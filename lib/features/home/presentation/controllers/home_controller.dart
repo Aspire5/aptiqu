@@ -129,6 +129,7 @@ class HomeController extends GetxController {
         subjectId: subjectId,
       );
       subjectLearningMap.value = map;
+      _updateWelcomeIfInitial();
     } catch (e) {
       roadmapError.value = e.toString();
     } finally {
@@ -177,17 +178,44 @@ class HomeController extends GetxController {
         id: 'msg_1',
         sender: MessageSender.ai,
         text:
-            'Hey Shagun, Welcome to AptiQu! ⚡\nI am your interactive AI Tutor. I will help you build mathematical intuition step-by-step through guided dialogue.\n\nOur first 15-minute curriculum session is ready on the server: Foundations of Ratios 101.\nShall we begin?',
+            'Hey Shagun, welcome to AptiQu! 👋\n\nBefore we start solving aptitude questions, let\'s make numbers feel simpler.\n\nWe\'ll start with patterns, mental calculation shortcuts, and techniques you will use everywhere.\n\nReady to jump in?',
         time: 'Just now',
         question: QuestionData(
-          title: 'CURRICULUM TRACK #1',
-          desc: 'Start 15-Minute Guided AI Tutor Lesson on Ratios:',
-          difficulty: 'Live Session • 15 min',
+          title: 'CURRENT TOPIC',
+          desc: 'Mathematical Foundations & Mental Calculation',
+          difficulty: 'Beginner • 5 min',
           inputType: QuestionInputType.select,
-          options: ["🚀 Start Live AI Lesson", 'Explore Topics'],
+          options: ["🚀 Start Lesson", 'Explore Topics'],
         ),
       ),
     );
+  }
+
+  void _updateWelcomeIfInitial() {
+    if (messages.isNotEmpty && messages.first.id == 'msg_1') {
+      final q = messages.first.question;
+      if (q != null && !q.isCompleted) {
+        final availableTopic = subjectLearningMap.value?.topics.firstWhereOrNull(
+          (t) => t.isAvailable || t.isInProgress,
+        );
+        if (availableTopic != null) {
+          messages[0] = ChatMessageModel(
+            id: 'msg_1',
+            sender: MessageSender.ai,
+            text:
+                'Hey Shagun, welcome to AptiQu! 👋\n\nBefore we start solving aptitude questions, let\'s make numbers feel simpler.\n\nWe\'ll start with patterns, mental calculation shortcuts, and techniques you will use everywhere.\n\nReady to jump in?',
+            time: 'Just now',
+            question: QuestionData(
+              title: 'CURRENT TOPIC',
+              desc: availableTopic.topicName,
+              difficulty: 'Beginner • 5 min',
+              inputType: QuestionInputType.select,
+              options: ["🚀 Start Lesson", 'Explore Topics'],
+            ),
+          );
+        }
+      }
+    }
   }
 
   /// Handle option selection (InputType.select)
@@ -218,14 +246,13 @@ class HomeController extends GetxController {
     // Natural conversation step progression
     if (conversationStep.value == 1) {
       if (optionIndex == 0) {
-        // Proceed with live backend AI Tutor lesson
+        // Proceed with lesson
         conversationStep.value = 2;
         messages.add(
           ChatMessageModel(
             id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
             sender: MessageSender.ai,
-            text:
-                'Connecting to AptiQu AI Tutor server for your roadmap lesson... ⚡\nOpening your interactive lesson stream now!',
+            text: 'Opening your interactive lesson stream now! ⚡',
             time: _getCurrentTime(),
           ),
         );
@@ -286,13 +313,18 @@ class HomeController extends GetxController {
     q.isCompleted = true;
     messages.refresh();
 
+    final activeTopicName = subjectLearningMap.value?.topics
+            .firstWhereOrNull((t) => t.isAvailable || t.isInProgress)
+            ?.topicName ??
+        'Mathematical Foundations & Mental Calculation';
+
     // User spoken answer
     messages.add(
       ChatMessageModel(
         id: 'user_${DateTime.now().millisecondsSinceEpoch}',
         sender: MessageSender.user,
         text:
-            '🎙️ "Because multiplying or dividing both terms by the same non-zero constant k is equivalent to multiplying the fraction by (k/k) = 1, so the numerical value remains invariant."',
+            '🎙️ "Breaking numbers down into smaller parts makes the calculation much easier to do mentally."',
         time: _getCurrentTime(),
       ),
     );
@@ -304,20 +336,21 @@ class HomeController extends GetxController {
           id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
           sender: MessageSender.ai,
           text:
-              'Great reasoning! 👏 To experience full interactive dialogue, formula cards, and mental calculation drills, start the 15-minute live AI session below:',
+              'Great reasoning! 👏 To practice step-by-step with real-time feedback, jump into your roadmap lesson below:',
           time: _getCurrentTime(),
           question: QuestionData(
-            title: 'RATIOS 101 CURRICULUM',
-            desc: 'Foundations of Ratios: Intuition to Mastery',
-            difficulty: 'Live Session • 15 min',
+            title: 'CURRENT LESSON',
+            desc: activeTopicName,
+            difficulty: 'Guided • 5 min',
             inputType: QuestionInputType.select,
-            options: ['🚀 Launch Live Lesson', 'Browse Topics'],
+            options: ['🚀 Start Lesson', 'Browse Topics'],
           ),
         ),
       );
       _scrollToBottom();
     });
   }
+
   /// Handle Text Submission (InputType.text)
   void handleTextSubmission(String messageId, String text) {
     if (text.trim().isEmpty) return;
@@ -331,6 +364,11 @@ class HomeController extends GetxController {
     q.submittedText = text.trim();
     q.isCompleted = true;
     messages.refresh();
+
+    final activeTopicName = subjectLearningMap.value?.topics
+            .firstWhereOrNull((t) => t.isAvailable || t.isInProgress)
+            ?.topicName ??
+        'Mathematical Foundations & Mental Calculation';
 
     // User message
     messages.add(
@@ -349,14 +387,14 @@ class HomeController extends GetxController {
           id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
           sender: MessageSender.ai,
           text:
-              'Answer recorded! 🎯 To experience the full guided conversation with smart hints and real-time step explanations, start the live AI Tutor lesson:',
+              'Got it! 🎯 To continue step-by-step through interactive drills and mental calculation patterns, start the lesson below:',
           time: _getCurrentTime(),
           question: QuestionData(
-            title: 'RATIOS 101 CURRICULUM',
-            desc: 'Foundations of Ratios: Intuition to Mastery • 15 min',
-            difficulty: 'Live Session • 15 min',
+            title: 'CURRENT LESSON',
+            desc: activeTopicName,
+            difficulty: 'Guided • 5 min',
             inputType: QuestionInputType.select,
-            options: ['🚀 Launch Live Lesson', 'Browse Topics'],
+            options: ['🚀 Start Lesson', 'Browse Topics'],
           ),
         ),
       );
