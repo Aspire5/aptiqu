@@ -58,7 +58,7 @@ class BottomNavZone extends StatelessWidget {
               selectedIndex: selectedIndex,
               label: 'TOPICS',
               icon: Icons.hub_rounded,
-              onTap: () => controller.selectedNavIndex.value = 1,
+              onTap: () => controller.selectTopicsTab(),
             ),
 
             // 3. PRACTICE

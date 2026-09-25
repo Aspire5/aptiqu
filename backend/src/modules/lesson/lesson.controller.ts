@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { lessonSessionService } from './services/lesson-session.service';
+import { roadmapProgressionService } from '../roadmap/services/roadmap-progression.service';
 import { StartSessionDto } from './dtos/lesson-session.dto';
 import { SubmitActionDto, InterruptDto } from './dtos/lesson-action.dto';
 
@@ -10,15 +11,30 @@ export class LessonController {
       const userId = req.userId!;
       const parsed = StartSessionDto.parse(req.body);
 
-      const result = parsed.roadmapStepId
+      let roadmapStepId = parsed.roadmapStepId;
+      let scriptSlug = parsed.scriptSlug;
+
+      if (!roadmapStepId && !scriptSlug) {
+        const roadmap = await roadmapProgressionService.getUserActiveRoadmap(userId);
+        const nextStep = await roadmapProgressionService.getNextStepOrScript(userId, roadmap.id);
+        if (nextStep.available && nextStep.roadmapStepId) {
+          roadmapStepId = nextStep.roadmapStepId;
+        } else if (nextStep.scriptSlug) {
+          scriptSlug = nextStep.scriptSlug;
+        } else {
+          throw new Error('No active learning step available on your current roadmap.');
+        }
+      }
+
+      const result = roadmapStepId
         ? await lessonSessionService.startOrResumeSessionByStep(
             userId,
-            parsed.roadmapStepId,
+            roadmapStepId,
             parsed.clientActionId
           )
         : await lessonSessionService.startOrResumeSession(
             userId,
-            parsed.scriptSlug!,
+            scriptSlug!,
             parsed.clientActionId
           );
 

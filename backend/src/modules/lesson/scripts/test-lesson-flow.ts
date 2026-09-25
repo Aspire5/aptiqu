@@ -18,7 +18,7 @@ async function testLessonFlow() {
   }
 
   const userId = user.id;
-  const scriptSlug = 'math_ratios_101';
+  const scriptSlug = 'script-qa-foundations-intro';
 
   // 2. Start or resume session
   console.log('1. Starting session for user:', userId);
@@ -36,47 +36,75 @@ async function testLessonFlow() {
   let stateVersion = startRes.stateVersion;
   let currentNodeId = startRes.currentNode.id;
 
-  // 3. Step: Welcome -> Click "Let's begin"
-  if (currentNodeId === 'node_01_welcome') {
-    console.log('2. Submitting action: "Let\'s begin" (opt_begin)');
+  // 3. Step: Welcome -> Click "Continue"
+  if (currentNodeId === 'welcome') {
+    console.log('2. Submitting action: Welcome -> Continue');
     const step1 = await lessonSessionService.submitAction(userId, sessionId, {
       clientActionId: uuidv4(),
       stateVersion,
       currentNodeId,
-      action: { type: 'CHOICE', actionId: 'opt_begin' },
+      action: { type: 'CONTINUE', actionId: 'continue' },
     });
     console.log(' -> Next Node:', step1.currentNode.id, '| Version:', step1.stateVersion);
     stateVersion = step1.stateVersion;
     currentNodeId = step1.currentNode.id;
   }
 
-  // 4. Step: Expectation -> Click "Continue"
-  if (currentNodeId === 'node_02_expectation') {
-    console.log('3. Submitting action: "Ready! Let\'s go" (opt_continue)');
+  // 4. Step: Hook Choice -> Click "Recognize easy patterns quickly" (patterns)
+  if (currentNodeId === 'hook') {
+    console.log('3. Submitting action: Hook -> Option "patterns"');
     const step2 = await lessonSessionService.submitAction(userId, sessionId, {
       clientActionId: uuidv4(),
       stateVersion,
       currentNodeId,
-      action: { type: 'CHOICE', actionId: 'opt_continue' },
+      action: { type: 'CHOICE', actionId: 'patterns' },
     });
     console.log(' -> Next Node:', step2.currentNode.id, '| Version:', step2.stateVersion);
+    console.log(' -> Evaluation:', step2.evaluation);
     stateVersion = step2.stateVersion;
     currentNodeId = step2.currentNode.id;
   }
 
-  // 5. Test Question Checkpoint: node_06_how_to_read
-  // Jump to test question evaluation
-  console.log('4. Testing Question Checkpoint (node_06_how_to_read)');
-  const qRes = await lessonSessionService.submitAction(userId, sessionId, {
-    clientActionId: uuidv4(),
-    stateVersion,
-    currentNodeId,
-    action: { type: 'CHOICE', actionId: 'opt_continue' },
-  }).catch(() => null);
+  // 5. Step: Real Life -> Continue
+  if (currentNodeId === 'real_life') {
+    console.log('4. Submitting action: Real Life -> Continue');
+    const step3 = await lessonSessionService.submitAction(userId, sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion,
+      currentNodeId,
+      action: { type: 'CONTINUE', actionId: 'continue' },
+    });
+    console.log(' -> Next Node:', step3.currentNode.id, '| Version:', step3.stateVersion);
+    stateVersion = step3.stateVersion;
+    currentNodeId = step3.currentNode.id;
+  }
 
-  if (qRes) {
-    stateVersion = qRes.stateVersion;
-    currentNodeId = qRes.currentNode.id;
+  // 6. Step: Real Life Continue -> "Let's go" (yes)
+  if (currentNodeId === 'real_life_continue') {
+    console.log('5. Submitting action: Real Life Continue -> Option "yes"');
+    const step4 = await lessonSessionService.submitAction(userId, sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion,
+      currentNodeId,
+      action: { type: 'CHOICE', actionId: 'yes' },
+    });
+    console.log(' -> Next Node:', step4.currentNode.id, '| Version:', step4.stateVersion);
+    stateVersion = step4.stateVersion;
+    currentNodeId = step4.currentNode.id;
+  }
+
+  // 7. Step: Map -> Continue
+  if (currentNodeId === 'map') {
+    console.log('6. Submitting action: Map -> Continue');
+    const step5 = await lessonSessionService.submitAction(userId, sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion,
+      currentNodeId,
+      action: { type: 'CONTINUE', actionId: 'continue' },
+    });
+    console.log(' -> Next Node:', step5.currentNode.id, '| Version:', step5.stateVersion);
+    console.log(' -> Is Completed:', step5.isCompleted);
+    console.log(' -> Next Step Result:', step5.next);
   }
 
   console.log('✅ End-to-End Lesson Flow Verification passed successfully!');

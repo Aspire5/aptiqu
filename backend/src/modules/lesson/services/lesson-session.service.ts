@@ -69,8 +69,7 @@ export class LessonSessionService {
       throw new Error(`Roadmap step "${roadmapStepId}" is currently not active.`);
     }
 
-    const assignment = step.scriptAssignments[0];
-    if (!assignment || !assignment.script || !assignment.publishedVersionId) {
+    if (!step.scriptAssignments || step.scriptAssignments.length === 0) {
       const error: any = new Error(
         `Learning content for "${step.id}" is coming soon. No published script available yet.`
       );
@@ -78,9 +77,6 @@ export class LessonSessionService {
       error.status = 404;
       throw error;
     }
-
-    const script = assignment.script;
-    const scriptVersionId = assignment.publishedVersionId;
 
     // Check for an active resumable session for this user and step
     let session = await prisma.lessonSession.findFirst({
@@ -90,7 +86,44 @@ export class LessonSessionService {
         status: { in: ['ACTIVE', 'PAUSED'] },
       },
       orderBy: { startedAt: 'desc' },
+      include: { script: true },
     });
+
+    let assignment = step.scriptAssignments[0];
+
+    if (!session) {
+      const completedSessions = await prisma.lessonSession.findMany({
+        where: {
+          userId,
+          roadmapStepId: step.id,
+          status: 'COMPLETED',
+        },
+        select: { scriptId: true },
+      });
+      const completedScriptIds = new Set(completedSessions.map((s) => s.scriptId));
+
+      const nextAssignment = step.scriptAssignments.find(
+        (sa) => !completedScriptIds.has(sa.scriptId)
+      );
+      if (nextAssignment) {
+        assignment = nextAssignment;
+      }
+    } else {
+      assignment =
+        step.scriptAssignments.find((sa) => sa.scriptId === session!.scriptId) || assignment;
+    }
+
+    if (!assignment || !assignment.script || !assignment.publishedVersionId) {
+      const error: any = new Error(
+        `Learning content for "${step.id}" is coming soon. No published script available yet.`
+      );
+      error.code = 'SCRIPT_NOT_PUBLISHED';
+      error.status = 404;
+      throw error;
+    }
+
+    const script = session?.script || assignment.script;
+    const scriptVersionId = session?.scriptVersionId || assignment.publishedVersionId;
 
     let definition: any;
 
@@ -113,6 +146,7 @@ export class LessonSessionService {
           stateVersion: 1,
           stateData: { variables: {}, visitedNodeIds: [entryNodeId] },
         },
+        include: { script: true },
       });
 
       await prisma.lessonEvent.create({
@@ -347,7 +381,10 @@ export class LessonSessionService {
         answer: input.action.answer,
       };
 
-      if (currentNode.type === 'QUESTION') {
+      if (
+        currentNode.type === 'QUESTION' ||
+        (currentNode.type === 'CHOICE' && currentNode.questionReference?.inlineData)
+      ) {
         const rawAnswer = input.action.answer || input.action.actionId || '';
         const evalRes = await questionService.evaluate(currentNode, rawAnswer);
         evaluation = {
@@ -448,20 +485,25 @@ export class LessonSessionService {
           }
         }
 
-        if (effectiveRoadmapId && effectiveRoadmapStepId) {
-          await roadmapProgressionService.markStepCompleted(
-            userId,
-            effectiveRoadmapId,
-            effectiveRoadmapStepId
-          );
-        }
-
         if (effectiveRoadmapId) {
           nextStepResult = await roadmapProgressionService.getNextStepOrScript(
             userId,
             effectiveRoadmapId,
             effectiveRoadmapStepId,
             session.scriptId
+          );
+        }
+
+        // Only mark roadmap step as completed if all scripts in this step have finished
+        if (
+          effectiveRoadmapId &&
+          effectiveRoadmapStepId &&
+          (!nextStepResult || nextStepResult.roadmapStepId !== effectiveRoadmapStepId)
+        ) {
+          await roadmapProgressionService.markStepCompleted(
+            userId,
+            effectiveRoadmapId,
+            effectiveRoadmapStepId
           );
         }
       }

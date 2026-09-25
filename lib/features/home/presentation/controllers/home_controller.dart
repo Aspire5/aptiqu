@@ -65,6 +65,21 @@ class HomeController extends GetxController {
   // Active step tracker for the offline interactive script
   final RxInt conversationStep = 1.obs;
 
+  // Triggers cinematic zoom-in camera animation on roadmap
+  final RxInt topicsTabTapCount = 0.obs;
+
+  // Fullscreen mode for immersive map exploration
+  final RxBool isFullScreen = false.obs;
+
+  void selectTopicsTab() {
+    selectedNavIndex.value = 1;
+    topicsTabTapCount.value++;
+  }
+
+  void toggleFullScreen() {
+    isFullScreen.value = !isFullScreen.value;
+  }
+
   // Roadmap & Curriculum state
   final RoadmapRepository roadmapRepo = Get.put(RoadmapRepository());
   final Rxn<ActiveRoadmapModel> activeRoadmap = Rxn<ActiveRoadmapModel>();
@@ -244,14 +259,19 @@ class HomeController extends GetxController {
   }
 
   /// Direct launch for live backend AI Tutor session
-  void startLiveLesson([String topicSlug = 'math_ratios_101']) {
+  void startLiveLesson([String? topicSlug]) {
     final availableTopic = subjectLearningMap.value?.topics.firstWhereOrNull(
       (t) => t.isAvailable || t.isInProgress,
     );
     if (availableTopic != null) {
       AppRouter.router.push('/lesson-step/${availableTopic.roadmapStepId}');
-    } else {
+    } else if (topicSlug != null && topicSlug.isNotEmpty) {
       AppRouter.router.push('/lesson/$topicSlug');
+    } else {
+      final firstTopic = subjectLearningMap.value?.topics.firstOrNull;
+      if (firstTopic != null) {
+        AppRouter.router.push('/lesson-step/${firstTopic.roadmapStepId}');
+      }
     }
   }
 

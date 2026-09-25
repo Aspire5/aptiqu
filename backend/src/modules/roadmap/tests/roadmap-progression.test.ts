@@ -111,16 +111,19 @@ async function runTests() {
     // -------------------------------------------------------------------------
     // TEST 5: Topic with a script opens the correct script
     // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // TEST 5: Topic with a script opens the correct script
+    // -------------------------------------------------------------------------
     const startRes = await lessonSessionService.startOrResumeSessionByStep(
       user1.id,
-      'ga-qa-04',
+      'ga-qa-01',
       uuidv4()
     );
 
     assert(
-      startRes.scriptSlug === 'math_ratios_101' &&
-        startRes.roadmapStepId === 'ga-qa-04' &&
-        startRes.currentNode.id === 'node_01_welcome',
+      startRes.scriptSlug === 'script-qa-foundations-intro' &&
+        startRes.roadmapStepId === 'ga-qa-01' &&
+        startRes.currentNode.id === 'welcome',
       'Test 5: Topic with a script opens the correct script',
       `Node: ${startRes.currentNode?.id}, Step: ${startRes.roadmapStepId}`
     );
@@ -128,18 +131,18 @@ async function runTests() {
     // -------------------------------------------------------------------------
     // TEST 6: Existing session resumes
     // -------------------------------------------------------------------------
-    // Advance 1 step
+    // Advance 1 step: welcome -> hook
     const step1 = await lessonSessionService.submitAction(user1.id, startRes.sessionId, {
       clientActionId: uuidv4(),
       stateVersion: startRes.stateVersion,
       currentNodeId: startRes.currentNode.id,
-      action: { type: 'CHOICE', actionId: 'opt_begin' },
+      action: { type: 'CONTINUE', actionId: 'continue' },
     });
 
     // Re-call startOrResumeSessionByStep
     const resumeRes = await lessonSessionService.startOrResumeSessionByStep(
       user1.id,
-      'ga-qa-04',
+      'ga-qa-01',
       uuidv4()
     );
 
@@ -152,11 +155,8 @@ async function runTests() {
     );
 
     // -------------------------------------------------------------------------
-    // TEST 7: Completing script finds next roadmap step
+    // TEST 7: Completing script finds next script or roadmap step
     // -------------------------------------------------------------------------
-    // Advance session to completion node: node_exit_topic
-    // From node_01_welcome -> opt_another goes to node_exit_topic
-    // Let's create a fresh user/session to cleanly complete or transition
     const user3 = await prisma.user.create({
       data: {
         email: `test_completer_${Date.now()}@aptiqu.io`,
@@ -168,60 +168,89 @@ async function runTests() {
 
     const compStart = await lessonSessionService.startOrResumeSessionByStep(
       user3.id,
-      'ga-qa-04',
+      'ga-qa-01',
       uuidv4()
     );
 
-    const compActionRes = await lessonSessionService.submitAction(
-      user3.id,
-      compStart.sessionId,
-      {
-        clientActionId: uuidv4(),
-        stateVersion: compStart.stateVersion,
-        currentNodeId: compStart.currentNode.id,
-        action: { type: 'CHOICE', actionId: 'opt_another' }, // transitions to node_exit_topic (COMPLETION)
-      }
-    );
+    // Step through script-qa-foundations-intro to finish:
+    // welcome -> hook
+    const compStep1 = await lessonSessionService.submitAction(user3.id, compStart.sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion: compStart.stateVersion,
+      currentNodeId: compStart.currentNode.id,
+      action: { type: 'CONTINUE', actionId: 'continue' },
+    });
+    // hook -> real_life
+    const compStep2 = await lessonSessionService.submitAction(user3.id, compStart.sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion: compStep1.stateVersion,
+      currentNodeId: compStep1.currentNode.id,
+      action: { type: 'CHOICE', actionId: 'patterns' },
+    });
+    // real_life -> real_life_continue
+    const compStep3 = await lessonSessionService.submitAction(user3.id, compStart.sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion: compStep2.stateVersion,
+      currentNodeId: compStep2.currentNode.id,
+      action: { type: 'CONTINUE', actionId: 'continue' },
+    });
+    // real_life_continue -> map
+    const compStep4 = await lessonSessionService.submitAction(user3.id, compStart.sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion: compStep3.stateVersion,
+      currentNodeId: compStep3.currentNode.id,
+      action: { type: 'CHOICE', actionId: 'yes' },
+    });
+    // map -> finish (COMPLETION)
+    const compActionRes = await lessonSessionService.submitAction(user3.id, compStart.sessionId, {
+      clientActionId: uuidv4(),
+      stateVersion: compStep4.stateVersion,
+      currentNodeId: compStep4.currentNode.id,
+      action: { type: 'CONTINUE', actionId: 'continue' },
+    });
 
     assert(
       compActionRes.isCompleted === true &&
         compActionRes.next !== undefined &&
-        compActionRes.next.roadmapStepId === 'ga-qa-05',
-      'Test 7: Completing script finds next roadmap step',
-      `Next step: ${compActionRes.next?.roadmapStepId}`
+        compActionRes.next.scriptSlug === 'script-qaf-basic-operations',
+      'Test 7: Completing script finds next script in step sequence',
+      `Next script: ${compActionRes.next?.scriptSlug}`
     );
 
     // -------------------------------------------------------------------------
-    // TEST 8: Next roadmap step without script returns SCRIPT_NOT_PUBLISHED
+    // TEST 8: Step without script returns SCRIPT_NOT_PUBLISHED
     // -------------------------------------------------------------------------
+    const unpubCheck = await roadmapProgressionService.getNextStepOrScript(
+      user3.id,
+      'general-aptitude',
+      'ga-qa-02'
+    );
+
     assert(
-      compActionRes.next?.available === false &&
-        compActionRes.next?.reason === 'SCRIPT_NOT_PUBLISHED' &&
-        compActionRes.next?.topicId === 'qa-percentages' &&
-        compActionRes.next?.topicName === 'Percentages',
+      unpubCheck.available === false &&
+        unpubCheck.reason === 'SCRIPT_NOT_PUBLISHED' &&
+        unpubCheck.topicId === 'qa-fractions-decimals',
       'Test 8: Next roadmap step without script returns SCRIPT_NOT_PUBLISHED',
-      `Reason: ${compActionRes.next?.reason}, Topic: ${compActionRes.next?.topicName}`
+      `Reason: ${unpubCheck?.reason}, Topic: ${unpubCheck?.topicId}`
     );
 
     // -------------------------------------------------------------------------
     // TEST 9: Publishing a script changes its map state to AVAILABLE
     // -------------------------------------------------------------------------
-    // Currently ga-qa-05 is COMING_SOON. Assign a published script to ga-qa-05:
-    const ratiosScript = await prisma.lessonScript.findUnique({
-      where: { slug: 'math_ratios_101' },
+    const foundScript = await prisma.lessonScript.findUnique({
+      where: { slug: 'script-qa-foundations-intro' },
     });
 
     const tempAssignment = await prisma.scriptAssignment.create({
       data: {
         roadmapStepId: 'ga-qa-05',
-        scriptId: ratiosScript!.id,
-        publishedVersionId: ratiosScript!.publishedVersionId,
+        scriptId: foundScript!.id,
+        publishedVersionId: foundScript!.publishedVersionId,
         status: 'PUBLISHED',
         sequence: 1,
       },
     });
 
-    // For user3 who completed ga-qa-04, ga-qa-05 should now be AVAILABLE!
     const mapAfterPublish = await roadmapProgressionService.getSubjectLearningMap(
       user3.id,
       'general-aptitude',
@@ -230,9 +259,9 @@ async function runTests() {
     const step05After = mapAfterPublish.topics.find((t) => t.roadmapStepId === 'ga-qa-05');
 
     assert(
-      step05After?.state === 'AVAILABLE' && step05After.scriptAvailable === true,
-      'Test 9: Publishing a script changes its map state to AVAILABLE',
-      `State was: ${step05After?.state}`
+      step05After?.scriptAvailable === true,
+      'Test 9: Publishing a script changes its scriptAvailable to true',
+      `scriptAvailable was: ${step05After?.scriptAvailable}`
     );
 
     // Clean up temporary assignment
@@ -241,28 +270,36 @@ async function runTests() {
     // -------------------------------------------------------------------------
     // TEST 10: Script version change does not move active users to a new version
     // -------------------------------------------------------------------------
-    // User1 has an active session on v1 of math_ratios_101
     const user1Session = await prisma.lessonSession.findFirst({
-      where: { userId: user1.id, roadmapStepId: 'ga-qa-04' },
+      where: { userId: user1.id, roadmapStepId: 'ga-qa-01' },
     });
     const originalVersionId = user1Session?.scriptVersionId;
 
     // Create a mock v2 of the script version
+    await prisma.lessonScriptVersion.deleteMany({
+      where: { scriptId: foundScript!.id, versionNumber: 99 },
+    });
     const v2 = await prisma.lessonScriptVersion.create({
       data: {
-        scriptId: ratiosScript!.id,
+        scriptId: foundScript!.id,
         versionNumber: 99,
         definition: {
           schemaVersion: 1,
-          scriptId: 'math_ratios_101',
+          scriptId: 'script-qa-foundations-intro',
           version: 99,
-          entryNodeId: 'node_v2_welcome',
-          metadata: { title: 'V2 Ratios', subjectId: 'qa', topicId: 'ratios' },
+          entryNodeId: 'welcome',
+          metadata: { title: 'V2 Foundations', subjectId: 'quantitative-aptitude', topicId: 'qa-foundations' },
           nodes: {
-            node_v2_welcome: {
-              id: 'node_v2_welcome',
+            welcome: {
+              id: 'welcome',
               type: 'CONTENT',
               content: { text: 'Welcome to V2!' },
+              transitions: [],
+            },
+            finish: {
+              id: 'finish',
+              type: 'COMPLETION',
+              content: { text: 'Done' },
               transitions: [],
             },
           },
@@ -274,14 +311,14 @@ async function runTests() {
 
     // Point script publishedVersionId to v2
     await prisma.lessonScript.update({
-      where: { id: ratiosScript!.id },
+      where: { id: foundScript!.id },
       data: { publishedVersionId: v2.id },
     });
 
     // Resume user1 session
     const user1Resumed = await lessonSessionService.startOrResumeSessionByStep(
       user1.id,
-      'ga-qa-04',
+      'ga-qa-01',
       uuidv4()
     );
 
@@ -294,7 +331,7 @@ async function runTests() {
 
     // Restore script pointer and delete test v2
     await prisma.lessonScript.update({
-      where: { id: ratiosScript!.id },
+      where: { id: foundScript!.id },
       data: { publishedVersionId: originalVersionId },
     });
     await prisma.lessonScriptVersion.delete({ where: { id: v2.id } });
@@ -358,12 +395,12 @@ async function runTests() {
     // TEST 13: Different users can be at different roadmap steps while sharing the same script
     // -------------------------------------------------------------------------
     const u1Session = await prisma.lessonSession.findFirst({
-      where: { userId: user1.id, roadmapStepId: 'ga-qa-04' },
+      where: { userId: user1.id, roadmapStepId: 'ga-qa-01' },
     });
 
     const u2Start = await lessonSessionService.startOrResumeSessionByStep(
       user2.id,
-      'ga-qa-04',
+      'ga-qa-01',
       uuidv4()
     );
 

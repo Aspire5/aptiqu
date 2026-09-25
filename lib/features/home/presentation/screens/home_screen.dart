@@ -6,7 +6,7 @@ import '../controllers/home_controller.dart';
 import '../widgets/bottom_nav_zone.dart';
 import '../widgets/chat_playground_zone.dart';
 import '../widgets/top_bar_zone.dart';
-import '../widgets/learning_map_topic_card.dart';
+import '../widgets/constellation_roadmap_view.dart';
 
 /// Screen 3: Redesigned Home Screen with 3 Strict Zones
 /// - Top 12%: Avatar + First Name & Level | Space | Streak & Points Badges
@@ -19,267 +19,167 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
 
-    return Scaffold(
-      backgroundColor: AptiquColors.surfaceDim,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final totalHeight = constraints.maxHeight;
-            // 3 Zones allocation: 12% Top, 76% Center, 12% Bottom
-            final topZoneHeight = (totalHeight * 0.12).clamp(68.0, 92.0);
-            final bottomZoneHeight = (totalHeight * 0.12).clamp(62.0, 84.0);
-            final centerZoneHeight = totalHeight - topZoneHeight - bottomZoneHeight;
+    return Obx(() {
+      final isFullScreen = controller.isFullScreen.value;
 
-            return Column(
-              children: [
-                // ZONE 1: TOP 12%
-                TopBarZone(height: topZoneHeight),
+      return Scaffold(
+        backgroundColor: AptiquColors.surfaceDim,
+        body: SafeArea(
+          top: !isFullScreen,
+          bottom: !isFullScreen,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final totalHeight = constraints.maxHeight;
+              // 3 Zones allocation: 12% Top, 76% Center, 12% Bottom
+              final topZoneHeight = (totalHeight * 0.12).clamp(68.0, 92.0);
+              final bottomZoneHeight = (totalHeight * 0.12).clamp(62.0, 84.0);
 
-                // ZONE 2: CENTER 76%
-                Expanded(
-                  child: Obx(() {
-                    final currentTab = controller.selectedNavIndex.value;
-                    if (currentTab == 0) {
-                      return ChatPlaygroundZone(height: centerZoneHeight);
-                    } else if (currentTab == 1) {
-                      return _buildTopicsTab(context);
-                    } else {
-                      return _buildSecondaryTabPlaceholder(currentTab);
-                    }
-                  }),
-                ),
+              return Column(
+                children: [
+                  // ZONE 1: TOP 12% - Slides & Fades UPWARDS in Fullscreen
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 320),
+                    curve: Curves.easeInOutCubic,
+                    height: isFullScreen ? 0.0 : topZoneHeight,
+                    child: AnimatedSlide(
+                      offset: isFullScreen ? const Offset(0, -1) : Offset.zero,
+                      duration: const Duration(milliseconds: 320),
+                      curve: Curves.easeInOutCubic,
+                      child: AnimatedOpacity(
+                        opacity: isFullScreen ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 240),
+                        child: OverflowBox(
+                          minHeight: topZoneHeight,
+                          maxHeight: topZoneHeight,
+                          alignment: Alignment.topCenter,
+                          child: TopBarZone(height: topZoneHeight),
+                        ),
+                      ),
+                    ),
+                  ),
 
-                // ZONE 3: BOTTOM 12%
-                BottomNavZone(height: bottomZoneHeight),
-              ],
-            );
-          },
+                  // ZONE 2: CENTER - Expands to 100% in Fullscreen
+                  Expanded(
+                    child: Obx(() {
+                      final currentTab = controller.selectedNavIndex.value;
+                      if (currentTab == 0) {
+                        return ChatPlaygroundZone(
+                          height: totalHeight -
+                              (isFullScreen ? 0 : topZoneHeight) -
+                              (isFullScreen ? 0 : bottomZoneHeight),
+                        );
+                      } else if (currentTab == 1) {
+                        return _buildTopicsTab(context, isFullScreen);
+                      } else {
+                        return _buildSecondaryTabPlaceholder(currentTab);
+                      }
+                    }),
+                  ),
+
+                  // ZONE 3: BOTTOM 12% - Slides & Fades DOWNWARDS in Fullscreen
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 320),
+                    curve: Curves.easeInOutCubic,
+                    height: isFullScreen ? 0.0 : bottomZoneHeight,
+                    child: AnimatedSlide(
+                      offset: isFullScreen ? const Offset(0, 1) : Offset.zero,
+                      duration: const Duration(milliseconds: 320),
+                      curve: Curves.easeInOutCubic,
+                      child: AnimatedOpacity(
+                        opacity: isFullScreen ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 240),
+                        child: OverflowBox(
+                          minHeight: bottomZoneHeight,
+                          maxHeight: bottomZoneHeight,
+                          alignment: Alignment.bottomCenter,
+                          child: BottomNavZone(height: bottomZoneHeight),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
-  /// Interactive Curriculum Directory (TOPICS Tab)
-  Widget _buildTopicsTab(BuildContext context) {
+  /// Interactive Curriculum Directory (TOPICS Tab with Zoomable Constellation Roadmap)
+  Widget _buildTopicsTab(BuildContext context, bool isFullScreen) {
     final controller = Get.find<HomeController>();
 
     return Obx(() {
-      final activeRoadmap = controller.activeRoadmap.value;
       final subjects = controller.subjects;
       final selectedSubjId = controller.selectedSubjectId.value;
       final learningMap = controller.subjectLearningMap.value;
       final isLoading = controller.isLoadingMap.value;
       final error = controller.roadmapError.value;
+      final cameraTrigger = controller.topicsTabTapCount.value;
 
-      return Container(
-        color: AptiquColors.surfaceDim,
-        child: RefreshIndicator(
-          color: AptiquColors.primary,
-          backgroundColor: AptiquColors.surfaceContainer,
-          onRefresh: () async {
-            await controller.fetchActiveRoadmap();
-          },
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      if (isLoading && learningMap == null) {
+        return Container(
+          color: AptiquColors.surfaceDim,
+          child: const Center(
+            child: CircularProgressIndicator(color: AptiquColors.primary),
+          ),
+        );
+      }
+
+      if (error != null && learningMap == null) {
+        return Container(
+          color: AptiquColors.surfaceDim,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Header Row: Tag + Active Roadmap Badge
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 4,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: AptiquColors.primary,
-                          borderRadius: BorderRadius.circular(2),
-                          boxShadow: AptiquColors.primaryGlow,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        activeRoadmap != null
-                            ? activeRoadmap.name.toUpperCase()
-                            : 'GENERAL APTITUDE',
-                        style: AptiquTypography.labelCapsBold.copyWith(
-                          color: AptiquColors.primary,
-                          fontSize: 12,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AptiquColors.primaryContainer.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AptiquColors.primaryContainer),
-                    ),
-                    child: Text(
-                      'ACTIVE ROADMAP',
-                      style: AptiquTypography.labelCapsBold.copyWith(
-                        color: AptiquColors.primary,
-                        fontSize: 9,
-                      ),
-                    ),
-                  ),
-                ],
+              const Icon(Icons.cloud_off_outlined, color: Colors.amberAccent, size: 40),
+              const SizedBox(height: 12),
+              Text(
+                'Failed to load curriculum map.',
+                style: AptiquTypography.headlineSm.copyWith(color: Colors.white),
               ),
               const SizedBox(height: 6),
               Text(
-                'Select a subject track to view your structured, milestone-based learning map.',
-                style: AptiquTypography.bodySm.copyWith(
-                  color: AptiquColors.onSurfaceVariant,
-                  fontSize: 12,
-                ),
+                error,
+                textAlign: TextAlign.center,
+                style: AptiquTypography.bodySm.copyWith(color: AptiquColors.onSurfaceVariant),
               ),
-              const SizedBox(height: 14),
-
-              // Subject Tabs Selector
-              if (subjects.isNotEmpty)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: subjects.map((subj) {
-                      final isSelected = subj.id == selectedSubjId;
-                      final isQA = subj.slug.contains('quantitative');
-
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () => controller.selectSubject(subj.id),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? AptiquColors.surfaceContainerHigh
-                                  : AptiquColors.surfaceContainer,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected
-                                    ? AptiquColors.primary
-                                    : AptiquColors.outlineVariant,
-                                width: isSelected ? 1.6 : 1.0,
-                              ),
-                              boxShadow: isSelected ? AptiquColors.primaryGlow : null,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  isQA ? Icons.calculate_outlined : Icons.psychology_outlined,
-                                  size: 16,
-                                  color: isSelected ? AptiquColors.primary : AptiquColors.onSurfaceVariant,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  subj.name,
-                                  style: AptiquTypography.bodySm.copyWith(
-                                    color: isSelected ? Colors.white : AptiquColors.onSurfaceVariant,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-
               const SizedBox(height: 16),
-
-              // Progress Overview Card
-              if (learningMap != null) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: AptiquColors.surfaceContainer,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AptiquColors.outlineVariant),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            learningMap.subjectName.toUpperCase(),
-                            style: AptiquTypography.labelCapsBold.copyWith(
-                              color: AptiquColors.secondary,
-                              fontSize: 10.5,
-                            ),
-                          ),
-                          Text(
-                            '${learningMap.completedTopics} of ${learningMap.totalTopics} Completed',
-                            style: AptiquTypography.labelCaps.copyWith(
-                              color: AptiquColors.onSurfaceVariant,
-                              fontSize: 10.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: learningMap.totalTopics > 0
-                              ? learningMap.completedTopics / learningMap.totalTopics
-                              : 0.0,
-                          backgroundColor: AptiquColors.surfaceContainerHighest,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AptiquColors.primary),
-                          minHeight: 6,
-                        ),
-                      ),
-                    ],
-                  ),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AptiquColors.primary,
+                  foregroundColor: AptiquColors.onPrimary,
                 ),
-                const SizedBox(height: 14),
-              ],
-
-              // Loading or Error State
-              if (isLoading)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Center(
-                    child: CircularProgressIndicator(color: AptiquColors.primary),
-                  ),
-                )
-              else if (error != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: Column(
-                    children: [
-                      const Icon(Icons.cloud_off_outlined, color: Colors.amberAccent, size: 36),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Failed to load curriculum map.',
-                        style: AptiquTypography.bodyMd.copyWith(color: Colors.white),
-                      ),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () => controller.fetchActiveRoadmap(),
-                        child: const Text('Retry'),
-                      ),
-                    ],
-                  ),
-                )
-              else if (learningMap != null)
-                // Ordered Learning Map Topics
-                ...learningMap.topics.map(
-                  (topic) => LearningMapTopicCard(
-                    topic: topic,
-                    onTap: () => controller.onTopicTapped(context, topic),
-                  ),
-                ),
+                onPressed: () => controller.fetchActiveRoadmap(),
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('Retry'),
+              ),
             ],
           ),
+        );
+      }
+
+      if (learningMap != null) {
+        return ConstellationRoadmapView(
+          learningMap: learningMap,
+          subjects: subjects,
+          selectedSubjectId: selectedSubjId,
+          cameraTrigger: cameraTrigger,
+          isFullScreen: isFullScreen,
+          onToggleFullScreen: () => controller.toggleFullScreen(),
+          onSelectSubject: (subjId) => controller.selectSubject(subjId),
+          onTopicTap: (topic) => controller.onTopicTapped(context, topic),
+          onRefresh: () => controller.fetchActiveRoadmap(),
+        );
+      }
+
+      return Container(
+        color: AptiquColors.surfaceDim,
+        child: const Center(
+          child: CircularProgressIndicator(color: AptiquColors.primary),
         ),
       );
     });

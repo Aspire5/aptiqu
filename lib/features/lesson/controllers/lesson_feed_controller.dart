@@ -94,6 +94,15 @@ class LessonFeedController extends GetxController {
         responseTimeMs: responseTimeMs,
       );
 
+      if (response.evaluation != null &&
+          response.evaluation!.explanation != null &&
+          response.evaluation!.explanation!.isNotEmpty) {
+        feedItems.add(FeedItem(
+          isUser: false,
+          text: response.evaluation!.explanation!,
+        ));
+      }
+
       _applySession(response);
       await _saveCheckpoint(response);
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import 'package:aptiqu/shared/widgets/background/cyber_ambient_background.dart';
@@ -29,10 +28,6 @@ class ChatPlaygroundZone extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
           child: Column(
             children: [
-              // Quick Launch Live Lesson Banner
-              _buildActiveLessonBanner(context),
-              const SizedBox(height: 6),
-
               // Scrollable Chat Messages Area
               Expanded(
                 child: Obx(() {
@@ -364,104 +359,6 @@ class ChatPlaygroundZone extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  /// Sleek, responsive quick-launch banner for active AI Tutor lesson
-  Widget _buildActiveLessonBanner(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainer.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AptiquColors.primaryContainer.withValues(alpha: 0.7),
-          width: 1.2,
-        ),
-        boxShadow: AptiquColors.primaryGlow,
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: AptiquColors.primaryContainer.withValues(alpha: 0.25),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.bolt_rounded,
-              color: AptiquColors.secondary,
-              size: 16,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 5,
-                      height: 5,
-                      decoration: const BoxDecoration(
-                        color: Colors.greenAccent,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'AI TUTOR READY',
-                      style: AptiquTypography.labelCapsBold.copyWith(
-                        fontSize: 9,
-                        color: Colors.greenAccent,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  'Ratio & Proportion 101 • 15 min',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: AptiquTypography.bodySm.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 11.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          InkWell(
-            onTap: () => context.push('/lesson/math_ratios_101'),
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                gradient: AptiquColors.primaryGradient,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Start',
-                    style: AptiquTypography.labelCapsBold.copyWith(
-                      color: Colors.white,
-                      fontSize: 11,
-                    ),
-                  ),
-                  const SizedBox(width: 3),
-                  const Icon(Icons.arrow_forward_rounded, size: 12, color: Colors.white),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

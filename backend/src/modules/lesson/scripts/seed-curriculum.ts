@@ -241,56 +241,104 @@ export async function seedCurriculum() {
     });
   }
 
-  // 7. Ensure Ratios script is published and assigned to its roadmap step
-  console.log('📌 Checking Script Assignment for Ratios lesson...');
-  const ratiosScriptFile = path.resolve(__dirname, 'ratios-15min-beginner.json');
-  if (fs.existsSync(ratiosScriptFile)) {
-    await publishScriptFromJson(ratiosScriptFile);
-  }
-
-  const ratiosScript = await prisma.lessonScript.findUnique({
+  // 7. Cleanup legacy ratio script
+  console.log('📌 Cleaning up legacy "math_ratios_101" script and assignments...');
+  const legacyRatioScript = await prisma.lessonScript.findUnique({
     where: { slug: 'math_ratios_101' },
   });
-
-  if (ratiosScript && ratiosScript.publishedVersionId) {
-    // Find the roadmap step for Ratio & Proportion in general-aptitude (ga-qa-04)
-    const ratioStep = await prisma.roadmapStep.findFirst({
-      where: {
-        roadmapId: 'general-aptitude',
-        topicId: 'qa-ratio-proportion',
-      },
+  if (legacyRatioScript) {
+    // Delete assignments
+    await prisma.scriptAssignment.deleteMany({
+      where: { scriptId: legacyRatioScript.id },
     });
+    const legacySessions = await prisma.lessonSession.findMany({
+      where: { scriptId: legacyRatioScript.id },
+      select: { id: true },
+    });
+    const sessionIds = legacySessions.map((s) => s.id);
 
-    if (ratioStep) {
-      // Find or create ScriptAssignment
-      const existingAssignment = await prisma.scriptAssignment.findFirst({
-        where: {
-          roadmapStepId: ratioStep.id,
-          scriptId: ratiosScript.id,
-        },
+    if (sessionIds.length > 0) {
+      await prisma.aiConversation.deleteMany({
+        where: { sessionId: { in: sessionIds } },
+      });
+      await prisma.questionAttempt.deleteMany({
+        where: { sessionId: { in: sessionIds } },
+      });
+      await prisma.lessonEvent.deleteMany({
+        where: { sessionId: { in: sessionIds } },
+      });
+      await prisma.lessonSession.deleteMany({
+        where: { id: { in: sessionIds } },
+      });
+    }
+    // Delete versions
+    await prisma.lessonScriptVersion.deleteMany({
+      where: { scriptId: legacyRatioScript.id },
+    });
+    // Delete script
+    await prisma.lessonScript.delete({
+      where: { id: legacyRatioScript.id },
+    });
+    console.log('🗑️ Successfully removed legacy script "math_ratios_101"');
+  }
+
+  // 8. Publish QA Foundations scripts
+  console.log('📌 Publishing QA Foundations scripts...');
+  const qaFoundationsFile = path.resolve(__dirname, 'qa-foundations-scripts.json');
+  if (fs.existsSync(qaFoundationsFile)) {
+    await publishScriptFromJson(qaFoundationsFile);
+  }
+
+  // Find roadmap step ga-qa-01 (Mathematical Foundations & Mental Calculation)
+  const foundationsStep = await prisma.roadmapStep.findFirst({
+    where: {
+      roadmapId: 'general-aptitude',
+      topicId: 'qa-foundations',
+    },
+  });
+
+  if (foundationsStep) {
+    const rawJson = fs.readFileSync(qaFoundationsFile, 'utf8');
+    const definitions: any[] = JSON.parse(rawJson);
+
+    for (let i = 0; i < definitions.length; i++) {
+      const def = definitions[i];
+      const script = await prisma.lessonScript.findUnique({
+        where: { slug: def.scriptId },
       });
 
-      if (!existingAssignment) {
-        await prisma.scriptAssignment.create({
-          data: {
-            roadmapStepId: ratioStep.id,
-            scriptId: ratiosScript.id,
-            publishedVersionId: ratiosScript.publishedVersionId,
-            status: 'PUBLISHED',
-            sequence: 1,
-            isRequired: true,
+      if (script && script.publishedVersionId) {
+        const sequence = i + 1; // 1 to 8
+        const existingAssignment = await prisma.scriptAssignment.findFirst({
+          where: {
+            roadmapStepId: foundationsStep.id,
+            scriptId: script.id,
           },
         });
-        console.log(`🔗 Linked script "math_ratios_101" to Roadmap Step "${ratioStep.id}"`);
-      } else {
-        await prisma.scriptAssignment.update({
-          where: { id: existingAssignment.id },
-          data: {
-            publishedVersionId: ratiosScript.publishedVersionId,
-            status: 'PUBLISHED',
-          },
-        });
-        console.log(`🔄 Updated assignment for script "math_ratios_101" on step "${ratioStep.id}"`);
+
+        if (!existingAssignment) {
+          await prisma.scriptAssignment.create({
+            data: {
+              roadmapStepId: foundationsStep.id,
+              scriptId: script.id,
+              publishedVersionId: script.publishedVersionId,
+              status: 'PUBLISHED',
+              sequence,
+              isRequired: true,
+            },
+          });
+          console.log(`🔗 Linked script "${def.scriptId}" (seq: ${sequence}) to Roadmap Step "${foundationsStep.id}"`);
+        } else {
+          await prisma.scriptAssignment.update({
+            where: { id: existingAssignment.id },
+            data: {
+              publishedVersionId: script.publishedVersionId,
+              status: 'PUBLISHED',
+              sequence,
+            },
+          });
+          console.log(`🔄 Updated assignment for script "${def.scriptId}" (seq: ${sequence}) on step "${foundationsStep.id}"`);
+        }
       }
     }
   }

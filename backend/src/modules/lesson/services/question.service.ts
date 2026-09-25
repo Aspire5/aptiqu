@@ -19,7 +19,7 @@ export class QuestionService {
   }
 
   public async evaluate(node: LessonNode, rawAnswer: string): Promise<EvaluationResult> {
-    if (node.type !== 'QUESTION' || !node.questionReference) {
+    if ((node.type !== 'QUESTION' && node.type !== 'CHOICE') || !node.questionReference) {
       return { isCorrect: true, score: 1.0 };
     }
 
