@@ -30,22 +30,32 @@ class LessonFeedController extends GetxController {
   final Rx<FeedStatus> status = FeedStatus.initial.obs;
   final RxList<FeedItem> feedItems = <FeedItem>[].obs;
   final Rxn<LessonNodeModel> currentNode = Rxn<LessonNodeModel>();
+  final Rxn<NextLearningStepModel> nextStep = Rxn<NextLearningStepModel>();
   final Rxn<String> errorMessage = Rxn<String>();
 
   String? sessionId;
   int stateVersion = 1;
   String? currentScriptSlug;
+  String? currentRoadmapStepId;
 
-  Future<void> initLesson(String scriptSlug) async {
+  Future<void> initLesson({String? scriptSlug, String? roadmapStepId}) async {
     currentScriptSlug = scriptSlug;
+    currentRoadmapStepId = roadmapStepId;
     status.value = FeedStatus.loading;
     errorMessage.value = null;
+    nextStep.value = null;
 
     try {
-      final session = await _repository.startOrResumeSession(
-        scriptSlug: scriptSlug,
-        clientActionId: _uuid.v4(),
-      );
+      final session = roadmapStepId != null
+          ? await _repository.startOrResumeSessionByStep(
+              roadmapStepId: roadmapStepId,
+              clientActionId: _uuid.v4(),
+            )
+          : await _repository.startOrResumeSession(
+              scriptSlug: scriptSlug,
+              roadmapStepId: roadmapStepId,
+              clientActionId: _uuid.v4(),
+            );
 
       _applySession(session);
       await _saveCheckpoint(session);
@@ -119,6 +129,12 @@ class LessonFeedController extends GetxController {
     sessionId = session.id;
     stateVersion = session.stateVersion;
     currentNode.value = session.currentNode;
+    if (session.next != null) {
+      nextStep.value = session.next;
+    }
+    if (session.roadmapStepId != null) {
+      currentRoadmapStepId = session.roadmapStepId;
+    }
 
     // Add tutor message to feed
     feedItems.add(FeedItem(

@@ -59,7 +59,15 @@ class AppRouter {
         path: AppRoutes.lesson,
         name: 'lesson',
         builder: (context, state) => LessonFeedScreen(
-          slug: state.pathParameters['slug'] ?? 'math_ratios_101',
+          slug: state.pathParameters['slug'],
+          roadmapStepId: state.uri.queryParameters['stepId'],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.lessonStep,
+        name: 'lessonStep',
+        builder: (context, state) => LessonFeedScreen(
+          roadmapStepId: state.pathParameters['stepId'],
         ),
       ),
     ],

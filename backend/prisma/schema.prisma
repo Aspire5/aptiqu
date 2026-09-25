@@ -26,6 +26,9 @@ model User {
   questionAttempts       QuestionAttempt[]
   conceptMasteries       StudentConceptMastery[]
   aiConversations        AiConversation[]
+  activeRoadmapId        String?                 @map("active_roadmap_id")
+  activeRoadmap          Roadmap?                @relation(fields: [activeRoadmapId], references: [id], onDelete: SetNull)
+  roadmapProgress        UserRoadmapStepProgress[]
 
   @@map("users")
   @@schema("auth")
@@ -105,6 +108,7 @@ model LessonScript {
 
   versions           LessonScriptVersion[]
   sessions           LessonSession[]
+  assignments        ScriptAssignment[]
 
   @@index([subjectId, topicId])
   @@map("lesson_scripts")
@@ -125,6 +129,7 @@ model LessonScriptVersion {
 
   script        LessonScript  @relation(fields: [scriptId], references: [id], onDelete: Cascade)
   sessions      LessonSession[]
+  assignments   ScriptAssignment[]
 
   @@unique([scriptId, versionNumber])
   @@index([scriptId, status])
@@ -144,6 +149,8 @@ enum SessionStatus {
 model LessonSession {
   id              String              @id @default(uuid()) @db.Uuid
   userId          String              @map("user_id") @db.Uuid
+  roadmapId       String?             @map("roadmap_id")
+  roadmapStepId   String?             @map("roadmap_step_id")
   scriptId        String              @map("script_id") @db.Uuid
   scriptVersionId String              @map("script_version_id") @db.Uuid
   status          SessionStatus       @default(ACTIVE)
@@ -155,6 +162,8 @@ model LessonSession {
   completedAt     DateTime?           @map("completed_at")
 
   user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmap         Roadmap?            @relation(fields: [roadmapId], references: [id], onDelete: SetNull)
+  roadmapStep     RoadmapStep?        @relation(fields: [roadmapStepId], references: [id], onDelete: SetNull)
   script          LessonScript        @relation(fields: [scriptId], references: [id], onDelete: Restrict)
   scriptVersion   LessonScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Restrict)
   events          LessonEvent[]
@@ -162,6 +171,7 @@ model LessonSession {
 
   @@index([userId, status])
   @@index([scriptId, userId])
+  @@index([userId, roadmapStepId])
   @@map("lesson_sessions")
   @@schema("learning")
 }
@@ -291,3 +301,179 @@ model AiMessage {
   @@map("ai_messages")
   @@schema("learning")
 }
+
+// =============================================================================
+// CURRICULUM & ROADMAP SCHEMA
+// =============================================================================
+
+model Subject {
+  id           String           @id
+  slug         String           @unique
+  name         String
+  description  String?
+  displayOrder Int              @default(0) @map("display_order")
+  isActive     Boolean          @default(true) @map("is_active")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+
+  topics          Topic[]
+  roadmapSubjects RoadmapSubject[]
+  roadmapSteps    RoadmapStep[]
+
+  @@map("subjects")
+  @@schema("learning")
+}
+
+model Topic {
+  id                     String    @id
+  subjectId              String    @map("subject_id")
+  slug                   String    @unique
+  name                   String
+  description            String?
+  defaultImportance      String?   @map("default_importance")
+  defaultTeachingDepth   Int?      @map("default_teaching_depth")
+  defaultTeachingMinutes Int?      @map("default_teaching_minutes")
+  isActive               Boolean   @default(true) @map("is_active")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  subject      Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subtopics    Subtopic[]
+  roadmapSteps RoadmapStep[]
+
+  @@index([subjectId])
+  @@map("topics")
+  @@schema("learning")
+}
+
+model Subtopic {
+  id              String    @id
+  topicId         String    @map("topic_id")
+  slug            String?
+  name            String
+  description     String?
+  sequence        Int       @default(0)
+  importance      String?
+  teachingDepth   Int?      @map("teaching_depth")
+  teachingMinutes Int?      @map("teaching_minutes")
+  isActive        Boolean   @default(true) @map("is_active")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  topic        Topic         @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  roadmapSteps RoadmapStep[]
+
+  @@index([topicId])
+  @@map("subtopics")
+  @@schema("learning")
+}
+
+model Roadmap {
+  id          String   @id
+  slug        String   @unique
+  name        String
+  course      String   @default("general")
+  description String?
+  isDefault   Boolean  @default(false) @map("is_default")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  roadmapSubjects  RoadmapSubject[]
+  roadmapSteps     RoadmapStep[]
+  userStepProgress UserRoadmapStepProgress[]
+  sessions         LessonSession[]
+  activeUsers      User[]
+
+  @@map("roadmaps")
+  @@schema("learning")
+}
+
+model RoadmapSubject {
+  id        String   @id @default(uuid()) @db.Uuid
+  roadmapId String   @map("roadmap_id")
+  subjectId String   @map("subject_id")
+  sequence  Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  roadmap Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([roadmapId, subjectId])
+  @@index([roadmapId, sequence])
+  @@map("roadmap_subjects")
+  @@schema("learning")
+}
+
+model RoadmapStep {
+  id              String   @id
+  roadmapId       String   @map("roadmap_id")
+  subjectId       String   @map("subject_id")
+  topicId         String   @map("topic_id")
+  subtopicId      String?  @map("subtopic_id")
+  sequence        Int
+  course          String   @default("general")
+  importance      String   @default("medium")
+  teachingDepth   Int      @default(3) @map("teaching_depth")
+  teachingMinutes Int      @default(30) @map("teaching_minutes")
+  isRequired      Boolean  @default(true) @map("is_required")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  roadmap           Roadmap                   @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  subject           Subject                   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic             Topic                     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subtopic          Subtopic?                 @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
+  scriptAssignments ScriptAssignment[]
+  sessions          LessonSession[]
+  userStepProgress  UserRoadmapStepProgress[]
+
+  @@unique([roadmapId, subjectId, sequence])
+  @@index([roadmapId, sequence])
+  @@index([topicId])
+  @@map("roadmap_steps")
+  @@schema("learning")
+}
+
+model ScriptAssignment {
+  id                 String       @id @default(uuid()) @db.Uuid
+  roadmapStepId      String       @map("roadmap_step_id")
+  scriptId           String       @map("script_id") @db.Uuid
+  publishedVersionId String?      @map("published_version_id") @db.Uuid
+  status             ScriptStatus @default(PUBLISHED)
+  sequence           Int          @default(1)
+  isRequired         Boolean      @default(true) @map("is_required")
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+
+  roadmapStep      RoadmapStep          @relation(fields: [roadmapStepId], references: [id], onDelete: Cascade)
+  script           LessonScript         @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  publishedVersion LessonScriptVersion? @relation(fields: [publishedVersionId], references: [id], onDelete: SetNull)
+
+  @@index([roadmapStepId, sequence])
+  @@map("script_assignments")
+  @@schema("learning")
+}
+
+model UserRoadmapStepProgress {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  roadmapId     String    @map("roadmap_id")
+  roadmapStepId String    @map("roadmap_step_id")
+  status        String    @default("IN_PROGRESS") // "IN_PROGRESS" | "COMPLETED"
+  completedAt   DateTime? @map("completed_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmap     Roadmap     @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  roadmapStep RoadmapStep @relation(fields: [roadmapStepId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roadmapStepId])
+  @@index([userId, roadmapId])
+  @@map("user_roadmap_step_progress")
+  @@schema("learning")
+}
+

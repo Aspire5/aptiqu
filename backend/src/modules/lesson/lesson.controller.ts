@@ -10,11 +10,17 @@ export class LessonController {
       const userId = req.userId!;
       const parsed = StartSessionDto.parse(req.body);
 
-      const result = await lessonSessionService.startOrResumeSession(
-        userId,
-        parsed.scriptSlug,
-        parsed.clientActionId
-      );
+      const result = parsed.roadmapStepId
+        ? await lessonSessionService.startOrResumeSessionByStep(
+            userId,
+            parsed.roadmapStepId,
+            parsed.clientActionId
+          )
+        : await lessonSessionService.startOrResumeSession(
+            userId,
+            parsed.scriptSlug!,
+            parsed.clientActionId
+          );
 
       res.status(200).json({
         success: true,

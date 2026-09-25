@@ -1,0 +1,3375 @@
+﻿Yes. At this point I would make one important architectural change before seeding:
+The curriculum order must belong to a roadmap, not to the topic itself.
+So Ratio is simply a topic. The General Aptitude roadmap decides that Ratio comes after Fractions and before Percentages. A future SSC roadmap can place the same Ratio topic somewhere else, change its depth, add/remove subtopics, or skip it entirely.
+That keeps your content reusable.
+I also cross-checked the breadth against current official exam material: SSC's quantitative syllabus spans number systems, arithmetic, algebra, geometry, mensuration and trigonometry; RRB NTPC includes a very similar arithmetic/geometry/statistics core plus reasoning; TCS iON NQT Cognitive explicitly covers number system, arithmetic, elementary statistics, DI and reasoning; and UPSC CSAT covers logical/analytical reasoning, decision making/problem solving, general mental ability, and Class-X-level numeracy and DI. So the structure below is deliberately a broad Indian aptitude foundation, not an SSC-only or corporate-only syllabus.
+Also, the time values below mean guided teaching/script time, not total practice time.
+________________
+
+
+1. Seed model I recommend
+Use these logical entities:
+subjects
+    ↓
+topics
+    ↓
+subtopics
+
+
+roadmaps
+    ↓
+roadmap_subjects
+    ↓
+roadmap_steps
+Later:
+roadmap_steps
+    ↓
+script_assignments
+    ↓
+lesson_script_versions
+That gives you:
+Topic = reusable content concept
+
+
+Roadmap = a particular learning path
+
+
+Script = an actual lesson teaching that content
+For example:
+Ratio
+exists once.
+But:
+General Aptitude:
+    Fractions
+    → Ratio
+    → Percentage
+
+
+SSC:
+    Number System
+    → Percentage
+    → Ratio
+    → Profit/Loss
+can use the same Ratio topic.
+________________
+
+
+2. Master seed data
+The following is intentionally written as provider-neutral JSON so Antigravity can adapt it to your existing Prisma/Drizzle schema instead of forcing a database structure on top of your existing implementation.
+A. Subjects + General roadmap
+{
+  "subjects": [
+    {
+      "id": "quantitative-aptitude",
+      "slug": "quantitative-aptitude",
+      "name": "Quantitative Aptitude",
+      "description": "Numerical concepts, arithmetic, algebra, geometry, data interpretation and quantitative problem solving.",
+      "displayOrder": 1,
+      "isActive": true
+    },
+    {
+      "id": "logical-analytical-reasoning",
+      "slug": "logical-analytical-reasoning",
+      "name": "Logical & Analytical Reasoning",
+      "description": "Pattern recognition, logical deduction, analytical reasoning, arrangements, puzzles and decision-oriented problem solving.",
+      "displayOrder": 2,
+      "isActive": true
+    }
+  ],
+
+
+  "roadmaps": [
+    {
+      "id": "general-aptitude",
+      "slug": "general-aptitude",
+      "name": "General Aptitude",
+      "course": "general",
+      "description": "A broad foundational aptitude roadmap designed for learners who want a strong general aptitude base before specializing for a particular examination.",
+      "isDefault": true,
+      "isActive": true
+    }
+  ],
+
+
+  "roadmapSubjects": [
+    {
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "sequence": 1
+    },
+    {
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "sequence": 2
+    }
+  ]
+}
+________________
+
+
+3. Quantitative Aptitude topics
+The teaching order is intentional.
+I am putting number sense and calculation foundations before Ratio because your target learner may be weak at aptitude rather than simply unfamiliar with a syllabus.
+{
+  "topics": [
+    {
+      "id": "qa-foundations",
+      "subjectId": "quantitative-aptitude",
+      "slug": "mathematical-foundations",
+      "name": "Mathematical Foundations & Mental Calculation",
+      "description": "Build the basic numerical fluency required to solve aptitude problems confidently.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 180
+    },
+    {
+      "id": "qa-number-system",
+      "subjectId": "quantitative-aptitude",
+      "slug": "number-system",
+      "name": "Number System",
+      "description": "Understand numbers, factors, divisibility, remainders, cyclicity and number properties.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 240
+    },
+    {
+      "id": "qa-fractions-decimals",
+      "subjectId": "quantitative-aptitude",
+      "slug": "fractions-decimals-simplification",
+      "name": "Fractions, Decimals, Simplification & Approximation",
+      "description": "Develop fast manipulation of fractions, decimals and arithmetic expressions.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 180
+    },
+    {
+      "id": "qa-ratio-proportion",
+      "subjectId": "quantitative-aptitude",
+      "slug": "ratio-proportion",
+      "name": "Ratio, Proportion & Variation",
+      "description": "Understand comparative quantities and proportional relationships.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 210
+    },
+    {
+      "id": "qa-percentages",
+      "subjectId": "quantitative-aptitude",
+      "slug": "percentages",
+      "name": "Percentages",
+      "description": "Master percentage calculations, changes, comparisons and applications.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 240
+    },
+    {
+      "id": "qa-averages",
+      "subjectId": "quantitative-aptitude",
+      "slug": "averages",
+      "name": "Averages",
+      "description": "Solve arithmetic and weighted average problems using direct and intuitive methods.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-profit-loss-discount",
+      "subjectId": "quantitative-aptitude",
+      "slug": "profit-loss-discount",
+      "name": "Profit, Loss & Discount",
+      "description": "Understand cost price, selling price, marked price, profit, loss and discounts.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 210
+    },
+    {
+      "id": "qa-interest",
+      "subjectId": "quantitative-aptitude",
+      "slug": "simple-compound-interest",
+      "name": "Simple & Compound Interest",
+      "description": "Understand interest as linear and repeated percentage growth.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-mixtures",
+      "subjectId": "quantitative-aptitude",
+      "slug": "mixtures-alligation",
+      "name": "Mixtures & Alligation",
+      "description": "Solve concentration, mixture, weighted-average and alligation problems.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-partnership",
+      "subjectId": "quantitative-aptitude",
+      "slug": "partnership",
+      "name": "Partnership",
+      "description": "Solve profit-sharing problems based on capital and time.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 90
+    },
+    {
+      "id": "qa-ages",
+      "subjectId": "quantitative-aptitude",
+      "slug": "ages",
+      "name": "Ages",
+      "description": "Solve present, past and future age relationships.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 90
+    },
+    {
+      "id": "qa-time-work",
+      "subjectId": "quantitative-aptitude",
+      "slug": "time-work",
+      "name": "Time & Work",
+      "description": "Understand work rates, efficiency and combined work.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 240
+    },
+    {
+      "id": "qa-pipes-cisterns",
+      "subjectId": "quantitative-aptitude",
+      "slug": "pipes-cisterns",
+      "name": "Pipes & Cisterns",
+      "description": "Apply work-rate concepts to filling, draining and leakage problems.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 75
+    },
+    {
+      "id": "qa-time-speed-distance",
+      "subjectId": "quantitative-aptitude",
+      "slug": "time-speed-distance",
+      "name": "Time, Speed & Distance",
+      "description": "Understand motion, speed, relative speed and common distance-time patterns.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 240
+    },
+    {
+      "id": "qa-algebra",
+      "subjectId": "quantitative-aptitude",
+      "slug": "algebra",
+      "name": "Algebra",
+      "description": "Use equations, identities, inequalities and algebraic relationships in aptitude problems.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 210
+    },
+    {
+      "id": "qa-geometry",
+      "subjectId": "quantitative-aptitude",
+      "slug": "geometry",
+      "name": "Geometry",
+      "description": "Understand elementary geometry, triangles, quadrilaterals and circles.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 270
+    },
+    {
+      "id": "qa-mensuration",
+      "subjectId": "quantitative-aptitude",
+      "slug": "mensuration",
+      "name": "Mensuration",
+      "description": "Calculate area, perimeter, volume and surface area of common 2D and 3D figures.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 210
+    },
+    {
+      "id": "qa-trigonometry",
+      "subjectId": "quantitative-aptitude",
+      "slug": "trigonometry",
+      "name": "Trigonometry",
+      "description": "Learn essential trigonometric ratios, identities and elementary applications.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-statistics",
+      "subjectId": "quantitative-aptitude",
+      "slug": "statistics",
+      "name": "Elementary Statistics",
+      "description": "Understand mean, median, mode, frequency-based interpretation and basic statistical calculations.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "qa-probability",
+      "subjectId": "quantitative-aptitude",
+      "slug": "probability",
+      "name": "Probability",
+      "description": "Understand outcomes, sample spaces and common elementary probability patterns.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-permutation-combination",
+      "subjectId": "quantitative-aptitude",
+      "slug": "permutation-combination",
+      "name": "Permutation & Combination",
+      "description": "Develop counting and arrangement techniques used in aptitude probability and arrangement problems.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-data-interpretation",
+      "subjectId": "quantitative-aptitude",
+      "slug": "data-interpretation",
+      "name": "Data Interpretation",
+      "description": "Interpret tables, charts and caselets using arithmetic reasoning.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 300
+    },
+    {
+      "id": "qa-data-sufficiency",
+      "subjectId": "quantitative-aptitude",
+      "slug": "data-sufficiency-quantity-comparison",
+      "name": "Data Sufficiency & Quantity Comparison",
+      "description": "Determine whether available information is sufficient and compare quantities efficiently.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "qa-mixed-arithmetic",
+      "subjectId": "quantitative-aptitude",
+      "slug": "mixed-arithmetic",
+      "name": "Mixed Arithmetic & Advanced Problem Solving",
+      "description": "Combine multiple aptitude concepts and identify the underlying pattern before solving.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 240
+    }
+  ]
+}
+________________
+
+
+4. Quantitative subtopics
+{
+  "subtopics": [
+    {
+      "id": "qaf-basic-operations",
+      "topicId": "qa-foundations",
+      "sequence": 1,
+      "name": "Basic Arithmetic Operations",
+      "importance": "very_important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qaf-bodmas",
+      "topicId": "qa-foundations",
+      "sequence": 2,
+      "name": "BODMAS & Order of Operations",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qaf-multiplication",
+      "topicId": "qa-foundations",
+      "sequence": 3,
+      "name": "Fast Multiplication & Division",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaf-squares-cubes",
+      "topicId": "qa-foundations",
+      "sequence": 4,
+      "name": "Squares, Cubes & Common Values",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qaf-fraction-percent-links",
+      "topicId": "qa-foundations",
+      "sequence": 5,
+      "name": "Common Fraction-Decimal-Percentage Equivalents",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaf-estimation",
+      "topicId": "qa-foundations",
+      "sequence": 6,
+      "name": "Estimation & Mental Calculation",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qaf-unit-conversion",
+      "topicId": "qa-foundations",
+      "sequence": 7,
+      "name": "Basic Unit Conversion",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+
+
+    {
+      "id": "qans-number-types",
+      "topicId": "qa-number-system",
+      "sequence": 1,
+      "name": "Natural, Whole, Integer, Rational & Irrational Numbers",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qans-even-odd",
+      "topicId": "qa-number-system",
+      "sequence": 2,
+      "name": "Even, Odd, Prime & Composite Numbers",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qans-factors-multiples",
+      "topicId": "qa-number-system",
+      "sequence": 3,
+      "name": "Factors & Multiples",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qans-divisibility",
+      "topicId": "qa-number-system",
+      "sequence": 4,
+      "name": "Divisibility Rules",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qans-hcf-lcm",
+      "topicId": "qa-number-system",
+      "sequence": 5,
+      "name": "HCF & LCM",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qans-prime-factorization",
+      "topicId": "qa-number-system",
+      "sequence": 6,
+      "name": "Prime Factorization",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qans-remainder",
+      "topicId": "qa-number-system",
+      "sequence": 7,
+      "name": "Remainders & Remainder Patterns",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qans-unit-digit",
+      "topicId": "qa-number-system",
+      "sequence": 8,
+      "name": "Unit Digit & Last Digit Patterns",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qans-cyclicity",
+      "topicId": "qa-number-system",
+      "sequence": 9,
+      "name": "Cyclicity",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qans-number-factors",
+      "topicId": "qa-number-system",
+      "sequence": 10,
+      "name": "Number of Factors & Sum of Factors",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qans-factorial-zeroes",
+      "topicId": "qa-number-system",
+      "sequence": 11,
+      "name": "Factorials, Highest Powers & Trailing Zeroes",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qafd-fractions",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 1,
+      "name": "Fraction Basics",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qafd-comparing",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 2,
+      "name": "Comparing Fractions",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qafd-operations",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 3,
+      "name": "Operations on Fractions",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qafd-decimals",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 4,
+      "name": "Decimal Operations",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qafd-recurring",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 5,
+      "name": "Recurring Decimals",
+      "importance": "low",
+      "teachingDepth": 1,
+      "teachingMinutes": 10
+    },
+    {
+      "id": "qafd-simplification",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 6,
+      "name": "Simplification of Numerical Expressions",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qafd-approximation",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 7,
+      "name": "Approximation & Option Elimination",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qarp-ratio-basics",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 1,
+      "name": "Meaning & Representation of Ratios",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qarp-equivalent",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 2,
+      "name": "Equivalent & Simplified Ratios",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qarp-scaling",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 3,
+      "name": "Scaling Ratios",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qarp-distribution",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 4,
+      "name": "Division of a Total in a Given Ratio",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qarp-missing-term",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 5,
+      "name": "Missing Terms & Proportion",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qarp-combined",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 6,
+      "name": "Combining Ratios",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qarp-direct-inverse",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 7,
+      "name": "Direct & Inverse Proportion",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qarp-variation",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 8,
+      "name": "Variation",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qapc-percent-basics",
+      "topicId": "qa-percentages",
+      "sequence": 1,
+      "name": "Meaning of Percentage",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapc-fraction-percent",
+      "topicId": "qa-percentages",
+      "sequence": 2,
+      "name": "Fraction, Decimal & Percentage Conversion",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qapc-percent-of",
+      "topicId": "qa-percentages",
+      "sequence": 3,
+      "name": "Percentage of a Quantity",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qapc-base",
+      "topicId": "qa-percentages",
+      "sequence": 4,
+      "name": "Finding the Base / Original Value",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapc-increase-decrease",
+      "topicId": "qa-percentages",
+      "sequence": 5,
+      "name": "Percentage Increase & Decrease",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qapc-successive",
+      "topicId": "qa-percentages",
+      "sequence": 6,
+      "name": "Successive Percentage Changes",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qapc-multiplier",
+      "topicId": "qa-percentages",
+      "sequence": 7,
+      "name": "Multiplying Factors",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapc-applications",
+      "topicId": "qa-percentages",
+      "sequence": 8,
+      "name": "Marks, Population, Salary, Expenditure & Saving Problems",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 35
+    },
+
+
+    {
+      "id": "qaa-basic",
+      "topicId": "qa-averages",
+      "sequence": 1,
+      "name": "Average Basics",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qaa-missing",
+      "topicId": "qa-averages",
+      "sequence": 2,
+      "name": "Missing Value from Average",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qaa-combined",
+      "topicId": "qa-averages",
+      "sequence": 3,
+      "name": "Combined Average",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaa-weighted",
+      "topicId": "qa-averages",
+      "sequence": 4,
+      "name": "Weighted Average",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaa-replacement",
+      "topicId": "qa-averages",
+      "sequence": 5,
+      "name": "Replacement & Change in Average",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qapl-cp-sp",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 1,
+      "name": "Cost Price & Selling Price",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapl-profit-loss",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 2,
+      "name": "Profit & Loss",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qapl-marked-price",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 3,
+      "name": "Marked Price & Discount",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qapl-successive-discount",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 4,
+      "name": "Successive Discount",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapl-markup",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 5,
+      "name": "Markup & Profit After Discount",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qapl-faulty-weight",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 6,
+      "name": "Faulty Weights & Dishonest Dealings",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qai-si",
+      "topicId": "qa-interest",
+      "sequence": 1,
+      "name": "Simple Interest",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qai-amount",
+      "topicId": "qa-interest",
+      "sequence": 2,
+      "name": "Principal, Amount, Rate & Time",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qai-ci",
+      "topicId": "qa-interest",
+      "sequence": 3,
+      "name": "Compound Interest",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qai-frequency",
+      "topicId": "qa-interest",
+      "sequence": 4,
+      "name": "Half-Yearly & Quarterly Compounding",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qai-difference",
+      "topicId": "qa-interest",
+      "sequence": 5,
+      "name": "Difference Between SI & CI",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qam-concentration",
+      "topicId": "qa-mixtures",
+      "sequence": 1,
+      "name": "Mixture & Concentration Basics",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qam-weighted",
+      "topicId": "qa-mixtures",
+      "sequence": 2,
+      "name": "Mixture as Weighted Average",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qam-alligation",
+      "topicId": "qa-mixtures",
+      "sequence": 3,
+      "name": "Alligation",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qam-replacement",
+      "topicId": "qa-mixtures",
+      "sequence": 4,
+      "name": "Repeated Replacement",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qapart-capital",
+      "topicId": "qa-partnership",
+      "sequence": 1,
+      "name": "Capital Ratio",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qapart-time",
+      "topicId": "qa-partnership",
+      "sequence": 2,
+      "name": "Capital × Time",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapart-changing",
+      "topicId": "qa-partnership",
+      "sequence": 3,
+      "name": "Partners Joining or Leaving",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qaage-present",
+      "topicId": "qa-ages",
+      "sequence": 1,
+      "name": "Present, Past & Future Ages",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qaage-ratio",
+      "topicId": "qa-ages",
+      "sequence": 2,
+      "name": "Age Ratios",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaage-relationships",
+      "topicId": "qa-ages",
+      "sequence": 3,
+      "name": "Age Difference & Family Problems",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qaw-rate",
+      "topicId": "qa-time-work",
+      "sequence": 1,
+      "name": "Work, Rate & Time",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qaw-one-person",
+      "topicId": "qa-time-work",
+      "sequence": 2,
+      "name": "Individual Work Rates",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaw-combined",
+      "topicId": "qa-time-work",
+      "sequence": 3,
+      "name": "Combined Work",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qaw-efficiency",
+      "topicId": "qa-time-work",
+      "sequence": 4,
+      "name": "Efficiency Relationships",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qaw-alternate",
+      "topicId": "qa-time-work",
+      "sequence": 5,
+      "name": "Alternate Work",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qaw-wages",
+      "topicId": "qa-time-work",
+      "sequence": 6,
+      "name": "Work & Wages",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qapc-fill",
+      "topicId": "qa-pipes-cisterns",
+      "sequence": 1,
+      "name": "Filling Pipes",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qapc-empty",
+      "topicId": "qa-pipes-cisterns",
+      "sequence": 2,
+      "name": "Emptying Pipes",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qapc-leak",
+      "topicId": "qa-pipes-cisterns",
+      "sequence": 3,
+      "name": "Leaks",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qapc-combined",
+      "topicId": "qa-pipes-cisterns",
+      "sequence": 4,
+      "name": "Combined Inlet & Outlet Problems",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qtsd-basic",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 1,
+      "name": "Distance, Speed & Time",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qtsd-units",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 2,
+      "name": "Unit Conversion",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qtsd-average",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 3,
+      "name": "Average Speed",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qtsd-relative",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 4,
+      "name": "Relative Speed",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qtsd-meeting",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 5,
+      "name": "Meeting & Catch-up Problems",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qtsd-circular",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 6,
+      "name": "Circular Track Problems",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qtsd-trains",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 7,
+      "name": "Train Problems",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "qtsd-boats",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 8,
+      "name": "Boats & Streams",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qtsd-races",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 9,
+      "name": "Races & Head Starts",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qalg-linear",
+      "topicId": "qa-algebra",
+      "sequence": 1,
+      "name": "Variables & Algebraic Expressions",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qalg-linear-eq",
+      "topicId": "qa-algebra",
+      "sequence": 2,
+      "name": "Linear Equations",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qalg-simultaneous",
+      "topicId": "qa-algebra",
+      "sequence": 3,
+      "name": "Simultaneous Equations",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qalg-identities",
+      "topicId": "qa-algebra",
+      "sequence": 4,
+      "name": "Algebraic Identities",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qalg-factorization",
+      "topicId": "qa-algebra",
+      "sequence": 5,
+      "name": "Factorization",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qalg-quadratic",
+      "topicId": "qa-algebra",
+      "sequence": 6,
+      "name": "Quadratic Equations",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qalg-indices-surds",
+      "topicId": "qa-algebra",
+      "sequence": 7,
+      "name": "Indices & Elementary Surds",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qalg-graphs",
+      "topicId": "qa-algebra",
+      "sequence": 8,
+      "name": "Graphs of Linear Equations",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qgeo-lines",
+      "topicId": "qa-geometry",
+      "sequence": 1,
+      "name": "Lines & Angles",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qgeo-triangle-basics",
+      "topicId": "qa-geometry",
+      "sequence": 2,
+      "name": "Triangles & Basic Properties",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "qgeo-congruence",
+      "topicId": "qa-geometry",
+      "sequence": 3,
+      "name": "Congruence & Similarity",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qgeo-pythagoras",
+      "topicId": "qa-geometry",
+      "sequence": 4,
+      "name": "Pythagoras Theorem",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qgeo-quadrilaterals",
+      "topicId": "qa-geometry",
+      "sequence": 5,
+      "name": "Quadrilaterals",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qgeo-circles",
+      "topicId": "qa-geometry",
+      "sequence": 6,
+      "name": "Circles",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "qgeo-tangents",
+      "topicId": "qa-geometry",
+      "sequence": 7,
+      "name": "Tangents & Chords",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qmen-2d",
+      "topicId": "qa-mensuration",
+      "sequence": 1,
+      "name": "2D Perimeter & Area",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qmen-circle",
+      "topicId": "qa-mensuration",
+      "sequence": 2,
+      "name": "Circle, Circumference & Area",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qmen-volume",
+      "topicId": "qa-mensuration",
+      "sequence": 3,
+      "name": "Volume of 3D Solids",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "qmen-surface",
+      "topicId": "qa-mensuration",
+      "sequence": 4,
+      "name": "Surface Area",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qmen-applications",
+      "topicId": "qa-mensuration",
+      "sequence": 5,
+      "name": "Cost, Painting, Filling & Application Problems",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qtr-ratios",
+      "topicId": "qa-trigonometry",
+      "sequence": 1,
+      "name": "Sin, Cos & Tan",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qtr-standard",
+      "topicId": "qa-trigonometry",
+      "sequence": 2,
+      "name": "Standard Angles",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qtr-identities",
+      "topicId": "qa-trigonometry",
+      "sequence": 3,
+      "name": "Basic Trigonometric Identities",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qtr-height",
+      "topicId": "qa-trigonometry",
+      "sequence": 4,
+      "name": "Heights & Distances",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "qstat-mean",
+      "topicId": "qa-statistics",
+      "sequence": 1,
+      "name": "Mean",
+      "importance": "very_important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qstat-median",
+      "topicId": "qa-statistics",
+      "sequence": 2,
+      "name": "Median",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qstat-mode",
+      "topicId": "qa-statistics",
+      "sequence": 3,
+      "name": "Mode & Range",
+      "importance": "medium",
+      "teachingDepth": 1,
+      "teachingMinutes": 10
+    },
+    {
+      "id": "qstat-frequency",
+      "topicId": "qa-statistics",
+      "sequence": 4,
+      "name": "Frequency Tables",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "qprob-basics",
+      "topicId": "qa-probability",
+      "sequence": 1,
+      "name": "Probability Fundamentals",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qprob-coins",
+      "topicId": "qa-probability",
+      "sequence": 2,
+      "name": "Coins",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qprob-dice",
+      "topicId": "qa-probability",
+      "sequence": 3,
+      "name": "Dice",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qprob-cards",
+      "topicId": "qa-probability",
+      "sequence": 4,
+      "name": "Cards",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qprob-complement",
+      "topicId": "qa-probability",
+      "sequence": 5,
+      "name": "Complementary Probability",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qprob-conditional",
+      "topicId": "qa-probability",
+      "sequence": 6,
+      "name": "Basic Conditional Probability",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qprob-bayes",
+      "topicId": "qa-probability",
+      "sequence": 7,
+      "name": "Basic Bayes Concept",
+      "importance": "low",
+      "teachingDepth": 1,
+      "teachingMinutes": 15
+    },
+
+
+    {
+      "id": "qpc-counting",
+      "topicId": "qa-permutation-combination",
+      "sequence": 1,
+      "name": "Fundamental Counting Principle",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qpc-factorial",
+      "topicId": "qa-permutation-combination",
+      "sequence": 2,
+      "name": "Factorial",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "qpc-permutation",
+      "topicId": "qa-permutation-combination",
+      "sequence": 3,
+      "name": "Permutations",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qpc-combination",
+      "topicId": "qa-permutation-combination",
+      "sequence": 4,
+      "name": "Combinations",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qpc-repetition",
+      "topicId": "qa-permutation-combination",
+      "sequence": 5,
+      "name": "Identical Objects & Repetition",
+      "importance": "medium",
+      "teachingDepth": 1,
+      "teachingMinutes": 15
+    },
+
+
+    {
+      "id": "qdi-tables",
+      "topicId": "qa-data-interpretation",
+      "sequence": 1,
+      "name": "Table DI",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "qdi-bar",
+      "topicId": "qa-data-interpretation",
+      "sequence": 2,
+      "name": "Bar Graph DI",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qdi-line",
+      "topicId": "qa-data-interpretation",
+      "sequence": 3,
+      "name": "Line Graph DI",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qdi-pie",
+      "topicId": "qa-data-interpretation",
+      "sequence": 4,
+      "name": "Pie Chart DI",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qdi-caselet",
+      "topicId": "qa-data-interpretation",
+      "sequence": 5,
+      "name": "Caselet DI",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "qdi-missing",
+      "topicId": "qa-data-interpretation",
+      "sequence": 6,
+      "name": "DI with Missing Values",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "qdi-mixed",
+      "topicId": "qa-data-interpretation",
+      "sequence": 7,
+      "name": "Mixed Chart DI",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "qds-question-type",
+      "topicId": "qa-data-sufficiency",
+      "sequence": 1,
+      "name": "What Data Sufficiency Actually Asks",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qds-one-statement",
+      "topicId": "qa-data-sufficiency",
+      "sequence": 2,
+      "name": "One Statement Sufficiency",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qds-both",
+      "topicId": "qa-data-sufficiency",
+      "sequence": 3,
+      "name": "Combined Statements",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "qds-comparison",
+      "topicId": "qa-data-sufficiency",
+      "sequence": 4,
+      "name": "Quantity Comparison",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "qma-multi",
+      "topicId": "qa-mixed-arithmetic",
+      "sequence": 1,
+      "name": "Identifying the Underlying Pattern",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qma-multi-concept",
+      "topicId": "qa-mixed-arithmetic",
+      "sequence": 2,
+      "name": "Multi-Concept Arithmetic",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 40
+    },
+    {
+      "id": "qma-shortcuts",
+      "topicId": "qa-mixed-arithmetic",
+      "sequence": 3,
+      "name": "Option Elimination & Shortcuts",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "qma-estimation",
+      "topicId": "qa-mixed-arithmetic",
+      "sequence": 4,
+      "name": "Estimation in Mixed Questions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    }
+  ]
+}
+________________
+
+
+5. Logical & Analytical Reasoning topics
+{
+  "topics": [
+    {
+      "id": "lr-foundations",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "reasoning-foundations",
+      "name": "Reasoning Foundations",
+      "description": "Learn how to identify patterns, assumptions, relationships and logical structure.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "lr-classification-analogy",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "classification-analogy",
+      "name": "Classification & Analogy",
+      "description": "Identify relationships and shared properties among words, numbers and symbols.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "lr-series",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "number-alphabet-series",
+      "name": "Number, Alphabet & Alphanumeric Series",
+      "description": "Recognize numerical, alphabetical and mixed sequences and their rules.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 210
+    },
+    {
+      "id": "lr-coding-decoding",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "coding-decoding",
+      "name": "Coding & Decoding",
+      "description": "Decode systematic transformations of letters, numbers and words.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 210
+    },
+    {
+      "id": "lr-mathematical-operations",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "mathematical-operations",
+      "name": "Mathematical Operations",
+      "description": "Solve questions involving altered symbols and coded mathematical operations.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 90
+    },
+    {
+      "id": "lr-inequality",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "inequality",
+      "name": "Inequality",
+      "description": "Compare quantities and derive definite or possible relationships.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "lr-direction",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "direction-sense",
+      "name": "Direction Sense & Maps",
+      "description": "Solve movement, turning, distance and spatial-direction problems.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "lr-blood-relations",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "blood-relations",
+      "name": "Blood Relations",
+      "description": "Understand family relationships and represent them systematically.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "lr-ranking",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "order-ranking",
+      "name": "Order & Ranking",
+      "description": "Determine relative positions and ranks in ordered groups.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 90
+    },
+    {
+      "id": "lr-syllogism",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "syllogism",
+      "name": "Syllogism",
+      "description": "Evaluate conclusions logically from given statements.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 180
+    },
+    {
+      "id": "lr-venn",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "venn-diagrams",
+      "name": "Venn Diagrams",
+      "description": "Use set relationships and overlapping groups to reason about classification and counts.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "lr-statements",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "statement-based-reasoning",
+      "name": "Statement-Based Reasoning",
+      "description": "Evaluate conclusions, assumptions, arguments, causes and courses of action.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 270
+    },
+    {
+      "id": "lr-data-sufficiency",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "reasoning-data-sufficiency",
+      "name": "Data Sufficiency",
+      "description": "Determine whether information is sufficient to answer a logical or numerical question.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "lr-seating",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "seating-arrangement",
+      "name": "Seating Arrangement",
+      "description": "Solve linear, circular and multi-row arrangement problems.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 270
+    },
+    {
+      "id": "lr-puzzles",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "logical-puzzles",
+      "name": "Logical Puzzles",
+      "description": "Solve multi-condition arrangement, scheduling and deduction puzzles.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 300
+    },
+    {
+      "id": "lr-distribution",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "distribution-grouping",
+      "name": "Distribution & Grouping",
+      "description": "Assign people, objects or properties into groups under constraints.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 150
+    },
+    {
+      "id": "lr-input-output",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "input-output",
+      "name": "Input-Output",
+      "description": "Identify systematic transformations performed across multiple steps.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "lr-non-verbal",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "non-verbal-reasoning",
+      "name": "Non-Verbal & Visual Reasoning",
+      "description": "Develop spatial and visual reasoning through figures, folding, rotation and pattern recognition.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 240
+    },
+    {
+      "id": "lr-calendar-clock",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "calendar-clock",
+      "name": "Calendar & Clock Reasoning",
+      "description": "Solve date, day, angle and clock movement problems.",
+      "defaultImportance": "medium",
+      "defaultTeachingDepth": 2,
+      "defaultTeachingMinutes": 120
+    },
+    {
+      "id": "lr-decision-analytical",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "decision-making-analytical-reasoning",
+      "name": "Decision Making & Analytical Reasoning",
+      "description": "Apply logical constraints, evidence and reasoning to decision-oriented problems.",
+      "defaultImportance": "important",
+      "defaultTeachingDepth": 3,
+      "defaultTeachingMinutes": 180
+    },
+    {
+      "id": "lr-mixed-reasoning",
+      "subjectId": "logical-analytical-reasoning",
+      "slug": "mixed-reasoning",
+      "name": "Mixed Reasoning & Exam Practice",
+      "description": "Identify and solve unseen reasoning patterns without being told the question type.",
+      "defaultImportance": "very_important",
+      "defaultTeachingDepth": 4,
+      "defaultTeachingMinutes": 240
+    }
+  ]
+}
+________________
+
+
+6. Reasoning subtopics
+{
+  "subtopics": [
+    {
+      "id": "lrf-pattern-recognition",
+      "topicId": "lr-foundations",
+      "sequence": 1,
+      "name": "Pattern Recognition",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrf-elimination",
+      "topicId": "lr-foundations",
+      "sequence": 2,
+      "name": "Option Elimination",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrf-statement-vs-conclusion",
+      "topicId": "lr-foundations",
+      "sequence": 3,
+      "name": "Statement vs Conclusion",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrf-necessary-information",
+      "topicId": "lr-foundations",
+      "sequence": 4,
+      "name": "Necessary Information & Logical Consistency",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "lrca-word-classification",
+      "topicId": "lr-classification-analogy",
+      "sequence": 1,
+      "name": "Word Classification",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrca-number-classification",
+      "topicId": "lr-classification-analogy",
+      "sequence": 2,
+      "name": "Number Classification",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrca-letter-classification",
+      "topicId": "lr-classification-analogy",
+      "sequence": 3,
+      "name": "Alphabet Classification",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "lrca-analogy",
+      "topicId": "lr-classification-analogy",
+      "sequence": 4,
+      "name": "Analogy Relationships",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrs-number",
+      "topicId": "lr-series",
+      "sequence": 1,
+      "name": "Number Series",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "lrs-difference",
+      "topicId": "lr-series",
+      "sequence": 2,
+      "name": "Difference-Based Series",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrs-multiplication",
+      "topicId": "lr-series",
+      "sequence": 3,
+      "name": "Multiplication / Division Series",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrs-alternating",
+      "topicId": "lr-series",
+      "sequence": 4,
+      "name": "Alternating & Mixed Series",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrs-alpha",
+      "topicId": "lr-series",
+      "sequence": 5,
+      "name": "Alphabet Series",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrs-alphanumeric",
+      "topicId": "lr-series",
+      "sequence": 6,
+      "name": "Alphanumeric Series",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "lrcd-letter-shift",
+      "topicId": "lr-coding-decoding",
+      "sequence": 1,
+      "name": "Letter Shifting",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrcd-reverse",
+      "topicId": "lr-coding-decoding",
+      "sequence": 2,
+      "name": "Reverse Coding",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrcd-substitution",
+      "topicId": "lr-coding-decoding",
+      "sequence": 3,
+      "name": "Substitution Coding",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrcd-number",
+      "topicId": "lr-coding-decoding",
+      "sequence": 4,
+      "name": "Number Coding",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrcd-mixed",
+      "topicId": "lr-coding-decoding",
+      "sequence": 5,
+      "name": "Mixed & Conditional Coding",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrmop-symbols",
+      "topicId": "lr-mathematical-operations",
+      "sequence": 1,
+      "name": "Symbol Replacement",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrmop-precedence",
+      "topicId": "lr-mathematical-operations",
+      "sequence": 2,
+      "name": "Operation Precedence",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrmop-coded",
+      "topicId": "lr-mathematical-operations",
+      "sequence": 3,
+      "name": "Coded Arithmetic Operations",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "lri-direct",
+      "topicId": "lr-inequality",
+      "sequence": 1,
+      "name": "Direct Inequality",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lri-chain",
+      "topicId": "lr-inequality",
+      "sequence": 2,
+      "name": "Inequality Chains",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lri-coded",
+      "topicId": "lr-inequality",
+      "sequence": 3,
+      "name": "Coded Inequality",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lri-conclusion",
+      "topicId": "lr-inequality",
+      "sequence": 4,
+      "name": "Definitely True / Possibly True Conclusions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "lrd-basic",
+      "topicId": "lr-direction",
+      "sequence": 1,
+      "name": "Basic Directions",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrd-turns",
+      "topicId": "lr-direction",
+      "sequence": 2,
+      "name": "Turns & Movement",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrd-distance",
+      "topicId": "lr-direction",
+      "sequence": 3,
+      "name": "Shortest Distance",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrd-shadow",
+      "topicId": "lr-direction",
+      "sequence": 4,
+      "name": "Shadow Problems",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "lrd-map",
+      "topicId": "lr-direction",
+      "sequence": 5,
+      "name": "Map-Based Direction Problems",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "lrb-family",
+      "topicId": "lr-blood-relations",
+      "sequence": 1,
+      "name": "Family Relationship Basics",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrb-generation",
+      "topicId": "lr-blood-relations",
+      "sequence": 2,
+      "name": "Generation Mapping",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrb-family-tree",
+      "topicId": "lr-blood-relations",
+      "sequence": 3,
+      "name": "Family Tree Problems",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrb-coded",
+      "topicId": "lr-blood-relations",
+      "sequence": 4,
+      "name": "Coded Blood Relations",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "lrr-left-right",
+      "topicId": "lr-ranking",
+      "sequence": 1,
+      "name": "Left / Right Ranking",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrr-top-bottom",
+      "topicId": "lr-ranking",
+      "sequence": 2,
+      "name": "Top / Bottom Ranking",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "lrr-total",
+      "topicId": "lr-ranking",
+      "sequence": 3,
+      "name": "Finding Total Participants",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrr-combined",
+      "topicId": "lr-ranking",
+      "sequence": 4,
+      "name": "Combined Ranking Problems",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "lrsyl-statements",
+      "topicId": "lr-syllogism",
+      "sequence": 1,
+      "name": "All, Some & No",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrsyl-venn",
+      "topicId": "lr-syllogism",
+      "sequence": 2,
+      "name": "Venn-Based Syllogism",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrsyl-conclusions",
+      "topicId": "lr-syllogism",
+      "sequence": 3,
+      "name": "Definite Conclusions",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrsyl-possibility",
+      "topicId": "lr-syllogism",
+      "sequence": 4,
+      "name": "Possibility Conclusions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "lrv-union",
+      "topicId": "lr-venn",
+      "sequence": 1,
+      "name": "Set Basics",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrv-overlap",
+      "topicId": "lr-venn",
+      "sequence": 2,
+      "name": "Overlapping Groups",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrv-counting",
+      "topicId": "lr-venn",
+      "sequence": 3,
+      "name": "Counting with Venn Diagrams",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "lrstmt-conclusion",
+      "topicId": "lr-statements",
+      "sequence": 1,
+      "name": "Statement & Conclusion",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrstmt-assumption",
+      "topicId": "lr-statements",
+      "sequence": 2,
+      "name": "Statement & Assumption",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrstmt-argument",
+      "topicId": "lr-statements",
+      "sequence": 3,
+      "name": "Statement & Argument",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrstmt-cause",
+      "topicId": "lr-statements",
+      "sequence": 4,
+      "name": "Cause & Effect",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrstmt-action",
+      "topicId": "lr-statements",
+      "sequence": 5,
+      "name": "Course of Action",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrstmt-inference",
+      "topicId": "lr-statements",
+      "sequence": 6,
+      "name": "Inference & Decision Questions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrds-question",
+      "topicId": "lr-data-sufficiency",
+      "sequence": 1,
+      "name": "What Data Sufficiency Means",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrds-single",
+      "topicId": "lr-data-sufficiency",
+      "sequence": 2,
+      "name": "Single Statement Sufficiency",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrds-combined",
+      "topicId": "lr-data-sufficiency",
+      "sequence": 3,
+      "name": "Combined Statements",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrds-elimination",
+      "topicId": "lr-data-sufficiency",
+      "sequence": 4,
+      "name": "Fast Elimination in Sufficiency Problems",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+
+
+    {
+      "id": "lrsa-linear",
+      "topicId": "lr-seating",
+      "sequence": 1,
+      "name": "Linear Seating",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "lrsa-circular",
+      "topicId": "lr-seating",
+      "sequence": 2,
+      "name": "Circular Seating",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 40
+    },
+    {
+      "id": "lrsa-facing",
+      "topicId": "lr-seating",
+      "sequence": 3,
+      "name": "Facing Inside / Outside",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrsa-two-row",
+      "topicId": "lr-seating",
+      "sequence": 4,
+      "name": "Two-Row Seating",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrp-order",
+      "topicId": "lr-puzzles",
+      "sequence": 1,
+      "name": "Ordering Puzzles",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrp-floor",
+      "topicId": "lr-puzzles",
+      "sequence": 2,
+      "name": "Floor Puzzles",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrp-box",
+      "topicId": "lr-puzzles",
+      "sequence": 3,
+      "name": "Box / Stack Puzzles",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrp-scheduling",
+      "topicId": "lr-puzzles",
+      "sequence": 4,
+      "name": "Scheduling Puzzles",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "lrp-comparison",
+      "topicId": "lr-puzzles",
+      "sequence": 5,
+      "name": "Comparison Puzzles",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrp-selection",
+      "topicId": "lr-puzzles",
+      "sequence": 6,
+      "name": "Selection & Grouping Puzzles",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrdg-grouping",
+      "topicId": "lr-distribution",
+      "sequence": 1,
+      "name": "Basic Group Formation",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrdg-distribution",
+      "topicId": "lr-distribution",
+      "sequence": 2,
+      "name": "Distribution under Conditions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrdg-teams",
+      "topicId": "lr-distribution",
+      "sequence": 3,
+      "name": "Team & Department Allocation",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrdg-conditional",
+      "topicId": "lr-distribution",
+      "sequence": 4,
+      "name": "Conditional Grouping",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+
+
+    {
+      "id": "lriop-pattern",
+      "topicId": "lr-input-output",
+      "sequence": 1,
+      "name": "Recognizing the Transformation Pattern",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lriop-number",
+      "topicId": "lr-input-output",
+      "sequence": 2,
+      "name": "Number Input-Output",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lriop-word",
+      "topicId": "lr-input-output",
+      "sequence": 3,
+      "name": "Word Input-Output",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lriop-multi-step",
+      "topicId": "lr-input-output",
+      "sequence": 4,
+      "name": "Multi-Step Transformation",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "lrnv-mirror",
+      "topicId": "lr-non-verbal",
+      "sequence": 1,
+      "name": "Mirror Images",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrnv-water",
+      "topicId": "lr-non-verbal",
+      "sequence": 2,
+      "name": "Water Images",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 15
+    },
+    {
+      "id": "lrnv-paper-fold",
+      "topicId": "lr-non-verbal",
+      "sequence": 3,
+      "name": "Paper Folding & Cutting",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrnv-embedded",
+      "topicId": "lr-non-verbal",
+      "sequence": 4,
+      "name": "Embedded Figures",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+    {
+      "id": "lrnv-figure-completion",
+      "topicId": "lr-non-verbal",
+      "sequence": 5,
+      "name": "Figure Completion & Classification",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrnv-cubes-dice",
+      "topicId": "lr-non-verbal",
+      "sequence": 6,
+      "name": "Cubes & Dice",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrcal-calendar",
+      "topicId": "lr-calendar-clock",
+      "sequence": 1,
+      "name": "Calendar Basics",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrcal-odd-days",
+      "topicId": "lr-calendar-clock",
+      "sequence": 2,
+      "name": "Odd Days",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrcal-clock-angle",
+      "topicId": "lr-calendar-clock",
+      "sequence": 3,
+      "name": "Clock Angles",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrcal-clock-movement",
+      "topicId": "lr-calendar-clock",
+      "sequence": 4,
+      "name": "Clock Movement & Coincidence",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 20
+    },
+
+
+    {
+      "id": "lrda-evidence",
+      "topicId": "lr-decision-analytical",
+      "sequence": 1,
+      "name": "Evidence-Based Decisions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrda-constraints",
+      "topicId": "lr-decision-analytical",
+      "sequence": 2,
+      "name": "Constraint Reasoning",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+    {
+      "id": "lrda-analytical",
+      "topicId": "lr-decision-analytical",
+      "sequence": 3,
+      "name": "Analytical Deduction",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 35
+    },
+    {
+      "id": "lrda-problem-solving",
+      "topicId": "lr-decision-analytical",
+      "sequence": 4,
+      "name": "Problem Solving & Decision Questions",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 30
+    },
+
+
+    {
+      "id": "lrmix-question-type",
+      "topicId": "lr-mixed-reasoning",
+      "sequence": 1,
+      "name": "Identifying the Question Pattern",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrmix-elimination",
+      "topicId": "lr-mixed-reasoning",
+      "sequence": 2,
+      "name": "Fast Option Elimination",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 25
+    },
+    {
+      "id": "lrmix-mixed",
+      "topicId": "lr-mixed-reasoning",
+      "sequence": 3,
+      "name": "Mixed Reasoning Sets",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 45
+    },
+    {
+      "id": "lrmix-timed",
+      "topicId": "lr-mixed-reasoning",
+      "sequence": 4,
+      "name": "Timed Reasoning Practice",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 30
+    }
+  ]
+}
+________________
+
+
+7. General roadmap ordering
+This is the part I especially want Antigravity to understand.
+The order is NOT stored on the topic itself.
+The General roadmap has its own ordered steps.
+{
+  "roadmapSteps": [
+    {
+      "id": "ga-qa-01",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-foundations",
+      "sequence": 1,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 180,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-02",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-number-system",
+      "sequence": 2,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 240,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-03",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-fractions-decimals",
+      "sequence": 3,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 180,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-04",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-ratio-proportion",
+      "sequence": 4,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 210,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-05",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-percentages",
+      "sequence": 5,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 240,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-06",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-averages",
+      "sequence": 6,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-07",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-profit-loss-discount",
+      "sequence": 7,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 210,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-08",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-interest",
+      "sequence": 8,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-09",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-mixtures",
+      "sequence": 9,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-10",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-partnership",
+      "sequence": 10,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 90,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-11",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-ages",
+      "sequence": 11,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 90,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-12",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-time-work",
+      "sequence": 12,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 240,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-13",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-pipes-cisterns",
+      "sequence": 13,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 75,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-14",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-time-speed-distance",
+      "sequence": 14,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 240,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-15",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-algebra",
+      "sequence": 15,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 210,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-16",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-geometry",
+      "sequence": 16,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 4,
+      "teachingMinutes": 270,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-17",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-mensuration",
+      "sequence": 17,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 210,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-18",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-trigonometry",
+      "sequence": 18,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 150,
+      "isRequired": false
+    },
+    {
+      "id": "ga-qa-19",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-statistics",
+      "sequence": 19,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 120,
+      "isRequired": false
+    },
+    {
+      "id": "ga-qa-20",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-probability",
+      "sequence": 20,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-21",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-permutation-combination",
+      "sequence": 21,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 150,
+      "isRequired": false
+    },
+    {
+      "id": "ga-qa-22",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-data-interpretation",
+      "sequence": 22,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 300,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-23",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-data-sufficiency",
+      "sequence": 23,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-qa-24",
+      "roadmapId": "general-aptitude",
+      "subjectId": "quantitative-aptitude",
+      "topicId": "qa-mixed-arithmetic",
+      "sequence": 24,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 240,
+      "isRequired": true
+    },
+
+
+    {
+      "id": "ga-lr-01",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-foundations",
+      "sequence": 1,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-02",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-classification-analogy",
+      "sequence": 2,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-03",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-series",
+      "sequence": 3,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 210,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-04",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-coding-decoding",
+      "sequence": 4,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 210,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-05",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-mathematical-operations",
+      "sequence": 5,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 2,
+      "teachingMinutes": 90,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-06",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-inequality",
+      "sequence": 6,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 3,
+      "teachingMinutes": 120,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-07",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-direction",
+      "sequence": 7,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 120,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-08",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-blood-relations",
+      "sequence": 8,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 120,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-09",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-ranking",
+      "sequence": 9,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 90,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-10",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-syllogism",
+      "sequence": 10,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 180,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-11",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-venn",
+      "sequence": 11,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 120,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-12",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-statements",
+      "sequence": 12,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 270,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-13",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-data-sufficiency",
+      "sequence": 13,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-14",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-seating",
+      "sequence": 14,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 270,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-15",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-puzzles",
+      "sequence": 15,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 300,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-16",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-distribution",
+      "sequence": 16,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 150,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-17",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-input-output",
+      "sequence": 17,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 120,
+      "isRequired": false
+    },
+    {
+      "id": "ga-lr-18",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-non-verbal",
+      "sequence": 18,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 240,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-19",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-calendar-clock",
+      "sequence": 19,
+      "course": "general",
+      "importance": "medium",
+      "teachingDepth": 2,
+      "teachingMinutes": 120,
+      "isRequired": false
+    },
+    {
+      "id": "ga-lr-20",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-decision-analytical",
+      "sequence": 20,
+      "course": "general",
+      "importance": "important",
+      "teachingDepth": 3,
+      "teachingMinutes": 180,
+      "isRequired": true
+    },
+    {
+      "id": "ga-lr-21",
+      "roadmapId": "general-aptitude",
+      "subjectId": "logical-analytical-reasoning",
+      "topicId": "lr-mixed-reasoning",
+      "sequence": 21,
+      "course": "general",
+      "importance": "very_important",
+      "teachingDepth": 4,
+      "teachingMinutes": 240,
+      "isRequired": true
+    }
+  ]
+}
+________________
+
+
+8. The important architectural change for scripts
+This is the part I would have Antigravity modify before you start feeding it the actual lesson scripts.
+Your old model essentially thinks:
+script
+  ↓
+completion
+We now want:
+USER
+ ↓
+ROADMAP
+ ↓
+ROADMAP STEP
+ ↓
+SCRIPT ASSIGNMENT
+ ↓
+SCRIPT VERSION
+ ↓
+LESSON SESSION
+And completion should work like:
+Current Script
+     ↓
+Script Completed
+     ↓
+Find current roadmap step
+     ↓
+Find next roadmap step
+     ↓
+Is there a published script for it?
+       │
+       ├── YES
+       │    ↓
+       │  Start/resume next script
+       │
+       └── NO
+            ↓
+       Mark current content complete
+            ↓
+       Return:
+       NEXT_LESSON_NOT_AVAILABLE
+            ↓
+       Learning Map shows:
+       "Coming soon"
+Do not hardcode this:
+if script == ratios:
+    next = percentages
+That would completely defeat your roadmap architecture.

@@ -6,13 +6,30 @@ class LessonRepository {
   final DioClient _dioClient = Get.find<DioClient>();
 
   Future<LessonSessionModel> startOrResumeSession({
-    required String scriptSlug,
+    String? scriptSlug,
+    String? roadmapStepId,
     required String clientActionId,
   }) async {
     final response = await _dioClient.dio.post(
       '/lessons/sessions',
       data: {
-        'scriptSlug': scriptSlug,
+        if (scriptSlug != null) 'scriptSlug': scriptSlug,
+        if (roadmapStepId != null) 'roadmapStepId': roadmapStepId,
+        'clientActionId': clientActionId,
+      },
+    );
+
+    final data = response.data['data'] as Map<String, dynamic>;
+    return LessonSessionModel.fromJson(data);
+  }
+
+  Future<LessonSessionModel> startOrResumeSessionByStep({
+    required String roadmapStepId,
+    required String clientActionId,
+  }) async {
+    final response = await _dioClient.dio.post(
+      '/roadmaps/steps/$roadmapStepId/start',
+      data: {
         'clientActionId': clientActionId,
       },
     );

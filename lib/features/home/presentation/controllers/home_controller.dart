@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/routing/app_router.dart';
+import '../../../../core/theme/aptiqu_colors.dart';
+import '../../models/roadmap_model.dart';
+import '../../repositories/roadmap_repository.dart';
 
 enum MessageSender { ai, user }
 
@@ -62,10 +65,86 @@ class HomeController extends GetxController {
   // Active step tracker for the offline interactive script
   final RxInt conversationStep = 1.obs;
 
+  // Roadmap & Curriculum state
+  final RoadmapRepository roadmapRepo = Get.put(RoadmapRepository());
+  final Rxn<ActiveRoadmapModel> activeRoadmap = Rxn<ActiveRoadmapModel>();
+  final RxList<RoadmapSubjectSummary> subjects = <RoadmapSubjectSummary>[].obs;
+  final RxString selectedSubjectId = ''.obs;
+  final Rxn<SubjectLearningMapModel> subjectLearningMap = Rxn<SubjectLearningMapModel>();
+  final RxBool isLoadingMap = false.obs;
+  final RxnString roadmapError = RxnString();
+
   @override
   void onInit() {
     super.onInit();
     _loadInitialConversation();
+    fetchActiveRoadmap();
+  }
+
+  Future<void> fetchActiveRoadmap() async {
+    try {
+      roadmapError.value = null;
+      final roadmap = await roadmapRepo.getActiveRoadmap();
+      activeRoadmap.value = roadmap;
+      subjects.value = roadmap.subjects;
+
+      if (subjects.isNotEmpty) {
+        if (selectedSubjectId.isEmpty || !subjects.any((s) => s.id == selectedSubjectId.value)) {
+          selectedSubjectId.value = subjects.first.id;
+        }
+        await fetchSubjectMap(selectedSubjectId.value);
+      }
+    } catch (e) {
+      roadmapError.value = e.toString();
+    }
+  }
+
+  Future<void> selectSubject(String subjectId) async {
+    selectedSubjectId.value = subjectId;
+    await fetchSubjectMap(subjectId);
+  }
+
+  Future<void> fetchSubjectMap(String subjectId) async {
+    if (activeRoadmap.value == null) return;
+    try {
+      isLoadingMap.value = true;
+      roadmapError.value = null;
+      final map = await roadmapRepo.getSubjectLearningMap(
+        roadmapId: activeRoadmap.value!.id,
+        subjectId: subjectId,
+      );
+      subjectLearningMap.value = map;
+    } catch (e) {
+      roadmapError.value = e.toString();
+    } finally {
+      isLoadingMap.value = false;
+    }
+  }
+
+  void onTopicTapped(BuildContext context, LearningMapTopicItemModel topic) {
+    if (topic.isAvailable || topic.isInProgress) {
+      AppRouter.router.push('/lesson-step/${topic.roadmapStepId}');
+    } else if (topic.isComingSoon) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Coming Soon: Guided lesson script for "${topic.topicName}" is currently being prepared.',
+          ),
+          backgroundColor: AptiquColors.surfaceContainer,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else if (topic.isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Topic Locked: Complete preceding topics in your roadmap to unlock "${topic.topicName}".',
+          ),
+          backgroundColor: AptiquColors.surfaceContainer,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override
@@ -131,14 +210,14 @@ class HomeController extends GetxController {
             id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
             sender: MessageSender.ai,
             text:
-                'Connecting to AptiQu AI Tutor server for "Ratio & Proportion 101"... ⚡\nOpening your interactive lesson stream now!',
+                'Connecting to AptiQu AI Tutor server for your roadmap lesson... ⚡\nOpening your interactive lesson stream now!',
             time: _getCurrentTime(),
           ),
         );
         _scrollToBottom();
 
         Future.delayed(const Duration(milliseconds: 500), () {
-          AppRouter.router.push('/lesson/math_ratios_101');
+          startLiveLesson();
         });
       } else {
         // Picked another topic
@@ -148,7 +227,7 @@ class HomeController extends GetxController {
               id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
               sender: MessageSender.ai,
               text:
-                  'Opening curriculum topics! You can start the Ratio & Proportion live session anytime from the Topics tab.',
+                  'Opening curriculum topics! You can explore all roadmap topics anytime from the Topics tab.',
               time: _getCurrentTime(),
             ),
           );
@@ -166,7 +245,14 @@ class HomeController extends GetxController {
 
   /// Direct launch for live backend AI Tutor session
   void startLiveLesson([String topicSlug = 'math_ratios_101']) {
-    AppRouter.router.push('/lesson/$topicSlug');
+    final availableTopic = subjectLearningMap.value?.topics.firstWhereOrNull(
+      (t) => t.isAvailable || t.isInProgress,
+    );
+    if (availableTopic != null) {
+      AppRouter.router.push('/lesson-step/${availableTopic.roadmapStepId}');
+    } else {
+      AppRouter.router.push('/lesson/$topicSlug');
+    }
   }
 
   /// Handle Voice/Viva submission (InputType.voice)

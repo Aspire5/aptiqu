@@ -11,9 +11,14 @@ import 'widgets/voice_stub_sheet.dart';
 import 'widgets/image_stub_dialog.dart';
 
 class LessonFeedScreen extends StatefulWidget {
-  final String slug;
+  final String? slug;
+  final String? roadmapStepId;
 
-  const LessonFeedScreen({super.key, required this.slug});
+  const LessonFeedScreen({
+    super.key,
+    this.slug,
+    this.roadmapStepId,
+  });
 
   @override
   State<LessonFeedScreen> createState() => _LessonFeedScreenState();
@@ -26,7 +31,10 @@ class _LessonFeedScreenState extends State<LessonFeedScreen> {
   void initState() {
     super.initState();
     _controller = Get.put(LessonFeedController());
-    _controller.initLesson(widget.slug);
+    _controller.initLesson(
+      scriptSlug: widget.slug,
+      roadmapStepId: widget.roadmapStepId,
+    );
   }
 
   @override
@@ -57,7 +65,10 @@ class _LessonFeedScreenState extends State<LessonFeedScreen> {
               ),
             ),
             Text(
-              widget.slug.replaceAll('_', ' ').toUpperCase(),
+              (widget.slug ?? widget.roadmapStepId ?? 'Lesson')
+                  .replaceAll('_', ' ')
+                  .replaceAll('-', ' ')
+                  .toUpperCase(),
               style: AptiquTypography.labelCaps.copyWith(
                 color: AptiquColors.secondary,
               ),
@@ -107,7 +118,10 @@ class _LessonFeedScreenState extends State<LessonFeedScreen> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => _controller.initLesson(widget.slug),
+                    onPressed: () => _controller.initLesson(
+                      scriptSlug: widget.slug,
+                      roadmapStepId: widget.roadmapStepId,
+                    ),
                     child: const Text('Retry'),
                   ),
                 ],

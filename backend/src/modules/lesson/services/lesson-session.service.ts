@@ -7,6 +7,7 @@ import { defaultAiProvider } from '../providers/stub-ai.provider';
 import { TransitionEngine } from '../engines/transition-engine';
 import { LessonNode } from '../interfaces/script-dsl.interface';
 import { SubmitActionInput, InterruptInput } from '../dtos/lesson-action.dto';
+import { roadmapProgressionService } from '../../roadmap/services/roadmap-progression.service';
 
 export class LessonSessionService {
   private static instance: LessonSessionService;
@@ -30,7 +31,136 @@ export class LessonSessionService {
     return cloned;
   }
 
-  public async startOrResumeSession(userId: string, scriptSlug: string, clientActionId: string) {
+  /**
+   * Starts or resumes a lesson session by roadmap step.
+   * This is the authoritative entry point for roadmap-based learning.
+   */
+  public async startOrResumeSessionByStep(
+    userId: string,
+    roadmapStepId: string,
+    clientActionId: string
+  ) {
+    const idempKey = `idemp:action:${clientActionId}`;
+    const cachedResponse = await redisService.get(idempKey);
+    if (cachedResponse) {
+      return JSON.parse(cachedResponse);
+    }
+
+    const step = await prisma.roadmapStep.findUnique({
+      where: { id: roadmapStepId },
+      include: {
+        roadmap: true,
+        scriptAssignments: {
+          where: { status: 'PUBLISHED' },
+          orderBy: { sequence: 'asc' },
+          include: {
+            script: true,
+            publishedVersion: true,
+          },
+        },
+      },
+    });
+
+    if (!step) {
+      throw new Error(`Roadmap step "${roadmapStepId}" not found.`);
+    }
+
+    if (!step.isActive || !step.roadmap.isActive) {
+      throw new Error(`Roadmap step "${roadmapStepId}" is currently not active.`);
+    }
+
+    const assignment = step.scriptAssignments[0];
+    if (!assignment || !assignment.script || !assignment.publishedVersionId) {
+      const error: any = new Error(
+        `Learning content for "${step.id}" is coming soon. No published script available yet.`
+      );
+      error.code = 'SCRIPT_NOT_PUBLISHED';
+      error.status = 404;
+      throw error;
+    }
+
+    const script = assignment.script;
+    const scriptVersionId = assignment.publishedVersionId;
+
+    // Check for an active resumable session for this user and step
+    let session = await prisma.lessonSession.findFirst({
+      where: {
+        userId,
+        roadmapStepId: step.id,
+        status: { in: ['ACTIVE', 'PAUSED'] },
+      },
+      orderBy: { startedAt: 'desc' },
+    });
+
+    let definition: any;
+
+    if (!session) {
+      definition = await scriptCacheService.getScriptVersionDefinition(scriptVersionId);
+      if (!definition) {
+        throw new Error(`Script version definition "${scriptVersionId}" could not be loaded.`);
+      }
+
+      const entryNodeId = definition.entryNodeId;
+      session = await prisma.lessonSession.create({
+        data: {
+          userId,
+          roadmapId: step.roadmapId,
+          roadmapStepId: step.id,
+          scriptId: script.id,
+          scriptVersionId,
+          status: 'ACTIVE',
+          currentNodeId: entryNodeId,
+          stateVersion: 1,
+          stateData: { variables: {}, visitedNodeIds: [entryNodeId] },
+        },
+      });
+
+      await prisma.lessonEvent.create({
+        data: {
+          sessionId: session.id,
+          userId,
+          sequenceNumber: 1,
+          nodeId: entryNodeId,
+          eventType: 'SESSION_STARTED',
+          clientActionId,
+          payload: { roadmapStepId: step.id, scriptSlug: script.slug, scriptVersionId },
+        },
+      });
+    } else {
+      // Resume existing session using its own scriptVersionId
+      definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId);
+      if (!definition) {
+        throw new Error(`Script version definition "${session.scriptVersionId}" could not be loaded.`);
+      }
+    }
+
+    const rawNode = definition.nodes[session.currentNodeId];
+    if (!rawNode) {
+      throw new Error(`Current node "${session.currentNodeId}" not found in script version.`);
+    }
+
+    const response = {
+      sessionId: session.id,
+      roadmapId: session.roadmapId,
+      roadmapStepId: session.roadmapStepId,
+      scriptId: session.scriptId,
+      scriptSlug: script.slug,
+      scriptVersionId: session.scriptVersionId,
+      status: session.status,
+      stateVersion: session.stateVersion,
+      currentNode: this.sanitizeNode(rawNode),
+    };
+
+    await redisService.set(idempKey, JSON.stringify(response), 86400);
+    return response;
+  }
+
+  public async startOrResumeSession(
+    userId: string,
+    scriptSlug: string,
+    clientActionId: string,
+    roadmapStepId?: string
+  ) {
     const idempKey = `idemp:action:${clientActionId}`;
     const cachedResponse = await redisService.get(idempKey);
     if (cachedResponse) {
@@ -44,11 +174,40 @@ export class LessonSessionService {
 
     const { scriptId, scriptVersionId, definition } = scriptMeta;
 
+    // Resolve roadmapStepId and roadmapId if not explicitly provided
+    let effectiveRoadmapId: string | null = null;
+    let effectiveRoadmapStepId: string | null = roadmapStepId || null;
+
+    if (!effectiveRoadmapStepId) {
+      // Check if user has an active roadmap and this script is assigned to one of its steps
+      const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
+      if (activeRoadmap) {
+        const assignment = await prisma.scriptAssignment.findFirst({
+          where: {
+            scriptId,
+            roadmapStep: { roadmapId: activeRoadmap.id },
+            status: 'PUBLISHED',
+          },
+          include: { roadmapStep: true },
+        });
+        if (assignment) {
+          effectiveRoadmapId = activeRoadmap.id;
+          effectiveRoadmapStepId = assignment.roadmapStepId;
+        }
+      }
+    } else {
+      const step = await prisma.roadmapStep.findUnique({ where: { id: effectiveRoadmapStepId } });
+      if (step) {
+        effectiveRoadmapId = step.roadmapId;
+      }
+    }
+
     // Check for an active resumable session
     let session = await prisma.lessonSession.findFirst({
       where: {
         userId,
         scriptId,
+        ...(effectiveRoadmapStepId ? { roadmapStepId: effectiveRoadmapStepId } : {}),
         status: { in: ['ACTIVE', 'PAUSED'] },
       },
       orderBy: { startedAt: 'desc' },
@@ -59,6 +218,8 @@ export class LessonSessionService {
       session = await prisma.lessonSession.create({
         data: {
           userId,
+          roadmapId: effectiveRoadmapId,
+          roadmapStepId: effectiveRoadmapStepId,
           scriptId,
           scriptVersionId,
           status: 'ACTIVE',
@@ -76,7 +237,7 @@ export class LessonSessionService {
           nodeId: entryNodeId,
           eventType: 'SESSION_STARTED',
           clientActionId,
-          payload: { scriptSlug, scriptVersionId },
+          payload: { scriptSlug, scriptVersionId, roadmapStepId: effectiveRoadmapStepId },
         },
       });
     }
@@ -88,7 +249,10 @@ export class LessonSessionService {
 
     const response = {
       sessionId: session.id,
+      roadmapId: session.roadmapId,
+      roadmapStepId: session.roadmapStepId,
       scriptId: session.scriptId,
+      scriptSlug,
       scriptVersionId: session.scriptVersionId,
       status: session.status,
       stateVersion: session.stateVersion,
@@ -254,6 +418,54 @@ export class LessonSessionService {
         }),
       ]);
 
+      // Handle roadmap-aware progression when lesson completes
+      let nextStepResult: any = undefined;
+      if (isCompleted) {
+        let effectiveRoadmapId = session.roadmapId;
+        let effectiveRoadmapStepId = session.roadmapStepId;
+
+        if (!effectiveRoadmapId || !effectiveRoadmapStepId) {
+          const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
+          if (activeRoadmap) {
+            effectiveRoadmapId = activeRoadmap.id;
+            const assignment = await prisma.scriptAssignment.findFirst({
+              where: {
+                scriptId: session.scriptId,
+                roadmapStep: { roadmapId: activeRoadmap.id },
+                status: 'PUBLISHED',
+              },
+            });
+            if (assignment) {
+              effectiveRoadmapStepId = assignment.roadmapStepId;
+              await prisma.lessonSession.update({
+                where: { id: sessionId },
+                data: {
+                  roadmapId: effectiveRoadmapId,
+                  roadmapStepId: effectiveRoadmapStepId,
+                },
+              });
+            }
+          }
+        }
+
+        if (effectiveRoadmapId && effectiveRoadmapStepId) {
+          await roadmapProgressionService.markStepCompleted(
+            userId,
+            effectiveRoadmapId,
+            effectiveRoadmapStepId
+          );
+        }
+
+        if (effectiveRoadmapId) {
+          nextStepResult = await roadmapProgressionService.getNextStepOrScript(
+            userId,
+            effectiveRoadmapId,
+            effectiveRoadmapStepId,
+            session.scriptId
+          );
+        }
+      }
+
       const response = {
         sessionId,
         stateVersion: nextStateVersion,
@@ -261,6 +473,7 @@ export class LessonSessionService {
         isCompleted,
         evaluation,
         currentNode: this.sanitizeNode(nextNode),
+        ...(isCompleted && nextStepResult ? { next: nextStepResult } : {}),
       };
 
       await redisService.set(idempKey, JSON.stringify(response), 86400);

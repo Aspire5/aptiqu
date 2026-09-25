@@ -3,6 +3,7 @@ import cors from 'cors';
 import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/user/user.routes';
 import lessonRoutes from './modules/lesson/lesson.routes';
+import roadmapRoutes from './modules/roadmap/roadmap.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -24,6 +25,7 @@ export function createApp(): Application {
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/user', userRoutes);
   app.use('/api/v1/lessons', lessonRoutes);
+  app.use('/api/v1/roadmaps', roadmapRoutes);
 
   // 404 Handler
   app.use((_req: Request, res: Response) => {
