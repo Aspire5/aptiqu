@@ -1,0 +1,293 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["auth", "users", "gamification", "learning"]
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+model User {
+  id                     String         @id @default(uuid()) @db.Uuid
+  email                  String         @unique
+  googleId               String         @unique @map("google_id")
+  isRegistrationComplete Boolean        @default(false) @map("is_registration_complete")
+  createdAt              DateTime       @default(now()) @map("created_at")
+  updatedAt              DateTime       @updatedAt @map("updated_at")
+
+  profile                Profile?
+  refreshTokens          RefreshToken[]
+  gameStats              GameStats?
+
+  // Learning relations
+  lessonSessions         LessonSession[]
+  questionAttempts       QuestionAttempt[]
+  conceptMasteries       StudentConceptMastery[]
+  aiConversations        AiConversation[]
+
+  @@map("users")
+  @@schema("auth")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+  @@schema("auth")
+}
+
+model Profile {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @unique @map("user_id") @db.Uuid
+  firstName String    @map("first_name")
+  lastName  String    @map("last_name")
+  dob       DateTime?
+  gender    String?
+  religion  String?
+  country   String?
+  avatarUrl String?   @map("avatar_url")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+  @@schema("users")
+}
+
+model GameStats {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  level     Int      @default(1)
+  streak    Int      @default(0)
+  coins     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("stats")
+  @@schema("gamification")
+}
+
+// =============================================================================
+// LEARNING / AI TUTOR SCHEMA
+// =============================================================================
+
+enum ScriptStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+
+  @@schema("learning")
+}
+
+model LessonScript {
+  id                 String                @id @default(uuid()) @db.Uuid
+  slug               String                @unique
+  title              String
+  subjectId          String                @map("subject_id")
+  topicId            String                @map("topic_id")
+  subtopicId         String?               @map("subtopic_id")
+  status             ScriptStatus          @default(DRAFT)
+  publishedVersionId String?               @unique @map("published_version_id") @db.Uuid
+  createdAt          DateTime              @default(now()) @map("created_at")
+  updatedAt          DateTime              @updatedAt @map("updated_at")
+
+  versions           LessonScriptVersion[]
+  sessions           LessonSession[]
+
+  @@index([subjectId, topicId])
+  @@map("lesson_scripts")
+  @@schema("learning")
+}
+
+model LessonScriptVersion {
+  id            String       @id @default(uuid()) @db.Uuid
+  scriptId      String       @map("script_id") @db.Uuid
+  versionNumber Int          @map("version_number")
+  schemaVersion Int          @default(1) @map("schema_version")
+  definition    Json         @db.JsonB
+  checksum      String
+  status        ScriptStatus @default(DRAFT)
+  createdBy     String?      @map("created_by") @db.Uuid
+  createdAt     DateTime     @default(now()) @map("created_at")
+  publishedAt   DateTime?    @map("published_at")
+
+  script        LessonScript  @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  sessions      LessonSession[]
+
+  @@unique([scriptId, versionNumber])
+  @@index([scriptId, status])
+  @@map("lesson_script_versions")
+  @@schema("learning")
+}
+
+enum SessionStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ABANDONED
+
+  @@schema("learning")
+}
+
+model LessonSession {
+  id              String              @id @default(uuid()) @db.Uuid
+  userId          String              @map("user_id") @db.Uuid
+  scriptId        String              @map("script_id") @db.Uuid
+  scriptVersionId String              @map("script_version_id") @db.Uuid
+  status          SessionStatus       @default(ACTIVE)
+  currentNodeId   String              @map("current_node_id")
+  stateData       Json                @default("{}") @map("state_data") @db.JsonB
+  stateVersion    Int                 @default(1) @map("state_version")
+  startedAt       DateTime            @default(now()) @map("started_at")
+  lastActivityAt  DateTime            @default(now()) @map("last_activity_at")
+  completedAt     DateTime?           @map("completed_at")
+
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  script          LessonScript        @relation(fields: [scriptId], references: [id], onDelete: Restrict)
+  scriptVersion   LessonScriptVersion @relation(fields: [scriptVersionId], references: [id], onDelete: Restrict)
+  events          LessonEvent[]
+  questionAttempts QuestionAttempt[]
+
+  @@index([userId, status])
+  @@index([scriptId, userId])
+  @@map("lesson_sessions")
+  @@schema("learning")
+}
+
+model LessonEvent {
+  id              String        @id @default(uuid()) @db.Uuid
+  sessionId       String        @map("session_id") @db.Uuid
+  userId          String        @map("user_id") @db.Uuid
+  sequenceNumber  Int           @map("sequence_number")
+  nodeId          String        @map("node_id")
+  eventType       String        @map("event_type")
+  clientActionId  String        @unique @map("client_action_id")
+  payload         Json          @default("{}") @db.JsonB
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  session         LessonSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, sequenceNumber])
+  @@map("lesson_events")
+  @@schema("learning")
+}
+
+model Question {
+  id             String            @id @default(uuid()) @db.Uuid
+  conceptId      String?           @map("concept_id") @db.Uuid
+  prompt         String
+  questionType   String            @default("MCQ") @map("question_type")
+  options        Json              @db.JsonB
+  correctAnswer  String            @map("correct_answer")
+  explanation    String?
+  difficulty     Int               @default(1)
+  createdAt      DateTime          @default(now()) @map("created_at")
+
+  concept        Concept?          @relation(fields: [conceptId], references: [id], onDelete: SetNull)
+  attempts       QuestionAttempt[]
+
+  @@map("questions")
+  @@schema("learning")
+}
+
+model QuestionAttempt {
+  id             String        @id @default(uuid()) @db.Uuid
+  userId         String        @map("user_id") @db.Uuid
+  sessionId      String        @map("session_id") @db.Uuid
+  questionId     String?       @map("question_id") @db.Uuid
+  nodeId         String        @map("node_id")
+  clientActionId String        @unique @map("client_action_id")
+  rawAnswer      String        @map("raw_answer")
+  isCorrect      Boolean       @map("is_correct")
+  score          Float         @default(0.0)
+  responseTimeMs Int?          @map("response_time_ms")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session        LessonSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question       Question?     @relation(fields: [questionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, questionId])
+  @@index([sessionId, nodeId])
+  @@map("question_attempts")
+  @@schema("learning")
+}
+
+model Concept {
+  id          String                 @id @default(uuid()) @db.Uuid
+  code        String                 @unique
+  title       String
+  subjectId   String                 @map("subject_id")
+  topicId     String                 @map("topic_id")
+  createdAt   DateTime               @default(now()) @map("created_at")
+
+  questions   Question[]
+  masteries   StudentConceptMastery[]
+
+  @@map("concepts")
+  @@schema("learning")
+}
+
+model StudentConceptMastery {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  conceptId       String    @map("concept_id") @db.Uuid
+  masteryScore    Float     @default(0.0) @map("mastery_score")
+  totalAttempts   Int       @default(0) @map("total_attempts")
+  correctAttempts Int       @default(0) @map("correct_attempts")
+  lastAttemptAt   DateTime  @default(now()) @map("last_attempt_at")
+  lastCorrectAt   DateTime? @map("last_correct_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  concept         Concept   @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conceptId])
+  @@map("student_concept_mastery")
+  @@schema("learning")
+}
+
+model AiConversation {
+  id              String        @id @default(uuid()) @db.Uuid
+  userId          String        @map("user_id") @db.Uuid
+  sessionId       String        @map("session_id") @db.Uuid
+  scriptVersionId String        @map("script_version_id") @db.Uuid
+  nodeId          String        @map("node_id")
+  status          String        @default("OPEN")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  closedAt        DateTime?     @map("closed_at")
+
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages        AiMessage[]
+
+  @@index([sessionId, nodeId])
+  @@map("ai_conversations")
+  @@schema("learning")
+}
+
+model AiMessage {
+  id               String         @id @default(uuid()) @db.Uuid
+  conversationId   String         @map("conversation_id") @db.Uuid
+  sender           String         // "USER" | "AI_TUTOR"
+  content          String
+  tokensUsed       Int?           @map("tokens_used")
+  modelId          String?        @map("model_id")
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  conversation     AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("ai_messages")
+  @@schema("learning")
+}
