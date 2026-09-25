@@ -85,26 +85,35 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
           // Header: Question Title + Difficulty Badge
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    _getCategoryIcon(q.inputType),
-                    size: 15,
-                    color: AptiquColors.tertiary,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    q.title.toUpperCase(),
-                    style: AptiquTypography.labelCapsBold.copyWith(
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      _getCategoryIcon(q.inputType),
+                      size: 15,
                       color: AptiquColors.tertiary,
-                      fontSize: 10.5,
-                      letterSpacing: 0.8,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        q.title.toUpperCase(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: AptiquTypography.labelCapsBold.copyWith(
+                          color: AptiquColors.tertiary,
+                          fontSize: 10.5,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Container(
+                constraints: const BoxConstraints(maxWidth: 130),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: AptiquColors.surfaceContainerHigh,
@@ -113,6 +122,8 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                 ),
                 child: Text(
                   q.difficulty.toUpperCase(),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: AptiquTypography.labelCaps.copyWith(
                     color: AptiquColors.secondary,
                     fontSize: 9.5,
@@ -296,12 +307,18 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                     ),
                   ),
                 ),
-                Text(
-                  optionText,
-                  style: AptiquTypography.metricMd.copyWith(
-                    fontSize: 13,
-                    color: isSelected ? Colors.white : AptiquColors.onSurface,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    optionText,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: AptiquTypography.metricMd.copyWith(
+                      fontSize: 13,
+                      color: isSelected ? Colors.white : AptiquColors.onSurface,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -327,11 +344,15 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             const Icon(Icons.check_circle_rounded,
                 color: AptiquColors.secondary, size: 18),
             const SizedBox(width: 8),
-            Text(
-              'Submitted: ${q.submittedText ?? ""}',
-              style: AptiquTypography.bodySm.copyWith(
-                color: AptiquColors.onSurface,
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: Text(
+                'Submitted: ${q.submittedText ?? ""}',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AptiquTypography.bodySm.copyWith(
+                  color: AptiquColors.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -426,11 +447,15 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             const Icon(Icons.mic_none_rounded,
                 color: AptiquColors.tertiary, size: 18),
             const SizedBox(width: 8),
-            Text(
-              'Viva Voice Response Submitted ✓',
-              style: AptiquTypography.bodySm.copyWith(
-                color: AptiquColors.tertiary,
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: Text(
+                'Viva Voice Response Submitted ✓',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AptiquTypography.bodySm.copyWith(
+                  color: AptiquColors.tertiary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -483,14 +508,18 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                   size: 20,
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  _isRecordingVoice
-                      ? 'Listening & Transcribing Reasoning...'
-                      : 'Tap to Speak & Explain Concept (Viva)',
-                  style: AptiquTypography.bodySm.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12.5,
+                Flexible(
+                  child: Text(
+                    _isRecordingVoice
+                        ? 'Listening & Transcribing Reasoning...'
+                        : 'Tap to Speak & Explain Concept (Viva)',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: AptiquTypography.bodySm.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12.5,
+                    ),
                   ),
                 ),
               ],
@@ -524,11 +553,15 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             const Icon(Icons.document_scanner_rounded,
                 color: AptiquColors.secondary, size: 18),
             const SizedBox(width: 8),
-            Text(
-              'Handwritten Solution Uploaded & Verified ✓',
-              style: AptiquTypography.bodySm.copyWith(
-                color: AptiquColors.secondary,
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: Text(
+                'Handwritten Solution Uploaded & Verified ✓',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AptiquTypography.bodySm.copyWith(
+                  color: AptiquColors.secondary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -557,12 +590,16 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             const Icon(Icons.document_scanner_rounded,
                 color: AptiquColors.secondary, size: 20),
             const SizedBox(width: 10),
-            Text(
-              'Scan Scratchpad / Upload Notes',
-              style: AptiquTypography.bodySm.copyWith(
-                color: AptiquColors.secondary,
-                fontWeight: FontWeight.w700,
-                fontSize: 12.5,
+            Flexible(
+              child: Text(
+                'Scan Scratchpad / Upload Notes',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AptiquTypography.bodySm.copyWith(
+                  color: AptiquColors.secondary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.5,
+                ),
               ),
             ),
           ],

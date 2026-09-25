@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../core/routing/app_router.dart';
 
 enum MessageSender { ai, user }
 
@@ -82,14 +83,14 @@ class HomeController extends GetxController {
         id: 'msg_1',
         sender: MessageSender.ai,
         text:
-            'Hey Shagun, Welcome to AptiQu! ⚡\nI will help you sharpen your mathematical aptitude and reasoning skills in a fun interactive manner!\n\nShall we proceed with the very first topic of our syllabus — Ratio & Proportion?',
+            'Hey Shagun, Welcome to AptiQu! ⚡\nI am your interactive AI Tutor. I will help you build mathematical intuition step-by-step through guided dialogue.\n\nOur first 15-minute curriculum session is ready on the server: Foundations of Ratios 101.\nShall we begin?',
         time: 'Just now',
         question: QuestionData(
-          title: 'SYLLABUS TOPIC #1',
-          desc: 'Select your preferred starting option:',
-          difficulty: 'Starting Point',
+          title: 'CURRICULUM TRACK #1',
+          desc: 'Start 15-Minute Guided AI Tutor Lesson on Ratios:',
+          difficulty: 'Live Session • 15 min',
           inputType: QuestionInputType.select,
-          options: ["Yes, let's begin!", 'Choose Another Topic'],
+          options: ["🚀 Start Live AI Lesson", 'Explore Topics'],
         ),
       ),
     );
@@ -123,97 +124,49 @@ class HomeController extends GetxController {
     // Natural conversation step progression
     if (conversationStep.value == 1) {
       if (optionIndex == 0) {
-        // Proceed with Ratio & Proportion
+        // Proceed with live backend AI Tutor lesson
         conversationStep.value = 2;
-        _triggerStep2RatioIntro();
+        messages.add(
+          ChatMessageModel(
+            id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
+            sender: MessageSender.ai,
+            text:
+                'Connecting to AptiQu AI Tutor server for "Ratio & Proportion 101"... ⚡\nOpening your interactive lesson stream now!',
+            time: _getCurrentTime(),
+          ),
+        );
+        _scrollToBottom();
+
+        Future.delayed(const Duration(milliseconds: 500), () {
+          AppRouter.router.push('/lesson/math_ratios_101');
+        });
       } else {
         // Picked another topic
-        Future.delayed(const Duration(milliseconds: 600), () {
+        Future.delayed(const Duration(milliseconds: 400), () {
           messages.add(
             ChatMessageModel(
               id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
               sender: MessageSender.ai,
               text:
-                  'No problem! You can explore all topics from the TOPICS tab anytime. For now, Ratio & Proportion forms the foundation of 80% of arithmetic topics. Let\'s do a quick look!',
+                  'Opening curriculum topics! You can start the Ratio & Proportion live session anytime from the Topics tab.',
               time: _getCurrentTime(),
             ),
           );
-          _triggerStep2RatioIntro();
+          selectedNavIndex.value = 1;
         });
       }
     } else if (conversationStep.value == 2) {
-      // User answered warm up check
-      conversationStep.value = 3;
-      _triggerStep3VivaCheck(optionIndex == 0);
+      if (optionIndex == 0) {
+        startLiveLesson();
+      } else {
+        selectedNavIndex.value = 1;
+      }
     }
   }
 
-  /// Step 2: Topic Divider + Introduction + Warm-Up Multi-Choice Check
-  void _triggerStep2RatioIntro() {
-    Future.delayed(const Duration(milliseconds: 500), () {
-      // 1. Topic divider acting as a heading
-      messages.add(
-        ChatMessageModel(
-          id: 'divider_1',
-          sender: MessageSender.ai,
-          text: '',
-          time: '',
-          isTopicDivider: true,
-          topicTitle: 'TOPIC: RATIO & PROPORTION',
-        ),
-      );
-      _scrollToBottom();
-
-      // 2. Message 2 with basic intro and warm-up question in the same container
-      Future.delayed(const Duration(milliseconds: 500), () {
-        messages.add(
-          ChatMessageModel(
-            id: 'msg_2',
-            sender: MessageSender.ai,
-            text:
-                'Awesome! Let\'s build your foundational intuition first.\n\nA ratio is simply a mathematical comparison of two quantities of the same kind by division (a : b = a/b).\nFor example, if a bag has 2 red marbles and 3 blue marbles, their ratio is 2 : 3.\n\nLet\'s check your understanding with a quick warm-up question:',
-            time: _getCurrentTime(),
-            question: QuestionData(
-              title: 'Warm-Up Check',
-              desc:
-                  'If a class has 20 boys and 30 girls, what is the simplest ratio of boys to girls?',
-              difficulty: 'Level 1 • Quick Drill',
-              inputType: QuestionInputType.select,
-              options: ['2 : 3', '3 : 2', '4 : 5', '1 : 2'],
-              correctOptionIndex: 0,
-            ),
-          ),
-        );
-        _scrollToBottom();
-      });
-    });
-  }
-
-  /// Step 3: Viva Oral Conceptual Check (InputType.voice)
-  void _triggerStep3VivaCheck(bool isCorrect) {
-    Future.delayed(const Duration(milliseconds: 600), () {
-      final feedback = isCorrect
-          ? 'Spot on! 🎯 20/30 simplifies down to 2/3 by dividing both by 10.'
-          : 'Good try! 20/30 simplifies to 2/3 when dividing both numerator and denominator by 10.';
-
-      messages.add(
-        ChatMessageModel(
-          id: 'msg_3',
-          sender: MessageSender.ai,
-          text:
-              '$feedback\n\nNow, let\'s test your conceptual intuition viva-style! In your own words, why does multiplying or dividing both terms of a ratio by the same non-zero number not change the ratio?',
-          time: _getCurrentTime(),
-          question: QuestionData(
-            title: 'Viva Conceptual Check',
-            desc:
-                'Explain the fundamental invariance property of ratios in your own words:',
-            difficulty: 'Oral Viva • +30 Coins',
-            inputType: QuestionInputType.voice,
-          ),
-        ),
-      );
-      _scrollToBottom();
-    });
+  /// Direct launch for live backend AI Tutor session
+  void startLiveLesson([String topicSlug = 'math_ratios_101']) {
+    AppRouter.router.push('/lesson/$topicSlug');
   }
 
   /// Handle Voice/Viva submission (InputType.voice)
@@ -239,34 +192,26 @@ class HomeController extends GetxController {
     );
     _scrollToBottom();
 
-    conversationStep.value = 4;
-    _triggerStep4CompoundRatioText();
-  }
-
-  /// Step 4: Text-Based Mathematical Drill (InputType.text)
-  void _triggerStep4CompoundRatioText() {
-    Future.delayed(const Duration(milliseconds: 700), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       messages.add(
         ChatMessageModel(
-          id: 'msg_4',
+          id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
           sender: MessageSender.ai,
           text:
-              'Brilliant viva articulation, Shagun! 👏 That is exactly the Fundamental Invariance Principle.\n\nNow, let\'s apply compound ratios. Try solving this on your notepad and enter your simplified answer below:',
+              'Great reasoning! 👏 To experience full interactive dialogue, formula cards, and mental calculation drills, start the 15-minute live AI session below:',
           time: _getCurrentTime(),
           question: QuestionData(
-            title: 'Compound Ratio Challenge',
-            desc:
-                'If A : B = 3 : 4 and B : C = 8 : 9, find the ratio of A : C in simplest form.',
-            difficulty: 'Tier II Drill • +40 Coins',
-            inputType: QuestionInputType.text,
-            placeholder: 'Type answer e.g. 2:3 or 2/3',
+            title: 'RATIOS 101 CURRICULUM',
+            desc: 'Foundations of Ratios: Intuition to Mastery',
+            difficulty: 'Live Session • 15 min',
+            inputType: QuestionInputType.select,
+            options: ['🚀 Launch Live Lesson', 'Browse Topics'],
           ),
         ),
       );
       _scrollToBottom();
     });
   }
-
   /// Handle Text Submission (InputType.text)
   void handleTextSubmission(String messageId, String text) {
     if (text.trim().isEmpty) return;
@@ -292,26 +237,20 @@ class HomeController extends GetxController {
     );
     _scrollToBottom();
 
-    conversationStep.value = 5;
-    _triggerStep5ScanDrill();
-  }
-
-  /// Step 5: Scratchpad / Paper Scan Drill (InputType.scan)
-  void _triggerStep5ScanDrill() {
-    Future.delayed(const Duration(milliseconds: 700), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       messages.add(
         ChatMessageModel(
-          id: 'msg_5',
+          id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
           sender: MessageSender.ai,
           text:
-              'Outstanding deduction! 🏆\n(A/C) = (A/B) × (B/C) = (3/4) × (8/9) = 24/36 = 2/3, so A : C = 2 : 3.\n\nYou have mastered the core fundamentals! For multi-step problem solving, solve this on paper and upload a photo of your rough work:',
+              'Answer recorded! 🎯 To experience the full guided conversation with smart hints and real-time step explanations, start the live AI Tutor lesson:',
           time: _getCurrentTime(),
           question: QuestionData(
-            title: 'Scratchpad Reasoning Drill',
-            desc:
-                'Divide ₹1,500 among A, B, and C in the ratio 2 : 3 : 5. Find C\'s share and upload your steps:',
-            difficulty: 'Scratchpad • +50 Coins',
-            inputType: QuestionInputType.scan,
+            title: 'RATIOS 101 CURRICULUM',
+            desc: 'Foundations of Ratios: Intuition to Mastery • 15 min',
+            difficulty: 'Live Session • 15 min',
+            inputType: QuestionInputType.select,
+            options: ['🚀 Launch Live Lesson', 'Browse Topics'],
           ),
         ),
       );
@@ -335,28 +274,20 @@ class HomeController extends GetxController {
       ChatMessageModel(
         id: 'user_${DateTime.now().millisecondsSinceEpoch}',
         sender: MessageSender.user,
-        text:
-            '📄 [Uploaded Handwritten Steps: C\'s share = (5/10) × ₹1,500 = ₹750 ✓]',
+        text: '📄 [Uploaded Handwritten Solution]',
         time: _getCurrentTime(),
       ),
     );
     _scrollToBottom();
 
-    Future.delayed(const Duration(milliseconds: 700), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       messages.add(
         ChatMessageModel(
           id: 'ai_${DateTime.now().millisecondsSinceEpoch}',
           sender: MessageSender.ai,
           text:
-              'Perfect handwritten methodology, Shagun! 🌟\nYour steps are crisp: Total units = 2 + 3 + 5 = 10 units. C receives 5/10 = 50% = ₹750.\n\nYou are officially ready for the Timed Speed Quiz! Would you like to launch it now?',
+              'Notes received! 🌟 You can also submit handwriting directly inside any live lesson session using the camera button in the top bar.',
           time: _getCurrentTime(),
-          question: QuestionData(
-            title: 'Speed Quiz Arena',
-            desc: '10 Timed Questions • 5 Minutes • Instant Rank Assessment',
-            difficulty: 'Arena Challenge',
-            inputType: QuestionInputType.select,
-            options: ['Launch Speed Quiz ⚡', 'Review Ratio Formulae'],
-          ),
         ),
       );
       _scrollToBottom();

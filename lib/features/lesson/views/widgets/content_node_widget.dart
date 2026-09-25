@@ -25,48 +25,97 @@ class ContentNodeWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (node.choiceOptions.isNotEmpty)
-            Row(
-              children: node.choiceOptions.map((opt) {
-                final isDoubt = opt.id.toLowerCase().contains('doubt');
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isDoubt
-                            ? AptiquColors.surfaceContainer
-                            : AptiquColors.primaryContainer,
-                        foregroundColor: isDoubt
-                            ? AptiquColors.tertiary
-                            : Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: isDoubt
-                              ? const BorderSide(color: AptiquColors.tertiaryContainer)
-                              : BorderSide.none,
+            node.choiceOptions.length > 2
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: node.choiceOptions.map((opt) {
+                      final isDoubt = opt.id.toLowerCase().contains('doubt');
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isDoubt
+                                ? AptiquColors.surfaceContainer
+                                : AptiquColors.primaryContainer,
+                            foregroundColor:
+                                isDoubt ? AptiquColors.tertiary : Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: isDoubt
+                                  ? const BorderSide(
+                                      color: AptiquColors.tertiaryContainer)
+                                  : BorderSide.none,
+                            ),
+                          ),
+                          onPressed: isSubmitting
+                              ? null
+                              : () {
+                                  if (isDoubt) {
+                                    onDoubt();
+                                  } else {
+                                    onAction(opt.id, opt.label);
+                                  }
+                                },
+                          child: Text(
+                            opt.label,
+                            textAlign: TextAlign.center,
+                            style: AptiquTypography.bodyLg.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: isSubmitting
-                          ? null
-                          : () {
-                              if (isDoubt) {
-                                onDoubt();
-                              } else {
-                                onAction(opt.id, opt.label);
-                              }
-                            },
-                      child: Text(
-                        opt.label,
-                        style: AptiquTypography.headlineSm.copyWith(
-                          fontWeight: FontWeight.bold,
+                      );
+                    }).toList(),
+                  )
+                : Row(
+                    children: node.choiceOptions.map((opt) {
+                      final isDoubt = opt.id.toLowerCase().contains('doubt');
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDoubt
+                                  ? AptiquColors.surfaceContainer
+                                  : AptiquColors.primaryContainer,
+                              foregroundColor: isDoubt
+                                  ? AptiquColors.tertiary
+                                  : Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: isDoubt
+                                    ? const BorderSide(
+                                        color: AptiquColors.tertiaryContainer)
+                                    : BorderSide.none,
+                              ),
+                            ),
+                            onPressed: isSubmitting
+                                ? null
+                                : () {
+                                    if (isDoubt) {
+                                      onDoubt();
+                                    } else {
+                                      onAction(opt.id, opt.label);
+                                    }
+                                  },
+                            child: Text(
+                              opt.label,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AptiquTypography.bodyLg.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            )
+                      );
+                    }).toList(),
+                  )
           else
             ElevatedButton(
               style: ElevatedButton.styleFrom(

@@ -112,29 +112,33 @@ class TopBarZone extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(width: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      firstName,
-                      style: AptiquTypography.headlineSm.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        height: 1.1,
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        firstName,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: AptiquTypography.headlineSm.copyWith(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          height: 1.1,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'LEVEL $level',
-                      style: AptiquTypography.labelCaps.copyWith(
-                        fontSize: 10,
-                        color: AptiquColors.secondary,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
+                      const SizedBox(height: 2),
+                      Text(
+                        'LEVEL $level',
+                        style: AptiquTypography.labelCaps.copyWith(
+                          fontSize: 10,
+                          color: AptiquColors.secondary,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
