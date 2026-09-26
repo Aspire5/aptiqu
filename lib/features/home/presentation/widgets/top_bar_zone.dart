@@ -6,7 +6,8 @@ import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import 'package:aptiqu/shared/widgets/badges/aptiqu_badge.dart';
 import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:aptiqu/core/progression/controllers/xp_controller.dart';
-import 'package:aptiqu/features/profile/presentation/screens/profile_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:aptiqu/core/routing/app_routes.dart';
 
 /// ZONE 1: TOP 12% SECTION
 /// Left: Circular profile image with First Name & Current Level under it
@@ -65,11 +66,7 @@ class TopBarZone extends StatelessWidget {
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                Get.to(
-                  () => const ProfileScreen(),
-                  transition: Transition.leftToRight,
-                  duration: const Duration(milliseconds: 280),
-                );
+                context.push(AppRoutes.profile);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,

@@ -8,6 +8,7 @@ import 'package:aptiqu/features/auth/domain/models/user_model.dart';
 import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:aptiqu/features/home/presentation/widgets/level_up_overlay.dart';
 import 'package:aptiqu/features/home/presentation/widgets/top_bar_zone.dart';
+import 'package:aptiqu/features/profile/presentation/screens/profile_screen.dart';
 import 'package:aptiqu/features/lesson/models/lesson_node_model.dart';
 import 'package:aptiqu/features/home/presentation/controllers/home_controller.dart';
 
@@ -319,6 +320,48 @@ void main() {
       // No celebration overlay displayed
       expect(find.text('LEVEL UP!'), findsNothing);
       expect(xpController.progress.value.total, 10);
+    });
+
+    testWidgets('ProfileScreen renders user profile, level progress, topics and question breakdowns', (tester) async {
+      final auth = Get.put<AuthController>(AuthController());
+      auth.currentUser.value = const UserModel(
+        id: 'u1',
+        email: 'shagun@aptiqu.io',
+        firstName: 'Shagun',
+        lastName: 'Kumar',
+        level: 2,
+        totalXp: 35,
+        xpIntoCurrentLevel: 15,
+        xpRequiredForNextLevel: 40,
+        progress: 0.375,
+        stats: UserStatsModel(
+          topics: TopicStatsModel(completed: 3, total: 45),
+          questions: QuestionStatsModel(
+            easy: QuestionDifficultyStatsModel(solved: 5, total: 19),
+            medium: QuestionDifficultyStatsModel(solved: 2, total: 6),
+            hard: QuestionDifficultyStatsModel(solved: 0, total: 0),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ProfileScreen(autoFetch: false),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('PROFILE'), findsOneWidget);
+      expect(find.text('Shagun Kumar'), findsOneWidget);
+      expect(find.text('shagun@aptiqu.io'), findsOneWidget);
+      expect(find.text('LEVEL 2'), findsWidgets);
+      expect(find.text('15 / 40 XP'), findsOneWidget);
+      expect(find.text('Next: Level 3'), findsOneWidget);
+      expect(find.text('3'), findsOneWidget);
+      expect(find.text('/ 45 Topics across all roadmaps'), findsOneWidget);
+      expect(find.text('5 / 19'), findsOneWidget);
+      expect(find.text('2 / 6'), findsOneWidget);
+      expect(find.text('0 / 0'), findsOneWidget);
     });
   });
 }

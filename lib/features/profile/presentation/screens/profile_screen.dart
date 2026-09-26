@@ -9,7 +9,12 @@ import '../../../auth/domain/models/user_model.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool autoFetch;
+
+  const ProfileScreen({
+    super.key,
+    this.autoFetch = true,
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -22,7 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchFreshProfileAndStats();
+    if (widget.autoFetch) {
+      _fetchFreshProfileAndStats();
+    }
   }
 
   Future<void> _fetchFreshProfileAndStats() async {
@@ -65,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.white),
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).maybePop(),
         ),
         title: Text(
           'PROFILE',
@@ -276,34 +283,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
                 const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AptiquColors.secondary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AptiquColors.secondary.withValues(alpha: 0.35),
-                      width: 1,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    if (Get.isRegistered<XpController>()) {
+                      Get.find<XpController>().triggerCelebrationForCurrentLevel();
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AptiquColors.secondary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AptiquColors.secondary.withValues(alpha: 0.35),
+                        width: 1,
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.military_tech_rounded,
-                        size: 14,
-                        color: AptiquColors.secondary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'LEVEL $level',
-                        style: AptiquTypography.labelCapsBold.copyWith(
-                          fontSize: 11,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.military_tech_rounded,
+                          size: 14,
                           color: AptiquColors.secondary,
-                          letterSpacing: 0.8,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        Text(
+                          'LEVEL $level',
+                          style: AptiquTypography.labelCapsBold.copyWith(
+                            fontSize: 11,
+                            color: AptiquColors.secondary,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

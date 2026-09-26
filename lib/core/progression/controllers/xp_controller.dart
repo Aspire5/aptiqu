@@ -1,14 +1,17 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/xp_models.dart';
 import '../../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../../features/home/presentation/widgets/level_up_overlay.dart';
+import '../../routing/app_router.dart';
 
 class XpController extends GetxController {
   static XpController get to => Get.find<XpController>();
 
   final Rx<XpProgressModel> progress = const XpProgressModel().obs;
   final RxBool isLevelUpDialogActive = false.obs;
+  int _lastCelebratedLevel = 1;
 
   @override
   void onInit() {
@@ -37,17 +40,21 @@ class XpController extends GetxController {
           xpRequiredForNextLevel: initialUser.xpRequiredForNextLevel,
           progress: initialUser.progress,
         );
+        _lastCelebratedLevel = initialUser.level;
       }
     }
   }
 
-  /// Updates local XP state and triggers level-up celebration if occurred == true.
+  /// Updates local XP state and triggers level-up celebration if occurred == true or level increased.
   void handleXpUpdate({
     required XpProgressModel xp,
     LevelUpModel? levelUp,
     BuildContext? context,
   }) {
+    final previousLevel = progress.value.level;
     progress.value = xp;
+
+    debugPrint('[XP] handleXpUpdate: earned=${xp.earned}, level=${xp.level}, previousLevel=$previousLevel, levelUpOccurred=${levelUp?.occurred}');
 
     // Synchronize with AuthController user model
     if (Get.isRegistered<AuthController>()) {
@@ -64,11 +71,42 @@ class XpController extends GetxController {
       }
     }
 
-    if (levelUp != null && levelUp.occurred && !isLevelUpDialogActive.value) {
-      final targetContext = context ?? Get.context;
+    final didLevelUp = (levelUp != null && levelUp.occurred) ||
+        (previousLevel > 0 && xp.level > previousLevel && xp.level > _lastCelebratedLevel);
+
+    if (didLevelUp && !isLevelUpDialogActive.value) {
+      _lastCelebratedLevel = xp.level;
+      final effectiveLevelUp = (levelUp != null && levelUp.occurred)
+          ? levelUp
+          : LevelUpModel(
+              occurred: true,
+              fromLevel: previousLevel,
+              toLevel: xp.level,
+              levelsGained: math.max(1, xp.level - previousLevel),
+            );
+
+      final targetContext = context ?? AppRouter.navigatorKey.currentContext ?? Get.context;
+      debugPrint('[XP] Target context for celebration: $targetContext');
       if (targetContext != null) {
-        showLevelUpCelebration(targetContext, levelUp);
+        showLevelUpCelebration(targetContext, effectiveLevelUp);
       }
+    }
+  }
+
+  /// Trigger celebration for current level (used for preview or missed triggers)
+  void triggerCelebrationForCurrentLevel() {
+    final currentLevel = progress.value.level;
+    final targetContext = AppRouter.navigatorKey.currentContext;
+    if (targetContext != null && currentLevel > 1) {
+      showLevelUpCelebration(
+        targetContext,
+        LevelUpModel(
+          occurred: true,
+          fromLevel: currentLevel - 1,
+          toLevel: currentLevel,
+          levelsGained: 1,
+        ),
+      );
     }
   }
 
