@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
@@ -54,25 +55,36 @@ class TopBarZone extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Left Side: Circular Profile Image + First Name & Level
+            // Left Side: Circular Profile Image with Level Progress Ring + First Name & Level
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Stack(
+                  alignment: Alignment.center,
                   children: [
+                    // Subtle circular level progression ring around avatar
+                    SizedBox(
+                      width: 46,
+                      height: 46,
+                      child: CustomPaint(
+                        painter: _AvatarProgressRingPainter(
+                          progress: user?.progress ?? 0.0,
+                        ),
+                      ),
+                    ),
                     Container(
-                      width: 42,
-                      height: 42,
+                      width: 38,
+                      height: 38,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: AptiquColors.primaryContainer.withValues(alpha: 0.8),
+                          color: AptiquColors.surfaceDim,
                           width: 2.0,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
-                            blurRadius: 12,
+                            blurRadius: 10,
                           ),
                         ],
                       ),
@@ -85,7 +97,7 @@ class TopBarZone extends StatelessWidget {
                             child: const Icon(
                               Icons.person_rounded,
                               color: AptiquColors.primary,
-                              size: 24,
+                              size: 22,
                             ),
                           ),
                         ),
@@ -93,17 +105,17 @@ class TopBarZone extends StatelessWidget {
                     ),
                     // Online Active Indicator Dot
                     Positioned(
-                      bottom: 0,
-                      right: 0,
+                      bottom: 2,
+                      right: 2,
                       child: Container(
-                        width: 11,
-                        height: 11,
+                        width: 9,
+                        height: 9,
                         decoration: BoxDecoration(
                           color: AptiquColors.secondary,
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AptiquColors.surfaceDim,
-                            width: 2.0,
+                            width: 1.5,
                           ),
                           boxShadow: AptiquColors.secondaryGlow,
                         ),
@@ -160,5 +172,49 @@ class TopBarZone extends StatelessWidget {
         ),
       );
     });
+  }
+}
+
+/// Subtle circular progression ring around the avatar
+class _AvatarProgressRingPainter extends CustomPainter {
+  final double progress;
+
+  _AvatarProgressRingPainter({required this.progress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - 4) / 2;
+
+    // Track
+    final trackPaint = Paint()
+      ..color = AptiquColors.outlineVariant.withValues(alpha: 0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    canvas.drawCircle(center, radius, trackPaint);
+
+    // Active Arc
+    if (progress > 0) {
+      final sweepAngle = 2 * math.pi * progress.clamp(0.0, 1.0);
+      final activePaint = Paint()
+        ..color = AptiquColors.secondary
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.2
+        ..strokeCap = StrokeCap.round;
+
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        -math.pi / 2,
+        sweepAngle,
+        false,
+        activePaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _AvatarProgressRingPainter oldDelegate) {
+    return oldDelegate.progress != progress;
   }
 }

@@ -99,7 +99,7 @@ class QuestionData {
     this.placeholder,
     this.questionType = QuestionModeType.practice,
     this.difficultyLevel = QuestionDifficultyLevel.easy,
-    this.xp = 10,
+    int? xp,
     this.hints = const [],
     this.revealedHintsCount = 0,
     this.selectedOptionIndex,
@@ -108,7 +108,18 @@ class QuestionData {
     this.hasEvaluated = false,
     this.isUserCorrect,
     this.correctOptionId,
-  });
+  }) : xp = xp ?? calculateQuestionXp(questionType, difficultyLevel);
+
+  static int calculateQuestionXp(
+    QuestionModeType type,
+    QuestionDifficultyLevel diff,
+  ) {
+    final typeXp = type == QuestionModeType.ranked ? 10 : 5;
+    final diffXp = diff == QuestionDifficultyLevel.hard
+        ? 15
+        : (diff == QuestionDifficultyLevel.medium ? 10 : 5);
+    return typeXp + diffXp;
+  }
 }
 
 class ChatMessageModel {

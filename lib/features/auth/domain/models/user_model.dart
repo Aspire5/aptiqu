@@ -11,8 +11,11 @@ class UserModel {
   final String country;
   final String avatarUrl;
   final int level;
+  final int totalXp;
+  final int xpIntoCurrentLevel;
+  final int xpRequiredForNextLevel;
+  final double progress;
   final String streak;
-  // NOTE: coins instead of xp across entire application
   final int coins;
   final bool isRegistrationComplete;
 
@@ -27,6 +30,10 @@ class UserModel {
     this.country = '',
     this.avatarUrl = '',
     this.level = 1,
+    this.totalXp = 0,
+    this.xpIntoCurrentLevel = 0,
+    this.xpRequiredForNextLevel = 20,
+    this.progress = 0.0,
     this.streak = '0d',
     this.coins = 0,
     this.isRegistrationComplete = false,
@@ -43,6 +50,10 @@ class UserModel {
     String? country,
     String? avatarUrl,
     int? level,
+    int? totalXp,
+    int? xpIntoCurrentLevel,
+    int? xpRequiredForNextLevel,
+    double? progress,
     String? streak,
     int? coins,
     bool? isRegistrationComplete,
@@ -58,6 +69,11 @@ class UserModel {
       country: country ?? this.country,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       level: level ?? this.level,
+      totalXp: totalXp ?? this.totalXp,
+      xpIntoCurrentLevel: xpIntoCurrentLevel ?? this.xpIntoCurrentLevel,
+      xpRequiredForNextLevel:
+          xpRequiredForNextLevel ?? this.xpRequiredForNextLevel,
+      progress: progress ?? this.progress,
       streak: streak ?? this.streak,
       coins: coins ?? this.coins,
       isRegistrationComplete:
@@ -76,7 +92,21 @@ class UserModel {
       religion: json['religion'] ?? '',
       country: json['country'] ?? '',
       avatarUrl: json['avatarUrl'] ?? '',
-      level: json['level'] ?? 1,
+      level: (json['level'] as num?)?.toInt() ?? 1,
+      totalXp: (json['totalXp'] as num?)?.toInt() ??
+          (json['xp']?['total'] as num?)?.toInt() ??
+          0,
+      xpIntoCurrentLevel:
+          (json['xpIntoCurrentLevel'] as num?)?.toInt() ??
+          (json['xp']?['xpIntoCurrentLevel'] as num?)?.toInt() ??
+          0,
+      xpRequiredForNextLevel:
+          (json['xpRequiredForNextLevel'] as num?)?.toInt() ??
+          (json['xp']?['xpRequiredForNextLevel'] as num?)?.toInt() ??
+          20,
+      progress: (json['progress'] as num?)?.toDouble() ??
+          (json['xp']?['progress'] as num?)?.toDouble() ??
+          0.0,
       // Streak from backend
       streak: json['streak']?.toString() ?? '0d',
       // Coins from backend

@@ -8,6 +8,8 @@ import { TransitionEngine } from '../engines/transition-engine';
 import { LessonNode } from '../interfaces/script-dsl.interface';
 import { SubmitActionInput, InterruptInput } from '../dtos/lesson-action.dto';
 import { roadmapProgressionService } from '../../roadmap/services/roadmap-progression.service';
+import { xpService } from '../../xp/xp.service';
+import { AwardXpResult } from '../../xp/xp.types';
 
 export class LessonSessionService {
   private static instance: LessonSessionService;
@@ -443,6 +445,7 @@ export class LessonSessionService {
 
       // Evaluate question if applicable
       let evaluation: { isCorrect: boolean; score: number; explanation?: string; correctOptionId?: string } | undefined;
+      let actionXpResult: AwardXpResult | null = null;
       const effectiveActionPayload: { actionId?: string; answer?: string; isCorrect?: boolean } = {
         actionId: input.action.actionId,
         answer: input.action.answer,
@@ -475,6 +478,19 @@ export class LessonSessionService {
             score: evalRes.score,
             responseTimeMs: input.action.responseTimeMs || null,
           },
+        });
+
+        // Award Question XP using centralized formula (type XP + difficulty XP)
+        const qType = currentNode.questionReference?.inlineData?.questionType;
+        const qDiff = currentNode.questionReference?.inlineData?.difficulty;
+        actionXpResult = await xpService.awardQuestionXp({
+          userId,
+          clientActionId: input.clientActionId,
+          questionType: qType,
+          difficulty: qDiff,
+          questionId: currentNode.questionReference?.questionId || null,
+          nodeId: currentNode.id,
+          sessionId,
         });
 
         // Record mastery if linked to concept
@@ -574,6 +590,68 @@ export class LessonSessionService {
             effectiveRoadmapStepId
           );
         }
+
+        // Award Subtopic Script Completion XP (+20 XP)
+        const effectiveTopicId = definition.metadata?.topicId || (session as any).script?.topicId;
+        const effectiveSubtopicId = definition.metadata?.subtopicId || (session as any).script?.subtopicId;
+
+        const scriptXpResult = await xpService.awardSubtopicCompletionXp({
+          userId,
+          roadmapId: effectiveRoadmapId,
+          roadmapStepId: effectiveRoadmapStepId,
+          topicId: effectiveTopicId,
+          subtopicId: effectiveSubtopicId,
+          scriptId: session.scriptId,
+          scriptVersionId: session.scriptVersionId,
+          sessionId: session.id,
+        });
+
+        let combinedXp = scriptXpResult.xp;
+        let combinedLevelUp = scriptXpResult.levelUp;
+
+        // Check if Topic is now fully completed in active roadmap
+        if (effectiveRoadmapId && effectiveTopicId) {
+          const topicXpResult = await roadmapProgressionService.checkAndAwardTopicCompletion(
+            userId,
+            effectiveRoadmapId,
+            effectiveTopicId
+          );
+
+          if (topicXpResult && topicXpResult.awarded) {
+            combinedXp = {
+              ...topicXpResult.xp,
+              earned: scriptXpResult.xp.earned + topicXpResult.xp.earned,
+              previousTotal: scriptXpResult.xp.previousTotal,
+            };
+            combinedLevelUp = {
+              occurred: scriptXpResult.levelUp.occurred || topicXpResult.levelUp.occurred,
+              fromLevel: scriptXpResult.levelUp.fromLevel,
+              toLevel: topicXpResult.levelUp.toLevel,
+              levelsGained: topicXpResult.levelUp.toLevel - scriptXpResult.levelUp.fromLevel,
+            };
+          }
+        }
+
+        actionXpResult = {
+          awarded: true,
+          xp: combinedXp,
+          levelUp: combinedLevelUp,
+        };
+      }
+
+      // If no XP-awarding event occurred on this action (e.g. continue node), get latest progress
+      if (!actionXpResult) {
+        const currentProgress = await xpService.getUserProgress(userId);
+        actionXpResult = {
+          awarded: false,
+          xp: currentProgress,
+          levelUp: {
+            occurred: false,
+            fromLevel: currentProgress.level,
+            toLevel: currentProgress.level,
+            levelsGained: 0,
+          },
+        };
       }
 
       const response = {
@@ -583,6 +661,8 @@ export class LessonSessionService {
         isCompleted,
         evaluation,
         currentNode: this.sanitizeNode(nextNode),
+        xp: actionXpResult.xp,
+        levelUp: actionXpResult.levelUp,
         ...(isCompleted && nextStepResult ? { next: nextStepResult } : {}),
       };
 

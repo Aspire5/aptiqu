@@ -1,4 +1,6 @@
 import { prisma } from '../../../config/prisma';
+import { xpService } from '../../xp/xp.service';
+import { AwardXpResult } from '../../xp/xp.types';
 
 export interface NextLearningStepResult {
   type: 'lesson' | 'roadmap_complete';
@@ -453,6 +455,104 @@ export class RoadmapProgressionService {
         status: 'COMPLETED',
         completedAt: new Date(),
       },
+    });
+  }
+
+  /**
+   * Evaluates if an entire topic in the user's active roadmap has been completed,
+   * and if so, awards topic completion XP (10 XP * required subtopics count).
+   */
+  public async checkAndAwardTopicCompletion(
+    userId: string,
+    roadmapId: string,
+    topicId: string
+  ): Promise<AwardXpResult | null> {
+    // 1. Fetch all steps for this topic in the roadmap
+    const steps = await prisma.roadmapStep.findMany({
+      where: {
+        roadmapId,
+        topicId,
+        isActive: true,
+      },
+      include: {
+        scriptAssignments: {
+          where: { status: 'PUBLISHED' },
+          include: { script: true },
+        },
+      },
+    });
+
+    if (steps.length === 0) return null;
+
+    // 2. Check if all required steps are completed
+    const completedStepProgress = await prisma.userRoadmapStepProgress.findMany({
+      where: {
+        userId,
+        roadmapId,
+        roadmapStepId: { in: steps.map((s) => s.id) },
+        status: 'COMPLETED',
+      },
+      select: { roadmapStepId: true },
+    });
+    const completedStepIds = new Set(completedStepProgress.map((p) => p.roadmapStepId));
+
+    // Also check completed sessions for scripts on these steps
+    const stepIds = steps.map((s) => s.id);
+    const completedSessions = await prisma.lessonSession.findMany({
+      where: {
+        userId,
+        roadmapStepId: { in: stepIds },
+        status: 'COMPLETED',
+      },
+      select: { scriptId: true, roadmapStepId: true },
+    });
+    const completedScriptIds = new Set(completedSessions.map((s) => s.scriptId));
+
+    // Verify all required steps are completed
+    for (const step of steps) {
+      if (!step.isRequired) continue;
+
+      const isStepMarkedDone = completedStepIds.has(step.id);
+      const assignments = step.scriptAssignments || [];
+      const allRequiredAssignmentsDone =
+        assignments.length > 0 &&
+        assignments
+          .filter((sa) => sa.isRequired)
+          .every((sa) => completedScriptIds.has(sa.scriptId));
+
+      if (!isStepMarkedDone && !allRequiredAssignmentsDone) {
+        // Topic is not yet fully completed
+        return null;
+      }
+    }
+
+    // 3. Determine required subtopic count
+    // First, check subtopics table for this topic
+    const topicSubtopics = await prisma.subtopic.findMany({
+      where: {
+        topicId,
+        isActive: true,
+      },
+    });
+
+    let requiredSubtopicCount = topicSubtopics.length;
+
+    // If subtopics are tracked at the step or assignment level, check required assignments
+    if (requiredSubtopicCount === 0) {
+      const requiredAssignmentsCount = steps.reduce(
+        (sum, s) => sum + s.scriptAssignments.filter((sa) => sa.isRequired).length,
+        0
+      );
+      requiredSubtopicCount = requiredAssignmentsCount > 0 ? requiredAssignmentsCount : steps.length;
+    }
+
+    // 4. Award topic completion XP
+    return xpService.awardTopicCompletionXp({
+      userId,
+      roadmapId,
+      topicId,
+      requiredSubtopicCount,
+      subjectId: steps[0]?.subjectId,
     });
   }
 

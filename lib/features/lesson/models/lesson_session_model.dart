@@ -1,4 +1,5 @@
 import 'lesson_node_model.dart';
+import '../../../core/progression/models/xp_models.dart';
 
 class QuestionEvaluationModel {
   final bool isCorrect;
@@ -169,6 +170,8 @@ class LessonSessionModel {
   final QuestionEvaluationModel? evaluation;
   final NextLearningStepModel? next;
   final List<LessonHistoryItemModel> history;
+  final XpProgressModel? xp;
+  final LevelUpModel? levelUp;
 
   LessonSessionModel({
     required this.id,
@@ -185,6 +188,8 @@ class LessonSessionModel {
     this.evaluation,
     this.next,
     this.history = const [],
+    this.xp,
+    this.levelUp,
   });
 
   factory LessonSessionModel.fromJson(Map<String, dynamic> json) {
@@ -211,6 +216,14 @@ class LessonSessionModel {
       }
     }
 
+    final parsedXp = json['xp'] != null
+        ? XpProgressModel.fromJson(json['xp'] as Map<String, dynamic>)
+        : null;
+
+    final parsedLevelUp = json['levelUp'] != null
+        ? LevelUpModel.fromJson(json['levelUp'] as Map<String, dynamic>)
+        : null;
+
     return LessonSessionModel(
       id: json['sessionId'] as String,
       scriptId: json['scriptId'] as String? ?? '',
@@ -226,6 +239,8 @@ class LessonSessionModel {
       evaluation: parsedEval,
       next: parsedNext,
       history: parsedHistory,
+      xp: parsedXp,
+      levelUp: parsedLevelUp,
     );
   }
 }

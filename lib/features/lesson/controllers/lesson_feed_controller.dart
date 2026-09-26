@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/lesson_node_model.dart';
 import '../models/lesson_session_model.dart';
 import '../repositories/lesson_repository.dart';
+import '../../../core/progression/controllers/xp_controller.dart';
 
 enum FeedStatus { initial, loading, active, submitting, completed, error }
 
@@ -105,6 +106,14 @@ class LessonFeedController extends GetxController {
 
       _applySession(response);
       await _saveCheckpoint(response);
+
+      // Synchronize XP and trigger Level-Up celebration if occurred
+      if (response.xp != null && Get.isRegistered<XpController>()) {
+        Get.find<XpController>().handleXpUpdate(
+          xp: response.xp!,
+          levelUp: response.levelUp,
+        );
+      }
 
       if (response.isCompleted) {
         status.value = FeedStatus.completed;

@@ -60,10 +60,17 @@ export class AuthService {
                 coins: 0,
               },
             },
+            progress: {
+              create: {
+                totalXp: BigInt(0),
+                level: 1,
+              },
+            },
           },
           include: {
             profile: true,
             gameStats: true,
+            progress: true,
           },
         });
       }
@@ -177,6 +184,17 @@ export class AuthService {
         streak: 0,
         // NOTE: coins is hardcoded to 0 for now as requested
         coins: 0,
+      },
+    });
+
+    // Ensure user progression is initialized
+    await prisma.userProgress.upsert({
+      where: { userId },
+      update: {},
+      create: {
+        userId,
+        totalXp: BigInt(0),
+        level: 1,
       },
     });
 

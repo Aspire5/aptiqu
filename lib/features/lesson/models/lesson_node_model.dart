@@ -24,12 +24,38 @@ class QuestionInlineModel {
     required this.prompt,
     required this.options,
     this.hints = const [],
-    this.xp = 10,
+    int? xp,
     this.difficulty = 'EASY',
     this.questionType = 'PRACTICE',
-  });
+  }) : xp = xp ?? calculateQuestionXp(questionType, difficulty);
+
+  static int calculateQuestionXp(String type, String difficulty) {
+    int typeXp;
+    final upperType = type.trim().toUpperCase();
+    if (upperType == 'RANKED') {
+      typeXp = 10;
+    } else {
+      typeXp = 5; // PRACTICE or UNRANKED
+    }
+
+    int diffXp;
+    final upperDiff = difficulty.trim().toUpperCase();
+    if (upperDiff == 'HARD' || upperDiff == '3') {
+      diffXp = 15;
+    } else if (upperDiff == 'MEDIUM' || upperDiff == 'MED' || upperDiff == '2') {
+      diffXp = 10;
+    } else {
+      diffXp = 5; // EASY
+    }
+
+    return typeXp + diffXp;
+  }
 
   factory QuestionInlineModel.fromJson(Map<String, dynamic> json) {
+    final diff = json['difficulty'] as String? ?? 'EASY';
+    final qType = json['questionType'] as String? ?? 'PRACTICE';
+    final computedXp = (json['xp'] as num?)?.toInt() ?? calculateQuestionXp(qType, diff);
+
     return QuestionInlineModel(
       prompt: json['prompt'] as String? ?? '',
       options: (json['options'] as List<dynamic>?)
@@ -40,9 +66,9 @@ class QuestionInlineModel {
               ?.map((h) => h.toString())
               .toList() ??
           const [],
-      xp: (json['xp'] as num?)?.toInt() ?? 10,
-      difficulty: json['difficulty'] as String? ?? 'EASY',
-      questionType: json['questionType'] as String? ?? 'PRACTICE',
+      xp: computedXp,
+      difficulty: diff,
+      questionType: qType,
     );
   }
 }
@@ -76,7 +102,10 @@ class LessonNodeModel {
   bool get isTextInput => type == 'TEXT_INPUT';
 
   List<String> get hints => inlineQuestion?.hints ?? const [];
-  int get xp => inlineQuestion?.xp ?? 10;
+  int get xp => inlineQuestion != null
+      ? QuestionInlineModel.calculateQuestionXp(
+          inlineQuestion!.questionType, inlineQuestion!.difficulty)
+      : 10;
   String get difficulty => inlineQuestion?.difficulty ?? 'EASY';
   String get questionType => inlineQuestion?.questionType ?? 'PRACTICE';
 

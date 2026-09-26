@@ -20,6 +20,8 @@ model User {
   profile                Profile?
   refreshTokens          RefreshToken[]
   gameStats              GameStats?
+  progress               UserProgress?
+  xpEvents               XpEvent[]
 
   // Learning relations
   lessonSessions         LessonSession[]
@@ -78,6 +80,44 @@ model GameStats {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("stats")
+  @@schema("gamification")
+}
+
+model UserProgress {
+  userId    String   @id @map("user_id") @db.Uuid
+  totalXp   BigInt   @default(0) @map("total_xp")
+  level     Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_progress")
+  @@schema("gamification")
+}
+
+model XpEvent {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  amount          BigInt
+  sourceType      String   @map("source_type")
+  sourceId        String?  @map("source_id")
+  roadmapId       String?  @map("roadmap_id")
+  subjectId       String?  @map("subject_id")
+  topicId         String?  @map("topic_id")
+  subtopicId      String?  @map("subtopic_id")
+  questionId      String?  @map("question_id")
+  lessonSessionId String?  @map("lesson_session_id") @db.Uuid
+  description     String?
+  metadata        Json?    @db.JsonB
+  idempotencyKey  String   @unique @map("idempotency_key")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, sourceType])
+  @@map("xp_events")
   @@schema("gamification")
 }
 
