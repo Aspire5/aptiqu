@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../../models/roadmap_model.dart';
+import '../controllers/home_controller.dart';
 
 /// Cyberpunk Constellation Winding Roadmap View
 ///
@@ -597,7 +599,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
-                        'ACTIVE OBJECTIVE • +120 XP',
+                        'CURRENT TOPIC',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AptiquTypography.labelCapsBold.copyWith(
@@ -625,8 +627,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
             const SizedBox(height: 6),
 
-            // 3-Star Rating
-            _buildStarRating(topic),
+            // Subtopics Progress Pill (e.g. 0/8 or 3/8)
+            _buildSubtopicsProgressPill(topic),
 
             const SizedBox(height: 2),
 
@@ -885,19 +887,32 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     );
   }
 
-  Widget _buildStarRating(LearningMapTopicItemModel topic) {
-    final int filledStars = topic.isCompleted ? 3 : (topic.isInProgress ? 2 : 0);
+  Widget _buildSubtopicsProgressPill(LearningMapTopicItemModel topic) {
+    final total = topic.totalSubtopics > 0 ? topic.totalSubtopics : 8;
+    final done = topic.completedSubtopics;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(3, (starIdx) {
-        final isFilled = starIdx < filledStars;
-        return Icon(
-          isFilled ? Icons.star_rounded : Icons.star_outline_rounded,
-          size: 13,
-          color: isFilled ? AptiquColors.tertiary : AptiquColors.outlineVariant,
-        );
-      }),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: AptiquColors.surfaceContainerHigh.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: topic.isCompleted
+              ? AptiquColors.secondary.withValues(alpha: 0.6)
+              : AptiquColors.outlineVariant.withValues(alpha: 0.4),
+          width: 0.8,
+        ),
+      ),
+      child: Text(
+        '$done/$total',
+        style: AptiquTypography.labelCapsBold.copyWith(
+          fontSize: 9.5,
+          color: topic.isCompleted
+              ? AptiquColors.secondary
+              : (done > 0 ? Colors.white : AptiquColors.onSurfaceVariant),
+          letterSpacing: 0.5,
+        ),
+      ),
     );
   }
 
@@ -918,7 +933,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
     if (isActiveFocus) {
       return Text(
-        'ENGAGE NODE',
+        topic.isInProgress || topic.completedSubtopics > 0
+            ? 'CONTINUE TOPIC'
+            : 'START TOPIC',
         style: AptiquTypography.labelCapsBold.copyWith(
           color: AptiquColors.secondary,
           fontSize: 9.5,
@@ -1065,15 +1082,14 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   // ===========================================================================
 
   Widget _buildNodeDetailsDock(LearningMapTopicItemModel topic) {
-    final isAvailable = topic.isAvailable || topic.isInProgress;
     final isCompleted = topic.isCompleted;
-
-    final String masteryText = isCompleted ? '100%' : (topic.isInProgress ? '65%' : '0%');
-    final String accuracyText = isCompleted ? '95%' : (topic.isInProgress ? '85%' : '--');
-    final String solvedText = isCompleted ? '20/20' : (topic.isInProgress ? '14/20' : '0/20');
-    final String starsText = isCompleted ? '★★★' : (topic.isInProgress ? '★★☆' : '☆☆☆');
+    final totalSubtopics = topic.totalSubtopics > 0 ? topic.totalSubtopics : 8;
+    final completedCount = topic.completedSubtopics;
 
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.68,
+      ),
       decoration: BoxDecoration(
         color: AptiquColors.surfaceContainer.withValues(alpha: 0.98),
         borderRadius: BorderRadius.circular(24),
@@ -1107,7 +1123,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
           ),
           const SizedBox(height: 8),
 
-          // Header: Icon + Node Tag & Stars + Close button
+          // Header: Icon + Topic Tag & Subtopic progress + Close button
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1132,35 +1148,37 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                     Row(
                       children: [
                         Text(
-                          'NODE ${topic.sequence.toString().padLeft(2, '0')}',
+                          'TOPIC ${topic.sequence.toString().padLeft(2, '0')}',
                           style: AptiquTypography.labelCapsBold.copyWith(
                             color: AptiquColors.secondary,
                             fontSize: 10,
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8),
                         Container(
-                          width: 4,
-                          height: 4,
-                          decoration: const BoxDecoration(
-                            color: AptiquColors.secondary,
-                            shape: BoxShape.circle,
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: AptiquColors.secondary.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AptiquColors.secondary.withValues(alpha: 0.3),
+                              width: 0.8,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          starsText,
-                          style: AptiquTypography.labelCaps.copyWith(
-                            color: AptiquColors.tertiary,
-                            letterSpacing: 1.5,
+                          child: Text(
+                            '$completedCount/$totalSubtopics',
+                            style: AptiquTypography.labelCapsBold.copyWith(
+                              color: AptiquColors.secondary,
+                              fontSize: 9.5,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
                     Text(
                       topic.topicName,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AptiquTypography.headlineSm.copyWith(
                         fontSize: 15,
@@ -1194,47 +1212,29 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             ],
           ),
 
-          const SizedBox(height: 10),
-
-          // 3-Column Stats Grid
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: BoxDecoration(
-              color: AptiquColors.surfaceContainerLowest.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Row(
-              children: [
-                _buildStatColumn('Mastery', masteryText, AptiquColors.primary),
-                Container(width: 1, height: 26, color: AptiquColors.outlineVariant),
-                _buildStatColumn('Best Acc.', accuracyText, AptiquColors.secondary),
-                Container(width: 1, height: 26, color: AptiquColors.outlineVariant),
-                _buildStatColumn('Solved', solvedText, Colors.white),
-              ],
-            ),
-          ),
-
           const SizedBox(height: 8),
 
-          // Insight capsule
+          // Insight capsule with full readable text (no ellipsis)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: AptiquColors.surfaceContainerHigh.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 24,
-                  height: 24,
+                  width: 22,
+                  height: 22,
+                  margin: const EdgeInsets.only(top: 2),
                   decoration: BoxDecoration(
                     color: AptiquColors.secondaryContainer.withValues(alpha: 0.25),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.lightbulb_outline_rounded,
-                    size: 14,
+                    size: 13,
                     color: AptiquColors.secondary,
                   ),
                 ),
@@ -1251,119 +1251,274 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                       children: [
                         TextSpan(
                           text: topic.description ??
-                              'Focus on foundational principles and proportional invariance.',
+                              'Build the basic numerical fluency required to solve aptitude problems confidently and quickly without pencil and paper.',
                           style: AptiquTypography.bodySm.copyWith(
                             color: AptiquColors.onSurfaceVariant,
                             fontSize: 11,
+                            height: 1.35,
                           ),
                         ),
                       ],
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
 
-          // Action Buttons: Practice & Begin Node
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 42,
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AptiquColors.outlineVariant),
-                      backgroundColor: AptiquColors.surfaceContainerHigh,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Quick Practice Drills for "${topic.topicName}" loading...'),
-                          backgroundColor: AptiquColors.surfaceContainer,
-                          behavior: SnackBarBehavior.floating,
+          // Scrollable Subtopics List
+          Flexible(
+            child: topic.subtopics.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Center(
+                      child: Text(
+                        'Content for this topic is being finalized.',
+                        style: AptiquTypography.bodySm.copyWith(
+                          color: AptiquColors.onSurfaceVariant,
+                          fontSize: 12,
                         ),
-                      );
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    itemCount: topic.subtopics.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 6),
+                    itemBuilder: (context, index) {
+                      final subtopic = topic.subtopics[index];
+                      return _buildSubtopicRowItem(context, topic, subtopic);
                     },
-                    icon: const Icon(Icons.fitness_center_rounded, size: 16, color: AptiquColors.secondary),
-                    label: Text(
-                      'Practice',
-                      style: AptiquTypography.headlineSm.copyWith(
-                        fontSize: 13,
-                        color: Colors.white,
-                      ),
-                    ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: SizedBox(
-                  height: 42,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isAvailable
-                          ? AptiquColors.primary
-                          : (isCompleted
-                              ? AptiquColors.secondary
-                              : AptiquColors.surfaceContainerHighest),
-                      foregroundColor: isAvailable
-                          ? AptiquColors.onPrimary
-                          : (isCompleted ? AptiquColors.onSecondary : AptiquColors.onSurfaceDisabled),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      elevation: isAvailable ? 4 : 0,
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: () => widget.onTopicTap(topic),
-                    icon: Icon(
-                      isCompleted ? Icons.replay_rounded : Icons.bolt_rounded,
-                      size: 18,
-                    ),
-                    label: Text(
-                      isCompleted
-                          ? 'Review Node'
-                          : (topic.isInProgress ? 'Resume Node' : (isAvailable ? 'Begin Node' : 'Coming Soon')),
-                      style: AptiquTypography.headlineSm.copyWith(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
           ),
+
+          // The Practice and Replay Topic buttons appear ONLY once the ENTIRE topic is completed
+          if (isCompleted) ...[
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 40,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AptiquColors.outlineVariant),
+                        backgroundColor: AptiquColors.surfaceContainerHigh,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        padding: EdgeInsets.zero,
+                      ),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Quick Practice Drills for "${topic.topicName}" loading...'),
+                            backgroundColor: AptiquColors.surfaceContainer,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.fitness_center_rounded, size: 16, color: AptiquColors.secondary),
+                      label: Text(
+                        'Practice',
+                        style: AptiquTypography.headlineSm.copyWith(
+                          fontSize: 13,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 40,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AptiquColors.secondary,
+                        foregroundColor: AptiquColors.onSecondary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        elevation: 2,
+                        padding: EdgeInsets.zero,
+                      ),
+                      onPressed: () => widget.onTopicTap(topic),
+                      icon: const Icon(Icons.replay_rounded, size: 17),
+                      label: Text(
+                        'Replay Topic',
+                        style: AptiquTypography.headlineSm.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildStatColumn(String label, String value, Color valueColor) {
-    return Expanded(
-      child: Column(
+  Widget _buildSubtopicRowItem(
+    BuildContext context,
+    LearningMapTopicItemModel topic,
+    SubtopicItemModel subtopic,
+  ) {
+    final controller = Get.find<HomeController>();
+    final isDone = subtopic.isCompleted;
+    final isLocked = subtopic.isLocked;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDone
+            ? AptiquColors.secondaryContainer.withValues(alpha: 0.08)
+            : (isLocked
+                ? AptiquColors.surfaceContainerLowest.withValues(alpha: 0.35)
+                : AptiquColors.surfaceContainerHigh.withValues(alpha: 0.6)),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDone
+              ? AptiquColors.secondary.withValues(alpha: 0.35)
+              : (isLocked
+                  ? AptiquColors.outlineVariant.withValues(alpha: 0.2)
+                  : AptiquColors.primary.withValues(alpha: 0.5)),
+          width: 0.8,
+        ),
+      ),
+      child: Row(
         children: [
-          Text(
-            label.toUpperCase(),
-            style: AptiquTypography.labelCaps.copyWith(
-              fontSize: 8.5,
-              color: AptiquColors.onSurfaceVariant,
+          // Status Icon: Green check for completed, play for unlocked, lock for locked
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isDone
+                  ? AptiquColors.secondary.withValues(alpha: 0.2)
+                  : (isLocked
+                      ? AptiquColors.surfaceContainerHighest.withValues(alpha: 0.4)
+                      : AptiquColors.primary.withValues(alpha: 0.25)),
+            ),
+            child: Icon(
+              isDone
+                  ? Icons.check_circle_rounded
+                  : (isLocked
+                      ? Icons.lock_outline_rounded
+                      : Icons.play_arrow_rounded),
+              size: 14,
+              color: isDone
+                  ? AptiquColors.secondary
+                  : (isLocked
+                      ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.4)
+                      : AptiquColors.primary),
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: AptiquTypography.metricMd.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: valueColor,
+          const SizedBox(width: 10),
+
+          // Subtopic details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  subtopic.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AptiquTypography.bodyMd.copyWith(
+                    fontSize: 12,
+                    fontWeight: isDone ? FontWeight.w600 : (isLocked ? FontWeight.normal : FontWeight.w700),
+                    color: isLocked
+                        ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.5)
+                        : Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  isDone
+                      ? 'Completed'
+                      : (isLocked
+                          ? 'Complete previous subtopic first'
+                          : 'Up next'),
+                  style: AptiquTypography.bodySm.copyWith(
+                    fontSize: 9.5,
+                    color: isDone
+                        ? AptiquColors.secondary
+                        : (isLocked
+                            ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.4)
+                            : AptiquColors.primary),
+                  ),
+                ),
+              ],
             ),
           ),
+
+          // Action button
+          if (isDone) ...[
+            SizedBox(
+              height: 28,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: AptiquColors.secondary.withValues(alpha: 0.5), width: 0.8),
+                  backgroundColor: AptiquColors.secondaryContainer.withValues(alpha: 0.15),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+                onPressed: () {
+                  setState(() => _isDockVisible = false);
+                  controller.startSubtopicLesson(
+                    roadmapStepId: topic.roadmapStepId,
+                    scriptSlug: subtopic.scriptSlug ?? topic.scriptSlug ?? '',
+                    scriptTitle: subtopic.title,
+                  );
+                },
+                icon: const Icon(Icons.replay_rounded, size: 12, color: AptiquColors.secondary),
+                label: Text(
+                  'Replay',
+                  style: AptiquTypography.labelCapsBold.copyWith(
+                    color: AptiquColors.secondary,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ),
+          ] else if (!isLocked) ...[
+            SizedBox(
+              height: 28,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AptiquColors.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  elevation: 1,
+                ),
+                onPressed: () {
+                  setState(() => _isDockVisible = false);
+                  if (subtopic.scriptSlug != null) {
+                    controller.startSubtopicLesson(
+                      roadmapStepId: topic.roadmapStepId,
+                      scriptSlug: subtopic.scriptSlug!,
+                      scriptTitle: subtopic.title,
+                    );
+                  } else {
+                    widget.onTopicTap(topic);
+                  }
+                },
+                child: Text(
+                  'Start',
+                  style: AptiquTypography.labelCapsBold.copyWith(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -49,6 +49,8 @@ class ChatMessageModel {
   final QuestionData? question;
   final bool? isCorrect;
   final LessonNodeModel? node;
+  final bool hasContinueAction;
+  bool isContinueCompleted;
 
   ChatMessageModel({
     required this.id,
@@ -60,6 +62,8 @@ class ChatMessageModel {
     this.question,
     this.isCorrect,
     this.node,
+    this.hasContinueAction = false,
+    this.isContinueCompleted = false,
   });
 }
 
@@ -200,14 +204,8 @@ class HomeController extends GetxController {
                 sender: MessageSender.ai,
                 text: item.text,
                 time: '',
-                question: item.node != null
-                    ? QuestionData(
-                        title: 'STEP',
-                        desc: item.node!.text,
-                        inputType: QuestionInputType.none,
-                        isCompleted: true,
-                      )
-                    : null,
+                question: null,
+                node: item.node,
               ),
             );
           }
@@ -257,6 +255,7 @@ class HomeController extends GetxController {
   /// Appends an interactive lesson node to the Home playground
   void _addNodeToPlayground(LessonNodeModel node) {
     QuestionData? questionData;
+    bool hasContinueAction = false;
 
     if (node.isCompletion) {
       questionData = QuestionData(
@@ -287,14 +286,9 @@ class HomeController extends GetxController {
         inputType: QuestionInputType.text,
       );
     } else {
-      // CONTENT node -> embedded "Continue →" action button within the container!
-      questionData = QuestionData(
-        title: 'STEP',
-        desc: 'Read the explanation above and tap continue.',
-        difficulty: 'Concept',
-        inputType: QuestionInputType.select,
-        options: ['Continue →'],
-      );
+      // CONTENT node -> embedded "Continue →" action button within the same message container!
+      questionData = null;
+      hasContinueAction = true;
     }
 
     messages.add(
@@ -305,6 +299,8 @@ class HomeController extends GetxController {
         time: _getCurrentTime(),
         question: questionData,
         node: node,
+        hasContinueAction: hasContinueAction,
+        isContinueCompleted: false,
       ),
     );
     _scrollToBottom();
@@ -321,7 +317,7 @@ class HomeController extends GetxController {
         time: _getCurrentTime(),
         question: QuestionData(
           title: 'LESSON COMPLETE',
-          desc: 'Completed: ${activeScriptTitle.value} (+10 XP)',
+          desc: 'Completed: ${activeScriptTitle.value}',
           difficulty: 'Completed',
           inputType: QuestionInputType.select,
           options: ['Start Next Lesson: $nextTitle →'],
@@ -507,6 +503,115 @@ class HomeController extends GetxController {
     }
   }
 
+  /// Handle Continue button embedded inside the AI message bubble
+  Future<void> handleContinueAction(String messageId) async {
+    if (isSubmittingAction.value) return;
+
+    final msgIndex = messages.indexWhere((m) => m.id == messageId);
+    if (msgIndex == -1) return;
+
+    final msg = messages[msgIndex];
+    if (msg.isContinueCompleted) return;
+
+    msg.isContinueCompleted = true;
+    messages.refresh();
+
+    // User message bubble "Continue →"
+    messages.add(
+      ChatMessageModel(
+        id: 'user_${DateTime.now().millisecondsSinceEpoch}',
+        sender: MessageSender.user,
+        text: 'Continue →',
+        time: _getCurrentTime(),
+      ),
+    );
+    _scrollToBottom();
+
+    if (currentSession.value == null) return;
+    final session = currentSession.value!;
+    final node = session.currentNode;
+
+    isSubmittingAction.value = true;
+    try {
+      final response = await lessonRepo.submitAction(
+        sessionId: session.id,
+        clientActionId: _uuid.v4(),
+        stateVersion: session.stateVersion,
+        currentNodeId: node.id,
+        actionType: 'CONTINUE',
+      );
+
+      currentSession.value = response;
+
+      if (response.evaluation?.explanation != null &&
+          response.evaluation!.explanation!.isNotEmpty) {
+        messages.add(
+          ChatMessageModel(
+            id: 'eval_${DateTime.now().millisecondsSinceEpoch}',
+            sender: MessageSender.ai,
+            text: response.evaluation!.explanation!,
+            time: _getCurrentTime(),
+            isCorrect: response.evaluation!.isCorrect,
+          ),
+        );
+        _scrollToBottom();
+      }
+
+      if (response.isCompleted) {
+        _addCompletionToPlayground(response);
+      } else {
+        _addNodeToPlayground(response.currentNode);
+      }
+    } catch (e) {
+      msg.isContinueCompleted = false;
+      messages.refresh();
+      messages.add(
+        ChatMessageModel(
+          id: 'err_${DateTime.now().millisecondsSinceEpoch}',
+          sender: MessageSender.ai,
+          text: 'Connection hiccup. Please tap Continue again.',
+          time: _getCurrentTime(),
+        ),
+      );
+    } finally {
+      isSubmittingAction.value = false;
+    }
+  }
+
+  /// Start or replay a specific subtopic lesson
+  Future<void> startSubtopicLesson({
+    required String roadmapStepId,
+    required String scriptSlug,
+    String? scriptTitle,
+  }) async {
+    selectedNavIndex.value = 0; // Switch directly to Home tab
+    messages.clear();
+    isSubmittingAction.value = true;
+    try {
+      final session = await lessonRepo.startOrResumeSessionByStep(
+        roadmapStepId: roadmapStepId,
+        clientActionId: _uuid.v4(),
+        scriptSlug: scriptSlug,
+      );
+      currentSession.value = session;
+      isLessonActive.value = true;
+      activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Lesson');
+      activeRoadmapStepId.value = roadmapStepId;
+      _addNodeToPlayground(session.currentNode);
+    } catch (e) {
+      messages.add(
+        ChatMessageModel(
+          id: 'err_${DateTime.now().millisecondsSinceEpoch}',
+          sender: MessageSender.ai,
+          text: 'Unable to start this subtopic script. Please try again.',
+          time: _getCurrentTime(),
+        ),
+      );
+    } finally {
+      isSubmittingAction.value = false;
+    }
+  }
+
   /// Handle Text Submission (InputType.text)
   Future<void> handleTextSubmission(String messageId, String text) async {
     if (text.trim().isEmpty || isSubmittingAction.value) return;
@@ -639,7 +744,7 @@ class HomeController extends GetxController {
 
   /// User taps a topic on the Roadmap map
   void onTopicTapped(BuildContext context, LearningMapTopicItemModel topic) {
-    if (topic.isAvailable || topic.isInProgress) {
+    if (topic.isAvailable || topic.isInProgress || topic.isCompleted) {
       activeRoadmapStepId.value = topic.roadmapStepId;
       selectedNavIndex.value = 0; // Go directly to Home playground!
       loadLessonState(topic.roadmapStepId);

@@ -270,6 +270,47 @@ class ChatPlaygroundZone extends StatelessWidget {
                           color: AptiquColors.onSurface,
                         ),
                       ),
+                      // Embedded Continue Button directly within the same message bubble
+                      if (msg.hasContinueAction && !msg.isContinueCompleted) ...[
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 42,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AptiquColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: controller.isSubmittingAction.value
+                                ? null
+                                : () => controller.handleContinueAction(msg.id),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Continue',
+                                  style: AptiquTypography.headlineSm.copyWith(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const Icon(
+                                  Icons.arrow_forward_rounded,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

@@ -38,11 +38,13 @@ class LessonRepository {
   Future<LessonSessionModel> startOrResumeSessionByStep({
     required String roadmapStepId,
     required String clientActionId,
+    String? scriptSlug,
   }) async {
     final response = await _dioClient.dio.post(
       '/roadmaps/steps/$roadmapStepId/start',
       data: {
         'clientActionId': clientActionId,
+        if (scriptSlug != null) 'scriptSlug': scriptSlug,
       },
     );
 

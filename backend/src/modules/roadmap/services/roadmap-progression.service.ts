@@ -15,6 +15,17 @@ export interface NextLearningStepResult {
   message?: string;
 }
 
+export interface LearningMapSubtopicItem {
+  id: string;
+  scriptId?: string;
+  scriptSlug?: string;
+  title: string;
+  sequence: number;
+  isCompleted: boolean;
+  isLocked: boolean;
+  canReplay: boolean;
+}
+
 export interface LearningMapTopicItem {
   roadmapStepId: string;
   sequence: number;
@@ -31,6 +42,9 @@ export interface LearningMapTopicItem {
   scriptAvailable: boolean;
   scriptSlug?: string;
   scriptTitle?: string;
+  totalSubtopics: number;
+  completedSubtopics: number;
+  subtopics: LearningMapSubtopicItem[];
 }
 
 export interface SubjectLearningMapResult {
@@ -219,7 +233,14 @@ export class RoadmapProgressionService {
       },
       orderBy: { sequence: 'asc' },
       include: {
-        topic: true,
+        topic: {
+          include: {
+            subtopics: {
+              where: { isActive: true },
+              orderBy: { sequence: 'asc' },
+            },
+          },
+        },
         subtopic: true,
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
@@ -259,10 +280,11 @@ export class RoadmapProgressionService {
     const completedSessions = await prisma.lessonSession.findMany({
       where: {
         userId,
-        roadmapId: roadmap.id,
         status: 'COMPLETED',
       },
+      select: { scriptId: true, roadmapStepId: true },
     });
+    const completedScriptIds = new Set(completedSessions.map((cs) => cs.scriptId));
     for (const cs of completedSessions) {
       if (cs.roadmapStepId) {
         completedStepIds.add(cs.roadmapStepId);
@@ -273,11 +295,12 @@ export class RoadmapProgressionService {
     let foundFirstIncompletePublished = false;
 
     const topicItems: LearningMapTopicItem[] = steps.map((step) => {
+      const assignments = step.scriptAssignments || [];
       const hasPublishedScript =
-        step.scriptAssignments.length > 0 &&
-        step.scriptAssignments.some((sa) => sa.publishedVersionId != null);
+        assignments.length > 0 &&
+        assignments.some((sa) => sa.publishedVersionId != null);
 
-      const firstScriptAssignment = step.scriptAssignments[0];
+      const firstScriptAssignment = assignments[0];
 
       let state: 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'COMING_SOON';
 
@@ -304,6 +327,59 @@ export class RoadmapProgressionService {
         }
       }
 
+      // Compute subtopics breakdown
+      let totalSubtopics = assignments.length;
+      let completedSubtopics = 0;
+      let subtopics: LearningMapSubtopicItem[] = [];
+
+      if (assignments.length > 0) {
+        let foundIncomplete = false;
+        subtopics = assignments.map((sa) => {
+          const isDone = completedScriptIds.has(sa.scriptId);
+          if (isDone) {
+            completedSubtopics++;
+          }
+
+          let isLocked = false;
+          if (!isDone) {
+            if (!foundIncomplete && (step.id === activeStepId || state === 'AVAILABLE' || state === 'IN_PROGRESS' || completedStepIds.has(step.id))) {
+              isLocked = false;
+              foundIncomplete = true;
+            } else {
+              isLocked = true;
+            }
+          }
+
+          return {
+            id: sa.id,
+            scriptId: sa.scriptId,
+            scriptSlug: sa.script.slug,
+            title: sa.script.title,
+            sequence: sa.sequence,
+            isCompleted: isDone,
+            isLocked,
+            canReplay: isDone,
+          };
+        });
+      } else {
+        const topicSubtopics = (step.topic as any).subtopics || [];
+        totalSubtopics = topicSubtopics.length;
+        subtopics = topicSubtopics.map((st: any) => ({
+          id: st.id,
+          title: st.name,
+          sequence: st.sequence,
+          isCompleted: false,
+          isLocked: true,
+          canReplay: false,
+        }));
+      }
+
+      if (totalSubtopics > 0 && completedSubtopics >= totalSubtopics) {
+        state = 'COMPLETED';
+      } else if (totalSubtopics > 1 && completedSubtopics < totalSubtopics && state === 'COMPLETED') {
+        state = 'IN_PROGRESS';
+      }
+
       return {
         roadmapStepId: step.id,
         sequence: step.sequence,
@@ -320,6 +396,9 @@ export class RoadmapProgressionService {
         scriptAvailable: hasPublishedScript,
         scriptSlug: firstScriptAssignment?.script?.slug,
         scriptTitle: firstScriptAssignment?.script?.title,
+        totalSubtopics,
+        completedSubtopics,
+        subtopics,
       };
     });
 

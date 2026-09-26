@@ -68,6 +68,41 @@ class ActiveRoadmapModel {
   }
 }
 
+class SubtopicItemModel {
+  final String id;
+  final String? scriptId;
+  final String? scriptSlug;
+  final String title;
+  final int sequence;
+  final bool isCompleted;
+  final bool isLocked;
+  final bool canReplay;
+
+  SubtopicItemModel({
+    required this.id,
+    this.scriptId,
+    this.scriptSlug,
+    required this.title,
+    required this.sequence,
+    this.isCompleted = false,
+    this.isLocked = true,
+    this.canReplay = false,
+  });
+
+  factory SubtopicItemModel.fromJson(Map<String, dynamic> json) {
+    return SubtopicItemModel(
+      id: json['id'] as String? ?? '',
+      scriptId: json['scriptId'] as String?,
+      scriptSlug: json['scriptSlug'] as String?,
+      title: json['title'] as String? ?? '',
+      sequence: json['sequence'] as int? ?? 1,
+      isCompleted: json['isCompleted'] as bool? ?? false,
+      isLocked: json['isLocked'] as bool? ?? true,
+      canReplay: json['canReplay'] as bool? ?? false,
+    );
+  }
+}
+
 class LearningMapTopicItemModel {
   final String roadmapStepId;
   final int sequence;
@@ -84,6 +119,9 @@ class LearningMapTopicItemModel {
   final bool scriptAvailable;
   final String? scriptSlug;
   final String? scriptTitle;
+  final int totalSubtopics;
+  final int completedSubtopics;
+  final List<SubtopicItemModel> subtopics;
 
   LearningMapTopicItemModel({
     required this.roadmapStepId,
@@ -101,6 +139,9 @@ class LearningMapTopicItemModel {
     required this.scriptAvailable,
     this.scriptSlug,
     this.scriptTitle,
+    this.totalSubtopics = 0,
+    this.completedSubtopics = 0,
+    this.subtopics = const [],
   });
 
   bool get isCompleted => state == 'COMPLETED';
@@ -126,6 +167,12 @@ class LearningMapTopicItemModel {
       scriptAvailable: json['scriptAvailable'] as bool? ?? false,
       scriptSlug: json['scriptSlug'] as String?,
       scriptTitle: json['scriptTitle'] as String?,
+      totalSubtopics: json['totalSubtopics'] as int? ?? 0,
+      completedSubtopics: json['completedSubtopics'] as int? ?? 0,
+      subtopics: (json['subtopics'] as List<dynamic>?)
+              ?.map((s) => SubtopicItemModel.fromJson(s as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 }

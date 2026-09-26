@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+import 'package:aptiqu/core/network/dio_client.dart';
 import 'package:aptiqu/features/home/models/roadmap_model.dart';
 import 'package:aptiqu/features/home/presentation/widgets/constellation_roadmap_view.dart';
+import 'package:aptiqu/features/home/presentation/controllers/home_controller.dart';
 
 void main() {
-  testWidgets('ConstellationRoadmapView renders minimal subjects bar, nodes, and dock on tap',
+  testWidgets('ConstellationRoadmapView renders minimal subjects bar, topics, and dock on tap',
       (WidgetTester tester) async {
     final mockLearningMap = SubjectLearningMapModel(
       roadmapId: 'general-aptitude',
@@ -31,6 +34,19 @@ void main() {
           scriptAvailable: true,
           scriptSlug: 'math_ratios_101',
           scriptTitle: 'Introduction to Ratios',
+          totalSubtopics: 1,
+          completedSubtopics: 1,
+          subtopics: [
+            SubtopicItemModel(
+              id: 'st_01',
+              title: 'Introduction to Ratios',
+              sequence: 1,
+              isCompleted: true,
+              isLocked: false,
+              canReplay: true,
+              scriptSlug: 'math_ratios_101',
+            ),
+          ],
         ),
         LearningMapTopicItemModel(
           roadmapStepId: 'ga-qa-02',
@@ -46,6 +62,19 @@ void main() {
           scriptAvailable: true,
           scriptSlug: 'math_percentages_101',
           scriptTitle: 'Percentages Drill',
+          totalSubtopics: 1,
+          completedSubtopics: 0,
+          subtopics: [
+            SubtopicItemModel(
+              id: 'st_02',
+              title: 'Percentages Drill',
+              sequence: 1,
+              isCompleted: false,
+              isLocked: false,
+              canReplay: false,
+              scriptSlug: 'math_percentages_101',
+            ),
+          ],
         ),
         LearningMapTopicItemModel(
           roadmapStepId: 'ga-qa-03',
@@ -65,6 +94,9 @@ void main() {
 
     LearningMapTopicItemModel? tappedTopic;
     bool fullscreenToggled = false;
+
+    Get.put(DioClient());
+    Get.put(HomeController());
 
     await tester.pumpWidget(
       MaterialApp(
@@ -96,31 +128,37 @@ void main() {
     // 1. Verify Fixed Minimal Subjects Bar
     expect(find.text('SUBJECTS'), findsOneWidget);
     expect(find.text('Quantitative Aptitude'), findsOneWidget);
-    expect(find.text('1/9'), findsOneWidget); // 1 completed of 3 topics * 3 stars = 9 stars
 
-    // 2. Verify Nodes are rendered
+    // 2. Verify Topics are rendered
     expect(find.text('Basic Ratios'), findsOneWidget);
     expect(find.text('Percentages & Discounts'), findsOneWidget);
-    expect(find.text('ACTIVE OBJECTIVE • +120 XP'), findsOneWidget);
+    expect(find.text('CURRENT TOPIC'), findsOneWidget);
 
     // 3. Verify Docked Card is NOT visible on initial entry
-    expect(find.text('Begin Node'), findsNothing);
+    expect(find.text('TOPIC 02'), findsNothing);
 
-    // 4. Tap the node to inspect it
+    // 4. Tap the topic to inspect it
     await tester.tap(find.text('Percentages & Discounts'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    // 5. Verify Docked Card is NOW visible
-    expect(find.text('NODE 02'), findsOneWidget);
-    expect(find.text('Begin Node'), findsOneWidget);
+    // 5. Verify Docked Card is NOW visible with subtopic and Start action
+    expect(find.text('TOPIC 02'), findsOneWidget);
+    expect(find.text('Percentages Drill'), findsAtLeastNWidgets(1));
+    expect(find.text('Start'), findsOneWidget);
 
-    // 6. Tap Begin Node button in dock
-    await tester.tap(find.text('Begin Node'));
+    // 6. Tap completed topic to inspect Replay Topic button
+    await tester.tap(find.text('Basic Ratios'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(tappedTopic?.roadmapStepId, 'ga-qa-02');
+    expect(find.text('TOPIC 01'), findsOneWidget);
+    expect(find.text('Replay Topic'), findsOneWidget);
+    await tester.tap(find.text('Replay Topic'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(tappedTopic?.roadmapStepId, 'ga-qa-01');
 
     // 7. Verify Fullscreen Toggle button
     expect(find.byIcon(Icons.fullscreen_rounded), findsOneWidget);

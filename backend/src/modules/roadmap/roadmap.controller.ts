@@ -142,10 +142,13 @@ export class RoadmapController {
         return;
       }
 
+      const scriptSlug = req.body.scriptSlug as string | undefined;
+
       const result = await lessonSessionService.startOrResumeSessionByStep(
         userId,
         stepId,
-        clientActionId
+        clientActionId,
+        scriptSlug
       );
 
       res.status(200).json({

@@ -38,7 +38,8 @@ export class LessonSessionService {
   public async startOrResumeSessionByStep(
     userId: string,
     roadmapStepId: string,
-    clientActionId: string
+    clientActionId: string,
+    targetScriptSlug?: string
   ) {
     const idempKey = `idemp:action:${clientActionId}`;
     const cachedResponse = await redisService.get(idempKey);
@@ -91,7 +92,15 @@ export class LessonSessionService {
 
     let assignment = step.scriptAssignments[0];
 
-    if (!session) {
+    if (targetScriptSlug) {
+      const target = step.scriptAssignments.find((sa) => sa.script.slug === targetScriptSlug);
+      if (target) {
+        assignment = target;
+        if (session && session.scriptId !== target.scriptId) {
+          session = null;
+        }
+      }
+    } else if (!session) {
       const completedSessions = await prisma.lessonSession.findMany({
         where: {
           userId,
