@@ -18,6 +18,7 @@ class UserModel {
   final String streak;
   final int coins;
   final bool isRegistrationComplete;
+  final UserStatsModel? stats;
 
   const UserModel({
     required this.id,
@@ -37,6 +38,7 @@ class UserModel {
     this.streak = '0d',
     this.coins = 0,
     this.isRegistrationComplete = false,
+    this.stats,
   });
 
   UserModel copyWith({
@@ -57,6 +59,7 @@ class UserModel {
     String? streak,
     int? coins,
     bool? isRegistrationComplete,
+    UserStatsModel? stats,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -78,6 +81,7 @@ class UserModel {
       coins: coins ?? this.coins,
       isRegistrationComplete:
           isRegistrationComplete ?? this.isRegistrationComplete,
+      stats: stats ?? this.stats,
     );
   }
 
@@ -112,6 +116,9 @@ class UserModel {
       // Coins from backend
       coins: json['coins'] ?? 0,
       isRegistrationComplete: json['isRegistrationComplete'] ?? false,
+      stats: json['stats'] != null
+          ? UserStatsModel.fromJson(json['stats'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -132,6 +139,80 @@ class UserModel {
       streak: '0d',
       coins: 0,
       isRegistrationComplete: true,
+      stats: const UserStatsModel(),
+    );
+  }
+}
+
+class TopicStatsModel {
+  final int completed;
+  final int total;
+
+  const TopicStatsModel({this.completed = 0, this.total = 0});
+
+  factory TopicStatsModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return const TopicStatsModel();
+    return TopicStatsModel(
+      completed: (json['completed'] as num?)?.toInt() ?? 0,
+      total: (json['total'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+class QuestionDifficultyStatsModel {
+  final int solved;
+  final int total;
+
+  const QuestionDifficultyStatsModel({this.solved = 0, this.total = 0});
+
+  factory QuestionDifficultyStatsModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return const QuestionDifficultyStatsModel();
+    return QuestionDifficultyStatsModel(
+      solved: (json['solved'] as num?)?.toInt() ?? 0,
+      total: (json['total'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+class QuestionStatsModel {
+  final QuestionDifficultyStatsModel easy;
+  final QuestionDifficultyStatsModel medium;
+  final QuestionDifficultyStatsModel hard;
+
+  const QuestionStatsModel({
+    this.easy = const QuestionDifficultyStatsModel(),
+    this.medium = const QuestionDifficultyStatsModel(),
+    this.hard = const QuestionDifficultyStatsModel(),
+  });
+
+  factory QuestionStatsModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return const QuestionStatsModel();
+    return QuestionStatsModel(
+      easy: QuestionDifficultyStatsModel.fromJson(
+          json['easy'] as Map<String, dynamic>?),
+      medium: QuestionDifficultyStatsModel.fromJson(
+          json['medium'] as Map<String, dynamic>?),
+      hard: QuestionDifficultyStatsModel.fromJson(
+          json['hard'] as Map<String, dynamic>?),
+    );
+  }
+}
+
+class UserStatsModel {
+  final TopicStatsModel topics;
+  final QuestionStatsModel questions;
+
+  const UserStatsModel({
+    this.topics = const TopicStatsModel(),
+    this.questions = const QuestionStatsModel(),
+  });
+
+  factory UserStatsModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return const UserStatsModel();
+    return UserStatsModel(
+      topics: TopicStatsModel.fromJson(json['topics'] as Map<String, dynamic>?),
+      questions:
+          QuestionStatsModel.fromJson(json['questions'] as Map<String, dynamic>?),
     );
   }
 }

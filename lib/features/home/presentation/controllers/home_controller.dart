@@ -7,6 +7,7 @@ import '../../repositories/roadmap_repository.dart';
 import '../../../lesson/models/lesson_session_model.dart';
 import '../../../lesson/models/lesson_node_model.dart';
 import '../../../lesson/repositories/lesson_repository.dart';
+import '../../../../core/progression/controllers/xp_controller.dart';
 
 enum MessageSender { ai, user }
 
@@ -550,6 +551,14 @@ class HomeController extends GetxController {
 
       currentSession.value = response;
 
+      // Synchronize XP and trigger Level-Up celebration if occurred
+      if (response.xp != null && Get.isRegistered<XpController>()) {
+        Get.find<XpController>().handleXpUpdate(
+          xp: response.xp!,
+          levelUp: response.levelUp,
+        );
+      }
+
       // Evaluation results for option feedback (green check / red cross)
       if (response.evaluation != null) {
         q.hasEvaluated = true;
@@ -653,6 +662,14 @@ class HomeController extends GetxController {
       );
 
       currentSession.value = response;
+
+      // Synchronize XP and trigger Level-Up celebration if occurred
+      if (response.xp != null && Get.isRegistered<XpController>()) {
+        Get.find<XpController>().handleXpUpdate(
+          xp: response.xp!,
+          levelUp: response.levelUp,
+        );
+      }
 
       if (response.evaluation?.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
@@ -770,6 +787,14 @@ class HomeController extends GetxController {
       );
 
       currentSession.value = response;
+
+      // Synchronize XP and trigger Level-Up celebration if occurred
+      if (response.xp != null && Get.isRegistered<XpController>()) {
+        Get.find<XpController>().handleXpUpdate(
+          xp: response.xp!,
+          levelUp: response.levelUp,
+        );
+      }
 
       if (response.evaluation?.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {

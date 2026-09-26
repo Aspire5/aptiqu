@@ -82,7 +82,7 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             ),
           ),
 
-          // Header: Question Type & DRILL + Difficulty & XP Badges
+          // Header: Question Type & Difficulty & XP Badges
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -118,15 +118,6 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '•  DRILL',
-                      style: AptiquTypography.labelCapsBold.copyWith(
-                        color: AptiquColors.tertiary,
-                        fontSize: 10,
-                        letterSpacing: 0.8,
                       ),
                     ),
                   ],

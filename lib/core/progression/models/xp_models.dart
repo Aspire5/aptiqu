@@ -1,4 +1,4 @@
-/// Aptiqu XP Progression & Level-Up Models
+// Aptiqu XP Progression & Level-Up Models
 
 class XpProgressModel {
   final int earned;

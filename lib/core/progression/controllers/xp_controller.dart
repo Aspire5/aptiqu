@@ -13,14 +13,29 @@ class XpController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Initialize from AuthController if current user exists
+    // Reactively listen to AuthController currentUser changes
     if (Get.isRegistered<AuthController>()) {
       final authController = Get.find<AuthController>();
-      final user = authController.currentUser.value;
-      if (user != null) {
+      ever(authController.currentUser, (user) {
+        if (user != null) {
+          progress.value = XpProgressModel(
+            level: user.level,
+            total: user.totalXp,
+            xpIntoCurrentLevel: user.xpIntoCurrentLevel,
+            xpRequiredForNextLevel: user.xpRequiredForNextLevel,
+            progress: user.progress,
+          );
+        }
+      });
+
+      final initialUser = authController.currentUser.value;
+      if (initialUser != null) {
         progress.value = XpProgressModel(
-          level: user.level,
-          total: user.totalXp,
+          level: initialUser.level,
+          total: initialUser.totalXp,
+          xpIntoCurrentLevel: initialUser.xpIntoCurrentLevel,
+          xpRequiredForNextLevel: initialUser.xpRequiredForNextLevel,
+          progress: initialUser.progress,
         );
       }
     }
@@ -42,6 +57,9 @@ class XpController extends GetxController {
         auth.currentUser.value = currentUser.copyWith(
           level: xp.level,
           totalXp: xp.total,
+          xpIntoCurrentLevel: xp.xpIntoCurrentLevel,
+          xpRequiredForNextLevel: xp.xpRequiredForNextLevel,
+          progress: xp.progress,
         );
       }
     }

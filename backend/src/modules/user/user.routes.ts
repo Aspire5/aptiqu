@@ -7,5 +7,6 @@ const controller = new UserController();
 
 router.get('/profile', authenticateJwt, controller.getProfile.bind(controller));
 router.get('/progress', authenticateJwt, controller.getProgress.bind(controller));
+router.get('/stats', authenticateJwt, controller.getStats.bind(controller));
 
 export default router;
