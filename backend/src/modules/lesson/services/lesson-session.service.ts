@@ -173,16 +173,74 @@ export class LessonSessionService {
       throw new Error(`Current node "${session.currentNodeId}" not found in script version.`);
     }
 
+    const events = await prisma.lessonEvent.findMany({
+      where: { sessionId: session.id },
+      orderBy: { sequenceNumber: 'asc' },
+    });
+
+    const history: Array<{
+      id: string;
+      isUser: boolean;
+      text: string;
+      node?: LessonNode;
+      evaluation?: { isCorrect: boolean; explanation?: string };
+    }> = [];
+
+    const entryNode = definition.nodes[definition.entryNodeId];
+    if (entryNode && session.currentNodeId !== definition.entryNodeId) {
+      history.push({
+        id: `node_${entryNode.id}`,
+        isUser: false,
+        text: entryNode.content?.text ?? '',
+        node: this.sanitizeNode(entryNode),
+      });
+    }
+
+    for (const evt of events) {
+      if (evt.eventType === 'SESSION_STARTED') continue;
+      const payload = evt.payload as any;
+      const userText =
+        payload?.action?.answer ||
+        payload?.action?.actionId ||
+        (payload?.action?.type === 'CONTINUE' ? 'Continue' : null);
+      if (userText) {
+        history.push({
+          id: `user_${evt.id}`,
+          isUser: true,
+          text: userText,
+        });
+      }
+      if (payload?.evaluation?.explanation) {
+        history.push({
+          id: `eval_${evt.id}`,
+          isUser: false,
+          text: payload.evaluation.explanation,
+          evaluation: payload.evaluation,
+        });
+      }
+      const reachedNode = definition.nodes[evt.nodeId];
+      if (reachedNode && reachedNode.id !== session.currentNodeId) {
+        history.push({
+          id: `node_${reachedNode.id}`,
+          isUser: false,
+          text: reachedNode.content?.text ?? '',
+          node: this.sanitizeNode(reachedNode),
+        });
+      }
+    }
+
     const response = {
       sessionId: session.id,
       roadmapId: session.roadmapId,
       roadmapStepId: session.roadmapStepId,
       scriptId: session.scriptId,
       scriptSlug: script.slug,
+      scriptTitle: script.title,
       scriptVersionId: session.scriptVersionId,
       status: session.status,
       stateVersion: session.stateVersion,
       currentNode: this.sanitizeNode(rawNode),
+      history,
     };
 
     await redisService.set(idempKey, JSON.stringify(response), 86400);
@@ -583,6 +641,172 @@ export class LessonSessionService {
       where: { id: sessionId, userId, status: 'PAUSED' },
       data: { status: 'ACTIVE', lastActivityAt: new Date() },
     });
+  }
+
+  public async getActiveSession(userId: string, roadmapStepId?: string) {
+    let effectiveStepId = roadmapStepId;
+    if (!effectiveStepId) {
+      const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
+      if (activeRoadmap) {
+        const nextStep = await roadmapProgressionService
+          .getNextStepOrScript(userId, activeRoadmap.id)
+          .catch(() => null);
+        if (nextStep?.available && nextStep.roadmapStepId) {
+          effectiveStepId = nextStep.roadmapStepId;
+        }
+      }
+      if (!effectiveStepId) {
+        effectiveStepId = 'ga-qa-01';
+      }
+    }
+
+    const step = await prisma.roadmapStep.findUnique({
+      where: { id: effectiveStepId },
+      include: {
+        roadmap: true,
+        scriptAssignments: {
+          where: { status: 'PUBLISHED' },
+          orderBy: { sequence: 'asc' },
+          include: { script: true, publishedVersion: true },
+        },
+      },
+    });
+
+    if (!step || !step.scriptAssignments.length) {
+      return { hasActiveSession: false, roadmapStepId: effectiveStepId, script: null, session: null };
+    }
+
+    // Check for an active session
+    const activeSession = await prisma.lessonSession.findFirst({
+      where: {
+        userId,
+        roadmapStepId: step.id,
+        status: { in: ['ACTIVE', 'PAUSED'] },
+      },
+      orderBy: { startedAt: 'desc' },
+      include: { script: true },
+    });
+
+    if (activeSession) {
+      const definition = await scriptCacheService.getScriptVersionDefinition(activeSession.scriptVersionId);
+      if (definition) {
+        const rawNode = definition.nodes[activeSession.currentNodeId];
+        const events = await prisma.lessonEvent.findMany({
+          where: { sessionId: activeSession.id },
+          orderBy: { sequenceNumber: 'asc' },
+        });
+
+        const history: Array<{
+          id: string;
+          isUser: boolean;
+          text: string;
+          node?: LessonNode;
+          evaluation?: { isCorrect: boolean; explanation?: string };
+        }> = [];
+
+        const entryNode = definition.nodes[definition.entryNodeId];
+        if (entryNode && activeSession.currentNodeId !== definition.entryNodeId) {
+          history.push({
+            id: `node_${entryNode.id}`,
+            isUser: false,
+            text: entryNode.content?.text ?? '',
+            node: this.sanitizeNode(entryNode),
+          });
+        }
+
+        for (const evt of events) {
+          if (evt.eventType === 'SESSION_STARTED') continue;
+          const payload = evt.payload as any;
+          const userText =
+            payload?.action?.answer ||
+            payload?.action?.actionId ||
+            (payload?.action?.type === 'CONTINUE' ? 'Continue' : null);
+          if (userText) {
+            history.push({
+              id: `user_${evt.id}`,
+              isUser: true,
+              text: userText,
+            });
+          }
+          if (payload?.evaluation?.explanation) {
+            history.push({
+              id: `eval_${evt.id}`,
+              isUser: false,
+              text: payload.evaluation.explanation,
+              evaluation: payload.evaluation,
+            });
+          }
+          const reachedNode = definition.nodes[evt.nodeId];
+          if (reachedNode && reachedNode.id !== activeSession.currentNodeId) {
+            history.push({
+              id: `node_${reachedNode.id}`,
+              isUser: false,
+              text: reachedNode.content?.text ?? '',
+              node: this.sanitizeNode(reachedNode),
+            });
+          }
+        }
+
+        return {
+          hasActiveSession: true,
+          roadmapStepId: step.id,
+          script: {
+            id: activeSession.script.id,
+            slug: activeSession.script.slug,
+            title: activeSession.script.title,
+            sequence: step.scriptAssignments.find((sa) => sa.scriptId === activeSession.scriptId)?.sequence ?? 1,
+            targetDurationMinutes: definition.metadata?.targetDurationMinutes || 8,
+            description: definition.metadata?.description || '',
+          },
+          session: {
+            sessionId: activeSession.id,
+            roadmapId: activeSession.roadmapId,
+            roadmapStepId: activeSession.roadmapStepId,
+            scriptId: activeSession.scriptId,
+            scriptSlug: activeSession.script.slug,
+            scriptTitle: activeSession.script.title,
+            scriptVersionId: activeSession.scriptVersionId,
+            status: activeSession.status,
+            stateVersion: activeSession.stateVersion,
+            currentNode: rawNode ? this.sanitizeNode(rawNode) : null,
+            history,
+          },
+        };
+      }
+    }
+
+    // No active session -> check next uncompleted script
+    const completedSessions = await prisma.lessonSession.findMany({
+      where: {
+        userId,
+        roadmapStepId: step.id,
+        status: 'COMPLETED',
+      },
+      select: { scriptId: true },
+    });
+    const completedScriptIds = new Set(completedSessions.map((s) => s.scriptId));
+
+    const nextAssignment =
+      step.scriptAssignments.find((sa) => !completedScriptIds.has(sa.scriptId)) ||
+      step.scriptAssignments[0];
+
+    const def = nextAssignment.publishedVersionId
+      ? await scriptCacheService.getScriptVersionDefinition(nextAssignment.publishedVersionId)
+      : null;
+
+    return {
+      hasActiveSession: false,
+      roadmapStepId: step.id,
+      script: {
+        id: nextAssignment.script.id,
+        slug: nextAssignment.script.slug,
+        title: nextAssignment.script.title,
+        sequence: nextAssignment.sequence,
+        targetDurationMinutes: def?.metadata?.targetDurationMinutes || 8,
+        description: def?.metadata?.description || '',
+      },
+      session: null,
+    };
   }
 }
 

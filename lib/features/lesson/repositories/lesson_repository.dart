@@ -5,6 +5,18 @@ import '../models/lesson_session_model.dart';
 class LessonRepository {
   final DioClient _dioClient = Get.find<DioClient>();
 
+  Future<ActiveLessonStateModel> getActiveLessonState([String? roadmapStepId]) async {
+    final response = await _dioClient.dio.get(
+      '/lessons/active',
+      queryParameters: {
+        if (roadmapStepId != null) 'roadmapStepId': roadmapStepId,
+      },
+    );
+
+    final data = response.data['data'] as Map<String, dynamic>;
+    return ActiveLessonStateModel.fromJson(data);
+  }
+
   Future<LessonSessionModel> startOrResumeSession({
     String? scriptSlug,
     String? roadmapStepId,

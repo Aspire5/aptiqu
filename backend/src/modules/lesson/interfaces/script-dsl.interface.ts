@@ -18,11 +18,21 @@ export interface ChoiceOption {
   payload?: Record<string, unknown>;
 }
 
+export interface QuestionVariation {
+  prompt: string;
+  options: Array<{ id: string; label: string }>;
+  correctOptionId: string;
+  explanation: string;
+  incorrectExplanation?: string;
+}
+
 export interface QuestionInlineData {
   prompt: string;
   options: Array<{ id: string; label: string }>;
   correctOptionId: string;
   explanation: string;
+  incorrectExplanation?: string;
+  variations?: QuestionVariation[];
 }
 
 export interface LessonNode {
@@ -58,6 +68,7 @@ export interface ScriptDefinition {
     topicId: string;
     subtopicId?: string;
     targetDurationMinutes: number;
+    description?: string;
   };
   nodes: Record<string, LessonNode>;
 }

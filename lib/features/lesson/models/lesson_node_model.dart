@@ -55,6 +55,11 @@ class LessonNodeModel {
     this.interruptible = false,
   });
 
+  bool get isCompletion => type == 'COMPLETION';
+  bool get isChoice => type == 'CHOICE';
+  bool get isQuestion => type == 'QUESTION';
+  bool get isTextInput => type == 'TEXT_INPUT';
+
   factory LessonNodeModel.fromJson(Map<String, dynamic> json) {
     final content = json['content'] as Map<String, dynamic>? ?? {};
     final input = json['input'] as Map<String, dynamic>?;

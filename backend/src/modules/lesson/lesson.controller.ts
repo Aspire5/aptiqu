@@ -50,6 +50,24 @@ export class LessonController {
     }
   }
 
+  public static async getActiveSession(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.userId!;
+      const roadmapStepId = req.query.roadmapStepId as string | undefined;
+
+      const result = await lessonSessionService.getActiveSession(userId, roadmapStepId);
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (err: any) {
+      res.status(err.status || 400).json({
+        success: false,
+        message: err.message || 'Failed to retrieve active session.',
+      });
+    }
+  }
+
   public static async getSession(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = req.userId!;

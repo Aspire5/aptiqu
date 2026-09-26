@@ -7,6 +7,7 @@ const router = Router();
 // All lesson routes require authentication
 router.use(authenticateJwt);
 
+router.get('/active', LessonController.getActiveSession);
 router.post('/sessions', LessonController.startSession);
 router.get('/sessions/:id', LessonController.getSession);
 router.post('/sessions/:id/actions', LessonController.submitAction);

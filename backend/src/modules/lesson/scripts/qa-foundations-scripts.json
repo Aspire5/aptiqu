@@ -28,7 +28,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "hook" }
+          {
+            "targetNodeId": "hook"
+          }
         ]
       },
       "hook": {
@@ -41,8 +43,14 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "memorize", "label": "Memorize lots of formulas" },
-            { "id": "patterns", "label": "Recognize easy patterns quickly" }
+            {
+              "id": "memorize",
+              "label": "Memorize lots of formulas"
+            },
+            {
+              "id": "patterns",
+              "label": "Recognize easy patterns quickly"
+            }
           ]
         },
         "questionReference": {
@@ -50,15 +58,36 @@
           "inlineData": {
             "prompt": "Which sounds more useful in an aptitude exam?",
             "options": [
-              { "id": "memorize", "label": "Memorize lots of formulas" },
-              { "id": "patterns", "label": "Recognize easy patterns quickly" }
+              {
+                "id": "memorize",
+                "label": "Memorize lots of formulas"
+              },
+              {
+                "id": "patterns",
+                "label": "Recognize easy patterns quickly"
+              }
             ],
             "correctOptionId": "patterns",
             "explanation": "Exactly. Formulas matter, but recognizing the pattern first can save you much more time."
           }
         },
         "transitions": [
-          { "targetNodeId": "real_life" }
+          {
+            "targetNodeId": "real_life",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "hook_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "real_life": {
@@ -69,7 +98,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "real_life_continue" }
+          {
+            "targetNodeId": "real_life_continue"
+          }
         ]
       },
       "real_life_continue": {
@@ -82,14 +113,36 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "yes", "label": "Let's go" },
-            { "id": "later", "label": "Maybe later" }
+            {
+              "id": "yes",
+              "label": "Let's go"
+            },
+            {
+              "id": "later",
+              "label": "Maybe later"
+            }
           ]
         },
         "transitions": [
-          { "targetNodeId": "map", "condition": { "field": "actionId", "operator": "EQUALS", "value": "yes" } },
-          { "targetNodeId": "map", "condition": { "field": "actionId", "operator": "EQUALS", "value": "later" } },
-          { "targetNodeId": "map" }
+          {
+            "targetNodeId": "map",
+            "condition": {
+              "field": "actionId",
+              "operator": "EQUALS",
+              "value": "yes"
+            }
+          },
+          {
+            "targetNodeId": "map",
+            "condition": {
+              "field": "actionId",
+              "operator": "EQUALS",
+              "value": "later"
+            }
+          },
+          {
+            "targetNodeId": "map"
+          }
         ]
       },
       "map": {
@@ -100,7 +153,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish"
+          }
         ]
       },
       "finish": {
@@ -111,6 +166,19 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "hook_remedy": {
+        "id": "hook_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Formulas are easy to forget under time pressure. But when you recognize patterns, math starts making sense naturally without memorizing dozens of tricks.\n\nLet us see this in real life:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "real_life"
+          }
+        ]
       }
     }
   },
@@ -143,7 +211,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "addition" }
+          {
+            "targetNodeId": "addition"
+          }
         ]
       },
       "addition": {
@@ -154,7 +224,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "addition_check" }
+          {
+            "targetNodeId": "addition_check"
+          }
         ]
       },
       "addition_check": {
@@ -167,10 +239,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "55" },
-            { "id": "b", "label": "65" },
-            { "id": "c", "label": "75" },
-            { "id": "d", "label": "68" }
+            {
+              "id": "a",
+              "label": "55"
+            },
+            {
+              "id": "b",
+              "label": "65"
+            },
+            {
+              "id": "c",
+              "label": "75"
+            },
+            {
+              "id": "d",
+              "label": "68"
+            }
           ]
         },
         "questionReference": {
@@ -178,17 +262,44 @@
           "inlineData": {
             "prompt": "48 + 17 = ?",
             "options": [
-              { "id": "a", "label": "55" },
-              { "id": "b", "label": "65" },
-              { "id": "c", "label": "75" },
-              { "id": "d", "label": "68" }
+              {
+                "id": "a",
+                "label": "55"
+              },
+              {
+                "id": "b",
+                "label": "65"
+              },
+              {
+                "id": "c",
+                "label": "75"
+              },
+              {
+                "id": "d",
+                "label": "68"
+              }
             ],
             "correctOptionId": "b",
             "explanation": "Yep. 48 + 10 = 58, then +7 = 65."
           }
         },
         "transitions": [
-          { "targetNodeId": "subtraction" }
+          {
+            "targetNodeId": "subtraction",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "addition_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "subtraction": {
@@ -199,7 +310,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "subtraction_check" }
+          {
+            "targetNodeId": "subtraction_check"
+          }
         ]
       },
       "subtraction_check": {
@@ -212,10 +325,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "51" },
-            { "id": "b", "label": "53" },
-            { "id": "c", "label": "54" },
-            { "id": "d", "label": "57" }
+            {
+              "id": "a",
+              "label": "51"
+            },
+            {
+              "id": "b",
+              "label": "53"
+            },
+            {
+              "id": "c",
+              "label": "54"
+            },
+            {
+              "id": "d",
+              "label": "57"
+            }
           ]
         },
         "questionReference": {
@@ -223,17 +348,44 @@
           "inlineData": {
             "prompt": "72 - 19 = ?",
             "options": [
-              { "id": "a", "label": "51" },
-              { "id": "b", "label": "53" },
-              { "id": "c", "label": "54" },
-              { "id": "d", "label": "57" }
+              {
+                "id": "a",
+                "label": "51"
+              },
+              {
+                "id": "b",
+                "label": "53"
+              },
+              {
+                "id": "c",
+                "label": "54"
+              },
+              {
+                "id": "d",
+                "label": "57"
+              }
             ],
             "correctOptionId": "b",
             "explanation": "Exactly. 72 - 20 = 52, then add 1 = 53."
           }
         },
         "transitions": [
-          { "targetNodeId": "multiplication" }
+          {
+            "targetNodeId": "multiplication",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "subtraction_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "multiplication": {
@@ -244,7 +396,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "division" }
+          {
+            "targetNodeId": "division"
+          }
         ]
       },
       "division": {
@@ -255,7 +409,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "final_check" }
+          {
+            "targetNodeId": "final_check"
+          }
         ]
       },
       "final_check": {
@@ -268,10 +424,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "150" },
-            { "id": "b", "label": "175" },
-            { "id": "c", "label": "200" },
-            { "id": "d", "label": "225" }
+            {
+              "id": "a",
+              "label": "150"
+            },
+            {
+              "id": "b",
+              "label": "175"
+            },
+            {
+              "id": "c",
+              "label": "200"
+            },
+            {
+              "id": "d",
+              "label": "225"
+            }
           ]
         },
         "questionReference": {
@@ -279,17 +447,44 @@
           "inlineData": {
             "prompt": "25 × 8 = ?",
             "options": [
-              { "id": "a", "label": "150" },
-              { "id": "b", "label": "175" },
-              { "id": "c", "label": "200" },
-              { "id": "d", "label": "225" }
+              {
+                "id": "a",
+                "label": "150"
+              },
+              {
+                "id": "b",
+                "label": "175"
+              },
+              {
+                "id": "c",
+                "label": "200"
+              },
+              {
+                "id": "d",
+                "label": "225"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Nice. 25 × 4 = 100, so 25 × 8 = 200."
           }
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "final_check_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "finish": {
@@ -300,6 +495,225 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "addition_remedy": {
+        "id": "addition_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Let us make addition easier mentally:\n\nBreak 17 into 10 + 7.\nFirst add 10:\n48 + 10 = 58.\nNow add the remaining 7:\n58 + 7 = 65.\n\nBreaking numbers into chunks removes the stress! Try this one:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "addition_retry"
+          }
+        ]
+      },
+      "addition_retry": {
+        "id": "addition_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "Try this one using the same breakdown:\n\n37 + 25 = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "58"
+            },
+            {
+              "id": "b",
+              "label": "62"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "72"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "37 + 25 = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "58"
+              },
+              {
+                "id": "b",
+                "label": "62"
+              },
+              {
+                "id": "c",
+                "label": "64"
+              },
+              {
+                "id": "d",
+                "label": "72"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Right! 37 + 20 = 57, and 57 + 5 = 62."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "subtraction"
+          }
+        ]
+      },
+      "subtraction_remedy": {
+        "id": "subtraction_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Here is the mental shortcut:\n\nInstead of subtracting 19 all at once, round it up to 20!\n72 - 20 = 52.\n\nSince 19 is 1 less than 20, you subtracted 1 too many! So add 1 back:\n52 + 1 = 53.\n\nLet us practice that trick with another problem:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "subtraction_retry"
+          }
+        ]
+      },
+      "subtraction_retry": {
+        "id": "subtraction_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "Try this one mentally:\n\n64 - 19 = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "43"
+            },
+            {
+              "id": "b",
+              "label": "45"
+            },
+            {
+              "id": "c",
+              "label": "46"
+            },
+            {
+              "id": "d",
+              "label": "48"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "64 - 19 = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "43"
+              },
+              {
+                "id": "b",
+                "label": "45"
+              },
+              {
+                "id": "c",
+                "label": "46"
+              },
+              {
+                "id": "d",
+                "label": "48"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Spot on! 64 - 20 = 44, then add 1 = 45."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "multiplication"
+          }
+        ]
+      },
+      "final_check_remedy": {
+        "id": "final_check_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Remember the 25 benchmark: 25 × 4 = 100.\nSince 8 is 4 × 2, we just double 100 to get 200!\n\nTry this one:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "final_check_retry"
+          }
+        ]
+      },
+      "final_check_retry": {
+        "id": "final_check_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "Try this one:\n\n25 × 6 = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "125"
+            },
+            {
+              "id": "b",
+              "label": "150"
+            },
+            {
+              "id": "c",
+              "label": "175"
+            },
+            {
+              "id": "d",
+              "label": "200"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "25 × 6 = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "125"
+              },
+              {
+                "id": "b",
+                "label": "150"
+              },
+              {
+                "id": "c",
+                "label": "175"
+              },
+              {
+                "id": "d",
+                "label": "200"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Great! 25 × 4 = 100, and 25 × 2 = 50, so 100 + 50 = 150."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "finish"
+          }
+        ]
       }
     }
   },
@@ -332,7 +746,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "why" }
+          {
+            "targetNodeId": "why"
+          }
         ]
       },
       "why": {
@@ -343,7 +759,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check1" }
+          {
+            "targetNodeId": "check1"
+          }
         ]
       },
       "check1": {
@@ -356,8 +774,14 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "addition", "label": "10 + 5" },
-            { "id": "multiplication", "label": "5 × 2" }
+            {
+              "id": "addition",
+              "label": "10 + 5"
+            },
+            {
+              "id": "multiplication",
+              "label": "5 × 2"
+            }
           ]
         },
         "questionReference": {
@@ -365,15 +789,36 @@
           "inlineData": {
             "prompt": "What should happen first?\n\n10 + 5 × 2",
             "options": [
-              { "id": "addition", "label": "10 + 5" },
-              { "id": "multiplication", "label": "5 × 2" }
+              {
+                "id": "addition",
+                "label": "10 + 5"
+              },
+              {
+                "id": "multiplication",
+                "label": "5 × 2"
+              }
             ],
             "correctOptionId": "multiplication",
             "explanation": "Correct. Multiplication comes before addition."
           }
         },
         "transitions": [
-          { "targetNodeId": "left_right" }
+          {
+            "targetNodeId": "left_right",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check1_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "left_right": {
@@ -384,7 +829,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check2" }
+          {
+            "targetNodeId": "check2"
+          }
         ]
       },
       "check2": {
@@ -397,10 +844,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "4" },
-            { "id": "b", "label": "16" },
-            { "id": "c", "label": "12" },
-            { "id": "d", "label": "6" }
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
           ]
         },
         "questionReference": {
@@ -408,17 +867,44 @@
           "inlineData": {
             "prompt": "What is: 18 - 6 ÷ 3 ?",
             "options": [
-              { "id": "a", "label": "4" },
-              { "id": "b", "label": "16" },
-              { "id": "c", "label": "12" },
-              { "id": "d", "label": "6" }
+              {
+                "id": "a",
+                "label": "4"
+              },
+              {
+                "id": "b",
+                "label": "16"
+              },
+              {
+                "id": "c",
+                "label": "12"
+              },
+              {
+                "id": "d",
+                "label": "6"
+              }
             ],
             "correctOptionId": "b",
             "explanation": "Yep. Divide first: 6 ÷ 3 = 2. Then 18 - 2 = 16."
           }
         },
         "transitions": [
-          { "targetNodeId": "brackets" }
+          {
+            "targetNodeId": "brackets",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check2_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "brackets": {
@@ -429,7 +915,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish"
+          }
         ]
       },
       "finish": {
@@ -440,6 +928,136 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "check1_remedy": {
+        "id": "check1_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Multiplication and division always have higher priority than addition and subtraction. In 10 + 5 × 2, calculate 5 × 2 = 10 first, then 10 + 10 = 20.\n\nLet us check this one:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "check1_retry"
+          }
+        ]
+      },
+      "check1_retry": {
+        "id": "check1_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "In 14 - 3 × 4, what gets calculated first?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "14 - 3"
+            },
+            {
+              "id": "b",
+              "label": "3 × 4"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "In 14 - 3 × 4, what gets calculated first?",
+            "options": [
+              {
+                "id": "a",
+                "label": "14 - 3"
+              },
+              {
+                "id": "b",
+                "label": "3 × 4"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Right! Multiplication comes before subtraction."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "left_right"
+          }
+        ]
+      },
+      "check2_remedy": {
+        "id": "check2_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Divide first! 6 ÷ 3 = 2. Now subtract: 18 - 2 = 16. If you did 18 - 6 first, you got tripped up by the order of operations!\n\nTry this one:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "check2_retry"
+          }
+        ]
+      },
+      "check2_retry": {
+        "id": "check2_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "What is: 20 - 8 ÷ 2 ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "What is: 20 - 8 ÷ 2 ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "6"
+              },
+              {
+                "id": "b",
+                "label": "16"
+              },
+              {
+                "id": "c",
+                "label": "12"
+              },
+              {
+                "id": "d",
+                "label": "14"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Exactly! 8 ÷ 2 = 4, then 20 - 4 = 16."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "brackets"
+          }
+        ]
       }
     }
   },
@@ -472,7 +1090,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "times5" }
+          {
+            "targetNodeId": "times5"
+          }
         ]
       },
       "times5": {
@@ -483,7 +1103,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check5" }
+          {
+            "targetNodeId": "check5"
+          }
         ]
       },
       "check5": {
@@ -496,10 +1118,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "220" },
-            { "id": "b", "label": "240" },
-            { "id": "c", "label": "250" },
-            { "id": "d", "label": "280" }
+            {
+              "id": "a",
+              "label": "220"
+            },
+            {
+              "id": "b",
+              "label": "240"
+            },
+            {
+              "id": "c",
+              "label": "250"
+            },
+            {
+              "id": "d",
+              "label": "280"
+            }
           ]
         },
         "questionReference": {
@@ -507,17 +1141,44 @@
           "inlineData": {
             "prompt": "48 × 5 = ?",
             "options": [
-              { "id": "a", "label": "220" },
-              { "id": "b", "label": "240" },
-              { "id": "c", "label": "250" },
-              { "id": "d", "label": "280" }
+              {
+                "id": "a",
+                "label": "220"
+              },
+              {
+                "id": "b",
+                "label": "240"
+              },
+              {
+                "id": "c",
+                "label": "250"
+              },
+              {
+                "id": "d",
+                "label": "280"
+              }
             ],
             "correctOptionId": "b",
             "explanation": "48 × 10 = 480. Half of 480 is 240."
           }
         },
         "transitions": [
-          { "targetNodeId": "times25" }
+          {
+            "targetNodeId": "times25",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check5_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "times25": {
@@ -528,7 +1189,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check25" }
+          {
+            "targetNodeId": "check25"
+          }
         ]
       },
       "check25": {
@@ -541,10 +1204,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "250" },
-            { "id": "b", "label": "300" },
-            { "id": "c", "label": "325" },
-            { "id": "d", "label": "350" }
+            {
+              "id": "a",
+              "label": "250"
+            },
+            {
+              "id": "b",
+              "label": "300"
+            },
+            {
+              "id": "c",
+              "label": "325"
+            },
+            {
+              "id": "d",
+              "label": "350"
+            }
           ]
         },
         "questionReference": {
@@ -552,17 +1227,44 @@
           "inlineData": {
             "prompt": "12 × 25 = ?",
             "options": [
-              { "id": "a", "label": "250" },
-              { "id": "b", "label": "300" },
-              { "id": "c", "label": "325" },
-              { "id": "d", "label": "350" }
+              {
+                "id": "a",
+                "label": "250"
+              },
+              {
+                "id": "b",
+                "label": "300"
+              },
+              {
+                "id": "c",
+                "label": "325"
+              },
+              {
+                "id": "d",
+                "label": "350"
+              }
             ],
             "correctOptionId": "b",
             "explanation": "Exactly. 1200 ÷ 4 = 300."
           }
         },
         "transitions": [
-          { "targetNodeId": "times50" }
+          {
+            "targetNodeId": "times50",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check25_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "times50": {
@@ -573,7 +1275,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "times9" }
+          {
+            "targetNodeId": "times9"
+          }
         ]
       },
       "times9": {
@@ -584,7 +1288,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "times11" }
+          {
+            "targetNodeId": "times11"
+          }
         ]
       },
       "times11": {
@@ -595,7 +1301,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "division" }
+          {
+            "targetNodeId": "division"
+          }
         ]
       },
       "division": {
@@ -606,7 +1314,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check_final" }
+          {
+            "targetNodeId": "check_final"
+          }
         ]
       },
       "check_final": {
@@ -619,8 +1329,14 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "normal", "label": "Multiply 48 by 20, then by 5" },
-            { "id": "shortcut", "label": "48 × 100 ÷ 4" }
+            {
+              "id": "normal",
+              "label": "Multiply 48 by 20, then by 5"
+            },
+            {
+              "id": "shortcut",
+              "label": "48 × 100 ÷ 4"
+            }
           ]
         },
         "questionReference": {
@@ -628,15 +1344,36 @@
           "inlineData": {
             "prompt": "Which is easiest to calculate mentally?\n\n48 × 25",
             "options": [
-              { "id": "normal", "label": "Multiply 48 by 20, then by 5" },
-              { "id": "shortcut", "label": "48 × 100 ÷ 4" }
+              {
+                "id": "normal",
+                "label": "Multiply 48 by 20, then by 5"
+              },
+              {
+                "id": "shortcut",
+                "label": "48 × 100 ÷ 4"
+              }
             ],
             "correctOptionId": "shortcut",
             "explanation": "Exactly. The trick is to recognize the useful number, not to do more arithmetic."
           }
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check_final_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "finish": {
@@ -647,6 +1384,165 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "check5_remedy": {
+        "id": "check5_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Multiplying by 5 is simply multiplying by 10 and halving!\n48 × 10 = 480, and half of 480 is 240.\n\nTry this one with the same rule:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "check5_retry"
+          }
+        ]
+      },
+      "check5_retry": {
+        "id": "check5_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "Try this: 36 × 5 = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "160"
+            },
+            {
+              "id": "b",
+              "label": "180"
+            },
+            {
+              "id": "c",
+              "label": "190"
+            },
+            {
+              "id": "d",
+              "label": "200"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "36 × 5 = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "160"
+              },
+              {
+                "id": "b",
+                "label": "180"
+              },
+              {
+                "id": "c",
+                "label": "190"
+              },
+              {
+                "id": "d",
+                "label": "200"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Nice! 36 × 10 = 360, half is 180."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "times25"
+          }
+        ]
+      },
+      "check25_remedy": {
+        "id": "check25_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "25 is 100 ÷ 4. So divide by 4 and add two zeros! 12 ÷ 4 = 3, add two zeros = 300.\n\nTry this one:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "check25_retry"
+          }
+        ]
+      },
+      "check25_retry": {
+        "id": "check25_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "16 × 25 = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "350"
+            },
+            {
+              "id": "b",
+              "label": "400"
+            },
+            {
+              "id": "c",
+              "label": "420"
+            },
+            {
+              "id": "d",
+              "label": "450"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "16 × 25 = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "350"
+              },
+              {
+                "id": "b",
+                "label": "400"
+              },
+              {
+                "id": "c",
+                "label": "420"
+              },
+              {
+                "id": "d",
+                "label": "450"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Right! 16 ÷ 4 = 4, so 400."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "times50"
+          }
+        ]
+      },
+      "check_final_remedy": {
+        "id": "check_final_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "48 ÷ 4 = 12, so 48 × 25 is instantly 1,200! Dividing by 4 is much faster mentally than multiplying by 20 and then by 5.",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "finish"
+          }
+        ]
       }
     }
   },
@@ -679,7 +1575,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "squares" }
+          {
+            "targetNodeId": "squares"
+          }
         ]
       },
       "squares": {
@@ -690,7 +1588,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check" }
+          {
+            "targetNodeId": "check"
+          }
         ]
       },
       "check": {
@@ -703,10 +1603,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "125" },
-            { "id": "b", "label": "200" },
-            { "id": "c", "label": "225" },
-            { "id": "d", "label": "250" }
+            {
+              "id": "a",
+              "label": "125"
+            },
+            {
+              "id": "b",
+              "label": "200"
+            },
+            {
+              "id": "c",
+              "label": "225"
+            },
+            {
+              "id": "d",
+              "label": "250"
+            }
           ]
         },
         "questionReference": {
@@ -714,17 +1626,44 @@
           "inlineData": {
             "prompt": "15² = ?",
             "options": [
-              { "id": "a", "label": "125" },
-              { "id": "b", "label": "200" },
-              { "id": "c", "label": "225" },
-              { "id": "d", "label": "250" }
+              {
+                "id": "a",
+                "label": "125"
+              },
+              {
+                "id": "b",
+                "label": "200"
+              },
+              {
+                "id": "c",
+                "label": "225"
+              },
+              {
+                "id": "d",
+                "label": "250"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Yep. 15 × 15 = 225."
           }
         },
         "transitions": [
-          { "targetNodeId": "trick" }
+          {
+            "targetNodeId": "trick",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "trick": {
@@ -735,7 +1674,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "cubes" }
+          {
+            "targetNodeId": "cubes"
+          }
         ]
       },
       "cubes": {
@@ -746,7 +1687,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "common" }
+          {
+            "targetNodeId": "common"
+          }
         ]
       },
       "common": {
@@ -757,7 +1700,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish"
+          }
         ]
       },
       "finish": {
@@ -768,6 +1713,79 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "check_remedy": {
+        "id": "check_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "For any number ending in 5, multiply the tens digit by the next integer (1 × 2 = 2) and append 25 -> 225!\n\nLet us practice:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "check_retry"
+          }
+        ]
+      },
+      "check_retry": {
+        "id": "check_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "Try this: 25² = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "525"
+            },
+            {
+              "id": "b",
+              "label": "625"
+            },
+            {
+              "id": "c",
+              "label": "650"
+            },
+            {
+              "id": "d",
+              "label": "725"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "25² = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "525"
+              },
+              {
+                "id": "b",
+                "label": "625"
+              },
+              {
+                "id": "c",
+                "label": "650"
+              },
+              {
+                "id": "d",
+                "label": "725"
+              }
+            ],
+            "correctOptionId": "b",
+            "explanation": "Spot on! 2 × 3 = 6, append 25 = 625."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "trick"
+          }
+        ]
       }
     }
   },
@@ -800,7 +1818,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "common" }
+          {
+            "targetNodeId": "common"
+          }
         ]
       },
       "common": {
@@ -811,7 +1831,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check" }
+          {
+            "targetNodeId": "check"
+          }
         ]
       },
       "check": {
@@ -824,10 +1846,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "1/2" },
-            { "id": "b", "label": "1/3" },
-            { "id": "c", "label": "1/4" },
-            { "id": "d", "label": "1/5" }
+            {
+              "id": "a",
+              "label": "1/2"
+            },
+            {
+              "id": "b",
+              "label": "1/3"
+            },
+            {
+              "id": "c",
+              "label": "1/4"
+            },
+            {
+              "id": "d",
+              "label": "1/5"
+            }
           ]
         },
         "questionReference": {
@@ -835,17 +1869,44 @@
           "inlineData": {
             "prompt": "What is 25% as a fraction?",
             "options": [
-              { "id": "a", "label": "1/2" },
-              { "id": "b", "label": "1/3" },
-              { "id": "c", "label": "1/4" },
-              { "id": "d", "label": "1/5" }
+              {
+                "id": "a",
+                "label": "1/2"
+              },
+              {
+                "id": "b",
+                "label": "1/3"
+              },
+              {
+                "id": "c",
+                "label": "1/4"
+              },
+              {
+                "id": "d",
+                "label": "1/5"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Exactly. 25% means 25 out of 100, which simplifies to 1/4."
           }
         },
         "transitions": [
-          { "targetNodeId": "percentage_trick" }
+          {
+            "targetNodeId": "percentage_trick",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "percentage_trick": {
@@ -856,7 +1917,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check2" }
+          {
+            "targetNodeId": "check2"
+          }
         ]
       },
       "check2": {
@@ -869,10 +1932,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "15" },
-            { "id": "b", "label": "20" },
-            { "id": "c", "label": "30" },
-            { "id": "d", "label": "40" }
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
           ]
         },
         "questionReference": {
@@ -880,17 +1955,44 @@
           "inlineData": {
             "prompt": "20% of 150 = ?",
             "options": [
-              { "id": "a", "label": "15" },
-              { "id": "b", "label": "20" },
-              { "id": "c", "label": "30" },
-              { "id": "d", "label": "40" }
+              {
+                "id": "a",
+                "label": "15"
+              },
+              {
+                "id": "b",
+                "label": "20"
+              },
+              {
+                "id": "c",
+                "label": "30"
+              },
+              {
+                "id": "d",
+                "label": "40"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Yep. 10% is 15, so 20% is 30."
           }
         },
         "transitions": [
-          { "targetNodeId": "same_value" }
+          {
+            "targetNodeId": "same_value",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check2_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "same_value": {
@@ -901,7 +2003,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish"
+          }
         ]
       },
       "finish": {
@@ -912,6 +2016,92 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "check_remedy": {
+        "id": "check_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Percent means per hundred. 25% = 25/100. Divide both by 25: 25/100 = 1/4.\n\nNow look at how this simplifies calculations:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "percentage_trick"
+          }
+        ]
+      },
+      "check2_remedy": {
+        "id": "check2_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "20% is 1/5! 150 ÷ 5 = 30. Alternatively, 10% is 15, so 20% is 15 × 2 = 30.\n\nTry this one:",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "check2_retry"
+          }
+        ]
+      },
+      "check2_retry": {
+        "id": "check2_retry",
+        "type": "CHOICE",
+        "content": {
+          "text": "20% of 80 = ?",
+          "avatarPersona": "TUTOR"
+        },
+        "input": {
+          "type": "CHOICE",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ]
+        },
+        "questionReference": {
+          "mode": "INLINE",
+          "inlineData": {
+            "prompt": "20% of 80 = ?",
+            "options": [
+              {
+                "id": "a",
+                "label": "12"
+              },
+              {
+                "id": "b",
+                "label": "14"
+              },
+              {
+                "id": "c",
+                "label": "16"
+              },
+              {
+                "id": "d",
+                "label": "18"
+              }
+            ],
+            "correctOptionId": "c",
+            "explanation": "Right! 10% of 80 is 8, so 20% is 16."
+          }
+        },
+        "transitions": [
+          {
+            "targetNodeId": "same_value"
+          }
+        ]
       }
     }
   },
@@ -944,7 +2134,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "example" }
+          {
+            "targetNodeId": "example"
+          }
         ]
       },
       "example": {
@@ -955,7 +2147,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check" }
+          {
+            "targetNodeId": "check"
+          }
         ]
       },
       "check": {
@@ -968,10 +2162,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "500" },
-            { "id": "b", "label": "750" },
-            { "id": "c", "label": "900" },
-            { "id": "d", "label": "1200" }
+            {
+              "id": "a",
+              "label": "500"
+            },
+            {
+              "id": "b",
+              "label": "750"
+            },
+            {
+              "id": "c",
+              "label": "900"
+            },
+            {
+              "id": "d",
+              "label": "1200"
+            }
           ]
         },
         "questionReference": {
@@ -979,17 +2185,44 @@
           "inlineData": {
             "prompt": "Which is closest to:\n\n49 × 19?",
             "options": [
-              { "id": "a", "label": "500" },
-              { "id": "b", "label": "750" },
-              { "id": "c", "label": "900" },
-              { "id": "d", "label": "1200" }
+              {
+                "id": "a",
+                "label": "500"
+              },
+              {
+                "id": "b",
+                "label": "750"
+              },
+              {
+                "id": "c",
+                "label": "900"
+              },
+              {
+                "id": "d",
+                "label": "1200"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Exactly. 50 × 20 is 1000, so 49 × 19 should be a little below 1000. 900 is the closest option."
           }
         },
         "transitions": [
-          { "targetNodeId": "rounding" }
+          {
+            "targetNodeId": "rounding",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "rounding": {
@@ -1000,7 +2233,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check2" }
+          {
+            "targetNodeId": "check2"
+          }
         ]
       },
       "check2": {
@@ -1013,10 +2248,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "25" },
-            { "id": "b", "label": "50" },
-            { "id": "c", "label": "75" },
-            { "id": "d", "label": "100" }
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "75"
+            },
+            {
+              "id": "d",
+              "label": "100"
+            }
           ]
         },
         "questionReference": {
@@ -1024,17 +2271,44 @@
           "inlineData": {
             "prompt": "Which is closest to:\n\n397 ÷ 8?",
             "options": [
-              { "id": "a", "label": "25" },
-              { "id": "b", "label": "50" },
-              { "id": "c", "label": "75" },
-              { "id": "d", "label": "100" }
+              {
+                "id": "a",
+                "label": "25"
+              },
+              {
+                "id": "b",
+                "label": "50"
+              },
+              {
+                "id": "c",
+                "label": "75"
+              },
+              {
+                "id": "d",
+                "label": "100"
+              }
             ],
             "correctOptionId": "b",
             "explanation": "Yep. 400 ÷ 8 = 50, so 397 ÷ 8 is just under 50."
           }
         },
         "transitions": [
-          { "targetNodeId": "fraction_estimation" }
+          {
+            "targetNodeId": "fraction_estimation",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check2_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "fraction_estimation": {
@@ -1045,7 +2319,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "mental_rules" }
+          {
+            "targetNodeId": "mental_rules"
+          }
         ]
       },
       "mental_rules": {
@@ -1056,7 +2332,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish"
+          }
         ]
       },
       "finish": {
@@ -1067,6 +2345,32 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "check_remedy": {
+        "id": "check_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Round each number: 49 is almost 50, and 19 is almost 20. 50 × 20 = 1,000. So the answer is slightly less than 1,000 -> 900 to 950!",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "rounding"
+          }
+        ]
+      },
+      "check2_remedy": {
+        "id": "check2_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "Round 397 to 400! 400 ÷ 8 = 50. Fast rounding gives you the answer instantly without long division.",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "fraction_estimation"
+          }
+        ]
       }
     }
   },
@@ -1099,7 +2403,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "length" }
+          {
+            "targetNodeId": "length"
+          }
         ]
       },
       "length": {
@@ -1110,7 +2416,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check_length" }
+          {
+            "targetNodeId": "check_length"
+          }
         ]
       },
       "check_length": {
@@ -1123,10 +2431,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "25" },
-            { "id": "b", "label": "250" },
-            { "id": "c", "label": "2500" },
-            { "id": "d", "label": "25000" }
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "250"
+            },
+            {
+              "id": "c",
+              "label": "2500"
+            },
+            {
+              "id": "d",
+              "label": "25000"
+            }
           ]
         },
         "questionReference": {
@@ -1134,17 +2454,44 @@
           "inlineData": {
             "prompt": "2.5 km = ? metres",
             "options": [
-              { "id": "a", "label": "25" },
-              { "id": "b", "label": "250" },
-              { "id": "c", "label": "2500" },
-              { "id": "d", "label": "25000" }
+              {
+                "id": "a",
+                "label": "25"
+              },
+              {
+                "id": "b",
+                "label": "250"
+              },
+              {
+                "id": "c",
+                "label": "2500"
+              },
+              {
+                "id": "d",
+                "label": "25000"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Correct. 2.5 × 1000 = 2500 metres."
           }
         },
         "transitions": [
-          { "targetNodeId": "time" }
+          {
+            "targetNodeId": "time",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check_length_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "time": {
@@ -1155,7 +2502,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "check_time" }
+          {
+            "targetNodeId": "check_time"
+          }
         ]
       },
       "check_time": {
@@ -1168,10 +2517,22 @@
         "input": {
           "type": "CHOICE",
           "options": [
-            { "id": "a", "label": "120" },
-            { "id": "b", "label": "135" },
-            { "id": "c", "label": "150" },
-            { "id": "d", "label": "180" }
+            {
+              "id": "a",
+              "label": "120"
+            },
+            {
+              "id": "b",
+              "label": "135"
+            },
+            {
+              "id": "c",
+              "label": "150"
+            },
+            {
+              "id": "d",
+              "label": "180"
+            }
           ]
         },
         "questionReference": {
@@ -1179,17 +2540,44 @@
           "inlineData": {
             "prompt": "2.5 hours = ? minutes",
             "options": [
-              { "id": "a", "label": "120" },
-              { "id": "b", "label": "135" },
-              { "id": "c", "label": "150" },
-              { "id": "d", "label": "180" }
+              {
+                "id": "a",
+                "label": "120"
+              },
+              {
+                "id": "b",
+                "label": "135"
+              },
+              {
+                "id": "c",
+                "label": "150"
+              },
+              {
+                "id": "d",
+                "label": "180"
+              }
             ],
             "correctOptionId": "c",
             "explanation": "Yep. 2 hours = 120 minutes and half an hour = 30 minutes. Total = 150."
           }
         },
         "transitions": [
-          { "targetNodeId": "mass" }
+          {
+            "targetNodeId": "mass",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": true
+            }
+          },
+          {
+            "targetNodeId": "check_time_remedy",
+            "condition": {
+              "field": "isCorrect",
+              "operator": "EQUALS",
+              "value": false
+            }
+          }
         ]
       },
       "mass": {
@@ -1200,7 +2588,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "speed" }
+          {
+            "targetNodeId": "speed"
+          }
         ]
       },
       "speed": {
@@ -1211,7 +2601,9 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": [
-          { "targetNodeId": "finish" }
+          {
+            "targetNodeId": "finish"
+          }
         ]
       },
       "finish": {
@@ -1222,6 +2614,32 @@
           "avatarPersona": "TUTOR"
         },
         "transitions": []
+      },
+      "check_length_remedy": {
+        "id": "check_length_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "1 km = 1,000 metres. So 2.5 km = 2.5 × 1,000 = 2,500 metres.",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "time"
+          }
+        ]
+      },
+      "check_time_remedy": {
+        "id": "check_time_remedy",
+        "type": "CONTENT",
+        "content": {
+          "text": "1 hour = 60 minutes. 2 hours = 120 min, and 0.5 hour = 30 min. 120 + 30 = 150 minutes!",
+          "avatarPersona": "TUTOR"
+        },
+        "transitions": [
+          {
+            "targetNodeId": "mass"
+          }
+        ]
       }
     }
   }

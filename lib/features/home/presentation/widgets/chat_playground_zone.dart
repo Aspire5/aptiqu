@@ -183,7 +183,7 @@ class ChatPlaygroundZone extends StatelessWidget {
             ),
             child: const Center(
               child: Icon(
-                Icons.smart_toy_rounded,
+                Icons.school_rounded,
                 size: 20,
                 color: AptiquColors.secondary,
               ),

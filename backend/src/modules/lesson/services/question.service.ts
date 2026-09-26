@@ -27,10 +27,23 @@ export class QuestionService {
 
     if (mode === 'INLINE' && inlineData) {
       const isCorrect = rawAnswer.trim().toLowerCase() === inlineData.correctOptionId.trim().toLowerCase();
+      let explanation = inlineData.explanation;
+      if (!isCorrect) {
+        if (inlineData.incorrectExplanation) {
+          explanation = inlineData.incorrectExplanation;
+        } else {
+          const correctOpt = inlineData.options?.find(
+            (o) => o.id.trim().toLowerCase() === inlineData.correctOptionId.trim().toLowerCase()
+          );
+          const correctLabel = correctOpt ? correctOpt.label : inlineData.correctOptionId;
+          const cleanExp = (inlineData.explanation || '').replace(/^(exactly|right|spot on|correct)[.!,]?\s*/i, '');
+          explanation = `Not quite! The correct answer is ${correctLabel}. ${cleanExp}`.trim();
+        }
+      }
       return {
         isCorrect,
         score: isCorrect ? 1.0 : 0.0,
-        explanation: inlineData.explanation,
+        explanation,
       };
     }
 
