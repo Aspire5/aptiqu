@@ -285,9 +285,10 @@ export class RoadmapProgressionService {
       select: { scriptId: true, roadmapStepId: true },
     });
     const completedScriptIds = new Set(completedSessions.map((cs) => cs.scriptId));
-    for (const cs of completedSessions) {
-      if (cs.roadmapStepId) {
-        completedStepIds.add(cs.roadmapStepId);
+    for (const step of steps) {
+      const assignments = step.scriptAssignments || [];
+      if (assignments.length > 0 && assignments.every((sa) => completedScriptIds.has(sa.scriptId))) {
+        completedStepIds.add(step.id);
       }
     }
 
@@ -301,14 +302,17 @@ export class RoadmapProgressionService {
         assignments.some((sa) => sa.publishedVersionId != null);
 
       const firstScriptAssignment = assignments[0];
+      const hasSomeCompleted = assignments.some((sa) => completedScriptIds.has(sa.scriptId));
+      const hasActiveSession = inProgressStepIds.has(step.id);
+      const isStepFullyCompleted = completedStepIds.has(step.id);
 
       let state: 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'COMING_SOON';
 
       if (!hasPublishedScript) {
         state = 'COMING_SOON';
-      } else if (completedStepIds.has(step.id)) {
+      } else if (isStepFullyCompleted) {
         state = 'COMPLETED';
-      } else if (inProgressStepIds.has(step.id)) {
+      } else if (hasActiveSession || hasSomeCompleted) {
         state = 'IN_PROGRESS';
         if (!activeStepId) {
           activeStepId = step.id;

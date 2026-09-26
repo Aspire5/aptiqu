@@ -82,7 +82,7 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             ),
           ),
 
-          // Header: Question Title + Difficulty Badge
+          // Header: Question Type & DRILL + Difficulty & XP Badges
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,45 +90,96 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
               Expanded(
                 child: Row(
                   children: [
-                    Icon(
-                      _getCategoryIcon(q.inputType),
-                      size: 15,
-                      color: AptiquColors.tertiary,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AptiquColors.primaryContainer.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: AptiquColors.primaryContainer.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _getCategoryIcon(q.inputType),
+                            size: 13,
+                            color: AptiquColors.primary,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            q.questionType.displayName.toUpperCase(),
+                            style: AptiquTypography.labelCapsBold.copyWith(
+                              color: AptiquColors.primary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        q.title.toUpperCase(),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: AptiquTypography.labelCapsBold.copyWith(
-                          color: AptiquColors.tertiary,
-                          fontSize: 10.5,
-                          letterSpacing: 0.8,
-                        ),
+                    Text(
+                      '•  DRILL',
+                      style: AptiquTypography.labelCapsBold.copyWith(
+                        color: AptiquColors.tertiary,
+                        fontSize: 10,
+                        letterSpacing: 0.8,
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              Container(
-                constraints: const BoxConstraints(maxWidth: 130),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AptiquColors.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AptiquColors.outlineVariant),
-                ),
-                child: Text(
-                  q.difficulty.toUpperCase(),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: AptiquTypography.labelCaps.copyWith(
-                    color: AptiquColors.secondary,
-                    fontSize: 9.5,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: _getDifficultyColor(q.difficultyLevel).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: _getDifficultyColor(q.difficultyLevel).withValues(alpha: 0.5),
+                      ),
+                    ),
+                    child: Text(
+                      q.difficultyLevel.displayName.toUpperCase(),
+                      style: AptiquTypography.labelCapsBold.copyWith(
+                        color: _getDifficultyColor(q.difficultyLevel),
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.5),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.bolt_rounded, size: 12, color: Color(0xFFF59E0B)),
+                        Text(
+                          '+${q.xp} XP',
+                          style: AptiquTypography.labelCapsBold.copyWith(
+                            color: const Color(0xFFFCD34D),
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -144,6 +195,115 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
               color: AptiquColors.onSurface,
             ),
           ),
+
+          // Hints section (1, 2, or more hints)
+          if (q.hints.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (q.revealedHintsCount < q.hints.length) {
+                        q.revealedHintsCount++;
+                      } else {
+                        q.revealedHintsCount = 0;
+                      }
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: q.revealedHintsCount > 0
+                          ? const Color(0xFFF59E0B).withValues(alpha: 0.18)
+                          : AptiquColors.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: q.revealedHintsCount > 0
+                            ? const Color(0xFFF59E0B).withValues(alpha: 0.7)
+                            : AptiquColors.outlineVariant,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.lightbulb_outline_rounded,
+                            size: 13, color: Color(0xFFFCD34D)),
+                        const SizedBox(width: 4),
+                        Text(
+                          q.revealedHintsCount == 0
+                              ? '💡 Hint (${q.hints.length})'
+                              : '💡 Hint ${q.revealedHintsCount}/${q.hints.length}',
+                          style: AptiquTypography.labelCapsBold.copyWith(
+                            color: const Color(0xFFFCD34D),
+                            fontSize: 10,
+                          ),
+                        ),
+                        if (q.revealedHintsCount > 0 &&
+                            q.revealedHintsCount < q.hints.length) ...[
+                          const SizedBox(width: 4),
+                          Text(
+                            '(tap for next)',
+                            style: AptiquTypography.labelCaps.copyWith(
+                              color: AptiquColors.onSurfaceVariant,
+                              fontSize: 8.5,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (q.revealedHintsCount > 0) ...[
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1B2E),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (int hIdx = 0; hIdx < q.revealedHintsCount; hIdx++) ...[
+                      if (hIdx > 0) const SizedBox(height: 6),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hint ${hIdx + 1}: ',
+                            style: AptiquTypography.bodySm.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFFCD34D),
+                              fontSize: 11.5,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              q.hints[hIdx],
+                              style: AptiquTypography.bodySm.copyWith(
+                                color: AptiquColors.onSurface,
+                                fontSize: 11.5,
+                                height: 1.35,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ],
+
           const SizedBox(height: 14),
 
           const Divider(color: AptiquColors.outlineVariant, height: 1),
@@ -154,6 +314,33 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
         ],
       ),
     );
+  }
+
+  Color _getDifficultyColor(QuestionDifficultyLevel level) {
+    switch (level) {
+      case QuestionDifficultyLevel.easy:
+        return const Color(0xFF10B981);
+      case QuestionDifficultyLevel.medium:
+        return const Color(0xFFF59E0B);
+      case QuestionDifficultyLevel.hard:
+        return const Color(0xFFEF4444);
+    }
+  }
+
+  bool _isOptionCorrect(QuestionData q, int optIdx) {
+    if (!q.hasEvaluated) return false;
+    if (q.correctOptionId != null &&
+        q.optionIds.isNotEmpty &&
+        optIdx < q.optionIds.length) {
+      return q.optionIds[optIdx].toLowerCase() ==
+          q.correctOptionId!.toLowerCase();
+    }
+    return q.isUserCorrect == true && q.selectedOptionIndex == optIdx;
+  }
+
+  bool _isOptionWrongSelected(QuestionData q, int optIdx) {
+    if (!q.hasEvaluated) return false;
+    return q.selectedOptionIndex == optIdx && q.isUserCorrect == false;
   }
 
   Widget _buildInputSection(QuestionData q) {
@@ -180,7 +367,49 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
         children: List.generate(q.options.length, (idx) {
           final optionText = q.options[idx];
           final isSelected = q.selectedOptionIndex == idx;
+          final isCorrect = _isOptionCorrect(q, idx);
+          final isWrongSelected = _isOptionWrongSelected(q, idx);
           final isPrimaryAction = idx == 0;
+
+          Color? bgColor;
+          Color borderColor;
+          Widget? statusIcon;
+          List<BoxShadow>? shadows;
+
+          if (isCorrect) {
+            bgColor = const Color(0xFF10B981).withValues(alpha: 0.22);
+            borderColor = const Color(0xFF10B981);
+            statusIcon = const Icon(Icons.check_circle_rounded,
+                color: Color(0xFF10B981), size: 16);
+            shadows = [
+              BoxShadow(
+                color: const Color(0xFF10B981).withValues(alpha: 0.35),
+                blurRadius: 10,
+              )
+            ];
+          } else if (isWrongSelected) {
+            bgColor = const Color(0xFFEF4444).withValues(alpha: 0.22);
+            borderColor = const Color(0xFFEF4444);
+            statusIcon = const Icon(Icons.cancel_rounded,
+                color: Color(0xFFEF4444), size: 16);
+            shadows = [
+              BoxShadow(
+                color: const Color(0xFFEF4444).withValues(alpha: 0.35),
+                blurRadius: 10,
+              )
+            ];
+          } else if (isSelected || (isPrimaryAction && !q.isCompleted)) {
+            borderColor = AptiquColors.primaryContainer;
+            shadows = [
+              BoxShadow(
+                color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
+                blurRadius: 10,
+              ),
+            ];
+          } else {
+            bgColor = AptiquColors.surfaceContainer;
+            borderColor = AptiquColors.outlineVariant;
+          }
 
           return Expanded(
             child: Padding(
@@ -196,45 +425,44 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   decoration: BoxDecoration(
-                    gradient: (isSelected || (isPrimaryAction && !q.isCompleted))
+                    gradient: (bgColor == null &&
+                            (isSelected || (isPrimaryAction && !q.isCompleted)))
                         ? AptiquColors.primaryGradient
                         : null,
-                    color: (isSelected || (isPrimaryAction && !q.isCompleted))
-                        ? null
-                        : AptiquColors.surfaceContainer,
+                    color: bgColor,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: (isSelected || (isPrimaryAction && !q.isCompleted))
-                          ? AptiquColors.primaryContainer
-                          : AptiquColors.outlineVariant,
-                      width: 1.2,
+                      color: borderColor,
+                      width: (isCorrect || isWrongSelected) ? 1.8 : 1.2,
                     ),
-                    boxShadow: (isSelected ||
-                            (isPrimaryAction && !q.isCompleted))
-                        ? [
-                            BoxShadow(
-                              color: AptiquColors.primaryContainer
-                                  .withValues(alpha: 0.35),
-                              blurRadius: 10,
-                            ),
-                          ]
-                        : null,
+                    boxShadow: shadows,
                   ),
-                  child: Center(
-                    child: Text(
-                      optionText,
-                      textAlign: TextAlign.center,
-                      style: AptiquTypography.bodySm.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color:
-                            (isSelected || (isPrimaryAction && !q.isCompleted))
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          optionText,
+                          textAlign: TextAlign.center,
+                          style: AptiquTypography.bodySm.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: (isCorrect ||
+                                    isWrongSelected ||
+                                    isSelected ||
+                                    (isPrimaryAction && !q.isCompleted))
                                 ? Colors.white
                                 : AptiquColors.onSurface,
+                          ),
+                        ),
                       ),
-                    ),
+                      if (statusIcon != null) ...[
+                        const SizedBox(width: 6),
+                        statusIcon,
+                      ],
+                    ],
                   ),
                 ),
               ),
@@ -259,6 +487,54 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
         final optionText = q.options[optIdx];
         final optionLetter = String.fromCharCode(65 + optIdx); // A, B, C, D
         final isSelected = q.selectedOptionIndex == optIdx;
+        final isCorrect = _isOptionCorrect(q, optIdx);
+        final isWrongSelected = _isOptionWrongSelected(q, optIdx);
+
+        Color bgColor;
+        Color borderColor;
+        Color letterBgColor;
+        Color letterTextColor;
+        Widget? trailingIcon;
+        List<BoxShadow>? shadows;
+
+        if (isCorrect) {
+          bgColor = const Color(0xFF10B981).withValues(alpha: 0.22);
+          borderColor = const Color(0xFF10B981);
+          letterBgColor = const Color(0xFF10B981).withValues(alpha: 0.35);
+          letterTextColor = const Color(0xFF34D399);
+          trailingIcon = const Icon(Icons.check_circle_rounded,
+              color: Color(0xFF10B981), size: 17);
+          shadows = [
+            BoxShadow(
+              color: const Color(0xFF10B981).withValues(alpha: 0.3),
+              blurRadius: 8,
+            )
+          ];
+        } else if (isWrongSelected) {
+          bgColor = const Color(0xFFEF4444).withValues(alpha: 0.22);
+          borderColor = const Color(0xFFEF4444);
+          letterBgColor = const Color(0xFFEF4444).withValues(alpha: 0.35);
+          letterTextColor = const Color(0xFFF87171);
+          trailingIcon = const Icon(Icons.cancel_rounded,
+              color: Color(0xFFEF4444), size: 17);
+          shadows = [
+            BoxShadow(
+              color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+              blurRadius: 8,
+            )
+          ];
+        } else if (isSelected) {
+          bgColor = AptiquColors.secondary.withValues(alpha: 0.18);
+          borderColor = AptiquColors.secondary;
+          letterBgColor = AptiquColors.secondary.withValues(alpha: 0.25);
+          letterTextColor = AptiquColors.secondary;
+          shadows = AptiquColors.secondaryGlow;
+        } else {
+          bgColor = AptiquColors.surfaceContainer;
+          borderColor = AptiquColors.outlineVariant.withValues(alpha: 0.8);
+          letterBgColor = AptiquColors.surfaceContainerHigh;
+          letterTextColor = AptiquColors.onSurfaceVariant;
+        }
 
         return InkWell(
           onTap: q.isCompleted
@@ -272,28 +548,21 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
             duration: const Duration(milliseconds: 150),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? AptiquColors.secondary.withValues(alpha: 0.18)
-                  : AptiquColors.surfaceContainer,
+              color: bgColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected
-                    ? AptiquColors.secondary
-                    : AptiquColors.outlineVariant.withValues(alpha: 0.8),
-                width: isSelected ? 1.5 : 1.0,
+                color: borderColor,
+                width: (isCorrect || isWrongSelected || isSelected) ? 1.5 : 1.0,
               ),
-              boxShadow: isSelected ? AptiquColors.secondaryGlow : null,
+              boxShadow: shadows,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   width: 20,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? AptiquColors.secondary.withValues(alpha: 0.25)
-                        : AptiquColors.surfaceContainerHigh,
+                    color: letterBgColor,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   alignment: Alignment.center,
@@ -301,9 +570,7 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                     optionLetter,
                     style: AptiquTypography.labelCapsBold.copyWith(
                       fontSize: 10,
-                      color: isSelected
-                          ? AptiquColors.secondary
-                          : AptiquColors.onSurfaceVariant,
+                      color: letterTextColor,
                     ),
                   ),
                 ),
@@ -311,16 +578,25 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                 Expanded(
                   child: Text(
                     optionText,
-                    textAlign: TextAlign.end,
+                    textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: AptiquTypography.metricMd.copyWith(
                       fontSize: 13,
-                      color: isSelected ? Colors.white : AptiquColors.onSurface,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                      color: (isSelected || isCorrect || isWrongSelected)
+                          ? Colors.white
+                          : AptiquColors.onSurface,
+                      fontWeight:
+                          (isSelected || isCorrect || isWrongSelected)
+                              ? FontWeight.w700
+                              : FontWeight.w600,
                     ),
                   ),
                 ),
+                if (trailingIcon != null) ...[
+                  const SizedBox(width: 4),
+                  trailingIcon,
+                ],
               ],
             ),
           ),

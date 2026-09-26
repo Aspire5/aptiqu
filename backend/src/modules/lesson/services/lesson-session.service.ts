@@ -442,7 +442,7 @@ export class LessonSessionService {
       }
 
       // Evaluate question if applicable
-      let evaluation: { isCorrect: boolean; score: number; explanation?: string } | undefined;
+      let evaluation: { isCorrect: boolean; score: number; explanation?: string; correctOptionId?: string } | undefined;
       const effectiveActionPayload: { actionId?: string; answer?: string; isCorrect?: boolean } = {
         actionId: input.action.actionId,
         answer: input.action.answer,
@@ -458,6 +458,7 @@ export class LessonSessionService {
           isCorrect: evalRes.isCorrect,
           score: evalRes.score,
           explanation: evalRes.explanation,
+          correctOptionId: evalRes.correctOptionId,
         };
         effectiveActionPayload.isCorrect = evalRes.isCorrect;
 

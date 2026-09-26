@@ -95,6 +95,17 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   @override
   void didUpdateWidget(covariant ConstellationRoadmapView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (_inspectedTopic != null) {
+      final updated = widget.learningMap.topics.firstWhereOrNull(
+        (t) => t.roadmapStepId == _inspectedTopic!.roadmapStepId,
+      );
+      if (updated != null) {
+        _inspectedTopic = updated;
+      }
+    } else {
+      _inspectedTopic = _getActiveOrFirstTopic();
+    }
+
     if (oldWidget.learningMap.subjectId != widget.learningMap.subjectId ||
         oldWidget.cameraTrigger != widget.cameraTrigger) {
       _inspectedTopic = _getActiveOrFirstTopic();
@@ -1489,13 +1500,13 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
           ] else if (!isLocked) ...[
             SizedBox(
               height: 28,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AptiquColors.primary,
+                  backgroundColor: const Color(0xFF7C3AED), // Vibrant purple
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  elevation: 1,
+                  elevation: 2,
                 ),
                 onPressed: () {
                   setState(() => _isDockVisible = false);
@@ -1509,11 +1520,14 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                     widget.onTopicTap(topic);
                   }
                 },
-                child: Text(
+                icon: const Icon(Icons.play_arrow_rounded, size: 14, color: Colors.white),
+                label: Text(
                   'Start',
                   style: AptiquTypography.labelCapsBold.copyWith(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ),

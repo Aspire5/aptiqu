@@ -6,6 +6,7 @@ export interface EvaluationResult {
   score: number;
   explanation?: string;
   conceptId?: string;
+  correctOptionId?: string;
 }
 
 export class QuestionService {
@@ -44,6 +45,7 @@ export class QuestionService {
         isCorrect,
         score: isCorrect ? 1.0 : 0.0,
         explanation,
+        correctOptionId: inlineData.correctOptionId,
       };
     }
 
@@ -62,6 +64,7 @@ export class QuestionService {
         score: isCorrect ? 1.0 : 0.0,
         explanation: question.explanation || undefined,
         conceptId: question.conceptId || undefined,
+        correctOptionId: question.correctAnswer,
       };
     }
 

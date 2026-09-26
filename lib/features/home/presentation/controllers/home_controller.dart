@@ -12,6 +12,60 @@ enum MessageSender { ai, user }
 
 enum QuestionInputType { none, select, text, voice, scan }
 
+enum QuestionDifficultyLevel { easy, medium, hard }
+
+enum QuestionModeType { practice, unranked, ranked }
+
+extension QuestionDifficultyLevelExt on QuestionDifficultyLevel {
+  String get displayName {
+    switch (this) {
+      case QuestionDifficultyLevel.easy:
+        return 'Easy';
+      case QuestionDifficultyLevel.medium:
+        return 'Medium';
+      case QuestionDifficultyLevel.hard:
+        return 'Hard';
+    }
+  }
+
+  static QuestionDifficultyLevel fromString(String? val) {
+    switch (val?.toUpperCase()) {
+      case 'MEDIUM':
+        return QuestionDifficultyLevel.medium;
+      case 'HARD':
+        return QuestionDifficultyLevel.hard;
+      case 'EASY':
+      default:
+        return QuestionDifficultyLevel.easy;
+    }
+  }
+}
+
+extension QuestionModeTypeExt on QuestionModeType {
+  String get displayName {
+    switch (this) {
+      case QuestionModeType.practice:
+        return 'Practice';
+      case QuestionModeType.unranked:
+        return 'Unranked';
+      case QuestionModeType.ranked:
+        return 'Ranked';
+    }
+  }
+
+  static QuestionModeType fromString(String? val) {
+    switch (val?.toUpperCase()) {
+      case 'UNRANKED':
+        return QuestionModeType.unranked;
+      case 'RANKED':
+        return QuestionModeType.ranked;
+      case 'PRACTICE':
+      default:
+        return QuestionModeType.practice;
+    }
+  }
+}
+
 /// Unified Question Model supporting Select, Text, Voice, and Scan
 class QuestionData {
   final String title;
@@ -19,23 +73,41 @@ class QuestionData {
   final String difficulty;
   final QuestionInputType inputType;
   final List<String> options;
+  final List<String> optionIds;
   final int? correctOptionIndex;
   final String? placeholder;
+  final QuestionModeType questionType;
+  final QuestionDifficultyLevel difficultyLevel;
+  final int xp;
+  final List<String> hints;
+  int revealedHintsCount;
   int? selectedOptionIndex;
   String? submittedText;
   bool isCompleted;
+  bool hasEvaluated;
+  bool? isUserCorrect;
+  String? correctOptionId;
 
   QuestionData({
     required this.title,
     required this.desc,
-    this.difficulty = 'Intro Drill',
+    this.difficulty = 'Easy',
     required this.inputType,
     this.options = const [],
+    this.optionIds = const [],
     this.correctOptionIndex,
     this.placeholder,
+    this.questionType = QuestionModeType.practice,
+    this.difficultyLevel = QuestionDifficultyLevel.easy,
+    this.xp = 10,
+    this.hints = const [],
+    this.revealedHintsCount = 0,
     this.selectedOptionIndex,
     this.submittedText,
     this.isCompleted = false,
+    this.hasEvaluated = false,
+    this.isUserCorrect,
+    this.correctOptionId,
   });
 }
 
@@ -85,6 +157,9 @@ class HomeController extends GetxController {
   void selectTopicsTab() {
     selectedNavIndex.value = 1;
     topicsTabTapCount.value++;
+    if (selectedSubjectId.isNotEmpty) {
+      fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+    }
   }
 
   void toggleFullScreen() {
@@ -143,7 +218,7 @@ class HomeController extends GetxController {
     await fetchSubjectMap(subjectId);
   }
 
-  Future<void> fetchSubjectMap(String subjectId) async {
+  Future<void> fetchSubjectMap(String subjectId, {bool updateLessonState = true}) async {
     if (activeRoadmap.value == null) return;
     try {
       isLoadingMap.value = true;
@@ -154,13 +229,15 @@ class HomeController extends GetxController {
       );
       subjectLearningMap.value = map;
 
-      final availableTopic = map.topics.firstWhereOrNull(
-        (t) => t.isAvailable || t.isInProgress,
-      );
-      final stepId = availableTopic?.roadmapStepId ?? 'ga-qa-01';
-      activeRoadmapStepId.value = stepId;
+      if (updateLessonState) {
+        final availableTopic = map.topics.firstWhereOrNull(
+          (t) => t.isAvailable || t.isInProgress,
+        );
+        final stepId = availableTopic?.roadmapStepId ?? 'ga-qa-01';
+        activeRoadmapStepId.value = stepId;
 
-      await loadLessonState(stepId);
+        await loadLessonState(stepId);
+      }
     } catch (e) {
       roadmapError.value = e.toString();
     } finally {
@@ -270,13 +347,25 @@ class HomeController extends GetxController {
           ? node.choiceOptions.map((o) => o.label).toList()
           : (node.inlineQuestion?.options.map((o) => o.label).toList() ??
               ['Continue →']);
+      final optionIds = node.choiceOptions.isNotEmpty
+          ? node.choiceOptions.map((o) => o.id).toList()
+          : (node.inlineQuestion?.options.map((o) => o.id).toList() ??
+              ['opt_continue']);
+
+      final qType = QuestionModeTypeExt.fromString(node.questionType);
+      final diffLevel = QuestionDifficultyLevelExt.fromString(node.difficulty);
 
       questionData = QuestionData(
-        title: 'QUICK CHECK',
+        title: qType.displayName.toUpperCase(),
         desc: node.inlineQuestion?.prompt ?? node.text,
-        difficulty: 'Drill',
+        difficulty: diffLevel.displayName,
         inputType: QuestionInputType.select,
         options: options,
+        optionIds: optionIds,
+        questionType: qType,
+        difficultyLevel: diffLevel,
+        xp: node.xp,
+        hints: node.hints,
       );
     } else if (node.isTextInput) {
       questionData = QuestionData(
@@ -450,6 +539,14 @@ class HomeController extends GetxController {
 
       currentSession.value = response;
 
+      // Evaluation results for option feedback (green check / red cross)
+      if (response.evaluation != null) {
+        q.hasEvaluated = true;
+        q.isUserCorrect = response.evaluation!.isCorrect;
+        q.correctOptionId = response.evaluation!.correctOptionId;
+        messages.refresh();
+      }
+
       // Evaluation explanation if present
       if (response.evaluation?.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
@@ -467,6 +564,9 @@ class HomeController extends GetxController {
 
       if (response.isCompleted) {
         _addCompletionToPlayground(response);
+        if (selectedSubjectId.isNotEmpty) {
+          fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+        }
       } else {
         _addNodeToPlayground(response.currentNode);
       }
@@ -559,6 +659,9 @@ class HomeController extends GetxController {
 
       if (response.isCompleted) {
         _addCompletionToPlayground(response);
+        if (selectedSubjectId.isNotEmpty) {
+          fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+        }
       } else {
         _addNodeToPlayground(response.currentNode);
       }
@@ -598,6 +701,9 @@ class HomeController extends GetxController {
       activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Lesson');
       activeRoadmapStepId.value = roadmapStepId;
       _addNodeToPlayground(session.currentNode);
+      if (selectedSubjectId.isNotEmpty) {
+        fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+      }
     } catch (e) {
       messages.add(
         ChatMessageModel(
@@ -670,6 +776,9 @@ class HomeController extends GetxController {
 
       if (response.isCompleted) {
         _addCompletionToPlayground(response);
+        if (selectedSubjectId.isNotEmpty) {
+          fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+        }
       } else {
         _addNodeToPlayground(response.currentNode);
       }

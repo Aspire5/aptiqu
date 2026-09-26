@@ -15,10 +15,18 @@ class ChoiceOptionModel {
 class QuestionInlineModel {
   final String prompt;
   final List<ChoiceOptionModel> options;
+  final List<String> hints;
+  final int xp;
+  final String difficulty;
+  final String questionType;
 
   QuestionInlineModel({
     required this.prompt,
     required this.options,
+    this.hints = const [],
+    this.xp = 10,
+    this.difficulty = 'EASY',
+    this.questionType = 'PRACTICE',
   });
 
   factory QuestionInlineModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +36,13 @@ class QuestionInlineModel {
               ?.map((o) => ChoiceOptionModel.fromJson(o as Map<String, dynamic>))
               .toList() ??
           [],
+      hints: (json['hints'] as List<dynamic>?)
+              ?.map((h) => h.toString())
+              .toList() ??
+          const [],
+      xp: (json['xp'] as num?)?.toInt() ?? 10,
+      difficulty: json['difficulty'] as String? ?? 'EASY',
+      questionType: json['questionType'] as String? ?? 'PRACTICE',
     );
   }
 }
@@ -59,6 +74,11 @@ class LessonNodeModel {
   bool get isChoice => type == 'CHOICE';
   bool get isQuestion => type == 'QUESTION';
   bool get isTextInput => type == 'TEXT_INPUT';
+
+  List<String> get hints => inlineQuestion?.hints ?? const [];
+  int get xp => inlineQuestion?.xp ?? 10;
+  String get difficulty => inlineQuestion?.difficulty ?? 'EASY';
+  String get questionType => inlineQuestion?.questionType ?? 'PRACTICE';
 
   factory LessonNodeModel.fromJson(Map<String, dynamic> json) {
     final content = json['content'] as Map<String, dynamic>? ?? {};

@@ -18,12 +18,19 @@ export interface ChoiceOption {
   payload?: Record<string, unknown>;
 }
 
+export type QuestionDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
+export type QuestionType = 'PRACTICE' | 'UNRANKED' | 'RANKED';
+
 export interface QuestionVariation {
   prompt: string;
   options: Array<{ id: string; label: string }>;
   correctOptionId: string;
   explanation: string;
   incorrectExplanation?: string;
+  hints?: string[];
+  xp?: number;
+  difficulty?: QuestionDifficulty;
+  questionType?: QuestionType;
 }
 
 export interface QuestionInlineData {
@@ -32,6 +39,10 @@ export interface QuestionInlineData {
   correctOptionId: string;
   explanation: string;
   incorrectExplanation?: string;
+  hints?: string[];
+  xp?: number;
+  difficulty?: QuestionDifficulty;
+  questionType?: QuestionType;
   variations?: QuestionVariation[];
 }
 

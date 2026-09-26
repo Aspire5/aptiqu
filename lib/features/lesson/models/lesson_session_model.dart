@@ -4,11 +4,13 @@ class QuestionEvaluationModel {
   final bool isCorrect;
   final double score;
   final String? explanation;
+  final String? correctOptionId;
 
   QuestionEvaluationModel({
     required this.isCorrect,
     required this.score,
     this.explanation,
+    this.correctOptionId,
   });
 
   factory QuestionEvaluationModel.fromJson(Map<String, dynamic> json) {
@@ -16,6 +18,7 @@ class QuestionEvaluationModel {
       isCorrect: json['isCorrect'] as bool? ?? false,
       score: (json['score'] as num?)?.toDouble() ?? 0.0,
       explanation: json['explanation'] as String?,
+      correctOptionId: json['correctOptionId'] as String?,
     );
   }
 }
