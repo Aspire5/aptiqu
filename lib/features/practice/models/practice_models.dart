@@ -57,11 +57,14 @@ class PracticeOptionModel {
 
   const PracticeOptionModel({required this.id, required this.text});
 
-  factory PracticeOptionModel.fromJson(Map<String, dynamic> json) {
-    return PracticeOptionModel(
-      id: json['id'] as String,
-      text: json['text'] as String,
-    );
+  factory PracticeOptionModel.fromJson(dynamic json) {
+    if (json is Map) {
+      return PracticeOptionModel(
+        id: json['id']?.toString() ?? '',
+        text: json['text']?.toString() ?? '',
+      );
+    }
+    return PracticeOptionModel(id: '', text: json?.toString() ?? '');
   }
 }
 
@@ -93,27 +96,29 @@ class PracticeQuestionModel {
   });
 
   factory PracticeQuestionModel.fromJson(Map<String, dynamic> json) {
-    final opts = (json['options'] as List<dynamic>?)
-            ?.map((o) => PracticeOptionModel.fromJson(o as Map<String, dynamic>))
-            .toList() ??
-        [];
-    final hintsList = (json['hints'] as List<dynamic>?)
-            ?.map((h) => h.toString())
-            .toList() ??
-        [];
+    List<PracticeOptionModel> opts = [];
+    if (json['options'] is List) {
+      opts = (json['options'] as List)
+          .map((o) => PracticeOptionModel.fromJson(o))
+          .toList();
+    }
+    List<String> hintsList = [];
+    if (json['hints'] is List) {
+      hintsList = (json['hints'] as List).map((h) => h.toString()).toList();
+    }
 
     return PracticeQuestionModel(
-      id: json['id'] as String,
-      prompt: json['prompt'] as String,
+      id: json['id']?.toString() ?? '',
+      prompt: json['prompt']?.toString() ?? '',
       options: opts,
-      difficulty: json['difficulty'] as String? ?? 'EASY',
-      estimatedTimeSeconds: json['estimatedTimeSeconds'] as int? ?? 60,
-      calculationMode: json['calculationMode'] as String? ?? 'MENTAL',
+      difficulty: json['difficulty']?.toString() ?? 'EASY',
+      estimatedTimeSeconds: (json['estimatedTimeSeconds'] as num?)?.toInt() ?? 60,
+      calculationMode: json['calculationMode']?.toString() ?? 'MENTAL',
       hints: hintsList,
-      pattern: json['pattern'] as String?,
-      correctAnswer: json['correctAnswer'] as String?,
-      explanation: json['explanation'] as String?,
-      method: json['method'] as String?,
+      pattern: json['pattern']?.toString(),
+      correctAnswer: json['correctAnswer']?.toString(),
+      explanation: json['explanation']?.toString(),
+      method: json['method']?.toString(),
     );
   }
 }
@@ -140,15 +145,18 @@ class PracticeSessionQuestionModel {
   });
 
   factory PracticeSessionQuestionModel.fromJson(Map<String, dynamic> json) {
+    final rawQ = json['question'];
+    final qMap = rawQ is Map ? Map<String, dynamic>.from(rawQ) : <String, dynamic>{};
+
     return PracticeSessionQuestionModel(
-      id: json['id'] as String,
-      sequence: json['sequence'] as int,
+      id: json['id']?.toString() ?? '',
+      sequence: (json['sequence'] as num?)?.toInt() ?? 1,
       isAnswered: json['isAnswered'] as bool? ?? false,
-      userSelectedOptionId: json['userSelectedOptionId'] as String?,
+      userSelectedOptionId: json['userSelectedOptionId']?.toString(),
       isCorrect: json['isCorrect'] as bool?,
-      responseTimeMs: json['responseTimeMs'] as int?,
-      hintsRevealedCount: json['hintsRevealedCount'] as int? ?? 0,
-      question: PracticeQuestionModel.fromJson(json['question'] as Map<String, dynamic>),
+      responseTimeMs: (json['responseTimeMs'] as num?)?.toInt(),
+      hintsRevealedCount: (json['hintsRevealedCount'] as num?)?.toInt() ?? 0,
+      question: PracticeQuestionModel.fromJson(qMap),
     );
   }
 }
@@ -183,28 +191,31 @@ class PracticeSessionModel {
   });
 
   factory PracticeSessionModel.fromJson(Map<String, dynamic> json) {
-    final qList = (json['questions'] as List<dynamic>?)
-            ?.map((q) => PracticeSessionQuestionModel.fromJson(q as Map<String, dynamic>))
-            .toList() ??
-        [];
+    List<PracticeSessionQuestionModel> qList = [];
+    if (json['questions'] is List) {
+      qList = (json['questions'] as List)
+          .whereType<Map>()
+          .map((q) => PracticeSessionQuestionModel.fromJson(Map<String, dynamic>.from(q)))
+          .toList();
+    }
 
-    final subIds = (json['subtopicIds'] as List<dynamic>?)
-            ?.map((s) => s.toString())
-            .toList() ??
-        [];
+    List<String> subIds = [];
+    if (json['subtopicIds'] is List) {
+      subIds = (json['subtopicIds'] as List).map((s) => s.toString()).toList();
+    }
 
     return PracticeSessionModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      subjectId: json['subjectId'] as String,
-      topicId: json['topicId'] as String,
+      id: json['id']?.toString() ?? '',
+      userId: json['userId']?.toString() ?? '',
+      subjectId: json['subjectId']?.toString() ?? '',
+      topicId: json['topicId']?.toString() ?? '',
       subtopicIds: subIds,
-      status: json['status'] as String,
-      currentIndex: json['currentIndex'] as int? ?? 0,
-      totalQuestions: json['totalQuestions'] as int? ?? 10,
-      correctCount: json['correctCount'] as int? ?? 0,
-      totalTimeMs: json['totalTimeMs'] as int? ?? 0,
-      xpAwarded: json['xpAwarded'] as int? ?? 0,
+      status: json['status']?.toString() ?? 'ACTIVE',
+      currentIndex: (json['currentIndex'] as num?)?.toInt() ?? 0,
+      totalQuestions: (json['totalQuestions'] as num?)?.toInt() ?? qList.length,
+      correctCount: (json['correctCount'] as num?)?.toInt() ?? 0,
+      totalTimeMs: (json['totalTimeMs'] as num?)?.toInt() ?? 0,
+      xpAwarded: (json['xpAwarded'] as num?)?.toInt() ?? 0,
       questions: qList,
     );
   }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../models/practice_models.dart';
 import '../repositories/practice_repository.dart';
 import '../views/practice_session_screen.dart';
+import 'practice_session_controller.dart';
 
 enum PracticeSelectionMode {
   random,
@@ -202,9 +203,18 @@ class PracticeCatalogController extends GetxController {
         );
       }
 
+      debugPrint('[Practice] Session created: ${session.id}, totalQuestions: ${session.totalQuestions}');
+
+      // Clean up previous session controller if still in memory
+      if (Get.isRegistered<PracticeSessionController>()) {
+        Get.delete<PracticeSessionController>();
+      }
+
       // Navigate to the practice session screen
+      debugPrint('[Practice] Navigating to PracticeSessionScreen...');
       Get.to(() => PracticeSessionScreen(initialSession: session));
-    } catch (err) {
+    } catch (err, stack) {
+      debugPrint('[Practice] startPracticeSession failed: $err\n$stack');
       Get.snackbar(
         'Session Failed',
         err.toString().replaceAll('Exception: ', ''),
