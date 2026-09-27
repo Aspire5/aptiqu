@@ -42,7 +42,14 @@ export class PracticeSelectionService {
       },
     });
 
+    console.log(
+      `[PracticeSelection] Selecting ${count} questions for subtopics [${subtopicIds.join(', ')}]. Published available: ${totalAvailable}`
+    );
+
     if (totalAvailable < count) {
+      console.log(
+        `[PracticeSelection] Inventory shortage detected (${totalAvailable} < ${count}). Triggering on-demand generation.`
+      );
       // Find subtopics with lowest inventory and generate until count is met
       const subtopicCounts = await Promise.all(
         subtopicIds.map(async (id) => ({
@@ -59,6 +66,10 @@ export class PracticeSelectionService {
           where: { subtopicId: { in: subtopicIds }, status: 'PUBLISHED' },
         });
         if (currentTotal >= count) break;
+
+        console.log(
+          `[PracticeSelection] Generating batch of ${INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT} questions for subtopic "${target.id}" (currently has ${target.count})`
+        );
 
         try {
           await questionGenerationService.generateQuestionsForSubtopic(

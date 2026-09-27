@@ -15,6 +15,23 @@ export function createApp(): Application {
   app.use(cors());
   app.use(express.json());
 
+  // HTTP Request Logger
+  app.use((req: Request, res: Response, next) => {
+    const start = Date.now();
+    const { method, originalUrl } = req;
+    res.on('finish', () => {
+      const duration = Date.now() - start;
+      const status = res.statusCode;
+      const logMsg = `[HTTP] ${method} ${originalUrl} -> ${status} (${duration}ms)`;
+      if (status >= 400) {
+        console.warn(logMsg);
+      } else {
+        console.log(logMsg);
+      }
+    });
+    next();
+  });
+
   // Health check
   app.get('/health', (_req: Request, res: Response) => {
     res.status(200).json({

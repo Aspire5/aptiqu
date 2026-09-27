@@ -38,13 +38,24 @@ export class PracticeController {
     // Both specific selection and random drill modes are supported
     const resolvedSubtopics = Array.isArray(subtopicIds) ? subtopicIds : undefined;
 
+    console.log(
+      `[PracticeController] POST /sessions requested by userId="${userId}" - topicId="${topicId || 'ALL'}", subtopicIds=${JSON.stringify(resolvedSubtopics || 'ALL')}`
+    );
+
     try {
       const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics);
+      console.log(
+        `[PracticeController] Practice session created successfully (sessionId="${session.id}", totalQuestions=${session.totalQuestions})`
+      );
       res.status(201).json({
         success: true,
         data: session,
       });
     } catch (err: any) {
+      console.error(
+        `[PracticeController] createSession failed for userId="${userId}":`,
+        err.message || err
+      );
       res.status(400).json({
         success: false,
         message: err.message || 'Failed to create practice session.',

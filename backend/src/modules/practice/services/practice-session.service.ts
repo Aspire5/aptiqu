@@ -55,11 +55,19 @@ export class PracticeSessionService {
       throw new Error(`Topic "${resolvedTopicId}" not found.`);
     }
 
+    console.log(
+      `[PracticeSession] Initiating practice session creation for user "${userId}", topic "${resolvedTopicId}", subtopics [${resolvedSubtopicIds.join(', ')}]`
+    );
+
     // 2. Select 10 Questions
     const questions = await practiceSelectionService.selectQuestionsForPractice(
       userId,
       resolvedSubtopicIds,
       10
+    );
+
+    console.log(
+      `[PracticeSession] Selected ${questions.length} questions. Saving practice session to database...`
     );
 
     // 3. Create Session in PostgreSQL

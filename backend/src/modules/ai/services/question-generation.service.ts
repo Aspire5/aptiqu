@@ -83,6 +83,9 @@ export class QuestionGenerationService {
       const difficultyCount = INVENTORY_CONFIG.PRACTICE_DIFFICULTY_DISTRIBUTION;
 
       // 3. Generator Call
+      console.log(
+        `[QuestionGen] Initiating AI question generation for subtopic "${subtopic.name}" (${subtopicId}), requestedCount: ${requestedCount}`
+      );
       const generatorPrompt = `
 Generate ${requestedCount} aptitude practice questions under these constraints:
 - Subject: ${subtopic.topic.subject.name} (ID: ${subtopic.topic.subject.id})
@@ -110,6 +113,10 @@ Generate exactly ${requestedCount} questions.
       if (!rawGeneration.questions || !Array.isArray(rawGeneration.questions)) {
         throw new Error('Gemini generator did not return a valid questions array.');
       }
+
+      console.log(
+        `[QuestionGen] Gemini returned ${rawGeneration.questions.length} candidate questions for "${subtopic.name}". Validating structure...`
+      );
 
       // 4. Structural Validation Gate
       const structurallyValid: any[] = [];
@@ -187,6 +194,9 @@ Generate exactly ${requestedCount} questions.
         }
       }
 
+      console.log(
+        `[QuestionGen] Successfully persisted ${createdQuestions.length} valid questions to DB for subtopic "${subtopic.name}" (${subtopicId}).`
+      );
       return createdQuestions;
     } finally {
       await ConcurrencyLockService.releaseLock(subtopicId);

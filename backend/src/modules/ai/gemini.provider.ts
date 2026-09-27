@@ -67,16 +67,35 @@ export class GeminiProvider {
       config,
     });
 
-    const response = await Promise.race([callPromise, timeoutPromise]);
+    const modelName = ENV.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+    const startTime = Date.now();
+    console.log(
+      `[GeminiProvider] Dispatching prompt to model "${modelName}" (length: ${prompt.length} chars, timeout: ${timeoutMs}ms, thinkingBudget: ${thinkingBudget})`
+    );
+
+    let response: any;
+    try {
+      response = await Promise.race([callPromise, timeoutPromise]);
+    } catch (err: any) {
+      const elapsed = Date.now() - startTime;
+      console.error(`[GeminiProvider] Request to "${modelName}" failed after ${elapsed}ms:`, err.message);
+      throw err;
+    }
+
+    const elapsed = Date.now() - startTime;
     const rawText = response.text?.trim();
 
     if (!rawText) {
+      console.error(`[GeminiProvider] Empty response received from "${modelName}" after ${elapsed}ms.`);
       throw new Error('Empty response received from Gemini API.');
     }
+
+    console.log(`[GeminiProvider] Successfully received response from "${modelName}" in ${elapsed}ms (${rawText.length} bytes).`);
 
     try {
       return JSON.parse(rawText) as T;
     } catch (err: any) {
+      console.error(`[GeminiProvider] Failed to parse JSON response:`, err.message);
       throw new Error(
         `Failed to parse Gemini JSON output: ${err.message}. Raw output preview: ${rawText.slice(0, 200)}`
       );
