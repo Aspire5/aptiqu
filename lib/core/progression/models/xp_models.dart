@@ -130,3 +130,28 @@ class LevelUpModel {
     };
   }
 }
+
+class AwardXpResultModel {
+  final bool awarded;
+  final XpProgressModel xp;
+  final LevelUpModel levelUp;
+
+  const AwardXpResultModel({
+    required this.awarded,
+    required this.xp,
+    required this.levelUp,
+  });
+
+  factory AwardXpResultModel.fromJson(Map<String, dynamic> json) {
+    return AwardXpResultModel(
+      awarded: json['awarded'] as bool? ?? false,
+      xp: json['xp'] != null
+          ? XpProgressModel.fromJson(json['xp'] as Map<String, dynamic>)
+          : const XpProgressModel(),
+      levelUp: json['levelUp'] != null
+          ? LevelUpModel.fromJson(json['levelUp'] as Map<String, dynamic>)
+          : const LevelUpModel(),
+    );
+  }
+}
+

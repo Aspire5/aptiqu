@@ -4,6 +4,9 @@ import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/user/user.routes';
 import lessonRoutes from './modules/lesson/lesson.routes';
 import roadmapRoutes from './modules/roadmap/roadmap.routes';
+import practiceRoutes from './modules/practice/practice.routes';
+import pvpRoutes from './modules/pvp/pvp.routes';
+import adminRoutes from './modules/admin/admin.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -26,6 +29,9 @@ export function createApp(): Application {
   app.use('/api/v1/user', userRoutes);
   app.use('/api/v1/lessons', lessonRoutes);
   app.use('/api/v1/roadmaps', roadmapRoutes);
+  app.use('/api/v1/practice', practiceRoutes);
+  app.use('/api/v1/pvp', pvpRoutes);
+  app.use('/api/v1/admin', adminRoutes);
 
   // 404 Handler
   app.use((_req: Request, res: Response) => {

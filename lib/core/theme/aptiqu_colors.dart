@@ -34,6 +34,10 @@ class AptiquColors {
   static const Color onSurfaceVariant = Color(0xFF9BA1B6);
   static const Color onSurfaceDisabled = Color(0xFF5E657C);
 
+  // Status & Feedback Colors
+  static const Color error = Color(0xFFEF4444);
+  static const Color success = Color(0xFF10B981);
+
   // Borders & Outlines
   static const Color outline = Color(0xFF3D445C);
   static const Color outlineVariant = Color(0xFF252B3D);

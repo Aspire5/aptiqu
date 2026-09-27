@@ -7,6 +7,8 @@ import '../widgets/bottom_nav_zone.dart';
 import '../widgets/chat_playground_zone.dart';
 import '../widgets/top_bar_zone.dart';
 import '../widgets/constellation_roadmap_view.dart';
+import '../../../practice/views/practice_catalog_view.dart';
+import '../../../pvp/views/pvp_lobby_view.dart';
 
 /// Screen 3: Redesigned Home Screen with 3 Strict Zones
 /// - Top 12%: Avatar + First Name & Level | Space | Streak & Points Badges
@@ -70,8 +72,10 @@ class HomeScreen extends StatelessWidget {
                         );
                       } else if (currentTab == 1) {
                         return _buildTopicsTab(context, isFullScreen);
+                      } else if (currentTab == 2) {
+                        return const PracticeCatalogView();
                       } else {
-                        return _buildSecondaryTabPlaceholder(currentTab);
+                        return const PvpLobbyView();
                       }
                     }),
                   ),
@@ -183,82 +187,5 @@ class HomeScreen extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Widget _buildSecondaryTabPlaceholder(int tabIndex) {
-    final titles = ['Home', 'Aptitude Topics', 'Speed Practice', 'Ranked Arena'];
-    final subtitles = [
-      'Conversational AI Playground',
-      'Quantitative, Logical & Analytical Reasoning Mastery Tracks',
-      'Daily timed drills, formula flashcards & custom speed challenges',
-      'Global leaderboard, tier promotions & weekly tournament',
-    ];
-    final icons = [
-      Icons.space_dashboard_rounded,
-      Icons.hub_rounded,
-      Icons.sports_esports_rounded,
-      Icons.emoji_events_rounded,
-    ];
-
-    return Container(
-      color: AptiquColors.surfaceDim,
-      padding: const EdgeInsets.all(24),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AptiquColors.primaryContainer.withValues(alpha: 0.15),
-              border: Border.all(
-                color: AptiquColors.primaryContainer,
-                width: 1.5,
-              ),
-              boxShadow: AptiquColors.primaryGlow,
-            ),
-            child: Icon(
-              icons[tabIndex],
-              size: 34,
-              color: AptiquColors.secondary,
-            ),
-          ),
-          const SizedBox(height: 18),
-          Text(
-            titles[tabIndex],
-            style: AptiquTypography.headlineMd.copyWith(
-              color: AptiquColors.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            subtitles[tabIndex],
-            textAlign: TextAlign.center,
-            style: AptiquTypography.bodyMd.copyWith(
-              color: AptiquColors.onSurfaceVariant,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-            decoration: BoxDecoration(
-              color: AptiquColors.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AptiquColors.outlineVariant),
-            ),
-            child: Text(
-              'COMING SOON IN PHASE 2',
-              style: AptiquTypography.labelCapsBold.copyWith(
-                fontSize: 10,
-                color: AptiquColors.tertiary,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

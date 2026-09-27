@@ -32,6 +32,14 @@ model User {
   activeRoadmap          Roadmap?                @relation(fields: [activeRoadmapId], references: [id], onDelete: SetNull)
   roadmapProgress        UserRoadmapStepProgress[]
 
+  // Practice & PvP relations
+  practiceSessions       PracticeSession[]
+  userQuestionProgress   UserQuestionProgress[]
+  pvpMatchesWon          PvpMatch[]              @relation("PvpMatchWinner")
+  pvpMatchParticipations PvpMatchPlayer[]
+  pvpMatchAnswers        PvpMatchAnswer[]
+  pvpSetHistory          PvpPlayerSetHistory[]
+
   @@map("users")
   @@schema("auth")
 }
@@ -130,6 +138,66 @@ enum ScriptStatus {
   REVIEW
   PUBLISHED
   ARCHIVED
+
+  @@schema("learning")
+}
+
+enum QuestionSourceType {
+  MANUAL
+  AI_GENERATED
+
+  @@schema("learning")
+}
+
+enum QuestionStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+
+  @@schema("learning")
+}
+
+enum QuestionDifficultyEnum {
+  EASY
+  MEDIUM
+  HARD
+
+  @@schema("learning")
+}
+
+enum CalculationMode {
+  MENTAL
+  LIGHT_PEN_AND_PAPER
+  PEN_AND_PAPER
+
+  @@schema("learning")
+}
+
+enum PracticeSessionStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ABANDONED
+
+  @@schema("learning")
+}
+
+enum PvpMatchStatus {
+  MATCHMAKING
+  STARTING
+  IN_PROGRESS
+  QUESTION_ACTIVE
+  QUESTION_TRANSITION
+  COMPLETED
+  CANCELLED
+
+  @@schema("learning")
+}
+
+enum PvpConnectionStatus {
+  CONNECTED
+  DISCONNECTED
 
   @@schema("learning")
 }
@@ -234,20 +302,55 @@ model LessonEvent {
   @@schema("learning")
 }
 
+// =============================================================================
+// QUESTIONS DOMAIN
+// =============================================================================
+
 model Question {
-  id             String            @id @default(uuid()) @db.Uuid
-  conceptId      String?           @map("concept_id") @db.Uuid
-  prompt         String
-  questionType   String            @default("MCQ") @map("question_type")
-  options        Json              @db.JsonB
-  correctAnswer  String            @map("correct_answer")
-  explanation    String?
-  difficulty     Int               @default(1)
-  createdAt      DateTime          @default(now()) @map("created_at")
+  id                     String                 @id @default(uuid()) @db.Uuid
+  subjectId              String                 @map("subject_id")
+  topicId                String                 @map("topic_id")
+  subtopicId             String                 @map("subtopic_id")
+  conceptId              String?                @map("concept_id") @db.Uuid
+  pattern                String?
+  prompt                 String
+  questionType           String                 @default("MCQ") @map("question_type")
+  options                Json                   @db.JsonB
+  correctAnswer          String                 @map("correct_answer")
+  hints                  Json                   @default("[]") @db.JsonB
+  explanation            String
+  method                 String
+  difficulty             QuestionDifficultyEnum @default(EASY)
+  estimatedTimeSeconds   Int                    @default(60) @map("estimated_time_seconds")
+  calculationMode        CalculationMode        @default(MENTAL) @map("calculation_mode")
+  
+  sourceType             QuestionSourceType     @default(MANUAL) @map("source_type")
+  status                 QuestionStatus         @default(PUBLISHED)
+  fingerprint            String                 @unique
 
-  concept        Concept?          @relation(fields: [conceptId], references: [id], onDelete: SetNull)
-  attempts       QuestionAttempt[]
+  generationModel        String?                @map("generation_model")
+  generationPromptVersion String?               @map("generation_prompt_version")
+  generationJobId        String?                @map("generation_job_id")
+  generatedAt            DateTime?              @map("generated_at")
+  reviewedAt             DateTime?              @map("reviewed_at")
 
+  createdAt              DateTime               @default(now()) @map("created_at")
+  updatedAt              DateTime               @updatedAt @map("updated_at")
+
+  subject                Subject                @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  topic                  Topic                  @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  subtopic               Subtopic               @relation(fields: [subtopicId], references: [id], onDelete: Restrict)
+  concept                Concept?               @relation(fields: [conceptId], references: [id], onDelete: SetNull)
+  
+  attempts               QuestionAttempt[]
+  practiceSessionQuestions PracticeSessionQuestion[]
+  userProgress           UserQuestionProgress[]
+  pvpSetQuestions        PvpQuestionSetQuestion[]
+  pvpMatchAnswers        PvpMatchAnswer[]
+
+  @@index([subtopicId, status, difficulty])
+  @@index([topicId, status])
+  @@index([sourceType, status])
   @@map("questions")
   @@schema("learning")
 }
@@ -343,6 +446,203 @@ model AiMessage {
 }
 
 // =============================================================================
+// PRACTICE DOMAIN MODELS
+// =============================================================================
+
+model PracticeSession {
+  id              String                 @id @default(uuid()) @db.Uuid
+  userId          String                 @map("user_id") @db.Uuid
+  subjectId       String                 @map("subject_id")
+  topicId         String                 @map("topic_id")
+  subtopicIds     String[]               @map("subtopic_ids")
+  status          PracticeSessionStatus  @default(ACTIVE)
+  currentIndex    Int                    @default(0) @map("current_index")
+  totalQuestions  Int                    @default(10) @map("total_questions")
+  correctCount    Int                    @default(0) @map("correct_count")
+  totalTimeMs     Int                    @default(0) @map("total_time_ms")
+  xpAwarded       Int                    @default(0) @map("xp_awarded")
+  
+  createdAt       DateTime               @default(now()) @map("created_at")
+  updatedAt       DateTime               @updatedAt @map("updated_at")
+  startedAt       DateTime               @default(now()) @map("started_at")
+  lastActivityAt  DateTime               @default(now()) @map("last_activity_at")
+  completedAt     DateTime?              @map("completed_at")
+
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions       PracticeSessionQuestion[]
+
+  @@index([userId, status])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("practice_sessions")
+  @@schema("learning")
+}
+
+model PracticeSessionQuestion {
+  id                   String          @id @default(uuid()) @db.Uuid
+  sessionId            String          @map("session_id") @db.Uuid
+  questionId           String          @map("question_id") @db.Uuid
+  sequence             Int
+  isAnswered           Boolean         @default(false) @map("is_answered")
+  userSelectedOptionId String?         @map("user_selected_option_id")
+  isCorrect            Boolean?        @map("is_correct")
+  responseTimeMs       Int?            @map("response_time_ms")
+  hintsRevealedCount   Int             @default(0) @map("hints_revealed_count")
+  answeredAt           DateTime?       @map("answered_at")
+
+  session              PracticeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question             Question        @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([sessionId, sequence])
+  @@index([sessionId, isAnswered])
+  @@map("practice_session_questions")
+  @@schema("learning")
+}
+
+model UserQuestionProgress {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  questionId        String    @map("question_id") @db.Uuid
+  subtopicId        String    @map("subtopic_id")
+  timesSeen         Int       @default(1) @map("times_seen")
+  timesCorrect      Int       @default(0) @map("times_correct")
+  lastSeenAt        DateTime  @default(now()) @map("last_seen_at")
+  lastIsCorrect     Boolean   @map("last_is_correct")
+  avgResponseTimeMs Int?      @map("avg_response_time_ms")
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question          Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId, subtopicId, lastSeenAt])
+  @@map("user_question_progress")
+  @@schema("learning")
+}
+
+// =============================================================================
+// RANKED PVP DOMAIN MODELS
+// =============================================================================
+
+model PvpQuestionSet {
+  id                      String             @id @default(uuid()) @db.Uuid
+  code                    String             @unique
+  sourceType              QuestionSourceType @default(AI_GENERATED) @map("source_type")
+  status                  QuestionStatus     @default(PUBLISHED)
+  questionCount           Int                @default(10) @map("question_count")
+  
+  generationModel         String?            @map("generation_model")
+  generationPromptVersion String?            @map("generation_prompt_version")
+  generationJobId         String?            @map("generation_job_id")
+  createdAt               DateTime           @default(now()) @map("created_at")
+  updatedAt               DateTime           @updatedAt @map("updated_at")
+
+  setQuestions            PvpQuestionSetQuestion[]
+  matches                 PvpMatch[]
+  playerHistory           PvpPlayerSetHistory[]
+
+  @@index([status, createdAt])
+  @@map("pvp_question_sets")
+  @@schema("learning")
+}
+
+model PvpQuestionSetQuestion {
+  id         String         @id @default(uuid()) @db.Uuid
+  setId      String         @map("set_id") @db.Uuid
+  questionId String         @map("question_id") @db.Uuid
+  sequence   Int            // 1 to 10
+
+  set        PvpQuestionSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+  question   Question       @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([setId, sequence])
+  @@map("pvp_question_set_questions")
+  @@schema("learning")
+}
+
+model PvpMatch {
+  id                       String         @id @default(uuid()) @db.Uuid
+  questionSetId            String         @map("question_set_id") @db.Uuid
+  status                   PvpMatchStatus @default(MATCHMAKING)
+  totalQuestions           Int            @default(10) @map("total_questions")
+  currentQuestionIndex     Int            @default(0) @map("current_question_index") // 0 to 9
+  currentQuestionStartedAt DateTime?      @map("current_question_started_at")
+  currentQuestionDeadline  DateTime?      @map("current_question_deadline")
+  
+  winnerId                 String?        @map("winner_id") @db.Uuid
+  isTie                    Boolean        @default(false) @map("is_tie")
+  
+  startedAt                DateTime?      @map("started_at")
+  endedAt                  DateTime?      @map("ended_at")
+  createdAt                DateTime       @default(now()) @map("created_at")
+
+  questionSet              PvpQuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Restrict)
+  winner                   User?          @relation("PvpMatchWinner", fields: [winnerId], references: [id], onDelete: SetNull)
+  players                  PvpMatchPlayer[]
+  answers                  PvpMatchAnswer[]
+
+  @@index([status, createdAt])
+  @@map("pvp_matches")
+  @@schema("learning")
+}
+
+model PvpMatchPlayer {
+  id                  String              @id @default(uuid()) @db.Uuid
+  matchId             String              @map("match_id") @db.Uuid
+  userId              String              @map("user_id") @db.Uuid
+  score               Int                 @default(0) // correct answers count
+  totalResponseTimeMs Int                 @default(0) @map("total_response_time_ms")
+  isWinner            Boolean             @default(false) @map("is_winner")
+  xpAwarded           Int                 @default(0) @map("xp_awarded")
+  connectionStatus    PvpConnectionStatus @default(CONNECTED) @map("connection_status")
+  joinedAt            DateTime            @default(now()) @map("joined_at")
+
+  match               PvpMatch            @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, userId])
+  @@index([userId, joinedAt(sort: Desc)])
+  @@map("pvp_match_players")
+  @@schema("learning")
+}
+
+model PvpMatchAnswer {
+  id                  String    @id @default(uuid()) @db.Uuid
+  matchId             String    @map("match_id") @db.Uuid
+  userId              String    @map("user_id") @db.Uuid
+  questionId          String    @map("question_id") @db.Uuid
+  questionIndex       Int       @map("question_index") // 0 to 9
+  selectedOptionId    String?   @map("selected_option_id")
+  isCorrect           Boolean   @map("is_correct")
+  responseTimeMs      Int       @map("response_time_ms")
+  serverReceivedAt    DateTime  @default(now()) @map("server_received_at")
+  isLate              Boolean   @default(false) @map("is_late")
+
+  match               PvpMatch  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question            Question  @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([matchId, userId, questionIndex])
+  @@index([matchId, questionIndex])
+  @@map("pvp_match_answers")
+  @@schema("learning")
+}
+
+model PvpPlayerSetHistory {
+  id            String         @id @default(uuid()) @db.Uuid
+  userId        String         @map("user_id") @db.Uuid
+  questionSetId String         @map("question_set_id") @db.Uuid
+  lastPlayedAt  DateTime       @default(now()) @map("last_played_at")
+  playCount     Int            @default(1) @map("play_count")
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionSet   PvpQuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionSetId])
+  @@index([userId, lastPlayedAt])
+  @@map("pvp_player_set_history")
+  @@schema("learning")
+}
+
+// =============================================================================
 // CURRICULUM & ROADMAP SCHEMA
 // =============================================================================
 
@@ -359,6 +659,7 @@ model Subject {
   topics          Topic[]
   roadmapSubjects RoadmapSubject[]
   roadmapSteps    RoadmapStep[]
+  questions       Question[]
 
   @@map("subjects")
   @@schema("learning")
@@ -380,6 +681,7 @@ model Topic {
   subject      Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subtopics    Subtopic[]
   roadmapSteps RoadmapStep[]
+  questions    Question[]
 
   @@index([subjectId])
   @@map("topics")
@@ -402,6 +704,7 @@ model Subtopic {
 
   topic        Topic         @relation(fields: [topicId], references: [id], onDelete: Cascade)
   roadmapSteps RoadmapStep[]
+  questions    Question[]
 
   @@index([topicId])
   @@map("subtopics")
@@ -516,4 +819,3 @@ model UserRoadmapStepProgress {
   @@map("user_roadmap_step_progress")
   @@schema("learning")
 }
-

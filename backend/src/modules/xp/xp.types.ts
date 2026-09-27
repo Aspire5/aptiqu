@@ -4,7 +4,9 @@ export type QuestionDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
 export type XpSourceType =
   | 'SUBTOPIC_SCRIPT_COMPLETION'
   | 'TOPIC_COMPLETION'
-  | 'QUESTION_COMPLETION';
+  | 'QUESTION_COMPLETION'
+  | 'PRACTICE'
+  | 'RANKED';
 
 export interface LevelProgressCalculation {
   currentLevel: number;

@@ -16,4 +16,9 @@ export const ENV = {
   GOOGLE_ANDROID_CLIENT_ID: process.env.GOOGLE_ANDROID_CLIENT_ID || '',
   GOOGLE_IOS_CLIENT_ID: process.env.GOOGLE_IOS_CLIENT_ID || '',
   REDIS_URL: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
+
+  // Gemini AI configuration
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+  GEMINI_THINKING_BUDGET: parseInt(process.env.GEMINI_THINKING_BUDGET || '1024', 10),
 };

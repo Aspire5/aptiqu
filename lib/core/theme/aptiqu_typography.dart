@@ -86,4 +86,33 @@ class AptiquTypography {
     letterSpacing: 0.9,
     color: AptiquColors.primary,
   );
+
+  // Material 3 Compatible Getters
+  static TextStyle get headlineMedium => headlineMd;
+  static TextStyle get headlineSmall => headlineSm;
+  static TextStyle get titleLarge => headlineMd;
+  static TextStyle get titleMedium => headlineSm;
+  static TextStyle get titleSmall => GoogleFonts.outfit(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AptiquColors.onSurface,
+      );
+  static TextStyle get bodyLarge => bodyLg;
+  static TextStyle get bodyMedium => bodyMd;
+  static TextStyle get bodySmall => bodySm;
+  static TextStyle get labelLarge => GoogleFonts.spaceGrotesk(
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        color: AptiquColors.onSurface,
+      );
+  static TextStyle get labelMedium => GoogleFonts.spaceGrotesk(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AptiquColors.onSurfaceVariant,
+      );
+  static TextStyle get labelSmall => GoogleFonts.spaceGrotesk(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: AptiquColors.onSurfaceVariant,
+      );
 }

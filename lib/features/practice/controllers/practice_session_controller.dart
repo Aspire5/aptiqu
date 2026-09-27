@@ -1,0 +1,113 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../models/practice_models.dart';
+import '../repositories/practice_repository.dart';
+import '../../../core/progression/controllers/xp_controller.dart';
+
+class PracticeSessionController extends GetxController {
+  final PracticeRepository _repository = PracticeRepository();
+  final PracticeSessionModel initialSession;
+
+  PracticeSessionController(this.initialSession);
+
+  late final Rx<PracticeSessionModel> session;
+  final RxInt currentQuestionIndex = 0.obs;
+  final RxBool isSubmitting = false.obs;
+  final RxString selectedOptionId = ''.obs;
+  final Rx<PracticeAnswerResultModel?> lastResult = Rx<PracticeAnswerResultModel?>(null);
+  final RxInt hintsRevealed = 0.obs;
+  final RxBool isCompleted = false.obs;
+
+  final Stopwatch _stopwatch = Stopwatch();
+
+  @override
+  void onInit() {
+    super.onInit();
+    session = Rx<PracticeSessionModel>(initialSession);
+    currentQuestionIndex.value = initialSession.currentIndex;
+    _stopwatch.start();
+  }
+
+  PracticeSessionQuestionModel? get currentSessionQuestion {
+    final idx = currentQuestionIndex.value;
+    if (idx >= 0 && idx < session.value.questions.length) {
+      return session.value.questions[idx];
+    }
+    return null;
+  }
+
+  void selectOption(String optionId) {
+    if (lastResult.value != null || isSubmitting.value) return;
+    selectedOptionId.value = optionId;
+  }
+
+  void revealNextHint() {
+    if (hintsRevealed.value < 2) {
+      hintsRevealed.value++;
+    }
+  }
+
+  Future<void> submitAnswer() async {
+    final curQ = currentSessionQuestion;
+    if (curQ == null || selectedOptionId.isEmpty || isSubmitting.value || lastResult.value != null) {
+      return;
+    }
+
+    isSubmitting.value = true;
+    _stopwatch.stop();
+    final elapsedMs = _stopwatch.elapsedMilliseconds;
+
+    try {
+      final result = await _repository.submitAnswer(
+        sessionId: session.value.id,
+        questionId: curQ.question.id,
+        selectedOptionId: selectedOptionId.value,
+        responseTimeMs: elapsedMs,
+      );
+
+      lastResult.value = result;
+
+      if (result.isComplete) {
+        isCompleted.value = true;
+
+        // If XP was awarded upon full completion, synchronize with global XpController
+        if (result.xpResult != null) {
+          XpController.to.handleXpUpdate(
+            xp: result.xpResult!.xp,
+            levelUp: result.xpResult!.levelUp,
+          );
+        }
+      }
+    } catch (err) {
+      Get.snackbar(
+        'Submission Failed',
+        err.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
+  void nextQuestion() {
+    if (currentQuestionIndex.value < session.value.totalQuestions - 1) {
+      currentQuestionIndex.value++;
+      selectedOptionId.value = '';
+      lastResult.value = null;
+      hintsRevealed.value = 0;
+      _stopwatch.reset();
+      _stopwatch.start();
+    }
+  }
+
+  Future<void> abandon() async {
+    if (!isCompleted.value) {
+      try {
+        await _repository.abandonSession(session.value.id);
+      } catch (_) {}
+    }
+    Get.back();
+  }
+}
