@@ -20,5 +20,5 @@ export const ENV = {
   // Gemini AI configuration
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
-  GEMINI_THINKING_BUDGET: parseInt(process.env.GEMINI_THINKING_BUDGET || '1024', 10),
+  GEMINI_THINKING_BUDGET: parseInt(process.env.GEMINI_THINKING_BUDGET || '0', 10),
 };

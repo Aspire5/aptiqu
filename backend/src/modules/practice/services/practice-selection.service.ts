@@ -34,20 +34,39 @@ export class PracticeSelectionService {
       }
     }
 
-    // 2. Check inventory and on-demand generate if below threshold
-    for (const subId of subtopicIds) {
-      const availableCount = await prisma.question.count({
-        where: { subtopicId: subId, status: 'PUBLISHED' },
-      });
+    // 2. Check total inventory across requested subtopics
+    const totalAvailable = await prisma.question.count({
+      where: {
+        subtopicId: { in: subtopicIds },
+        status: 'PUBLISHED',
+      },
+    });
 
-      if (availableCount < INVENTORY_CONFIG.MINIMUM_THRESHOLD_PER_SUBTOPIC) {
+    if (totalAvailable < count) {
+      // Find subtopics with lowest inventory and generate until count is met
+      const subtopicCounts = await Promise.all(
+        subtopicIds.map(async (id) => ({
+          id,
+          count: await prisma.question.count({
+            where: { subtopicId: id, status: 'PUBLISHED' },
+          }),
+        }))
+      );
+      subtopicCounts.sort((a, b) => a.count - b.count);
+
+      for (const target of subtopicCounts) {
+        const currentTotal = await prisma.question.count({
+          where: { subtopicId: { in: subtopicIds }, status: 'PUBLISHED' },
+        });
+        if (currentTotal >= count) break;
+
         try {
           await questionGenerationService.generateQuestionsForSubtopic(
-            subId,
+            target.id,
             INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT
           );
         } catch (err: any) {
-          console.warn(`[PracticeSelection] Auto-generation failed for subtopic ${subId}:`, err.message);
+          console.warn(`[PracticeSelection] Auto-generation failed for subtopic ${target.id}:`, err.message);
         }
       }
     }

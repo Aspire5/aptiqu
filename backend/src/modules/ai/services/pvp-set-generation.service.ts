@@ -101,6 +101,7 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
         systemInstruction: PVP_GENERATION_SYSTEM_INSTRUCTION,
         prompt: generatorPrompt,
         responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
+        timeoutMs: 60000,
       });
 
       if (!rawGeneration.questions || !Array.isArray(rawGeneration.questions)) {
@@ -116,25 +117,11 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
         }
       }
 
-      // 6. Reviewer Call
-      const reviewerPrompt = `
-Audit this 10-question set for head-to-head live duel competition:
-Questions to Audit:
-${JSON.stringify(validQuestions, null, 2)}
-`.trim();
+      if (validQuestions.length === 0) {
+        throw new Error('None of the generated PvP questions passed initial structural validation.');
+      }
 
-      const rawReview = await geminiProvider.generateStructuredContent<{
-        verdict: 'PASS' | 'REVISE';
-        auditSummary: string;
-        acceptedQuestions: any[];
-        rejections: any[];
-      }>({
-        systemInstruction: PVP_REVIEW_SYSTEM_INSTRUCTION,
-        prompt: reviewerPrompt,
-        responseSchema: QUESTION_REVIEW_JSON_SCHEMA,
-      });
-
-      const candidates = rawReview.acceptedQuestions || validQuestions;
+      const candidates = validQuestions;
 
       // 7. Map to live subtopic metadata (fallback to first live subtopic if not matching)
       const firstLiveSubject = liveUniverse[0];

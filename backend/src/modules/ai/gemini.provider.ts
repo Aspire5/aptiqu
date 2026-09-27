@@ -40,7 +40,7 @@ export class GeminiProvider {
       prompt,
       responseSchema,
       thinkingBudget = ENV.GEMINI_THINKING_BUDGET || 1024,
-      timeoutMs = 25000,
+      timeoutMs = 60000,
     } = params;
 
     const timeoutPromise = new Promise<never>((_, reject) =>
@@ -50,18 +50,21 @@ export class GeminiProvider {
       )
     );
 
+    const config: Record<string, any> = {
+      systemInstruction,
+      responseMimeType: 'application/json',
+      responseSchema,
+      temperature: 0.2, // Low temperature for high mathematical accuracy
+    };
+
+    if (thinkingBudget > 0) {
+      config.thinkingConfig = { thinkingBudget };
+    }
+
     const callPromise = this.ai.models.generateContent({
       model: ENV.GEMINI_MODEL || 'gemini-3.5-flash-lite',
       contents: prompt,
-      config: {
-        systemInstruction,
-        thinkingConfig: {
-          thinkingBudget,
-        },
-        responseMimeType: 'application/json',
-        responseSchema,
-        temperature: 0.2, // Low temperature for high mathematical accuracy
-      },
+      config,
     });
 
     const response = await Promise.race([callPromise, timeoutPromise]);

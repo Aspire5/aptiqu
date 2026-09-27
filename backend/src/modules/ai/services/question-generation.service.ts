@@ -61,7 +61,7 @@ export class QuestionGenerationService {
         const count = await prisma.question.count({
           where: { subtopicId, status: 'PUBLISHED' },
         });
-        return count >= INVENTORY_CONFIG.MINIMUM_THRESHOLD_PER_SUBTOPIC;
+        return count >= requestedCount;
       }, 15000);
 
       return await prisma.question.findMany({
@@ -104,13 +104,14 @@ Generate exactly ${requestedCount} questions.
         systemInstruction: PRACTICE_GENERATION_SYSTEM_INSTRUCTION,
         prompt: generatorPrompt,
         responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
+        timeoutMs: 60000,
       });
 
       if (!rawGeneration.questions || !Array.isArray(rawGeneration.questions)) {
         throw new Error('Gemini generator did not return a valid questions array.');
       }
 
-      // 4. First Structural Gate
+      // 4. Structural Validation Gate
       const structurallyValid: any[] = [];
       for (const rawQ of rawGeneration.questions) {
         const valRes = validateQuestionStructure(rawQ, false);
@@ -123,29 +124,7 @@ Generate exactly ${requestedCount} questions.
         throw new Error('None of the generated questions passed initial structural validation.');
       }
 
-      // 5. Reviewer Call (Semantic & Mathematical Integrity)
-      const reviewerPrompt = `
-Audit this batch of ${structurallyValid.length} questions for:
-Subject: ${subtopic.topic.subject.name}
-Topic: ${subtopic.topic.name}
-Subtopic: ${subtopic.name}
-
-Questions to Audit:
-${JSON.stringify(structurallyValid, null, 2)}
-`.trim();
-
-      const rawReview = await geminiProvider.generateStructuredContent<{
-        verdict: 'PASS' | 'REVISE';
-        auditSummary: string;
-        acceptedQuestions: any[];
-        rejections: any[];
-      }>({
-        systemInstruction: PRACTICE_REVIEW_SYSTEM_INSTRUCTION,
-        prompt: reviewerPrompt,
-        responseSchema: QUESTION_REVIEW_JSON_SCHEMA,
-      });
-
-      const candidateQuestions = rawReview.acceptedQuestions || structurallyValid;
+      const candidateQuestions = structurallyValid;
 
       // 6. Deduplicate & Prepare Database Records
       const acceptedRecords: any[] = [];
