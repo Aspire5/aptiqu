@@ -17,15 +17,20 @@ class PracticeRepository {
   }
 
   Future<PracticeSessionModel> createSession({
-    required String topicId,
-    required List<String> subtopicIds,
+    String? topicId,
+    List<String>? subtopicIds,
   }) async {
+    final Map<String, dynamic> data = {};
+    if (topicId != null && topicId.isNotEmpty) {
+      data['topicId'] = topicId;
+    }
+    if (subtopicIds != null && subtopicIds.isNotEmpty) {
+      data['subtopicIds'] = subtopicIds;
+    }
+
     final response = await _client.dio.post(
       '/practice/sessions',
-      data: {
-        'topicId': topicId,
-        'subtopicIds': subtopicIds,
-      },
+      data: data,
     );
 
     if (response.statusCode == 201 && response.data['success'] == true) {

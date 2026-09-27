@@ -5,6 +5,7 @@ import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../../models/roadmap_model.dart';
 import '../controllers/home_controller.dart';
+import '../../../practice/controllers/practice_catalog_controller.dart';
 
 /// Cyberpunk Constellation Winding Roadmap View
 ///
@@ -1306,8 +1307,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   ),
           ),
 
-          // The Practice and Replay Topic buttons appear ONLY once the ENTIRE topic is completed
-          if (isCompleted) ...[
+          // The Practice button appears for any topic with live scripts, with Replay appearing when completed
+          if (isCompleted || topic.scriptAvailable) ...[
             const SizedBox(height: 10),
             Row(
               children: [
@@ -1322,15 +1323,24 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Quick Practice Drills for "${topic.topicName}" loading...'),
-                            backgroundColor: AptiquColors.surfaceContainer,
-                            behavior: SnackBarBehavior.floating,
-                          ),
+                        // 1. Close the topic details sheet
+                        Navigator.of(context).pop();
+
+                        // 2. Preselect in PracticeCatalogController
+                        final practiceController = Get.isRegistered<PracticeCatalogController>()
+                            ? Get.find<PracticeCatalogController>()
+                            : Get.put(PracticeCatalogController());
+
+                        practiceController.preselectTopic(
+                          subjectId: widget.selectedSubjectId,
+                          topicId: topic.topicId,
                         );
+
+                        // 3. Switch to Practice tab (index 2)
+                        final homeController = Get.find<HomeController>();
+                        homeController.selectedNavIndex.value = 2;
                       },
-                      icon: const Icon(Icons.fitness_center_rounded, size: 16, color: AptiquColors.secondary),
+                      icon: const Icon(Icons.sports_esports_rounded, size: 16, color: AptiquColors.secondary),
                       label: Text(
                         'Practice',
                         style: AptiquTypography.headlineSm.copyWith(
@@ -1341,30 +1351,32 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: SizedBox(
-                    height: 40,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AptiquColors.secondary,
-                        foregroundColor: AptiquColors.onSecondary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        elevation: 2,
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () => widget.onTopicTap(topic),
-                      icon: const Icon(Icons.replay_rounded, size: 17),
-                      label: Text(
-                        'Replay Topic',
-                        style: AptiquTypography.headlineSm.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
+                if (isCompleted) ...[
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AptiquColors.secondary,
+                          foregroundColor: AptiquColors.onSecondary,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          elevation: 2,
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () => widget.onTopicTap(topic),
+                        icon: const Icon(Icons.replay_rounded, size: 17),
+                        label: Text(
+                          'Replay Topic',
+                          style: AptiquTypography.headlineSm.copyWith(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ],

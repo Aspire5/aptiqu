@@ -28,6 +28,9 @@ class ChatPlaygroundZone extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
           child: Column(
             children: [
+              // Persistent Now-Playing Small Bar
+              _buildNowPlayingBar(context, controller),
+
               // Scrollable Chat Messages Area
               Expanded(
                 child: Obx(() {
@@ -70,6 +73,100 @@ class ChatPlaygroundZone extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Persistent Now-Playing small bar showing the active subtopic / script title
+  Widget _buildNowPlayingBar(BuildContext context, HomeController controller) {
+    return Obx(() {
+      final scriptTitle = controller.activeScriptTitle.value;
+      final session = controller.currentSession.value;
+      final displayTitle = scriptTitle.isNotEmpty
+          ? scriptTitle
+          : (session?.scriptTitle?.isNotEmpty == true
+              ? session!.scriptTitle!
+              : 'Welcome to Aptitude');
+      final isPlaying = controller.isLessonActive.value || scriptTitle.isNotEmpty;
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: AptiquColors.surfaceContainerLowest.withValues(alpha: 0.9),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isPlaying
+                ? AptiquColors.secondary.withValues(alpha: 0.4)
+                : AptiquColors.outlineVariant.withValues(alpha: 0.5),
+            width: 1,
+          ),
+          boxShadow: isPlaying
+              ? [
+                  BoxShadow(
+                    color: AptiquColors.secondary.withValues(alpha: 0.12),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          children: [
+            // Glowing radar/pulse dot
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isPlaying ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
+                boxShadow: isPlaying ? AptiquColors.secondaryGlow : null,
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // "PLAYING" cyber pill tag
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: (isPlaying ? AptiquColors.secondary : AptiquColors.outlineVariant)
+                    .withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text(
+                isPlaying ? 'NOW PLAYING' : 'READY',
+                style: AptiquTypography.labelCaps.copyWith(
+                  fontSize: 8.5,
+                  fontWeight: FontWeight.w800,
+                  color: isPlaying ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
+                  letterSpacing: 0.6,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // Subtopic / script title
+            Expanded(
+              child: Text(
+                displayTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AptiquTypography.bodySmall.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 6),
+            Icon(
+              isPlaying ? Icons.graphic_eq_rounded : Icons.play_circle_outline_rounded,
+              size: 16,
+              color: isPlaying ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   /// Topic Divider acting as a heading with topic name at center

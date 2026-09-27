@@ -41,20 +41,20 @@ class TopBarZone extends StatelessWidget {
 
       return Container(
         height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         decoration: BoxDecoration(
-          color: AptiquColors.surfaceDim.withValues(alpha: 0.92),
+          color: AptiquColors.surfaceDim.withValues(alpha: 0.95),
           border: const Border(
             bottom: BorderSide(
               color: AptiquColors.outlineVariant,
-              width: 1.0,
+              width: 0.8,
             ),
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -62,7 +62,7 @@ class TopBarZone extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Left Side: Circular Profile Image with Level Progress Ring + First Name & Level (Tappable to slide open Profile)
+            // Left Side: Circular Profile Image with Level Progress Ring + First Name & Level
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
@@ -76,8 +76,8 @@ class TopBarZone extends StatelessWidget {
                     children: [
                       // Subtle circular level progression ring around avatar
                       SizedBox(
-                        width: 46,
-                        height: 46,
+                        width: 38,
+                        height: 38,
                         child: CustomPaint(
                           painter: _AvatarProgressRingPainter(
                             progress: levelProgress,
@@ -85,18 +85,18 @@ class TopBarZone extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        width: 38,
-                        height: 38,
+                        width: 31,
+                        height: 31,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AptiquColors.surfaceDim,
-                            width: 2.0,
+                            width: 1.5,
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
-                              blurRadius: 10,
+                              blurRadius: 8,
                             ),
                           ],
                         ),
@@ -109,7 +109,7 @@ class TopBarZone extends StatelessWidget {
                               child: const Icon(
                                 Icons.person_rounded,
                                 color: AptiquColors.primary,
-                                size: 22,
+                                size: 18,
                               ),
                             ),
                           ),
@@ -117,11 +117,11 @@ class TopBarZone extends StatelessWidget {
                       ),
                       // Online Active Indicator Dot
                       Positioned(
-                        bottom: 2,
-                        right: 2,
+                        bottom: 0,
+                        right: 0,
                         child: Container(
-                          width: 9,
-                          height: 9,
+                          width: 8,
+                          height: 8,
                           decoration: BoxDecoration(
                             color: AptiquColors.secondary,
                             shape: BoxShape.circle,
@@ -135,7 +135,7 @@ class TopBarZone extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -146,19 +146,19 @@ class TopBarZone extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: AptiquTypography.headlineSm.copyWith(
-                            fontSize: 15,
+                            fontSize: 13.5,
                             fontWeight: FontWeight.w700,
                             height: 1.1,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 1),
                         Text(
                           'LEVEL $level',
                           style: AptiquTypography.labelCaps.copyWith(
-                            fontSize: 10,
+                            fontSize: 9,
                             color: AptiquColors.secondary,
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8,
+                            letterSpacing: 0.7,
                           ),
                         ),
                       ],

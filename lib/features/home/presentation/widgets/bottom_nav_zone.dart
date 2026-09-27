@@ -43,12 +43,12 @@ class BottomNavZone extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // 1. HOME
+            // 1. PLAY (formerly HOME)
             _buildNavItem(
               index: 0,
               selectedIndex: selectedIndex,
-              label: 'HOME',
-              icon: Icons.space_dashboard_rounded,
+              label: 'PLAY',
+              icon: Icons.play_circle_filled_rounded,
               onTap: () => controller.selectedNavIndex.value = 0,
             ),
 

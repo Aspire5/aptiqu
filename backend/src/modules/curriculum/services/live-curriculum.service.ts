@@ -13,24 +13,11 @@ export interface LiveSubtopicWithContext {
 export class LiveCurriculumService {
   /**
    * Authoritatively determines if a topic or subtopic is LIVE.
-   * A subtopic is LIVE if and only if it has a published lesson script
-   * with an active published version in an active roadmap.
+   * A subtopic is LIVE if and only if it (or its parent topic) has a published lesson script
+   * with an active published version.
    */
   public static async isSubtopicLive(subtopicId: string): Promise<boolean> {
-    const liveAssignmentCount = await prisma.scriptAssignment.count({
-      where: {
-        status: 'PUBLISHED',
-        publishedVersionId: { not: null },
-        roadmapStep: {
-          subtopicId,
-          isActive: true,
-        },
-      },
-    });
-
-    if (liveAssignmentCount > 0) return true;
-
-    // Fallback: direct check on LessonScript
+    // 1. Direct check on LessonScript with this subtopicId
     const scriptCount = await prisma.lessonScript.count({
       where: {
         subtopicId,
@@ -39,26 +26,32 @@ export class LiveCurriculumService {
       },
     });
 
-    return scriptCount > 0;
+    if (scriptCount > 0) return true;
+
+    // 2. Check if subtopic's parent topic has published scripts
+    const subtopic = await prisma.subtopic.findUnique({
+      where: { id: subtopicId },
+      select: { topicId: true },
+    });
+
+    if (subtopic) {
+      const topicScriptCount = await prisma.lessonScript.count({
+        where: {
+          topicId: subtopic.topicId,
+          status: 'PUBLISHED',
+          publishedVersionId: { not: null },
+        },
+      });
+      if (topicScriptCount > 0) return true;
+    }
+
+    return false;
   }
 
   /**
-   * Checks if a Topic is LIVE.
+   * Checks if a Topic is LIVE (has at least one published script).
    */
   public static async isTopicLive(topicId: string): Promise<boolean> {
-    const count = await prisma.scriptAssignment.count({
-      where: {
-        status: 'PUBLISHED',
-        publishedVersionId: { not: null },
-        roadmapStep: {
-          topicId,
-          isActive: true,
-        },
-      },
-    });
-
-    if (count > 0) return true;
-
     const scriptCount = await prisma.lessonScript.count({
       where: {
         topicId,
@@ -74,52 +67,35 @@ export class LiveCurriculumService {
    * Returns all LIVE subtopics for a specific topic.
    */
   public static async getLiveSubtopicsForTopic(topicId: string): Promise<LiveSubtopicWithContext[]> {
-    const liveAssignments = await prisma.scriptAssignment.findMany({
-      where: {
-        status: 'PUBLISHED',
-        publishedVersionId: { not: null },
-        roadmapStep: {
-          topicId,
-          isActive: true,
-          subtopicId: { not: null },
-        },
-      },
+    const isLive = await this.isTopicLive(topicId);
+    if (!isLive) return [];
+
+    const topic = await prisma.topic.findUnique({
+      where: { id: topicId },
       include: {
-        roadmapStep: {
-          include: {
-            subtopic: true,
-            topic: {
-              include: {
-                subject: true,
-              },
-            },
-          },
+        subject: true,
+        subtopics: {
+          orderBy: { sequence: 'asc' },
         },
       },
     });
 
-    const seenSubtopics = new Map<string, LiveSubtopicWithContext>();
+    if (!topic) return [];
 
-    for (const a of liveAssignments) {
-      const step = a.roadmapStep;
-      if (step.subtopic && !seenSubtopics.has(step.subtopic.id)) {
-        seenSubtopics.set(step.subtopic.id, {
-          id: step.subtopic.id,
-          name: step.subtopic.name,
-          description: step.subtopic.description,
-          topicId: step.topic.id,
-          topicName: step.topic.name,
-          subjectId: step.topic.subject.id,
-          subjectName: step.topic.subject.name,
-        });
-      }
-    }
-
-    return Array.from(seenSubtopics.values());
+    return topic.subtopics.map((s) => ({
+      id: s.id,
+      name: s.name,
+      description: s.description,
+      topicId: topic.id,
+      topicName: topic.name,
+      subjectId: topic.subject.id,
+      subjectName: topic.subject.name,
+    }));
   }
 
   /**
-   * Returns all LIVE topics and subtopics in the universe.
+   * Returns all LIVE topics and subtopics in the universe that have published scripts.
+   * Topics/subjects without scripts (coming soon) are excluded.
    */
   public static async getAllLiveCurriculumUniverse(): Promise<
     {
@@ -130,68 +106,44 @@ export class LiveCurriculumService {
       subtopics: { id: string; name: string; description: string | null }[];
     }[]
   > {
-    const liveAssignments = await prisma.scriptAssignment.findMany({
+    const publishedScripts = await prisma.lessonScript.findMany({
       where: {
         status: 'PUBLISHED',
         publishedVersionId: { not: null },
-        roadmapStep: {
-          isActive: true,
-          subtopicId: { not: null },
-        },
       },
-      include: {
-        roadmapStep: {
-          include: {
-            subtopic: true,
-            topic: {
-              include: {
-                subject: true,
-              },
-            },
-          },
-        },
+      select: {
+        id: true,
+        subjectId: true,
+        topicId: true,
+        subtopicId: true,
       },
     });
 
-    const topicMap = new Map<
-      string,
-      {
-        subjectId: string;
-        subjectName: string;
-        topicId: string;
-        topicName: string;
-        subtopics: Map<string, { id: string; name: string; description: string | null }>;
-      }
-    >();
+    if (publishedScripts.length === 0) return [];
 
-    for (const a of liveAssignments) {
-      const step = a.roadmapStep;
-      if (!step.subtopic) continue;
+    const topicIds = Array.from(new Set(publishedScripts.map((s) => s.topicId)));
 
-      if (!topicMap.has(step.topic.id)) {
-        topicMap.set(step.topic.id, {
-          subjectId: step.topic.subject.id,
-          subjectName: step.topic.subject.name,
-          topicId: step.topic.id,
-          topicName: step.topic.name,
-          subtopics: new Map(),
-        });
-      }
+    const topics = await prisma.topic.findMany({
+      where: { id: { in: topicIds } },
+      include: {
+        subject: true,
+        subtopics: {
+          orderBy: { sequence: 'asc' },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
 
-      const t = topicMap.get(step.topic.id)!;
-      t.subtopics.set(step.subtopic.id, {
-        id: step.subtopic.id,
-        name: step.subtopic.name,
-        description: step.subtopic.description,
-      });
-    }
-
-    return Array.from(topicMap.values()).map((t) => ({
-      subjectId: t.subjectId,
-      subjectName: t.subjectName,
-      topicId: t.topicId,
-      topicName: t.topicName,
-      subtopics: Array.from(t.subtopics.values()),
+    return topics.map((t) => ({
+      subjectId: t.subject.id,
+      subjectName: t.subject.name,
+      topicId: t.id,
+      topicName: t.name,
+      subtopics: t.subtopics.map((s) => ({
+        id: s.id,
+        name: s.name,
+        description: s.description,
+      })),
     }));
   }
 }

@@ -35,16 +35,11 @@ export class PracticeController {
     }
 
     const { topicId, subtopicIds } = req.body;
-    if (!topicId || !Array.isArray(subtopicIds) || subtopicIds.length === 0) {
-      res.status(400).json({
-        success: false,
-        message: 'Invalid payload. "topicId" and non-empty "subtopicIds" array are required.',
-      });
-      return;
-    }
+    // Both specific selection and random drill modes are supported
+    const resolvedSubtopics = Array.isArray(subtopicIds) ? subtopicIds : undefined;
 
     try {
-      const session = await practiceSessionService.createSession(userId, topicId, subtopicIds);
+      const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics);
       res.status(201).json({
         success: true,
         data: session,

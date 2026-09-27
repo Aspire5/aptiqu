@@ -15,22 +15,50 @@ export class PracticeSessionService {
 
   /**
    * Initializes and persists a new 10-Question Practice Session.
+   * Supports specific topic/subtopics or global random selection across live content.
    */
-  public async createSession(userId: string, topicId: string, subtopicIds: string[]) {
+  public async createSession(userId: string, topicId?: string, subtopicIds?: string[]) {
+    let resolvedSubtopicIds = subtopicIds;
+    let resolvedTopicId = topicId;
+
+    if (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0) {
+      const { LiveCurriculumService } = await import('../../curriculum/services/live-curriculum.service');
+      const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
+      const allSubtopics = liveUniverse.flatMap((u) => u.subtopics.map((s) => s.id));
+      if (allSubtopics.length === 0) {
+        throw new Error('No live topics or subtopics currently available for practice.');
+      }
+      resolvedSubtopicIds = allSubtopics;
+      if (!resolvedTopicId && liveUniverse.length > 0) {
+        resolvedTopicId = liveUniverse[0].topicId;
+      }
+    }
+
+    if (!resolvedTopicId && resolvedSubtopicIds.length > 0) {
+      const sub = await prisma.subtopic.findUnique({
+        where: { id: resolvedSubtopicIds[0] },
+      });
+      resolvedTopicId = sub?.topicId;
+    }
+
+    if (!resolvedTopicId) {
+      resolvedTopicId = 'qa-foundations';
+    }
+
     // 1. Resolve Subject for the Topic
     const topic = await prisma.topic.findUnique({
-      where: { id: topicId },
+      where: { id: resolvedTopicId },
       include: { subject: true },
     });
 
     if (!topic) {
-      throw new Error(`Topic "${topicId}" not found.`);
+      throw new Error(`Topic "${resolvedTopicId}" not found.`);
     }
 
     // 2. Select 10 Questions
     const questions = await practiceSelectionService.selectQuestionsForPractice(
       userId,
-      subtopicIds,
+      resolvedSubtopicIds,
       10
     );
 
@@ -41,7 +69,7 @@ export class PracticeSessionService {
           userId,
           subjectId: topic.subjectId,
           topicId: topic.id,
-          subtopicIds,
+          subtopicIds: resolvedSubtopicIds,
           status: 'ACTIVE',
           currentIndex: 0,
           totalQuestions: questions.length,

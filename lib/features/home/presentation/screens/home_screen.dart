@@ -32,8 +32,8 @@ class HomeScreen extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final totalHeight = constraints.maxHeight;
-              // 3 Zones allocation: 12% Top, 76% Center, 12% Bottom
-              final topZoneHeight = (totalHeight * 0.12).clamp(68.0, 92.0);
+              // 3 Zones allocation: Top (reduced by 30%), Center, Bottom
+              final topZoneHeight = (totalHeight * 0.084).clamp(50.0, 62.0);
               final bottomZoneHeight = (totalHeight * 0.12).clamp(62.0, 84.0);
 
               return Column(
