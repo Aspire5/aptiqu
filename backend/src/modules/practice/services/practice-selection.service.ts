@@ -34,127 +34,143 @@ export class PracticeSelectionService {
       }
     }
 
-    // 2. Check total inventory across requested subtopics
-    const totalAvailable = await prisma.question.count({
+    // 2. Fetch user progress for questions in these subtopics
+    const userProgressRecords = await prisma.userQuestionProgress.findMany({
+      where: {
+        userId,
+        subtopicId: { in: subtopicIds },
+      },
+      include: {
+        question: true,
+      },
+      orderBy: { lastSeenAt: 'asc' }, // Least recently seen first
+    });
+
+    const seenQuestionIds = new Set(userProgressRecords.map((p) => p.questionId));
+
+    // Identify questions the user previously failed (lastIsCorrect == false)
+    const failedQuestions = userProgressRecords
+      .filter((p) => !p.lastIsCorrect && p.question && p.question.status === 'PUBLISHED')
+      .map((p) => p.question);
+
+    // Reserve up to 3 questions for previously failed patterns/questions
+    const targetFailedCount = Math.min(3, failedQuestions.length);
+    const selectedFailed: any[] = [];
+    const addedIds = new Set<string>();
+
+    // Prioritize variety of patterns among failed questions
+    const seenPatterns = new Set<string>();
+    for (const q of failedQuestions) {
+      if (selectedFailed.length >= targetFailedCount) break;
+      const patternKey = q.pattern || q.id;
+      if (!seenPatterns.has(patternKey) && !addedIds.has(q.id)) {
+        selectedFailed.push(q);
+        addedIds.add(q.id);
+        seenPatterns.add(patternKey);
+      }
+    }
+    // If we have remaining failed slots, fill with remaining failed questions
+    for (const q of failedQuestions) {
+      if (selectedFailed.length >= targetFailedCount) break;
+      if (!addedIds.has(q.id)) {
+        selectedFailed.push(q);
+        addedIds.add(q.id);
+      }
+    }
+
+    const neededFresh = count - selectedFailed.length;
+
+    // 3. Check inventory of UNSEEN published questions for this user
+    let unseenCandidates = await prisma.question.findMany({
       where: {
         subtopicId: { in: subtopicIds },
         status: 'PUBLISHED',
+        id: { notIn: Array.from(seenQuestionIds) },
       },
     });
 
     console.log(
-      `[PracticeSelection] Selecting ${count} questions for subtopics [${subtopicIds.join(', ')}]. Published available: ${totalAvailable}`
+      `[PracticeSelection] User has ${failedQuestions.length} previously failed questions (selected ${selectedFailed.length}). Needs ${neededFresh} fresh questions. Currently unseen in DB: ${unseenCandidates.length}`
     );
 
-    if (totalAvailable < count) {
+    // 4. Trigger AI Generation if unseen inventory is insufficient
+    if (unseenCandidates.length < neededFresh) {
+      const shortage = neededFresh - unseenCandidates.length;
       console.log(
-        `[PracticeSelection] Inventory shortage detected (${totalAvailable} < ${count}). Triggering on-demand generation.`
+        `[PracticeSelection] Fresh question shortage detected (${unseenCandidates.length} < ${neededFresh}, deficit: ${shortage}). Triggering on-demand Gemini generation...`
       );
-      // Find subtopics with lowest inventory and generate until count is met
+
+      // Distribute generation across subtopics with lowest unseen inventory
       const subtopicCounts = await Promise.all(
         subtopicIds.map(async (id) => ({
           id,
           count: await prisma.question.count({
-            where: { subtopicId: id, status: 'PUBLISHED' },
+            where: {
+              subtopicId: id,
+              status: 'PUBLISHED',
+              id: { notIn: Array.from(seenQuestionIds) },
+            },
           }),
         }))
       );
       subtopicCounts.sort((a, b) => a.count - b.count);
 
       for (const target of subtopicCounts) {
-        const currentTotal = await prisma.question.count({
-          where: { subtopicId: { in: subtopicIds }, status: 'PUBLISHED' },
-        });
-        if (currentTotal >= count) break;
+        if (unseenCandidates.length >= neededFresh) break;
 
         console.log(
-          `[PracticeSelection] Generating batch of ${INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT} questions for subtopic "${target.id}" (currently has ${target.count})`
+          `[PracticeSelection] Auto-generating batch of fresh questions for subtopic "${target.id}"...`
         );
 
         try {
-          await questionGenerationService.generateQuestionsForSubtopic(
+          const generated = await questionGenerationService.generateQuestionsForSubtopic(
             target.id,
             INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT
           );
+
+          // Add newly generated questions to our fresh pool
+          for (const g of generated) {
+            if (!addedIds.has(g.id) && !seenQuestionIds.has(g.id)) {
+              unseenCandidates.push(g);
+            }
+          }
         } catch (err: any) {
           console.warn(`[PracticeSelection] Auto-generation failed for subtopic ${target.id}:`, err.message);
         }
       }
     }
 
-    // 3. Candidate Prioritization Pipeline
-    // Fetch all user progress for questions in these subtopics
-    const userProgressRecords = await prisma.userQuestionProgress.findMany({
-      where: {
-        userId,
-        subtopicId: { in: subtopicIds },
-      },
-      select: {
-        questionId: true,
-        timesSeen: true,
-        lastIsCorrect: true,
-        lastSeenAt: true,
-      },
-    });
+    // 5. Assemble final pool
+    const selected: any[] = [...selectedFailed];
 
-    const progressMap = new Map(userProgressRecords.map((p) => [p.questionId, p]));
-
-    // Fetch all available published questions for these subtopics
-    const allCandidates = await prisma.question.findMany({
-      where: {
-        subtopicId: { in: subtopicIds },
-        status: 'PUBLISHED',
-      },
-    });
-
-    if (allCandidates.length === 0) {
-      throw new Error('No usable questions available for the selected subtopics.');
-    }
-
-    // Categorize candidates
-    const unseen: any[] = [];
-    const previouslyIncorrect: any[] = [];
-    const previouslyCorrect: any[] = [];
-
-    for (const q of allCandidates) {
-      const prog = progressMap.get(q.id);
-      if (!prog) {
-        unseen.push(q);
-      } else if (!prog.lastIsCorrect) {
-        previouslyIncorrect.push({ q, lastSeenAt: prog.lastSeenAt });
-      } else {
-        previouslyCorrect.push({ q, lastSeenAt: prog.lastSeenAt });
+    // Shuffle unseen candidates for variety and add up to target count
+    const shuffledUnseen = unseenCandidates.sort(() => 0.5 - Math.random());
+    for (const q of shuffledUnseen) {
+      if (selected.length >= count) break;
+      if (!addedIds.has(q.id)) {
+        selected.push(q);
+        addedIds.add(q.id);
       }
     }
 
-    // Sort previously incorrect & correct by least recently seen
-    previouslyIncorrect.sort((a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime());
-    previouslyCorrect.sort((a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime());
+    // 6. Safety fallback: If AI generation couldn't fulfill fresh count, use least recently seen
+    if (selected.length < count) {
+      const seenSorted = [...userProgressRecords]
+        .sort((a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime())
+        .map((p) => p.question)
+        .filter((q) => q && q.status === 'PUBLISHED');
 
-    // Assemble final pool
-    const selected: any[] = [];
-
-    // Helper to add unique
-    const addedIds = new Set<string>();
-    const tryAdd = (question: any) => {
-      if (selected.length < count && !addedIds.has(question.id)) {
-        selected.push(question);
-        addedIds.add(question.id);
+      for (const q of seenSorted) {
+        if (selected.length >= count) break;
+        if (!addedIds.has(q.id)) {
+          selected.push(q);
+          addedIds.add(q.id);
+        }
       }
-    };
+    }
 
-    // 1. Unseen questions first
-    for (const q of unseen) tryAdd(q);
-
-    // 2. Previously incorrect
-    for (const item of previouslyIncorrect) tryAdd(item.q);
-
-    // 3. Fallback: least recently seen
-    for (const item of previouslyCorrect) tryAdd(item.q);
-
-    // If still short, cycle through remaining allCandidates
-    for (const q of allCandidates) tryAdd(q);
-
+    // 7. Final shuffle so review questions are interleaved naturally
+    selected.sort(() => 0.5 - Math.random());
     return selected.slice(0, count);
   }
 }

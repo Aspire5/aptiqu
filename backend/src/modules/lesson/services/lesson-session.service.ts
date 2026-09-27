@@ -33,6 +33,26 @@ export class LessonSessionService {
     return cloned;
   }
 
+  private async sanitizeNodeForUser(node: LessonNode, userId?: string, scriptId?: string): Promise<LessonNode> {
+    const cloned = this.sanitizeNode(node);
+    if (userId && cloned.type === 'QUESTION') {
+      const qRef = cloned.questionReference;
+      const questionId = qRef?.questionId;
+      const targetKey = questionId ? `q:${questionId}` : (scriptId ? `script:${scriptId}:node:${cloned.id}` : null);
+      if (targetKey) {
+        const idempKey = `question_first_solve:${userId}:${targetKey}`;
+        const claimed = await prisma.xpEvent.findUnique({
+          where: { idempotencyKey: idempKey },
+          select: { id: true },
+        });
+        if (claimed && cloned.questionReference?.inlineData) {
+          (cloned.questionReference.inlineData as any).xp = 0;
+        }
+      }
+    }
+    return cloned;
+  }
+
   /**
    * Starts or resumes a lesson session by roadmap step.
    * This is the authoritative entry point for roadmap-based learning.
@@ -250,7 +270,7 @@ export class LessonSessionService {
       scriptVersionId: session.scriptVersionId,
       status: session.status,
       stateVersion: session.stateVersion,
-      currentNode: this.sanitizeNode(rawNode),
+      currentNode: await this.sanitizeNodeForUser(rawNode, userId, session.scriptId),
       history,
     };
 
@@ -359,7 +379,7 @@ export class LessonSessionService {
       scriptVersionId: session.scriptVersionId,
       status: session.status,
       stateVersion: session.stateVersion,
-      currentNode: this.sanitizeNode(rawNode),
+      currentNode: await this.sanitizeNodeForUser(rawNode, userId, scriptId),
     };
 
     await redisService.set(idempKey, JSON.stringify(response), 86400);
@@ -387,7 +407,7 @@ export class LessonSessionService {
       scriptVersionId: session.scriptVersionId,
       status: session.status,
       stateVersion: session.stateVersion,
-      currentNode: this.sanitizeNode(rawNode),
+      currentNode: await this.sanitizeNodeForUser(rawNode, userId, session.scriptId),
     };
   }
 
@@ -480,18 +500,21 @@ export class LessonSessionService {
           },
         });
 
-        // Award Question XP using centralized formula (type XP + difficulty XP)
-        const qType = currentNode.questionReference?.inlineData?.questionType;
-        const qDiff = currentNode.questionReference?.inlineData?.difficulty;
-        actionXpResult = await xpService.awardQuestionXp({
-          userId,
-          clientActionId: input.clientActionId,
-          questionType: qType,
-          difficulty: qDiff,
-          questionId: currentNode.questionReference?.questionId || null,
-          nodeId: currentNode.id,
-          sessionId,
-        });
+        // Award Question XP using centralized formula (type XP + difficulty XP) ONLY on correct answer
+        if (evalRes.isCorrect) {
+          const qType = currentNode.questionReference?.inlineData?.questionType;
+          const qDiff = currentNode.questionReference?.inlineData?.difficulty;
+          actionXpResult = await xpService.awardQuestionXp({
+            userId,
+            clientActionId: input.clientActionId,
+            scriptId: session.scriptId,
+            questionType: qType,
+            difficulty: qDiff,
+            questionId: currentNode.questionReference?.questionId || null,
+            nodeId: currentNode.id,
+            sessionId,
+          });
+        }
 
         // Record mastery if linked to concept
         if (evalRes.conceptId) {
@@ -608,10 +631,11 @@ export class LessonSessionService {
 
         let combinedXp = scriptXpResult.xp;
         let combinedLevelUp = scriptXpResult.levelUp;
+        let topicXpResult: any = null;
 
         // Check if Topic is now fully completed in active roadmap
         if (effectiveRoadmapId && effectiveTopicId) {
-          const topicXpResult = await roadmapProgressionService.checkAndAwardTopicCompletion(
+          topicXpResult = await roadmapProgressionService.checkAndAwardTopicCompletion(
             userId,
             effectiveRoadmapId,
             effectiveTopicId
@@ -632,8 +656,9 @@ export class LessonSessionService {
           }
         }
 
+        const anyAwarded = scriptXpResult.awarded || (topicXpResult && topicXpResult.awarded);
         actionXpResult = {
-          awarded: true,
+          awarded: !!anyAwarded,
           xp: combinedXp,
           levelUp: combinedLevelUp,
         };
@@ -660,9 +685,9 @@ export class LessonSessionService {
         status: isCompleted ? 'COMPLETED' : 'ACTIVE',
         isCompleted,
         evaluation,
-        currentNode: this.sanitizeNode(nextNode),
-        xp: actionXpResult.xp,
-        levelUp: actionXpResult.levelUp,
+        currentNode: await this.sanitizeNodeForUser(nextNode, userId, session.scriptId),
+        xp: actionXpResult && actionXpResult.awarded && actionXpResult.xp && actionXpResult.xp.earned > 0 ? actionXpResult.xp : null,
+        levelUp: actionXpResult && actionXpResult.awarded && actionXpResult.levelUp && actionXpResult.levelUp.occurred ? actionXpResult.levelUp : null,
         ...(isCompleted && nextStepResult ? { next: nextStepResult } : {}),
       };
 
@@ -858,7 +883,7 @@ export class LessonSessionService {
             scriptVersionId: activeSession.scriptVersionId,
             status: activeSession.status,
             stateVersion: activeSession.stateVersion,
-            currentNode: rawNode ? this.sanitizeNode(rawNode) : null,
+            currentNode: rawNode ? await this.sanitizeNodeForUser(rawNode, userId, activeSession.scriptId) : null,
             history,
           },
         };

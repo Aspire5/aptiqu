@@ -125,23 +125,26 @@ class PracticeSessionScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                question.calculationMode,
+                                question.calculationMode.toHumanCalculationMode(),
                                 style: AptiquTypography.labelSmall.copyWith(
                                   color: AptiquColors.onSurfaceVariant,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                            const Spacer(),
-                            if (question.pattern != null)
-                              Text(
-                                question.pattern!,
-                                style: AptiquTypography.labelSmall.copyWith(
-                                  color: AptiquColors.onSurfaceVariant,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
                           ],
                         ),
+                        if (question.pattern != null && question.pattern!.trim().isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            question.pattern!,
+                            style: AptiquTypography.labelSmall.copyWith(
+                              color: AptiquColors.onSurfaceVariant,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 16),
 
                         // Question Prompt Box
@@ -319,7 +322,7 @@ class PracticeSessionScreen extends StatelessWidget {
                               lastRes != null
                                   ? (controller.currentQuestionIndex.value < controller.session.value.totalQuestions - 1
                                       ? 'Next Question'
-                                      : 'View Results')
+                                      : 'Continue to Summary')
                                   : 'Submit Answer',
                               style: AptiquTypography.labelLarge.copyWith(fontWeight: FontWeight.bold),
                             ),
@@ -432,7 +435,7 @@ class PracticeSessionScreen extends StatelessWidget {
   }
 
   Widget _buildCompletionView(BuildContext context, PracticeSessionController controller) {
-    final res = controller.lastResult.value;
+    final res = controller.completionResult.value ?? controller.lastResult.value;
     final correct = res?.correctCount ?? controller.session.value.correctCount;
     final total = controller.session.value.totalQuestions;
     final xpEarned = res?.xpAwarded ?? 0;
@@ -465,29 +468,31 @@ class PracticeSessionScreen extends StatelessWidget {
               'You scored $correct out of $total questions correct',
               style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurfaceVariant),
             ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              decoration: BoxDecoration(
-                color: AptiquColors.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AptiquColors.primary),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.bolt_rounded, color: AptiquColors.primary, size: 28),
-                  const SizedBox(width: 8),
-                  Text(
-                    '+$xpEarned XP Earned',
-                    style: AptiquTypography.titleMedium.copyWith(
-                      color: AptiquColors.primary,
-                      fontWeight: FontWeight.bold,
+            if (xpEarned > 0) ...[
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  color: AptiquColors.primary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AptiquColors.primary),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.bolt_rounded, color: AptiquColors.primary, size: 28),
+                    const SizedBox(width: 8),
+                    Text(
+                      '+$xpEarned XP Earned',
+                      style: AptiquTypography.titleMedium.copyWith(
+                        color: AptiquColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: 36),
             SizedBox(
               width: double.infinity,

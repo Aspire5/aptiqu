@@ -260,3 +260,23 @@ class PracticeAnswerResultModel {
     );
   }
 }
+
+extension CalculationModeFormatter on String {
+  String toHumanCalculationMode() {
+    switch (toUpperCase()) {
+      case 'LIGHT_PEN_AND_PAPER':
+        return 'Light Pen & Paper';
+      case 'FULL_PEN_AND_PAPER':
+        return 'Pen & Paper';
+      case 'MENTAL':
+        return 'Mental Only';
+      default:
+        return replaceAll('_', ' ')
+            .toLowerCase()
+            .split(' ')
+            .where((w) => w.isNotEmpty)
+            .map((w) => '${w[0].toUpperCase()}${w.substring(1)}')
+            .join(' ');
+    }
+  }
+}

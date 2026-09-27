@@ -19,6 +19,8 @@ class PracticeSessionController extends GetxController {
   final RxInt hintsRevealed = 0.obs;
   final RxBool isCompleted = false.obs;
 
+  final Rx<PracticeAnswerResultModel?> completionResult = Rx<PracticeAnswerResultModel?>(null);
+
   final Stopwatch _stopwatch = Stopwatch();
 
   @override
@@ -69,15 +71,7 @@ class PracticeSessionController extends GetxController {
       lastResult.value = result;
 
       if (result.isComplete) {
-        isCompleted.value = true;
-
-        // If XP was awarded upon full completion, synchronize with global XpController
-        if (result.xpResult != null) {
-          XpController.to.handleXpUpdate(
-            xp: result.xpResult!.xp,
-            levelUp: result.xpResult!.levelUp,
-          );
-        }
+        completionResult.value = result;
       }
     } catch (err) {
       Get.snackbar(
@@ -100,6 +94,19 @@ class PracticeSessionController extends GetxController {
       hintsRevealed.value = 0;
       _stopwatch.reset();
       _stopwatch.start();
+    } else {
+      finishSession();
+    }
+  }
+
+  void finishSession() {
+    isCompleted.value = true;
+    final compResult = completionResult.value ?? lastResult.value;
+    if (compResult != null && compResult.xpResult != null) {
+      XpController.to.handleXpUpdate(
+        xp: compResult.xpResult!.xp,
+        levelUp: compResult.xpResult!.levelUp,
+      );
     }
   }
 

@@ -241,6 +241,7 @@ export class XpService {
   public async awardQuestionXp(params: {
     userId: string;
     clientActionId: string;
+    scriptId?: string | null;
     questionType?: string | null;
     difficulty?: string | number | null;
     questionId?: string | null;
@@ -251,7 +252,11 @@ export class XpService {
     const normType = XpPolicy.normalizeQuestionType(params.questionType);
     const normDiff = XpPolicy.normalizeQuestionDifficulty(params.difficulty);
 
-    const idempotencyKey = `question_attempt:${params.userId}:${params.clientActionId}`;
+    // One-time XP enforcement: User can only earn XP for a question or script question node once
+    const targetKey = params.questionId
+      ? `q:${params.questionId}`
+      : `script:${params.scriptId || 'generic'}:node:${params.nodeId}`;
+    const idempotencyKey = `question_first_solve:${params.userId}:${targetKey}`;
 
     return this.awardXp({
       userId: params.userId,
@@ -268,6 +273,7 @@ export class XpService {
         typeXp: XpPolicy.QUESTION_TYPE_XP[normType],
         difficultyXp: XpPolicy.QUESTION_DIFFICULTY_XP[normDiff],
         nodeId: params.nodeId,
+        scriptId: params.scriptId,
         clientActionId: params.clientActionId,
       },
     });
@@ -287,8 +293,8 @@ export class XpService {
     sessionId: string;
   }): Promise<AwardXpResult> {
     const amount = XpPolicy.SUBTOPIC_SCRIPT_COMPLETION_XP;
-    const roadmapKey = params.roadmapId || 'noroadmap';
-    const idempotencyKey = `subtopic_completion:${params.userId}:${roadmapKey}:${params.scriptId}:${params.scriptVersionId}`;
+    // One-time XP enforcement: A script can only award completion XP once per user across the system
+    const idempotencyKey = `subtopic_completion:${params.userId}:${params.scriptId}`;
 
     return this.awardXp({
       userId: params.userId,

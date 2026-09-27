@@ -145,31 +145,33 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.5),
+                  if (!q.isCompleted && q.xp > 0) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.bolt_rounded, size: 12, color: Color(0xFFF59E0B)),
+                          Text(
+                            '+${q.xp} XP',
+                            style: AptiquTypography.labelCapsBold.copyWith(
+                              color: const Color(0xFFFCD34D),
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.bolt_rounded, size: 12, color: Color(0xFFF59E0B)),
-                        Text(
-                          '+${q.xp} XP',
-                          style: AptiquTypography.labelCapsBold.copyWith(
-                            color: const Color(0xFFFCD34D),
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ],
               ),
             ],
