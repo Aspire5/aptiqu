@@ -20,6 +20,7 @@ void main() async {
     ),
   );
 
+
   // Initialize Global GetX Dependencies
   InitialBinding().dependencies();
 

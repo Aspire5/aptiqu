@@ -493,7 +493,7 @@ class PracticeSessionScreen extends StatelessWidget {
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: () => Get.back(),
+                onPressed: () => Navigator.of(context).pop(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AptiquColors.primary,
                   foregroundColor: Colors.white,

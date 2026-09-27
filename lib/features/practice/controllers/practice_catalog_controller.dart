@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../models/practice_models.dart';
 import '../repositories/practice_repository.dart';
 import '../views/practice_session_screen.dart';
+import '../../../core/routing/app_router.dart';
 import 'practice_session_controller.dart';
 
 enum PracticeSelectionMode {
@@ -175,6 +176,27 @@ class PracticeCatalogController extends GetxController {
     _pendingTopicId = null;
   }
 
+  void _showNotice(String title, String message, {bool isError = false}) {
+    final ctx = AppRouter.navigatorKey.currentContext;
+    if (ctx != null && ctx.mounted) {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('$title: $message'),
+          backgroundColor: isError ? Colors.redAccent : Colors.black87,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      Get.snackbar(
+        title,
+        message,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: isError ? Colors.redAccent.withValues(alpha: 0.9) : Colors.black87,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   Future<void> startPracticeSession() async {
     isStartingSession.value = true;
     try {
@@ -186,13 +208,7 @@ class PracticeCatalogController extends GetxController {
       } else {
         // Mode 2: Specific drill with user's tailored selection
         if (selectedSubtopicIds.isEmpty) {
-          Get.snackbar(
-            'Selection Required',
-            'Please select at least one subtopic or topic to practice.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.black87,
-            colorText: Colors.white,
-          );
+          _showNotice('Selection Required', 'Please select at least one subtopic or topic to practice.');
           isStartingSession.value = false;
           return;
         }
@@ -210,18 +226,21 @@ class PracticeCatalogController extends GetxController {
         Get.delete<PracticeSessionController>();
       }
 
-      // Navigate to the practice session screen
+      // Navigate to the practice session screen using the AppRouter Navigator
       debugPrint('[Practice] Navigating to PracticeSessionScreen...');
-      Get.to(() => PracticeSessionScreen(initialSession: session));
+      final nav = AppRouter.navigatorKey.currentState;
+      if (nav != null) {
+        nav.push(
+          MaterialPageRoute(
+            builder: (_) => PracticeSessionScreen(initialSession: session),
+          ),
+        );
+      } else {
+        Get.to(() => PracticeSessionScreen(initialSession: session));
+      }
     } catch (err, stack) {
       debugPrint('[Practice] startPracticeSession failed: $err\n$stack');
-      Get.snackbar(
-        'Session Failed',
-        err.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withValues(alpha: 0.9),
-        colorText: Colors.white,
-      );
+      _showNotice('Session Failed', err.toString().replaceAll('Exception: ', ''), isError: true);
     } finally {
       isStartingSession.value = false;
     }

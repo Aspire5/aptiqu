@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../models/practice_models.dart';
 import '../repositories/practice_repository.dart';
 import '../../../core/progression/controllers/xp_controller.dart';
+import '../../../core/routing/app_router.dart';
 
 class PracticeSessionController extends GetxController {
   final PracticeRepository _repository = PracticeRepository();
@@ -108,6 +109,11 @@ class PracticeSessionController extends GetxController {
         await _repository.abandonSession(session.value.id);
       } catch (_) {}
     }
-    Get.back();
+    final nav = AppRouter.navigatorKey.currentState;
+    if (nav != null && nav.canPop()) {
+      nav.pop();
+    } else {
+      Get.back();
+    }
   }
 }
