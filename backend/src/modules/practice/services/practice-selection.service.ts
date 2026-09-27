@@ -115,27 +115,29 @@ export class PracticeSelectionService {
       );
       subtopicCounts.sort((a, b) => a.count - b.count);
 
-      for (const target of subtopicCounts) {
-        if (unseenCandidates.length >= neededFresh) break;
+      const batchUnit = INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT;
+      const batchesNeeded = Math.min(Math.ceil(shortage / batchUnit), 2);
+      const selectedTargets = subtopicCounts.slice(0, batchesNeeded);
 
-        console.log(
-          `[PracticeSelection] Auto-generating batch of fresh questions for subtopic "${target.id}"...`
-        );
+      console.log(
+        `[PracticeSelection] Launching parallel generation for ${selectedTargets.length} subtopics: [${selectedTargets.map((t) => t.id).join(', ')}]...`
+      );
 
-        try {
-          const generated = await questionGenerationService.generateQuestionsForSubtopic(
-            target.id,
-            INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT
-          );
+      const genResults = await Promise.allSettled(
+        selectedTargets.map((target) =>
+          questionGenerationService.generateQuestionsForSubtopic(target.id, batchUnit)
+        )
+      );
 
-          // Add newly generated questions to our fresh pool
-          for (const g of generated) {
+      for (const res of genResults) {
+        if (res.status === 'fulfilled') {
+          for (const g of res.value) {
             if (!addedIds.has(g.id) && !seenQuestionIds.has(g.id)) {
               unseenCandidates.push(g);
             }
           }
-        } catch (err: any) {
-          console.warn(`[PracticeSelection] Auto-generation failed for subtopic ${target.id}:`, err.message);
+        } else {
+          console.warn('[PracticeSelection] Batch generation failed:', res.reason?.message);
         }
       }
     }

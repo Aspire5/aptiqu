@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import '../../../core/network/dio_client.dart';
 import '../models/practice_models.dart';
@@ -31,6 +32,9 @@ class PracticeRepository {
     final response = await _client.dio.post(
       '/practice/sessions',
       data: data,
+      options: Options(
+        receiveTimeout: const Duration(seconds: 60),
+      ),
     );
 
     if (response.statusCode == 201 && response.data['success'] == true) {
