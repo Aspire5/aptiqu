@@ -1,7 +1,7 @@
 import { prisma } from '../../../config/prisma';
 import { XpPolicy } from '../xp.policy';
 import { xpService } from '../xp.service';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID as uuidv4 } from 'crypto';
 
 async function runXpTests() {
   console.log('====================================================');

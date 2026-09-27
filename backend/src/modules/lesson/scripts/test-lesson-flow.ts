@@ -1,6 +1,6 @@
 import { prisma } from '../../../config/prisma';
 import { lessonSessionService } from '../services/lesson-session.service';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID as uuidv4 } from 'crypto';
 
 async function testLessonFlow() {
   console.log('🧪 Starting End-to-End Lesson Flow Verification...');

@@ -10,7 +10,7 @@ import { LiveCurriculumService } from '../../curriculum/services/live-curriculum
 import { INVENTORY_CONFIG } from '../../../config/inventory.config';
 import { ConcurrencyLockService } from '../../concurrency/concurrency-lock.service';
 import { QuestionDifficultyEnum, CalculationMode } from '@prisma/client';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export class PvpSetGenerationService {
   private static instance: PvpSetGenerationService;
@@ -141,7 +141,7 @@ ${JSON.stringify(validQuestions, null, 2)}
       const firstLiveSubtopic = firstLiveSubject.subtopics[0];
 
       // Insert questions & create set in a transaction
-      const setCode = `pvp_set_${Date.now()}_${uuidv4().slice(0, 8)}`;
+      const setCode = `pvp_set_${Date.now()}_${randomUUID().slice(0, 8)}`;
 
       return await prisma.$transaction(async (tx) => {
         const pvpSet = await tx.pvpQuestionSet.create({

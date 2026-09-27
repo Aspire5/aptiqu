@@ -1,7 +1,7 @@
 import { prisma } from '../../../config/prisma';
 import { roadmapProgressionService } from '../services/roadmap-progression.service';
 import { lessonSessionService } from '../../lesson/services/lesson-session.service';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID as uuidv4 } from 'crypto';
 
 async function runTests() {
   console.log('====================================================');
