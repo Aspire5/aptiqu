@@ -205,6 +205,9 @@ class HomeController extends GetxController {
     super.onInit();
     _loadInitialConversation();
     fetchActiveRoadmap();
+    if (Get.isRegistered<AuthController>()) {
+      Get.find<AuthController>().fetchUserProfile();
+    }
   }
 
   Future<void> fetchActiveRoadmap() async {

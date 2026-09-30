@@ -165,6 +165,9 @@ class AuthController extends GetxController {
           'avatarUrl': profile?['avatarUrl'] ?? '',
           'email': user['email'] ?? '',
         };
+      } else {
+        // Fetch full profile with XP and stats from backend immediately
+        await fetchUserProfile();
       }
 
       return true;

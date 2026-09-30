@@ -104,10 +104,6 @@ export const AdminLayout: React.FC = () => {
           </div>
 
           <div className="top-navbar-actions">
-            <div className="status-badge-online">
-              <span className="status-dot-green"></span>
-              <span>Live Engine</span>
-            </div>
             <button 
               className="btn-secondary" 
               onClick={() => window.location.reload()}

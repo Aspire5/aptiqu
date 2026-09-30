@@ -31,8 +31,14 @@ class TopBarZone extends StatelessWidget {
       final xp = xpController?.progress.value;
 
       final firstName = user?.firstName.isNotEmpty == true ? user!.firstName : 'Learner';
-      final level = xp != null && xp.level > 0 ? xp.level : (user?.level ?? 1);
-      final levelProgress = xp != null ? xp.progress : (user?.progress ?? 0.0);
+      final level = (xp != null && xp.level > 0) ? xp.level : (user?.level ?? 1);
+      final levelProgress = (xp != null && xp.progress > 0)
+          ? xp.progress
+          : ((user != null && user.progress > 0)
+              ? user.progress
+              : ((user != null && user.xpRequiredForNextLevel > 0 && user.xpIntoCurrentLevel > 0)
+                  ? user.xpIntoCurrentLevel / user.xpRequiredForNextLevel
+                  : 0.0));
       final streak = user?.streak ?? '0d';
       final coins = user?.coins ?? 0;
       final avatarUrl = user?.avatarUrl.isNotEmpty == true

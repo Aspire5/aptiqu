@@ -47,12 +47,6 @@ export const DashboardPage: React.FC = () => {
   const streakHistory = data?.dailyStreakHistory || [];
   const activity = overview?.activity || {};
 
-  // Find max value in growth trends for chart scaling
-  const maxTrendVal = Math.max(
-    ...growthTrends.map((d: any) => Math.max(d.registered || 0, d.active || 0)),
-    10
-  );
-
   return (
     <div>
       {/* 1. TOP STAT CARDS WITH FLOATING GRADIENTS */}
@@ -71,7 +65,7 @@ export const DashboardPage: React.FC = () => {
           <div className="stat-card-footer">
             <span className="stat-growth-positive">
               <TrendingUp size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
-              Live SaaS Base
+              All-Time Registered
             </span>
             <span>Total accounts</span>
           </div>
@@ -139,13 +133,13 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. USER GROWTH & LOGGED-IN TRENDS GRAPH */}
+      {/* 2. AUTO-SCALING DOT-LINE GRAPH FOR USER GROWTH & ACTIVE USERS */}
       <div className="card">
         <div className="card-header-styled">
           <div>
             <h3 className="card-title">User Growth & Activity Velocity</h3>
             <p className="card-subtitle">
-              New user registrations versus active logged-in users
+              Interactive auto-scaling line graph comparing new user registrations and active logged-in users
             </p>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -162,95 +156,212 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Visual Bar / Column Chart */}
-        <div style={{ height: '260px', display: 'flex', alignItems: 'flex-end', gap: '20px', padding: '20px 0 10px 0' }}>
-          {growthTrends.map((item: any, idx: number) => {
-            const regHeight = Math.max(8, Math.round(((item.registered || 0) / maxTrendVal) * 200));
-            const actHeight = Math.max(8, Math.round(((item.active || 0) / maxTrendVal) * 200));
+        {/* Responsive Auto-scaling SVG Line Graph */}
+        <div style={{ width: '100%', position: 'relative', marginTop: '12px' }}>
+          {(() => {
+            const rawMax = Math.max(
+              ...growthTrends.map((d: any) => Math.max(d.registered || 0, d.active || 0)),
+              0
+            );
+            // Calculate dynamic ceiling so low counts never stick to the floor
+            const yMax = rawMax === 0 ? 3 : (rawMax <= 3 ? rawMax + 1 : (rawMax <= 6 ? rawMax + 2 : Math.ceil(rawMax * 1.25)));
+
+            const svgWidth = 840;
+            const svgHeight = 250;
+            const padLeft = 45;
+            const padRight = 35;
+            const padTop = 30;
+            const padBottom = 40;
+            const plotW = svgWidth - padLeft - padRight;
+            const plotH = svgHeight - padTop - padBottom;
+
+            const n = growthTrends.length;
+            const getX = (i: number) => padLeft + (n > 1 ? (i / (n - 1)) * plotW : plotW / 2);
+            const getY = (val: number) => padTop + plotH - (val / yMax) * plotH;
+
+            // Coordinates for series
+            const regPoints = growthTrends.map((d: any, i: number) => ({
+              x: getX(i),
+              y: getY(d.registered || 0),
+              val: d.registered || 0,
+              label: d.label,
+            }));
+
+            const actPoints = growthTrends.map((d: any, i: number) => ({
+              x: getX(i),
+              y: getY(d.active || 0),
+              val: d.active || 0,
+              label: d.label,
+            }));
+
+            const regLinePath = regPoints.length > 0 
+              ? 'M ' + regPoints.map((p: any) => `${p.x},${p.y}`).join(' L ') 
+              : '';
+            const actLinePath = actPoints.length > 0 
+              ? 'M ' + actPoints.map((p: any) => `${p.x},${p.y}`).join(' L ') 
+              : '';
+
+            const regAreaPath = regPoints.length > 0
+              ? `${regLinePath} L ${regPoints[regPoints.length - 1].x},${padTop + plotH} L ${regPoints[0].x},${padTop + plotH} Z`
+              : '';
+            const actAreaPath = actPoints.length > 0
+              ? `${actLinePath} L ${actPoints[actPoints.length - 1].x},${padTop + plotH} L ${actPoints[0].x},${padTop + plotH} Z`
+              : '';
+
+            // Y Ticks (4 levels: 0, 1/3, 2/3, max)
+            const yTicks = [
+              0,
+              Math.max(1, Math.round(yMax / 3)),
+              Math.max(2, Math.round((2 * yMax) / 3)),
+              yMax,
+            ].filter((val, idx, self) => self.indexOf(val) === idx);
 
             return (
-              <div 
-                key={idx} 
-                style={{ 
-                  flex: 1, 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
-                  height: '100%', 
-                  justifyContent: 'flex-end' 
-                }}
+              <svg 
+                viewBox={`0 0 ${svgWidth} ${svgHeight}`} 
+                style={{ width: '100%', height: '260px', overflow: 'visible' }}
               >
-                <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-end', width: '100%', justifyContent: 'center' }}>
-                  {/* Registered Users Bar */}
-                  <div
-                    title={`Registered: ${item.registered}`}
-                    style={{
-                      width: '40%',
-                      maxWidth: '28px',
-                      height: `${regHeight}px`,
-                      background: 'linear-gradient(195deg, #49a3f1, #1a73e8)',
-                      borderRadius: '6px 6px 0 0',
-                      transition: 'height 0.4s ease',
-                      position: 'relative',
-                    }}
-                  >
-                    <span style={{
-                      position: 'absolute',
-                      top: '-18px',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      fontSize: '10px',
-                      fontWeight: 600,
-                      color: '#1a73e8'
-                    }}>
-                      {item.registered}
-                    </span>
-                  </div>
+                <defs>
+                  <linearGradient id="regGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1a73e8" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#1a73e8" stopOpacity="0.0" />
+                  </linearGradient>
+                  <linearGradient id="actGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#4caf50" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#4caf50" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
 
-                  {/* Active Users Bar */}
-                  <div
-                    title={`Active: ${item.active}`}
-                    style={{
-                      width: '40%',
-                      maxWidth: '28px',
-                      height: `${actHeight}px`,
-                      background: 'linear-gradient(195deg, #66bb6a, #43a047)',
-                      borderRadius: '6px 6px 0 0',
-                      transition: 'height 0.4s ease',
-                      position: 'relative',
-                    }}
-                  >
-                    <span style={{
-                      position: 'absolute',
-                      top: '-18px',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      fontSize: '10px',
-                      fontWeight: 600,
-                      color: '#2e7d32'
-                    }}>
-                      {item.active}
-                    </span>
-                  </div>
-                </div>
+                {/* Horizontal Grid Lines & Y-Axis Labels */}
+                {yTicks.map((tickVal) => {
+                  const tickY = getY(tickVal);
+                  return (
+                    <g key={tickVal}>
+                      <line
+                        x1={padLeft}
+                        y1={tickY}
+                        x2={svgWidth - padRight}
+                        y2={tickY}
+                        stroke="#e2e8f0"
+                        strokeDasharray="4 4"
+                        strokeWidth="1"
+                      />
+                      <text
+                        x={padLeft - 10}
+                        y={tickY + 4}
+                        textAnchor="end"
+                        fontSize="11"
+                        fill="#7b809a"
+                        fontWeight="500"
+                      >
+                        {tickVal}
+                      </text>
+                    </g>
+                  );
+                })}
 
-                <div style={{ marginTop: '12px', fontSize: '11px', color: '#7b809a', fontWeight: 500 }}>
-                  {item.label}
-                </div>
-              </div>
+                {/* Shaded Areas */}
+                {regAreaPath && <path d={regAreaPath} fill="url(#regGradient)" />}
+                {actAreaPath && <path d={actAreaPath} fill="url(#actGradient)" />}
+
+                {/* Lines */}
+                {regLinePath && (
+                  <path
+                    d={regLinePath}
+                    fill="none"
+                    stroke="#1a73e8"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                )}
+                {actLinePath && (
+                  <path
+                    d={actLinePath}
+                    fill="none"
+                    stroke="#4caf50"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                )}
+
+                {/* Dots & Labels for Series 1: Registered Users */}
+                {regPoints.map((p: any, i: number) => (
+                  <g key={`reg-${i}`}>
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r="5"
+                      fill="#1a73e8"
+                      stroke="#ffffff"
+                      strokeWidth="2.5"
+                    />
+                    <text
+                      x={p.x}
+                      y={p.y - 10}
+                      textAnchor="middle"
+                      fontSize="10"
+                      fontWeight="700"
+                      fill="#1a73e8"
+                    >
+                      {p.val}
+                    </text>
+                  </g>
+                ))}
+
+                {/* Dots & Labels for Series 2: Active Users */}
+                {actPoints.map((p: any, i: number) => (
+                  <g key={`act-${i}`}>
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r="5"
+                      fill="#4caf50"
+                      stroke="#ffffff"
+                      strokeWidth="2.5"
+                    />
+                    <text
+                      x={p.x}
+                      y={p.y - 10}
+                      textAnchor="middle"
+                      fontSize="10"
+                      fontWeight="700"
+                      fill="#2e7d32"
+                    >
+                      {p.val}
+                    </text>
+                  </g>
+                ))}
+
+                {/* X-Axis Date Labels */}
+                {growthTrends.map((d: any, i: number) => (
+                  <text
+                    key={`label-${i}`}
+                    x={getX(i)}
+                    y={padTop + plotH + 22}
+                    textAnchor="middle"
+                    fontSize="11"
+                    fontWeight="500"
+                    fill="#7b809a"
+                  >
+                    {d.label}
+                  </text>
+                ))}
+              </svg>
             );
-          })}
+          })()}
         </div>
 
         {/* Legend */}
-        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '12px', fontSize: '12px', color: '#7b809a' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '12px', height: '12px', background: '#1a73e8', borderRadius: '3px' }}></span>
-            <span>New Registrations</span>
+        <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', marginTop: '16px', fontSize: '13px', color: '#7b809a' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '12px', height: '12px', background: '#1a73e8', borderRadius: '50%', display: 'inline-block' }}></span>
+            <span style={{ fontWeight: 600, color: '#1a73e8' }}>New Registrations</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '12px', height: '12px', background: '#4caf50', borderRadius: '3px' }}></span>
-            <span>Active Logged-in Users</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '12px', height: '12px', background: '#4caf50', borderRadius: '50%', display: 'inline-block' }}></span>
+            <span style={{ fontWeight: 600, color: '#2e7d32' }}>Active Logged-in Users</span>
           </div>
         </div>
       </div>
