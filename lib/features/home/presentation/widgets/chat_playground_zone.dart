@@ -28,8 +28,8 @@ class ChatPlaygroundZone extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
           child: Column(
             children: [
-              // Persistent Now-Playing Small Bar
-              _buildNowPlayingBar(context, controller),
+              // Floating Playing Header Bar with Exit/Pause
+              _buildPlayingHeaderBar(context, controller),
 
               // Scrollable Chat Messages Area
               Expanded(
@@ -57,17 +57,6 @@ class ChatPlaygroundZone extends StatelessWidget {
                   );
                 }),
               ),
-
-              /*
-              // =========================================================================
-              // COMMENTED OUT: Persistent floating action dock & textfield
-              // As requested: The AI leads the conversation naturally and presents
-              // interactions right inside the question container based on expected input.
-              // =========================================================================
-              _buildAdaptiveActionDock(context, controller),
-              const SizedBox(height: 8),
-              _buildFloatingInputField(controller),
-              */
             ],
           ),
         ),
@@ -75,93 +64,105 @@ class ChatPlaygroundZone extends StatelessWidget {
     );
   }
 
-  /// Persistent Now-Playing small bar showing the active subtopic / script title
-  Widget _buildNowPlayingBar(BuildContext context, HomeController controller) {
+  /// Floating Playing header bar matching the Topics screen subjects header style
+  Widget _buildPlayingHeaderBar(BuildContext context, HomeController controller) {
     return Obx(() {
-      final scriptTitle = controller.activeScriptTitle.value;
-      final session = controller.currentSession.value;
-      final displayTitle = scriptTitle.isNotEmpty
-          ? scriptTitle
-          : (session?.scriptTitle?.isNotEmpty == true
-              ? session!.scriptTitle!
-              : 'Welcome to Aptitude');
-      final isPlaying = controller.isLessonActive.value || scriptTitle.isNotEmpty;
+      final subject = controller.subjects.firstWhereOrNull(
+        (s) => s.id == controller.selectedSubjectId.value,
+      );
+      final subjectName = subject?.name.isNotEmpty == true
+          ? subject!.name
+          : (controller.subjectLearningMap.value?.subjectName ?? 'Aptitude');
 
       return Container(
+        height: 46.0,
+        width: double.infinity,
         margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: AptiquColors.surfaceContainerLowest.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(10),
+          color: AptiquColors.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isPlaying
-                ? AptiquColors.secondary.withValues(alpha: 0.4)
-                : AptiquColors.outlineVariant.withValues(alpha: 0.5),
-            width: 1,
+            color: AptiquColors.outlineVariant,
+            width: 1.0,
           ),
-          boxShadow: isPlaying
-              ? [
-                  BoxShadow(
-                    color: AptiquColors.secondary.withValues(alpha: 0.12),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
         ),
         child: Row(
           children: [
-            // Glowing radar/pulse dot
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isPlaying ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
-                boxShadow: isPlaying ? AptiquColors.secondaryGlow : null,
+            // Left icon: Matching bottom nav play icon
+            const Icon(
+              Icons.play_circle_filled_rounded,
+              size: 16,
+              color: AptiquColors.primary,
+            ),
+            const SizedBox(width: 6),
+
+            // "PLAYING" label
+            Text(
+              'PLAYING',
+              style: AptiquTypography.labelCapsBold.copyWith(
+                color: AptiquColors.primary,
+                fontSize: 10,
+                letterSpacing: 1.0,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
 
-            // "PLAYING" cyber pill tag
+            // Vertical divider
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: (isPlaying ? AptiquColors.secondary : AptiquColors.outlineVariant)
-                    .withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Text(
-                isPlaying ? 'NOW PLAYING' : 'READY',
-                style: AptiquTypography.labelCaps.copyWith(
-                  fontSize: 8.5,
-                  fontWeight: FontWeight.w800,
-                  color: isPlaying ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
-                  letterSpacing: 0.6,
-                ),
-              ),
+              width: 1,
+              height: 16,
+              color: AptiquColors.outlineVariant,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
 
-            // Subtopic / script title
+            // Subject name (ellipsible)
             Expanded(
               child: Text(
-                displayTitle,
+                subjectName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AptiquTypography.bodySmall.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
-                  fontSize: 12,
+                  fontSize: 12.5,
                 ),
               ),
             ),
 
-            const SizedBox(width: 6),
-            Icon(
-              isPlaying ? Icons.graphic_eq_rounded : Icons.play_circle_outline_rounded,
-              size: 16,
-              color: isPlaying ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
+            const SizedBox(width: 8),
+
+            // Exit / Pause action button at the very right
+            InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => controller.exitToSubjectCards(),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AptiquColors.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AptiquColors.outlineVariant),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.pause_circle_outline_rounded,
+                      size: 13,
+                      color: AptiquColors.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Exit',
+                      style: AptiquTypography.labelCapsBold.copyWith(
+                        color: AptiquColors.onSurfaceVariant,
+                        fontSize: 9.5,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

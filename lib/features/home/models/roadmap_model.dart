@@ -4,6 +4,15 @@ class RoadmapSubjectSummary {
   final String name;
   final String? description;
   final int sequence;
+  final int totalTopics;
+  final int completedTopics;
+  final int totalSubtopics;
+  final int completedSubtopics;
+  final int estimatedMinutes;
+  final bool hasPlayableContent;
+  final bool isStarted;
+  final bool isCompleted;
+  final String? activeStepId;
 
   RoadmapSubjectSummary({
     required this.id,
@@ -11,15 +20,44 @@ class RoadmapSubjectSummary {
     required this.name,
     this.description,
     required this.sequence,
+    this.totalTopics = 0,
+    this.completedTopics = 0,
+    this.totalSubtopics = 0,
+    this.completedSubtopics = 0,
+    this.estimatedMinutes = 30,
+    this.hasPlayableContent = false,
+    this.isStarted = false,
+    this.isCompleted = false,
+    this.activeStepId,
   });
 
-  factory RoadmapSubjectSummary.fromJson(Map<String, dynamic> json) {
+  double get progressPercentage {
+    if (totalSubtopics > 0) {
+      return (completedSubtopics / totalSubtopics).clamp(0.0, 1.0);
+    }
+    if (totalTopics > 0) {
+      return (completedTopics / totalTopics).clamp(0.0, 1.0);
+    }
+    return 0.0;
+  }
+
+  factory RoadmapSubjectSummary.fromJson(Map<String, dynamic> json, {Map<String, dynamic>? progressMap}) {
+    final prog = progressMap ?? (json['progress'] as Map<String, dynamic>? ?? {});
     return RoadmapSubjectSummary(
       id: json['id'] as String,
       slug: json['slug'] as String? ?? json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
       sequence: json['sequence'] as int? ?? 1,
+      totalTopics: prog['totalTopics'] as int? ?? 0,
+      completedTopics: prog['completedTopics'] as int? ?? 0,
+      totalSubtopics: prog['totalSubtopics'] as int? ?? 0,
+      completedSubtopics: prog['completedSubtopics'] as int? ?? 0,
+      estimatedMinutes: prog['estimatedMinutes'] as int? ?? 30,
+      hasPlayableContent: prog['hasPlayableContent'] as bool? ?? false,
+      isStarted: prog['isStarted'] as bool? ?? false,
+      isCompleted: prog['isCompleted'] as bool? ?? false,
+      activeStepId: prog['activeStepId'] as String?,
     );
   }
 }
@@ -47,12 +85,16 @@ class ActiveRoadmapModel {
     final rawSubjects = json['roadmapSubjects'] as List<dynamic>? ?? [];
     final subjects = rawSubjects.map((item) {
       final subjMap = item['subject'] as Map<String, dynamic>? ?? {};
-      return RoadmapSubjectSummary(
-        id: subjMap['id'] as String? ?? item['subjectId'] as String,
-        slug: subjMap['slug'] as String? ?? subjMap['id'] as String? ?? '',
-        name: subjMap['name'] as String? ?? 'Subject',
-        description: subjMap['description'] as String?,
-        sequence: item['sequence'] as int? ?? 1,
+      final progMap = item['progress'] as Map<String, dynamic>?;
+      return RoadmapSubjectSummary.fromJson(
+        {
+          'id': subjMap['id'] as String? ?? item['subjectId'] as String,
+          'slug': subjMap['slug'] as String? ?? subjMap['id'] as String? ?? '',
+          'name': subjMap['name'] as String? ?? 'Subject',
+          'description': subjMap['description'] as String?,
+          'sequence': item['sequence'] as int? ?? 1,
+        },
+        progressMap: progMap,
       );
     }).toList();
 

@@ -8,6 +8,8 @@ export interface NextLearningStepResult {
   reason?: 'SCRIPT_NOT_PUBLISHED' | 'ROADMAP_COMPLETED' | 'STEP_NOT_FOUND';
   roadmapId?: string;
   roadmapStepId?: string;
+  subjectId?: string;
+  subjectName?: string;
   topicId?: string;
   topicName?: string;
   subtopicId?: string | null;
@@ -134,7 +136,92 @@ export class RoadmapProgressionService {
       throw new Error(`Active roadmap "${roadmapId}" not found.`);
     }
 
-    return roadmap;
+    const allSteps = await prisma.roadmapStep.findMany({
+      where: { roadmapId, isActive: true },
+      include: {
+        scriptAssignments: {
+          where: { status: 'PUBLISHED' },
+          include: { script: true },
+        },
+      },
+      orderBy: { sequence: 'asc' },
+    });
+
+    const completedSessions = await prisma.lessonSession.findMany({
+      where: { userId, status: 'COMPLETED' },
+      select: { scriptId: true, roadmapStepId: true },
+    });
+    const completedScriptIds = new Set(completedSessions.map((cs) => cs.scriptId));
+
+    const activeSessions = await prisma.lessonSession.findMany({
+      where: { userId, status: { in: ['ACTIVE', 'PAUSED'] } },
+      select: { scriptId: true, roadmapStepId: true, lastActivityAt: true },
+      orderBy: { lastActivityAt: 'desc' },
+    });
+    const activeStepIds = new Set(activeSessions.map((as) => as.roadmapStepId).filter(Boolean));
+
+    const enrichedRoadmapSubjects = roadmap.roadmapSubjects.map((rs) => {
+      const subjectSteps = allSteps.filter((s) => s.subjectId === rs.subjectId);
+      const totalTopics = subjectSteps.length;
+      let totalSubtopics = 0;
+      let completedSubtopics = 0;
+      let completedTopics = 0;
+      let hasPlayableContent = false;
+      let activeStepId: string | null = null;
+
+      for (const step of subjectSteps) {
+        const assignments = step.scriptAssignments || [];
+        totalSubtopics += assignments.length;
+        if (assignments.length > 0) {
+          hasPlayableContent = true;
+          let stepCompleted = true;
+          for (const sa of assignments) {
+            if (completedScriptIds.has(sa.scriptId)) {
+              completedSubtopics++;
+            } else {
+              stepCompleted = false;
+            }
+          }
+          if (stepCompleted) {
+            completedTopics++;
+          } else if (!activeStepId) {
+            activeStepId = step.id;
+          }
+        }
+      }
+
+      // If user has an active session in this subject, pick that step
+      const resumeStep = subjectSteps.find((s) => activeStepIds.has(s.id));
+      if (resumeStep) {
+        activeStepId = resumeStep.id;
+      } else if (!activeStepId && subjectSteps.length > 0) {
+        activeStepId = subjectSteps[0].id;
+      }
+
+      const isStarted = completedSubtopics > 0 || subjectSteps.some((s) => activeStepIds.has(s.id));
+      const isCompleted = hasPlayableContent && completedSubtopics >= totalSubtopics && totalSubtopics > 0;
+      const estimatedMinutes = totalSubtopics > 0 ? totalSubtopics * 8 : (subjectSteps.length > 0 ? subjectSteps.length * 15 : 30);
+
+      return {
+        ...rs,
+        progress: {
+          totalTopics,
+          completedTopics,
+          totalSubtopics,
+          completedSubtopics,
+          estimatedMinutes,
+          hasPlayableContent,
+          isStarted,
+          isCompleted,
+          activeStepId,
+        },
+      };
+    });
+
+    return {
+      ...roadmap,
+      roadmapSubjects: enrichedRoadmapSubjects,
+    };
   }
 
   /**
@@ -676,17 +763,21 @@ export class RoadmapProgressionService {
       }
     }
 
-    // Rule 2: Next step within the SAME subject
+    // Rule 2: Next step within the SAME subject that has published content
     const nextStepInSubject = await prisma.roadmapStep.findFirst({
       where: {
         roadmapId: roadmap.id,
         subjectId: currentStep.subjectId,
         sequence: { gt: currentStep.sequence },
         isActive: true,
+        scriptAssignments: {
+          some: { status: 'PUBLISHED' },
+        },
       },
       orderBy: { sequence: 'asc' },
       include: {
         topic: true,
+        subject: true,
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
@@ -695,33 +786,37 @@ export class RoadmapProgressionService {
       },
     });
 
-    if (nextStepInSubject) {
+    if (nextStepInSubject && nextStepInSubject.scriptAssignments.length > 0) {
       return this.formatStepResult(
         nextStepInSubject,
         nextStepInSubject.scriptAssignments[0]
       );
     }
 
-    // Rule 3: Next subject in the roadmap
+    // Rule 3: Next subject in the roadmap with published content
     const currentRoadmapSubject = roadmap.roadmapSubjects.find(
       (rs) => rs.subjectId === currentStep.subjectId
     );
     const currentSubjectSequence = currentRoadmapSubject?.sequence ?? 0;
 
-    const nextRoadmapSubject = roadmap.roadmapSubjects.find(
+    const laterRoadmapSubjects = roadmap.roadmapSubjects.filter(
       (rs) => rs.sequence > currentSubjectSequence
     );
 
-    if (nextRoadmapSubject) {
+    for (const rs of laterRoadmapSubjects) {
       const firstStepOfNextSubject = await prisma.roadmapStep.findFirst({
         where: {
           roadmapId: roadmap.id,
-          subjectId: nextRoadmapSubject.subjectId,
+          subjectId: rs.subjectId,
           isActive: true,
+          scriptAssignments: {
+            some: { status: 'PUBLISHED' },
+          },
         },
         orderBy: { sequence: 'asc' },
         include: {
           topic: true,
+          subject: true,
           scriptAssignments: {
             where: { status: 'PUBLISHED' },
             orderBy: { sequence: 'asc' },
@@ -730,7 +825,7 @@ export class RoadmapProgressionService {
         },
       });
 
-      if (firstStepOfNextSubject) {
+      if (firstStepOfNextSubject && firstStepOfNextSubject.scriptAssignments.length > 0) {
         return this.formatStepResult(
           firstStepOfNextSubject,
           firstStepOfNextSubject.scriptAssignments[0]
@@ -738,13 +833,13 @@ export class RoadmapProgressionService {
       }
     }
 
-    // Rule 4: No steps remain in the roadmap
+    // Rule 4: No published steps remain in the roadmap
     return {
       type: 'roadmap_complete',
       available: false,
       reason: 'ROADMAP_COMPLETED',
       roadmapId: roadmap.id,
-      message: 'Congratulations! You have completed all steps in this roadmap.',
+      message: 'Congratulations! You have completed all available topics in this roadmap.',
     };
   }
 
@@ -755,6 +850,8 @@ export class RoadmapProgressionService {
         available: true,
         roadmapId: step.roadmapId,
         roadmapStepId: step.id,
+        subjectId: step.subjectId,
+        subjectName: step.subject?.name,
         topicId: step.topicId,
         topicName: step.topic.name,
         subtopicId: step.subtopicId,
@@ -771,6 +868,8 @@ export class RoadmapProgressionService {
       reason: 'SCRIPT_NOT_PUBLISHED',
       roadmapId: step.roadmapId,
       roadmapStepId: step.id,
+      subjectId: step.subjectId,
+      subjectName: step.subject?.name,
       topicId: step.topicId,
       topicName: step.topic.name,
       subtopicId: step.subtopicId,

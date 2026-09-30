@@ -200,6 +200,32 @@ class HomeController extends GetxController {
   final RxBool isLessonActive = false.obs;
   final RxBool isSubmittingAction = false.obs;
 
+  // Subject Card Selection Overlay (active on fresh login/boot until a subject is played)
+  final RxBool showSubjectCards = true.obs;
+
+  void playSubject(RoadmapSubjectSummary subject) {
+    selectedSubjectId.value = subject.id;
+    showSubjectCards.value = false;
+    final stepId = subject.activeStepId;
+    if (stepId != null && stepId.isNotEmpty) {
+      activeRoadmapStepId.value = stepId;
+      loadLessonState(stepId);
+    } else {
+      fetchSubjectMap(subject.id, updateLessonState: true);
+    }
+  }
+
+  void viewSubjectDetails(RoadmapSubjectSummary subject) {
+    selectedSubjectId.value = subject.id;
+    selectedNavIndex.value = 1;
+    fetchSubjectMap(subject.id, updateLessonState: false);
+  }
+
+  void exitToSubjectCards() {
+    showSubjectCards.value = true;
+    fetchActiveRoadmap();
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -222,7 +248,7 @@ class HomeController extends GetxController {
             !subjects.any((s) => s.id == selectedSubjectId.value)) {
           selectedSubjectId.value = subjects.first.id;
         }
-        await fetchSubjectMap(selectedSubjectId.value);
+        await fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
       }
     } catch (e) {
       roadmapError.value = e.toString();
@@ -231,7 +257,7 @@ class HomeController extends GetxController {
 
   Future<void> selectSubject(String subjectId) async {
     selectedSubjectId.value = subjectId;
-    await fetchSubjectMap(subjectId);
+    await fetchSubjectMap(subjectId, updateLessonState: false);
   }
 
   Future<void> fetchSubjectMap(String subjectId, {bool updateLessonState = true}) async {
@@ -325,7 +351,7 @@ class HomeController extends GetxController {
     final displayTitle = title ?? activeScriptTitle.value;
     final cleanTitle =
         displayTitle.isNotEmpty ? displayTitle : 'The Four Basics';
-    final subDesc = desc ?? 'Ready to jump into today\'s lesson?';
+    final subDesc = desc ?? 'Ready to jump into today\'s session?';
 
     final auth = Get.isRegistered<AuthController>() ? Get.find<AuthController>() : null;
     final rawName = auth?.currentUser.value?.firstName.trim();
@@ -336,14 +362,14 @@ class HomeController extends GetxController {
         id: 'msg_1',
         sender: MessageSender.ai,
         text:
-            '$greeting! 👋\n\n$subDesc\n\nWe\'ll build speed and mental shortcuts step by step.\n\nReady to begin?',
+            '$greeting! 👋\n\n$subDesc\n\nWe\'ll build speed and mental shortcuts step by step.\n\nReady to begin playing?',
         time: 'Just now',
         question: QuestionData(
-          title: 'LESSON #$activeScriptSequence',
+          title: 'SECTION #$activeScriptSequence',
           desc: cleanTitle,
           difficulty: 'Beginner • 8 min',
           inputType: QuestionInputType.select,
-          options: ["🚀 Start Lesson", 'Explore Topics'],
+          options: ["🚀 Start Playing", 'Back to Subjects'],
         ),
       ),
     );
@@ -356,11 +382,11 @@ class HomeController extends GetxController {
 
     if (node.isCompletion) {
       questionData = QuestionData(
-        title: 'LESSON COMPLETE',
-        desc: '🎉 You completed this lesson! Great job.',
+        title: 'SECTION COMPLETED',
+        desc: '🎉 You completed this section! Great job.',
         difficulty: 'Milestone',
         inputType: QuestionInputType.select,
-        options: ['Start Next Lesson →'],
+        options: ['Continue Playing →', 'Back to Subjects'],
       );
     } else if (node.isChoice || node.isQuestion) {
       final options = node.choiceOptions.isNotEmpty
@@ -416,20 +442,59 @@ class HomeController extends GetxController {
   }
 
   void _addCompletionToPlayground(LessonSessionModel response) {
-    final nextTitle = response.next?.scriptTitle ?? 'Next Lesson';
+    final next = response.next;
+    final currentSubject = subjects.firstWhereOrNull((s) => s.id == selectedSubjectId.value);
+    final currentSubjectName = currentSubject?.name ?? 'Subject';
+
+    String completionTitle = 'SECTION COMPLETED';
+    String completionDesc = 'Completed: ${activeScriptTitle.value}';
+    String aiCelebrationText = '🎉 Outstanding work! You have finished this section.';
+    List<String> options = [];
+
+    if (next != null && next.available && next.roadmapStepId != null) {
+      final isDifferentSubject = next.subjectId != null && next.subjectId != selectedSubjectId.value;
+
+      if (isDifferentSubject) {
+        completionTitle = 'SUBJECT COMPLETED';
+        final nextSubjName = next.subjectName ?? next.topicName ?? 'Next Subject';
+        completionDesc = 'All topics in $currentSubjectName completed!\nUp next: $nextSubjName';
+        aiCelebrationText = '🏆 Incredible! You have completed all active topics in $currentSubjectName.';
+        options = [
+          'Continue Playing: $nextSubjName →',
+          'Back to Subjects',
+        ];
+      } else {
+        final nextTopicTitle = next.topicName ?? 'Next Topic';
+        final nextSecTitle = next.scriptTitle ?? nextTopicTitle;
+        completionTitle = 'TOPIC SECTION COMPLETED';
+        completionDesc = 'Up next: $nextSecTitle';
+        options = [
+          'Continue Playing: $nextSecTitle →',
+          'Back to Subjects',
+        ];
+      }
+    } else {
+      completionTitle = 'SUBJECT COMPLETED';
+      completionDesc = 'You have completed all available topics in $currentSubjectName!';
+      aiCelebrationText = '🏆 Mastered! You have completed all currently active topics in $currentSubjectName.';
+      options = [
+        'Back to Subjects',
+        'Explore Practice Arena',
+      ];
+    }
 
     messages.add(
       ChatMessageModel(
         id: 'completion_${DateTime.now().millisecondsSinceEpoch}',
         sender: MessageSender.ai,
-        text: '🎉 Outstanding work! You have finished this lesson.',
+        text: aiCelebrationText,
         time: _getCurrentTime(),
         question: QuestionData(
-          title: 'LESSON COMPLETE',
-          desc: 'Completed: ${activeScriptTitle.value}',
+          title: completionTitle,
+          desc: completionDesc,
           difficulty: 'Completed',
           inputType: QuestionInputType.select,
-          options: ['Start Next Lesson: $nextTitle →'],
+          options: options,
         ),
       ),
     );
@@ -483,7 +548,7 @@ class HomeController extends GetxController {
               id: 'err_${DateTime.now().millisecondsSinceEpoch}',
               sender: MessageSender.ai,
               text:
-                  'Unable to start lesson right now. Please check your connection and tap Start Lesson again.',
+                  'Unable to start playing right now. Please check your connection and tap Start Playing again.',
               time: _getCurrentTime(),
             ),
           );
@@ -491,18 +556,41 @@ class HomeController extends GetxController {
           isSubmittingAction.value = false;
         }
       } else {
-        selectedNavIndex.value = 1;
+        exitToSubjectCards();
       }
       return;
     }
 
     // 2. Next Lesson button on completion card
-    if (q.title == 'LESSON COMPLETE') {
+    if (q.title == 'SECTION COMPLETED' ||
+        q.title == 'TOPIC SECTION COMPLETED' ||
+        q.title == 'TOPIC COMPLETED' ||
+        q.title == 'SUBJECT COMPLETED' ||
+        q.title == 'LESSON COMPLETE') {
       q.selectedOptionIndex = optionIndex;
       q.isCompleted = true;
       messages.refresh();
 
-      await startNextLesson();
+      if (selectedText == 'Back to Subjects') {
+        exitToSubjectCards();
+        return;
+      }
+
+      if (selectedText == 'Explore Practice Arena') {
+        selectedNavIndex.value = 2;
+        return;
+      }
+
+      final next = currentSession.value?.next;
+      if (next != null && next.available && next.roadmapStepId != null) {
+        if (next.subjectId != null && next.subjectId != selectedSubjectId.value) {
+          selectedSubjectId.value = next.subjectId!;
+        }
+        activeRoadmapStepId.value = next.roadmapStepId!;
+        await startNextLesson(stepId: next.roadmapStepId!);
+      } else {
+        exitToSubjectCards();
+      }
       return;
     }
 
@@ -614,20 +702,26 @@ class HomeController extends GetxController {
     }
   }
 
-  /// Starts the next lesson script and clears the playground
-  Future<void> startNextLesson() async {
+  /// Starts the next lesson and clears the playground
+  Future<void> startNextLesson({String? stepId}) async {
     try {
       messages.clear();
+      final targetStep = stepId ?? activeRoadmapStepId.value;
+      activeRoadmapStepId.value = targetStep;
+
       final session = await lessonRepo.startOrResumeSessionByStep(
-        roadmapStepId: activeRoadmapStepId.value,
+        roadmapStepId: targetStep,
         clientActionId: _uuid.v4(),
       );
       currentSession.value = session;
-      activeScriptTitle.value = session.scriptTitle ?? 'Today\'s Lesson';
+      activeScriptTitle.value = session.scriptTitle ?? 'Playing';
       isLessonActive.value = true;
       _addNodeToPlayground(session.currentNode);
+      if (selectedSubjectId.isNotEmpty) {
+        fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+      }
     } catch (e) {
-      await loadLessonState(activeRoadmapStepId.value);
+      exitToSubjectCards();
     }
   }
 
@@ -724,6 +818,7 @@ class HomeController extends GetxController {
     String? scriptTitle,
   }) async {
     selectedNavIndex.value = 0; // Switch directly to Home tab
+    showSubjectCards.value = false;
     messages.clear();
     isSubmittingAction.value = true;
     try {
@@ -734,7 +829,7 @@ class HomeController extends GetxController {
       );
       currentSession.value = session;
       isLessonActive.value = true;
-      activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Lesson');
+      activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Playing');
       activeRoadmapStepId.value = roadmapStepId;
       _addNodeToPlayground(session.currentNode);
       if (selectedSubjectId.isNotEmpty) {
@@ -899,13 +994,14 @@ class HomeController extends GetxController {
   void onTopicTapped(BuildContext context, LearningMapTopicItemModel topic) {
     if (topic.isAvailable || topic.isInProgress || topic.isCompleted) {
       activeRoadmapStepId.value = topic.roadmapStepId;
+      showSubjectCards.value = false;
       selectedNavIndex.value = 0; // Go directly to Home playground!
       loadLessonState(topic.roadmapStepId);
     } else if (topic.isComingSoon) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Coming Soon: Guided lesson for "${topic.topicName}" is currently being prepared.',
+            'Coming Soon: Content for "${topic.topicName}" is currently being prepared.',
           ),
           backgroundColor: AptiquColors.surfaceContainer,
           behavior: SnackBarBehavior.floating,

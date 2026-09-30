@@ -4,9 +4,10 @@ import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/bottom_nav_zone.dart';
-import '../widgets/chat_playground_zone.dart';
 import '../widgets/top_bar_zone.dart';
+import '../widgets/chat_playground_zone.dart';
 import '../widgets/constellation_roadmap_view.dart';
+import '../widgets/subject_play_cards_view.dart';
 import '../../../practice/views/practice_catalog_view.dart';
 import '../../../pvp/views/pvp_lobby_view.dart';
 
@@ -65,6 +66,9 @@ class HomeScreen extends StatelessWidget {
                     child: Obx(() {
                       final currentTab = controller.selectedNavIndex.value;
                       if (currentTab == 0) {
+                        if (controller.showSubjectCards.value) {
+                          return const SubjectPlayCardsView();
+                        }
                         return ChatPlaygroundZone(
                           height: totalHeight -
                               (isFullScreen ? 0 : topZoneHeight) -

@@ -29,6 +29,8 @@ class NextLearningStepModel {
   final bool available;
   final String? reason; // 'SCRIPT_NOT_PUBLISHED'
   final String? roadmapStepId;
+  final String? subjectId;
+  final String? subjectName;
   final String? topicId;
   final String? topicName;
   final String? subtopicId;
@@ -42,6 +44,8 @@ class NextLearningStepModel {
     required this.available,
     this.reason,
     this.roadmapStepId,
+    this.subjectId,
+    this.subjectName,
     this.topicId,
     this.topicName,
     this.subtopicId,
@@ -57,6 +61,8 @@ class NextLearningStepModel {
       available: json['available'] as bool? ?? false,
       reason: json['reason'] as String?,
       roadmapStepId: json['roadmapStepId'] as String?,
+      subjectId: json['subjectId'] as String?,
+      subjectName: json['subjectName'] as String?,
       topicId: json['topicId'] as String?,
       topicName: json['topicName'] as String?,
       subtopicId: json['subtopicId'] as String?,
