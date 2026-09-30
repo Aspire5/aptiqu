@@ -6,6 +6,7 @@ import lessonRoutes from './modules/lesson/lesson.routes';
 import roadmapRoutes from './modules/roadmap/roadmap.routes';
 import practiceRoutes from './modules/practice/practice.routes';
 import pvpRoutes from './modules/pvp/pvp.routes';
+import dailyChallengeRoutes from './modules/daily-challenge/daily-challenge.routes';
 import adminRoutes from './modules/admin/admin.routes';
 
 export function createApp(): Application {
@@ -48,6 +49,7 @@ export function createApp(): Application {
   app.use('/api/v1/roadmaps', roadmapRoutes);
   app.use('/api/v1/practice', practiceRoutes);
   app.use('/api/v1/pvp', pvpRoutes);
+  app.use('/api/v1/daily-challenge', dailyChallengeRoutes);
   app.use('/api/v1/admin', adminRoutes);
 
   // 404 Handler

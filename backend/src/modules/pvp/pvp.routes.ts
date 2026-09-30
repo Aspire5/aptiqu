@@ -8,5 +8,6 @@ router.use(authenticateJwt);
 
 router.get('/matches/:matchId', PvpController.getMatch);
 router.get('/history', PvpController.getPlayerHistory);
+router.post('/replay/:matchId', PvpController.replayMatch);
 
 export default router;

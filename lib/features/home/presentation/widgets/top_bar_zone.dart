@@ -174,8 +174,11 @@ class TopBarZone extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Streak Badge (Fire Icon + Quantity)
-                AptiquBadge.streak(days: streak),
+                // Streak Badge (Fire Icon + Quantity) - Opens Daily Streak Arena
+                AptiquBadge.streak(
+                  days: streak,
+                  onTap: () => context.push(AppRoutes.dailyStreak),
+                ),
                 const SizedBox(width: 8),
                 // Coins Badge (Coins Icon + Quantity)
                 AptiquBadge.coins(coins: '$coins'),

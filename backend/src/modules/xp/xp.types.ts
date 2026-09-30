@@ -6,7 +6,8 @@ export type XpSourceType =
   | 'TOPIC_COMPLETION'
   | 'QUESTION_COMPLETION'
   | 'PRACTICE'
-  | 'RANKED';
+  | 'RANKED'
+  | 'DAILY_CHALLENGE';
 
 export interface LevelProgressCalculation {
   currentLevel: number;

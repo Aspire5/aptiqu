@@ -159,4 +159,60 @@ export class PracticeController {
       });
     }
   }
+
+  /**
+   * GET /api/v1/practice/history
+   * Retrieves paginated practice drill history including replays.
+   */
+  public static async getHistory(req: AuthenticatedRequest, res: Response) {
+    const userId = req.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+
+    try {
+      const history = await practiceSessionService.getHistory(userId, page, limit);
+      res.status(200).json({
+        success: true,
+        data: history,
+      });
+    } catch (err: any) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Failed to retrieve practice history.',
+      });
+    }
+  }
+
+  /**
+   * POST /api/v1/practice/replay/:sessionId
+   * Starts a replay of a past practice drill with 0 rewards.
+   */
+  public static async replaySession(req: AuthenticatedRequest, res: Response) {
+    const userId = req.userId;
+    const sessionId = req.params.sessionId as string;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    try {
+      const session = await practiceSessionService.replayPracticeSession(userId, sessionId);
+      res.status(201).json({
+        success: true,
+        data: session,
+      });
+    } catch (err: any) {
+      res.status(400).json({
+        success: false,
+        message: err.message || 'Failed to replay practice session.',
+      });
+    }
+  }
 }
+

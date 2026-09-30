@@ -40,6 +40,9 @@ model User {
   pvpMatchAnswers        PvpMatchAnswer[]
   pvpSetHistory          PvpPlayerSetHistory[]
 
+  // Daily Challenge relations
+  dailyChallengeParticipations DailyChallengeParticipation[]
+
   @@map("users")
   @@schema("auth")
 }
@@ -77,13 +80,16 @@ model Profile {
 }
 
 model GameStats {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @unique @map("user_id") @db.Uuid
-  level     Int      @default(1)
-  streak    Int      @default(0)
-  coins     Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                   String    @id @default(uuid()) @db.Uuid
+  userId               String    @unique @map("user_id") @db.Uuid
+  level                Int       @default(1)
+  streak               Int       @default(0)
+  highestStreak        Int       @default(0) @map("highest_streak")
+  lastDailyCompletedAt DateTime? @map("last_daily_completed_at")
+  lastDailyDate        String?   @map("last_daily_date")
+  coins                Int       @default(0)
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -347,6 +353,8 @@ model Question {
   userProgress           UserQuestionProgress[]
   pvpSetQuestions        PvpQuestionSetQuestion[]
   pvpMatchAnswers        PvpMatchAnswer[]
+  dailyChallengeScriptQuestions DailyChallengeScriptQuestion[]
+  dailyChallengeAnswers         DailyChallengeAnswer[]
 
   @@index([subtopicId, status, difficulty])
   @@index([topicId, status])
@@ -461,6 +469,9 @@ model PracticeSession {
   correctCount    Int                    @default(0) @map("correct_count")
   totalTimeMs     Int                    @default(0) @map("total_time_ms")
   xpAwarded       Int                    @default(0) @map("xp_awarded")
+  isReplay        Boolean                @default(false) @map("is_replay")
+  replaySourceType String?               @map("replay_source_type")
+  replaySourceId   String?               @map("replay_source_id")
   
   createdAt       DateTime               @default(now()) @map("created_at")
   updatedAt       DateTime               @updatedAt @map("updated_at")
@@ -473,6 +484,7 @@ model PracticeSession {
 
   @@index([userId, status])
   @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, isReplay, createdAt(sort: Desc)])
   @@map("practice_sessions")
   @@schema("learning")
 }
@@ -819,3 +831,95 @@ model UserRoadmapStepProgress {
   @@map("user_roadmap_step_progress")
   @@schema("learning")
 }
+
+// =============================================================================
+// DAILY CHALLENGE DOMAIN MODELS
+// =============================================================================
+
+enum DailyChallengeStatus {
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  ABANDONED
+
+  @@schema("learning")
+}
+
+model DailyChallengeScript {
+  id            String                         @id @default(uuid()) @db.Uuid
+  dateString    String                         @map("date_string")
+  tier          Int
+  questionCount Int                            @map("question_count")
+  createdAt     DateTime                       @default(now()) @map("created_at")
+
+  questions      DailyChallengeScriptQuestion[]
+  participations DailyChallengeParticipation[]
+
+  @@unique([dateString, tier])
+  @@index([dateString])
+  @@map("daily_challenge_scripts")
+  @@schema("learning")
+}
+
+model DailyChallengeScriptQuestion {
+  id         String                 @id @default(uuid()) @db.Uuid
+  scriptId   String                 @map("script_id") @db.Uuid
+  questionId String                 @map("question_id") @db.Uuid
+  sequence   Int
+  difficulty QuestionDifficultyEnum
+  timeLimit  Int                    @default(60) @map("time_limit")
+
+  script   DailyChallengeScript @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  question Question             @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([scriptId, sequence])
+  @@map("daily_challenge_script_questions")
+  @@schema("learning")
+}
+
+model DailyChallengeParticipation {
+  id                String               @id @default(uuid()) @db.Uuid
+  userId            String               @map("user_id") @db.Uuid
+  scriptId          String               @map("script_id") @db.Uuid
+  dateString        String               @map("date_string")
+  status            DailyChallengeStatus @default(IN_PROGRESS)
+  correctCount      Int                  @default(0) @map("correct_count")
+  totalQuestions    Int                  @map("total_questions")
+  totalTimeMs       Int                  @default(0) @map("total_time_ms")
+  avgTimeMs         Int                  @default(0) @map("avg_time_ms")
+  streakAtAttempt   Int                  @map("streak_at_attempt")
+  streakIncremented Boolean              @default(false) @map("streak_incremented")
+  xpAwarded         Int                  @default(0) @map("xp_awarded")
+  coinsAwarded      Int                  @default(0) @map("coins_awarded")
+  startedAt         DateTime             @default(now()) @map("started_at")
+  completedAt       DateTime?            @map("completed_at")
+
+  user    User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  script  DailyChallengeScript   @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  answers DailyChallengeAnswer[]
+
+  @@unique([userId, dateString])
+  @@index([userId, startedAt(sort: Desc)])
+  @@index([dateString, status])
+  @@map("daily_challenge_participations")
+  @@schema("learning")
+}
+
+model DailyChallengeAnswer {
+  id               String   @id @default(uuid()) @db.Uuid
+  participationId  String   @map("participation_id") @db.Uuid
+  questionId       String   @map("question_id") @db.Uuid
+  sequence         Int
+  selectedOptionId String?  @map("selected_option_id")
+  isCorrect        Boolean  @map("is_correct")
+  responseTimeMs   Int      @map("response_time_ms")
+  answeredAt       DateTime @default(now()) @map("answered_at")
+
+  participation DailyChallengeParticipation @relation(fields: [participationId], references: [id], onDelete: Cascade)
+  question      Question                    @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([participationId, sequence])
+  @@map("daily_challenge_answers")
+  @@schema("learning")
+}
+

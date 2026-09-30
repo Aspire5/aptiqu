@@ -7,6 +7,8 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/presentation/screens/signup_screen.dart';
 import '../../features/lesson/views/lesson_feed_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/daily_challenge/presentation/screens/daily_streak_hub_screen.dart';
+import '../../features/daily_challenge/presentation/screens/daily_challenge_quiz_screen.dart';
 import 'app_routes.dart';
 
 /// Centralized GoRouter with Auth & Onboarding Guards
@@ -76,6 +78,16 @@ class AppRouter {
             );
           },
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.dailyStreak,
+        name: 'dailyStreak',
+        builder: (context, state) => const DailyStreakHubScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.dailyChallengeQuiz,
+        name: 'dailyChallengeQuiz',
+        builder: (context, state) => const DailyChallengeQuizScreen(),
       ),
       GoRoute(
         path: AppRoutes.lesson,

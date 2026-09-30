@@ -75,4 +75,28 @@ class PracticeRepository {
   Future<void> abandonSession(String sessionId) async {
     await _client.dio.post('/practice/sessions/$sessionId/abandon');
   }
+
+  Future<PracticeHistoryResponseModel> getHistory({int page = 1, int limit = 10}) async {
+    final response = await _client.dio.get(
+      '/practice/history',
+      queryParameters: {'page': page, 'limit': limit},
+    );
+
+    if (response.statusCode == 200 && response.data['success'] == true) {
+      return PracticeHistoryResponseModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    }
+    throw Exception(response.data['message'] ?? 'Failed to retrieve practice history');
+  }
+
+  Future<PracticeSessionModel> replaySession(String sessionId) async {
+    final response = await _client.dio.post(
+      '/practice/replay/$sessionId',
+      options: Options(receiveTimeout: const Duration(seconds: 45)),
+    );
+
+    if (response.statusCode == 201 && response.data['success'] == true) {
+      return PracticeSessionModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    }
+    throw Exception(response.data['message'] ?? 'Failed to replay practice session');
+  }
 }

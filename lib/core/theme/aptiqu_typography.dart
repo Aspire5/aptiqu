@@ -88,6 +88,7 @@ class AptiquTypography {
   );
 
   // Material 3 Compatible Getters
+  static TextStyle get headlineLarge => displayHero;
   static TextStyle get headlineMedium => headlineMd;
   static TextStyle get headlineSmall => headlineSm;
   static TextStyle get titleLarge => headlineMd;

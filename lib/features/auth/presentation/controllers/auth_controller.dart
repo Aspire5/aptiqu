@@ -58,6 +58,17 @@ class AuthController extends GetxController {
     return null;
   }
 
+  /// Refreshes the user profile from the backend
+  Future<void> fetchUserProfile() async {
+    try {
+      final response = await dioClient.dio.get('/user/profile');
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        final profileData = response.data['data'];
+        currentUser.value = UserModel.fromJson(profileData);
+      }
+    } catch (_) {}
+  }
+
   /// Sign In with Google OAuth (Real Google Sign-In SDK)
   Future<bool> signInWithGoogle() async {
     isLoading.value = true;

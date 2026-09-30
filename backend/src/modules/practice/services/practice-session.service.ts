@@ -161,6 +161,9 @@ export class PracticeSessionService {
       correctCount: session.correctCount,
       totalTimeMs: session.totalTimeMs,
       xpAwarded: session.xpAwarded,
+      isReplay: session.isReplay,
+      replaySourceType: session.replaySourceType,
+      replaySourceId: session.replaySourceId,
       startedAt: session.startedAt,
       completedAt: session.completedAt,
       questions: sanitizedQuestions,
@@ -225,42 +228,44 @@ export class PracticeSessionService {
         },
       });
 
-      // 2. Update UserQuestionProgress (history & mastery tracking)
-      const existingProg = await tx.userQuestionProgress.findUnique({
-        where: {
-          userId_questionId: {
-            userId,
-            questionId,
+      // 2. Update UserQuestionProgress (history & mastery tracking) ONLY for regular drills (not replays)
+      if (!session.isReplay) {
+        const existingProg = await tx.userQuestionProgress.findUnique({
+          where: {
+            userId_questionId: {
+              userId,
+              questionId,
+            },
           },
-        },
-      });
+        });
 
-      if (existingProg) {
-        await tx.userQuestionProgress.update({
-          where: { id: existingProg.id },
-          data: {
-            timesSeen: existingProg.timesSeen + 1,
-            timesCorrect: existingProg.timesCorrect + (isCorrect ? 1 : 0),
-            lastSeenAt: new Date(),
-            lastIsCorrect: isCorrect,
-            avgResponseTimeMs: Math.round(
-              ((existingProg.avgResponseTimeMs || responseTimeMs) + responseTimeMs) / 2
-            ),
-          },
-        });
-      } else {
-        await tx.userQuestionProgress.create({
-          data: {
-            userId,
-            questionId,
-            subtopicId: question.subtopicId,
-            timesSeen: 1,
-            timesCorrect: isCorrect ? 1 : 0,
-            lastSeenAt: new Date(),
-            lastIsCorrect: isCorrect,
-            avgResponseTimeMs: responseTimeMs,
-          },
-        });
+        if (existingProg) {
+          await tx.userQuestionProgress.update({
+            where: { id: existingProg.id },
+            data: {
+              timesSeen: existingProg.timesSeen + 1,
+              timesCorrect: existingProg.timesCorrect + (isCorrect ? 1 : 0),
+              lastSeenAt: new Date(),
+              lastIsCorrect: isCorrect,
+              avgResponseTimeMs: Math.round(
+                ((existingProg.avgResponseTimeMs || responseTimeMs) + responseTimeMs) / 2
+              ),
+            },
+          });
+        } else {
+          await tx.userQuestionProgress.create({
+            data: {
+              userId,
+              questionId,
+              subtopicId: question.subtopicId,
+              timesSeen: 1,
+              timesCorrect: isCorrect ? 1 : 0,
+              lastSeenAt: new Date(),
+              lastIsCorrect: isCorrect,
+              avgResponseTimeMs: responseTimeMs,
+            },
+          });
+        }
       }
 
       // 3. Count remaining unanswered questions
@@ -278,26 +283,28 @@ export class PracticeSessionService {
       let totalXpToAward = 0;
 
       if (isComplete) {
-        // Calculate XP for each correct question
-        for (const sq of updatedQuestions) {
-          if (sq.isCorrect) {
-            const qXp = XpPolicy.calculateQuestionXp('PRACTICE', sq.question.difficulty);
-            totalXpToAward += qXp;
+        // Calculate XP for each correct question ONLY if NOT a replay
+        if (!session.isReplay) {
+          for (const sq of updatedQuestions) {
+            if (sq.isCorrect) {
+              const qXp = XpPolicy.calculateQuestionXp('PRACTICE', sq.question.difficulty);
+              totalXpToAward += qXp;
+            }
           }
-        }
 
-        // Authoritatively award XP via centralized XpService
-        if (totalXpToAward > 0) {
-          xpResult = await XpService.getInstance().awardXp({
-            userId,
-            amount: totalXpToAward,
-            sourceType: 'PRACTICE',
-            sourceId: session.id,
-            idempotencyKey: `practice:session:${session.id}`,
-            subjectId: session.subjectId,
-            topicId: session.topicId,
-            description: `Completed 10-Question Practice Session on ${session.topicId}`,
-          });
+          // Authoritatively award XP via centralized XpService
+          if (totalXpToAward > 0) {
+            xpResult = await XpService.getInstance().awardXp({
+              userId,
+              amount: totalXpToAward,
+              sourceType: 'PRACTICE',
+              sourceId: session.id,
+              idempotencyKey: `practice:session:${session.id}`,
+              subjectId: session.subjectId,
+              topicId: session.topicId,
+              description: `Completed 10-Question Practice Session on ${session.topicId}`,
+            });
+          }
         }
 
         // Mark session as COMPLETED
@@ -369,6 +376,187 @@ export class PracticeSessionService {
       success: true,
       message: 'Session marked as abandoned. Zero completion XP awarded.',
       xpAwarded: 0,
+    };
+  }
+
+  /**
+   * Replays an existing practice session as an untimed practice drill with 0 rewards.
+   */
+  public async replayPracticeSession(userId: string, originalSessionId: string) {
+    const original = await prisma.practiceSession.findFirst({
+      where: { id: originalSessionId },
+      include: {
+        questions: {
+          orderBy: { sequence: 'asc' },
+        },
+      },
+    });
+
+    if (!original) {
+      throw new Error(`Practice session "${originalSessionId}" not found for replay.`);
+    }
+
+    return await prisma.$transaction(async (tx) => {
+      const replaySession = await tx.practiceSession.create({
+        data: {
+          userId,
+          subjectId: original.subjectId,
+          topicId: original.topicId,
+          subtopicIds: original.subtopicIds,
+          status: 'ACTIVE',
+          currentIndex: 0,
+          totalQuestions: original.questions.length,
+          correctCount: 0,
+          totalTimeMs: 0,
+          xpAwarded: 0,
+          isReplay: true,
+          replaySourceType: 'PRACTICE',
+          replaySourceId: original.id,
+        },
+      });
+
+      for (let i = 0; i < original.questions.length; i++) {
+        await tx.practiceSessionQuestion.create({
+          data: {
+            sessionId: replaySession.id,
+            questionId: original.questions[i].questionId,
+            sequence: i + 1,
+            isAnswered: false,
+          },
+        });
+      }
+
+      return await this.getSession(replaySession.id, userId, tx);
+    });
+  }
+
+  /**
+   * Replays a PvP Match as a solo Practice drill (no timer, no second user, 0 rewards).
+   * Logs are recorded as Practice sessions so they automatically appear in Practice history!
+   */
+  public async replayPvpMatch(userId: string, matchId: string) {
+    const match = await prisma.pvpMatch.findUnique({
+      where: { id: matchId },
+      include: {
+        questionSet: {
+          include: {
+            setQuestions: {
+              include: { question: true },
+              orderBy: { sequence: 'asc' },
+            },
+          },
+        },
+      },
+    });
+
+    if (!match || !match.questionSet) {
+      throw new Error(`PvP Match "${matchId}" not found for replay.`);
+    }
+
+    const setQuestions = match.questionSet.setQuestions;
+    if (setQuestions.length === 0) {
+      throw new Error('PvP match question set contains no questions.');
+    }
+
+    const firstQuestion = setQuestions[0].question;
+
+    return await prisma.$transaction(async (tx) => {
+      const replaySession = await tx.practiceSession.create({
+        data: {
+          userId,
+          subjectId: firstQuestion.subjectId,
+          topicId: firstQuestion.topicId,
+          subtopicIds: [firstQuestion.subtopicId],
+          status: 'ACTIVE',
+          currentIndex: 0,
+          totalQuestions: setQuestions.length,
+          correctCount: 0,
+          totalTimeMs: 0,
+          xpAwarded: 0,
+          isReplay: true,
+          replaySourceType: 'PVP',
+          replaySourceId: match.id,
+        },
+      });
+
+      for (let i = 0; i < setQuestions.length; i++) {
+        await tx.practiceSessionQuestion.create({
+          data: {
+            sessionId: replaySession.id,
+            questionId: setQuestions[i].questionId,
+            sequence: i + 1,
+            isAnswered: false,
+          },
+        });
+      }
+
+      return await this.getSession(replaySession.id, userId, tx);
+    });
+  }
+
+  /**
+   * Retrieves paginated Practice history (including replays & PvP replays).
+   * Replays do not inflate user average speed stats.
+   */
+  public async getHistory(userId: string, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    const [items, totalCount] = await Promise.all([
+      prisma.practiceSession.findMany({
+        where: { userId },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.practiceSession.count({ where: { userId } }),
+    ]);
+
+    // Compute stats only over non-replay completed sessions
+    const nonReplayCompleted = await prisma.practiceSession.findMany({
+      where: { userId, isReplay: false, status: 'COMPLETED' },
+      select: { correctCount: true, totalQuestions: true, totalTimeMs: true },
+    });
+
+    const totalAnsweredQuestions = nonReplayCompleted.reduce(
+      (sum, s) => sum + s.totalQuestions,
+      0
+    );
+    const totalCorrect = nonReplayCompleted.reduce((sum, s) => sum + s.correctCount, 0);
+    const totalTimeMs = nonReplayCompleted.reduce((sum, s) => sum + s.totalTimeMs, 0);
+
+    const overallAccuracy =
+      totalAnsweredQuestions > 0 ? Math.round((totalCorrect / totalAnsweredQuestions) * 100) : 0;
+    const avgResponseTimeMs =
+      totalAnsweredQuestions > 0 ? Math.round(totalTimeMs / totalAnsweredQuestions) : 0;
+
+    return {
+      history: items.map((s) => ({
+        id: s.id,
+        topicId: s.topicId,
+        subjectId: s.subjectId,
+        status: s.status,
+        correctCount: s.correctCount,
+        totalQuestions: s.totalQuestions,
+        totalTimeMs: s.totalTimeMs,
+        xpAwarded: s.xpAwarded,
+        isReplay: s.isReplay,
+        replaySourceType: s.replaySourceType,
+        replaySourceId: s.replaySourceId,
+        startedAt: s.startedAt,
+        completedAt: s.completedAt,
+        createdAt: s.createdAt,
+      })),
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+      stats: {
+        completedDrillsCount: nonReplayCompleted.length,
+        overallAccuracy,
+        avgResponseTimeMs,
+      },
     };
   }
 }

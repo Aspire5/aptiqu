@@ -9,6 +9,7 @@ import 'practice_session_controller.dart';
 enum PracticeSelectionMode {
   random,
   specific,
+  history,
 }
 
 class PracticeCatalogController extends GetxController {
@@ -22,6 +23,14 @@ class PracticeCatalogController extends GetxController {
   final RxString selectedSubjectId = ''.obs;
   final RxString selectedTopicId = ''.obs;
   final RxString errorMessage = ''.obs;
+
+  // History observables
+  final RxList<PracticeHistoryItemModel> historyList = <PracticeHistoryItemModel>[].obs;
+  final RxBool isLoadingHistory = false.obs;
+  final RxInt historyCompletedDrills = 0.obs;
+  final RxInt historyOverallAccuracy = 0.obs;
+  final RxInt historyAvgResponseTimeMs = 0.obs;
+  final RxBool isReplaying = false.obs;
 
   String? _pendingSubjectId;
   String? _pendingTopicId;
@@ -243,6 +252,49 @@ class PracticeCatalogController extends GetxController {
       _showNotice('Session Failed', err.toString().replaceAll('Exception: ', ''), isError: true);
     } finally {
       isStartingSession.value = false;
+    }
+  }
+
+  /// Fetches practice history including replays and PvP replays
+  Future<void> fetchHistory({bool refresh = false}) async {
+    isLoadingHistory.value = true;
+    try {
+      final res = await _repository.getHistory(page: 1, limit: 20);
+      historyList.assignAll(res.history);
+      historyCompletedDrills.value = res.completedDrillsCount;
+      historyOverallAccuracy.value = res.overallAccuracy;
+      historyAvgResponseTimeMs.value = res.avgResponseTimeMs;
+    } catch (e) {
+      debugPrint('[Practice] fetchHistory error: $e');
+    } finally {
+      isLoadingHistory.value = false;
+    }
+  }
+
+  /// Replays a past practice drill with 0 rewards
+  Future<void> replayPracticeSession(String sessionId) async {
+    isReplaying.value = true;
+    try {
+      final session = await _repository.replaySession(sessionId);
+
+      if (Get.isRegistered<PracticeSessionController>()) {
+        Get.delete<PracticeSessionController>();
+      }
+
+      final nav = AppRouter.navigatorKey.currentState;
+      if (nav != null) {
+        nav.push(
+          MaterialPageRoute(
+            builder: (_) => PracticeSessionScreen(initialSession: session),
+          ),
+        );
+      } else {
+        Get.to(() => PracticeSessionScreen(initialSession: session));
+      }
+    } catch (e) {
+      _showNotice('Replay Failed', e.toString().replaceAll('Exception: ', ''), isError: true);
+    } finally {
+      isReplaying.value = false;
     }
   }
 }

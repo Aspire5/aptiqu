@@ -57,19 +57,21 @@ class PracticeCatalogView extends StatelessWidget {
             // 1. Sleek Minimal Header & Mode Switcher
             _buildHeaderAndModeTabs(context, controller),
 
-            // 2. Mode Content (Quick Drill vs Custom Curate)
+            // 2. Mode Content (Quick Drill vs Custom Curate vs History)
             Expanded(
               child: Obx(() {
                 final mode = controller.selectionMode.value;
                 if (mode == PracticeSelectionMode.random) {
                   return _buildQuickDrillMode(context, controller);
-                } else {
+                } else if (mode == PracticeSelectionMode.specific) {
                   return _buildCustomDrillMode(context, controller);
+                } else {
+                  return _buildHistoryMode(context, controller);
                 }
               }),
             ),
 
-            // 3. Persistent Action Bar (guaranteed overflow-free)
+            // 3. Persistent Action Bar (guaranteed overflow-free, hidden on History)
             _buildBottomActionBar(controller),
           ],
         ),
@@ -163,9 +165,12 @@ class PracticeCatalogView extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Modern Low-Profile Segmented Switcher
+          // Modern Low-Profile Segmented Switcher (3 Tabs)
           Obx(() {
-            final isRandom = controller.selectionMode.value == PracticeSelectionMode.random;
+            final mode = controller.selectionMode.value;
+            final isRandom = mode == PracticeSelectionMode.random;
+            final isSpecific = mode == PracticeSelectionMode.specific;
+            final isHistory = mode == PracticeSelectionMode.history;
 
             return Container(
               height: 38,
@@ -197,10 +202,10 @@ class PracticeCatalogView extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.shuffle_rounded,
-                              size: 14,
+                              size: 13,
                               color: isRandom ? AptiquColors.primary : AptiquColors.onSurfaceVariant,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: 4),
                             Flexible(
                               child: Text(
                                 'Quick Drill',
@@ -209,7 +214,7 @@ class PracticeCatalogView extends StatelessWidget {
                                 style: AptiquTypography.labelMedium.copyWith(
                                   color: isRandom ? Colors.white : AptiquColors.onSurfaceVariant,
                                   fontWeight: isRandom ? FontWeight.bold : FontWeight.w500,
-                                  fontSize: 12,
+                                  fontSize: 11,
                                 ),
                               ),
                             ),
@@ -227,9 +232,9 @@ class PracticeCatalogView extends StatelessWidget {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 180),
                         decoration: BoxDecoration(
-                          color: !isRandom ? AptiquColors.surfaceContainerHigh : Colors.transparent,
+                          color: isSpecific ? AptiquColors.surfaceContainerHigh : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
-                          border: !isRandom
+                          border: isSpecific
                               ? Border.all(color: AptiquColors.primary.withValues(alpha: 0.35))
                               : null,
                         ),
@@ -239,19 +244,64 @@ class PracticeCatalogView extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.tune_rounded,
-                              size: 14,
-                              color: !isRandom ? AptiquColors.primary : AptiquColors.onSurfaceVariant,
+                              size: 13,
+                              color: isSpecific ? AptiquColors.primary : AptiquColors.onSurfaceVariant,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: 4),
                             Flexible(
                               child: Text(
-                                'Curate Topics',
+                                'Curate',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AptiquTypography.labelMedium.copyWith(
-                                  color: !isRandom ? Colors.white : AptiquColors.onSurfaceVariant,
-                                  fontWeight: !isRandom ? FontWeight.bold : FontWeight.w500,
-                                  fontSize: 12,
+                                  color: isSpecific ? Colors.white : AptiquColors.onSurfaceVariant,
+                                  fontWeight: isSpecific ? FontWeight.bold : FontWeight.w500,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Tab 3: History & Replays
+                  Expanded(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        controller.selectionMode.value = PracticeSelectionMode.history;
+                        controller.fetchHistory();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        decoration: BoxDecoration(
+                          color: isHistory ? AptiquColors.surfaceContainerHigh : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          border: isHistory
+                              ? Border.all(color: AptiquColors.primary.withValues(alpha: 0.35))
+                              : null,
+                        ),
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.history_rounded,
+                              size: 13,
+                              color: isHistory ? AptiquColors.primary : AptiquColors.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                'Logs & Replays',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AptiquTypography.labelMedium.copyWith(
+                                  color: isHistory ? Colors.white : AptiquColors.onSurfaceVariant,
+                                  fontWeight: isHistory ? FontWeight.bold : FontWeight.w500,
+                                  fontSize: 11,
                                 ),
                               ),
                             ),
@@ -792,8 +842,13 @@ class PracticeCatalogView extends StatelessWidget {
         width: double.infinity,
         height: 50,
         child: Obx(() {
+          final mode = controller.selectionMode.value;
+          if (mode == PracticeSelectionMode.history) {
+            return const SizedBox.shrink();
+          }
+
           final isBusy = controller.isStartingSession.value;
-          final isRandom = controller.selectionMode.value == PracticeSelectionMode.random;
+          final isRandom = mode == PracticeSelectionMode.random;
           final selectedCount = controller.selectedSubtopicIds.length;
           final isEnabled = isRandom || selectedCount > 0;
 
@@ -857,6 +912,215 @@ class PracticeCatalogView extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+
+  /// History & Replays View
+  Widget _buildHistoryMode(BuildContext context, PracticeCatalogController controller) {
+    return Obx(() {
+      if (controller.isLoadingHistory.value && controller.historyList.isEmpty) {
+        return const Center(child: CircularProgressIndicator(color: AptiquColors.primary));
+      }
+
+      if (controller.historyList.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.history_toggle_off_rounded, color: AptiquColors.onSurfaceVariant, size: 48),
+              const SizedBox(height: 12),
+              Text(
+                'No Practice Sessions Yet',
+                style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurfaceVariant),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Start a Quick Drill to begin your practice logs!',
+                style: AptiquTypography.bodySmall.copyWith(color: AptiquColors.outline),
+              ),
+            ],
+          ),
+        );
+      }
+
+      return RefreshIndicator(
+        onRefresh: () => controller.fetchHistory(refresh: true),
+        color: AptiquColors.primary,
+        child: ListView.separated(
+          padding: const EdgeInsets.all(16),
+          itemCount: controller.historyList.length + 1,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              // Stats Overview Banner
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: AptiquColors.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AptiquColors.outlineVariant),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatItem('COMPLETED', '${controller.historyCompletedDrills.value}'),
+                    Container(width: 1, height: 24, color: AptiquColors.outlineVariant),
+                    _buildStatItem('ACCURACY', '${controller.historyOverallAccuracy.value}%'),
+                    Container(width: 1, height: 24, color: AptiquColors.outlineVariant),
+                    _buildStatItem(
+                      'AVG TIME',
+                      controller.historyAvgResponseTimeMs.value > 0
+                          ? '${(controller.historyAvgResponseTimeMs.value / 1000).toStringAsFixed(1)}s'
+                          : 'N/A',
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            final item = controller.historyList[index - 1];
+            final isReplay = item.isReplay;
+            final isPvpReplay = item.replaySourceType == 'PVP';
+
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AptiquColors.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isReplay
+                      ? Colors.purple.withValues(alpha: 0.5)
+                      : AptiquColors.outlineVariant,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            isPvpReplay ? Icons.sports_esports_rounded : Icons.flash_on_rounded,
+                            size: 16,
+                            color: isPvpReplay ? const Color(0xFFF59E0B) : AptiquColors.primary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            isPvpReplay ? 'PvP Duel Replay' : (item.topicId.replaceAll('-', ' ').toUpperCase()),
+                            style: AptiquTypography.labelCaps.copyWith(
+                              color: AptiquColors.onSurface,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (isReplay)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.purple.withValues(alpha: 0.18),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.purple.withValues(alpha: 0.4)),
+                          ),
+                          child: Text(
+                            'REPLAY · 0 REWARDS',
+                            style: AptiquTypography.labelCaps.copyWith(
+                              color: Colors.purpleAccent,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        )
+                      else if (item.xpAwarded > 0)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AptiquColors.primary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '+${item.xpAwarded} XP',
+                            style: AptiquTypography.labelCaps.copyWith(
+                              color: AptiquColors.primary,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Score: ${item.correctCount}/${item.totalQuestions} Correct',
+                            style: AptiquTypography.bodySmall.copyWith(
+                              color: AptiquColors.onSurface,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Total Time: ${(item.totalTimeMs / 1000).toStringAsFixed(1)}s',
+                            style: AptiquTypography.bodySmall.copyWith(
+                              color: AptiquColors.onSurfaceVariant,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Replay Button
+                      OutlinedButton.icon(
+                        onPressed: controller.isReplaying.value
+                            ? null
+                            : () => controller.replayPracticeSession(item.id),
+                        icon: const Icon(Icons.replay_rounded, size: 14),
+                        label: const Text('Replay', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AptiquColors.primary,
+                          side: const BorderSide(color: AptiquColors.primary),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  Widget _buildStatItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: AptiquTypography.labelCaps.copyWith(
+            color: AptiquColors.onSurfaceVariant,
+            fontSize: 9,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: AptiquTypography.bodyMedium.copyWith(
+            color: AptiquColors.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }

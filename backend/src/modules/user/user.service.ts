@@ -1,5 +1,6 @@
 import { prisma } from '../../config/prisma';
 import { xpService } from '../xp/xp.service';
+import { dailyChallengeService } from '../daily-challenge/daily-challenge.service';
 
 export class UserService {
   /**
@@ -18,7 +19,10 @@ export class UserService {
       throw new Error('User not found');
     }
 
-    const xpProgress = await xpService.getUserProgress(userId);
+    const [xpProgress, streakSync] = await Promise.all([
+      xpService.getUserProgress(userId),
+      dailyChallengeService.syncUserStreak(userId),
+    ]);
 
     return {
       id: user.id,
@@ -41,10 +45,11 @@ export class UserService {
       xpRemainingToNextLevel: xpProgress.xpRemainingToNextLevel,
       progress: xpProgress.progress,
       xp: xpProgress,
-      // NOTE: Streak is hardcoded to 0 for now as requested. Daily streak calculation logic will be handled later.
-      streak: `${user.gameStats?.streak ?? 0}d`,
-      // NOTE: Coins is hardcoded to 0 for now as requested. Coin rewards logic will be handled later.
-      coins: user.gameStats?.coins ?? 0,
+      streak: `${streakSync.currentStreak}d`,
+      highestStreak: `${streakSync.highestStreak}d`,
+      coins: streakSync.stats.coins,
+      dailyChallengeDue: streakSync.isDue,
+      dailyChallengeCompleted: streakSync.isCompletedToday,
       stats: await this.getUserStats(userId),
     };
   }

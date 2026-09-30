@@ -173,6 +173,9 @@ class PracticeSessionModel {
   final int correctCount;
   final int totalTimeMs;
   final int xpAwarded;
+  final bool isReplay;
+  final String? replaySourceType;
+  final String? replaySourceId;
   final List<PracticeSessionQuestionModel> questions;
 
   const PracticeSessionModel({
@@ -187,6 +190,9 @@ class PracticeSessionModel {
     required this.correctCount,
     required this.totalTimeMs,
     required this.xpAwarded,
+    this.isReplay = false,
+    this.replaySourceType,
+    this.replaySourceId,
     required this.questions,
   });
 
@@ -216,7 +222,97 @@ class PracticeSessionModel {
       correctCount: (json['correctCount'] as num?)?.toInt() ?? 0,
       totalTimeMs: (json['totalTimeMs'] as num?)?.toInt() ?? 0,
       xpAwarded: (json['xpAwarded'] as num?)?.toInt() ?? 0,
+      isReplay: json['isReplay'] as bool? ?? false,
+      replaySourceType: json['replaySourceType']?.toString(),
+      replaySourceId: json['replaySourceId']?.toString(),
       questions: qList,
+    );
+  }
+}
+
+class PracticeHistoryItemModel {
+  final String id;
+  final String topicId;
+  final String subjectId;
+  final String status;
+  final int correctCount;
+  final int totalQuestions;
+  final int totalTimeMs;
+  final int xpAwarded;
+  final bool isReplay;
+  final String? replaySourceType;
+  final String? replaySourceId;
+  final String createdAt;
+  final String? completedAt;
+
+  const PracticeHistoryItemModel({
+    required this.id,
+    required this.topicId,
+    required this.subjectId,
+    required this.status,
+    required this.correctCount,
+    required this.totalQuestions,
+    required this.totalTimeMs,
+    required this.xpAwarded,
+    required this.isReplay,
+    this.replaySourceType,
+    this.replaySourceId,
+    required this.createdAt,
+    this.completedAt,
+  });
+
+  factory PracticeHistoryItemModel.fromJson(Map<String, dynamic> json) {
+    return PracticeHistoryItemModel(
+      id: json['id']?.toString() ?? '',
+      topicId: json['topicId']?.toString() ?? '',
+      subjectId: json['subjectId']?.toString() ?? '',
+      status: json['status']?.toString() ?? 'COMPLETED',
+      correctCount: (json['correctCount'] as num?)?.toInt() ?? 0,
+      totalQuestions: (json['totalQuestions'] as num?)?.toInt() ?? 10,
+      totalTimeMs: (json['totalTimeMs'] as num?)?.toInt() ?? 0,
+      xpAwarded: (json['xpAwarded'] as num?)?.toInt() ?? 0,
+      isReplay: json['isReplay'] as bool? ?? false,
+      replaySourceType: json['replaySourceType']?.toString(),
+      replaySourceId: json['replaySourceId']?.toString(),
+      createdAt: json['createdAt']?.toString() ?? '',
+      completedAt: json['completedAt']?.toString(),
+    );
+  }
+}
+
+class PracticeHistoryResponseModel {
+  final List<PracticeHistoryItemModel> history;
+  final int completedDrillsCount;
+  final int overallAccuracy;
+  final int avgResponseTimeMs;
+  final int page;
+  final int totalPages;
+
+  const PracticeHistoryResponseModel({
+    required this.history,
+    required this.completedDrillsCount,
+    required this.overallAccuracy,
+    required this.avgResponseTimeMs,
+    required this.page,
+    required this.totalPages,
+  });
+
+  factory PracticeHistoryResponseModel.fromJson(Map<String, dynamic> json) {
+    final list = (json['history'] as List<dynamic>?)
+            ?.map((h) => PracticeHistoryItemModel.fromJson(Map<String, dynamic>.from(h as Map)))
+            .toList() ??
+        [];
+
+    final stats = json['stats'] as Map<String, dynamic>? ?? {};
+    final pagination = json['pagination'] as Map<String, dynamic>? ?? {};
+
+    return PracticeHistoryResponseModel(
+      history: list,
+      completedDrillsCount: (stats['completedDrillsCount'] as num?)?.toInt() ?? 0,
+      overallAccuracy: (stats['overallAccuracy'] as num?)?.toInt() ?? 0,
+      avgResponseTimeMs: (stats['avgResponseTimeMs'] as num?)?.toInt() ?? 0,
+      page: (pagination['page'] as num?)?.toInt() ?? 1,
+      totalPages: (pagination['totalPages'] as num?)?.toInt() ?? 1,
     );
   }
 }
