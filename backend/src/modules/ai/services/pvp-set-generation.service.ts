@@ -50,10 +50,26 @@ export class PvpSetGenerationService {
     }
 
     try {
-      // 1. Fetch Live Universe
+      // 1. Fetch Live Universe & flatten subtopics
       const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
       if (liveUniverse.length === 0) {
         throw new Error('No live topics or subtopics found in curriculum universe.');
+      }
+
+      const allLiveSubtopics = liveUniverse.flatMap((u) =>
+        u.subtopics.map((sub) => ({
+          subtopicId: sub.id,
+          subtopicName: sub.name,
+          subtopicDescription: sub.description,
+          topicId: u.topicId,
+          topicName: u.topicName,
+          subjectId: u.subjectId,
+          subjectName: u.subjectName,
+        }))
+      );
+
+      if (allLiveSubtopics.length === 0) {
+        throw new Error('No live subtopics found in curriculum universe for PvP.');
       }
 
       // 2. Select difficulty distribution (Random draw across EASY, MEDIUM, HARD per question)
@@ -70,9 +86,7 @@ export class PvpSetGenerationService {
         }
       }
 
-      const easyCount = difficulties.filter((d) => d === 'EASY').length;
-      const medCount = difficulties.filter((d) => d === 'MEDIUM').length;
-      const hardCount = difficulties.filter((d) => d === 'HARD').length;
+      const assignedSubtopics = difficulties.map((_, i) => allLiveSubtopics[i % allLiveSubtopics.length]);
 
       // 3. Fetch fingerprints
       const recentQuestions = await prisma.question.findMany({
@@ -84,12 +98,18 @@ export class PvpSetGenerationService {
 
       // 4. Generator Call
       const generatorPrompt = `
-Generate a 10-Question Ranked PvP Set from the following LIVE Curriculum Universe:
-${liveUniverse.map((s) => `Subject: ${s.subjectName} -> Topic: ${s.topicName} -> Subtopics: ${s.subtopics.map((sub) => sub.name).join(', ')}`).join('\n')}
-
-Requested Difficulty Target for this Set:
-- Target Distribution: ${easyCount} EASY, ${medCount} MEDIUM, ${hardCount} HARD
-- Each question must be independently solvable within 30 to 60 seconds (60 seconds fixed PvP maximum).
+Generate a 10-Question Ranked PvP Set drawn strictly from the following ACTIVE syllabus subtopics:
+${difficulties
+  .map((diff, i) => {
+    const targetSub = assignedSubtopics[i];
+    return `Question ${i + 1} (${diff}):
+- Active Syllabus Subject: ${targetSub.subjectName}
+- Active Syllabus Topic: ${targetSub.topicName}
+- Active Syllabus Subtopic: ${targetSub.subtopicName}
+- Target Difficulty: ${diff}
+- Time constraint: Solvable within 30 to 60 seconds (mental aptitude shortcuts preferred).`;
+  })
+  .join('\n\n')}
 
 Exclude previously generated fingerprints:
 ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
@@ -123,10 +143,6 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
 
       const candidates = validQuestions;
 
-      // 7. Map to live subtopic metadata (fallback to first live subtopic if not matching)
-      const firstLiveSubject = liveUniverse[0];
-      const firstLiveSubtopic = firstLiveSubject.subtopics[0];
-
       // Insert questions & create set in a transaction
       const setCode = `pvp_set_${Date.now()}_${randomUUID().slice(0, 8)}`;
 
@@ -143,8 +159,10 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
         });
 
         let sequence = 1;
-        for (const q of candidates) {
+        for (let i = 0; i < candidates.length; i++) {
           if (sequence > 10) break;
+          const q = candidates[i];
+          const targetSub = assignedSubtopics[i] || allLiveSubtopics[0];
 
           const fingerprint = FingerprintService.computeFingerprint(q.prompt, q.options);
           let question = await tx.question.findUnique({
@@ -154,9 +172,9 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
           if (!question) {
             question = await tx.question.create({
               data: {
-                subjectId: firstLiveSubject.subjectId,
-                topicId: firstLiveSubject.topicId,
-                subtopicId: firstLiveSubtopic.id,
+                subjectId: targetSub.subjectId,
+                topicId: targetSub.topicId,
+                subtopicId: targetSub.subtopicId,
                 pattern: q.pattern,
                 prompt: q.prompt,
                 options: q.options,

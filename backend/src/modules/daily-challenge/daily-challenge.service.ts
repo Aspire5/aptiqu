@@ -218,6 +218,10 @@ export class DailyChallengeService {
       },
     });
 
+    if (participation && participation.status !== 'IN_PROGRESS') {
+      throw new Error('Daily Challenge already attempted for today. Come back tomorrow!');
+    }
+
     if (!participation) {
       // 1. Lazy generate or fetch today's tier script
       const script = await dailyChallengeGenerationService.getOrGenerateDailyScript(
@@ -379,68 +383,103 @@ export class DailyChallengeService {
       };
 
       if (isComplete) {
-        // Complete the challenge and increment user streak!
         const stats = await tx.gameStats.findUnique({
           where: { userId },
         });
 
-        const prevStreak = stats?.streak ?? 0;
-        const newStreak = prevStreak + 1;
-        const newHighestStreak = Math.max(stats?.highestStreak ?? 0, newStreak);
+        const isAllCorrect = correctCount === participation.totalQuestions;
 
-        // Scaled rewards based on streak
-        const baseCoins = 25;
-        const streakBonusCoins = Math.min(newStreak * 5, 200);
-        const totalCoins = baseCoins + streakBonusCoins;
+        if (isAllCorrect) {
+          // Success! User got ALL questions right in the challenge!
+          const prevStreak = stats?.streak ?? 0;
+          const newStreak = prevStreak + 1;
+          const newHighestStreak = Math.max(stats?.highestStreak ?? 0, newStreak);
 
-        const baseXp = 50;
-        const streakBonusXp = Math.min(newStreak * 10, 500);
-        const totalXp = baseXp + streakBonusXp;
+          // Coins: exactly 10x number of questions in challenge (1 -> 10, 3 -> 30)
+          const totalCoins = participation.totalQuestions * 10;
 
-        // Update GameStats
-        await tx.gameStats.update({
-          where: { userId },
-          data: {
+          // XP: Base 50 + streak bonus (scaled with new streak)
+          const baseXp = 50;
+          const streakBonusXp = Math.min(newStreak * 10, 500);
+          const totalXp = baseXp + streakBonusXp;
+
+          // Update GameStats
+          await tx.gameStats.update({
+            where: { userId },
+            data: {
+              streak: newStreak,
+              highestStreak: newHighestStreak,
+              coins: { increment: totalCoins },
+              lastDailyCompletedAt: new Date(),
+              lastDailyDate: participation.dateString,
+            },
+          });
+
+          // Award XP authoritatively
+          await XpService.getInstance().awardXp({
+            userId,
+            amount: totalXp,
+            sourceType: 'DAILY_CHALLENGE',
+            sourceId: participation.id,
+            idempotencyKey: `daily:challenge:${participation.id}`,
+            description: `Completed Day ${newStreak} Daily Streak Challenge`,
+          });
+
+          // Update participation
+          await tx.dailyChallengeParticipation.update({
+            where: { id: participation.id },
+            data: {
+              status: 'COMPLETED',
+              correctCount,
+              totalTimeMs,
+              avgTimeMs,
+              streakIncremented: true,
+              xpAwarded: totalXp,
+              coinsAwarded: totalCoins,
+              completedAt: new Date(),
+            },
+          });
+
+          streakResult = {
             streak: newStreak,
             highestStreak: newHighestStreak,
-            coins: { increment: totalCoins },
-            lastDailyCompletedAt: new Date(),
-            lastDailyDate: participation.dateString,
-          },
-        });
-
-        // Award XP authoritatively
-        await XpService.getInstance().awardXp({
-          userId,
-          amount: totalXp,
-          sourceType: 'DAILY_CHALLENGE',
-          sourceId: participation.id,
-          idempotencyKey: `daily:challenge:${participation.id}`,
-          description: `Completed Day ${newStreak} Daily Streak Challenge`,
-        });
-
-        // Update participation
-        await tx.dailyChallengeParticipation.update({
-          where: { id: participation.id },
-          data: {
-            status: 'COMPLETED',
-            correctCount,
-            totalTimeMs,
-            avgTimeMs,
             streakIncremented: true,
             xpAwarded: totalXp,
             coinsAwarded: totalCoins,
-            completedAt: new Date(),
-          },
-        });
+          };
+        } else {
+          // All or None: If user missed any question or timed out, streak resets to 0.
+          // Zero XP, Zero Coins.
+          await tx.gameStats.update({
+            where: { userId },
+            data: {
+              streak: 0,
+              lastDailyDate: participation.dateString,
+            },
+          });
 
-        streakResult = {
-          streak: newStreak,
-          highestStreak: newHighestStreak,
-          streakIncremented: true,
-          xpAwarded: totalXp,
-          coinsAwarded: totalCoins,
-        };
+          await tx.dailyChallengeParticipation.update({
+            where: { id: participation.id },
+            data: {
+              status: 'FAILED',
+              correctCount,
+              totalTimeMs,
+              avgTimeMs,
+              streakIncremented: false,
+              xpAwarded: 0,
+              coinsAwarded: 0,
+              completedAt: new Date(),
+            },
+          });
+
+          streakResult = {
+            streak: 0,
+            highestStreak: stats?.highestStreak ?? 0,
+            streakIncremented: false,
+            xpAwarded: 0,
+            coinsAwarded: 0,
+          };
+        }
       } else {
         // Partially answered, update intermediate counts
         await tx.dailyChallengeParticipation.update({

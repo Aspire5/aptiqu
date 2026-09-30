@@ -14,22 +14,8 @@ class DailyStreakHubScreen extends StatefulWidget {
   State<DailyStreakHubScreen> createState() => _DailyStreakHubScreenState();
 }
 
-class _DailyStreakHubScreenState extends State<DailyStreakHubScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
   final DailyChallengeController controller = Get.put(DailyChallengeController());
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +36,49 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen>
           ),
         ),
         actions: [
-          Obx(() {
-            final auth = Get.find<AuthController>();
-            final coins = auth.currentUser.value?.coins ?? 0;
-            return Container(
-              margin: const EdgeInsets.only(right: 16),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          // History Button
+          InkWell(
+            onTap: () => _showHistoryModal(context),
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                 color: AptiquColors.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AptiquColors.outlineVariant),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.history_rounded, color: AptiquColors.primary, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    'History',
+                    style: AptiquTypography.labelCaps.copyWith(
+                      color: AptiquColors.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // Coins Display
+          Obx(() {
+            final auth = Get.find<AuthController>();
+            final coins = auth.currentUser.value?.coins ?? 0;
+            return Container(
+              margin: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AptiquColors.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AptiquColors.outlineVariant),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.monetization_on_rounded, color: AptiquColors.tertiary, size: 16),
                   const SizedBox(width: 4),
@@ -80,45 +97,7 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen>
       ),
       body: Stack(
         children: [
-          Column(
-            children: [
-              // Segmented Tabs: OVERVIEW vs STREAK LOGS
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AptiquColors.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AptiquColors.outlineVariant),
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  indicator: BoxDecoration(
-                    color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AptiquColors.primary.withValues(alpha: 0.6)),
-                  ),
-                  labelColor: AptiquColors.primary,
-                  unselectedLabelColor: AptiquColors.onSurfaceVariant,
-                  labelStyle: AptiquTypography.labelCaps.copyWith(fontWeight: FontWeight.bold, fontSize: 11),
-                  tabs: const [
-                    Tab(text: 'CHALLENGE HUB'),
-                    Tab(text: 'STREAK LOGS / HISTORY'),
-                  ],
-                ),
-              ),
-
-              // Tab View Content
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildOverviewTab(context),
-                    _buildHistoryTab(context),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          _buildOverviewTab(context),
 
           // FULL-SCREEN BLOCKING MODAL OVERLAY (Ensures user UI is blocked during AI generation)
           Obx(() {
@@ -384,18 +363,77 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen>
     );
   }
 
+  void _showHistoryModal(BuildContext context) {
+    controller.fetchHistory(refresh: true);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AptiquColors.surfaceDim,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (_, scrollController) {
+            return Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AptiquColors.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.history_rounded, color: AptiquColors.primary, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Streak Logs & History',
+                        style: AptiquTypography.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AptiquColors.onSurface,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded, color: AptiquColors.onSurfaceVariant, size: 20),
+                        onPressed: () => Navigator.of(ctx).pop(),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(color: AptiquColors.outlineVariant, height: 1),
+                Expanded(child: _buildHistoryTab(context)),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildActionStateCard(BuildContext context, DailyChallengeStatusModel status) {
     if (status.isCompletedToday) {
-      // Completed State Card
       final hours = status.msUntilMidnight ~/ (1000 * 60 * 60);
       final minutes = (status.msUntilMidnight % (1000 * 60 * 60)) ~/ (1000 * 60);
+      final isFailed = status.todayParticipation?.status == 'FAILED';
+      final statusColor = isFailed ? Colors.redAccent : Colors.green;
 
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AptiquColors.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.green.withValues(alpha: 0.5)),
+          border: Border.all(color: statusColor.withValues(alpha: 0.5)),
         ),
         child: Column(
           children: [
@@ -404,10 +442,14 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen>
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.15),
+                    color: statusColor.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.check_circle_rounded, color: Colors.green, size: 24),
+                  child: Icon(
+                    isFailed ? Icons.cancel_outlined : Icons.check_circle_rounded,
+                    color: statusColor,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -415,14 +457,16 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Completed for Today!',
+                        isFailed ? 'Attempt Finished for Today' : 'Completed for Today!',
                         style: AptiquTypography.titleSmall.copyWith(
                           color: AptiquColors.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        'Your streak is safely locked for the next cycle.',
+                        isFailed
+                            ? 'Streak reset to 0. All questions must be answered correctly.'
+                            : 'Your streak is safely locked for the next cycle.',
                         style: AptiquTypography.bodySmall.copyWith(
                           color: AptiquColors.onSurfaceVariant,
                         ),

@@ -470,6 +470,8 @@ class DailyChallengeQuizScreen extends StatelessWidget {
     DailyChallengeController controller,
     DailyChallengeAnswerResultModel result,
   ) {
+    final isSuccess = result.streakIncremented;
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -477,14 +479,21 @@ class DailyChallengeQuizScreen extends StatelessWidget {
         backgroundColor: AptiquColors.surfaceContainerLowest,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AptiquColors.tertiary, width: 1.5),
+          side: BorderSide(
+            color: isSuccess ? AptiquColors.tertiary : Colors.redAccent.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
         ),
         title: Column(
           children: [
-            const Icon(Icons.local_fire_department_rounded, color: AptiquColors.tertiary, size: 54),
+            Icon(
+              isSuccess ? Icons.local_fire_department_rounded : Icons.cancel_outlined,
+              color: isSuccess ? AptiquColors.tertiary : Colors.redAccent,
+              size: 54,
+            ),
             const SizedBox(height: 12),
             Text(
-              'Daily Challenge Complete!',
+              isSuccess ? 'Daily Challenge Complete!' : 'Challenge Incomplete',
               style: AptiquTypography.titleMedium.copyWith(
                 fontWeight: FontWeight.w900,
                 color: AptiquColors.onSurface,
@@ -497,26 +506,46 @@ class DailyChallengeQuizScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Streak Increased to',
+              isSuccess ? 'Streak Increased to' : 'Streak Status',
               style: AptiquTypography.bodySmall.copyWith(color: AptiquColors.onSurfaceVariant),
             ),
             const SizedBox(height: 4),
             Text(
-              '${result.streak} DAYS',
+              isSuccess ? '${result.streak} DAYS' : '0 DAYS',
               style: AptiquTypography.headlineLarge.copyWith(
-                color: AptiquColors.tertiary,
+                color: isSuccess ? AptiquColors.tertiary : Colors.redAccent,
                 fontWeight: FontWeight.w900,
-                fontSize: 36,
+                fontSize: 34,
               ),
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildRewardBadge(Icons.bolt_rounded, '+${result.xpAwarded} XP', AptiquColors.primary),
-                _buildRewardBadge(Icons.monetization_on_rounded, '+${result.coinsAwarded} Coins', AptiquColors.tertiary),
-              ],
-            ),
+            const SizedBox(height: 12),
+            if (isSuccess) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildRewardBadge(Icons.bolt_rounded, '+${result.xpAwarded} XP', AptiquColors.primary),
+                  _buildRewardBadge(Icons.monetization_on_rounded, '+${result.coinsAwarded} Coins', AptiquColors.tertiary),
+                ],
+              ),
+            ] else ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+                ),
+                child: Text(
+                  'All questions must be answered correctly to maintain your daily streak and earn rewards. Streak has reset to 0.',
+                  style: AptiquTypography.bodySmall.copyWith(
+                    color: AptiquColors.onSurface,
+                    fontSize: 12,
+                    height: 1.35,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ],
         ),
         actions: [
@@ -526,8 +555,8 @@ class DailyChallengeQuizScreen extends StatelessWidget {
               context.pop(); // Pop quiz screen back to hub
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.tertiary,
-              foregroundColor: Colors.black,
+              backgroundColor: isSuccess ? AptiquColors.tertiary : AptiquColors.surfaceContainerHigh,
+              foregroundColor: isSuccess ? Colors.black : AptiquColors.onSurface,
               minimumSize: const Size(double.infinity, 44),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),

@@ -65,25 +65,63 @@ export class UserService {
 
   private async getQuestionTotals() {
     const now = Date.now();
-    if (UserService.questionsCache && now - UserService.questionsCache.timestamp < 300000) {
+    if (UserService.questionsCache && now - UserService.questionsCache.timestamp < 120000) {
       return UserService.questionsCache;
     }
 
+    const map = new Map<string, 'EASY' | 'MEDIUM' | 'HARD'>();
+    let easy = 0, medium = 0, hard = 0;
+
+    // 1. All questions stored in the Question table (all banners: practice, script, daily challenge, pvp, admin)
+    const dbQuestions = await prisma.question.findMany({
+      where: { status: 'PUBLISHED' },
+      select: { id: true, difficulty: true },
+    });
+
+    for (const q of dbQuestions) {
+      const rawDiff = (q.difficulty || 'EASY').toUpperCase();
+      const diff: 'EASY' | 'MEDIUM' | 'HARD' = rawDiff.includes('HARD')
+        ? 'HARD'
+        : rawDiff.includes('MED')
+        ? 'MEDIUM'
+        : 'EASY';
+      map.set(q.id, diff);
+      if (diff === 'HARD') hard++;
+      else if (diff === 'MEDIUM') medium++;
+      else easy++;
+    }
+
+    // 2. Published lesson script versions with inline question nodes that are NOT in prisma.question
     const versions = await prisma.lessonScriptVersion.findMany({
       where: { status: 'PUBLISHED' },
       select: { definition: true },
     });
-
-    const map = new Map<string, 'EASY' | 'MEDIUM' | 'HARD'>();
-    let easy = 0, medium = 0, hard = 0;
 
     for (const v of versions) {
       const def = v.definition as any;
       if (def && def.nodes) {
         for (const [nodeId, node] of Object.entries(def.nodes) as [string, any][]) {
           if (node.type === 'QUESTION' || node.questionReference) {
-            const rawDiff = (node.questionReference?.inlineData?.difficulty || node.difficulty || 'EASY').toUpperCase();
-            const diff = rawDiff.includes('HARD') ? 'HARD' : rawDiff.includes('MED') ? 'MEDIUM' : 'EASY';
+            const refQuestionId = node.questionReference?.questionId;
+            // If the node already references a questionId in the Question table, map nodeId -> that difficulty without incrementing total
+            if (refQuestionId && map.has(refQuestionId)) {
+              map.set(nodeId, map.get(refQuestionId)!);
+              continue;
+            }
+
+            // If it's already mapped by nodeId, skip
+            if (map.has(nodeId)) continue;
+
+            const rawDiff = (
+              node.questionReference?.inlineData?.difficulty ||
+              node.difficulty ||
+              'EASY'
+            ).toUpperCase();
+            const diff: 'EASY' | 'MEDIUM' | 'HARD' = rawDiff.includes('HARD')
+              ? 'HARD'
+              : rawDiff.includes('MED')
+              ? 'MEDIUM'
+              : 'EASY';
             map.set(nodeId, diff);
             if (diff === 'HARD') hard++;
             else if (diff === 'MEDIUM') medium++;
@@ -103,7 +141,7 @@ export class UserService {
   }
 
   /**
-   * Calculates curriculum topic completion and questions solved by difficulty.
+   * Calculates curriculum topic completion and questions solved by difficulty across ALL banners.
    */
   async getUserStats(userId: string) {
     // 1. Unique topics across all roadmaps
@@ -142,23 +180,83 @@ export class UserService {
       if (ev.topicId) completedTopicIds.add(ev.topicId);
     }
 
-    // 2. Questions solved by difficulty
+    // 2. Questions solved by difficulty across ALL banners (scripts, practice, daily challenge, pvp)
     const { map, totals } = await this.getQuestionTotals();
 
-    const correctAttempts = await prisma.questionAttempt.findMany({
-      where: { userId, isCorrect: true },
-      select: { nodeId: true },
-    });
+    const [scriptAttempts, practiceAnswers, dailyAnswers, pvpAnswers, userProgress] =
+      await Promise.all([
+        // Banner 1: Interactive scripts
+        prisma.questionAttempt.findMany({
+          where: { userId, isCorrect: true },
+          select: { questionId: true, nodeId: true },
+        }),
+        // Banner 2: Practice Sessions
+        prisma.practiceSessionQuestion.findMany({
+          where: { session: { userId }, isCorrect: true },
+          select: { questionId: true },
+        }),
+        // Banner 3: Daily Challenge
+        prisma.dailyChallengeAnswer.findMany({
+          where: { participation: { userId }, isCorrect: true },
+          select: { questionId: true },
+        }),
+        // Banner 4: Ranked PvP
+        prisma.pvpMatchAnswer.findMany({
+          where: { userId, isCorrect: true },
+          select: { questionId: true },
+        }),
+        // Banner 5: User Question Progress (tracking practice/drills)
+        prisma.userQuestionProgress.findMany({
+          where: { userId, timesCorrect: { gt: 0 } },
+          select: { questionId: true },
+        }),
+      ]);
 
-    const solvedNodeIds = new Set(correctAttempts.map((a) => a.nodeId).filter(Boolean));
+    const solvedQuestionIds = new Set<string>();
+    const solvedNodeIds = new Set<string>();
 
-    let solvedEasy = 0, solvedMedium = 0, solvedHard = 0;
-    for (const nodeId of solvedNodeIds) {
-      const diff = map.get(nodeId) || 'EASY';
+    for (const a of scriptAttempts) {
+      if (a.questionId) solvedQuestionIds.add(a.questionId);
+      if (a.nodeId) solvedNodeIds.add(a.nodeId);
+    }
+    for (const a of practiceAnswers) {
+      if (a.questionId) solvedQuestionIds.add(a.questionId);
+    }
+    for (const a of dailyAnswers) {
+      if (a.questionId) solvedQuestionIds.add(a.questionId);
+    }
+    for (const a of pvpAnswers) {
+      if (a.questionId) solvedQuestionIds.add(a.questionId);
+    }
+    for (const a of userProgress) {
+      if (a.questionId) solvedQuestionIds.add(a.questionId);
+    }
+
+    let solvedEasy = 0,
+      solvedMedium = 0,
+      solvedHard = 0;
+
+    // Count solved DB questions
+    for (const qId of solvedQuestionIds) {
+      const diff = map.get(qId) || 'EASY';
       if (diff === 'HARD') solvedHard++;
       else if (diff === 'MEDIUM') solvedMedium++;
       else solvedEasy++;
     }
+
+    // Count solved inline script nodes that aren't already covered by a questionId
+    for (const nodeId of solvedNodeIds) {
+      if (!solvedQuestionIds.has(nodeId) && map.has(nodeId)) {
+        const diff = map.get(nodeId)!;
+        if (diff === 'HARD') solvedHard++;
+        else if (diff === 'MEDIUM') solvedMedium++;
+        else solvedEasy++;
+      }
+    }
+
+    const finalEasyTotal = Math.max(totals.easy, solvedEasy);
+    const finalMediumTotal = Math.max(totals.medium, solvedMedium);
+    const finalHardTotal = Math.max(totals.hard, solvedHard);
 
     return {
       topics: {
@@ -166,9 +264,9 @@ export class UserService {
         total: totalTopics,
       },
       questions: {
-        easy: { solved: solvedEasy, total: totals.easy },
-        medium: { solved: solvedMedium, total: totals.medium },
-        hard: { solved: solvedHard, total: totals.hard },
+        easy: { solved: solvedEasy, total: finalEasyTotal },
+        medium: { solved: solvedMedium, total: finalMediumTotal },
+        hard: { solved: solvedHard, total: finalHardTotal },
       },
     };
   }
