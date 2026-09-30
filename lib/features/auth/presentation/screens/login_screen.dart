@@ -242,7 +242,7 @@ class LoginScreen extends StatelessWidget {
                           const SizedBox(width: 8),
                           Expanded(
                             child: AptiquButton.outline(
-                              label: 'Sandbox (Shagun)',
+                              label: 'Sandbox (Existing)',
                               height: 40,
                               fontSize: 11.5,
                               onPressed: () async {

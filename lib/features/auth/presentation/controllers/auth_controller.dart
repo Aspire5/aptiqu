@@ -104,7 +104,7 @@ class AuthController extends GetxController {
     try {
       final mockToken = isNewUser
           ? 'mock_test_token_new_${DateTime.now().millisecondsSinceEpoch}'
-          : 'mock_test_token_shagun_kumar';
+          : 'mock_test_token_existing_user';
 
       return await _authenticateWithBackend(mockToken);
     } catch (e) {

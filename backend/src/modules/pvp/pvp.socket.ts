@@ -118,9 +118,16 @@ export class PvpSocketServer {
 
     switch (type) {
       case 'JOIN_MATCHMAKING': {
-        // Prevent duplicate queueing
-        if (this.matchmakingQueue.some((m) => m.userId === userId)) {
-          this.send(ws, 'QUEUE_STATUS', { status: 'ALREADY_IN_QUEUE' });
+        // Purge dead or disconnected sockets
+        this.matchmakingQueue = this.matchmakingQueue.filter(
+          (m) => m.ws && m.ws.readyState === WebSocket.OPEN
+        );
+
+        const existingIdx = this.matchmakingQueue.findIndex((m) => m.userId === userId);
+        if (existingIdx >= 0) {
+          this.matchmakingQueue[existingIdx] = { userId, ws };
+          this.send(ws, 'QUEUE_STATUS', { status: 'WAITING_FOR_OPPONENT' });
+          this.tryPairPlayers();
           return;
         }
 
@@ -209,6 +216,11 @@ export class PvpSocketServer {
    * Pairs two players in the matchmaking queue and launches their match.
    */
   private async tryPairPlayers() {
+    // Filter out closed or terminated sockets
+    this.matchmakingQueue = this.matchmakingQueue.filter(
+      (m) => m.ws && m.ws.readyState === WebSocket.OPEN
+    );
+
     if (this.matchmakingQueue.length < 2) return;
 
     const player1 = this.matchmakingQueue.shift()!;

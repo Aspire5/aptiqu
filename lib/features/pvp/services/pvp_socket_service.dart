@@ -52,15 +52,18 @@ class PvpSocketService {
         onError: (err) {
           debugPrint('[PvP Socket] Stream Error: $err');
           isConnected = false;
+          _channel = null;
         },
         onDone: () {
           debugPrint('[PvP Socket] Connection closed');
           isConnected = false;
+          _channel = null;
         },
       );
     } catch (err) {
       debugPrint('[PvP Socket] Connection Failed: $err');
       isConnected = false;
+      _channel = null;
     }
   }
 
@@ -71,7 +74,10 @@ class PvpSocketService {
     }
   }
 
-  void joinMatchmaking() {
+  Future<void> joinMatchmaking() async {
+    if (!isConnected || _channel == null) {
+      await connect();
+    }
     send('JOIN_MATCHMAKING');
   }
 

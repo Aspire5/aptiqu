@@ -8,6 +8,7 @@ import '../../../lesson/models/lesson_session_model.dart';
 import '../../../lesson/models/lesson_node_model.dart';
 import '../../../lesson/repositories/lesson_repository.dart';
 import '../../../../core/progression/controllers/xp_controller.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 
 enum MessageSender { ai, user }
 
@@ -323,12 +324,16 @@ class HomeController extends GetxController {
         displayTitle.isNotEmpty ? displayTitle : 'The Four Basics';
     final subDesc = desc ?? 'Ready to jump into today\'s lesson?';
 
+    final auth = Get.isRegistered<AuthController>() ? Get.find<AuthController>() : null;
+    final rawName = auth?.currentUser.value?.firstName.trim();
+    final greeting = (rawName != null && rawName.isNotEmpty) ? 'Hey $rawName' : 'Welcome to AptiQu';
+
     messages.add(
       ChatMessageModel(
         id: 'msg_1',
         sender: MessageSender.ai,
         text:
-            'Hey Shagun, welcome to AptiQu! 👋\n\n$subDesc\n\nWe\'ll build speed and mental shortcuts step by step.\n\nReady to begin?',
+            '$greeting! 👋\n\n$subDesc\n\nWe\'ll build speed and mental shortcuts step by step.\n\nReady to begin?',
         time: 'Just now',
         question: QuestionData(
           title: 'LESSON #$activeScriptSequence',

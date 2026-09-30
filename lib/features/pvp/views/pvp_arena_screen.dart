@@ -424,7 +424,7 @@ class PvpArenaScreen extends StatelessWidget {
               height: 52,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.back(); // Exit arena back to lobby
+                  Navigator.of(context).pop(); // Exit arena back to lobby
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AptiquColors.primary,

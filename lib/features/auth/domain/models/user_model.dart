@@ -122,15 +122,15 @@ class UserModel {
     );
   }
 
-  /// Default demo user matching Shagun
-  factory UserModel.demoShagun() {
+  /// Default demo user
+  factory UserModel.demoUser() {
     return UserModel(
-      id: 'shagun_101',
-      email: 'shagun@gmail.com',
-      firstName: 'Shagun',
-      lastName: 'Kumar',
-      dob: DateTime(2002, 5, 14),
-      gender: 'Male',
+      id: 'demo_101',
+      email: 'demo@aptiqu.io',
+      firstName: 'Learner',
+      lastName: '',
+      dob: DateTime(2002, 1, 1),
+      gender: 'Prefer not to say',
       religion: 'Prefer not to say',
       country: 'India',
       avatarUrl:

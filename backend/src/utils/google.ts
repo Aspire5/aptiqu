@@ -21,12 +21,12 @@ export async function verifyGoogleToken(idToken: string): Promise<GoogleUserPayl
   // Development / Test sandbox bypass
   if (idToken.startsWith('mock_test_token_')) {
     const parts = idToken.split('_');
-    const mockEmail = parts[3] ? `${parts[3]}@gmail.com` : 'shagun.test@gmail.com';
+    const mockEmail = parts[3] ? `${parts[3]}@gmail.com` : 'demo.user@gmail.com';
     return {
       googleId: `google_mock_${Date.now()}`,
       email: mockEmail,
-      firstName: 'Shagun',
-      lastName: 'Kumar',
+      firstName: 'Demo',
+      lastName: 'User',
       avatarUrl:
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
     };

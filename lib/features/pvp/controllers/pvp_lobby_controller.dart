@@ -36,10 +36,12 @@ class PvpLobbyController extends GetxController {
       switch (eventName) {
         case 'QUEUE_STATUS':
           final status = data['status'] as String?;
-          if (status == 'WAITING_FOR_OPPONENT') {
+          if (status == 'WAITING_FOR_OPPONENT' || status == 'ALREADY_IN_QUEUE') {
             isInQueue.value = true;
             statusMessage.value = 'Searching for worthy opponent...';
-            _startQueueTimer();
+            if (_queueTimer == null) {
+              _startQueueTimer();
+            }
           } else if (status == 'LEFT_QUEUE') {
             isInQueue.value = false;
             statusMessage.value = 'Ready for Duel';
@@ -48,36 +50,69 @@ class PvpLobbyController extends GetxController {
           break;
 
         case 'MATCH_FOUND':
-          _stopQueueTimer();
-          isInQueue.value = false;
-          statusMessage.value = 'Opponent Found! Preparing Arena...';
+          try {
+            _stopQueueTimer();
+            isInQueue.value = false;
+            statusMessage.value = 'Opponent Found! Entering Arena...';
 
-          final matchId = data['matchId'] as String;
-          final players = (data['players'] as List<dynamic>?) ?? [];
-          final totalQ = data['totalQuestions'] as int? ?? 10;
+            final matchId = data['matchId'] as String;
+            final players = (data['players'] as List<dynamic>?) ?? [];
+            final totalQ = data['totalQuestions'] as int? ?? 10;
 
-          // Transition to Arena
-          Get.to(() => PvpArenaScreen(
-                matchId: matchId,
-                initialPlayersData: players,
-                totalQuestions: totalQ,
-              ));
+            final nav = AppRouter.navigatorKey.currentState;
+            if (nav != null) {
+              nav.push(
+                MaterialPageRoute(
+                  builder: (_) => PvpArenaScreen(
+                    matchId: matchId,
+                    initialPlayersData: players,
+                    totalQuestions: totalQ,
+                  ),
+                ),
+              );
+            } else {
+              Get.to(() => PvpArenaScreen(
+                    matchId: matchId,
+                    initialPlayersData: players,
+                    totalQuestions: totalQ,
+                  ));
+            }
+          } catch (e) {
+            debugPrint('[PvP Lobby] Navigation error on MATCH_FOUND: $e');
+            _showMessage('Arena Error', 'Failed to open PvP Arena: $e', isError: true);
+          }
           break;
 
         case 'ERROR':
-          Get.snackbar(
-            'Arena Error',
-            data['message']?.toString() ?? 'An error occurred',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white,
-          );
+          final errMsg = data['message']?.toString() ?? 'An error occurred';
+          _stopQueueTimer();
+          isInQueue.value = false;
+          statusMessage.value = 'Ready for Duel';
+          _showMessage('Arena Error', errMsg, isError: true);
           break;
       }
     });
   }
 
+  void _showMessage(String title, String message, {bool isError = false}) {
+    final ctx = AppRouter.navigatorKey.currentContext;
+    if (ctx != null) {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('$title: $message'),
+          backgroundColor: isError ? Colors.redAccent : const Color(0xFF6366F1),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      debugPrint('[$title] $message');
+    }
+  }
+
   void startMatchmaking() {
+    isInQueue.value = true;
+    statusMessage.value = 'Searching for worthy opponent...';
+    _startQueueTimer();
     _socketService.joinMatchmaking();
   }
 
@@ -159,10 +194,10 @@ class PvpLobbyController extends GetxController {
         throw Exception(res.data['message'] ?? 'Failed to replay match');
       }
     } catch (e) {
-      Get.snackbar(
+      _showMessage(
         'Replay Notice',
         e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
+        isError: true,
       );
     } finally {
       isReplayingMatch.value = false;
