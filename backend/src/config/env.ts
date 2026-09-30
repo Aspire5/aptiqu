@@ -21,4 +21,9 @@ export const ENV = {
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
   GEMINI_THINKING_BUDGET: parseInt(process.env.GEMINI_THINKING_BUDGET || '0', 10),
+
+  // Admin configuration
+  ADMIN_USERNAME: process.env.ADMIN_USERNAME || 'shagun5750',
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'shagun123',
+  ADMIN_JWT_SECRET: process.env.ADMIN_JWT_SECRET || 'aptiqu_admin_secret_key_2026_xyz',
 };
