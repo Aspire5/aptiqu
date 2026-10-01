@@ -19,8 +19,10 @@ Core Rules for Daily Challenge Questions:
    - The clean step-by-step conceptual reasoning.
 6. NO AMBIGUITY:
    Exactly one option is unequivocally correct.
-7. HINTS:
-   Provide 2 hints per question so the question can later be seamlessly reused in general practice pools if needed.
-8. OUTPUT:
+7. TIMING CONSTRAINTS:
+   - estimatedTimeSeconds MUST be an integer between 30 and 60 (30 for EASY, 45 for MEDIUM, 60 for HARD). Minimum allowed value is 30.
+8. HINTS:
+   Provide exactly 2 pedagogical hints per question (min 5 characters each) so the question can later be seamlessly reused in general practice pools if needed.
+9. OUTPUT:
    Raw JSON strictly adhering to the schema.
 `.trim();

@@ -162,13 +162,14 @@ ${targetDifficulties
 - Active Syllabus Topic: ${targetSub.topicName}
 - Active Syllabus Subtopic: ${targetSub.subtopicName} (Description: ${targetSub.subtopicDescription || 'Core concepts'})
 - Difficulty Target: ${diff}
-${diff === 'EASY' ? '- EASY CONSTRAINT: Keep it ACTUALLY EASY! Solvable in 15-30s with basic conceptual pattern recognition and simple, clean numbers (e.g. 10%, 25%, 50%, clean ratios 1:2, small single/double digits). NO tedious or heavy mental calculations!' : ''}`;
+${diff === 'EASY' ? '- EASY CONSTRAINT: Keep it ACTUALLY EASY! Solvable quickly with basic conceptual pattern recognition and simple, clean numbers (e.g. 10%, 25%, 50%, clean ratios 1:2, small single/double digits). NO tedious or heavy mental calculations!' : ''}`;
   })
   .join('\n\n')}
 
 STRICT CONSTRAINTS:
 - EACH QUESTION MUST BE SOLVABLE IN UNDER 60 SECONDS using an aptitude trick or mental shortcut!
-- NO hints in the question prompts, but provide 2 hints in the hints array for future reuse.
+- estimatedTimeSeconds MUST be an integer between 30 and 60 (use 30 for EASY, 45 for MEDIUM, 60 for HARD). Minimum allowed is 30.
+- NO hints in the question prompts, but provide exactly 2 hints in the hints array for future reuse.
 - The explanation must prominently describe the exact speed trick / shortcut.
 - Provide 4 distinct options (A, B, C, D) with plausible distractors.
 
@@ -180,26 +181,68 @@ ${existingFingerprints.slice(0, 25).map((f) => `- ${f}`).join('\n')}
         `[DailyChallengeGen] Requesting Gemini generation for date ${dateString}, tier ${tier} (${questionCount} questions)...`
       );
 
-      const rawGeneration = await geminiProvider.generateStructuredContent<{
-        questions: any[];
-      }>({
-        systemInstruction: DAILY_CHALLENGE_GENERATION_SYSTEM_INSTRUCTION,
-        prompt: generatorPrompt,
-        responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
-      });
+      let rawQuestions: any[] = [];
+      try {
+        const rawGeneration = await geminiProvider.generateStructuredContent<{
+          questions: any[];
+        }>({
+          systemInstruction: DAILY_CHALLENGE_GENERATION_SYSTEM_INSTRUCTION,
+          prompt: generatorPrompt,
+          responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
+        });
 
-      if (!rawGeneration?.questions || !Array.isArray(rawGeneration.questions)) {
-        throw new Error('Gemini returned an invalid question array for Daily Challenge.');
+        if (rawGeneration?.questions && Array.isArray(rawGeneration.questions)) {
+          rawQuestions = rawGeneration.questions;
+        }
+      } catch (genError) {
+        console.warn(`[DailyChallengeGen] Gemini API generation error:`, genError);
       }
 
-      // 7. Validate questions
+      // 7. Validate & Normalize questions
       const validQuestions: any[] = [];
-      for (const q of rawGeneration.questions) {
-        const valResult = validateQuestionStructure(q);
+      for (let i = 0; i < rawQuestions.length; i++) {
+        const rawQ = rawQuestions[i];
+        const assignedDiff = targetDifficulties[i] || 'EASY';
+        const normalized = this.normalizeDailyChallengeQuestion(rawQ, assignedDiff);
+        const valResult = validateQuestionStructure(normalized);
         if (valResult.valid) {
           validQuestions.push(valResult.data);
         } else {
           console.warn(`[DailyChallengeGen] Question structural validation failed: ${valResult.errors.join('; ')}`);
+        }
+      }
+
+      // Fallback: If AI returned fewer valid questions than required, draw from published question repository
+      if (validQuestions.length < questionCount) {
+        console.warn(
+          `[DailyChallengeGen] Only ${validQuestions.length}/${questionCount} AI questions valid. Sourcing from published questions pool...`
+        );
+        const needed = questionCount - validQuestions.length;
+        const fallbackQuestions = await prisma.question.findMany({
+          where: {
+            status: 'PUBLISHED',
+          },
+          take: Math.max(needed * 4, 10),
+          orderBy: { createdAt: 'desc' },
+        });
+
+        for (const candidate of fallbackQuestions) {
+          if (validQuestions.length >= questionCount) break;
+          if (validQuestions.some((v) => v.prompt === candidate.prompt)) continue;
+
+          validQuestions.push({
+            pattern: candidate.pattern,
+            prompt: candidate.prompt,
+            options: candidate.options as any,
+            correctAnswer: candidate.correctAnswer as any,
+            difficulty: candidate.difficulty,
+            estimatedTimeSeconds: candidate.estimatedTimeSeconds,
+            calculationMode: candidate.calculationMode,
+            hints: candidate.hints,
+            method: candidate.method,
+            explanation: candidate.explanation,
+            persistedQuestionId: candidate.id,
+          });
         }
       }
 
@@ -224,40 +267,47 @@ ${existingFingerprints.slice(0, 25).map((f) => `- ${f}`).join('\n')}
           const assignedDifficulty = targetDifficulties[i];
           const targetSub = assignedSubtopics[i];
 
-          const fingerprint = FingerprintService.computeFingerprint(q.prompt, q.options);
-          let question = await tx.question.findUnique({
-            where: { fingerprint },
-          });
+          let questionId: string;
 
-          if (!question) {
-            question = await tx.question.create({
-              data: {
-                subjectId: targetSub.subjectId,
-                topicId: targetSub.topicId,
-                subtopicId: targetSub.subtopicId,
-                pattern: q.pattern || 'DAILY_CHALLENGE',
-                prompt: q.prompt,
-                options: q.options,
-                correctAnswer: q.correctAnswer,
-                hints: q.hints || [],
-                explanation: q.explanation,
-                method: q.method || 'Speed Aptitude Shortcut',
-                difficulty: assignedDifficulty as QuestionDifficultyEnum,
-                estimatedTimeSeconds: 60,
-                calculationMode: (q.calculationMode as CalculationMode) || CalculationMode.MENTAL,
-                sourceType: 'AI_GENERATED',
-                status: 'PUBLISHED',
-                fingerprint,
-                generationModel: 'gemini-3.5-flash-lite',
-                generationPromptVersion: 'v1.0.0',
-              },
+          if (q.persistedQuestionId) {
+            questionId = q.persistedQuestionId;
+          } else {
+            const fingerprint = FingerprintService.computeFingerprint(q.prompt, q.options);
+            let question = await tx.question.findUnique({
+              where: { fingerprint },
             });
+
+            if (!question) {
+              question = await tx.question.create({
+                data: {
+                  subjectId: targetSub.subjectId,
+                  topicId: targetSub.topicId,
+                  subtopicId: targetSub.subtopicId,
+                  pattern: q.pattern || 'DAILY_CHALLENGE',
+                  prompt: q.prompt,
+                  options: q.options,
+                  correctAnswer: q.correctAnswer,
+                  hints: q.hints || [],
+                  explanation: q.explanation,
+                  method: q.method || 'Speed Aptitude Shortcut',
+                  difficulty: assignedDifficulty as QuestionDifficultyEnum,
+                  estimatedTimeSeconds: q.estimatedTimeSeconds || 60,
+                  calculationMode: (q.calculationMode as CalculationMode) || CalculationMode.MENTAL,
+                  sourceType: 'AI_GENERATED',
+                  status: 'PUBLISHED',
+                  fingerprint,
+                  generationModel: 'gemini-3.5-flash-lite',
+                  generationPromptVersion: 'v1.0.0',
+                },
+              });
+            }
+            questionId = question.id;
           }
 
           await tx.dailyChallengeScriptQuestion.create({
             data: {
               scriptId: script.id,
-              questionId: question.id,
+              questionId,
               sequence: i + 1,
               difficulty: assignedDifficulty as QuestionDifficultyEnum,
               timeLimit: 60,
@@ -279,6 +329,112 @@ ${existingFingerprints.slice(0, 25).map((f) => `- ${f}`).join('\n')}
       await ConcurrencyLockService.releaseLock(lockKey);
     }
   }
+
+  private normalizeDailyChallengeQuestion(
+    raw: any,
+    targetDifficulty: 'EASY' | 'MEDIUM' | 'HARD'
+  ): any {
+    if (!raw || typeof raw !== 'object') return raw;
+
+    let pattern = typeof raw.pattern === 'string' ? raw.pattern.trim() : '';
+    if (pattern.length < 2) pattern = 'Speed Shortcut';
+    if (pattern.length > 100) pattern = pattern.slice(0, 100);
+
+    let prompt = typeof raw.prompt === 'string' ? raw.prompt.trim() : '';
+
+    let difficulty =
+      typeof raw.difficulty === 'string'
+        ? raw.difficulty.trim().toUpperCase()
+        : targetDifficulty;
+    if (!['EASY', 'MEDIUM', 'HARD'].includes(difficulty)) {
+      difficulty = targetDifficulty;
+    }
+
+    let options = Array.isArray(raw.options) ? raw.options : [];
+    const validIds: ('A' | 'B' | 'C' | 'D')[] = ['A', 'B', 'C', 'D'];
+    const normalizedOptions = validIds.map((id, index) => {
+      const existing = options[index];
+      let text = '';
+      if (typeof existing === 'string') {
+        text = existing.trim();
+      } else if (existing && typeof existing === 'object') {
+        text =
+          typeof existing.text === 'string'
+            ? existing.text.trim()
+            : String(existing.text ?? '').trim();
+      }
+      if (!text) text = `Option ${id}`;
+      if (text.length > 300) text = text.slice(0, 300);
+      return { id, text };
+    });
+
+    let correctAnswer =
+      typeof raw.correctAnswer === 'string'
+        ? raw.correctAnswer.trim().toUpperCase()
+        : 'A';
+    if (!['A', 'B', 'C', 'D'].includes(correctAnswer)) {
+      correctAnswer = 'A';
+    }
+
+    // Enforce 30..120 window required by RawQuestionSchema
+    let est = Number(raw.estimatedTimeSeconds);
+    if (isNaN(est) || est < 30) {
+      est = 30;
+    } else if (est > 120) {
+      est = 120;
+    } else {
+      est = Math.round(est);
+    }
+
+    let calc =
+      typeof raw.calculationMode === 'string'
+        ? raw.calculationMode.trim().toUpperCase()
+        : 'MENTAL';
+    if (!['MENTAL', 'LIGHT_PEN_AND_PAPER', 'PEN_AND_PAPER'].includes(calc)) {
+      calc = 'MENTAL';
+    }
+
+    let hints = Array.isArray(raw.hints)
+      ? raw.hints
+          .map((h: any) => String(h || '').trim())
+          .filter((h: string) => h.length >= 5)
+      : [];
+    if (hints.length < 1) {
+      hints.push('Identify the fundamental relationship and spot the speed trick.');
+    }
+    if (hints.length < 2) {
+      hints.push('Eliminate illogical options to find the correct answer in under 60 seconds.');
+    }
+    if (hints.length > 2) {
+      hints = hints.slice(0, 2);
+    }
+    hints = hints.map((h: string) => h.slice(0, 300));
+
+    let method = typeof raw.method === 'string' ? raw.method.trim() : '';
+    if (method.length < 5) method = 'Mental Aptitude Shortcut';
+    if (method.length > 500) method = method.slice(0, 500);
+
+    let explanation =
+      typeof raw.explanation === 'string' ? raw.explanation.trim() : '';
+    if (explanation.length < 10) {
+      explanation = `The correct answer is Option ${correctAnswer}. Apply standard speed trick to solve in under 60s.`;
+    }
+    if (explanation.length > 1000) explanation = explanation.slice(0, 1000);
+
+    return {
+      pattern,
+      prompt,
+      options: normalizedOptions,
+      correctAnswer,
+      difficulty,
+      estimatedTimeSeconds: est,
+      calculationMode: calc,
+      hints,
+      method,
+      explanation,
+    };
+  }
 }
 
 export const dailyChallengeGenerationService = DailyChallengeGenerationService.getInstance();
+

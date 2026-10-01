@@ -218,38 +218,15 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              hasStreakAtRisk
-                                  ? '$streakStr Streak at Risk!'
-                                  : 'Daily Challenge is Live!',
-                              style: AptiquTypography.labelLarge.copyWith(
-                                color: const Color(0xFFFDE68A),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEF4444).withValues(alpha: 0.25),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                  color: const Color(0xFFEF4444).withValues(alpha: 0.5),
-                                ),
-                              ),
-                              child: Text(
-                                'RESET AT 12 AM IST',
-                                style: AptiquTypography.labelCaps.copyWith(
-                                  color: const Color(0xFFFCA5A5),
-                                  fontSize: 8.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          hasStreakAtRisk
+                              ? '$streakStr Streak at Risk!'
+                              : 'Daily Challenge is Live!',
+                          style: AptiquTypography.labelLarge.copyWith(
+                            color: const Color(0xFFFDE68A),
+                            fontWeight: FontWeight.w800,
+                            fontSize: 13,
+                          ),
                         ),
                         const SizedBox(height: 5),
                         Text(
