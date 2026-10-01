@@ -95,11 +95,15 @@ class DailyChallengeController extends GetxController {
   /// Shows a blocking, informative modal while Gemini synthesizes the script.
   Future<void> startDailyChallenge(BuildContext context) async {
     if (status.value?.canAttempt == false) {
-      Get.snackbar(
-        'Already Completed',
-        'You have already conquered today\'s challenge! Next challenge unlocks at 00:00 UTC.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('You have already conquered today\'s challenge! Next challenge unlocks at 12:00 AM IST.'),
+            backgroundColor: Color(0xFF1E293B),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
       return;
     }
 
@@ -128,13 +132,17 @@ class DailyChallengeController extends GetxController {
     } catch (e) {
       _stopLoadingMessageTimer();
       isStarting.value = false;
-      Get.snackbar(
-        'Challenge Notice',
-        e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withValues(alpha: 0.8),
-        colorText: Colors.white,
-      );
+      final rawMsg = e.toString().replaceAll('Exception: ', '').trim();
+      debugPrint('[DailyChallenge] startDailyChallenge error: $rawMsg');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(rawMsg.isNotEmpty ? rawMsg : 'Failed to start daily challenge. Please try again.'),
+            backgroundColor: const Color(0xFFDC2626),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
     }
   }
 
@@ -189,7 +197,7 @@ class DailyChallengeController extends GetxController {
   }
 
   /// Submits the selected answer or handles automatic time expiration
-  Future<void> submitAnswer() async {
+  Future<void> submitAnswer([BuildContext? context]) async {
     final session = activeSession.value;
     if (session == null || isSubmitting.value || showExplanation.value) return;
 
@@ -197,11 +205,15 @@ class DailyChallengeController extends GetxController {
     final selected = selectedOptionId.value;
 
     if (selected == null) {
-      Get.snackbar(
-        'Select an Answer',
-        'Please select an option before submitting.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (context != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select an option before submitting.'),
+            backgroundColor: Color(0xFF1E293B),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
       return;
     }
 
@@ -233,11 +245,17 @@ class DailyChallengeController extends GetxController {
         fetchHistory(refresh: true);
       }
     } catch (e) {
-      Get.snackbar(
-        'Submission Error',
-        e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      final rawMsg = e.toString().replaceAll('Exception: ', '').trim();
+      debugPrint('[DailyChallenge] submitAnswer error: $rawMsg');
+      if (context != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(rawMsg.isNotEmpty ? rawMsg : 'Failed to submit answer. Please try again.'),
+            backgroundColor: const Color(0xFFDC2626),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     } finally {
       isSubmitting.value = false;
     }

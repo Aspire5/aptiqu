@@ -204,7 +204,7 @@ class DailyChallengeQuizScreen extends StatelessWidget {
                   final hasSelected = controller.selectedOptionId.value != null;
                   return ElevatedButton(
                     onPressed: hasSelected && !isSubmitting
-                        ? () => controller.submitAnswer()
+                        ? () => controller.submitAnswer(context)
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AptiquColors.tertiary,

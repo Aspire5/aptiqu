@@ -203,12 +203,28 @@ export class DailyChallengeService {
       });
     }
 
+    const todayParticipation = await prisma.dailyChallengeParticipation.findUnique({
+      where: {
+        userId_dateString: {
+          userId,
+          dateString: todayDate,
+        },
+      },
+      select: { status: true },
+    });
+
+    const hasFinishedToday =
+      todayParticipation &&
+      (todayParticipation.status === 'COMPLETED' ||
+        todayParticipation.status === 'FAILED' ||
+        todayParticipation.status === 'ABANDONED');
+
     let currentStreak = stats.streak;
-    let isCompletedToday = stats.lastDailyDate === todayDate;
+    let isCompletedToday = stats.lastDailyDate === todayDate || todayParticipation?.status === 'COMPLETED';
     let isDue = false;
     let canAttempt = true;
 
-    if (isCompletedToday) {
+    if (isCompletedToday || hasFinishedToday) {
       isDue = false;
       canAttempt = false;
     } else if (stats.lastDailyDate === yesterdayDate) {
@@ -271,12 +287,22 @@ export class DailyChallengeService {
       },
     });
 
+    const hasFinishedToday =
+      todayParticipation &&
+      (todayParticipation.status === 'COMPLETED' ||
+        todayParticipation.status === 'FAILED' ||
+        todayParticipation.status === 'ABANDONED');
+
+    const canAttempt = !hasFinishedToday && sync.canAttempt;
+    const isDue = !hasFinishedToday && sync.isDue;
+    const isCompletedToday = sync.isCompletedToday || todayParticipation?.status === 'COMPLETED';
+
     return {
       streak: sync.currentStreak,
       highestStreak: sync.highestStreak,
-      isDue: sync.isDue,
-      isCompletedToday: sync.isCompletedToday,
-      canAttempt: sync.canAttempt,
+      isDue,
+      isCompletedToday,
+      canAttempt,
       tier: sync.tierInfo.tier,
       tierTitle: sync.tierInfo.title,
       questionCount: sync.tierInfo.questionCount,

@@ -70,8 +70,7 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
   String _formatRemaining() {
     final hours = _remaining.inHours.toString().padLeft(2, '0');
     final minutes = (_remaining.inMinutes % 60).toString().padLeft(2, '0');
-    final seconds = (_remaining.inSeconds % 60).toString().padLeft(2, '0');
-    return '${hours}h ${minutes}m ${seconds}s';
+    return '${hours}h ${minutes}m';
   }
 
   @override
@@ -90,7 +89,7 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
         // State 2: Streak Protected for Today
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: const Color(0xFF071911),
             borderRadius: BorderRadius.circular(14),
@@ -124,17 +123,13 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Today's Streak Secured! 🔥 $streakStr",
-                          style: AptiquTypography.labelLarge.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12.5,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      "Today's Streak Secured! 🔥 $streakStr",
+                      style: AptiquTypography.labelLarge.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.5,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -218,12 +213,13 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                     ),
                   ),
                   const SizedBox(width: 12),
-                  // Banner Text Info
+                  // Banner Text Info with Space-Between on top row and separate lines for timer & prompt
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               hasStreakAtRisk
@@ -235,9 +231,8 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                                 fontSize: 13,
                               ),
                             ),
-                            const SizedBox(width: 6),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEF4444).withValues(alpha: 0.25),
                                 borderRadius: BorderRadius.circular(6),
@@ -246,7 +241,7 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                                 ),
                               ),
                               child: Text(
-                                'RESET 12 AM IST',
+                                'RESET AT 12 AM IST',
                                 style: AptiquTypography.labelCaps.copyWith(
                                   color: const Color(0xFFFCA5A5),
                                   fontSize: 8.5,
@@ -256,9 +251,18 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                             ),
                           ],
                         ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 5),
                         Text(
-                          'Resets in ${_formatRemaining()} • Complete challenge to save streak',
+                          'Resets in ${_formatRemaining()}',
+                          style: AptiquTypography.bodySmall.copyWith(
+                            color: const Color(0xFFFDE68A),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Complete challenge to save streak',
                           style: AptiquTypography.bodySmall.copyWith(
                             color: AptiquColors.onSurfaceVariant,
                             fontSize: 10.5,
@@ -267,41 +271,12 @@ class _DailyChallengeStreakBannerState extends State<DailyChallengeStreakBanner>
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  // Action CTA Button
-                  ElevatedButton(
-                    onPressed: () => context.push(AppRoutes.dailyStreak),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AptiquColors.buttonDarkBg,
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Color(0xFFF59E0B), width: 1.1),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          hasStreakAtRisk ? 'Save' : 'Play',
-                          style: const TextStyle(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 2),
-                        const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 10,
-                          color: Color(0xFFF59E0B),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(width: 10),
+                  // Chevron indicator confirming entire container is tappable
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: Color(0xFFF59E0B),
                   ),
                 ],
               ),
