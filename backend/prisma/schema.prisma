@@ -669,6 +669,7 @@ model Subject {
   updatedAt    DateTime         @updatedAt @map("updated_at")
 
   topics          Topic[]
+  subjectTopics   SubjectTopic[]
   roadmapSubjects RoadmapSubject[]
   roadmapSteps    RoadmapStep[]
   questions       Question[]
@@ -683,6 +684,7 @@ model Topic {
   slug                   String    @unique
   name                   String
   description            String?
+  sequence               Int       @default(0)
   defaultImportance      String?   @map("default_importance")
   defaultTeachingDepth   Int?      @map("default_teaching_depth")
   defaultTeachingMinutes Int?      @map("default_teaching_minutes")
@@ -690,10 +692,12 @@ model Topic {
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
 
-  subject      Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  subtopics    Subtopic[]
-  roadmapSteps RoadmapStep[]
-  questions    Question[]
+  subject        Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectTopics  SubjectTopic[]
+  subtopics      Subtopic[]
+  topicSubtopics TopicSubtopic[]
+  roadmapSteps   RoadmapStep[]
+  questions      Question[]
 
   @@index([subjectId])
   @@map("topics")
@@ -714,12 +718,47 @@ model Subtopic {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  topic        Topic         @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  roadmapSteps RoadmapStep[]
-  questions    Question[]
+  topic          Topic           @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicSubtopics TopicSubtopic[]
+  roadmapSteps   RoadmapStep[]
+  questions      Question[]
 
   @@index([topicId])
   @@map("subtopics")
+  @@schema("learning")
+}
+
+model SubjectTopic {
+  id        String   @id @default(uuid()) @db.Uuid
+  subjectId String   @map("subject_id")
+  topicId   String   @map("topic_id")
+  sequence  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([subjectId, topicId])
+  @@index([subjectId, sequence])
+  @@map("subject_topics")
+  @@schema("learning")
+}
+
+model TopicSubtopic {
+  id         String   @id @default(uuid()) @db.Uuid
+  topicId    String   @map("topic_id")
+  subtopicId String   @map("subtopic_id")
+  sequence   Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  topic    Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subtopic Subtopic @relation(fields: [subtopicId], references: [id], onDelete: Cascade)
+
+  @@unique([topicId, subtopicId])
+  @@index([topicId, sequence])
+  @@map("topic_subtopics")
   @@schema("learning")
 }
 

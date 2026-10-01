@@ -6,17 +6,31 @@ export class AdminSyllabusService {
    * Retrieves full syllabus tree (Subjects -> Topics -> Subtopics) with attached scripts & question counts
    */
   public static async getFullSyllabus() {
-    const subjects = await prisma.subject.findMany({
+    const rawSubjects = await prisma.subject.findMany({
       orderBy: { displayOrder: 'asc' },
       include: {
         topics: {
-          orderBy: { name: 'asc' },
+          where: { isActive: true },
+          orderBy: { sequence: 'asc' },
           include: {
             subtopics: {
+              where: { isActive: true },
               orderBy: { sequence: 'asc' },
               include: {
                 _count: {
                   select: { questions: true },
+                },
+              },
+            },
+            topicSubtopics: {
+              orderBy: { sequence: 'asc' },
+              include: {
+                subtopic: {
+                  include: {
+                    _count: {
+                      select: { questions: true },
+                    },
+                  },
                 },
               },
             },
@@ -25,10 +39,101 @@ export class AdminSyllabusService {
             },
           },
         },
+        subjectTopics: {
+          orderBy: { sequence: 'asc' },
+          include: {
+            topic: {
+              include: {
+                subtopics: {
+                  where: { isActive: true },
+                  orderBy: { sequence: 'asc' },
+                  include: {
+                    _count: {
+                      select: { questions: true },
+                    },
+                  },
+                },
+                topicSubtopics: {
+                  orderBy: { sequence: 'asc' },
+                  include: {
+                    subtopic: {
+                      include: {
+                        _count: {
+                          select: { questions: true },
+                        },
+                      },
+                    },
+                  },
+                },
+                _count: {
+                  select: { questions: true, subtopics: true },
+                },
+              },
+            },
+          },
+        },
         _count: {
           select: { questions: true, topics: true },
         },
       },
+    });
+
+    // Merge direct & linked topics / subtopics with clean sequence preservation
+    const subjects = rawSubjects.map((subject) => {
+      const topicMap = new Map<string, any>();
+
+      // 1. Add direct topics
+      for (const t of subject.topics) {
+        topicMap.set(t.id, { ...t, isLinked: false });
+      }
+
+      // 2. Add or merge linked topics
+      for (const st of subject.subjectTopics) {
+        if (st.topic && st.topic.isActive) {
+          topicMap.set(st.topic.id, {
+            ...st.topic,
+            sequence: st.sequence,
+            isLinked: true,
+          });
+        }
+      }
+
+      // Sort topics by sequence
+      const topics = Array.from(topicMap.values())
+        .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))
+        .map((t) => {
+          const subtopicMap = new Map<string, any>();
+
+          // Direct subtopics
+          for (const s of t.subtopics || []) {
+            subtopicMap.set(s.id, { ...s, isLinked: false });
+          }
+
+          // Linked subtopics
+          for (const tst of t.topicSubtopics || []) {
+            if (tst.subtopic && tst.subtopic.isActive) {
+              subtopicMap.set(tst.subtopic.id, {
+                ...tst.subtopic,
+                sequence: tst.sequence,
+                isLinked: true,
+              });
+            }
+          }
+
+          const sortedSubtopics = Array.from(subtopicMap.values()).sort(
+            (a, b) => (a.sequence ?? 0) - (b.sequence ?? 0)
+          );
+
+          return {
+            ...t,
+            subtopics: sortedSubtopics,
+          };
+        });
+
+      return {
+        ...subject,
+        topics,
+      };
     });
 
     // Also fetch all scripts to map them to topic/subtopic
@@ -420,6 +525,168 @@ export class AdminSyllabusService {
       }
 
       return { script, version: existing.versions[0] };
+    });
+  }
+
+  // ==================== REORDERING ====================
+
+  public static async reorderTopics(subjectId: string, topicIds: string[]) {
+    return prisma.$transaction(async (tx) => {
+      for (let i = 0; i < topicIds.length; i++) {
+        const topicId = topicIds[i];
+        // 1. Update topic.sequence
+        await tx.topic.updateMany({
+          where: { id: topicId, subjectId },
+          data: { sequence: i },
+        });
+
+        // 2. Update subjectTopic.sequence if linked
+        await tx.subjectTopic.updateMany({
+          where: { subjectId, topicId },
+          data: { sequence: i },
+        });
+      }
+      return { success: true };
+    });
+  }
+
+  public static async reorderSubtopics(topicId: string, subtopicIds: string[]) {
+    return prisma.$transaction(async (tx) => {
+      for (let i = 0; i < subtopicIds.length; i++) {
+        const subtopicId = subtopicIds[i];
+        // 1. Update subtopic.sequence
+        await tx.subtopic.updateMany({
+          where: { id: subtopicId, topicId },
+          data: { sequence: i },
+        });
+
+        // 2. Update topicSubtopic.sequence if linked
+        await tx.topicSubtopic.updateMany({
+          where: { topicId, subtopicId },
+          data: { sequence: i },
+        });
+      }
+      return { success: true };
+    });
+  }
+
+  // ==================== LINKING / REUSABILITY ====================
+
+  public static async linkTopicToSubject(subjectId: string, topicId: string) {
+    const existing = await prisma.subjectTopic.findUnique({
+      where: { subjectId_topicId: { subjectId, topicId } },
+    });
+    if (existing) return existing;
+
+    const maxSeq = await prisma.subjectTopic.aggregate({
+      where: { subjectId },
+      _max: { sequence: true },
+    });
+    const nextSeq = (maxSeq._max.sequence ?? 0) + 1;
+
+    return prisma.subjectTopic.create({
+      data: {
+        subjectId,
+        topicId,
+        sequence: nextSeq,
+      },
+    });
+  }
+
+  public static async unlinkTopicFromSubject(subjectId: string, topicId: string) {
+    // 1. If in subjectTopics join table, remove it
+    await prisma.subjectTopic.deleteMany({
+      where: { subjectId, topicId },
+    });
+
+    // 2. If it's the primary topic.subjectId, check if another subject is linked
+    const topic = await prisma.topic.findUnique({
+      where: { id: topicId },
+      include: { subjectTopics: true },
+    });
+
+    if (topic && topic.subjectId === subjectId) {
+      if (topic.subjectTopics.length > 0) {
+        const nextSubjectId = topic.subjectTopics[0].subjectId;
+        await prisma.topic.update({
+          where: { id: topicId },
+          data: { subjectId: nextSubjectId },
+        });
+        await prisma.subjectTopic.deleteMany({
+          where: { subjectId: nextSubjectId, topicId },
+        });
+      }
+    }
+
+    return { success: true, message: 'Topic unlinked successfully without deletion.' };
+  }
+
+  public static async linkSubtopicToTopic(topicId: string, subtopicId: string) {
+    const existing = await prisma.topicSubtopic.findUnique({
+      where: { topicId_subtopicId: { topicId, subtopicId } },
+    });
+    if (existing) return existing;
+
+    const maxSeq = await prisma.topicSubtopic.aggregate({
+      where: { topicId },
+      _max: { sequence: true },
+    });
+    const nextSeq = (maxSeq._max.sequence ?? 0) + 1;
+
+    return prisma.topicSubtopic.create({
+      data: {
+        topicId,
+        subtopicId,
+        sequence: nextSeq,
+      },
+    });
+  }
+
+  public static async unlinkSubtopicFromTopic(topicId: string, subtopicId: string) {
+    await prisma.topicSubtopic.deleteMany({
+      where: { topicId, subtopicId },
+    });
+
+    const subtopic = await prisma.subtopic.findUnique({
+      where: { id: subtopicId },
+      include: { topicSubtopics: true },
+    });
+
+    if (subtopic && subtopic.topicId === topicId) {
+      if (subtopic.topicSubtopics.length > 0) {
+        const nextTopicId = subtopic.topicSubtopics[0].topicId;
+        await prisma.subtopic.update({
+          where: { id: subtopicId },
+          data: { topicId: nextTopicId },
+        });
+        await prisma.topicSubtopic.deleteMany({
+          where: { topicId: nextTopicId, subtopicId },
+        });
+      }
+    }
+
+    return { success: true, message: 'Subtopic unlinked successfully without deletion.' };
+  }
+
+  public static async getAllAvailableTopics() {
+    return prisma.topic.findMany({
+      where: { isActive: true },
+      orderBy: { name: 'asc' },
+      include: {
+        subject: { select: { id: true, name: true } },
+        _count: { select: { subtopics: true, questions: true } },
+      },
+    });
+  }
+
+  public static async getAllAvailableSubtopics() {
+    return prisma.subtopic.findMany({
+      where: { isActive: true },
+      orderBy: { name: 'asc' },
+      include: {
+        topic: { select: { id: true, name: true } },
+        _count: { select: { questions: true } },
+      },
     });
   }
 }

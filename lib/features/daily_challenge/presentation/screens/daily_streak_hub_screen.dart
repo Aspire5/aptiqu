@@ -552,23 +552,29 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
           ElevatedButton(
             onPressed: () => controller.startDailyChallenge(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.tertiary,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              elevation: 4,
+              backgroundColor: AptiquColors.buttonDarkBg,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: AptiquColors.tertiary.withValues(alpha: 0.5),
+                  width: 1.2,
+                ),
+              ),
+              elevation: 0,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.play_arrow_rounded, color: Colors.black, size: 24),
+                const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 22),
                 const SizedBox(width: 8),
                 Text(
                   'START DAILY CHALLENGE',
                   style: AptiquTypography.labelCaps.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
                     fontSize: 13,
                   ),
                 ),

@@ -18,6 +18,10 @@ class UserModel {
   final String streak;
   final int coins;
   final bool isRegistrationComplete;
+  final bool dailyChallengeDue;
+  final bool dailyChallengeCompleted;
+  final int dailyChallengeTimeRemainingMs;
+  final String? dailyChallengeExpiresAt;
   final UserStatsModel? stats;
 
   const UserModel({
@@ -38,6 +42,10 @@ class UserModel {
     this.streak = '0d',
     this.coins = 0,
     this.isRegistrationComplete = false,
+    this.dailyChallengeDue = false,
+    this.dailyChallengeCompleted = false,
+    this.dailyChallengeTimeRemainingMs = 0,
+    this.dailyChallengeExpiresAt,
     this.stats,
   });
 
@@ -59,6 +67,10 @@ class UserModel {
     String? streak,
     int? coins,
     bool? isRegistrationComplete,
+    bool? dailyChallengeDue,
+    bool? dailyChallengeCompleted,
+    int? dailyChallengeTimeRemainingMs,
+    String? dailyChallengeExpiresAt,
     UserStatsModel? stats,
   }) {
     return UserModel(
@@ -81,6 +93,13 @@ class UserModel {
       coins: coins ?? this.coins,
       isRegistrationComplete:
           isRegistrationComplete ?? this.isRegistrationComplete,
+      dailyChallengeDue: dailyChallengeDue ?? this.dailyChallengeDue,
+      dailyChallengeCompleted:
+          dailyChallengeCompleted ?? this.dailyChallengeCompleted,
+      dailyChallengeTimeRemainingMs:
+          dailyChallengeTimeRemainingMs ?? this.dailyChallengeTimeRemainingMs,
+      dailyChallengeExpiresAt:
+          dailyChallengeExpiresAt ?? this.dailyChallengeExpiresAt,
       stats: stats ?? this.stats,
     );
   }
@@ -116,6 +135,16 @@ class UserModel {
       // Coins from backend
       coins: json['coins'] ?? 0,
       isRegistrationComplete: json['isRegistrationComplete'] ?? false,
+      dailyChallengeDue: json['dailyChallengeDue'] ??
+          json['dailyChallenge']?['isDue'] ??
+          false,
+      dailyChallengeCompleted: json['dailyChallengeCompleted'] ??
+          json['dailyChallenge']?['isCompletedToday'] ??
+          false,
+      dailyChallengeTimeRemainingMs:
+          (json['dailyChallenge']?['timeRemainingMs'] as num?)?.toInt() ?? 0,
+      dailyChallengeExpiresAt:
+          json['dailyChallenge']?['expiresAt']?.toString(),
       stats: json['stats'] != null
           ? UserStatsModel.fromJson(json['stats'] as Map<String, dynamic>)
           : null,

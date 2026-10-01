@@ -42,6 +42,10 @@ class AptiquColors {
   static const Color outline = Color(0xFF3D445C);
   static const Color outlineVariant = Color(0xFF252B3D);
 
+  // Unified Senior Dark Button System
+  static const Color buttonDarkBg = Color(0xFF1B2030);
+  static const Color buttonDarkBorder = Color(0xFF353C54);
+
   // Glow Shadows & Gradients
   static List<BoxShadow> get primaryGlow => [
         BoxShadow(

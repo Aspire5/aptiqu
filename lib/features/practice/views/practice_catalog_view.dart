@@ -409,7 +409,7 @@ class PracticeCatalogView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'AI Adaptive Set Composition',
+                        'Adaptive Set Composition',
                         style: AptiquTypography.labelMedium.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -830,13 +830,19 @@ class PracticeCatalogView extends StatelessWidget {
           return ElevatedButton(
             onPressed: isBusy || !isEnabled ? null : controller.startPracticeSession,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.primary,
+              backgroundColor: AptiquColors.buttonDarkBg,
               foregroundColor: Colors.white,
               elevation: 0,
-              disabledBackgroundColor: AptiquColors.surfaceContainerHigh,
-              disabledForegroundColor: AptiquColors.onSurfaceVariant.withValues(alpha: 0.4),
+              disabledBackgroundColor: const Color(0xFF131722),
+              disabledForegroundColor: AptiquColors.onSurfaceDisabled,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: isEnabled
+                      ? AptiquColors.primary.withValues(alpha: 0.5)
+                      : AptiquColors.outlineVariant,
+                  width: 1.2,
+                ),
               ),
             ),
             child: isBusy
@@ -851,10 +857,10 @@ class PracticeCatalogView extends StatelessWidget {
                       SizedBox(width: 10),
                       Flexible(
                         child: Text(
-                          'Curating Questions with AI...',
+                          'Setting up drill...',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
                         ),
                       ),
                     ],
@@ -865,6 +871,7 @@ class PracticeCatalogView extends StatelessWidget {
                       Icon(
                         isRandom ? Icons.bolt_rounded : Icons.play_arrow_rounded,
                         size: 20,
+                        color: Colors.white,
                       ),
                       const SizedBox(width: 8),
                       Flexible(

@@ -62,6 +62,22 @@ export const api = {
   createScript: (data: any) => apiClient.post('/syllabus/scripts', data),
   updateScript: (id: string, data: any) => apiClient.put(`/syllabus/scripts/${id}`, data),
 
+  // Syllabus Reordering & Reusability
+  reorderTopics: (subjectId: string, topicIds: string[]) =>
+    apiClient.put(`/syllabus/subjects/${subjectId}/reorder-topics`, { topicIds }),
+  reorderSubtopics: (topicId: string, subtopicIds: string[]) =>
+    apiClient.put(`/syllabus/topics/${topicId}/reorder-subtopics`, { subtopicIds }),
+  linkTopic: (subjectId: string, topicId: string) =>
+    apiClient.post(`/syllabus/subjects/${subjectId}/link-topic`, { topicId }),
+  unlinkTopic: (subjectId: string, topicId: string) =>
+    apiClient.delete(`/syllabus/subjects/${subjectId}/link-topic/${topicId}`),
+  linkSubtopic: (topicId: string, subtopicId: string) =>
+    apiClient.post(`/syllabus/topics/${topicId}/link-subtopic`, { subtopicId }),
+  unlinkSubtopic: (topicId: string, subtopicId: string) =>
+    apiClient.delete(`/syllabus/topics/${topicId}/link-subtopic/${subtopicId}`),
+  getAvailableTopics: () => apiClient.get('/syllabus/available-topics'),
+  getAvailableSubtopics: () => apiClient.get('/syllabus/available-subtopics'),
+
   // Questions
   getQuestions: (params: any) => apiClient.get('/questions', { params }),
   getQuestionStats: () => apiClient.get('/questions/stats'),

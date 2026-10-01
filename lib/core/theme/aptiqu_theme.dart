@@ -76,6 +76,41 @@ class AptiquTheme {
         thickness: 1,
         space: 1,
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AptiquColors.buttonDarkBg,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: const Color(0xFF131722),
+          disabledForegroundColor: const Color(0xFF5E657C),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(color: AptiquColors.buttonDarkBorder, width: 1.0),
+          ),
+          textStyle: AptiquTypography.labelLarge.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 13.5,
+            letterSpacing: 0.3,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white,
+          side: const BorderSide(color: AptiquColors.outlineVariant, width: 1.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: AptiquTypography.labelLarge.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 13.0,
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../../models/roadmap_model.dart';
 import '../controllers/home_controller.dart';
+import 'daily_challenge_streak_banner.dart';
 
 /// Subject Selection Overlay / View on the Play Screen
 /// Displays all active Subject Cards with circular progress rings,
@@ -39,11 +40,13 @@ class SubjectPlayCardsView extends StatelessWidget {
               const SizedBox(height: 8),
               ElevatedButton.icon(
                 onPressed: () => controller.fetchActiveRoadmap(),
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Refresh'),
+                icon: const Icon(Icons.refresh_rounded, size: 18, color: Colors.white),
+                label: const Text('Refresh', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AptiquColors.primary,
+                  backgroundColor: AptiquColors.buttonDarkBg,
                   foregroundColor: Colors.white,
+                  side: const BorderSide(color: AptiquColors.buttonDarkBorder),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ],
@@ -54,6 +57,9 @@ class SubjectPlayCardsView extends StatelessWidget {
       return ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
+          // Senior UI/UX Daily Challenge & Streak Protection Banner
+          const DailyChallengeStreakBanner(),
+
           // Header section
           Row(
             children: [
@@ -294,22 +300,27 @@ class SubjectPlayCardsView extends StatelessWidget {
                   child: hasPlayableContent
                       ? ElevatedButton.icon(
                           onPressed: () => controller.playSubject(subject),
-                          icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                          icon: const Icon(Icons.play_arrow_rounded, size: 18, color: Colors.white),
                           label: Text(
                             isStarted ? 'Continue Playing' : 'Start Playing',
                             style: AptiquTypography.labelLarge.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
+                              color: Colors.white,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isStarted
-                                ? AptiquColors.secondary
-                                : AptiquColors.primary,
-                            foregroundColor: isStarted ? Colors.black : Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 11),
+                            backgroundColor: AptiquColors.buttonDarkBg,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                color: isStarted
+                                    ? AptiquColors.secondary.withValues(alpha: 0.5)
+                                    : AptiquColors.primary.withValues(alpha: 0.4),
+                                width: 1.2,
+                              ),
                             ),
                             elevation: 0,
                           ),
@@ -326,19 +337,21 @@ class SubjectPlayCardsView extends StatelessWidget {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.hourglass_top_rounded, size: 16, color: AptiquColors.onSurfaceVariant),
+                          icon: const Icon(Icons.hourglass_top_rounded, size: 16, color: AptiquColors.onSurfaceDisabled),
                           label: Text(
                             'Coming Soon',
                             style: AptiquTypography.labelLarge.copyWith(
-                              color: AptiquColors.onSurfaceVariant,
+                              color: AptiquColors.onSurfaceDisabled,
                               fontSize: 13,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           style: OutlinedButton.styleFrom(
+                            backgroundColor: const Color(0xFF131722),
                             side: const BorderSide(color: AptiquColors.outlineVariant),
-                            padding: const EdgeInsets.symmetric(vertical: 11),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         ),
@@ -348,20 +361,22 @@ class SubjectPlayCardsView extends StatelessWidget {
                 // Secondary Action Button: Details
                 OutlinedButton.icon(
                   onPressed: () => controller.viewSubjectDetails(subject),
-                  icon: const Icon(Icons.hub_rounded, size: 16, color: Colors.white70),
+                  icon: const Icon(Icons.hub_rounded, size: 16, color: Colors.white),
                   label: Text(
                     'Details',
                     style: AptiquTypography.labelLarge.copyWith(
                       color: Colors.white,
-                      fontSize: 12,
+                      fontSize: 12.5,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AptiquColors.outlineVariant),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                    backgroundColor: const Color(0xFF131722),
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: AptiquColors.outlineVariant, width: 1.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),

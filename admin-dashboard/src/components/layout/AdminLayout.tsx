@@ -7,7 +7,6 @@ import {
   HelpCircle, 
   Users, 
   LogOut, 
-  Sparkles,
   Server
 } from 'lucide-react';
 
@@ -33,12 +32,16 @@ export const AdminLayout: React.FC = () => {
       {/* Sidebar matching Material Dashboard 2 Dark Theme */}
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <div className="sidebar-brand-icon">
-            <Sparkles size={20} />
+          <div className="sidebar-brand-icon" style={{ overflow: 'hidden', padding: 0, background: 'transparent' }}>
+            <img 
+              src="/logo.jpeg" 
+              alt="AptiQu Logo" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} 
+            />
           </div>
           <div className="sidebar-brand-text">
-            <h2>Aptiqu Console</h2>
-            <span>Admin Control Panel</span>
+            <h2>AptiQu Console</h2>
+            <span>ADMIN CONTROL PANEL</span>
           </div>
         </div>
 

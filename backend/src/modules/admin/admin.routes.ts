@@ -43,6 +43,18 @@ router.post('/syllabus/subtopics', AdminSyllabusController.createSubtopic);
 router.put('/syllabus/subtopics/:id', AdminSyllabusController.updateSubtopic);
 router.delete('/syllabus/subtopics/:id', AdminSyllabusController.deleteSubtopic);
 
+// Reordering
+router.put('/syllabus/subjects/:subjectId/reorder-topics', AdminSyllabusController.reorderTopics);
+router.put('/syllabus/topics/:topicId/reorder-subtopics', AdminSyllabusController.reorderSubtopics);
+
+// Reusability / Linking
+router.get('/syllabus/available-topics', AdminSyllabusController.getAvailableTopics);
+router.get('/syllabus/available-subtopics', AdminSyllabusController.getAvailableSubtopics);
+router.post('/syllabus/subjects/:subjectId/link-topic', AdminSyllabusController.linkTopic);
+router.delete('/syllabus/subjects/:subjectId/topics/:topicId/unlink', AdminSyllabusController.unlinkTopic);
+router.post('/syllabus/topics/:topicId/link-subtopic', AdminSyllabusController.linkSubtopic);
+router.delete('/syllabus/topics/:topicId/subtopics/:subtopicId/unlink', AdminSyllabusController.unlinkSubtopic);
+
 // Script Inspection & Versioning
 router.get('/syllabus/scripts/:id', AdminSyllabusController.getScript);
 router.post('/syllabus/scripts', AdminSyllabusController.createScript);

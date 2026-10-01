@@ -46,10 +46,22 @@ export class UserService {
       progress: xpProgress.progress,
       xp: xpProgress,
       streak: `${streakSync.currentStreak}d`,
+      streakCount: streakSync.currentStreak,
       highestStreak: `${streakSync.highestStreak}d`,
       coins: streakSync.stats.coins,
       dailyChallengeDue: streakSync.isDue,
       dailyChallengeCompleted: streakSync.isCompletedToday,
+      dailyChallenge: {
+        isAvailable: streakSync.canAttempt,
+        isDue: streakSync.isDue,
+        isCompletedToday: streakSync.isCompletedToday,
+        streak: streakSync.currentStreak,
+        tier: streakSync.tierInfo.tier,
+        tierTitle: streakSync.tierInfo.title,
+        questionCount: streakSync.tierInfo.questionCount,
+        timeRemainingMs: streakSync.msUntilMidnight,
+        expiresAt: streakSync.expiresAt,
+      },
       stats: await this.getUserStats(userId),
     };
   }

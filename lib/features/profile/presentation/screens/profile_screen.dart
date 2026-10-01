@@ -7,6 +7,8 @@ import '../../../../core/network/dio_client.dart';
 import '../../../../core/progression/controllers/xp_controller.dart';
 import '../../../auth/domain/models/user_model.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/routing/app_routes.dart';
 
 class ProfileScreen extends StatefulWidget {
   final bool autoFetch;
@@ -86,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           if (_isLoading)
             const Padding(
-              padding: EdgeInsets.only(right: 18),
+              padding: EdgeInsets.only(right: 12),
               child: Center(
                 child: SizedBox(
                   width: 18,
@@ -98,6 +100,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
+          IconButton(
+            tooltip: 'Sign Out',
+            icon: const Icon(Icons.logout_rounded, size: 20, color: Colors.white70),
+            onPressed: () => _showLogoutConfirmationDialog(context),
+          ),
+          const SizedBox(width: 8),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -170,7 +178,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 10),
                 _buildQuestionsSolvedCard(stats.questions),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
+
+                // 5. Account & Session Controls
+                _buildSectionHeader('ACCOUNT'),
+                const SizedBox(height: 10),
+                _buildAccountSettingsCard(context),
+
+                const SizedBox(height: 36),
               ],
             ),
           ),
@@ -659,6 +674,176 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildAccountSettingsCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AptiquColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AptiquColors.outlineVariant, width: 1.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF131722),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AptiquColors.outlineVariant),
+                ),
+                child: const Icon(
+                  Icons.shield_outlined,
+                  size: 18,
+                  color: AptiquColors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'AptiQu App Version',
+                      style: AptiquTypography.bodyMd.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'v1.0.0 (Build 1)',
+                      style: AptiquTypography.bodySm.copyWith(
+                        color: AptiquColors.onSurfaceVariant,
+                        fontSize: 11.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1, color: AptiquColors.outlineVariant),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () => _showLogoutConfirmationDialog(context),
+            icon: const Icon(Icons.logout_rounded, size: 18, color: Colors.white),
+            label: Text(
+              'Sign Out of AptiQu',
+              style: AptiquTypography.labelLarge.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 13.5,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AptiquColors.buttonDarkBg,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: Colors.redAccent.withValues(alpha: 0.4),
+                  width: 1.2,
+                ),
+              ),
+              elevation: 0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    final authController = Get.find<AuthController>();
+
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: AptiquColors.surfaceContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: const BorderSide(color: AptiquColors.buttonDarkBorder, width: 1.2),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.redAccent.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.logout_rounded,
+                color: Colors.redAccent,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Sign Out?',
+              style: AptiquTypography.headlineSm.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to sign out of AptiQu? Your progress will remain securely saved.',
+          style: AptiquTypography.bodyMd.copyWith(
+            color: AptiquColors.onSurfaceVariant,
+            height: 1.45,
+          ),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogCtx).pop(),
+            child: Text(
+              'Cancel',
+              style: AptiquTypography.labelLarge.copyWith(
+                color: AptiquColors.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent.shade700,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 0,
+            ),
+            onPressed: () async {
+              Navigator.of(dialogCtx).pop();
+              await authController.logout();
+              if (context.mounted) {
+                context.go(AppRoutes.login);
+              }
+            },
+            child: Text(
+              'Sign Out',
+              style: AptiquTypography.labelLarge.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

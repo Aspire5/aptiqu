@@ -185,23 +185,32 @@ class PvpLobbyView extends StatelessWidget {
                               const SizedBox(height: 24),
                               SizedBox(
                                 width: double.infinity,
-                                height: 52,
+                                height: 50,
                                 child: ElevatedButton(
                                   onPressed: controller.startMatchmaking,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AptiquColors.primary,
+                                    backgroundColor: AptiquColors.buttonDarkBg,
                                     foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                        color: AptiquColors.secondary.withValues(alpha: 0.5),
+                                        width: 1.2,
+                                      ),
+                                    ),
+                                    elevation: 0,
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.flash_on_rounded, size: 20),
+                                      const Icon(Icons.flash_on_rounded, size: 20, color: Colors.white),
                                       const SizedBox(width: 8),
                                       Text(
                                         'Find Match (Ranked Duel)',
-                                        style: AptiquTypography.labelLarge.copyWith(fontWeight: FontWeight.bold),
+                                        style: AptiquTypography.labelLarge.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ],
                                   ),

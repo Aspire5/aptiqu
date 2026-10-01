@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, User, AlertCircle } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('shagun5750');
@@ -57,15 +57,17 @@ export const LoginPage: React.FC = () => {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.2)',
+            width: '56px',
+            height: '56px',
+            borderRadius: '14px',
+            background: '#ffffff',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             marginBottom: '12px',
+            overflow: 'hidden',
           }}>
-            <ShieldCheck size={28} />
+            <img src="/logo.jpeg" alt="AptiQu Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, margin: 0 }}>Aptiqu Admin</h2>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, margin: 0 }}>AptiQu Admin</h2>
           <p style={{ fontSize: '13px', margin: '4px 0 0 0', opacity: 0.9 }}>
             Sign in to access your management dashboard
           </p>

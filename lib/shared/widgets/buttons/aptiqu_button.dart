@@ -128,14 +128,14 @@ class _AptiquButtonState extends State<AptiquButton> {
 
       case AptiquButtonVariant.google:
         decoration = BoxDecoration(
-          color: AptiquColors.surfaceContainerHigh,
+          color: AptiquColors.buttonDarkBg,
           borderRadius: effectiveRadius,
-          border: Border.all(color: AptiquColors.outlineVariant, width: 1.2),
+          border: Border.all(color: AptiquColors.buttonDarkBorder, width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: 0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         );

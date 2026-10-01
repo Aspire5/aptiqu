@@ -20,19 +20,134 @@ export class DailyChallengeService {
   }
 
   /**
-   * Helper to format UTC dates as "YYYY-MM-DD"
+   * Helper to format IST (Asia/Kolkata, UTC+5:30) dates as "YYYY-MM-DD".
+   * Daily streak day cycle starts and ends at 12:00 AM IST sharp.
    */
-  public getUtcDates(): { todayDate: string; yesterdayDate: string; msUntilMidnight: number } {
+  public getIstDates(): { todayDate: string; yesterdayDate: string; msUntilMidnight: number; expiresAt: string } {
     const now = new Date();
-    const todayDate = now.toISOString().slice(0, 10);
+    // Using Intl.DateTimeFormat with Asia/Kolkata to ensure exact IST date regardless of host system timezone
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const todayDate = formatter.format(now); // e.g. "2026-10-01"
 
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const yesterdayDate = yesterday.toISOString().slice(0, 10);
+    const yesterdayObj = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yesterdayDate = formatter.format(yesterdayObj);
 
-    const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-    const msUntilMidnight = Math.max(0, tomorrow.getTime() - now.getTime());
+    // Calculate next midnight in IST (12:00 AM IST = 18:30 UTC of previous day)
+    const [y, m, d] = todayDate.split('-').map(Number);
+    const nextDayDate = new Date(Date.UTC(y, m - 1, d + 1));
+    const nextDayStr = formatter.format(nextDayDate);
+    const nextMidnightIst = new Date(`${nextDayStr}T00:00:00+05:30`);
+    const msUntilMidnight = Math.max(0, nextMidnightIst.getTime() - now.getTime());
 
-    return { todayDate, yesterdayDate, msUntilMidnight };
+    return { todayDate, yesterdayDate, msUntilMidnight, expiresAt: nextMidnightIst.toISOString() };
+  }
+
+  /**
+   * Backward-compatible alias for getIstDates.
+   */
+  public getUtcDates(): { todayDate: string; yesterdayDate: string; msUntilMidnight: number; expiresAt: string } {
+    return this.getIstDates();
+  }
+
+  /**
+   * Cron job execution running daily at 12:00 AM sharp IST.
+   * 1. Check and reset streak of all missed attempts for anyone where streak >= 1.
+   * 2. Check user availability across tiers:
+   *    - Tier 1 (0-9 streak): Generate 1 EASY question script (if users exist)
+   *    - Tier 2 (10-99 streak): Generate 1 EASY + 1 MEDIUM question script (if users exist)
+   *    - Tier 3 (100+ streak): Generate 1 EASY + 1 MEDIUM + 1 HARD question script (if users exist)
+   * 3. Lazy-load and avoid unnecessary AI calls where tiers have no users.
+   */
+  public async runMidnightIstCron() {
+    console.log('[DailyStreakCron] Running midnight IST streak evaluation and maintenance...');
+    try {
+      const { todayDate, yesterdayDate } = this.getIstDates();
+
+      // 1. Reset streak to 0 for users who did not complete yesterday's daily challenge
+      // In IST, at 00:00 IST todayDate, users whose lastDailyDate is NOT yesterdayDate missed it.
+      const resetResult = await prisma.gameStats.updateMany({
+        where: {
+          streak: { gte: 1 },
+          NOT: {
+            lastDailyDate: yesterdayDate,
+          },
+        },
+        data: {
+          streak: 0,
+        },
+      });
+
+      console.log(
+        `[DailyStreakCron] Reset streak to 0 for ${resetResult.count} users who missed the daily challenge on ${yesterdayDate}.`
+      );
+
+      // Expire any incomplete daily challenge participations from previous days
+      await prisma.dailyChallengeParticipation.updateMany({
+        where: {
+          status: 'IN_PROGRESS',
+          dateString: { not: todayDate },
+        },
+        data: {
+          status: 'FAILED',
+        },
+      });
+
+      // 2. Check user distribution by streak tiers
+      const [tier1Users, tier2Users, tier3Users] = await Promise.all([
+        prisma.gameStats.count({
+          where: { streak: { gte: 0, lte: 9 } },
+        }),
+        prisma.gameStats.count({
+          where: { streak: { gte: 10, lte: 99 } },
+        }),
+        prisma.gameStats.count({
+          where: { streak: { gte: 100 } },
+        }),
+      ]);
+
+      console.log(
+        `[DailyStreakCron] User tier distribution for ${todayDate}: Tier 1 (0-9)=${tier1Users}, Tier 2 (10-99)=${tier2Users}, Tier 3 (100+)=${tier3Users}`
+      );
+
+      // 3. Lazy-generate scripts only if active users exist in that tier (to avoid unnecessary AI API calls)
+      if (tier1Users > 0) {
+        console.log(`[DailyStreakCron] Pre-generating Tier 1 Daily Script for ${todayDate}...`);
+        try {
+          await dailyChallengeGenerationService.getOrGenerateDailyScript(todayDate, 1);
+        } catch (err) {
+          console.error(`[DailyStreakCron] Error generating Tier 1 script:`, err);
+        }
+      }
+
+      if (tier2Users > 0) {
+        console.log(`[DailyStreakCron] Pre-generating Tier 2 Daily Script for ${todayDate}...`);
+        try {
+          await dailyChallengeGenerationService.getOrGenerateDailyScript(todayDate, 2);
+        } catch (err) {
+          console.error(`[DailyStreakCron] Error generating Tier 2 script:`, err);
+        }
+      }
+
+      if (tier3Users > 0) {
+        console.log(`[DailyStreakCron] Pre-generating Tier 3 Daily Script for ${todayDate}...`);
+        try {
+          await dailyChallengeGenerationService.getOrGenerateDailyScript(todayDate, 3);
+        } catch (err) {
+          console.error(`[DailyStreakCron] Error generating Tier 3 script:`, err);
+        }
+      } else {
+        console.log(`[DailyStreakCron] 0 users in Tier 3 (100+ streak). Skipping Tier 3 script generation to save AI API costs.`);
+      }
+
+      console.log(`[DailyStreakCron] Completed midnight IST challenge rollover successfully.`);
+    } catch (error) {
+      console.error('[DailyStreakCron] Error during midnight IST cron execution:', error);
+    }
   }
 
   /**
@@ -71,7 +186,7 @@ export class DailyChallengeService {
    * If user missed yesterday, streak resets to 0 (starting streak is 0).
    */
   public async syncUserStreak(userId: string) {
-    const { todayDate, yesterdayDate } = this.getUtcDates();
+    const { todayDate, yesterdayDate, msUntilMidnight, expiresAt } = this.getIstDates();
 
     let stats = await prisma.gameStats.findUnique({
       where: { userId },
@@ -129,6 +244,8 @@ export class DailyChallengeService {
       canAttempt,
       tierInfo,
       todayDate,
+      msUntilMidnight,
+      expiresAt,
     };
   }
 
@@ -137,7 +254,7 @@ export class DailyChallengeService {
    */
   public async getStatus(userId: string) {
     const sync = await this.syncUserStreak(userId);
-    const { msUntilMidnight } = this.getUtcDates();
+    const { msUntilMidnight, expiresAt } = this.getIstDates();
 
     // Check if user has an existing participation record for today
     const todayParticipation = await prisma.dailyChallengeParticipation.findUnique({
@@ -167,6 +284,7 @@ export class DailyChallengeService {
       timeLimitPerQuestion: 60,
       hasHints: false,
       msUntilMidnight,
+      expiresAt,
       todayParticipation: todayParticipation
         ? {
             id: todayParticipation.id,

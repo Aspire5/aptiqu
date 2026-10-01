@@ -97,24 +97,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /// Sandbox Google Login for instant testing without native Play Services
-  Future<bool> signInWithSandbox({bool isNewUser = false}) async {
-    isLoading.value = true;
-    authErrorMessage.value = '';
-    try {
-      final mockToken = isNewUser
-          ? 'mock_test_token_new_${DateTime.now().millisecondsSinceEpoch}'
-          : 'mock_test_token_existing_user';
-
-      return await _authenticateWithBackend(mockToken);
-    } catch (e) {
-      authErrorMessage.value = e.toString().replaceAll('Exception: ', '');
-      return false;
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
   /// Internal method to exchange Google ID Token with Node.js backend
   Future<bool> _authenticateWithBackend(String idToken) async {
     final response = await dioClient.dio.post(

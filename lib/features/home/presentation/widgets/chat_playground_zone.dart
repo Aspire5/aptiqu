@@ -376,10 +376,14 @@ class ChatPlaygroundZone extends StatelessWidget {
                           height: 42,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AptiquColors.primary,
+                              backgroundColor: AptiquColors.buttonDarkBg,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(
+                                  color: AptiquColors.buttonDarkBorder,
+                                  width: 1.2,
+                                ),
                               ),
                               elevation: 2,
                               padding: EdgeInsets.zero,
