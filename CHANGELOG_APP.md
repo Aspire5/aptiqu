@@ -2,23 +2,25 @@
 
 All notable changes, version updates, and release notes for the AptiQu Flutter mobile application (iOS & Android).
 
+<!-- NOTE: Project versioning strictly follows 0.0.x during pre-production development. Version 1.0.0 is reserved exclusively for the first live public release to the Google Play Store and Apple App Store. -->
+
 ---
 
-## [1.2.0+3] — 2026-10-02
+## [0.0.3+3] — 2026-10-02
 
 ### PYQ Badges & Dual Solution Cards
 * **Competitive Exam Badges (`🏛️ PYQ`):**
   * Displays competitive exam provenance badge (e.g. `🏛️ TCS NQT (2023), CAT (2012)`) under question prompt cards across Practice Arena, Daily Challenge, Lesson dialogues, and PvP Arenas.
 * **Dual Solution Post-Answer Breakdown:**
   * Replaced single explanation banner with structured dual solutions: Solution 1 (Book Method) and Solution 2 (Alternative Speed Shortcut).
-  * Solution cards highlight "⭐ AI Preferred" badge on the method recommended by AptiQu AI.
-  * Tapping "AI Preferred" opens an info bottom sheet explaining the exact speed/clarity rationale under exam pressure.
+  * Solution cards highlight preferred badge on the speed shortcut method recommended for exam speed.
+  * Tapping the badge opens an info bottom sheet explaining the exact speed/clarity rationale under exam pressure.
 * **Model Enriched Support:**
   * Updated `PracticeQuestionModel`, `PracticeAnswerResultModel`, `DailyChallengeQuestionModel`, `DailyChallengeAnswerResultModel`, `QuestionInlineModel`, and `PvpQuestionDataModel` with PYQ, provenance, and dual-solution parsing.
 
 ---
 
-## [1.1.0+2] — 2026-10-01
+## [0.0.2+2] — 2026-10-01
 
 ### Daily Streak Alerts & UI/UX
 * **Daily Challenge Banner:** Integrated high-visibility streak protection banner on the Play screen with real-time countdown ticking down to 12:00 AM IST.
@@ -28,7 +30,7 @@ All notable changes, version updates, and release notes for the AptiQu Flutter m
 
 ---
 
-## [1.0.0+1] — 2026-10-01 (Initial Production Candidate)
+## [0.0.1+1] — 2026-10-01 (Pre-Production Build)
 
 ### Platform & Build Configurations
 * **App Branding:** Official app display name finalized to **AptiQu** across Android and iOS.

@@ -149,12 +149,16 @@ export async function seedCurriculum() {
   // 4. Seed Topics
   console.log('📌 Seeding Topics...');
   for (const t of topics) {
+    const matchingStep = roadmapSteps.find((s) => s.topicId === t.id && s.subjectId === t.subjectId);
+    const seq = matchingStep ? matchingStep.sequence : (t.sequence ?? 0);
+
     await prisma.topic.upsert({
       where: { id: t.id },
       update: {
         subjectId: t.subjectId,
         slug: t.slug || t.id,
         name: t.name,
+        sequence: seq,
         description: t.description || null,
         defaultImportance: t.defaultImportance || null,
         defaultTeachingDepth: t.defaultTeachingDepth ?? null,
@@ -166,6 +170,7 @@ export async function seedCurriculum() {
         subjectId: t.subjectId,
         slug: t.slug || t.id,
         name: t.name,
+        sequence: seq,
         description: t.description || null,
         defaultImportance: t.defaultImportance || null,
         defaultTeachingDepth: t.defaultTeachingDepth ?? null,
@@ -205,6 +210,32 @@ export async function seedCurriculum() {
       },
     });
   }
+
+  // Ensure QA foundations intro subtopic exists
+  await prisma.subtopic.upsert({
+    where: { id: 'qaf-intro' },
+    update: {
+      topicId: 'qa-foundations',
+      slug: 'qaf-intro',
+      name: 'Welcome to Aptitude',
+      sequence: 1,
+      importance: 'very_important',
+      teachingDepth: 2,
+      teachingMinutes: 5,
+      isActive: true,
+    },
+    create: {
+      id: 'qaf-intro',
+      topicId: 'qa-foundations',
+      slug: 'qaf-intro',
+      name: 'Welcome to Aptitude',
+      sequence: 1,
+      importance: 'very_important',
+      teachingDepth: 2,
+      teachingMinutes: 5,
+      isActive: true,
+    },
+  });
 
   // 6. Seed Roadmap Steps
   console.log('📌 Seeding Roadmap Steps...');
@@ -308,6 +339,13 @@ export async function seedCurriculum() {
       });
 
       if (script && script.publishedVersionId) {
+        if (def.scriptId === 'script-qa-foundations-intro' && script.subtopicId !== 'qaf-intro') {
+          await prisma.lessonScript.update({
+            where: { id: script.id },
+            data: { subtopicId: 'qaf-intro' },
+          });
+        }
+
         const sequence = i + 1; // 1 to 8
         const existingAssignment = await prisma.scriptAssignment.findFirst({
           where: {

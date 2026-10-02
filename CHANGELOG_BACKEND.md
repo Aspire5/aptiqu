@@ -2,9 +2,11 @@
 
 All notable changes, version updates, and migration notes for the AptiQu Node.js/TypeScript backend services.
 
+<!-- NOTE: Project versioning strictly follows 0.0.x during pre-production development. Version 1.0.0 is reserved exclusively for the first live public release to production. -->
+
 ---
 
-## [1.3.0] — 2026-10-02
+## [0.0.4] — 2026-10-02
 
 ### AI Prompts Management & Dynamic Server Execution
 * **AiPrompt Prisma Model:** Added `AiPrompt` model (`@@schema("learning")`) supporting `key`, `title`, `description`, `category`, `draftPrompt`, `publishedPrompt`, `version`, `isLive`, and `lastPublishedAt`.
@@ -19,11 +21,14 @@ All notable changes, version updates, and migration notes for the AptiQu Node.js
 * **Daily Challenge Inventory Depletion Monitoring:**
   * Added `AdminDashboardService.getDailyChallengeInventoryStatus()` monitoring remaining unused manual PYQ counts per difficulty (`EASY`, `MEDIUM`, `HARD`).
   * Emits `CRITICAL` or `WARNING` status alerts to admin dashboard when inventory is depleted or low.
+* **Curriculum Canonical Sequence Sync:**
+  * Updated all topic sequences in `quantitative-aptitude` (1..24) and `logical-analytical-reasoning` (1..21) to match exact pedagogical study sequence.
+  * Added `qaf-intro` ("Welcome to Aptitude") as subtopic 1 under `qa-foundations` and linked `script-qa-foundations-intro`.
 * **Roadmap Progression Invariant:** Fixed `getNextStepOrScript` to return `SCRIPT_NOT_PUBLISHED` when the next active step in sequence does not have published content.
 
 ---
 
-## [1.2.0] — 2026-10-02
+## [0.0.3] — 2026-10-02
 
 ### Book Curriculum, PYQ Provenance & Dual Solutions
 * **Prisma Schema Extensions:**
@@ -47,7 +52,7 @@ All notable changes, version updates, and migration notes for the AptiQu Node.js
 
 ---
 
-## [1.1.0] — 2026-10-01
+## [0.0.2] — 2026-10-01
 
 ### Curriculum Reordering & Reusability
 * **Prisma Schema Update:** Added `sequence` field to `Topic` and introduced `SubjectTopic` and `TopicSubtopic` join models with unique compound keys.
@@ -63,7 +68,7 @@ All notable changes, version updates, and migration notes for the AptiQu Node.js
 
 ---
 
-## [1.0.0] — 2026-10-01 (Production Release)
+## [0.0.1] — 2026-10-01 (Pre-Production Build)
 
 ### Core Services & Security
 * **Authentication Engine:** Production Google OAuth ID token verification via `google-auth-library`.

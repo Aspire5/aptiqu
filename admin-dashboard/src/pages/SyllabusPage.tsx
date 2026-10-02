@@ -721,7 +721,7 @@ export const SyllabusPage: React.FC = () => {
               <div className="form-group">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <label className="form-label">Script JSON Definition (Nodes, Questions, Dialogue)</label>
-                  <span style={{ fontSize: '11px', color: '#7b809a' }}>Prisma JSONB Versioned Engine</span>
+                  <span style={{ fontSize: '11px', color: '#7b809a' }}>AptiQu DSL Definition</span>
                 </div>
                 {scriptJsonError && (
                   <div style={{ color: '#c62828', background: '#ffebee', padding: '8px 12px', borderRadius: '6px', fontSize: '12px' }}>

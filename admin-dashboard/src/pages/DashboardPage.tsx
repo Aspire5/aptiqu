@@ -39,7 +39,7 @@ export const DashboardPage: React.FC = () => {
   if (loading) {
     return (
       <div style={{ padding: '40px', textAlign: 'center', color: '#7b809a' }}>
-        <p>Loading SaaS intelligence metrics...</p>
+        <p>Loading dashboard analytics...</p>
       </div>
     );
   }

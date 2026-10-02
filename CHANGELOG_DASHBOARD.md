@@ -4,7 +4,9 @@ All notable changes, version updates, and UI enhancements for the AptiQu React/V
 
 ---
 
-## [1.3.0] — 2026-10-02
+<!-- NOTE: Project versioning strictly follows 0.0.x during pre-production development. Version 1.0.0 is reserved exclusively for the first live public release to production. -->
+
+## [0.0.4] — 2026-10-02
 
 ### AI Prompts Control Center & Live Zero-Restart Engine
 * **New AI Prompts Sidebar Navigation:** Added dedicated `AI Prompts` section in the left navigation sidebar with icon and route.
@@ -18,19 +20,19 @@ All notable changes, version updates, and UI enhancements for the AptiQu React/V
 
 ---
 
-## [1.2.0] — 2026-10-02
+## [0.0.3] — 2026-10-02
 
 ### Book Curriculum & PYQ Authoring Tools
 * **PYQ & Status Filtering:** Added filter controls for `PYQs Only`, `Non-PYQ`, and review statuses (`PUBLISHED`, `REVIEW`, `DRAFT`) in Question Bank Explorer.
-* **Badges & Visual Tags:** Rendered `🏛️ PYQ` badge, `REVIEW REQUIRED` tag, `externalKey`, and `AI Preferred` chips on question rows.
+* **Badges & Visual Tags:** Rendered `🏛️ PYQ` badge, `REVIEW REQUIRED` tag, `externalKey`, and `Preferred Solution` chips on question rows.
 * **Dual Solution & Provenance Inspector:** Expanded question rows show Solution 1 (Book Method) and Solution 2 (Alternative Speed Shortcut) with preference badges and textbook provenance (book, edition, chapter, pages).
-* **Comprehensive Question Form Modal:** Added form fields for unique `externalKey`, `pyq`, review status, source type, generation method, full book provenance, and dual solutions with AI preference reason.
+* **Comprehensive Question Form Modal:** Added form fields for unique `externalKey`, `pyq`, review status, source type, generation method, full book provenance, and dual solutions with preference reason.
 * **Enhanced Bulk Importer:** Updated Excel/CSV download template and live preview with curriculum columns: `externalKey`, `subtopicKey`, `pyq`, `sourceBook`, `sourceChapter`, `alternativeExplanation`, `preferredSolution`, `preferredReason`.
 * **Strict Script Verification & Import:** Integrated `Strict Import & Verify Refs` action in Lesson Script inspector ensuring all question references exist and match the target subtopic prior to persisting.
 
 ---
 
-## [1.1.0] — 2026-10-01
+## [0.0.2] — 2026-10-01
 
 ### Curriculum & UX Enhancements
 * **Study Order Sequence:** Removed alphabetical sorting from syllabus; topics and subtopics now strictly preserve intended curriculum study order.
@@ -41,7 +43,7 @@ All notable changes, version updates, and UI enhancements for the AptiQu React/V
 
 ---
 
-## [1.0.0] — 2026-10-01 (Production Release)
+## [0.0.1] — 2026-10-01 (Pre-Production Baseline)
 
 ### Administrative Features
 * **Authentication Portal:** Single-tenant admin credentials gatekeeper with secure session storage.

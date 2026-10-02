@@ -126,7 +126,7 @@ export const QuestionsPage: React.FC = () => {
           <div className="card" style={{ padding: '16px', marginBottom: 0 }}>
             <span style={{ fontSize: '12px', color: '#7b809a' }}>Total Questions</span>
             <h3 style={{ fontSize: '22px', fontWeight: 700, marginTop: '4px' }}>{stats.total ?? 0}</h3>
-            <span style={{ fontSize: '11px', color: '#4caf50' }}>Active in engine</span>
+            <span style={{ fontSize: '11px', color: '#4caf50' }}>Active questions</span>
           </div>
 
           <div className="card" style={{ padding: '16px', marginBottom: 0 }}>
@@ -441,7 +441,7 @@ export const QuestionsPage: React.FC = () => {
                                     📖 Solution 1 (Book Method)
                                   </h5>
                                   {q.preferredSolution === 'BOOK' && (
-                                    <span className="badge badge-success" style={{ fontSize: '10px' }}>⭐ AI Preferred</span>
+                                    <span className="badge badge-success" style={{ fontSize: '10px' }}>⭐ Preferred Solution</span>
                                   )}
                                 </div>
                                 <p style={{ fontSize: '13px', lineHeight: 1.5, color: '#334155', whiteSpace: 'pre-wrap' }}>
@@ -461,7 +461,7 @@ export const QuestionsPage: React.FC = () => {
                                     ⚡ Solution 2 (Alternative / Speed Shortcut)
                                   </h5>
                                   {q.preferredSolution === 'ALTERNATIVE' && (
-                                    <span className="badge badge-success" style={{ fontSize: '10px' }}>⭐ AI Preferred</span>
+                                    <span className="badge badge-success" style={{ fontSize: '10px' }}>⭐ Preferred Solution</span>
                                   )}
                                 </div>
                                 <p style={{ fontSize: '13px', lineHeight: 1.5, color: '#334155', whiteSpace: 'pre-wrap' }}>
@@ -1095,7 +1095,7 @@ const QuestionFormModal: React.FC<{
               {/* Preference selector */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontSize: '11px' }}>AI Preferred Solution</label>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Preferred Solution</label>
                   <select className="form-control" value={preferredSolution} onChange={(e) => setPreferredSolution(e.target.value)}>
                     <option value="">None / Neutral</option>
                     <option value="BOOK">Solution 1 (Book Method)</option>

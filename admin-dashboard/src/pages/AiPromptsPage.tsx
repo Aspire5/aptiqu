@@ -327,7 +327,7 @@ export const AiPromptsPage: React.FC = () => {
         {/* Left Column: Prompt Selection List */}
         <div className="card" style={{ padding: '16px', marginBottom: 0 }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {activeTab === 'SERVER' ? 'Live Server Prompts' : 'Curriculum Reference Prompts'}
+            {activeTab === 'SERVER' ? 'Server Prompts' : 'Curriculum Reference Prompts'}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -462,7 +462,7 @@ export const AiPromptsPage: React.FC = () => {
                       }}
                     />
                     <span style={{ fontSize: '12px', fontWeight: 700, color: '#16a34a' }}>
-                      LIVE ENGINE (v{selectedPrompt.version})
+                      LIVE (v{selectedPrompt.version})
                     </span>
                   </div>
                   {selectedPrompt.lastPublishedAt && (
