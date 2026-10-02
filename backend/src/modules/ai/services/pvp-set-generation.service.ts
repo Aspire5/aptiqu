@@ -27,8 +27,8 @@ export class PvpSetGenerationService {
    * Generates a complete verified 10-Question PvP Set from the LIVE syllabus universe.
    */
   public async generatePvpQuestionSet(): Promise<any> {
-    const lockAcquired = await ConcurrencyLockService.acquireLock('PVP_SET_GENERATION', 60000);
-    if (!lockAcquired) {
+    const lockToken = await ConcurrencyLockService.acquireLock('PVP_SET_GENERATION', 60000);
+    if (!lockToken) {
       // Another thread is generating a set. Wait and return an available published set.
       await ConcurrencyLockService.waitForCondition(async () => {
         const count = await prisma.pvpQuestionSet.count({
@@ -222,7 +222,7 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
         });
       });
     } finally {
-      await ConcurrencyLockService.releaseLock('PVP_SET_GENERATION');
+      await ConcurrencyLockService.releaseLock('PVP_SET_GENERATION', lockToken);
     }
   }
 }

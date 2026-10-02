@@ -115,14 +115,12 @@ export class AuthService {
       stats: user.gameStats
         ? {
             level: user.gameStats.level,
-            // Streak hardcoded to 0 for now as requested
-            streak: `${user.gameStats.streak}d`,
-            // Coins hardcoded to 0 for now as requested
+            streak: user.gameStats.streak,
             coins: user.gameStats.coins,
           }
         : {
             level: 1,
-            streak: '0d',
+            streak: 0,
             coins: 0,
           },
     };
@@ -211,8 +209,7 @@ export class AuthService {
       },
       stats: {
         level: stats.level,
-        // Streak and coins returned with proper hardcoded defaults
-        streak: `${stats.streak}d`,
+        streak: stats.streak,
         coins: stats.coins,
       },
     };

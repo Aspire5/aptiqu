@@ -55,8 +55,8 @@ export class QuestionGenerationService {
       throw new Error(`Subtopic with ID "${subtopicId}" not found.`);
     }
 
-    const lockAcquired = await ConcurrencyLockService.acquireLock(subtopicId, 60000);
-    if (!lockAcquired) {
+    const lockToken = await ConcurrencyLockService.acquireLock(subtopicId, 60000);
+    if (!lockToken) {
       // Another worker/thread is currently generating. Wait for completion.
       await ConcurrencyLockService.waitForCondition(async () => {
         const count = await prisma.question.count({
@@ -205,7 +205,7 @@ Generate exactly ${requestedCount} questions.
       );
       return createdQuestions;
     } finally {
-      await ConcurrencyLockService.releaseLock(subtopicId);
+      await ConcurrencyLockService.releaseLock(subtopicId, lockToken);
     }
   }
 }

@@ -50,8 +50,13 @@ class AuthController extends GetxController {
             ? 'home'
             : 'signup';
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        await dioClient.clearTokens();
+      }
+      // Do not clear tokens on network timeout, offline state, or 500 error
     } catch (_) {
-      await dioClient.clearTokens();
+      // Do not wipe tokens on unexpected local exceptions
     } finally {
       isInitializing.value = false;
     }
@@ -132,9 +137,12 @@ class AuthController extends GetxController {
         country: profile?['country'] ?? '',
         avatarUrl: profile?['avatarUrl'] ?? '',
         level: stats?['level'] ?? 1,
-        // Streak hardcoded to 0 for now as requested
-        streak: stats?['streak']?.toString() ?? '0d',
-        // Coins hardcoded to 0 for now as requested
+        streak: () {
+          final s = stats?['streak'];
+          if (s is num) return '${s.toInt()}d';
+          final str = s?.toString().trim() ?? '0d';
+          return str.endsWith('d') ? str : '${str}d';
+        }(),
         coins: stats?['coins'] ?? 0,
         isRegistrationComplete: isRegComplete,
       );
@@ -197,7 +205,12 @@ class AuthController extends GetxController {
           country: profile['country'],
           avatarUrl: profile['avatarUrl'],
           level: stats['level'] ?? 1,
-          streak: stats['streak']?.toString() ?? '0d',
+          streak: () {
+            final s = stats['streak'];
+            if (s is num) return '${s.toInt()}d';
+            final str = s?.toString().trim() ?? '0d';
+            return str.endsWith('d') ? str : '${str}d';
+          }(),
           coins: stats['coins'] ?? 0,
           isRegistrationComplete: true,
         );

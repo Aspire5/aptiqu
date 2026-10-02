@@ -130,8 +130,15 @@ class UserModel {
       progress: (json['progress'] as num?)?.toDouble() ??
           (json['xp']?['progress'] as num?)?.toDouble() ??
           0.0,
-      // Streak from backend
-      streak: json['streak']?.toString() ?? '0d',
+      // Streak from backend (format as 'Xd' for UI display)
+      streak: () {
+        final val = json['streak'] ?? json['streakCount'];
+        if (val == null) return '0d';
+        if (val is num) return '${val.toInt()}d';
+        final str = val.toString().trim();
+        if (str.isEmpty) return '0d';
+        return str.endsWith('d') ? str : '${str}d';
+      }(),
       // Coins from backend
       coins: json['coins'] ?? 0,
       isRegistrationComplete: json['isRegistrationComplete'] ?? false,

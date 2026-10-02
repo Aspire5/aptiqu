@@ -9,12 +9,26 @@ export class PvpController {
    */
   public static async getMatch(req: AuthenticatedRequest, res: Response) {
     const matchId = req.params.matchId as string;
+    const userId = req.userId;
 
     try {
       const match = await pvpMatchService.getMatchDetails(matchId);
+      const isParticipant = match.players?.some((p: any) => p.userId === userId);
+      if (!isParticipant) {
+        res.status(403).json({
+          success: false,
+          message: 'Access denied: You are not a participant in this match',
+          code: 'FORBIDDEN_MATCH_ACCESS',
+        });
+        return;
+      }
       res.status(200).json({ success: true, data: match });
     } catch (err: any) {
-      res.status(404).json({ success: false, message: err.message || 'Match not found' });
+      res.status(404).json({
+        success: false,
+        message: err.message || 'Match not found',
+        code: 'MATCH_NOT_FOUND',
+      });
     }
   }
 

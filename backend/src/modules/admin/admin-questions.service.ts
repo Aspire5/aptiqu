@@ -371,6 +371,18 @@ export class AdminQuestionsService {
 
     const resolvedDefaultSubtopic = defaultSubtopicId ? subtopicMap.get(defaultSubtopicId.trim()) : null;
 
+    // 2. First pass: parse, validate format, and compute fingerprints
+    interface ValidatedCandidate {
+      index: number;
+      data: any;
+      fingerprint: string;
+      externalKey: string | null;
+    }
+
+    const candidates: ValidatedCandidate[] = [];
+    const seenFingerprintsInBatch = new Set<string>();
+    const seenExternalKeysInBatch = new Set<string>();
+
     for (let i = 0; i < rawQuestions.length; i++) {
       const q = rawQuestions[i];
       try {
@@ -427,23 +439,21 @@ export class AdminQuestionsService {
 
         const fingerprint = FingerprintService.computeFingerprint(prompt, options);
 
-        // Skip if duplicate fingerprint
-        const existing = await prisma.question.findUnique({ where: { fingerprint } });
-        if (existing) {
+        if (seenFingerprintsInBatch.has(fingerprint)) {
           failedCount++;
-          errors.push({ index: i + 1, reason: `Duplicate question skipped: "${prompt.slice(0, 30)}..."` });
+          errors.push({ index: i + 1, reason: `Duplicate question within batch: "${prompt.slice(0, 30)}..."` });
           continue;
         }
 
         const externalKey = q.externalQuestionKey || q.externalKey ? String(q.externalQuestionKey || q.externalKey).trim() : null;
-        if (externalKey) {
-          const existingKey = await prisma.question.findUnique({ where: { externalKey } });
-          if (existingKey) {
-            failedCount++;
-            errors.push({ index: i + 1, reason: `Question with externalKey "${externalKey}" already exists.` });
-            continue;
-          }
+        if (externalKey && seenExternalKeysInBatch.has(externalKey)) {
+          failedCount++;
+          errors.push({ index: i + 1, reason: `Duplicate externalKey within batch: "${externalKey}"` });
+          continue;
         }
+
+        seenFingerprintsInBatch.add(fingerprint);
+        if (externalKey) seenExternalKeysInBatch.add(externalKey);
 
         const pyq = q.pyq ? String(q.pyq).trim() : null;
         const alternativeExplanation = q.alternativeExplanation ? String(q.alternativeExplanation).trim() : null;
@@ -455,7 +465,10 @@ export class AdminQuestionsService {
         const sourceChapter = q.provenance?.chapter || q.sourceChapter ? String(q.provenance?.chapter || q.sourceChapter).trim() : null;
         const sourcePageRange = q.provenance?.pageRange || q.sourcePageRange ? String(q.provenance?.pageRange || q.sourcePageRange).trim() : null;
 
-        await prisma.question.create({
+        candidates.push({
+          index: i + 1,
+          fingerprint,
+          externalKey,
           data: {
             subjectId: subtopic.topic.subjectId,
             topicId: subtopic.topicId,
@@ -472,7 +485,7 @@ export class AdminQuestionsService {
             estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
             calculationMode: (q.calculationMode || 'MENTAL') as CalculationMode,
             sourceType: 'MANUAL',
-            status: q.status || 'REVIEW', // Default is REVIEW (Review Required)
+            status: q.status || 'REVIEW',
             generationMethod: 'AI_EXTRACTED',
             sourceBook,
             sourceEdition,
@@ -485,12 +498,54 @@ export class AdminQuestionsService {
             fingerprint,
           },
         });
-
-        successCount++;
       } catch (err: any) {
         failedCount++;
         errors.push({ index: i + 1, reason: err.message || 'Validation error' });
       }
+    }
+
+    // 3. Batched duplicate check against database
+    const candidateFingerprints = candidates.map((c) => c.fingerprint);
+    const candidateExternalKeys = candidates.map((c) => c.externalKey).filter(Boolean) as string[];
+
+    const [existingFpList, existingKeyList] = await Promise.all([
+      prisma.question.findMany({
+        where: { fingerprint: { in: candidateFingerprints } },
+        select: { fingerprint: true },
+      }),
+      candidateExternalKeys.length > 0
+        ? prisma.question.findMany({
+            where: { externalKey: { in: candidateExternalKeys } },
+            select: { externalKey: true },
+          })
+        : Promise.resolve([]),
+    ]);
+
+    const existingFps = new Set(existingFpList.map((e) => e.fingerprint));
+    const existingKeys = new Set(existingKeyList.map((e) => e.externalKey));
+
+    const recordsToInsert: any[] = [];
+    for (const c of candidates) {
+      if (existingFps.has(c.fingerprint)) {
+        failedCount++;
+        errors.push({ index: c.index, reason: `Question already exists in database (duplicate fingerprint)` });
+        continue;
+      }
+      if (c.externalKey && existingKeys.has(c.externalKey)) {
+        failedCount++;
+        errors.push({ index: c.index, reason: `Question with externalKey "${c.externalKey}" already exists in database.` });
+        continue;
+      }
+      recordsToInsert.push(c.data);
+    }
+
+    // 4. Batch insert all accepted records
+    if (recordsToInsert.length > 0) {
+      await prisma.question.createMany({
+        data: recordsToInsert,
+        skipDuplicates: true,
+      });
+      successCount = recordsToInsert.length;
     }
 
     return {
@@ -498,7 +553,7 @@ export class AdminQuestionsService {
       totalProcessed: rawQuestions.length,
       successCount,
       failedCount,
-      errors: errors.slice(0, 20),
+      errors: errors.slice(0, 50),
     };
   }
 }

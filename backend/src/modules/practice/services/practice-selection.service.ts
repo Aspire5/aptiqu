@@ -2,6 +2,7 @@ import { prisma } from '../../../config/prisma';
 import { INVENTORY_CONFIG } from '../../../config/inventory.config';
 import { questionGenerationService } from '../../ai/services/question-generation.service';
 import { LiveCurriculumService } from '../../curriculum/services/live-curriculum.service';
+import { contentGenQueue } from '../../../queues/content-generation.queue';
 
 export class PracticeSelectionService {
   private static instance: PracticeSelectionService;
@@ -112,35 +113,25 @@ export class PracticeSelectionService {
       orderBy: { createdAt: 'desc' },
     });
 
-    // 6. Trigger AI Generation ONLY if fresh AI candidate inventory is insufficient
+    // 6. If fresh candidate inventory is low, dispatch background BullMQ job (non-blocking)
     if (aiCandidates.length < count) {
-      const shortage = count - aiCandidates.length;
       console.log(
-        `[PracticeSelection] Shortage of AI questions detected (${aiCandidates.length} < ${count}). Triggering on-demand Gemini generation...`
+        `[PracticeSelection] Shortage of questions detected (${aiCandidates.length} < ${count}). Dispatching background BullMQ generation...`
       );
 
-      const batchUnit = INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT;
-      const batchesNeeded = Math.min(Math.ceil(shortage / batchUnit), 2);
-      const selectedTargets = subtopicIds.slice(0, batchesNeeded);
-
-      const genResults = await Promise.allSettled(
-        selectedTargets.map((targetId) =>
-          questionGenerationService.generateQuestionsForSubtopic(targetId, batchUnit)
-        )
-      );
-
-      for (const res of genResults) {
-        if (res.status === 'fulfilled') {
-          for (const g of res.value) {
-            if (!aiCandidates.some((c) => c.id === g.id)) {
-              aiCandidates.push(g);
-            }
-          }
-        }
+      // Trigger background replenishment for requested subtopics
+      for (const targetId of subtopicIds) {
+        contentGenQueue.add('generate-subtopic-questions', { subtopicId: targetId }, {
+          jobId: `subtopic:${targetId}`,
+          removeOnComplete: true,
+        }).catch((err) => {
+          console.warn(`[PracticeSelection] Failed to enqueue background generation for subtopic ${targetId}:`, err);
+        });
       }
     }
 
-    // 7. Safety fallback: If still less than count, reuse least recently seen questions from DB
+    // 7. Safety fallback: If still less than count, reuse least recently updated published questions for the SAME subtopics
+    // STRICT RULE: Do NOT introduce adjacent subtopic questions. Preserve selected subtopic semantics.
     if (aiCandidates.length < count) {
       const fallbackQuestions = await prisma.question.findMany({
         where: {
@@ -152,6 +143,16 @@ export class PracticeSelectionService {
         orderBy: { updatedAt: 'asc' },
       });
       aiCandidates.push(...fallbackQuestions);
+    }
+
+    // 8. If zero valid questions exist for this subtopic, return clean preparation state
+    if (aiCandidates.length === 0) {
+      const err: any = new Error(
+        'Practice questions for this subtopic are currently being prepared. Please check back shortly.'
+      );
+      err.statusCode = 422;
+      err.code = 'QUESTIONS_BEING_PREPARED';
+      throw err;
     }
 
     return aiCandidates.slice(0, count).sort(() => 0.5 - Math.random());

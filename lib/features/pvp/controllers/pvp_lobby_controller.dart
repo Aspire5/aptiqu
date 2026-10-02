@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/network/dio_client.dart';
 import '../../../core/routing/app_router.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../practice/models/practice_models.dart';
 import '../../practice/controllers/practice_session_controller.dart';
-import '../../practice/views/practice_session_screen.dart';
 import '../models/pvp_history_model.dart';
 import '../services/pvp_socket_service.dart';
-import '../views/pvp_arena_screen.dart';
 
 class PvpLobbyController extends GetxController {
   final PvpSocketService _socketService = PvpSocketService();
@@ -59,24 +58,14 @@ class PvpLobbyController extends GetxController {
             final players = (data['players'] as List<dynamic>?) ?? [];
             final totalQ = data['totalQuestions'] as int? ?? 10;
 
-            final nav = AppRouter.navigatorKey.currentState;
-            if (nav != null) {
-              nav.push(
-                MaterialPageRoute(
-                  builder: (_) => PvpArenaScreen(
-                    matchId: matchId,
-                    initialPlayersData: players,
-                    totalQuestions: totalQ,
-                  ),
-                ),
-              );
-            } else {
-              Get.to(() => PvpArenaScreen(
-                    matchId: matchId,
-                    initialPlayersData: players,
-                    totalQuestions: totalQ,
-                  ));
-            }
+            AppRouter.router.push(
+              AppRoutes.pvpArena,
+              extra: {
+                'matchId': matchId,
+                'initialPlayersData': players,
+                'totalQuestions': totalQ,
+              },
+            );
           } catch (e) {
             debugPrint('[PvP Lobby] Navigation error on MATCH_FOUND: $e');
             _showMessage('Arena Error', 'Failed to open PvP Arena: $e', isError: true);
@@ -180,16 +169,10 @@ class PvpLobbyController extends GetxController {
           Get.delete<PracticeSessionController>();
         }
 
-        final nav = AppRouter.navigatorKey.currentState;
-        if (nav != null) {
-          nav.push(
-            MaterialPageRoute(
-              builder: (_) => PracticeSessionScreen(initialSession: session),
-            ),
-          );
-        } else {
-          Get.to(() => PracticeSessionScreen(initialSession: session));
-        }
+        AppRouter.router.push(
+          AppRoutes.practiceSession,
+          extra: session,
+        );
       } else {
         throw Exception(res.data['message'] ?? 'Failed to replay match');
       }

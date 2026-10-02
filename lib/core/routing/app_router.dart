@@ -9,6 +9,9 @@ import '../../features/lesson/views/lesson_feed_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/daily_challenge/presentation/screens/daily_streak_hub_screen.dart';
 import '../../features/daily_challenge/presentation/screens/daily_challenge_quiz_screen.dart';
+import '../../features/practice/models/practice_models.dart';
+import '../../features/practice/views/practice_session_screen.dart';
+import '../../features/pvp/views/pvp_arena_screen.dart';
 import 'app_routes.dart';
 
 /// Centralized GoRouter with Auth & Onboarding Guards
@@ -103,6 +106,26 @@ class AppRouter {
         builder: (context, state) => LessonFeedScreen(
           roadmapStepId: state.pathParameters['stepId'],
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.practiceSession,
+        name: 'practiceSession',
+        builder: (context, state) {
+          final session = state.extra as PracticeSessionModel;
+          return PracticeSessionScreen(initialSession: session);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.pvpArena,
+        name: 'pvpArena',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return PvpArenaScreen(
+            matchId: extra['matchId'] as String,
+            initialPlayersData: extra['initialPlayersData'] as List<dynamic>,
+            totalQuestions: extra['totalQuestions'] as int,
+          );
+        },
       ),
     ],
   );

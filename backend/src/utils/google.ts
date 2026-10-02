@@ -18,20 +18,6 @@ export interface GoogleUserPayload {
  * Verifies a Google ID Token received from mobile / web Google Sign-In.
  */
 export async function verifyGoogleToken(idToken: string): Promise<GoogleUserPayload> {
-  // Development / Test sandbox bypass
-  if (idToken.startsWith('mock_test_token_')) {
-    const parts = idToken.split('_');
-    const mockEmail = parts[3] ? `${parts[3]}@gmail.com` : 'demo.user@gmail.com';
-    return {
-      googleId: `google_mock_${Date.now()}`,
-      email: mockEmail,
-      firstName: 'Demo',
-      lastName: 'User',
-      avatarUrl:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-    };
-  }
-
   const validAudiences = [
     ENV.GOOGLE_WEB_CLIENT_ID,
     ENV.GOOGLE_ANDROID_CLIENT_ID,

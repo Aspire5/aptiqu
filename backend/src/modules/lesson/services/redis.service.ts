@@ -23,8 +23,8 @@ export class RedisService {
       this.client = new Redis(ENV.REDIS_URL, {
         maxRetriesPerRequest: 1,
         enableOfflineQueue: false,
-        connectTimeout: 1500,
-        retryStrategy: () => null, // Do not spam reconnects if not running
+        connectTimeout: 2000,
+        retryStrategy: (times) => Math.min(times * 100, 3000),
       });
 
       this.client.on('connect', () => {
@@ -37,6 +37,14 @@ export class RedisService {
     } catch {
       this.isConnected = false;
     }
+  }
+
+  public getClient(): Redis | null {
+    return this.client;
+  }
+
+  public getIsConnected(): boolean {
+    return this.isConnected;
   }
 
   public async get(key: string): Promise<string | null> {
@@ -76,21 +84,37 @@ export class RedisService {
   }
 
   public async setNx(key: string, value: string, ttlMs: number): Promise<boolean> {
+    return this.setNxToken(key, value, ttlMs);
+  }
+
+  /**
+   * Distributed lock acquisition with unique token.
+   * If Redis is disconnected, fails fast (returns false) to prevent uncoordinated local lock state.
+   */
+  public async setNxToken(key: string, token: string, ttlMs: number): Promise<boolean> {
     if (this.isConnected && this.client) {
       try {
-        const res = await this.client.set(key, value, 'PX', ttlMs, 'NX');
+        const res = await this.client.set(key, token, 'PX', ttlMs, 'NX');
         return res === 'OK';
       } catch {
-        // Fallback to memory
+        return false;
       }
     }
+    return false;
+  }
 
-    const item = this.memoryFallback.get(key);
-    if (item && (item.expiresAt === 0 || item.expiresAt > Date.now())) {
-      return false; // Already locked
+  /**
+   * Executes a Lua script atomically against Redis.
+   */
+  public async evalLua(script: string, keys: string[], args: string[]): Promise<any> {
+    if (this.isConnected && this.client) {
+      try {
+        return await this.client.eval(script, keys.length, ...keys, ...args);
+      } catch {
+        return null;
+      }
     }
-    this.memoryFallback.set(key, { value, expiresAt: Date.now() + ttlMs });
-    return true;
+    return null;
   }
 
   public async del(key: string): Promise<void> {

@@ -71,11 +71,11 @@ export const api = {
   linkTopic: (subjectId: string, topicId: string) =>
     apiClient.post(`/syllabus/subjects/${subjectId}/link-topic`, { topicId }),
   unlinkTopic: (subjectId: string, topicId: string) =>
-    apiClient.delete(`/syllabus/subjects/${subjectId}/link-topic/${topicId}`),
+    apiClient.delete(`/syllabus/subjects/${subjectId}/topics/${topicId}/unlink`),
   linkSubtopic: (topicId: string, subtopicId: string) =>
     apiClient.post(`/syllabus/topics/${topicId}/link-subtopic`, { subtopicId }),
   unlinkSubtopic: (topicId: string, subtopicId: string) =>
-    apiClient.delete(`/syllabus/topics/${topicId}/link-subtopic/${subtopicId}`),
+    apiClient.delete(`/syllabus/topics/${topicId}/subtopics/${subtopicId}/unlink`),
   getAvailableTopics: () => apiClient.get('/syllabus/available-topics'),
   getAvailableSubtopics: () => apiClient.get('/syllabus/available-subtopics'),
 

@@ -57,6 +57,18 @@ export function createApp(): Application {
     res.status(404).json({
       success: false,
       message: 'API route not found',
+      code: 'NOT_FOUND',
+    });
+  });
+
+  // Global Error Handler
+  app.use((err: any, _req: Request, res: Response, _next: express.NextFunction) => {
+    console.error('[UNHANDLED_ERROR]', err);
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({
+      success: false,
+      message: err.message || 'Internal server error',
+      code: err.code || 'INTERNAL_SERVER_ERROR',
     });
   });
 

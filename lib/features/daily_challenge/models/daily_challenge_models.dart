@@ -160,8 +160,8 @@ class DailyChallengeQuestionModel {
       method: qMap['method']?.toString(),
       pyq: qMap['pyq']?.toString(),
       alternativeExplanation: qMap['alternativeExplanation']?.toString(),
-      preferredSolution: qMap['preferredSolution']?.toString(),
-      preferredReason: qMap['preferredReason']?.toString(),
+      preferredSolution: (qMap['preferredSolution'] ?? json['preferredSolution'])?.toString(),
+      preferredReason: (qMap['preferredReason'] ?? json['preferredReason'])?.toString(),
     );
   }
 }

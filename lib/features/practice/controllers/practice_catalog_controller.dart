@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/practice_models.dart';
 import '../repositories/practice_repository.dart';
-import '../views/practice_session_screen.dart';
 import '../../../core/routing/app_router.dart';
+import '../../../core/routing/app_routes.dart';
 import 'practice_session_controller.dart';
 
 enum PracticeSelectionMode {
@@ -235,18 +235,12 @@ class PracticeCatalogController extends GetxController {
         Get.delete<PracticeSessionController>();
       }
 
-      // Navigate to the practice session screen using the AppRouter Navigator
-      debugPrint('[Practice] Navigating to PracticeSessionScreen...');
-      final nav = AppRouter.navigatorKey.currentState;
-      if (nav != null) {
-        nav.push(
-          MaterialPageRoute(
-            builder: (_) => PracticeSessionScreen(initialSession: session),
-          ),
-        );
-      } else {
-        Get.to(() => PracticeSessionScreen(initialSession: session));
-      }
+      // Navigate to the practice session screen using GoRouter
+      debugPrint('[Practice] Navigating to PracticeSessionScreen via GoRouter...');
+      AppRouter.router.push(
+        AppRoutes.practiceSession,
+        extra: session,
+      );
     } catch (err, stack) {
       debugPrint('[Practice] startPracticeSession failed: $err\n$stack');
       _showNotice('Session Failed', err.toString().replaceAll('Exception: ', ''), isError: true);
@@ -281,16 +275,10 @@ class PracticeCatalogController extends GetxController {
         Get.delete<PracticeSessionController>();
       }
 
-      final nav = AppRouter.navigatorKey.currentState;
-      if (nav != null) {
-        nav.push(
-          MaterialPageRoute(
-            builder: (_) => PracticeSessionScreen(initialSession: session),
-          ),
-        );
-      } else {
-        Get.to(() => PracticeSessionScreen(initialSession: session));
-      }
+      AppRouter.router.push(
+        AppRoutes.practiceSession,
+        extra: session,
+      );
     } catch (e) {
       _showNotice('Replay Failed', e.toString().replaceAll('Exception: ', ''), isError: true);
     } finally {

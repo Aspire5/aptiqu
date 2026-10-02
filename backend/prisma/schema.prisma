@@ -56,6 +56,8 @@ model RefreshToken {
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([expiresAt])
   @@map("refresh_tokens")
   @@schema("auth")
 }
@@ -93,6 +95,8 @@ model GameStats {
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([streak])
+  @@index([lastDailyDate])
   @@map("stats")
   @@schema("gamification")
 }
@@ -535,6 +539,7 @@ model PracticeSessionQuestion {
 
   @@unique([sessionId, sequence])
   @@index([sessionId, isAnswered])
+  @@index([questionId])
   @@map("practice_session_questions")
   @@schema("learning")
 }
@@ -595,6 +600,7 @@ model PvpQuestionSetQuestion {
   question   Question       @relation(fields: [questionId], references: [id], onDelete: Restrict)
 
   @@unique([setId, sequence])
+  @@index([questionId])
   @@map("pvp_question_set_questions")
   @@schema("learning")
 }
@@ -663,6 +669,8 @@ model PvpMatchAnswer {
 
   @@unique([matchId, userId, questionIndex])
   @@index([matchId, questionIndex])
+  @@index([questionId])
+  @@index([userId, isCorrect])
   @@map("pvp_match_answers")
   @@schema("learning")
 }
@@ -988,6 +996,7 @@ model DailyChallengeAnswer {
   question      Question                    @relation(fields: [questionId], references: [id], onDelete: Restrict)
 
   @@unique([participationId, sequence])
+  @@index([questionId])
   @@map("daily_challenge_answers")
   @@schema("learning")
 }

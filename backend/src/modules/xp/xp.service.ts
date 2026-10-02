@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../config/prisma';
 import { XpPolicy } from './xp.policy';
 import {
@@ -51,7 +52,7 @@ export class XpService {
   /**
    * Atomically awards XP to a user with strict idempotency and concurrency protection.
    */
-  public async awardXp(input: AwardXpInput): Promise<AwardXpResult> {
+  public async awardXp(input: AwardXpInput, txClient?: Prisma.TransactionClient): Promise<AwardXpResult> {
     const {
       userId,
       amount,
@@ -70,8 +71,7 @@ export class XpService {
 
     const numericAmount = Math.max(0, typeof amount === 'bigint' ? Number(amount) : amount);
 
-    try {
-      return await prisma.$transaction(async (tx) => {
+    const executeAward = async (tx: Prisma.TransactionClient): Promise<AwardXpResult> => {
         // 1. Check if an XP event with this idempotency key already exists
         const existingEvent = await tx.xpEvent.findUnique({
           where: { idempotencyKey },
@@ -203,6 +203,14 @@ export class XpService {
             levelsGained,
           },
         };
+      };
+
+    try {
+      if (txClient) {
+        return await executeAward(txClient);
+      }
+      return await prisma.$transaction(async (tx) => {
+        return await executeAward(tx);
       });
     } catch (err: any) {
       if (err?.code === 'P2002') {

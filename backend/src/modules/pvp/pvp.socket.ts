@@ -3,6 +3,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { verifyAccessToken } from '../../utils/jwt';
 import { pvpMatchService } from './services/pvp-match.service';
 import { TIME_CONFIG } from '../../config/inventory.config';
+import { redisService } from '../lesson/services/redis.service';
 
 interface ClientSocket extends WebSocket {
   userId?: string;
@@ -37,18 +38,24 @@ export class PvpSocketServer {
     this.wss.on('connection', (ws: ClientSocket, req) => {
       ws.isAlive = true;
 
-      // Extract and verify JWT token from query string (?token=...)
+      let authTimeout: NodeJS.Timeout | null = null;
+
+      // Extract and verify JWT token from query string (?token=...) if provided
       try {
         const url = new URL(req.url || '', `http://${req.headers.host}`);
         const token = url.searchParams.get('token');
-        if (!token) {
-          ws.close(4001, 'Authentication token required');
-          return;
+        if (token) {
+          const payload = verifyAccessToken(token);
+          ws.userId = payload.userId;
+          this.userSockets.set(payload.userId, ws);
+        } else {
+          // Allow up to 3 seconds for client to send AUTH_INIT message frame
+          authTimeout = setTimeout(() => {
+            if (!ws.userId) {
+              ws.close(4001, 'Authentication timeout: AUTH_INIT frame required within 3s');
+            }
+          }, 3000);
         }
-
-        const payload = verifyAccessToken(token);
-        ws.userId = payload.userId;
-        this.userSockets.set(payload.userId, ws);
       } catch {
         ws.close(4003, 'Invalid or expired authentication token');
         return;
@@ -61,6 +68,32 @@ export class PvpSocketServer {
       ws.on('message', async (data) => {
         try {
           const message = JSON.parse(data.toString());
+
+          // Handle AUTH_INIT handshake frame
+          if (message.type === 'AUTH_INIT') {
+            if (authTimeout) clearTimeout(authTimeout);
+            const token = message.payload?.token;
+            if (!token) {
+              ws.close(4001, 'Authentication token required in AUTH_INIT');
+              return;
+            }
+            try {
+              const payload = verifyAccessToken(token);
+              ws.userId = payload.userId;
+              this.userSockets.set(payload.userId, ws);
+              this.send(ws, 'AUTH_SUCCESS', { userId: payload.userId });
+              return;
+            } catch {
+              ws.close(4003, 'Invalid or expired authentication token');
+              return;
+            }
+          }
+
+          if (!ws.userId) {
+            this.send(ws, 'ERROR', { message: 'Authentication required', code: 'UNAUTHORIZED' });
+            return;
+          }
+
           await this.handleMessage(ws, message);
         } catch (err: any) {
           this.send(ws, 'ERROR', { message: err.message || 'Invalid message payload' });
@@ -68,8 +101,13 @@ export class PvpSocketServer {
       });
 
       ws.on('close', () => {
+        if (authTimeout) clearTimeout(authTimeout);
         if (ws.userId) {
           this.userSockets.delete(ws.userId);
+          const redis = redisService.getClient();
+          if (redis && redisService.getIsConnected()) {
+            redis.zrem('pvp:matchmaking', ws.userId).catch(() => {});
+          }
           // Remove from matchmaking queue if present
           this.matchmakingQueue = this.matchmakingQueue.filter((m) => m.userId !== ws.userId);
 
@@ -118,26 +156,33 @@ export class PvpSocketServer {
 
     switch (type) {
       case 'JOIN_MATCHMAKING': {
-        // Purge dead or disconnected sockets
-        this.matchmakingQueue = this.matchmakingQueue.filter(
-          (m) => m.ws && m.ws.readyState === WebSocket.OPEN
-        );
-
-        const existingIdx = this.matchmakingQueue.findIndex((m) => m.userId === userId);
-        if (existingIdx >= 0) {
-          this.matchmakingQueue[existingIdx] = { userId, ws };
-          this.send(ws, 'QUEUE_STATUS', { status: 'WAITING_FOR_OPPONENT' });
-          this.tryPairPlayers();
-          return;
+        this.userSockets.set(userId, ws);
+        const redis = redisService.getClient();
+        if (redis && redisService.getIsConnected()) {
+          await redis.zadd('pvp:matchmaking', Date.now(), userId);
+        } else {
+          // Local fallback
+          this.matchmakingQueue = this.matchmakingQueue.filter(
+            (m) => m.ws && m.ws.readyState === WebSocket.OPEN
+          );
+          const existingIdx = this.matchmakingQueue.findIndex((m) => m.userId === userId);
+          if (existingIdx >= 0) {
+            this.matchmakingQueue[existingIdx] = { userId, ws };
+          } else {
+            this.matchmakingQueue.push({ userId, ws });
+          }
         }
 
-        this.matchmakingQueue.push({ userId, ws });
         this.send(ws, 'QUEUE_STATUS', { status: 'WAITING_FOR_OPPONENT' });
         this.tryPairPlayers();
         break;
       }
 
       case 'LEAVE_MATCHMAKING': {
+        const redis = redisService.getClient();
+        if (redis && redisService.getIsConnected()) {
+          await redis.zrem('pvp:matchmaking', userId);
+        }
         this.matchmakingQueue = this.matchmakingQueue.filter((m) => m.userId !== userId);
         this.send(ws, 'QUEUE_STATUS', { status: 'LEFT_QUEUE' });
         break;
@@ -216,25 +261,49 @@ export class PvpSocketServer {
    * Pairs two players in the matchmaking queue and launches their match.
    */
   private async tryPairPlayers() {
-    // Filter out closed or terminated sockets
-    this.matchmakingQueue = this.matchmakingQueue.filter(
-      (m) => m.ws && m.ws.readyState === WebSocket.OPEN
-    );
+    let player1Id: string | null = null;
+    let player2Id: string | null = null;
 
-    if (this.matchmakingQueue.length < 2) return;
+    const redis = redisService.getClient();
+    if (redis && redisService.getIsConnected()) {
+      const lua = `
+        local players = redis.call('zrange', KEYS[1], 0, 1)
+        if #players == 2 then
+          redis.call('zrem', KEYS[1], players[1], players[2])
+          return players
+        else
+          return {}
+        end
+      `;
+      const result = await redis.eval(lua, 1, 'pvp:matchmaking') as string[];
+      if (Array.isArray(result) && result.length === 2) {
+        player1Id = result[0];
+        player2Id = result[1];
+      }
+    } else {
+      this.matchmakingQueue = this.matchmakingQueue.filter(
+        (m) => m.ws && m.ws.readyState === WebSocket.OPEN
+      );
+      if (this.matchmakingQueue.length >= 2) {
+        player1Id = this.matchmakingQueue.shift()!.userId;
+        player2Id = this.matchmakingQueue.shift()!.userId;
+      }
+    }
 
-    const player1 = this.matchmakingQueue.shift()!;
-    const player2 = this.matchmakingQueue.shift()!;
+    if (!player1Id || !player2Id) return;
 
     try {
-      const match = await pvpMatchService.createMatch(player1.userId, player2.userId);
+      const match = await pvpMatchService.createMatch(player1Id, player2Id);
 
-      player1.ws.matchId = match.id;
-      player2.ws.matchId = match.id;
+      const ws1 = this.userSockets.get(player1Id);
+      const ws2 = this.userSockets.get(player2Id);
+
+      if (ws1) ws1.matchId = match.id;
+      if (ws2) ws2.matchId = match.id;
 
       this.activeMatches.set(match.id, {
         matchId: match.id,
-        players: [player1.userId, player2.userId],
+        players: [player1Id, player2Id],
         currentQuestionIndex: 0,
       });
 
@@ -254,8 +323,10 @@ export class PvpSocketServer {
         this.startQuestionRound(match.id, 0);
       }, 3000);
     } catch (err: any) {
-      this.send(player1.ws, 'ERROR', { message: 'Failed to initialize match: ' + err.message });
-      this.send(player2.ws, 'ERROR', { message: 'Failed to initialize match: ' + err.message });
+      const ws1 = this.userSockets.get(player1Id);
+      const ws2 = this.userSockets.get(player2Id);
+      if (ws1) this.send(ws1, 'ERROR', { message: 'Failed to initialize match: ' + err.message });
+      if (ws2) this.send(ws2, 'ERROR', { message: 'Failed to initialize match: ' + err.message });
     }
   }
 

@@ -10,4 +10,6 @@ class AppRoutes {
   static const String dailyChallengeQuiz = '/daily-challenge-quiz';
   static const String lesson = '/lesson/:slug';
   static const String lessonStep = '/lesson-step/:stepId';
+  static const String practiceSession = '/practice-session';
+  static const String pvpArena = '/pvp-arena';
 }

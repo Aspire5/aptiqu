@@ -1,6 +1,7 @@
 import { prisma } from '../../config/prisma';
 import { dailyChallengeGenerationService } from '../ai/services/daily-challenge-generation.service';
 import { XpService } from '../xp/xp.service';
+import { contentGenQueue } from '../../queues/content-generation.queue';
 
 export interface TierInfo {
   tier: number;
@@ -367,11 +368,38 @@ export class DailyChallengeService {
     }
 
     if (!participation) {
-      // 1. Lazy generate or fetch today's tier script
-      const script = await dailyChallengeGenerationService.getOrGenerateDailyScript(
-        sync.todayDate,
-        sync.tierInfo.tier
-      );
+      // 1. Fetch today's pre-warmed tier script from DB (never block user HTTP request on Gemini)
+      const script = await prisma.dailyChallengeScript.findUnique({
+        where: {
+          dateString_tier: {
+            dateString: sync.todayDate,
+            tier: sync.tierInfo.tier,
+          },
+        },
+        include: {
+          questions: {
+            include: { question: true },
+            orderBy: { sequence: 'asc' },
+          },
+        },
+      });
+
+      if (!script) {
+        // Enqueue emergency background generation without blocking user HTTP request
+        contentGenQueue.add('prewarm-daily-challenge', { targetDate: sync.todayDate }, {
+          jobId: `emergency:daily:${sync.todayDate}`,
+          removeOnComplete: true,
+        }).catch((err) => {
+          console.warn('[DailyChallenge] Failed to enqueue emergency prewarm job:', err);
+        });
+
+        const err: any = new Error(
+          "Today's Daily Challenge is currently being prepared. Please check back in a few minutes."
+        );
+        err.statusCode = 503;
+        err.code = 'DAILY_CHALLENGE_PREPARING';
+        throw err;
+      }
 
       // 2. Create participation record
       participation = await prisma.dailyChallengeParticipation.create({
@@ -563,15 +591,18 @@ export class DailyChallengeService {
             },
           });
 
-          // Award XP authoritatively
-          await XpService.getInstance().awardXp({
-            userId,
-            amount: totalXp,
-            sourceType: 'DAILY_CHALLENGE',
-            sourceId: participation.id,
-            idempotencyKey: `daily:challenge:${participation.id}`,
-            description: `Completed Day ${newStreak} Daily Streak Challenge`,
-          });
+          // Award XP authoritatively within parent transaction
+          await XpService.getInstance().awardXp(
+            {
+              userId,
+              amount: totalXp,
+              sourceType: 'DAILY_CHALLENGE',
+              sourceId: participation.id,
+              idempotencyKey: `daily:challenge:${participation.id}`,
+              description: `Completed Day ${newStreak} Daily Streak Challenge`,
+            },
+            tx
+          );
 
           // Update participation
           await tx.dailyChallengeParticipation.update({

@@ -33,12 +33,15 @@ class PvpSocketService {
         .replaceFirst('http://', 'ws://')
         .replaceFirst('/api/v1', '');
 
-    final wsUri = Uri.parse('$wsBase/ws/pvp?token=$token');
+    final wsUri = Uri.parse('$wsBase/ws/pvp');
     debugPrint('[PvP Socket] Connecting to: $wsUri');
 
     try {
       _channel = WebSocketChannel.connect(wsUri);
       isConnected = true;
+
+      // Send initial authentication handshake frame
+      send('AUTH_INIT', {'token': token});
 
       _channel!.stream.listen(
         (data) {

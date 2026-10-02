@@ -110,18 +110,7 @@ class QuestionData {
     this.hasEvaluated = false,
     this.isUserCorrect,
     this.correctOptionId,
-  }) : xp = xp ?? calculateQuestionXp(questionType, difficultyLevel);
-
-  static int calculateQuestionXp(
-    QuestionModeType type,
-    QuestionDifficultyLevel diff,
-  ) {
-    final typeXp = type == QuestionModeType.ranked ? 10 : 5;
-    final diffXp = diff == QuestionDifficultyLevel.hard
-        ? 15
-        : (diff == QuestionDifficultyLevel.medium ? 10 : 5);
-    return typeXp + diffXp;
-  }
+  }) : xp = xp ?? 0;
 }
 
 class ChatMessageModel {
@@ -194,7 +183,7 @@ class HomeController extends GetxController {
 
   // Active Lesson Session State in the Home Playground
   final Rxn<LessonSessionModel> currentSession = Rxn<LessonSessionModel>();
-  final RxString activeRoadmapStepId = 'ga-qa-01'.obs;
+  final RxString activeRoadmapStepId = ''.obs;
   final RxString activeScriptTitle = ''.obs;
   final RxInt activeScriptSequence = 1.obs;
   final RxBool isLessonActive = false.obs;
@@ -275,7 +264,12 @@ class HomeController extends GetxController {
         final availableTopic = map.topics.firstWhereOrNull(
           (t) => t.isAvailable || t.isInProgress,
         );
-        final stepId = availableTopic?.roadmapStepId ?? 'ga-qa-01';
+        final stepId = availableTopic?.roadmapStepId;
+        if (stepId == null) {
+          roadmapError.value = 'No lessons available for this topic yet.';
+          activeRoadmapStepId.value = '';
+          return;
+        }
         activeRoadmapStepId.value = stepId;
 
         await loadLessonState(stepId);

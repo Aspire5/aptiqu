@@ -91,37 +91,60 @@ export class PvpMatchService {
    * Selects a published PvP set, preferring one unseen by both players.
    */
   private async selectPvPSetForPlayers(player1Id: string, player2Id: string) {
-    const publishedSets = await prisma.pvpQuestionSet.findMany({
-      where: { status: 'PUBLISHED' },
+    // 1. Prefer set unseen by both players
+    const unseenBoth = await prisma.$queryRaw<Array<{ id: string }>>`
+      SELECT qs.id FROM learning.pvp_question_sets qs
+      WHERE qs.status = 'PUBLISHED'
+        AND NOT EXISTS (
+          SELECT 1 FROM learning.pvp_player_set_history h
+          WHERE h.question_set_id = qs.id AND h.user_id IN (${player1Id}::uuid, ${player2Id}::uuid)
+        )
+      ORDER BY qs.updated_at ASC LIMIT 1;
+    `;
+
+    let selectedSetId = unseenBoth[0]?.id;
+
+    // 2. Fallback: unseen by at least one
+    if (!selectedSetId) {
+      const unseenOne = await prisma.$queryRaw<Array<{ id: string }>>`
+        SELECT qs.id FROM learning.pvp_question_sets qs
+        WHERE qs.status = 'PUBLISHED'
+          AND (
+            NOT EXISTS (
+              SELECT 1 FROM learning.pvp_player_set_history h
+              WHERE h.question_set_id = qs.id AND h.user_id = ${player1Id}::uuid
+            )
+            OR NOT EXISTS (
+              SELECT 1 FROM learning.pvp_player_set_history h
+              WHERE h.question_set_id = qs.id AND h.user_id = ${player2Id}::uuid
+            )
+          )
+        ORDER BY qs.updated_at ASC LIMIT 1;
+      `;
+      selectedSetId = unseenOne[0]?.id;
+    }
+
+    // 3. Fallback: least recently used published set
+    if (!selectedSetId) {
+      const lru = await prisma.$queryRaw<Array<{ id: string }>>`
+        SELECT qs.id FROM learning.pvp_question_sets qs
+        WHERE qs.status = 'PUBLISHED'
+        ORDER BY qs.updated_at ASC LIMIT 1;
+      `;
+      selectedSetId = lru[0]?.id;
+    }
+
+    if (!selectedSetId) return null;
+
+    return await prisma.pvpQuestionSet.findUnique({
+      where: { id: selectedSetId },
       include: {
-        playerHistory: true,
         setQuestions: {
           include: { question: true },
           orderBy: { sequence: 'asc' },
         },
       },
     });
-
-    if (publishedSets.length === 0) return null;
-
-    // Filter unseen by both
-    const unseenByBoth = publishedSets.filter((s) => {
-      const playedUsers = new Set(s.playerHistory.map((h) => h.userId));
-      return !playedUsers.has(player1Id) && !playedUsers.has(player2Id);
-    });
-
-    if (unseenByBoth.length > 0) return unseenByBoth[0];
-
-    // Filter unseen by at least one
-    const unseenByOne = publishedSets.filter((s) => {
-      const playedUsers = new Set(s.playerHistory.map((h) => h.userId));
-      return !playedUsers.has(player1Id) || !playedUsers.has(player2Id);
-    });
-
-    if (unseenByOne.length > 0) return unseenByOne[0];
-
-    // Fallback: least recently used
-    return publishedSets.sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime())[0];
   }
 
   /**

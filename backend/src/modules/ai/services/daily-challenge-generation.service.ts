@@ -47,8 +47,8 @@ export class DailyChallengeGenerationService {
 
     // 2. Lock to prevent multiple concurrent generations for the same date & tier
     const lockKey = `DAILY_CHALLENGE_GEN_${dateString}_${tier}`;
-    const lockAcquired = await ConcurrencyLockService.acquireLock(lockKey, 75000);
-    if (!lockAcquired) {
+    const lockToken = await ConcurrencyLockService.acquireLock(lockKey, 75000);
+    if (!lockToken) {
       // Wait for the other process to finish generating
       await ConcurrencyLockService.waitForCondition(async () => {
         const found = await prisma.dailyChallengeScript.findUnique({
@@ -180,7 +180,7 @@ export class DailyChallengeGenerationService {
         });
       });
     } finally {
-      await ConcurrencyLockService.releaseLock(lockKey);
+      await ConcurrencyLockService.releaseLock(lockKey, lockToken);
     }
   }
 
@@ -287,6 +287,21 @@ export class DailyChallengeGenerationService {
       method,
       explanation,
     };
+  }
+
+  /**
+   * Pre-generates daily challenge scripts for all 3 tiers ahead of time (e.g. at 23:00 IST)
+   */
+  public async prewarmDailyChallengeScripts(dateString: string): Promise<void> {
+    const tiers = [1, 2, 3];
+    for (const tier of tiers) {
+      try {
+        await this.getOrGenerateDailyScript(dateString, tier);
+        console.log(`[Prewarm] Successfully pre-warmed Daily Challenge for ${dateString} Tier ${tier}`);
+      } catch (err) {
+        console.error(`[Prewarm] Error pre-warming Daily Challenge for ${dateString} Tier ${tier}:`, err);
+      }
+    }
   }
 }
 

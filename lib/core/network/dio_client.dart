@@ -8,8 +8,11 @@ class DioClient {
   static const String _accessTokenKey = 'aptiqu_access_token';
   static const String _refreshTokenKey = 'aptiqu_refresh_token';
 
-  // Primary backend server URL
-  static const String defaultBaseUrl = 'http://15.252.71.142:5001/api/v1';
+  // Primary backend server URL (Enforce HTTPS with TLS)
+  static const String defaultBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://api.aptiqu.com/api/v1',
+  );
 
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   late final Dio dio;

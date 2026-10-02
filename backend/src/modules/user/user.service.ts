@@ -45,9 +45,9 @@ export class UserService {
       xpRemainingToNextLevel: xpProgress.xpRemainingToNextLevel,
       progress: xpProgress.progress,
       xp: xpProgress,
-      streak: `${streakSync.currentStreak}d`,
+      streak: streakSync.currentStreak,
       streakCount: streakSync.currentStreak,
-      highestStreak: `${streakSync.highestStreak}d`,
+      highestStreak: streakSync.highestStreak,
       coins: streakSync.stats.coins,
       dailyChallengeDue: streakSync.isDue,
       dailyChallengeCompleted: streakSync.isCompletedToday,
@@ -195,71 +195,43 @@ export class UserService {
     // 2. Questions solved by difficulty across ALL banners (scripts, practice, daily challenge, pvp)
     const { map, totals } = await this.getQuestionTotals();
 
-    const [scriptAttempts, practiceAnswers, dailyAnswers, pvpAnswers, userProgress] =
-      await Promise.all([
-        // Banner 1: Interactive scripts
-        prisma.questionAttempt.findMany({
-          where: { userId, isCorrect: true },
-          select: { questionId: true, nodeId: true },
-        }),
-        // Banner 2: Practice Sessions
-        prisma.practiceSessionQuestion.findMany({
-          where: { session: { userId }, isCorrect: true },
-          select: { questionId: true },
-        }),
-        // Banner 3: Daily Challenge
-        prisma.dailyChallengeAnswer.findMany({
-          where: { participation: { userId }, isCorrect: true },
-          select: { questionId: true },
-        }),
-        // Banner 4: Ranked PvP
-        prisma.pvpMatchAnswer.findMany({
-          where: { userId, isCorrect: true },
-          select: { questionId: true },
-        }),
-        // Banner 5: User Question Progress (tracking practice/drills)
-        prisma.userQuestionProgress.findMany({
-          where: { userId, timesCorrect: { gt: 0 } },
-          select: { questionId: true },
-        }),
-      ]);
-
-    const solvedQuestionIds = new Set<string>();
-    const solvedNodeIds = new Set<string>();
-
-    for (const a of scriptAttempts) {
-      if (a.questionId) solvedQuestionIds.add(a.questionId);
-      if (a.nodeId) solvedNodeIds.add(a.nodeId);
-    }
-    for (const a of practiceAnswers) {
-      if (a.questionId) solvedQuestionIds.add(a.questionId);
-    }
-    for (const a of dailyAnswers) {
-      if (a.questionId) solvedQuestionIds.add(a.questionId);
-    }
-    for (const a of pvpAnswers) {
-      if (a.questionId) solvedQuestionIds.add(a.questionId);
-    }
-    for (const a of userProgress) {
-      if (a.questionId) solvedQuestionIds.add(a.questionId);
-    }
+    const [solvedCounts, distinctNodes] = await Promise.all([
+      prisma.$queryRaw<Array<{ difficulty: string; count: number }>>`
+        SELECT q.difficulty::text, COUNT(DISTINCT q.id)::int as count
+        FROM learning.questions q
+        WHERE q.id IN (
+          SELECT question_id FROM learning.question_attempts WHERE user_id = ${userId}::uuid AND is_correct = true AND question_id IS NOT NULL
+          UNION
+          SELECT psq.question_id FROM learning.practice_session_questions psq JOIN learning.practice_sessions ps ON psq.session_id = ps.id WHERE ps.user_id = ${userId}::uuid AND psq.is_correct = true
+          UNION
+          SELECT dca.question_id FROM learning.daily_challenge_answers dca JOIN learning.daily_challenge_participations dcp ON dca.participation_id = dcp.id WHERE dcp.user_id = ${userId}::uuid AND dca.is_correct = true
+          UNION
+          SELECT question_id FROM learning.pvp_match_answers WHERE user_id = ${userId}::uuid AND is_correct = true
+          UNION
+          SELECT question_id FROM learning.user_question_progress WHERE user_id = ${userId}::uuid AND times_correct > 0
+        )
+        GROUP BY q.difficulty;
+      `,
+      prisma.$queryRaw<Array<{ node_id: string }>>`
+        SELECT DISTINCT node_id FROM learning.question_attempts
+        WHERE user_id = ${userId}::uuid AND is_correct = true AND node_id IS NOT NULL;
+      `,
+    ]);
 
     let solvedEasy = 0,
       solvedMedium = 0,
       solvedHard = 0;
 
-    // Count solved DB questions
-    for (const qId of solvedQuestionIds) {
-      const diff = map.get(qId) || 'EASY';
-      if (diff === 'HARD') solvedHard++;
-      else if (diff === 'MEDIUM') solvedMedium++;
-      else solvedEasy++;
+    for (const row of solvedCounts) {
+      if (row.difficulty === 'HARD') solvedHard = Number(row.count);
+      else if (row.difficulty === 'MEDIUM') solvedMedium = Number(row.count);
+      else solvedEasy = Number(row.count);
     }
 
-    // Count solved inline script nodes that aren't already covered by a questionId
-    for (const nodeId of solvedNodeIds) {
-      if (!solvedQuestionIds.has(nodeId) && map.has(nodeId)) {
-        const diff = map.get(nodeId)!;
+    // Count solved inline script nodes that aren't database question records
+    for (const row of distinctNodes) {
+      if (row.node_id && map.has(row.node_id)) {
+        const diff = map.get(row.node_id)!;
         if (diff === 'HARD') solvedHard++;
         else if (diff === 'MEDIUM') solvedMedium++;
         else solvedEasy++;
