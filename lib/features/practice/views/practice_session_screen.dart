@@ -164,6 +164,32 @@ class PracticeSessionScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        if (question.pyq != null && question.pyq!.trim().isNotEmpty) ...[
+                          const SizedBox(height: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFEF3C7),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFFFDE68A)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text('🏛️ ', style: TextStyle(fontSize: 12)),
+                                Flexible(
+                                  child: Text(
+                                    question.pyq!,
+                                    style: AptiquTypography.labelSmall.copyWith(
+                                      color: const Color(0xFF92400E),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 20),
 
                         // 4 Multiple Choice Options
@@ -238,57 +264,10 @@ class PracticeSessionScreen extends StatelessWidget {
                           );
                         }),
 
-                        // Explanation Banner after answer
+                        // Dual Solution Banner after answer
                         if (lastRes != null) ...[
                           const SizedBox(height: 16),
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AptiquColors.surfaceContainerLowest,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      lastRes.isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                                      color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      lastRes.isCorrect ? 'Correct!' : 'Incorrect (Answer: Option ${lastRes.correctAnswer})',
-                                      style: AptiquTypography.titleSmall.copyWith(
-                                        color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (lastRes.method.isNotEmpty) ...[
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Method / Shortcut: ${lastRes.method}',
-                                    style: AptiquTypography.bodySmall.copyWith(
-                                      color: const Color(0xFF38BDF8),
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                                const SizedBox(height: 6),
-                                Text(
-                                  lastRes.explanation,
-                                  style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurfaceVariant),
-                                ),
-                              ],
-                            ),
-                          ),
+                          _buildDualSolutionCard(context, question, lastRes),
                         ],
                       ],
                     ),
@@ -539,6 +518,268 @@ class PracticeSessionScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDualSolutionCard(BuildContext context, PracticeQuestionModel question, PracticeAnswerResultModel lastRes) {
+    final bookExplanation = lastRes.explanation.isNotEmpty ? lastRes.explanation : (question.explanation ?? '');
+    final bookMethod = lastRes.method.isNotEmpty ? lastRes.method : (question.method ?? '');
+    final altExplanation = lastRes.alternativeExplanation ?? question.alternativeExplanation;
+    final preferredSol = lastRes.preferredSolution ?? question.preferredSolution;
+    final preferredReason = lastRes.preferredReason ?? question.preferredReason;
+
+    final hasDualSolutions = altExplanation != null && altExplanation.trim().isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AptiquColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                lastRes.isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                size: 22,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  lastRes.isCorrect ? 'Correct!' : 'Incorrect (Answer: Option ${lastRes.correctAnswer})',
+                  style: AptiquTypography.titleSmall.copyWith(
+                    color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+
+          // Solution 1: Book Method
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AptiquColors.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: preferredSol == 'BOOK' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
+                width: preferredSol == 'BOOK' ? 1.5 : 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '📖 Book Method',
+                      style: AptiquTypography.labelMedium.copyWith(
+                        color: AptiquColors.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (preferredSol == 'BOOK')
+                      InkWell(
+                        onTap: () => _showPreferredReasonBottomSheet(context, 'Book Method', preferredReason),
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
+                              const SizedBox(width: 4),
+                              Text(
+                                'AI Preferred',
+                                style: AptiquTypography.labelSmall.copyWith(
+                                  color: const Color(0xFF10B981),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+                              const Icon(Icons.info_outline, color: Color(0xFF10B981), size: 12),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                if (bookMethod.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    'Formula / Method: $bookMethod',
+                    style: AptiquTypography.bodySmall.copyWith(
+                      color: const Color(0xFF38BDF8),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 6),
+                Text(
+                  bookExplanation.isNotEmpty ? bookExplanation : 'Standard textbook derivation.',
+                  style: AptiquTypography.bodyMedium.copyWith(
+                    color: AptiquColors.onSurfaceVariant,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Solution 2: Alternative Speed Shortcut (if exists)
+          if (hasDualSolutions) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AptiquColors.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: preferredSol == 'ALTERNATIVE' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
+                  width: preferredSol == 'ALTERNATIVE' ? 1.5 : 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '⚡ Alternative Speed Shortcut',
+                        style: AptiquTypography.labelMedium.copyWith(
+                          color: AptiquColors.onSurface,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (preferredSol == 'ALTERNATIVE')
+                        InkWell(
+                          onTap: () => _showPreferredReasonBottomSheet(context, 'Alternative Speed Shortcut', preferredReason),
+                          borderRadius: BorderRadius.circular(6),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'AI Preferred',
+                                  style: AptiquTypography.labelSmall.copyWith(
+                                    color: const Color(0xFF10B981),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                const SizedBox(width: 2),
+                                const Icon(Icons.info_outline, color: Color(0xFF10B981), size: 12),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    altExplanation,
+                    style: AptiquTypography.bodyMedium.copyWith(
+                      color: AptiquColors.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _showPreferredReasonBottomSheet(BuildContext context, String preferredTitle, String? reason) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AptiquColors.surfaceContainerLowest,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AptiquColors.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 22),
+                  const SizedBox(width: 8),
+                  Text(
+                    'AI Preferred: $preferredTitle',
+                    style: AptiquTypography.titleMedium.copyWith(
+                      color: AptiquColors.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                reason != null && reason.trim().isNotEmpty
+                    ? reason
+                    : 'This method is recommended by AptiQu for maximum time efficiency and conceptual clarity under competitive exam constraints.',
+                style: AptiquTypography.bodyMedium.copyWith(
+                  color: AptiquColors.onSurfaceVariant,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AptiquColors.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text('Got it'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

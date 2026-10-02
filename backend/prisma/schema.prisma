@@ -172,6 +172,21 @@ enum QuestionDifficultyEnum {
   @@schema("learning")
 }
 
+enum QuestionGenerationMethod {
+  HUMAN_MANUAL
+  AI_EXTRACTED
+  AI_SYNTHETIC
+
+  @@schema("learning")
+}
+
+enum PreferredSolution {
+  BOOK
+  ALTERNATIVE
+
+  @@schema("learning")
+}
+
 enum CalculationMode {
   MENTAL
   LIGHT_PEN_AND_PAPER
@@ -334,6 +349,19 @@ model Question {
   status                 QuestionStatus         @default(PUBLISHED)
   fingerprint            String                 @unique
 
+  externalKey            String?                @unique @map("external_key")
+
+  generationMethod       QuestionGenerationMethod @default(AI_EXTRACTED) @map("generation_method")
+  sourceBook             String?                @map("source_book")
+  sourceEdition          String?                @map("source_edition")
+  sourceChapter          String?                @map("source_chapter")
+  sourcePageRange        String?                @map("source_page_range")
+
+  pyq                    String?
+  alternativeExplanation String?                @map("alternative_explanation")
+  preferredSolution      PreferredSolution?     @map("preferred_solution")
+  preferredReason        String?                @map("preferred_reason")
+
   generationModel        String?                @map("generation_model")
   generationPromptVersion String?               @map("generation_prompt_version")
   generationJobId        String?                @map("generation_job_id")
@@ -356,9 +384,10 @@ model Question {
   dailyChallengeScriptQuestions DailyChallengeScriptQuestion[]
   dailyChallengeAnswers         DailyChallengeAnswer[]
 
-  @@index([subtopicId, status, difficulty])
-  @@index([topicId, status])
-  @@index([sourceType, status])
+  @@index([subtopicId, sourceType, status, difficulty])
+  @@index([topicId, sourceType, status])
+  @@index([sourceType, status, pyq])
+  @@index([pyq])
   @@map("questions")
   @@schema("learning")
 }
@@ -911,6 +940,7 @@ model DailyChallengeScriptQuestion {
   script   DailyChallengeScript @relation(fields: [scriptId], references: [id], onDelete: Cascade)
   question Question             @relation(fields: [questionId], references: [id], onDelete: Restrict)
 
+  @@unique([questionId])
   @@unique([scriptId, sequence])
   @@map("daily_challenge_script_questions")
   @@schema("learning")

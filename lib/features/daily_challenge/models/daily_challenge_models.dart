@@ -109,6 +109,10 @@ class DailyChallengeQuestionModel {
   final String? correctAnswer;
   final String? explanation;
   final String? method;
+  final String? pyq;
+  final String? alternativeExplanation;
+  final String? preferredSolution;
+  final String? preferredReason;
 
   const DailyChallengeQuestionModel({
     required this.sequence,
@@ -124,6 +128,10 @@ class DailyChallengeQuestionModel {
     this.correctAnswer,
     this.explanation,
     this.method,
+    this.pyq,
+    this.alternativeExplanation,
+    this.preferredSolution,
+    this.preferredReason,
   });
 
   factory DailyChallengeQuestionModel.fromJson(Map<String, dynamic> json) {
@@ -150,6 +158,10 @@ class DailyChallengeQuestionModel {
       correctAnswer: qMap['correctAnswer']?.toString(),
       explanation: qMap['explanation']?.toString(),
       method: qMap['method']?.toString(),
+      pyq: qMap['pyq']?.toString(),
+      alternativeExplanation: qMap['alternativeExplanation']?.toString(),
+      preferredSolution: qMap['preferredSolution']?.toString(),
+      preferredReason: qMap['preferredReason']?.toString(),
     );
   }
 }
@@ -203,6 +215,9 @@ class DailyChallengeAnswerResultModel {
   final String correctAnswer;
   final String explanation;
   final String method;
+  final String? alternativeExplanation;
+  final String? preferredSolution;
+  final String? preferredReason;
   final int sequence;
   final bool isComplete;
   final int answeredCount;
@@ -220,6 +235,9 @@ class DailyChallengeAnswerResultModel {
     required this.correctAnswer,
     required this.explanation,
     required this.method,
+    this.alternativeExplanation,
+    this.preferredSolution,
+    this.preferredReason,
     required this.sequence,
     required this.isComplete,
     required this.answeredCount,
@@ -239,6 +257,9 @@ class DailyChallengeAnswerResultModel {
       correctAnswer: json['correctAnswer']?.toString() ?? '',
       explanation: json['explanation']?.toString() ?? '',
       method: json['method']?.toString() ?? '',
+      alternativeExplanation: json['alternativeExplanation']?.toString(),
+      preferredSolution: json['preferredSolution']?.toString(),
+      preferredReason: json['preferredReason']?.toString(),
       sequence: (json['sequence'] as num?)?.toInt() ?? 1,
       isComplete: json['isComplete'] as bool? ?? false,
       answeredCount: (json['answeredCount'] as num?)?.toInt() ?? 0,

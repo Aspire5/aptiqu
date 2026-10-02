@@ -19,6 +19,12 @@ class QuestionInlineModel {
   final int xp;
   final String difficulty;
   final String questionType;
+  final String? pyq;
+  final String? method;
+  final String? explanation;
+  final String? alternativeExplanation;
+  final String? preferredSolution;
+  final String? preferredReason;
 
   QuestionInlineModel({
     required this.prompt,
@@ -27,6 +33,12 @@ class QuestionInlineModel {
     int? xp,
     this.difficulty = 'EASY',
     this.questionType = 'PRACTICE',
+    this.pyq,
+    this.method,
+    this.explanation,
+    this.alternativeExplanation,
+    this.preferredSolution,
+    this.preferredReason,
   }) : xp = xp ?? calculateQuestionXp(questionType, difficulty);
 
   static int calculateQuestionXp(String type, String difficulty) {
@@ -69,6 +81,12 @@ class QuestionInlineModel {
       xp: computedXp,
       difficulty: diff,
       questionType: qType,
+      pyq: json['pyq']?.toString(),
+      method: json['method']?.toString(),
+      explanation: json['explanation']?.toString(),
+      alternativeExplanation: json['alternativeExplanation']?.toString(),
+      preferredSolution: json['preferredSolution']?.toString(),
+      preferredReason: json['preferredReason']?.toString(),
     );
   }
 }

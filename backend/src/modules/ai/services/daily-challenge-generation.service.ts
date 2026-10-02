@@ -99,7 +99,7 @@ export class DailyChallengeGenerationService {
       if (doubleCheck) return doubleCheck;
 
       // 3. Resolve requirements based on tier
-      const targetDifficulties: ('EASY' | 'MEDIUM' | 'HARD')[] =
+      const targetDifficulties: QuestionDifficultyEnum[] =
         tier === 1
           ? ['EASY']
           : tier === 2
@@ -107,152 +107,46 @@ export class DailyChallengeGenerationService {
           : ['EASY', 'MEDIUM', 'HARD'];
 
       const questionCount = targetDifficulties.length;
+      const selectedQuestions: any[] = [];
 
-      // 4. Fetch Live Curriculum Universe & flatten subtopics
-      const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
-      if (liveUniverse.length === 0) {
-        throw new Error('No live topics or subtopics found in curriculum universe for Daily Challenge.');
-      }
-
-      const allLiveSubtopics = liveUniverse.flatMap((u) =>
-        u.subtopics.map((sub) => ({
-          subtopicId: sub.id,
-          subtopicName: sub.name,
-          subtopicDescription: sub.description,
-          topicId: u.topicId,
-          topicName: u.topicName,
-          subjectId: u.subjectId,
-          subjectName: u.subjectName,
-        }))
-      );
-
-      if (allLiveSubtopics.length === 0) {
-        throw new Error('No live subtopics found in curriculum universe for Daily Challenge.');
-      }
-
-      // Select target subtopics for each question deterministically using dateString hash
-      const dateHash = Math.abs(
-        dateString.split('-').reduce((acc, part) => acc * 31 + parseInt(part, 10), 0)
-      );
-
-      const assignedSubtopics = targetDifficulties.map((_, idx) => {
-        const subIndex = (dateHash + idx * 7) % allLiveSubtopics.length;
-        return allLiveSubtopics[subIndex];
-      });
-
-      // 5. Fetch recent fingerprints to avoid duplication
-      const recentQuestions = await prisma.question.findMany({
-        take: 30,
-        orderBy: { createdAt: 'desc' },
-        select: { fingerprint: true },
-      });
-      const existingFingerprints = recentQuestions.map((q) => q.fingerprint);
-
-      // 6. Formulate AI Generation Prompt strictly linked to active syllabus
-      const generatorPrompt = `
-Generate exactly ${questionCount} brand-new, unseen Aptitude Daily Challenge question(s) for ${dateString} (Tier ${tier}).
-
-CRITICAL REQUIREMENTS:
-Each question MUST be drawn strictly from the specified ACTIVE SYLLABUS topic and subtopic:
-${targetDifficulties
-  .map((diff, idx) => {
-    const targetSub = assignedSubtopics[idx];
-    return `Question ${idx + 1} (${diff}):
-- Active Syllabus Subject: ${targetSub.subjectName}
-- Active Syllabus Topic: ${targetSub.topicName}
-- Active Syllabus Subtopic: ${targetSub.subtopicName} (Description: ${targetSub.subtopicDescription || 'Core concepts'})
-- Difficulty Target: ${diff}
-${diff === 'EASY' ? '- EASY CONSTRAINT: Keep it ACTUALLY EASY! Solvable quickly with basic conceptual pattern recognition and simple, clean numbers (e.g. 10%, 25%, 50%, clean ratios 1:2, small single/double digits). NO tedious or heavy mental calculations!' : ''}`;
-  })
-  .join('\n\n')}
-
-STRICT CONSTRAINTS:
-- EACH QUESTION MUST BE SOLVABLE IN UNDER 60 SECONDS using an aptitude trick or mental shortcut!
-- estimatedTimeSeconds MUST be an integer between 30 and 60 (use 30 for EASY, 45 for MEDIUM, 60 for HARD). Minimum allowed is 30.
-- NO hints in the question prompts, but provide exactly 2 hints in the hints array for future reuse.
-- The explanation must prominently describe the exact speed trick / shortcut.
-- Provide 4 distinct options (A, B, C, D) with plausible distractors.
-
-Do NOT duplicate these recent question fingerprints:
-${existingFingerprints.slice(0, 25).map((f) => `- ${f}`).join('\n')}
-`.trim();
-
-      console.log(
-        `[DailyChallengeGen] Requesting Gemini generation for date ${dateString}, tier ${tier} (${questionCount} questions)...`
-      );
-
-      let rawQuestions: any[] = [];
-      try {
-        const rawGeneration = await geminiProvider.generateStructuredContent<{
-          questions: any[];
-        }>({
-          systemInstruction: DAILY_CHALLENGE_GENERATION_SYSTEM_INSTRUCTION,
-          prompt: generatorPrompt,
-          responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
-        });
-
-        if (rawGeneration?.questions && Array.isArray(rawGeneration.questions)) {
-          rawQuestions = rawGeneration.questions;
-        }
-      } catch (genError) {
-        console.warn(`[DailyChallengeGen] Gemini API generation error:`, genError);
-      }
-
-      // 7. Validate & Normalize questions
-      const validQuestions: any[] = [];
-      for (let i = 0; i < rawQuestions.length; i++) {
-        const rawQ = rawQuestions[i];
-        const assignedDiff = targetDifficulties[i] || 'EASY';
-        const normalized = this.normalizeDailyChallengeQuestion(rawQ, assignedDiff);
-        const valResult = validateQuestionStructure(normalized);
-        if (valResult.valid) {
-          validQuestions.push(valResult.data);
-        } else {
-          console.warn(`[DailyChallengeGen] Question structural validation failed: ${valResult.errors.join('; ')}`);
-        }
-      }
-
-      // Fallback: If AI returned fewer valid questions than required, draw from published question repository
-      if (validQuestions.length < questionCount) {
-        console.warn(
-          `[DailyChallengeGen] Only ${validQuestions.length}/${questionCount} AI questions valid. Sourcing from published questions pool...`
-        );
-        const needed = questionCount - validQuestions.length;
-        const fallbackQuestions = await prisma.question.findMany({
+      // 4. Query bounded candidate pool per difficulty directly in PostgreSQL
+      // Database determines: MANUAL + PUBLISHED + PYQ present + NEVER appeared in any DailyChallenge
+      for (let i = 0; i < questionCount; i++) {
+        const diff = targetDifficulties[i];
+        const candidates = await prisma.question.findMany({
           where: {
+            sourceType: 'MANUAL',
             status: 'PUBLISHED',
+            pyq: { not: null },
+            difficulty: diff,
+            id: { notIn: selectedQuestions.map((q) => q.id) },
+            dailyChallengeScriptQuestions: {
+              none: {}, // Database-level: Never appeared in ANY daily challenge
+            },
           },
-          take: Math.max(needed * 4, 10),
-          orderBy: { createdAt: 'desc' },
+          take: 25, // Bounded candidate pool (constant memory footprint)
         });
 
-        for (const candidate of fallbackQuestions) {
-          if (validQuestions.length >= questionCount) break;
-          if (validQuestions.some((v) => v.prompt === candidate.prompt)) continue;
-
-          validQuestions.push({
-            pattern: candidate.pattern,
-            prompt: candidate.prompt,
-            options: candidate.options as any,
-            correctAnswer: candidate.correctAnswer as any,
-            difficulty: candidate.difficulty,
-            estimatedTimeSeconds: candidate.estimatedTimeSeconds,
-            calculationMode: candidate.calculationMode,
-            hints: candidate.hints,
-            method: candidate.method,
-            explanation: candidate.explanation,
-            persistedQuestionId: candidate.id,
-          });
+        if (candidates.length === 0) {
+          console.error(
+            `[DailyChallenge] INVENTORY DEPLETED: Zero unused MANUAL PYQs for difficulty ${diff} on ${dateString} (Tier ${tier}).`
+          );
+          // TODO: Surface inventory depletion alert in Admin Dashboard Daily Challenge tab
+          // and prevent corrupted or non-PYQ daily challenge generation.
+          throw new Error(
+            `Daily Challenge creation halted: Manual PYQ inventory depleted for difficulty ${diff} on date ${dateString}.`
+          );
         }
-      }
 
-      if (validQuestions.length < questionCount) {
-        throw new Error(
-          `Only ${validQuestions.length}/${questionCount} questions passed validation for Daily Challenge.`
+        // Deterministic pseudo-random pick from the bounded candidate pool using date hash seed
+        const dateHash = Math.abs(
+          dateString.split('-').reduce((acc, part) => acc * 31 + parseInt(part, 10), 0) + i * 17
         );
+        const chosen = candidates[dateHash % candidates.length];
+        selectedQuestions.push(chosen);
       }
 
-      // 8. Persist script and questions in PostgreSQL transaction
+      // 5. Persist script and questions in PostgreSQL transaction
       return await prisma.$transaction(async (tx) => {
         const script = await tx.dailyChallengeScript.create({
           data: {
@@ -263,54 +157,14 @@ ${existingFingerprints.slice(0, 25).map((f) => `- ${f}`).join('\n')}
         });
 
         for (let i = 0; i < questionCount; i++) {
-          const q = validQuestions[i];
-          const assignedDifficulty = targetDifficulties[i];
-          const targetSub = assignedSubtopics[i];
-
-          let questionId: string;
-
-          if (q.persistedQuestionId) {
-            questionId = q.persistedQuestionId;
-          } else {
-            const fingerprint = FingerprintService.computeFingerprint(q.prompt, q.options);
-            let question = await tx.question.findUnique({
-              where: { fingerprint },
-            });
-
-            if (!question) {
-              question = await tx.question.create({
-                data: {
-                  subjectId: targetSub.subjectId,
-                  topicId: targetSub.topicId,
-                  subtopicId: targetSub.subtopicId,
-                  pattern: q.pattern || 'DAILY_CHALLENGE',
-                  prompt: q.prompt,
-                  options: q.options,
-                  correctAnswer: q.correctAnswer,
-                  hints: q.hints || [],
-                  explanation: q.explanation,
-                  method: q.method || 'Speed Aptitude Shortcut',
-                  difficulty: assignedDifficulty as QuestionDifficultyEnum,
-                  estimatedTimeSeconds: q.estimatedTimeSeconds || 60,
-                  calculationMode: (q.calculationMode as CalculationMode) || CalculationMode.MENTAL,
-                  sourceType: 'AI_GENERATED',
-                  status: 'PUBLISHED',
-                  fingerprint,
-                  generationModel: 'gemini-3.5-flash-lite',
-                  generationPromptVersion: 'v1.0.0',
-                },
-              });
-            }
-            questionId = question.id;
-          }
-
+          const q = selectedQuestions[i];
           await tx.dailyChallengeScriptQuestion.create({
             data: {
               scriptId: script.id,
-              questionId,
+              questionId: q.id,
               sequence: i + 1,
-              difficulty: assignedDifficulty as QuestionDifficultyEnum,
-              timeLimit: 60,
+              difficulty: q.difficulty,
+              timeLimit: q.estimatedTimeSeconds || 60,
             },
           });
         }

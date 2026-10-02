@@ -180,6 +180,32 @@ class PvpArenaScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              if (q.pyq != null && q.pyq!.trim().isNotEmpty) ...[
+                                const SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFEF3C7),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: const Color(0xFFFDE68A)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text('🏛️ ', style: TextStyle(fontSize: 12)),
+                                      Flexible(
+                                        child: Text(
+                                          q.pyq!,
+                                          style: AptiquTypography.labelSmall.copyWith(
+                                            color: const Color(0xFF92400E),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                               const SizedBox(height: 20),
 
                               // 4 Multiple Choice Options

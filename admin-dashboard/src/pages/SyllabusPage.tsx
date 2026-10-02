@@ -269,6 +269,33 @@ export const SyllabusPage: React.FC = () => {
     }
   };
 
+  // Strictly verify question references & import script via Admin Syllabus API
+  const handleImportVerifiedScript = async () => {
+    if (!scriptModal || !scriptModal.topicId) return;
+    try {
+      let parsedDefinition;
+      try {
+        parsedDefinition = JSON.parse(scriptModal.definitionJson);
+      } catch (e: any) {
+        setScriptJsonError(`JSON Syntax Error: ${e.message}`);
+        return;
+      }
+
+      await api.importScript({
+        topicId: scriptModal.topicId,
+        subtopicId: scriptModal.subtopicId,
+        scriptDefinition: parsedDefinition,
+      });
+
+      alert('Script verified and imported successfully with valid question references!');
+      setScriptModal(null);
+      fetchSyllabus();
+    } catch (err: any) {
+      const errMsg = err.response?.data?.message || err.message;
+      setScriptJsonError(`Strict Validation Error: ${errMsg}`);
+    }
+  };
+
   return (
     <div>
       {/* Header bar */}
@@ -720,14 +747,25 @@ export const SyllabusPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="modal-footer">
+            <div className="modal-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <button className="btn-secondary" onClick={() => setScriptModal(null)}>
                 Cancel
               </button>
-              <button className="btn-primary" onClick={handleSaveScript}>
-                <Check size={16} />
-                <span>{scriptModal.isNew ? 'Create & Attach' : 'Publish New Version'}</span>
-              </button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  className="btn-secondary"
+                  style={{ background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe' }}
+                  onClick={handleImportVerifiedScript}
+                  title="Verify all question externalKey references and subtopic bindings before persisting"
+                >
+                  <FileCode size={15} />
+                  <span>Strict Import & Verify Refs</span>
+                </button>
+                <button className="btn-primary" onClick={handleSaveScript}>
+                  <Check size={16} />
+                  <span>{scriptModal.isNew ? 'Create & Attach' : 'Publish New Version'}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -14,8 +14,8 @@ export class PracticeSelectionService {
   }
 
   /**
-   * Selects 10 candidate questions for a user across selected subtopics.
-   * On-demand generates questions if inventory is low.
+   * Selects candidate questions for a user across selected subtopics.
+   * INVARIANT: No AI question may appear while an eligible unsolved MANUAL question exists.
    */
   public async selectQuestionsForPractice(
     userId: string,
@@ -34,146 +34,127 @@ export class PracticeSelectionService {
       }
     }
 
-    // 2. Fetch user progress for questions in these subtopics
-    const userProgressRecords = await prisma.userQuestionProgress.findMany({
-      where: {
-        userId,
-        subtopicId: { in: subtopicIds },
-      },
-      include: {
-        question: true,
-      },
-      orderBy: { lastSeenAt: 'asc' }, // Least recently seen first
-    });
-
-    const seenQuestionIds = new Set(userProgressRecords.map((p) => p.questionId));
-
-    // Identify questions the user previously failed (lastIsCorrect == false)
-    const failedQuestions = userProgressRecords
-      .filter((p) => !p.lastIsCorrect && p.question && p.question.status === 'PUBLISHED')
-      .map((p) => p.question);
-
-    // Reserve up to 3 questions for previously failed patterns/questions
-    const targetFailedCount = Math.min(3, failedQuestions.length);
-    const selectedFailed: any[] = [];
-    const addedIds = new Set<string>();
-
-    // Prioritize variety of patterns among failed questions
-    const seenPatterns = new Set<string>();
-    for (const q of failedQuestions) {
-      if (selectedFailed.length >= targetFailedCount) break;
-      const patternKey = q.pattern || q.id;
-      if (!seenPatterns.has(patternKey) && !addedIds.has(q.id)) {
-        selectedFailed.push(q);
-        addedIds.add(q.id);
-        seenPatterns.add(patternKey);
-      }
-    }
-    // If we have remaining failed slots, fill with remaining failed questions
-    for (const q of failedQuestions) {
-      if (selectedFailed.length >= targetFailedCount) break;
-      if (!addedIds.has(q.id)) {
-        selectedFailed.push(q);
-        addedIds.add(q.id);
-      }
-    }
-
-    const neededFresh = count - selectedFailed.length;
-
-    // 3. Check inventory of UNSEEN published questions for this user
-    let unseenCandidates = await prisma.question.findMany({
+    // 2. QUERY SCALABLE DATABASE-LEVEL: Eligible unsolved MANUAL questions
+    // Unsolved = user has never answered correctly (userProgress.none with timesCorrect > 0)
+    const unsolvedManual = await prisma.question.findMany({
       where: {
         subtopicId: { in: subtopicIds },
+        sourceType: 'MANUAL',
         status: 'PUBLISHED',
-        id: { notIn: Array.from(seenQuestionIds) },
+        userProgress: {
+          none: {
+            userId,
+            timesCorrect: { gt: 0 },
+          },
+        },
       },
+      take: count,
+      include: {
+        userProgress: {
+          where: { userId },
+          select: { timesSeen: true, timesCorrect: true, lastIsCorrect: true },
+        },
+      },
+      orderBy: [
+        // Prioritize previously failed questions over completely unseen
+        { attempts: { _count: 'desc' } },
+        { createdAt: 'asc' },
+      ],
     });
 
+    // 3. STRICT INVARIANT: If at least one unsolved manual question exists, serve ONLY manual questions!
+    if (unsolvedManual.length > 0) {
+      console.log(
+        `[PracticeSelection] Found ${unsolvedManual.length} unsolved MANUAL questions for user ${userId}. Strictly serving MANUAL questions.`
+      );
+
+      if (unsolvedManual.length >= count) {
+        return unsolvedManual.sort(() => 0.5 - Math.random());
+      }
+
+      // Reinforcement fill: If unsolved manual count < session count, fill remaining slots
+      // with previously solved MANUAL questions from the same subtopics (ZERO AI questions)
+      const needed = count - unsolvedManual.length;
+      const reinforcementManual = await prisma.question.findMany({
+        where: {
+          subtopicId: { in: subtopicIds },
+          sourceType: 'MANUAL',
+          status: 'PUBLISHED',
+          id: { notIn: unsolvedManual.map((q) => q.id) },
+        },
+        take: needed,
+        orderBy: { updatedAt: 'asc' },
+      });
+
+      const manualCombined = [...unsolvedManual, ...reinforcementManual];
+      return manualCombined.sort(() => 0.5 - Math.random());
+    }
+
+    // 4. If zero unsolved manual questions exist, check if user has solved all existing manual questions
     console.log(
-      `[PracticeSelection] User has ${failedQuestions.length} previously failed questions (selected ${selectedFailed.length}). Needs ${neededFresh} fresh questions. Currently unseen in DB: ${unseenCandidates.length}`
+      `[PracticeSelection] Zero unsolved MANUAL questions remaining for user ${userId} in selected subtopics. AI_GENERATED questions are now eligible.`
     );
 
-    // 4. Trigger AI Generation if unseen inventory is insufficient
-    if (unseenCandidates.length < neededFresh) {
-      const shortage = neededFresh - unseenCandidates.length;
-      console.log(
-        `[PracticeSelection] Fresh question shortage detected (${unseenCandidates.length} < ${neededFresh}, deficit: ${shortage}). Triggering on-demand Gemini generation...`
-      );
+    // 5. Query published AI questions that user hasn't solved correctly
+    let aiCandidates = await prisma.question.findMany({
+      where: {
+        subtopicId: { in: subtopicIds },
+        sourceType: 'AI_GENERATED',
+        status: 'PUBLISHED',
+        userProgress: {
+          none: {
+            userId,
+            timesCorrect: { gt: 0 },
+          },
+        },
+      },
+      take: count,
+      orderBy: { createdAt: 'desc' },
+    });
 
-      // Distribute generation across subtopics with lowest unseen inventory
-      const subtopicCounts = await Promise.all(
-        subtopicIds.map(async (id) => ({
-          id,
-          count: await prisma.question.count({
-            where: {
-              subtopicId: id,
-              status: 'PUBLISHED',
-              id: { notIn: Array.from(seenQuestionIds) },
-            },
-          }),
-        }))
+    // 6. Trigger AI Generation ONLY if fresh AI candidate inventory is insufficient
+    if (aiCandidates.length < count) {
+      const shortage = count - aiCandidates.length;
+      console.log(
+        `[PracticeSelection] Shortage of AI questions detected (${aiCandidates.length} < ${count}). Triggering on-demand Gemini generation...`
       );
-      subtopicCounts.sort((a, b) => a.count - b.count);
 
       const batchUnit = INVENTORY_CONFIG.DEFAULT_BATCH_GENERATION_UNIT;
       const batchesNeeded = Math.min(Math.ceil(shortage / batchUnit), 2);
-      const selectedTargets = subtopicCounts.slice(0, batchesNeeded);
-
-      console.log(
-        `[PracticeSelection] Launching parallel generation for ${selectedTargets.length} subtopics: [${selectedTargets.map((t) => t.id).join(', ')}]...`
-      );
+      const selectedTargets = subtopicIds.slice(0, batchesNeeded);
 
       const genResults = await Promise.allSettled(
-        selectedTargets.map((target) =>
-          questionGenerationService.generateQuestionsForSubtopic(target.id, batchUnit)
+        selectedTargets.map((targetId) =>
+          questionGenerationService.generateQuestionsForSubtopic(targetId, batchUnit)
         )
       );
 
       for (const res of genResults) {
         if (res.status === 'fulfilled') {
           for (const g of res.value) {
-            if (!addedIds.has(g.id) && !seenQuestionIds.has(g.id)) {
-              unseenCandidates.push(g);
+            if (!aiCandidates.some((c) => c.id === g.id)) {
+              aiCandidates.push(g);
             }
           }
-        } else {
-          console.warn('[PracticeSelection] Batch generation failed:', res.reason?.message);
         }
       }
     }
 
-    // 5. Assemble final pool
-    const selected: any[] = [...selectedFailed];
-
-    // Shuffle unseen candidates for variety and add up to target count
-    const shuffledUnseen = unseenCandidates.sort(() => 0.5 - Math.random());
-    for (const q of shuffledUnseen) {
-      if (selected.length >= count) break;
-      if (!addedIds.has(q.id)) {
-        selected.push(q);
-        addedIds.add(q.id);
-      }
+    // 7. Safety fallback: If still less than count, reuse least recently seen questions from DB
+    if (aiCandidates.length < count) {
+      const fallbackQuestions = await prisma.question.findMany({
+        where: {
+          subtopicId: { in: subtopicIds },
+          status: 'PUBLISHED',
+          id: { notIn: aiCandidates.map((q) => q.id) },
+        },
+        take: count - aiCandidates.length,
+        orderBy: { updatedAt: 'asc' },
+      });
+      aiCandidates.push(...fallbackQuestions);
     }
 
-    // 6. Safety fallback: If AI generation couldn't fulfill fresh count, use least recently seen
-    if (selected.length < count) {
-      const seenSorted = [...userProgressRecords]
-        .sort((a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime())
-        .map((p) => p.question)
-        .filter((q) => q && q.status === 'PUBLISHED');
-
-      for (const q of seenSorted) {
-        if (selected.length >= count) break;
-        if (!addedIds.has(q.id)) {
-          selected.push(q);
-          addedIds.add(q.id);
-        }
-      }
-    }
-
-    // 7. Final shuffle so review questions are interleaved naturally
-    selected.sort(() => 0.5 - Math.random());
-    return selected.slice(0, count);
+    return aiCandidates.slice(0, count).sort(() => 0.5 - Math.random());
   }
 }
 

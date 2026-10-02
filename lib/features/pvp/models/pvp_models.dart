@@ -50,6 +50,7 @@ class PvpQuestionDataModel {
   final List<PvpQuestionOptionModel> options;
   final String difficulty;
   final String? pattern;
+  final String? pyq;
 
   const PvpQuestionDataModel({
     required this.id,
@@ -57,6 +58,7 @@ class PvpQuestionDataModel {
     required this.options,
     required this.difficulty,
     this.pattern,
+    this.pyq,
   });
 
   factory PvpQuestionDataModel.fromJson(Map<String, dynamic> json) {
@@ -71,6 +73,7 @@ class PvpQuestionDataModel {
       options: opts,
       difficulty: json['difficulty'] as String? ?? 'EASY',
       pattern: json['pattern'] as String?,
+      pyq: json['pyq'] as String?,
     );
   }
 }

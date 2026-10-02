@@ -4,6 +4,30 @@ All notable changes, version updates, and migration notes for the AptiQu Node.js
 
 ---
 
+## [1.2.0] — 2026-10-02
+
+### Book Curriculum, PYQ Provenance & Dual Solutions
+* **Prisma Schema Extensions:**
+  * Added `externalKey` (unique text identifier) to `Question` for stable script cross-referencing.
+  * Added `pyq` string column for competitive exam tags (`"exam_name (year), ..."`).
+  * Added provenance metadata: `sourceBook`, `sourceEdition`, `sourceChapter`, `sourcePageRange`.
+  * Added dual-solution fields: `alternativeExplanation`, `preferredSolution` (`BOOK` | `ALTERNATIVE`), and `preferredReason`.
+  * Added `QuestionGenerationMethod` enum (`HUMAN_MANUAL`, `AI_EXTRACTED`, `AI_SYNTHETIC`).
+  * Enforced database-level unique constraint `@@unique([questionId])` on `DailyChallengeScriptQuestion` to guarantee no question is ever repeated in daily challenges.
+* **Practice Question Selection Invariant:**
+  * Replaced in-memory filtering with database-level scalable query checking `userQuestionProgress` with `timesCorrect > 0`.
+  * Enforced strict curriculum invariant: serves 100% `MANUAL` questions (unsolved first, reinforcement second) while any unsolved manual question exists in a topic. AI questions are only served when 100% of manual questions have been correctly solved.
+* **Daily Challenge Curated Candidate Selection:**
+  * Swapped synthetic question generation for authoritative candidate queries: strictly `MANUAL`, `PUBLISHED`, `pyq != null`, and `dailyChallengeScriptQuestions: { none: {} }`.
+  * Preserves `Asia/Kolkata` midnight boundary and halts creation if candidate pool is depleted.
+* **Strict Script Import & Verification API:**
+  * Added `POST /api/v1/admin/syllabus/scripts/import` verifying that all `QUESTION_EXTERNAL_ID` references exist in the database, belong to the target topic, and belong to the target subtopic prior to persisting.
+* **Bulk Question Ingestion:**
+  * Batched subtopic lookup by ID and slug with strict error rejection on unknown keys.
+  * Defaults imported curriculum items to `REVIEW` status and `sourceType: MANUAL`.
+
+---
+
 ## [1.1.0] — 2026-10-01
 
 ### Curriculum Reordering & Reusability

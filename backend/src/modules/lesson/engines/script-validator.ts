@@ -69,6 +69,13 @@ export class ScriptValidator {
               message: `correctOptionId "${inline?.correctOptionId}" not found in provided options.`,
             });
           }
+        } else if (node.questionReference.mode === 'QUESTION_EXTERNAL_ID') {
+          if (!node.questionReference.externalId || typeof node.questionReference.externalId !== 'string' || !node.questionReference.externalId.trim()) {
+            errors.push({
+              field: `nodes.${id}.questionReference.externalId`,
+              message: 'QUESTION_EXTERNAL_ID mode requires a valid non-empty externalId string.',
+            });
+          }
         }
       }
 

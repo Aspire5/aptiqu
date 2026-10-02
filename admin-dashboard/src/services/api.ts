@@ -60,6 +60,7 @@ export const api = {
 
   getScript: (id: string) => apiClient.get(`/syllabus/scripts/${id}`),
   createScript: (data: any) => apiClient.post('/syllabus/scripts', data),
+  importScript: (data: any) => apiClient.post('/syllabus/scripts/import', data),
   updateScript: (id: string, data: any) => apiClient.put(`/syllabus/scripts/${id}`, data),
 
   // Syllabus Reordering & Reusability

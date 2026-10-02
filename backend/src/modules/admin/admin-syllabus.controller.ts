@@ -126,6 +126,15 @@ export class AdminSyllabusController {
     }
   }
 
+  public static async importScript(req: Request, res: Response): Promise<void> {
+    try {
+      const data = await AdminSyllabusService.importScript(req.body);
+      res.status(201).json({ success: true, data });
+    } catch (err: any) {
+      res.status(400).json({ success: false, message: err.message });
+    }
+  }
+
   // ==================== REORDERING ====================
 
   public static async reorderTopics(req: Request, res: Response): Promise<void> {

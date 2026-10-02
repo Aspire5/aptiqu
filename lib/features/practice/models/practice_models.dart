@@ -80,6 +80,13 @@ class PracticeQuestionModel {
   final String? correctAnswer;
   final String? explanation;
   final String? method;
+  final String? externalKey;
+  final String? pyq;
+  final String? alternativeExplanation;
+  final String? preferredSolution;
+  final String? preferredReason;
+  final String? sourceBook;
+  final String? sourceChapter;
 
   const PracticeQuestionModel({
     required this.id,
@@ -93,6 +100,13 @@ class PracticeQuestionModel {
     this.correctAnswer,
     this.explanation,
     this.method,
+    this.externalKey,
+    this.pyq,
+    this.alternativeExplanation,
+    this.preferredSolution,
+    this.preferredReason,
+    this.sourceBook,
+    this.sourceChapter,
   });
 
   factory PracticeQuestionModel.fromJson(Map<String, dynamic> json) {
@@ -119,6 +133,13 @@ class PracticeQuestionModel {
       correctAnswer: json['correctAnswer']?.toString(),
       explanation: json['explanation']?.toString(),
       method: json['method']?.toString(),
+      externalKey: json['externalKey']?.toString(),
+      pyq: json['pyq']?.toString(),
+      alternativeExplanation: json['alternativeExplanation']?.toString(),
+      preferredSolution: json['preferredSolution']?.toString(),
+      preferredReason: json['preferredReason']?.toString(),
+      sourceBook: json['sourceBook']?.toString(),
+      sourceChapter: json['sourceChapter']?.toString(),
     );
   }
 }
@@ -322,6 +343,9 @@ class PracticeAnswerResultModel {
   final String correctAnswer;
   final String explanation;
   final String method;
+  final String? alternativeExplanation;
+  final String? preferredSolution;
+  final String? preferredReason;
   final bool isComplete;
   final int totalAnswered;
   final int correctCount;
@@ -333,6 +357,9 @@ class PracticeAnswerResultModel {
     required this.correctAnswer,
     required this.explanation,
     required this.method,
+    this.alternativeExplanation,
+    this.preferredSolution,
+    this.preferredReason,
     required this.isComplete,
     required this.totalAnswered,
     required this.correctCount,
@@ -346,6 +373,9 @@ class PracticeAnswerResultModel {
       correctAnswer: json['correctAnswer'] as String,
       explanation: json['explanation'] as String? ?? '',
       method: json['method'] as String? ?? '',
+      alternativeExplanation: json['alternativeExplanation']?.toString(),
+      preferredSolution: json['preferredSolution']?.toString(),
+      preferredReason: json['preferredReason']?.toString(),
       isComplete: json['isComplete'] as bool? ?? false,
       totalAnswered: json['totalAnswered'] as int? ?? 0,
       correctCount: json['correctCount'] as int? ?? 0,

@@ -43,6 +43,10 @@ export interface QuestionInlineData {
   xp?: number;
   difficulty?: QuestionDifficulty;
   questionType?: QuestionType;
+  pyq?: string;
+  alternativeExplanation?: string;
+  preferredSolution?: 'BOOK' | 'ALTERNATIVE';
+  preferredReason?: string;
   variations?: QuestionVariation[];
 }
 
@@ -60,8 +64,9 @@ export interface LessonNode {
     placeholder?: string;
   };
   questionReference?: {
-    mode: 'INLINE' | 'REPOSITORY';
+    mode: 'INLINE' | 'REPOSITORY' | 'QUESTION_EXTERNAL_ID';
     questionId?: string;
+    externalId?: string;
     inlineData?: QuestionInlineData;
   };
   transitions: TransitionEdge[];
@@ -72,6 +77,7 @@ export interface ScriptDefinition {
   schemaVersion: number;
   scriptId: string;
   version: number;
+  sourceType?: 'MANUAL' | 'AI_GENERATED';
   entryNodeId: string;
   metadata: {
     title: string;

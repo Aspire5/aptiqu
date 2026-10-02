@@ -178,6 +178,32 @@ class DailyChallengeQuizScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (question.pyq != null && question.pyq!.trim().isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEF3C7),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFFDE68A)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('🏛️ ', style: TextStyle(fontSize: 12)),
+                              Flexible(
+                                child: Text(
+                                  question.pyq!,
+                                  style: AptiquTypography.labelSmall.copyWith(
+                                    color: const Color(0xFF92400E),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
 
                       const SizedBox(height: 24),
 
@@ -365,70 +391,177 @@ class DailyChallengeQuizScreen extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // Shortcut Trick Callout Box
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AptiquColors.tertiary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AptiquColors.tertiary.withValues(alpha: 0.4)),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.lightbulb_rounded, color: AptiquColors.tertiary, size: 22),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '60-SECOND SPEED SHORTCUT',
-                        style: AptiquTypography.labelCaps.copyWith(
-                          color: AptiquColors.tertiary,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        result.method.isNotEmpty ? result.method : 'Mathematical elimination trick',
-                        style: AptiquTypography.bodySmall.copyWith(
-                          color: AptiquColors.onSurface,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           const SizedBox(height: 14),
 
-          // Step-by-Step Explanation
+          // Dual Solutions (Book Method + Alternative Speed Shortcut)
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Step-by-Step Breakdown:',
-                    style: AptiquTypography.labelCaps.copyWith(
-                      color: AptiquColors.onSurfaceVariant,
-                      fontSize: 10,
+                  // Solution 1: Book Method
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AptiquColors.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: result.preferredSolution == 'BOOK' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
+                        width: result.preferredSolution == 'BOOK' ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '📖 Book Method',
+                              style: AptiquTypography.labelMedium.copyWith(
+                                color: AptiquColors.onSurface,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (result.preferredSolution == 'BOOK')
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'AI Preferred',
+                                      style: AptiquTypography.labelSmall.copyWith(
+                                        color: const Color(0xFF10B981),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                        if (result.method.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Formula / Method: ${result.method}',
+                            style: AptiquTypography.bodySmall.copyWith(
+                              color: const Color(0xFF38BDF8),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 6),
+                        Text(
+                          result.explanation.isNotEmpty ? result.explanation : 'Standard textbook derivation.',
+                          style: AptiquTypography.bodySmall.copyWith(
+                            color: AptiquColors.onSurface,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    result.explanation,
-                    style: AptiquTypography.bodySmall.copyWith(
-                      color: AptiquColors.onSurface,
-                      height: 1.45,
+
+                  // Solution 2: Alternative Speed Shortcut (if available)
+                  if (result.alternativeExplanation != null && result.alternativeExplanation!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AptiquColors.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: result.preferredSolution == 'ALTERNATIVE' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
+                          width: result.preferredSolution == 'ALTERNATIVE' ? 1.5 : 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '⚡ Alternative Speed Shortcut',
+                                style: AptiquTypography.labelMedium.copyWith(
+                                  color: AptiquColors.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              if (result.preferredSolution == 'ALTERNATIVE')
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'AI Preferred',
+                                        style: AptiquTypography.labelSmall.copyWith(
+                                          color: const Color(0xFF10B981),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            result.alternativeExplanation!,
+                            style: AptiquTypography.bodySmall.copyWith(
+                              color: AptiquColors.onSurface,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
+
+                  // Reason for AI preference
+                  if (result.preferredReason != null && result.preferredReason!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFA7F3D0)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.info_outline, color: Color(0xFF047857), size: 16),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              'Why Preferred: ${result.preferredReason}',
+                              style: AptiquTypography.labelSmall.copyWith(
+                                color: const Color(0xFF065F46),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

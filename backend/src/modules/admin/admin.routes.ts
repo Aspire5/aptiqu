@@ -58,6 +58,7 @@ router.delete('/syllabus/topics/:topicId/subtopics/:subtopicId/unlink', AdminSyl
 // Script Inspection & Versioning
 router.get('/syllabus/scripts/:id', AdminSyllabusController.getScript);
 router.post('/syllabus/scripts', AdminSyllabusController.createScript);
+router.post('/syllabus/scripts/import', AdminSyllabusController.importScript);
 router.put('/syllabus/scripts/:id', AdminSyllabusController.updateScript);
 
 // 4. Questions Management

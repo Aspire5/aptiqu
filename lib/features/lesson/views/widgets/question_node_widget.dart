@@ -44,7 +44,7 @@ class _QuestionNodeWidgetState extends State<QuestionNodeWidget> {
           if (inline != null && inline.prompt.isNotEmpty) ...[
             Container(
               padding: const EdgeInsets.all(12),
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: EdgeInsets.only(bottom: (inline.pyq != null && inline.pyq!.trim().isNotEmpty) ? 6 : 12),
               decoration: BoxDecoration(
                 color: AptiquColors.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(10),
@@ -58,6 +58,37 @@ class _QuestionNodeWidgetState extends State<QuestionNodeWidget> {
                 ),
               ),
             ),
+            if (inline.pyq != null && inline.pyq!.trim().isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFDE68A)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('🏛️ ', style: TextStyle(fontSize: 12)),
+                        Flexible(
+                          child: Text(
+                            inline.pyq!,
+                            style: AptiquTypography.labelSmall.copyWith(
+                              color: const Color(0xFF92400E),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
           ...options.map((opt) {
             final isSelected = _selectedOptionId == opt.id;

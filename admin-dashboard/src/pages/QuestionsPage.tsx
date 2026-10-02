@@ -27,6 +27,8 @@ export const QuestionsPage: React.FC = () => {
   const [selectedSubtopic, setSelectedSubtopic] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
   const [selectedSource, setSelectedSource] = useState('');
+  const [selectedPyq, setSelectedPyq] = useState<'ALL' | 'PYQ_ONLY' | 'NON_PYQ'>('ALL');
+  const [selectedStatus, setSelectedStatus] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -46,7 +48,7 @@ export const QuestionsPage: React.FC = () => {
 
   useEffect(() => {
     fetchQuestions();
-  }, [page, search, selectedSubtopic, selectedDifficulty, selectedSource]);
+  }, [page, search, selectedSubtopic, selectedDifficulty, selectedSource, selectedPyq, selectedStatus]);
 
   const fetchSyllabusDropdowns = async () => {
     try {
@@ -78,6 +80,9 @@ export const QuestionsPage: React.FC = () => {
       if (selectedSubtopic) params.subtopicId = selectedSubtopic;
       if (selectedDifficulty) params.difficulty = selectedDifficulty;
       if (selectedSource) params.sourceType = selectedSource;
+      if (selectedPyq === 'PYQ_ONLY') params.pyqOnly = 'true';
+      if (selectedPyq === 'NON_PYQ') params.pyqOnly = 'false';
+      if (selectedStatus && selectedStatus !== 'ALL') params.status = selectedStatus;
 
       const res = await api.getQuestions(params);
       if (res.data?.success) {
@@ -235,7 +240,36 @@ export const QuestionsPage: React.FC = () => {
             <option value="AI_GENERATED">AI Generated</option>
           </select>
 
-          {(search || selectedSubtopic || selectedDifficulty || selectedSource) && (
+          {/* PYQ Filter */}
+          <select
+            className="select-custom"
+            value={selectedPyq}
+            onChange={(e) => {
+              setSelectedPyq(e.target.value as any);
+              setPage(1);
+            }}
+          >
+            <option value="ALL">All PYQ Status</option>
+            <option value="PYQ_ONLY">🏛️ PYQ Questions Only</option>
+            <option value="NON_PYQ">Non-PYQ Questions</option>
+          </select>
+
+          {/* Status Filter */}
+          <select
+            className="select-custom"
+            value={selectedStatus}
+            onChange={(e) => {
+              setSelectedStatus(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="PUBLISHED">Published</option>
+            <option value="REVIEW">Review Required</option>
+            <option value="DRAFT">Draft</option>
+          </select>
+
+          {(search || selectedSubtopic || selectedDifficulty || selectedSource || selectedPyq !== 'ALL' || (selectedStatus && selectedStatus !== 'ALL')) && (
             <button
               className="btn-secondary"
               style={{ padding: '8px 12px', fontSize: '12px' }}
@@ -244,6 +278,8 @@ export const QuestionsPage: React.FC = () => {
                 setSelectedSubtopic('');
                 setSelectedDifficulty('');
                 setSelectedSource('');
+                setSelectedPyq('ALL');
+                setSelectedStatus('');
                 setPage(1);
               }}
             >
@@ -295,6 +331,28 @@ export const QuestionsPage: React.FC = () => {
                           </button>
                         </td>
                         <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                            {q.externalKey && (
+                              <span style={{ fontSize: '10px', color: '#475569', background: '#f1f5f9', padding: '1px 6px', borderRadius: '4px', fontFamily: 'monospace', border: '1px solid #e2e8f0' }}>
+                                #{q.externalKey}
+                              </span>
+                            )}
+                            {q.pyq && (
+                              <span className="badge" style={{ fontSize: '11px', background: '#fef3c7', color: '#92400e', border: '1px solid #fde68a', fontWeight: 600 }}>
+                                🏛️ {q.pyq}
+                              </span>
+                            )}
+                            {q.status === 'REVIEW' && (
+                              <span className="badge" style={{ fontSize: '10px', background: '#fef9c3', color: '#854d0e', border: '1px solid #fde047', fontWeight: 600 }}>
+                                ⚠️ REVIEW REQUIRED
+                              </span>
+                            )}
+                            {q.preferredSolution && (
+                              <span className="badge" style={{ fontSize: '10px', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}>
+                                ⭐ Preferred: {q.preferredSolution}
+                              </span>
+                            )}
+                          </div>
                           <div style={{ fontWeight: 600, color: '#1e293b', marginBottom: '6px' }}>
                             {q.prompt}
                           </div>
@@ -371,40 +429,63 @@ export const QuestionsPage: React.FC = () => {
                         </td>
                       </tr>
 
-                      {/* Expandable explanation and details */}
+                      {/* Expandable explanation, dual-solution and provenance */}
                       {isExpanded && (
                         <tr style={{ background: '#f8fafc' }}>
-                          <td colSpan={6} style={{ padding: '16px 24px', borderBottom: '1px solid #e2e8f0' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                              <div>
-                                <h5 style={{ fontSize: '12px', textTransform: 'uppercase', color: '#7b809a', marginBottom: '4px' }}>
-                                  Explanation & Method
-                                </h5>
-                                <p style={{ fontSize: '13px', lineHeight: 1.5, color: '#334155' }}>
-                                  {q.explanation || 'No explanation provided.'}
+                          <td colSpan={6} style={{ padding: '20px 24px', borderBottom: '1px solid #e2e8f0' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '16px' }}>
+                              {/* Solution 1: Book Method */}
+                              <div style={{ background: '#ffffff', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                  <h5 style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', margin: 0 }}>
+                                    📖 Solution 1 (Book Method)
+                                  </h5>
+                                  {q.preferredSolution === 'BOOK' && (
+                                    <span className="badge badge-success" style={{ fontSize: '10px' }}>⭐ AI Preferred</span>
+                                  )}
+                                </div>
+                                <p style={{ fontSize: '13px', lineHeight: 1.5, color: '#334155', whiteSpace: 'pre-wrap' }}>
+                                  {q.explanation || 'No standard explanation provided.'}
                                 </p>
                                 {q.method && (
                                   <p style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
-                                    <strong>Shortcut/Method:</strong> {q.method}
+                                    <strong>Formula/Method:</strong> {q.method}
                                   </p>
                                 )}
                               </div>
-                              <div>
-                                <h5 style={{ fontSize: '12px', textTransform: 'uppercase', color: '#7b809a', marginBottom: '4px' }}>
-                                  Hints & Metadata
-                                </h5>
-                                {Array.isArray(q.hints) && q.hints.length > 0 ? (
-                                  <ul style={{ paddingLeft: '18px', fontSize: '12px', color: '#475569' }}>
-                                    {q.hints.map((h: string, i: number) => (
-                                      <li key={i}>{h}</li>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  <p style={{ fontSize: '12px', color: '#94a3b8' }}>No hints registered.</p>
-                                )}
-                                <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>
-                                  Est. Time: {q.estimatedTimeSeconds}s | Mode: {q.calculationMode} | ID: {q.id}
+
+                              {/* Solution 2: Alternative Shortcut */}
+                              <div style={{ background: '#ffffff', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                  <h5 style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', margin: 0 }}>
+                                    ⚡ Solution 2 (Alternative / Speed Shortcut)
+                                  </h5>
+                                  {q.preferredSolution === 'ALTERNATIVE' && (
+                                    <span className="badge badge-success" style={{ fontSize: '10px' }}>⭐ AI Preferred</span>
+                                  )}
                                 </div>
+                                <p style={{ fontSize: '13px', lineHeight: 1.5, color: '#334155', whiteSpace: 'pre-wrap' }}>
+                                  {q.alternativeExplanation || <em style={{ color: '#94a3b8' }}>No alternative speed solution provided.</em>}
+                                </p>
+                                {q.preferredReason && (
+                                  <div style={{ marginTop: '8px', padding: '8px', background: '#ecfdf5', borderRadius: '6px', fontSize: '11px', color: '#065f46' }}>
+                                    <strong>Why Preferred:</strong> {q.preferredReason}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Provenance & Metadata */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', fontSize: '12px', color: '#64748b', background: '#f1f5f9', padding: '12px 16px', borderRadius: '8px' }}>
+                              <div>
+                                <div><strong>Source Book:</strong> {q.sourceBook || 'Not specified'} {q.sourceEdition ? `(${q.sourceEdition})` : ''}</div>
+                                <div><strong>Chapter / Pages:</strong> {q.sourceChapter || 'N/A'} {q.sourcePageRange ? `[${q.sourcePageRange}]` : ''}</div>
+                                <div><strong>Generation Method:</strong> {q.generationMethod || 'HUMAN_MANUAL'}</div>
+                              </div>
+                              <div>
+                                <div><strong>PYQ Exam:</strong> {q.pyq || 'None (Standard textbook practice)'}</div>
+                                <div><strong>Hints:</strong> {Array.isArray(q.hints) && q.hints.length > 0 ? q.hints.join(', ') : 'None'}</div>
+                                <div><strong>ID / ExtKey:</strong> {q.id} {q.externalKey ? `(Ext: ${q.externalKey})` : ''}</div>
                               </div>
                             </div>
                           </td>
@@ -528,6 +609,8 @@ const BulkImportModal: React.FC<{
   const handleDownloadSample = () => {
     const sampleData = [
       {
+        externalKey: 'rs-agg-ch01-q001',
+        subtopicKey: '', // optional if default subtopic is selected
         prompt: 'What is 25% of 80?',
         optionA: '15',
         optionB: '20',
@@ -536,10 +619,21 @@ const BulkImportModal: React.FC<{
         correctAnswer: 'B',
         difficulty: 'EASY',
         explanation: '25% of 80 is 80 / 4 = 20.',
+        method: 'Fraction equivalent 1/4',
+        alternativeExplanation: '10% is 8, so 20% is 16, and 5% is 4. 16 + 4 = 20.',
+        preferredSolution: 'ALTERNATIVE',
+        preferredReason: 'Mental math breakdown eliminates division step.',
+        pyq: 'SSC CGL (2022)',
+        sourceBook: 'Quantitative Aptitude for Competitive Examinations',
+        sourceEdition: '2024 Revised',
+        sourceChapter: 'Chapter 10: Percentage',
+        sourcePageRange: 'pp. 142-143',
         hints: 'Think of 25% as one quarter.',
         calculationMode: 'MENTAL',
       },
       {
+        externalKey: 'rs-agg-ch21-q014',
+        subtopicKey: '',
         prompt: 'If a car travels at 60 km/h, how far does it travel in 2.5 hours?',
         optionA: '120 km',
         optionB: '140 km',
@@ -548,6 +642,15 @@ const BulkImportModal: React.FC<{
         correctAnswer: 'C',
         difficulty: 'EASY',
         explanation: 'Distance = Speed * Time = 60 * 2.5 = 150 km.',
+        method: 'Standard Distance Formula',
+        alternativeExplanation: '60 * 2 = 120 km. In 0.5 hours it goes 30 km. 120 + 30 = 150 km.',
+        preferredSolution: 'BOOK',
+        preferredReason: 'Simple scalar multiplication.',
+        pyq: 'TCS NQT (2023), CAT (2012)',
+        sourceBook: 'Quantitative Aptitude for Competitive Examinations',
+        sourceEdition: '2024 Revised',
+        sourceChapter: 'Chapter 21: Time and Distance',
+        sourcePageRange: 'pp. 310-312',
         hints: 'Multiply 60 by 2 then add half of 60.',
         calculationMode: 'MENTAL',
       },
@@ -556,7 +659,7 @@ const BulkImportModal: React.FC<{
     const ws = XLSX.utils.json_to_sheet(sampleData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sample_Questions');
-    XLSX.writeFile(wb, 'aptiqu_bulk_questions_template.xlsx');
+    XLSX.writeFile(wb, 'aptiqu_curriculum_questions_template.xlsx');
   };
 
   const handleImportSubmit = async () => {
@@ -656,7 +759,10 @@ const BulkImportModal: React.FC<{
                       <thead>
                         <tr>
                           <th>#</th>
+                          <th>Key</th>
+                          <th>Subtopic</th>
                           <th>Prompt</th>
+                          <th>PYQ</th>
                           <th>Ans</th>
                           <th>Diff</th>
                         </tr>
@@ -665,7 +771,10 @@ const BulkImportModal: React.FC<{
                         {parsedRows.slice(0, 10).map((r, i) => (
                           <tr key={i}>
                             <td>{i + 1}</td>
-                            <td>{r.prompt || r.question}</td>
+                            <td><code style={{ fontSize: '10px' }}>{r.externalKey || r.externalId || '-'}</code></td>
+                            <td>{r.subtopicKey || r.subtopicSlug || 'default'}</td>
+                            <td>{(r.prompt || r.question || '').slice(0, 45)}...</td>
+                            <td>{r.pyq ? <span style={{ color: '#b45309', fontWeight: 600 }}>🏛️ {r.pyq}</span> : '-'}</td>
                             <td>{r.correctAnswer || r.answer}</td>
                             <td>{r.difficulty || 'EASY'}</td>
                           </tr>
@@ -710,7 +819,18 @@ const QuestionFormModal: React.FC<{
   onSuccess: () => void;
 }> = ({ subtopics, editItem, onClose, onSuccess }) => {
   const [subtopicId, setSubtopicId] = useState(editItem?.subtopicId || subtopics[0]?.id || '');
+  const [externalKey, setExternalKey] = useState(editItem?.externalKey || '');
   const [prompt, setPrompt] = useState(editItem?.prompt || '');
+  const [pyq, setPyq] = useState(editItem?.pyq || '');
+  const [status, setStatus] = useState(editItem?.status || 'PUBLISHED');
+  const [sourceType, setSourceType] = useState(editItem?.sourceType || 'MANUAL');
+  const [generationMethod, setGenerationMethod] = useState(editItem?.generationMethod || 'HUMAN_MANUAL');
+
+  // Book Provenance
+  const [sourceBook, setSourceBook] = useState(editItem?.sourceBook || '');
+  const [sourceEdition, setSourceEdition] = useState(editItem?.sourceEdition || '');
+  const [sourceChapter, setSourceChapter] = useState(editItem?.sourceChapter || '');
+  const [sourcePageRange, setSourcePageRange] = useState(editItem?.sourcePageRange || '');
   
   // Options A, B, C, D
   const existingOptions = Array.isArray(editItem?.options) ? editItem.options : [];
@@ -723,8 +843,14 @@ const QuestionFormModal: React.FC<{
   const [difficulty, setDifficulty] = useState(editItem?.difficulty || 'EASY');
   const [calculationMode, setCalculationMode] = useState(editItem?.calculationMode || 'MENTAL');
   const [estimatedTime, setEstimatedTime] = useState(editItem?.estimatedTimeSeconds || 60);
+
+  // Dual Solutions
   const [explanation, setExplanation] = useState(editItem?.explanation || '');
-  const [method, setMethod] = useState(editItem?.method || '');
+  const [method, setMethod] = useState(editItem?.method || 'Standard Method');
+  const [alternativeExplanation, setAlternativeExplanation] = useState(editItem?.alternativeExplanation || '');
+  const [preferredSolution, setPreferredSolution] = useState(editItem?.preferredSolution || '');
+  const [preferredReason, setPreferredReason] = useState(editItem?.preferredReason || '');
+
   const [hintsText, setHintsText] = useState((editItem?.hints || []).join('\n'));
   const [loading, setLoading] = useState(false);
 
@@ -744,7 +870,7 @@ const QuestionFormModal: React.FC<{
       .map((h: string) => h.trim())
       .filter((h: string) => h.length > 0);
 
-    const payload = {
+    const payload: any = {
       subtopicId,
       prompt,
       options,
@@ -753,8 +879,20 @@ const QuestionFormModal: React.FC<{
       calculationMode,
       estimatedTimeSeconds: Number(estimatedTime) || 60,
       explanation,
-      method,
+      method: method.trim() || 'Standard Method',
       hints,
+      externalKey: externalKey.trim() || undefined,
+      pyq: pyq.trim() || null,
+      status,
+      sourceType,
+      generationMethod,
+      sourceBook: sourceBook.trim() || null,
+      sourceEdition: sourceEdition.trim() || null,
+      sourceChapter: sourceChapter.trim() || null,
+      sourcePageRange: sourcePageRange.trim() || null,
+      alternativeExplanation: alternativeExplanation.trim() || null,
+      preferredSolution: preferredSolution ? preferredSolution : null,
+      preferredReason: preferredReason.trim() || null,
     };
 
     try {
@@ -773,7 +911,7 @@ const QuestionFormModal: React.FC<{
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content" style={{ maxWidth: '680px' }}>
+      <div className="modal-content" style={{ maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="modal-header">
           <h3 className="modal-title">{editItem ? 'Edit Question' : 'Add New Question'}</h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
@@ -781,23 +919,78 @@ const QuestionFormModal: React.FC<{
 
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            <div className="form-group">
-              <label className="form-label">Subtopic Assignment</label>
-              <select className="form-control" value={subtopicId} onChange={(e) => setSubtopicId(e.target.value)} required>
-                {subtopics.map((s) => (
-                  <option key={s.id} value={s.id}>{s.topicName} → {s.name}</option>
-                ))}
-              </select>
+            {/* Top row: Subtopic and External Key */}
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px' }}>
+              <div className="form-group">
+                <label className="form-label">Subtopic Assignment</label>
+                <select className="form-control" value={subtopicId} onChange={(e) => setSubtopicId(e.target.value)} required>
+                  {subtopics.map((s) => (
+                    <option key={s.id} value={s.id}>{s.topicName} → {s.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">External Key (Unique ID)</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={externalKey}
+                  onChange={(e) => setExternalKey(e.target.value)}
+                  placeholder="e.g. rs-agg-ch21-q014"
+                />
+              </div>
             </div>
 
+            {/* Prompt */}
             <div className="form-group">
               <label className="form-label">Question Prompt</label>
-              <textarea className="form-control" value={prompt} onChange={(e) => setPrompt(e.target.value)} required placeholder="e.g. A store offers a 20% discount..." />
+              <textarea className="form-control" value={prompt} onChange={(e) => setPrompt(e.target.value)} required rows={3} placeholder="e.g. A store offers a 20% discount..." />
+            </div>
+
+            {/* PYQ Tag, Review Status, & Generation Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '12px' }}>
+              <div className="form-group">
+                <label className="form-label">PYQ Exam & Year</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={pyq}
+                  onChange={(e) => setPyq(e.target.value)}
+                  placeholder='e.g. TCS NQT (2023), CAT (2012)'
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Status</label>
+                <select className="form-control" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option value="PUBLISHED">PUBLISHED</option>
+                  <option value="REVIEW">REVIEW</option>
+                  <option value="DRAFT">DRAFT</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Source</label>
+                <select className="form-control" value={sourceType} onChange={(e) => setSourceType(e.target.value)}>
+                  <option value="MANUAL">MANUAL</option>
+                  <option value="AI_GENERATED">AI_GEN</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Method</label>
+                <select className="form-control" value={generationMethod} onChange={(e) => setGenerationMethod(e.target.value)}>
+                  <option value="HUMAN_MANUAL">HUMAN</option>
+                  <option value="AI_EXTRACTED">AI_EXTRACTED</option>
+                  <option value="AI_SYNTHETIC">AI_SYNTHETIC</option>
+                </select>
+              </div>
             </div>
 
             {/* Options */}
             <div className="form-group">
-              <label className="form-label">Options (Mark Correct Radio)</label>
+              <label className="form-label">Options (Select Correct Radio)</label>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 {[
                   { id: 'A', val: optA, setter: setOptA },
@@ -826,7 +1019,7 @@ const QuestionFormModal: React.FC<{
               </div>
             </div>
 
-            {/* Difficulty & Mode */}
+            {/* Difficulty & Calculation Mode */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
               <div className="form-group">
                 <label className="form-label">Difficulty</label>
@@ -852,14 +1045,68 @@ const QuestionFormModal: React.FC<{
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Explanation</label>
-              <textarea className="form-control" value={explanation} onChange={(e) => setExplanation(e.target.value)} placeholder="Step-by-step solution..." />
+            {/* Provenance Details */}
+            <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+                Curriculum Book Provenance
+              </span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '8px' }}>
+                <div>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Source Book Title</label>
+                  <input type="text" className="form-control" value={sourceBook} onChange={(e) => setSourceBook(e.target.value)} placeholder="e.g. RS Aggarwal Quantitative Aptitude" />
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Edition</label>
+                  <input type="text" className="form-control" value={sourceEdition} onChange={(e) => setSourceEdition(e.target.value)} placeholder="e.g. 2024 Revised" />
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Chapter / Unit</label>
+                  <input type="text" className="form-control" value={sourceChapter} onChange={(e) => setSourceChapter(e.target.value)} placeholder="e.g. Chapter 21: Time and Distance" />
+                </div>
+                <div>
+                  <label className="form-label" style={{ fontSize: '11px' }}>Page Range</label>
+                  <input type="text" className="form-control" value={sourcePageRange} onChange={(e) => setSourcePageRange(e.target.value)} placeholder="e.g. pp. 310-312" />
+                </div>
+              </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Solving Method / Shortcut</label>
-              <input type="text" className="form-control" value={method} onChange={(e) => setMethod(e.target.value)} placeholder="e.g. Unit digit method, ratio shortcut..." />
+            {/* Dual Solutions Section */}
+            <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '8px', border: '1px solid #bfdbfe', marginBottom: '16px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#1d4ed8' }}>
+                Dual Solutions (Book Method + Alternative Speed Shortcut)
+              </span>
+
+              {/* Solution 1: Book */}
+              <div className="form-group" style={{ marginTop: '10px' }}>
+                <label className="form-label">📖 Solution 1 (Book / Standard Method)</label>
+                <textarea className="form-control" rows={3} value={explanation} onChange={(e) => setExplanation(e.target.value)} placeholder="Standard textbook step-by-step derivation..." required />
+              </div>
+              <div className="form-group">
+                <label className="form-label" style={{ fontSize: '11px' }}>Solving Formula / Method Descriptor</label>
+                <input type="text" className="form-control" value={method} onChange={(e) => setMethod(e.target.value)} placeholder="e.g. Standard Distance Formula, Ratio Shortcut..." />
+              </div>
+
+              {/* Solution 2: Alternative */}
+              <div className="form-group" style={{ marginTop: '12px' }}>
+                <label className="form-label">⚡ Solution 2 (Alternative / Speed Shortcut Method)</label>
+                <textarea className="form-control" rows={3} value={alternativeExplanation} onChange={(e) => setAlternativeExplanation(e.target.value)} placeholder="High-speed trick, mental-math shortcut, or elimination technique..." />
+              </div>
+
+              {/* Preference selector */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
+                <div className="form-group">
+                  <label className="form-label" style={{ fontSize: '11px' }}>AI Preferred Solution</label>
+                  <select className="form-control" value={preferredSolution} onChange={(e) => setPreferredSolution(e.target.value)}>
+                    <option value="">None / Neutral</option>
+                    <option value="BOOK">Solution 1 (Book Method)</option>
+                    <option value="ALTERNATIVE">Solution 2 (Alternative Speed Shortcut)</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label" style={{ fontSize: '11px' }}>Reason for Preference</label>
+                  <input type="text" className="form-control" value={preferredReason} onChange={(e) => setPreferredReason(e.target.value)} placeholder="e.g. Solves in 15 seconds without algebra" />
+                </div>
+              </div>
             </div>
 
             <div className="form-group">

@@ -1,5 +1,7 @@
 import { prisma } from '../../config/prisma';
 import crypto from 'crypto';
+import { ScriptDefinition } from '../lesson/interfaces/script-dsl.interface';
+import { ScriptValidator } from '../lesson/engines/script-validator';
 
 export class AdminSyllabusService {
   /**
@@ -525,6 +527,147 @@ export class AdminSyllabusService {
       }
 
       return { script, version: existing.versions[0] };
+    });
+  }
+
+  /**
+   * Imports a full Lesson Script with strict external question existence and ownership verification.
+   */
+  public static async importScript(data: {
+    subjectId: string;
+    topicId: string;
+    externalSubtopicKey: string;
+    definition: ScriptDefinition;
+    status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED';
+  }) {
+    // 1. Resolve subtopic by externalSubtopicKey (slug) or ID under topic
+    const subtopic = await prisma.subtopic.findFirst({
+      where: {
+        topicId: data.topicId,
+        OR: [
+          { slug: data.externalSubtopicKey },
+          { id: data.externalSubtopicKey },
+        ],
+      },
+      include: { topic: true },
+    });
+
+    if (!subtopic) {
+      throw new Error(
+        `Target subtopic with external key '${data.externalSubtopicKey}' does not exist under topic '${data.topicId}'.`
+      );
+    }
+
+    // 2. Validate Script DSL Structure
+    const validation = ScriptValidator.validate(data.definition);
+    if (!validation.valid) {
+      throw new Error(`Script DSL validation failed: ${validation.errors.map((e) => e.message).join('; ')}`);
+    }
+
+    // 3. STRICT QUESTION REFERENCE VERIFICATION
+    const referencedQuestionKeys: string[] = [];
+    if (data.definition.nodes) {
+      for (const node of Object.values(data.definition.nodes)) {
+        if (node.type === 'QUESTION' && node.questionReference?.mode === 'QUESTION_EXTERNAL_ID') {
+          const extId = node.questionReference.externalId;
+          if (!extId) {
+            throw new Error(`Node '${node.id}' specifies QUESTION_EXTERNAL_ID but externalId is missing.`);
+          }
+          referencedQuestionKeys.push(extId.trim());
+        }
+      }
+    }
+
+    if (referencedQuestionKeys.length > 0) {
+      const existingQuestions = await prisma.question.findMany({
+        where: { externalKey: { in: referencedQuestionKeys } },
+        select: { id: true, externalKey: true, topicId: true, subtopicId: true },
+      });
+
+      const questionMap = new Map(existingQuestions.map((q) => [q.externalKey!, q]));
+
+      for (const key of referencedQuestionKeys) {
+        const q = questionMap.get(key);
+        // Check 1: Existence
+        if (!q) {
+          throw new Error(`❌ SCRIPT IMPORT FAILED: Question reference '${key}' does not exist in the question repository.`);
+        }
+        // Check 2: Topic Ownership
+        if (q.topicId !== data.topicId) {
+          throw new Error(
+            `❌ SCRIPT IMPORT FAILED: Question '${key}' belongs to topic '${q.topicId}', but this script is for topic '${data.topicId}'.`
+          );
+        }
+        // Check 3: Subtopic Ownership
+        if (q.subtopicId !== subtopic.id) {
+          throw new Error(
+            `❌ SCRIPT IMPORT FAILED: Question '${key}' belongs to subtopic '${q.subtopicId}', while this script is for subtopic '${subtopic.id}' (${data.externalSubtopicKey}).`
+          );
+        }
+      }
+    }
+
+    // 4. Persistence
+    const status = data.status || 'REVIEW';
+    const slug = data.definition.scriptId || `${data.topicId}-${subtopic.slug || subtopic.id}-script`;
+    const definitionString = JSON.stringify(data.definition);
+    const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
+
+    return prisma.$transaction(async (tx) => {
+      let script = await tx.lessonScript.findUnique({
+        where: { slug },
+      });
+
+      if (!script) {
+        script = await tx.lessonScript.create({
+          data: {
+            slug,
+            title: data.definition.metadata?.title || `${subtopic.name} Script`,
+            subjectId: data.subjectId,
+            topicId: data.topicId,
+            subtopicId: subtopic.id,
+            status: status as any,
+          },
+        });
+      } else {
+        await tx.lessonScript.update({
+          where: { id: script.id },
+          data: {
+            title: data.definition.metadata?.title || script.title,
+            subjectId: data.subjectId,
+            topicId: data.topicId,
+            subtopicId: subtopic.id,
+            status: status as any,
+          },
+        });
+      }
+
+      // Check current latest version
+      const latestVersion = await tx.lessonScriptVersion.findFirst({
+        where: { scriptId: script.id },
+        orderBy: { versionNumber: 'desc' },
+      });
+      const nextVersionNumber = (latestVersion?.versionNumber || 0) + 1;
+
+      const version = await tx.lessonScriptVersion.create({
+        data: {
+          scriptId: script.id,
+          versionNumber: nextVersionNumber,
+          definition: data.definition as any,
+          checksum,
+          status: status as any,
+          publishedAt: status === 'PUBLISHED' ? new Date() : null,
+        },
+      });
+
+      if (status === 'PUBLISHED') {
+        await tx.lessonScript.update({
+          where: { id: script.id },
+          data: { publishedVersionId: version.id },
+        });
+      }
+
+      return { script, version };
     });
   }
 

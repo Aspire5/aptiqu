@@ -10,6 +10,7 @@ export interface QuestionListFilter {
   difficulty?: QuestionDifficulty;
   sourceType?: 'MANUAL' | 'AI_GENERATED';
   status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
+  pyqOnly?: boolean | string;
   page?: number;
   limit?: number;
 }
@@ -31,6 +32,15 @@ export class AdminQuestionsService {
     if (filter.difficulty) where.difficulty = filter.difficulty;
     if (filter.sourceType) where.sourceType = filter.sourceType;
     if (filter.status) where.status = filter.status;
+
+    if (filter.pyqOnly !== undefined && filter.pyqOnly !== '') {
+      const isPyq = filter.pyqOnly === true || filter.pyqOnly === 'true';
+      if (isPyq) {
+        where.pyq = { not: null };
+      } else {
+        where.pyq = null;
+      }
+    }
 
     if (filter.search && filter.search.trim()) {
       where.prompt = {
@@ -141,6 +151,16 @@ export class AdminQuestionsService {
     calculationMode?: CalculationMode;
     status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
     sourceType?: 'MANUAL' | 'AI_GENERATED';
+    externalKey?: string;
+    pyq?: string;
+    alternativeExplanation?: string;
+    preferredSolution?: 'BOOK' | 'ALTERNATIVE';
+    preferredReason?: string;
+    generationMethod?: 'HUMAN_MANUAL' | 'AI_EXTRACTED' | 'AI_SYNTHETIC';
+    sourceBook?: string;
+    sourceEdition?: string;
+    sourceChapter?: string;
+    sourcePageRange?: string;
   }) {
     // Resolve subtopic hierarchy
     const subtopic = await prisma.subtopic.findUnique({
@@ -168,18 +188,28 @@ export class AdminQuestionsService {
         subjectId,
         topicId,
         subtopicId: data.subtopicId,
+        externalKey: data.externalKey?.trim() || null,
         pattern: data.pattern || 'STANDARD_MCQ',
         prompt: data.prompt,
         options: data.options as any,
         correctAnswer: data.correctAnswer,
         hints: data.hints || [],
         explanation: data.explanation || '',
-        method: data.method || '',
+        method: data.method || 'Standard Method',
         difficulty: data.difficulty || 'EASY',
         estimatedTimeSeconds: data.estimatedTimeSeconds || 60,
         calculationMode: data.calculationMode || 'MENTAL',
         sourceType: data.sourceType || 'MANUAL',
         status: data.status || 'PUBLISHED',
+        pyq: data.pyq?.trim() || null,
+        alternativeExplanation: data.alternativeExplanation?.trim() || null,
+        preferredSolution: data.preferredSolution || null,
+        preferredReason: data.preferredReason?.trim() || null,
+        generationMethod: data.generationMethod || 'HUMAN_MANUAL',
+        sourceBook: data.sourceBook?.trim() || null,
+        sourceEdition: data.sourceEdition?.trim() || null,
+        sourceChapter: data.sourceChapter?.trim() || null,
+        sourcePageRange: data.sourcePageRange?.trim() || null,
         fingerprint,
       },
       include: {
@@ -227,6 +257,7 @@ export class AdminQuestionsService {
         subjectId,
         topicId,
         subtopicId,
+        externalKey: data.externalKey !== undefined ? (data.externalKey?.trim() || null) : existing.externalKey,
         prompt,
         options,
         correctAnswer: data.correctAnswer ?? existing.correctAnswer,
@@ -237,6 +268,14 @@ export class AdminQuestionsService {
         estimatedTimeSeconds: data.estimatedTimeSeconds ?? existing.estimatedTimeSeconds,
         calculationMode: data.calculationMode ?? existing.calculationMode,
         status: data.status ?? existing.status,
+        pyq: data.pyq !== undefined ? (data.pyq?.trim() || null) : existing.pyq,
+        alternativeExplanation: data.alternativeExplanation !== undefined ? (data.alternativeExplanation?.trim() || null) : existing.alternativeExplanation,
+        preferredSolution: data.preferredSolution !== undefined ? (data.preferredSolution || null) : existing.preferredSolution,
+        preferredReason: data.preferredReason !== undefined ? (data.preferredReason?.trim() || null) : existing.preferredReason,
+        sourceBook: data.sourceBook !== undefined ? (data.sourceBook?.trim() || null) : existing.sourceBook,
+        sourceEdition: data.sourceEdition !== undefined ? (data.sourceEdition?.trim() || null) : existing.sourceEdition,
+        sourceChapter: data.sourceChapter !== undefined ? (data.sourceChapter?.trim() || null) : existing.sourceChapter,
+        sourcePageRange: data.sourcePageRange !== undefined ? (data.sourcePageRange?.trim() || null) : existing.sourcePageRange,
         fingerprint,
       },
       include: {
@@ -302,12 +341,35 @@ export class AdminQuestionsService {
     let failedCount = 0;
     const errors: Array<{ index: number; reason: string }> = [];
 
-    // Fallback subtopic if none provided in row or default
-    let fallbackSubtopicId = defaultSubtopicId;
-    if (!fallbackSubtopicId) {
-      const firstSubtopic = await prisma.subtopic.findFirst();
-      fallbackSubtopicId = firstSubtopic?.id;
+    // 1. Collect all candidate subtopic keys across all rows for a single batched query
+    const rawKeys = new Set<string>();
+    for (const q of rawQuestions) {
+      const key = q.externalSubtopicKey || q.subtopicId || q.subtopicSlug;
+      if (key && typeof key === 'string' && key.trim()) {
+        rawKeys.add(key.trim());
+      }
     }
+    if (defaultSubtopicId && defaultSubtopicId.trim()) {
+      rawKeys.add(defaultSubtopicId.trim());
+    }
+
+    const subtopicList = await prisma.subtopic.findMany({
+      where: {
+        OR: [
+          { slug: { in: Array.from(rawKeys) } },
+          { id: { in: Array.from(rawKeys) } },
+        ],
+      },
+      include: { topic: true },
+    });
+
+    const subtopicMap = new Map<string, any>();
+    for (const s of subtopicList) {
+      if (s.slug) subtopicMap.set(s.slug, s);
+      subtopicMap.set(s.id, s);
+    }
+
+    const resolvedDefaultSubtopic = defaultSubtopicId ? subtopicMap.get(defaultSubtopicId.trim()) : null;
 
     for (let i = 0; i < rawQuestions.length; i++) {
       const q = rawQuestions[i];
@@ -341,18 +403,21 @@ export class AdminQuestionsService {
         const rawCorrect = String(q.correctAnswer || q.correct_answer || q.answer || 'A').toUpperCase().trim();
         const correctAnswer = (['A', 'B', 'C', 'D'].includes(rawCorrect) ? rawCorrect : 'A') as QuestionOptionId;
 
-        const subtopicId = q.subtopicId || fallbackSubtopicId;
-        if (!subtopicId) {
-          throw new Error('No subtopic assigned and no default subtopic found');
+        // Subtopic lookup
+        const rawTargetKey = (q.externalSubtopicKey || q.subtopicId || q.subtopicSlug || '') as string;
+        const targetSubtopicKey = rawTargetKey.trim();
+
+        let subtopic = targetSubtopicKey ? subtopicMap.get(targetSubtopicKey) : null;
+        if (!subtopic && resolvedDefaultSubtopic) {
+          subtopic = resolvedDefaultSubtopic;
         }
 
-        const subtopic = await prisma.subtopic.findUnique({
-          where: { id: subtopicId },
-          include: { topic: true },
-        });
-
         if (!subtopic) {
-          throw new Error(`Subtopic with ID '${subtopicId}' does not exist`);
+          throw new Error(
+            targetSubtopicKey
+              ? `Unknown subtopic key: "${targetSubtopicKey}"`
+              : 'No subtopic key provided and no default subtopic configured'
+          );
         }
 
         const difficultyRaw = String(q.difficulty || 'EASY').toUpperCase().trim();
@@ -365,29 +430,58 @@ export class AdminQuestionsService {
         // Skip if duplicate fingerprint
         const existing = await prisma.question.findUnique({ where: { fingerprint } });
         if (existing) {
-          // Already in database, treat as duplicate skip
           failedCount++;
           errors.push({ index: i + 1, reason: `Duplicate question skipped: "${prompt.slice(0, 30)}..."` });
           continue;
         }
+
+        const externalKey = q.externalQuestionKey || q.externalKey ? String(q.externalQuestionKey || q.externalKey).trim() : null;
+        if (externalKey) {
+          const existingKey = await prisma.question.findUnique({ where: { externalKey } });
+          if (existingKey) {
+            failedCount++;
+            errors.push({ index: i + 1, reason: `Question with externalKey "${externalKey}" already exists.` });
+            continue;
+          }
+        }
+
+        const pyq = q.pyq ? String(q.pyq).trim() : null;
+        const alternativeExplanation = q.alternativeExplanation ? String(q.alternativeExplanation).trim() : null;
+        const preferredSolution = q.preferredSolution === 'ALTERNATIVE' ? 'ALTERNATIVE' : q.preferredSolution === 'BOOK' ? 'BOOK' : null;
+        const preferredReason = q.preferredReason ? String(q.preferredReason).trim() : null;
+
+        const sourceBook = q.provenance?.bookTitle || q.sourceBook ? String(q.provenance?.bookTitle || q.sourceBook).trim() : null;
+        const sourceEdition = q.provenance?.edition || q.sourceEdition ? String(q.provenance?.edition || q.sourceEdition).trim() : null;
+        const sourceChapter = q.provenance?.chapter || q.sourceChapter ? String(q.provenance?.chapter || q.sourceChapter).trim() : null;
+        const sourcePageRange = q.provenance?.pageRange || q.sourcePageRange ? String(q.provenance?.pageRange || q.sourcePageRange).trim() : null;
 
         await prisma.question.create({
           data: {
             subjectId: subtopic.topic.subjectId,
             topicId: subtopic.topicId,
             subtopicId: subtopic.id,
+            externalKey,
             pattern: q.pattern || 'STANDARD_MCQ',
             prompt,
             options: options as any,
             correctAnswer,
             hints: Array.isArray(q.hints) ? q.hints : (q.hint ? [String(q.hint)] : []),
             explanation: String(q.explanation || ''),
-            method: String(q.method || ''),
+            method: String(q.method || q.pattern || 'Standard Method'),
             difficulty,
             estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
             calculationMode: (q.calculationMode || 'MENTAL') as CalculationMode,
             sourceType: 'MANUAL',
-            status: 'PUBLISHED',
+            status: q.status || 'REVIEW', // Default is REVIEW (Review Required)
+            generationMethod: 'AI_EXTRACTED',
+            sourceBook,
+            sourceEdition,
+            sourceChapter,
+            sourcePageRange,
+            pyq,
+            alternativeExplanation,
+            preferredSolution,
+            preferredReason,
             fingerprint,
           },
         });
@@ -404,7 +498,7 @@ export class AdminQuestionsService {
       totalProcessed: rawQuestions.length,
       successCount,
       failedCount,
-      errors: errors.slice(0, 20), // return top 20 errors for user feedback
+      errors: errors.slice(0, 20),
     };
   }
 }

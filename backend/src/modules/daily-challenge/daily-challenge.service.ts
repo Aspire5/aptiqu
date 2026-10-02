@@ -421,12 +421,16 @@ export class DailyChallengeService {
           difficulty: sq.question.difficulty,
           estimatedTimeSeconds: 60,
           calculationMode: sq.question.calculationMode,
+          pyq: sq.question.pyq,
           // Exclude hints strictly for daily challenge!
           hints: [],
           // Reveal explanation and answer only if already answered
           correctAnswer: isAnswered ? sq.question.correctAnswer : undefined,
           explanation: isAnswered ? sq.question.explanation : undefined,
           method: isAnswered ? sq.question.method : undefined,
+          alternativeExplanation: isAnswered ? sq.question.alternativeExplanation : undefined,
+          preferredSolution: isAnswered ? sq.question.preferredSolution : undefined,
+          preferredReason: isAnswered ? sq.question.preferredReason : undefined,
         },
       };
     });
@@ -641,6 +645,9 @@ export class DailyChallengeService {
         correctAnswer: question.correctAnswer,
         explanation: question.explanation,
         method: question.method,
+        alternativeExplanation: question.alternativeExplanation,
+        preferredSolution: question.preferredSolution,
+        preferredReason: question.preferredReason,
         sequence: scriptQuestion.sequence,
         isComplete,
         answeredCount,
