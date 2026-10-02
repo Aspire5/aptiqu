@@ -8,8 +8,10 @@ import {
   BrainCircuit, 
   TrendingUp, 
   CheckCircle2, 
-  BookOpen
+  BookOpen,
+  AlertTriangle
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -49,6 +51,64 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div>
+      {/* Daily Challenge Inventory Depletion Alert Banner */}
+      {overview.dailyChallengeInventory && overview.dailyChallengeInventory.status !== 'HEALTHY' && (
+        <div style={{
+          background: overview.dailyChallengeInventory.status === 'CRITICAL' ? '#fef2f2' : '#fffbeb',
+          border: `1px solid ${overview.dailyChallengeInventory.status === 'CRITICAL' ? '#f87171' : '#fcd34d'}`,
+          borderRadius: '12px',
+          padding: '16px 20px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{
+              background: overview.dailyChallengeInventory.status === 'CRITICAL' ? '#fee2e2' : '#fef3c7',
+              color: overview.dailyChallengeInventory.status === 'CRITICAL' ? '#dc2626' : '#d97706',
+              padding: '10px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <AlertTriangle size={24} />
+            </div>
+            <div>
+              <h4 style={{
+                margin: 0,
+                fontSize: '15px',
+                fontWeight: 700,
+                color: overview.dailyChallengeInventory.status === 'CRITICAL' ? '#991b1b' : '#92400e',
+              }}>
+                {overview.dailyChallengeInventory.status === 'CRITICAL' 
+                  ? '🚨 Daily Challenge Manual PYQ Inventory Depleted' 
+                  : '⚠️ Daily Challenge Manual PYQ Inventory Running Low'}
+              </h4>
+              <p style={{
+                margin: '4px 0 0 0',
+                fontSize: '13px',
+                color: overview.dailyChallengeInventory.status === 'CRITICAL' ? '#b91c1c' : '#b45309',
+              }}>
+                {overview.dailyChallengeInventory.alertMessage}
+              </p>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '8px', fontSize: '12px', alignItems: 'center' }}>
+                <span style={{ fontWeight: 600, color: '#475569' }}>Unused Pool:</span>
+                <span className="badge badge-success">Easy: {overview.dailyChallengeInventory.counts.EASY}</span>
+                <span className="badge badge-warning">Med: {overview.dailyChallengeInventory.counts.MEDIUM}</span>
+                <span className="badge badge-danger">Hard: {overview.dailyChallengeInventory.counts.HARD}</span>
+              </div>
+            </div>
+          </div>
+          <Link to="/questions" className="btn-primary" style={{ textDecoration: 'none', whiteSpace: 'nowrap' }}>
+            Import Manual PYQs
+          </Link>
+        </div>
+      )}
+
       {/* 1. TOP STAT CARDS WITH FLOATING GRADIENTS */}
       <div className="stats-grid">
         {/* Total Users */}

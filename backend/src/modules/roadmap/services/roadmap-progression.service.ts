@@ -763,16 +763,13 @@ export class RoadmapProgressionService {
       }
     }
 
-    // Rule 2: Next step within the SAME subject that has published content
+    // Rule 2: Next step within the SAME subject
     const nextStepInSubject = await prisma.roadmapStep.findFirst({
       where: {
         roadmapId: roadmap.id,
         subjectId: currentStep.subjectId,
         sequence: { gt: currentStep.sequence },
         isActive: true,
-        scriptAssignments: {
-          some: { status: 'PUBLISHED' },
-        },
       },
       orderBy: { sequence: 'asc' },
       include: {
@@ -786,11 +783,27 @@ export class RoadmapProgressionService {
       },
     });
 
-    if (nextStepInSubject && nextStepInSubject.scriptAssignments.length > 0) {
-      return this.formatStepResult(
-        nextStepInSubject,
-        nextStepInSubject.scriptAssignments[0]
-      );
+    if (nextStepInSubject) {
+      if (nextStepInSubject.scriptAssignments.length > 0) {
+        return this.formatStepResult(
+          nextStepInSubject,
+          nextStepInSubject.scriptAssignments[0]
+        );
+      } else {
+        return {
+          type: 'lesson',
+          available: false,
+          reason: 'SCRIPT_NOT_PUBLISHED',
+          roadmapId: roadmap.id,
+          roadmapStepId: nextStepInSubject.id,
+          subjectId: nextStepInSubject.subjectId,
+          subjectName: nextStepInSubject.subject?.name,
+          topicId: nextStepInSubject.topicId,
+          topicName: nextStepInSubject.topic?.name,
+          subtopicId: nextStepInSubject.subtopicId,
+          message: 'The next lesson in this topic is coming soon.',
+        };
+      }
     }
 
     // Rule 3: Next subject in the roadmap with published content

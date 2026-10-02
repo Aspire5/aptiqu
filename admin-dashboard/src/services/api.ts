@@ -93,4 +93,13 @@ export const api = {
   getUsers: (params: any) => apiClient.get('/users', { params }),
   getUserStats: () => apiClient.get('/users/stats'),
   hardDeleteUser: (id: string) => apiClient.delete(`/users/${id}`),
+
+  // AI Prompts
+  getAiPrompts: () => apiClient.get('/ai-prompts'),
+  getAiPrompt: (key: string) => apiClient.get(`/ai-prompts/${key}`),
+  updateAiPromptDraft: (key: string, draftPrompt: string) =>
+    apiClient.put(`/ai-prompts/${key}`, { draftPrompt }),
+  publishAiPrompt: (key: string) => apiClient.post(`/ai-prompts/${key}/publish`),
+  resetAiPromptToDefault: (key: string) => apiClient.post(`/ai-prompts/${key}/reset-default`),
 };
+

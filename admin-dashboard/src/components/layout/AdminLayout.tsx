@@ -7,7 +7,8 @@ import {
   HelpCircle, 
   Users, 
   LogOut, 
-  Server
+  Server,
+  Sparkles
 } from 'lucide-react';
 
 export const AdminLayout: React.FC = () => {
@@ -23,6 +24,7 @@ export const AdminLayout: React.FC = () => {
   const getPageTitle = () => {
     if (location.pathname.includes('/syllabus')) return 'Syllabus & Curriculum';
     if (location.pathname.includes('/questions')) return 'Question Bank';
+    if (location.pathname.includes('/ai-prompts')) return 'AI Prompts Control Center';
     if (location.pathname.includes('/users')) return 'User Management';
     return 'Executive SaaS Dashboard';
   };
@@ -68,6 +70,14 @@ export const AdminLayout: React.FC = () => {
           >
             <HelpCircle size={18} />
             <span>Questions</span>
+          </NavLink>
+
+          <NavLink
+            to="/ai-prompts"
+            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          >
+            <Sparkles size={18} />
+            <span>AI Prompts</span>
           </NavLink>
 
           <NavLink

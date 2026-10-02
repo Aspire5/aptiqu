@@ -8,6 +8,7 @@ import {
   PRACTICE_REVIEW_SYSTEM_INSTRUCTION,
   QUESTION_REVIEW_JSON_SCHEMA,
 } from '../prompts/practice-review.prompt';
+import { aiPromptService } from './ai-prompt.service';
 import { validateQuestionStructure } from '../../question/validators/question-structural.validator';
 import { FingerprintService } from '../../question/services/fingerprint.service';
 import { LiveCurriculumService } from '../../curriculum/services/live-curriculum.service';
@@ -101,10 +102,15 @@ ${existingFingerprints.map((f) => `- ${f}`).join('\n')}
 Generate exactly ${requestedCount} questions.
 `.trim();
 
+      const systemInstruction = await aiPromptService.getPublishedPrompt(
+        'PRACTICE_GENERATION',
+        PRACTICE_GENERATION_SYSTEM_INSTRUCTION
+      );
+
       const rawGeneration = await geminiProvider.generateStructuredContent<{
         questions: any[];
       }>({
-        systemInstruction: PRACTICE_GENERATION_SYSTEM_INSTRUCTION,
+        systemInstruction,
         prompt: generatorPrompt,
         responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
         timeoutMs: 60000,

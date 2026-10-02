@@ -56,6 +56,8 @@ export class AdminDashboardService {
       prisma.aiMessage.count(),
     ]);
 
+    const dailyChallengeInventory = await AdminDashboardService.getDailyChallengeInventoryStatus();
+
     return {
       totalUsers,
       activeUsers24h,
@@ -65,6 +67,7 @@ export class AdminDashboardService {
         passedCount: todayPassed,
         passRate: todayPassRate,
       },
+      dailyChallengeInventory,
       activity: {
         pvpMatchesPlayed: pvpMatchesTotal,
         pvpMatchesCompleted,
@@ -304,4 +307,73 @@ export class AdminDashboardService {
 
     return days;
   }
+
+  /**
+   * Checks the remaining inventory of unused MANUAL PYQ questions available for Daily Challenges.
+   * If any difficulty pool is exhausted (0) or low (< 5), flags an alert for the admin dashboard.
+   */
+  public static async getDailyChallengeInventoryStatus() {
+    const [easyCount, mediumCount, hardCount] = await Promise.all([
+      prisma.question.count({
+        where: {
+          sourceType: 'MANUAL',
+          status: 'PUBLISHED',
+          pyq: { not: null },
+          difficulty: 'EASY',
+          dailyChallengeScriptQuestions: { none: {} },
+        },
+      }),
+      prisma.question.count({
+        where: {
+          sourceType: 'MANUAL',
+          status: 'PUBLISHED',
+          pyq: { not: null },
+          difficulty: 'MEDIUM',
+          dailyChallengeScriptQuestions: { none: {} },
+        },
+      }),
+      prisma.question.count({
+        where: {
+          sourceType: 'MANUAL',
+          status: 'PUBLISHED',
+          pyq: { not: null },
+          difficulty: 'HARD',
+          dailyChallengeScriptQuestions: { none: {} },
+        },
+      }),
+    ]);
+
+    const isDepleted = easyCount === 0 || mediumCount === 0 || hardCount === 0;
+    const isLow = easyCount < 5 || mediumCount < 5 || hardCount < 5;
+
+    let status: 'CRITICAL' | 'WARNING' | 'HEALTHY' = 'HEALTHY';
+    let alertMessage: string | null = null;
+
+    if (isDepleted) {
+      status = 'CRITICAL';
+      const depletedDiffs = [
+        ...(easyCount === 0 ? ['EASY'] : []),
+        ...(mediumCount === 0 ? ['MEDIUM'] : []),
+        ...(hardCount === 0 ? ['HARD'] : []),
+      ];
+      alertMessage = `CRITICAL: Manual PYQ inventory depleted for ${depletedDiffs.join(', ')}. Daily Challenge generation will halt until new manual PYQs are imported.`;
+    } else if (isLow) {
+      status = 'WARNING';
+      alertMessage = `WARNING: Manual PYQ inventory is running low (EASY: ${easyCount}, MEDIUM: ${mediumCount}, HARD: ${hardCount}). Consider importing more manual PYQs.`;
+    }
+
+    return {
+      status,
+      isDepleted,
+      isLow,
+      alertMessage,
+      counts: {
+        EASY: easyCount,
+        MEDIUM: mediumCount,
+        HARD: hardCount,
+        total: easyCount + mediumCount + hardCount,
+      },
+    };
+  }
 }
+

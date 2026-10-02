@@ -131,8 +131,8 @@ export class DailyChallengeGenerationService {
           console.error(
             `[DailyChallenge] INVENTORY DEPLETED: Zero unused MANUAL PYQs for difficulty ${diff} on ${dateString} (Tier ${tier}).`
           );
-          // TODO: Surface inventory depletion alert in Admin Dashboard Daily Challenge tab
-          // and prevent corrupted or non-PYQ daily challenge generation.
+          // Inventory depletion alert is monitored and displayed in Admin Dashboard (AdminDashboardService.getDailyChallengeInventoryStatus)
+          // to prevent corrupted or non-PYQ daily challenge generation.
           throw new Error(
             `Daily Challenge creation halted: Manual PYQ inventory depleted for difficulty ${diff} on date ${dateString}.`
           );

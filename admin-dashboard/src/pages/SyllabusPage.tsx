@@ -1032,6 +1032,7 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
   const [description, setDescription] = useState(editItem?.description || '');
   const [defaultImportance, setDefaultImportance] = useState(editItem?.defaultImportance || 'medium');
   const [defaultTeachingMinutes, setDefaultTeachingMinutes] = useState(editItem?.defaultTeachingMinutes ?? 30);
+  const [isActive, setIsActive] = useState(editItem?.isActive ?? true);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -1039,7 +1040,7 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
     setLoading(true);
     try {
       if (editItem) {
-        await api.updateTopic(editItem.id, { name, description, defaultImportance, defaultTeachingMinutes });
+        await api.updateTopic(editItem.id, { name, description, defaultImportance, defaultTeachingMinutes, isActive });
       } else {
         await api.createTopic({ subjectId, name, description, defaultImportance, defaultTeachingMinutes });
       }
@@ -1080,6 +1081,12 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
               <label className="form-label">Teaching Minutes</label>
               <input type="number" className="form-control" value={defaultTeachingMinutes} onChange={(e) => setDefaultTeachingMinutes(Number(e.target.value))} />
             </div>
+            {editItem && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                <input type="checkbox" id="topicActive" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+                <label htmlFor="topicActive" style={{ fontSize: '13px', cursor: 'pointer' }}>Active (Visible in Curriculum)</label>
+              </div>
+            )}
           </div>
           <div className="modal-footer">
             <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
@@ -1098,8 +1105,11 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
   onSuccess,
 }) => {
   const [name, setName] = useState(editItem?.name || '');
+  const [description, setDescription] = useState(editItem?.description || '');
   const [sequence, setSequence] = useState(editItem?.sequence ?? 0);
   const [importance, setImportance] = useState(editItem?.importance || 'medium');
+  const [teachingMinutes, setTeachingMinutes] = useState(editItem?.teachingMinutes ?? 30);
+  const [isActive, setIsActive] = useState(editItem?.isActive ?? true);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -1107,9 +1117,9 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
     setLoading(true);
     try {
       if (editItem) {
-        await api.updateSubtopic(editItem.id, { name, sequence, importance });
+        await api.updateSubtopic(editItem.id, { name, description, sequence, importance, teachingMinutes, isActive });
       } else {
-        await api.createSubtopic({ topicId, name, sequence, importance });
+        await api.createSubtopic({ topicId, name, description, sequence, importance, teachingMinutes });
       }
       onSuccess();
     } catch (err: any) {
@@ -1133,6 +1143,10 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
               <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
             <div className="form-group">
+              <label className="form-label">Description</label>
+              <textarea className="form-control" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Subtopic learning goals or concepts..." />
+            </div>
+            <div className="form-group">
               <label className="form-label">Sequence Number</label>
               <input type="number" className="form-control" value={sequence} onChange={(e) => setSequence(Number(e.target.value))} />
             </div>
@@ -1144,6 +1158,16 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
                 <option value="low">Low</option>
               </select>
             </div>
+            <div className="form-group">
+              <label className="form-label">Teaching Minutes</label>
+              <input type="number" className="form-control" value={teachingMinutes} onChange={(e) => setTeachingMinutes(Number(e.target.value))} />
+            </div>
+            {editItem && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                <input type="checkbox" id="subActive" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+                <label htmlFor="subActive" style={{ fontSize: '13px', cursor: 'pointer' }}>Active (Visible in Curriculum)</label>
+              </div>
+            )}
           </div>
           <div className="modal-footer">
             <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
@@ -1154,6 +1178,7 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
     </div>
   );
 };
+
 
 // ============================================================================
 // LINK EXISTING TOPIC MODAL (REUSABILITY)

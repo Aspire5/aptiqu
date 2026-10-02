@@ -2,6 +2,7 @@ import { prisma } from '../../../config/prisma';
 import { geminiProvider } from '../gemini.provider';
 import { PVP_GENERATION_SYSTEM_INSTRUCTION } from '../prompts/pvp-generation.prompt';
 import { PVP_REVIEW_SYSTEM_INSTRUCTION } from '../prompts/pvp-review.prompt';
+import { aiPromptService } from './ai-prompt.service';
 import { QUESTION_ARRAY_JSON_SCHEMA } from '../prompts/practice-generation.prompt';
 import { QUESTION_REVIEW_JSON_SCHEMA } from '../prompts/practice-review.prompt';
 import { validateQuestionStructure } from '../../question/validators/question-structural.validator';
@@ -115,10 +116,15 @@ Exclude previously generated fingerprints:
 ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
 `.trim();
 
+      const systemInstruction = await aiPromptService.getPublishedPrompt(
+        'PVP_GENERATION',
+        PVP_GENERATION_SYSTEM_INSTRUCTION
+      );
+
       const rawGeneration = await geminiProvider.generateStructuredContent<{
         questions: any[];
       }>({
-        systemInstruction: PVP_GENERATION_SYSTEM_INSTRUCTION,
+        systemInstruction,
         prompt: generatorPrompt,
         responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
         timeoutMs: 60000,

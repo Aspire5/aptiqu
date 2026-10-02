@@ -7,6 +7,8 @@ import { DashboardPage } from './pages/DashboardPage';
 import { SyllabusPage } from './pages/SyllabusPage';
 import { QuestionsPage } from './pages/QuestionsPage';
 import { UsersPage } from './pages/UsersPage';
+import { AiPromptsPage } from './pages/AiPromptsPage';
+
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -53,6 +55,7 @@ export const App: React.FC = () => {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="syllabus" element={<SyllabusPage />} />
             <Route path="questions" element={<QuestionsPage />} />
+            <Route path="ai-prompts" element={<AiPromptsPage />} />
             <Route path="users" element={<UsersPage />} />
           </Route>
 

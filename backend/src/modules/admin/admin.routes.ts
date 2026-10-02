@@ -5,9 +5,11 @@ import { AdminDashboardController } from './admin-dashboard.controller';
 import { AdminSyllabusController } from './admin-syllabus.controller';
 import { AdminQuestionsController } from './admin-questions.controller';
 import { AdminUsersController } from './admin-users.controller';
+import { AdminAiPromptsController } from './admin-ai-prompts.controller';
 import { AdminController } from './admin.controller';
 
 const router = Router();
+
 
 // ==========================================
 // 1. PUBLIC ADMIN AUTH ROUTE
@@ -83,4 +85,12 @@ router.delete('/users/:id', AdminUsersController.hardDeleteUser);
 // 6. Timing & System Configuration
 router.put('/config/timing', AdminController.updateTimingConfig);
 
+// 7. AI Prompts Management
+router.get('/ai-prompts', AdminAiPromptsController.listPrompts);
+router.get('/ai-prompts/:key', AdminAiPromptsController.getPrompt);
+router.put('/ai-prompts/:key', AdminAiPromptsController.updateDraft);
+router.post('/ai-prompts/:key/publish', AdminAiPromptsController.publishPrompt);
+router.post('/ai-prompts/:key/reset-default', AdminAiPromptsController.resetToDefault);
+
 export default router;
+

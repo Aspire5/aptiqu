@@ -4,6 +4,25 @@ All notable changes, version updates, and migration notes for the AptiQu Node.js
 
 ---
 
+## [1.3.0] — 2026-10-02
+
+### AI Prompts Management & Dynamic Server Execution
+* **AiPrompt Prisma Model:** Added `AiPrompt` model (`@@schema("learning")`) supporting `key`, `title`, `description`, `category`, `draftPrompt`, `publishedPrompt`, `version`, `isLive`, and `lastPublishedAt`.
+* **AiPromptService & In-Memory Cache:**
+  * Implemented `AiPromptService` with zero-restart hot-swapping: reads from memory cache and syncs on boot.
+  * `saveDraft`: Persists modified drafts without affecting live server execution.
+  * `publishPrompt`: Copies draft to published, increments version, and updates memory cache instantly.
+* **Dynamic Generation Services:**
+  * `QuestionGenerationService`: Dynamically queries `PRACTICE_GENERATION` prompt from `AiPromptService`.
+  * `PvpSetGenerationService`: Dynamically queries `PVP_GENERATION` prompt from `AiPromptService`.
+  * `AdminAiPromptsController`: Registered REST endpoints under `/api/v1/admin/ai-prompts` for list, get, draft update, publish, and reset.
+* **Daily Challenge Inventory Depletion Monitoring:**
+  * Added `AdminDashboardService.getDailyChallengeInventoryStatus()` monitoring remaining unused manual PYQ counts per difficulty (`EASY`, `MEDIUM`, `HARD`).
+  * Emits `CRITICAL` or `WARNING` status alerts to admin dashboard when inventory is depleted or low.
+* **Roadmap Progression Invariant:** Fixed `getNextStepOrScript` to return `SCRIPT_NOT_PUBLISHED` when the next active step in sequence does not have published content.
+
+---
+
 ## [1.2.0] — 2026-10-02
 
 ### Book Curriculum, PYQ Provenance & Dual Solutions

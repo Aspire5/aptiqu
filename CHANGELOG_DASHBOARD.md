@@ -4,6 +4,20 @@ All notable changes, version updates, and UI enhancements for the AptiQu React/V
 
 ---
 
+## [1.3.0] — 2026-10-02
+
+### AI Prompts Control Center & Live Zero-Restart Engine
+* **New AI Prompts Sidebar Navigation:** Added dedicated `AI Prompts` section in the left navigation sidebar with icon and route.
+* **Live Server Prompt Management:** Full dashboard editing for PvP Generation, PvP Integrity Review, Practice Generation, Practice Review, and Daily Challenge system instructions.
+* **Draft vs. Live Separation:** Implemented dual-action workflow:
+  * `Save Draft`: Persists updates in database without altering live server execution.
+  * `Publish to Live`: Hot-swaps the active in-memory prompt cache on the server, taking effect immediately with **zero server restart**.
+* **Curriculum Synthesis & OCR Prompt Templates:** Stored textbook OCR and PYQ prompt template in DB under `Manual Reference Prompts` with 1-click clipboard copy for manual ChatGPT/Gemini runs.
+* **Daily Challenge Depletion Warning:** Added top-level alert banner on the executive dashboard surfacing critical inventory depletion or low-stock alerts for unused manual PYQs with direct link to bulk import.
+* **CRUD Audit & Subtopic Enhancements:** Added missing fields in Syllabus modals: Subtopic `description`, `teachingMinutes`, and `isActive` toggles for Topics and Subtopics.
+
+---
+
 ## [1.2.0] — 2026-10-02
 
 ### Book Curriculum & PYQ Authoring Tools

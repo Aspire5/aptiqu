@@ -992,3 +992,23 @@ model DailyChallengeAnswer {
   @@schema("learning")
 }
 
+model AiPrompt {
+  id              String    @id @default(uuid()) @db.Uuid
+  key             String    @unique
+  title           String
+  description     String?
+  category        String    // 'SERVER_GENERATION' | 'SERVER_REVIEW' | 'MANUAL_REFERENCE'
+  draftPrompt     String    @map("draft_prompt") @db.Text
+  publishedPrompt String    @map("published_prompt") @db.Text
+  variables       Json?     @default("[]")
+  version         Int       @default(1)
+  isLive          Boolean   @default(true) @map("is_live")
+  lastPublishedAt DateTime? @map("last_published_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("ai_prompts")
+  @@schema("learning")
+}
+
+
