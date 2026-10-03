@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import { ScriptDefinition } from '../lesson/interfaces/script-dsl.interface';
 import { ScriptValidator } from '../lesson/engines/script-validator';
 import { roadmapProgressionService } from '../roadmap/services/roadmap-progression.service';
+import { questionHydrationService } from '../lesson/services/question-hydration.service';
+import { scriptCacheService } from '../lesson/services/script-cache.service';
 
 export class AdminSyllabusService {
   /**
@@ -465,12 +467,14 @@ export class AdminSyllabusService {
     title: string;
     subjectId: string;
     topicId: string;
-    subtopicId?: string;
+    subtopicId?: string | null;
     definition: any;
     status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED';
   }) {
     const slug = `${data.topicId}-${data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${Date.now().toString(36)}`;
-    const definitionString = JSON.stringify(data.definition || {});
+    const normalized = scriptCacheService.normalizeScriptDefinition(data.definition || {}, data.title);
+    const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalized);
+    const definitionString = JSON.stringify(hydratedDef);
     const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
     const status = data.status || 'PUBLISHED';
 
@@ -490,7 +494,7 @@ export class AdminSyllabusService {
         data: {
           scriptId: script.id,
           versionNumber: 1,
-          definition: data.definition || {},
+          definition: hydratedDef as any,
           checksum,
           status,
           publishedAt: status === 'PUBLISHED' ? new Date() : null,
@@ -542,15 +546,17 @@ export class AdminSyllabusService {
 
       // If definition provided, create a new version
       if (data.definition) {
+        const normalized = scriptCacheService.normalizeScriptDefinition(data.definition, data.title || existing.title);
+        const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalized);
         const nextVersionNum = (existing.versions[0]?.versionNumber || 0) + 1;
-        const definitionString = JSON.stringify(data.definition);
+        const definitionString = JSON.stringify(hydratedDef);
         const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
 
         const newVersion = await tx.lessonScriptVersion.create({
           data: {
             scriptId,
             versionNumber: nextVersionNum,
-            definition: data.definition,
+            definition: hydratedDef as any,
             checksum,
             status: data.status || 'PUBLISHED',
             publishedAt: new Date(),
@@ -576,19 +582,38 @@ export class AdminSyllabusService {
    * Imports a full Lesson Script with strict external question existence and ownership verification.
    */
   public static async importScript(data: {
-    subjectId: string;
+    subjectId?: string;
     topicId: string;
-    externalSubtopicKey: string;
-    definition: ScriptDefinition;
+    subtopicId?: string;
+    externalSubtopicKey?: string;
+    definition?: any;
+    scriptDefinition?: any;
     status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED';
   }) {
+    const rawDef = data.definition || data.scriptDefinition;
+    if (!rawDef) {
+      throw new Error('Script definition is required.');
+    }
+    const normalizedDef = scriptCacheService.normalizeScriptDefinition(rawDef);
+
+    const subtopicKey = (
+      data.externalSubtopicKey ||
+      data.subtopicId ||
+      normalizedDef.metadata?.subtopicId ||
+      ''
+    ).trim();
+
+    if (!subtopicKey) {
+      throw new Error('Target subtopicId or externalSubtopicKey is required.');
+    }
+
     // 1. Resolve subtopic by externalSubtopicKey (slug) or ID under topic
     const subtopic = await prisma.subtopic.findFirst({
       where: {
         topicId: data.topicId,
         OR: [
-          { slug: data.externalSubtopicKey },
-          { id: data.externalSubtopicKey },
+          { slug: subtopicKey },
+          { id: subtopicKey },
         ],
       },
       include: { topic: true },
@@ -596,64 +621,47 @@ export class AdminSyllabusService {
 
     if (!subtopic) {
       throw new Error(
-        `Target subtopic with external key '${data.externalSubtopicKey}' does not exist under topic '${data.topicId}'.`
+        `Target subtopic with key '${subtopicKey}' does not exist under topic '${data.topicId}'.`
       );
     }
 
     // 2. Validate Script DSL Structure
-    const validation = ScriptValidator.validate(data.definition);
+    const validation = ScriptValidator.validate(normalizedDef);
     if (!validation.valid) {
       throw new Error(`Script DSL validation failed: ${validation.errors.map((e) => e.message).join('; ')}`);
     }
 
-    // 3. STRICT QUESTION REFERENCE VERIFICATION
-    const referencedQuestionKeys: string[] = [];
-    if (data.definition.nodes) {
-      for (const node of Object.values(data.definition.nodes)) {
-        if (node.type === 'QUESTION' && node.questionReference?.mode === 'QUESTION_EXTERNAL_ID') {
-          const extId = node.questionReference.externalId;
-          if (!extId) {
-            throw new Error(`Node '${node.id}' specifies QUESTION_EXTERNAL_ID but externalId is missing.`);
+    // 3. Hydrate questions from question bank & enforce strict existence
+    const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalizedDef);
+
+    // Verify subtopic & topic ownership of referenced questions
+    for (const [nodeId, node] of Object.entries(hydratedDef.nodes)) {
+      if (node.type === 'QUESTION' && node.questionReference?.questionId) {
+        const q = await prisma.question.findUnique({
+          where: { id: node.questionReference.questionId },
+          select: { id: true, externalKey: true, topicId: true, subtopicId: true },
+        });
+        if (q) {
+          if (q.topicId !== data.topicId) {
+            throw new Error(
+              `❌ SCRIPT IMPORT FAILED: Question '${q.externalKey || q.id}' belongs to topic '${q.topicId}', but this script is for topic '${data.topicId}'.`
+            );
           }
-          referencedQuestionKeys.push(extId.trim());
-        }
-      }
-    }
-
-    if (referencedQuestionKeys.length > 0) {
-      const existingQuestions = await prisma.question.findMany({
-        where: { externalKey: { in: referencedQuestionKeys } },
-        select: { id: true, externalKey: true, topicId: true, subtopicId: true },
-      });
-
-      const questionMap = new Map(existingQuestions.map((q) => [q.externalKey!, q]));
-
-      for (const key of referencedQuestionKeys) {
-        const q = questionMap.get(key);
-        // Check 1: Existence
-        if (!q) {
-          throw new Error(`❌ SCRIPT IMPORT FAILED: Question reference '${key}' does not exist in the question repository.`);
-        }
-        // Check 2: Topic Ownership
-        if (q.topicId !== data.topicId) {
-          throw new Error(
-            `❌ SCRIPT IMPORT FAILED: Question '${key}' belongs to topic '${q.topicId}', but this script is for topic '${data.topicId}'.`
-          );
-        }
-        // Check 3: Subtopic Ownership
-        if (q.subtopicId !== subtopic.id) {
-          throw new Error(
-            `❌ SCRIPT IMPORT FAILED: Question '${key}' belongs to subtopic '${q.subtopicId}', while this script is for subtopic '${subtopic.id}' (${data.externalSubtopicKey}).`
-          );
+          if (q.subtopicId !== subtopic.id && q.subtopicId !== subtopic.slug) {
+            throw new Error(
+              `❌ SCRIPT IMPORT FAILED: Question '${q.externalKey || q.id}' belongs to subtopic '${q.subtopicId}', while this script is for subtopic '${subtopic.id}' (${subtopic.slug || ''}).`
+            );
+          }
         }
       }
     }
 
     // 4. Persistence
-    const status = data.status || 'REVIEW';
-    const slug = data.definition.scriptId || `${data.topicId}-${subtopic.slug || subtopic.id}-script`;
-    const definitionString = JSON.stringify(data.definition);
+    const status = data.status || 'PUBLISHED';
+    const slug = hydratedDef.scriptId || `${data.topicId}-${subtopic.slug || subtopic.id}-script`;
+    const definitionString = JSON.stringify(hydratedDef);
     const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
+    const subjectId = data.subjectId || subtopic.topic.subjectId;
 
     const result = await prisma.$transaction(async (tx) => {
       let script = await tx.lessonScript.findUnique({
@@ -664,8 +672,8 @@ export class AdminSyllabusService {
         script = await tx.lessonScript.create({
           data: {
             slug,
-            title: data.definition.metadata?.title || `${subtopic.name} Script`,
-            subjectId: data.subjectId,
+            title: hydratedDef.metadata?.title || `${subtopic.name} Script`,
+            subjectId,
             topicId: data.topicId,
             subtopicId: subtopic.id,
             status: status as any,
@@ -675,8 +683,8 @@ export class AdminSyllabusService {
         await tx.lessonScript.update({
           where: { id: script.id },
           data: {
-            title: data.definition.metadata?.title || script.title,
-            subjectId: data.subjectId,
+            title: hydratedDef.metadata?.title || script.title,
+            subjectId,
             topicId: data.topicId,
             subtopicId: subtopic.id,
             status: status as any,
@@ -695,7 +703,7 @@ export class AdminSyllabusService {
         data: {
           scriptId: script.id,
           versionNumber: nextVersionNumber,
-          definition: data.definition as any,
+          definition: hydratedDef as any,
           checksum,
           status: status as any,
           publishedAt: status === 'PUBLISHED' ? new Date() : null,

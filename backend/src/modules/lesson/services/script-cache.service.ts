@@ -1,6 +1,7 @@
 import { prisma } from '../../../config/prisma';
 import { redisService } from './redis.service';
 import { ScriptDefinition } from '../interfaces/script-dsl.interface';
+import { questionHydrationService } from './question-hydration.service';
 
 export class ScriptCacheService {
   private static instance: ScriptCacheService;
@@ -49,7 +50,8 @@ export class ScriptCacheService {
 
     const latestPublished = script.versions[0];
     versionId = latestPublished.id;
-    const definition = this.normalizeScriptDefinition(latestPublished.definition, script.title);
+    let definition = this.normalizeScriptDefinition(latestPublished.definition, script.title);
+    definition = await questionHydrationService.hydrateScriptDefinition(definition);
 
     // Cache in Redis
     await redisService.set(slugKey, versionId, 86400); // 24 hours
@@ -149,7 +151,8 @@ export class ScriptCacheService {
     if (cached) {
       try {
         const parsed = JSON.parse(cached);
-        return this.normalizeScriptDefinition(parsed, fallbackTitle);
+        const normalized = this.normalizeScriptDefinition(parsed, fallbackTitle);
+        return await questionHydrationService.hydrateScriptDefinition(normalized);
       } catch {
         // Fallthrough
       }
@@ -165,7 +168,9 @@ export class ScriptCacheService {
       const retry = await redisService.get(defKey);
       if (retry) {
         try {
-          return this.normalizeScriptDefinition(JSON.parse(retry), fallbackTitle);
+          const parsed = JSON.parse(retry);
+          const normalized = this.normalizeScriptDefinition(parsed, fallbackTitle);
+          return await questionHydrationService.hydrateScriptDefinition(normalized);
         } catch {
           // Fallthrough
         }
@@ -179,7 +184,8 @@ export class ScriptCacheService {
 
       if (!versionRow) return null;
 
-      const definition = this.normalizeScriptDefinition(versionRow.definition, fallbackTitle);
+      let definition = this.normalizeScriptDefinition(versionRow.definition, fallbackTitle);
+      definition = await questionHydrationService.hydrateScriptDefinition(definition);
       await redisService.set(defKey, JSON.stringify(definition), 604800);
       return definition;
     } finally {

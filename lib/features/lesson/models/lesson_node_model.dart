@@ -7,7 +7,7 @@ class ChoiceOptionModel {
   factory ChoiceOptionModel.fromJson(Map<String, dynamic> json) {
     return ChoiceOptionModel(
       id: json['id'] as String,
-      label: json['label'] as String,
+      label: (json['label'] ?? json['text'] ?? '') as String,
     );
   }
 }

@@ -24,9 +24,10 @@ export class QuestionService {
       return { isCorrect: true, score: 1.0 };
     }
 
-    const { mode, inlineData, questionId } = node.questionReference;
+    const { mode, inlineData, questionId, externalId } = node.questionReference as any;
 
-    if (mode === 'INLINE' && inlineData) {
+    // 1. If inlineData is populated (hydrated from external question or inline), evaluate directly
+    if (inlineData && inlineData.correctOptionId) {
       const isCorrect = rawAnswer.trim().toLowerCase() === inlineData.correctOptionId.trim().toLowerCase();
       let explanation = inlineData.explanation;
       if (!isCorrect) {
@@ -34,9 +35,9 @@ export class QuestionService {
           explanation = inlineData.incorrectExplanation;
         } else {
           const correctOpt = inlineData.options?.find(
-            (o) => o.id.trim().toLowerCase() === inlineData.correctOptionId.trim().toLowerCase()
+            (o: any) => o.id.trim().toLowerCase() === inlineData.correctOptionId.trim().toLowerCase()
           );
-          const correctLabel = correctOpt ? correctOpt.label : inlineData.correctOptionId;
+          const correctLabel = correctOpt ? (correctOpt.label || correctOpt.text || correctOpt.id) : inlineData.correctOptionId;
           const cleanExp = (inlineData.explanation || '').replace(/^(exactly|right|spot on|correct)[.!,]?\s*/i, '');
           explanation = `Not quite! The correct answer is ${correctLabel}. ${cleanExp}`.trim();
         }
@@ -46,9 +47,31 @@ export class QuestionService {
         score: isCorrect ? 1.0 : 0.0,
         explanation,
         correctOptionId: inlineData.correctOptionId,
+        conceptId: (node.questionReference as any).conceptId,
       };
     }
 
+    // 2. Fallback: resolve from database by externalKey
+    if (mode === 'QUESTION_EXTERNAL_ID' && externalId) {
+      const question = await prisma.question.findFirst({
+        where: { externalKey: externalId.trim() },
+      });
+
+      if (!question) {
+        throw new Error(`Question reference '${externalId}' not found in database.`);
+      }
+
+      const isCorrect = rawAnswer.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
+      return {
+        isCorrect,
+        score: isCorrect ? 1.0 : 0.0,
+        explanation: question.explanation || undefined,
+        conceptId: question.conceptId || undefined,
+        correctOptionId: question.correctAnswer,
+      };
+    }
+
+    // 3. Fallback: resolve from database by questionId
     if (mode === 'REPOSITORY' && questionId) {
       const question = await prisma.question.findUnique({
         where: { id: questionId },
@@ -68,7 +91,7 @@ export class QuestionService {
       };
     }
 
-    return { isCorrect: false, score: 0.0, explanation: 'Unable to evaluate question.' };
+    throw new Error(`Unable to evaluate question: node "${node.id}" has no valid question data or reference.`);
   }
 }
 
