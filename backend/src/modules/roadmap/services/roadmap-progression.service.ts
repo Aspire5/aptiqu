@@ -74,12 +74,275 @@ export interface SubjectLearningMapResult {
 
 export class RoadmapProgressionService {
   private static instance: RoadmapProgressionService;
+  private lastSyncTime = 0;
 
   public static getInstance(): RoadmapProgressionService {
     if (!RoadmapProgressionService.instance) {
       RoadmapProgressionService.instance = new RoadmapProgressionService();
     }
     return RoadmapProgressionService.instance;
+  }
+
+  /**
+   * Synchronizes the active roadmap(s) with the current state of the syllabus.
+   * Ensures active subjects have corresponding RoadmapSubject entries,
+   * active topics have corresponding RoadmapStep entries,
+   * and published scripts are linked as ScriptAssignments.
+   * Also deactivates/cleans up any entries for inactive subjects or topics.
+   */
+  public async syncRoadmapWithSyllabus(roadmapId?: string, force = false): Promise<void> {
+    const now = Date.now();
+    if (!force && now - this.lastSyncTime < 4000) {
+      return;
+    }
+    this.lastSyncTime = now;
+
+    try {
+      // 1. Resolve active roadmap(s)
+      let roadmaps: any[];
+      if (roadmapId) {
+        const r = await prisma.roadmap.findFirst({
+          where: {
+            OR: [{ id: roadmapId }, { slug: roadmapId }],
+            isActive: true,
+          },
+        });
+        roadmaps = r ? [r] : [];
+      } else {
+        roadmaps = await prisma.roadmap.findMany({ where: { isActive: true } });
+      }
+
+      if (roadmaps.length === 0) {
+        const defaultR = await prisma.roadmap.upsert({
+          where: { id: 'general-aptitude' },
+          update: { isActive: true, isDefault: true },
+          create: {
+            id: 'general-aptitude',
+            slug: 'general-aptitude',
+            name: 'General Aptitude',
+            course: 'general',
+            isDefault: true,
+            isActive: true,
+          },
+        });
+        roadmaps = [defaultR];
+      }
+
+      // 2. Fetch all subjects with direct and linked topics & subtopics
+      const allSubjects = await prisma.subject.findMany({
+        orderBy: { displayOrder: 'asc' },
+        include: {
+          topics: {
+            where: { isActive: true },
+            orderBy: { sequence: 'asc' },
+            include: {
+              subtopics: { where: { isActive: true }, orderBy: { sequence: 'asc' } },
+            },
+          },
+          subjectTopics: {
+            orderBy: { sequence: 'asc' },
+            include: {
+              topic: {
+                include: {
+                  subtopics: { where: { isActive: true }, orderBy: { sequence: 'asc' } },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const activeSubjects = allSubjects.filter((s) => s.isActive);
+      const inactiveSubjectIds = allSubjects.filter((s) => !s.isActive).map((s) => s.id);
+
+      for (const roadmap of roadmaps) {
+        // 3. Clean up inactive subjects from this roadmap
+        if (inactiveSubjectIds.length > 0) {
+          await prisma.roadmapSubject.deleteMany({
+            where: {
+              roadmapId: roadmap.id,
+              subjectId: { in: inactiveSubjectIds },
+            },
+          });
+          await prisma.roadmapStep.updateMany({
+            where: {
+              roadmapId: roadmap.id,
+              subjectId: { in: inactiveSubjectIds },
+            },
+            data: { isActive: false },
+          });
+        }
+
+        // 4. Upsert active subjects into RoadmapSubject
+        for (let sIdx = 0; sIdx < activeSubjects.length; sIdx++) {
+          const subject = activeSubjects[sIdx];
+          const subjectSeq = subject.displayOrder > 0 ? subject.displayOrder : sIdx + 1;
+
+          await prisma.roadmapSubject.upsert({
+            where: {
+              roadmapId_subjectId: {
+                roadmapId: roadmap.id,
+                subjectId: subject.id,
+              },
+            },
+            update: { sequence: subjectSeq },
+            create: {
+              roadmapId: roadmap.id,
+              subjectId: subject.id,
+              sequence: subjectSeq,
+            },
+          });
+
+          // 5. Collect all active topics for this subject
+          const topicMap = new Map<string, any>();
+          for (const t of subject.topics) {
+            if (t.isActive) topicMap.set(t.id, t);
+          }
+          for (const st of subject.subjectTopics) {
+            if (st.topic && st.topic.isActive) {
+              topicMap.set(st.topic.id, { ...st.topic, sequence: st.sequence });
+            }
+          }
+
+          const activeTopics = Array.from(topicMap.values()).sort((a, b) => a.sequence - b.sequence);
+          const activeTopicIds = activeTopics.map((t) => t.id);
+
+          // Deactivate steps for topics no longer active or linked to this subject
+          await prisma.roadmapStep.updateMany({
+            where: {
+              roadmapId: roadmap.id,
+              subjectId: subject.id,
+              topicId: { notIn: activeTopicIds },
+            },
+            data: { isActive: false },
+          });
+
+          // Existing steps for this (roadmapId, subjectId)
+          const existingSteps = await prisma.roadmapStep.findMany({
+            where: { roadmapId: roadmap.id, subjectId: subject.id },
+          });
+          const existingStepByTopic = new Map(existingSteps.map((s) => [s.topicId, s]));
+
+          // Offset existing sequences temporarily to avoid unique constraint collisions on (roadmapId, subjectId, sequence)
+          if (existingSteps.length > 0) {
+            await prisma.roadmapStep.updateMany({
+              where: { roadmapId: roadmap.id, subjectId: subject.id },
+              data: { sequence: { increment: 10000 } },
+            });
+          }
+
+          for (let tIdx = 0; tIdx < activeTopics.length; tIdx++) {
+            const topic = activeTopics[tIdx];
+            const stepSeq = tIdx + 1;
+            const existing = existingStepByTopic.get(topic.id);
+            let currentStepId: string;
+
+            if (existing) {
+              currentStepId = existing.id;
+              await prisma.roadmapStep.update({
+                where: { id: existing.id },
+                data: {
+                  sequence: stepSeq,
+                  importance: topic.defaultImportance || 'medium',
+                  teachingDepth: topic.defaultTeachingDepth ?? 3,
+                  teachingMinutes: topic.defaultTeachingMinutes ?? 30,
+                  isActive: true,
+                },
+              });
+            } else {
+              currentStepId = `${roadmap.id}-${subject.slug || subject.id}-${topic.slug || topic.id}`.slice(0, 100);
+              await prisma.roadmapStep.upsert({
+                where: { id: currentStepId },
+                update: {
+                  sequence: stepSeq,
+                  importance: topic.defaultImportance || 'medium',
+                  teachingDepth: topic.defaultTeachingDepth ?? 3,
+                  teachingMinutes: topic.defaultTeachingMinutes ?? 30,
+                  isActive: true,
+                },
+                create: {
+                  id: currentStepId,
+                  roadmapId: roadmap.id,
+                  subjectId: subject.id,
+                  topicId: topic.id,
+                  sequence: stepSeq,
+                  course: roadmap.course || 'general',
+                  importance: topic.defaultImportance || 'medium',
+                  teachingDepth: topic.defaultTeachingDepth ?? 3,
+                  teachingMinutes: topic.defaultTeachingMinutes ?? 30,
+                  isRequired: true,
+                  isActive: true,
+                },
+              });
+            }
+
+            // 6. Sync ScriptAssignments for this step
+            const subtopicSeqMap = new Map<string, number>();
+            for (const sub of (topic.subtopics || [])) {
+              subtopicSeqMap.set(sub.id, sub.sequence);
+              if (sub.slug) subtopicSeqMap.set(sub.slug, sub.sequence);
+            }
+
+            const publishedScripts = await prisma.lessonScript.findMany({
+              where: {
+                topicId: topic.id,
+                status: { in: ['PUBLISHED', 'REVIEW'] },
+              },
+              include: {
+                versions: {
+                  select: { id: true },
+                  orderBy: { versionNumber: 'desc' },
+                  take: 1,
+                },
+              },
+            });
+
+            publishedScripts.sort((a, b) => {
+              const seqA = a.subtopicId ? (subtopicSeqMap.get(a.subtopicId) ?? 999) : 999;
+              const seqB = b.subtopicId ? (subtopicSeqMap.get(b.subtopicId) ?? 999) : 999;
+              return seqA - seqB;
+            });
+
+            for (let scIdx = 0; scIdx < publishedScripts.length; scIdx++) {
+              const script = publishedScripts[scIdx];
+              const versionId = script.publishedVersionId || script.versions[0]?.id;
+              const assignSeq = (script.subtopicId ? subtopicSeqMap.get(script.subtopicId) : undefined) ?? (scIdx + 1);
+
+              const existingAssign = await prisma.scriptAssignment.findFirst({
+                where: {
+                  roadmapStepId: currentStepId,
+                  scriptId: script.id,
+                },
+              });
+
+              if (!existingAssign) {
+                await prisma.scriptAssignment.create({
+                  data: {
+                    roadmapStepId: currentStepId,
+                    scriptId: script.id,
+                    publishedVersionId: versionId || null,
+                    status: 'PUBLISHED',
+                    sequence: assignSeq,
+                    isRequired: true,
+                  },
+                });
+              } else {
+                await prisma.scriptAssignment.update({
+                  where: { id: existingAssign.id },
+                  data: {
+                    publishedVersionId: versionId || existingAssign.publishedVersionId,
+                    status: 'PUBLISHED',
+                    sequence: assignSeq,
+                  },
+                });
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('[RoadmapSync] Error synchronizing roadmap with syllabus:', err);
+    }
   }
 
   /**
@@ -120,10 +383,16 @@ export class RoadmapProgressionService {
       });
     }
 
+    // Automatically synchronize roadmap with active syllabus
+    await this.syncRoadmapWithSyllabus(roadmapId);
+
     const roadmap = await prisma.roadmap.findUnique({
       where: { id: roadmapId },
       include: {
         roadmapSubjects: {
+          where: {
+            subject: { isActive: true },
+          },
           orderBy: { sequence: 'asc' },
           include: {
             subject: true,
@@ -139,6 +408,13 @@ export class RoadmapProgressionService {
     const allSteps = await prisma.roadmapStep.findMany({
       where: { roadmapId, isActive: true },
       include: {
+        topic: {
+          include: {
+            subtopics: {
+              where: { isActive: true },
+            },
+          },
+        },
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           include: { script: true },
@@ -160,63 +436,67 @@ export class RoadmapProgressionService {
     });
     const activeStepIds = new Set(activeSessions.map((as) => as.roadmapStepId).filter(Boolean));
 
-    const enrichedRoadmapSubjects = roadmap.roadmapSubjects.map((rs) => {
-      const subjectSteps = allSteps.filter((s) => s.subjectId === rs.subjectId);
-      const totalTopics = subjectSteps.length;
-      let totalSubtopics = 0;
-      let completedSubtopics = 0;
-      let completedTopics = 0;
-      let hasPlayableContent = false;
-      let activeStepId: string | null = null;
+    const enrichedRoadmapSubjects = roadmap.roadmapSubjects
+      .filter((rs) => rs.subject && rs.subject.isActive)
+      .map((rs) => {
+        const subjectSteps = allSteps.filter((s) => s.subjectId === rs.subjectId);
+        const totalTopics = subjectSteps.length;
+        let totalSubtopics = 0;
+        let completedSubtopics = 0;
+        let completedTopics = 0;
+        let hasPlayableContent = false;
+        let activeStepId: string | null = null;
 
-      for (const step of subjectSteps) {
-        const assignments = step.scriptAssignments || [];
-        totalSubtopics += assignments.length;
-        if (assignments.length > 0) {
-          hasPlayableContent = true;
-          let stepCompleted = true;
-          for (const sa of assignments) {
-            if (completedScriptIds.has(sa.scriptId)) {
-              completedSubtopics++;
-            } else {
-              stepCompleted = false;
+        for (const step of subjectSteps) {
+          const assignments = step.scriptAssignments || [];
+          const stepSubtopicCount = (step.topic as any)?.subtopics?.length || 0;
+          totalSubtopics += Math.max(stepSubtopicCount, assignments.length);
+
+          if (assignments.length > 0) {
+            hasPlayableContent = true;
+            let stepCompleted = true;
+            for (const sa of assignments) {
+              if (completedScriptIds.has(sa.scriptId)) {
+                completedSubtopics++;
+              } else {
+                stepCompleted = false;
+              }
+            }
+            if (stepCompleted) {
+              completedTopics++;
+            } else if (!activeStepId) {
+              activeStepId = step.id;
             }
           }
-          if (stepCompleted) {
-            completedTopics++;
-          } else if (!activeStepId) {
-            activeStepId = step.id;
-          }
         }
-      }
 
-      // If user has an active session in this subject, pick that step
-      const resumeStep = subjectSteps.find((s) => activeStepIds.has(s.id));
-      if (resumeStep) {
-        activeStepId = resumeStep.id;
-      } else if (!activeStepId && subjectSteps.length > 0) {
-        activeStepId = subjectSteps[0].id;
-      }
+        // If user has an active session in this subject, pick that step
+        const resumeStep = subjectSteps.find((s) => activeStepIds.has(s.id));
+        if (resumeStep) {
+          activeStepId = resumeStep.id;
+        } else if (!activeStepId && subjectSteps.length > 0) {
+          activeStepId = subjectSteps[0].id;
+        }
 
-      const isStarted = completedSubtopics > 0 || subjectSteps.some((s) => activeStepIds.has(s.id));
-      const isCompleted = hasPlayableContent && completedSubtopics >= totalSubtopics && totalSubtopics > 0;
-      const estimatedMinutes = totalSubtopics > 0 ? totalSubtopics * 8 : (subjectSteps.length > 0 ? subjectSteps.length * 15 : 30);
+        const isStarted = completedSubtopics > 0 || subjectSteps.some((s) => activeStepIds.has(s.id));
+        const isCompleted = hasPlayableContent && completedSubtopics >= totalSubtopics && totalSubtopics > 0;
+        const estimatedMinutes = totalSubtopics > 0 ? totalSubtopics * 8 : (subjectSteps.length > 0 ? subjectSteps.length * 15 : 30);
 
-      return {
-        ...rs,
-        progress: {
-          totalTopics,
-          completedTopics,
-          totalSubtopics,
-          completedSubtopics,
-          estimatedMinutes,
-          hasPlayableContent,
-          isStarted,
-          isCompleted,
-          activeStepId,
-        },
-      };
-    });
+        return {
+          ...rs,
+          progress: {
+            totalTopics,
+            completedTopics,
+            totalSubtopics,
+            completedSubtopics,
+            estimatedMinutes,
+            hasPlayableContent,
+            isStarted,
+            isCompleted,
+            activeStepId,
+          },
+        };
+      });
 
     return {
       ...roadmap,
@@ -234,6 +514,7 @@ export class RoadmapProgressionService {
       orderBy: [{ isDefault: 'desc' }, { name: 'asc' }],
       include: {
         roadmapSubjects: {
+          where: { subject: { isActive: true } },
           orderBy: { sequence: 'asc' },
           include: { subject: true },
         },
@@ -289,6 +570,9 @@ export class RoadmapProgressionService {
     roadmapId: string,
     subjectId: string
   ): Promise<SubjectLearningMapResult> {
+    // 1. Reconcile roadmap with active syllabus
+    await this.syncRoadmapWithSyllabus(roadmapId);
+
     // Resolve roadmap by ID or slug
     const roadmap = await prisma.roadmap.findFirst({
       where: {
@@ -301,16 +585,36 @@ export class RoadmapProgressionService {
       throw new Error(`Roadmap "${roadmapId}" not found.`);
     }
 
-    // Resolve subject by ID or slug
-    const subject = await prisma.subject.findFirst({
+    // Resolve subject by ID or slug (active only)
+    let subject = await prisma.subject.findFirst({
       where: {
         OR: [{ id: subjectId }, { slug: subjectId }],
         isActive: true,
       },
     });
 
+    // Fallback: If requested subject is inactive or not found, fallback to first active subject in this roadmap
     if (!subject) {
-      throw new Error(`Subject "${subjectId}" not found.`);
+      const activeRs = await prisma.roadmapSubject.findFirst({
+        where: {
+          roadmapId: roadmap.id,
+          subject: { isActive: true },
+        },
+        orderBy: { sequence: 'asc' },
+        include: { subject: true },
+      });
+      if (activeRs?.subject) {
+        subject = activeRs.subject;
+      } else {
+        subject = await prisma.subject.findFirst({
+          where: { isActive: true },
+          orderBy: { displayOrder: 'asc' },
+        });
+      }
+    }
+
+    if (!subject) {
+      throw new Error(`No active subject found for roadmap "${roadmapId}".`);
     }
 
     // Get all roadmap steps for this subject ordered by sequence
@@ -385,6 +689,7 @@ export class RoadmapProgressionService {
     let foundFirstIncompletePublished = false;
 
     const topicItems: LearningMapTopicItem[] = steps.map((step) => {
+      const topicSubtopics = (step.topic as any)?.subtopics || [];
       const assignments = step.scriptAssignments || [];
       const hasPublishedScript =
         assignments.length > 0 &&
@@ -420,29 +725,82 @@ export class RoadmapProgressionService {
         }
       }
 
-      // Compute subtopics breakdown
-      let totalSubtopics = assignments.length;
-      let completedSubtopics = 0;
+      // Compute subtopics breakdown merging topic subtopics with script assignments
       let subtopics: LearningMapSubtopicItem[] = [];
+      let totalSubtopics = 0;
+      let completedSubtopics = 0;
 
-      if (assignments.length > 0) {
+      if (topicSubtopics.length > 0) {
+        totalSubtopics = topicSubtopics.length;
+        let foundIncomplete = false;
+
+        subtopics = topicSubtopics.map((st: any, idx: number) => {
+          const sa = assignments.find(
+            (a) => a.script?.subtopicId === st.id || a.sequence === st.sequence
+          ) || (idx < assignments.length && !assignments.some((a) => a.script?.subtopicId) ? assignments[idx] : null);
+
+          if (sa) {
+            const isDone = completedScriptIds.has(sa.scriptId);
+            if (isDone) completedSubtopics++;
+
+            let isLocked = false;
+            if (!isDone) {
+              if (
+                !foundIncomplete &&
+                (step.id === activeStepId ||
+                  state === 'AVAILABLE' ||
+                  state === 'IN_PROGRESS' ||
+                  completedStepIds.has(step.id))
+              ) {
+                isLocked = false;
+                foundIncomplete = true;
+              } else {
+                isLocked = true;
+              }
+            }
+
+            return {
+              id: sa.id,
+              scriptId: sa.scriptId,
+              scriptSlug: sa.script.slug,
+              title: sa.script.title || st.name,
+              sequence: st.sequence ?? idx + 1,
+              isCompleted: isDone,
+              isLocked,
+              canReplay: isDone,
+            };
+          } else {
+            return {
+              id: st.id,
+              title: st.name,
+              sequence: st.sequence ?? idx + 1,
+              isCompleted: false,
+              isLocked: true,
+              canReplay: false,
+            };
+          }
+        });
+      } else if (assignments.length > 0) {
+        totalSubtopics = assignments.length;
         let foundIncomplete = false;
         subtopics = assignments.map((sa) => {
           const isDone = completedScriptIds.has(sa.scriptId);
-          if (isDone) {
-            completedSubtopics++;
-          }
-
+          if (isDone) completedSubtopics++;
           let isLocked = false;
           if (!isDone) {
-            if (!foundIncomplete && (step.id === activeStepId || state === 'AVAILABLE' || state === 'IN_PROGRESS' || completedStepIds.has(step.id))) {
+            if (
+              !foundIncomplete &&
+              (step.id === activeStepId ||
+                state === 'AVAILABLE' ||
+                state === 'IN_PROGRESS' ||
+                completedStepIds.has(step.id))
+            ) {
               isLocked = false;
               foundIncomplete = true;
             } else {
               isLocked = true;
             }
           }
-
           return {
             id: sa.id,
             scriptId: sa.scriptId,
@@ -454,17 +812,6 @@ export class RoadmapProgressionService {
             canReplay: isDone,
           };
         });
-      } else {
-        const topicSubtopics = (step.topic as any).subtopics || [];
-        totalSubtopics = topicSubtopics.length;
-        subtopics = topicSubtopics.map((st: any) => ({
-          id: st.id,
-          title: st.name,
-          sequence: st.sequence,
-          isCompleted: false,
-          isLocked: true,
-          canReplay: false,
-        }));
       }
 
       if (totalSubtopics > 0 && completedSubtopics >= totalSubtopics) {
@@ -658,10 +1005,15 @@ export class RoadmapProgressionService {
     currentRoadmapStepId?: string | null,
     currentScriptId?: string | null
   ): Promise<NextLearningStepResult> {
+    await this.syncRoadmapWithSyllabus(roadmapId);
+
     const roadmap = await prisma.roadmap.findUnique({
       where: { id: roadmapId },
       include: {
         roadmapSubjects: {
+          where: {
+            subject: { isActive: true },
+          },
           orderBy: { sequence: 'asc' },
         },
       },

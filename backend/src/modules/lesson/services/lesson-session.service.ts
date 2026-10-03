@@ -62,17 +62,18 @@ export class LessonSessionService {
     roadmapStepId: string,
     clientActionId: string,
     targetScriptSlug?: string
-  ) {
+  ): Promise<any> {
     const idempKey = `idemp:action:${clientActionId}`;
     const cachedResponse = await redisService.get(idempKey);
     if (cachedResponse) {
       return JSON.parse(cachedResponse);
     }
 
-    const step = await prisma.roadmapStep.findUnique({
+    let step = await prisma.roadmapStep.findUnique({
       where: { id: roadmapStepId },
       include: {
         roadmap: true,
+        subject: true,
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
@@ -84,11 +85,17 @@ export class LessonSessionService {
       },
     });
 
-    if (!step) {
-      throw new Error(`Roadmap step "${roadmapStepId}" not found.`);
-    }
-
-    if (!step.isActive || !step.roadmap.isActive) {
+    if (!step || !step.isActive || !step.roadmap.isActive || (step.subject && !step.subject.isActive)) {
+      // Re-resolve active step dynamically if requested step is inactive or belongs to an inactive subject
+      const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
+      if (activeRoadmap) {
+        const nextStep = await roadmapProgressionService
+          .getNextStepOrScript(userId, activeRoadmap.id)
+          .catch(() => null);
+        if (nextStep?.available && nextStep.roadmapStepId && nextStep.roadmapStepId !== roadmapStepId) {
+          return this.startOrResumeSessionByStep(userId, nextStep.roadmapStepId, clientActionId, targetScriptSlug);
+        }
+      }
       throw new Error(`Roadmap step "${roadmapStepId}" is currently not active.`);
     }
 
@@ -758,7 +765,7 @@ export class LessonSessionService {
     });
   }
 
-  public async getActiveSession(userId: string, roadmapStepId?: string) {
+  public async getActiveSession(userId: string, roadmapStepId?: string): Promise<any> {
     let effectiveStepId = roadmapStepId;
     if (!effectiveStepId) {
       const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
@@ -779,6 +786,7 @@ export class LessonSessionService {
       where: { id: effectiveStepId },
       include: {
         roadmap: true,
+        subject: true,
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
@@ -787,7 +795,23 @@ export class LessonSessionService {
       },
     });
 
-    if (!step || !step.scriptAssignments.length) {
+    if (
+      !step ||
+      !step.isActive ||
+      !step.roadmap.isActive ||
+      (step.subject && !step.subject.isActive) ||
+      !step.scriptAssignments.length
+    ) {
+      // Step is inactive, belongs to an inactive subject, or has no scripts. Re-resolve dynamically from active roadmap!
+      const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
+      if (activeRoadmap) {
+        const nextStep = await roadmapProgressionService
+          .getNextStepOrScript(userId, activeRoadmap.id)
+          .catch(() => null);
+        if (nextStep?.available && nextStep.roadmapStepId && nextStep.roadmapStepId !== effectiveStepId) {
+          return this.getActiveSession(userId, nextStep.roadmapStepId);
+        }
+      }
       return { hasActiveSession: false, roadmapStepId: effectiveStepId, script: null, session: null };
     }
 

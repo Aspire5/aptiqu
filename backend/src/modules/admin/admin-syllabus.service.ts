@@ -2,6 +2,7 @@ import { prisma } from '../../config/prisma';
 import crypto from 'crypto';
 import { ScriptDefinition } from '../lesson/interfaces/script-dsl.interface';
 import { ScriptValidator } from '../lesson/engines/script-validator';
+import { roadmapProgressionService } from '../roadmap/services/roadmap-progression.service';
 
 export class AdminSyllabusService {
   /**
@@ -169,7 +170,7 @@ export class AdminSyllabusService {
     const slug = data.slug || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const id = data.id || slug;
 
-    return prisma.subject.create({
+    const result = await prisma.subject.create({
       data: {
         id,
         slug,
@@ -179,6 +180,9 @@ export class AdminSyllabusService {
         isActive: true,
       },
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async updateSubject(id: string, data: {
@@ -187,58 +191,65 @@ export class AdminSyllabusService {
     displayOrder?: number;
     isActive?: boolean;
   }) {
-    return prisma.subject.update({
+    const result = await prisma.subject.update({
       where: { id },
       data,
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async deleteSubject(id: string, hard = false) {
+    let result;
     if (!hard) {
       // Soft delete
-      return prisma.subject.update({
+      result = await prisma.subject.update({
         where: { id },
         data: { isActive: false },
       });
+    } else {
+      // Hard delete: Clean up related records in transaction
+      result = await prisma.$transaction(async (tx) => {
+        // Find all topics under subject
+        const topics = await tx.topic.findMany({ where: { subjectId: id }, select: { id: true } });
+        const topicIds = topics.map((t) => t.id);
+
+        // Find subtopics
+        const subtopics = await tx.subtopic.findMany({ where: { topicId: { in: topicIds } }, select: { id: true } });
+        const subtopicIds = subtopics.map((s) => s.id);
+
+        // Delete questions in these subtopics
+        await tx.questionAttempt.deleteMany({
+          where: { question: { subjectId: id } },
+        });
+        await tx.userQuestionProgress.deleteMany({
+          where: { question: { subjectId: id } },
+        });
+        await tx.pvpQuestionSetQuestion.deleteMany({
+          where: { question: { subjectId: id } },
+        });
+        await tx.practiceSessionQuestion.deleteMany({
+          where: { question: { subjectId: id } },
+        });
+        await tx.question.deleteMany({
+          where: { subjectId: id },
+        });
+
+        // Delete scripts
+        await tx.lessonScript.deleteMany({
+          where: { subjectId: id },
+        });
+
+        // Delete subtopics, topics, subject
+        await tx.subtopic.deleteMany({ where: { id: { in: subtopicIds } } });
+        await tx.topic.deleteMany({ where: { id: { in: topicIds } } });
+        return tx.subject.delete({ where: { id } });
+      });
     }
 
-    // Hard delete: Clean up related records in transaction
-    return prisma.$transaction(async (tx) => {
-      // Find all topics under subject
-      const topics = await tx.topic.findMany({ where: { subjectId: id }, select: { id: true } });
-      const topicIds = topics.map((t) => t.id);
-
-      // Find subtopics
-      const subtopics = await tx.subtopic.findMany({ where: { topicId: { in: topicIds } }, select: { id: true } });
-      const subtopicIds = subtopics.map((s) => s.id);
-
-      // Delete questions in these subtopics
-      await tx.questionAttempt.deleteMany({
-        where: { question: { subjectId: id } },
-      });
-      await tx.userQuestionProgress.deleteMany({
-        where: { question: { subjectId: id } },
-      });
-      await tx.pvpQuestionSetQuestion.deleteMany({
-        where: { question: { subjectId: id } },
-      });
-      await tx.practiceSessionQuestion.deleteMany({
-        where: { question: { subjectId: id } },
-      });
-      await tx.question.deleteMany({
-        where: { subjectId: id },
-      });
-
-      // Delete scripts
-      await tx.lessonScript.deleteMany({
-        where: { subjectId: id },
-      });
-
-      // Delete subtopics, topics, subject
-      await tx.subtopic.deleteMany({ where: { id: { in: subtopicIds } } });
-      await tx.topic.deleteMany({ where: { id: { in: topicIds } } });
-      return tx.subject.delete({ where: { id } });
-    });
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   // ==================== TOPIC CRUD ====================
@@ -256,7 +267,7 @@ export class AdminSyllabusService {
     const slug = data.slug || `${data.subjectId}-${data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
     const id = data.id || slug;
 
-    return prisma.topic.create({
+    const result = await prisma.topic.create({
       data: {
         id,
         subjectId: data.subjectId,
@@ -269,6 +280,9 @@ export class AdminSyllabusService {
         isActive: true,
       },
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async updateTopic(id: string, data: {
@@ -279,42 +293,49 @@ export class AdminSyllabusService {
     defaultTeachingMinutes?: number;
     isActive?: boolean;
   }) {
-    return prisma.topic.update({
+    const result = await prisma.topic.update({
       where: { id },
       data,
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async deleteTopic(id: string, hard = false) {
+    let result;
     if (!hard) {
-      return prisma.topic.update({
+      result = await prisma.topic.update({
         where: { id },
         data: { isActive: false },
       });
+    } else {
+      result = await prisma.$transaction(async (tx) => {
+        const subtopics = await tx.subtopic.findMany({ where: { topicId: id }, select: { id: true } });
+        const subtopicIds = subtopics.map((s) => s.id);
+
+        await tx.questionAttempt.deleteMany({
+          where: { question: { topicId: id } },
+        });
+        await tx.userQuestionProgress.deleteMany({
+          where: { question: { topicId: id } },
+        });
+        await tx.pvpQuestionSetQuestion.deleteMany({
+          where: { question: { topicId: id } },
+        });
+        await tx.practiceSessionQuestion.deleteMany({
+          where: { question: { topicId: id } },
+        });
+        await tx.question.deleteMany({ where: { topicId: id } });
+
+        await tx.lessonScript.deleteMany({ where: { topicId: id } });
+        await tx.subtopic.deleteMany({ where: { id: { in: subtopicIds } } });
+        return tx.topic.delete({ where: { id } });
+      });
     }
 
-    return prisma.$transaction(async (tx) => {
-      const subtopics = await tx.subtopic.findMany({ where: { topicId: id }, select: { id: true } });
-      const subtopicIds = subtopics.map((s) => s.id);
-
-      await tx.questionAttempt.deleteMany({
-        where: { question: { topicId: id } },
-      });
-      await tx.userQuestionProgress.deleteMany({
-        where: { question: { topicId: id } },
-      });
-      await tx.pvpQuestionSetQuestion.deleteMany({
-        where: { question: { topicId: id } },
-      });
-      await tx.practiceSessionQuestion.deleteMany({
-        where: { question: { topicId: id } },
-      });
-      await tx.question.deleteMany({ where: { topicId: id } });
-
-      await tx.lessonScript.deleteMany({ where: { topicId: id } });
-      await tx.subtopic.deleteMany({ where: { id: { in: subtopicIds } } });
-      return tx.topic.delete({ where: { id } });
-    });
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   // ==================== SUBTOPIC CRUD ====================
@@ -333,7 +354,7 @@ export class AdminSyllabusService {
     const slug = data.slug || `${data.topicId}-${data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
     const id = data.id || slug;
 
-    return prisma.subtopic.create({
+    const result = await prisma.subtopic.create({
       data: {
         id,
         topicId: data.topicId,
@@ -347,6 +368,9 @@ export class AdminSyllabusService {
         isActive: true,
       },
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async updateSubtopic(id: string, data: {
@@ -358,42 +382,49 @@ export class AdminSyllabusService {
     teachingMinutes?: number;
     isActive?: boolean;
   }) {
-    return prisma.subtopic.update({
+    const result = await prisma.subtopic.update({
       where: { id },
       data,
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async deleteSubtopic(id: string, hard = false) {
+    let result;
     if (!hard) {
-      return prisma.subtopic.update({
+      result = await prisma.subtopic.update({
         where: { id },
         data: { isActive: false },
       });
+    } else {
+      result = await prisma.$transaction(async (tx) => {
+        await tx.questionAttempt.deleteMany({
+          where: { question: { subtopicId: id } },
+        });
+        await tx.userQuestionProgress.deleteMany({
+          where: { question: { subtopicId: id } },
+        });
+        await tx.pvpQuestionSetQuestion.deleteMany({
+          where: { question: { subtopicId: id } },
+        });
+        await tx.practiceSessionQuestion.deleteMany({
+          where: { question: { subtopicId: id } },
+        });
+        await tx.question.deleteMany({ where: { subtopicId: id } });
+
+        await tx.lessonScript.updateMany({
+          where: { subtopicId: id },
+          data: { subtopicId: null },
+        });
+
+        return tx.subtopic.delete({ where: { id } });
+      });
     }
 
-    return prisma.$transaction(async (tx) => {
-      await tx.questionAttempt.deleteMany({
-        where: { question: { subtopicId: id } },
-      });
-      await tx.userQuestionProgress.deleteMany({
-        where: { question: { subtopicId: id } },
-      });
-      await tx.pvpQuestionSetQuestion.deleteMany({
-        where: { question: { subtopicId: id } },
-      });
-      await tx.practiceSessionQuestion.deleteMany({
-        where: { question: { subtopicId: id } },
-      });
-      await tx.question.deleteMany({ where: { subtopicId: id } });
-
-      await tx.lessonScript.updateMany({
-        where: { subtopicId: id },
-        data: { subtopicId: null },
-      });
-
-      return tx.subtopic.delete({ where: { id } });
-    });
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   // ==================== SCRIPT OPERATIONS ====================
@@ -438,7 +469,7 @@ export class AdminSyllabusService {
     const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
     const status = data.status || 'PUBLISHED';
 
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const script = await tx.lessonScript.create({
         data: {
           slug,
@@ -468,6 +499,9 @@ export class AdminSyllabusService {
 
       return { script, version };
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   /**
@@ -479,7 +513,7 @@ export class AdminSyllabusService {
     subtopicId?: string | null;
     definition?: any;
   }) {
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const existing = await tx.lessonScript.findUnique({
         where: { id: scriptId },
         include: {
@@ -528,6 +562,9 @@ export class AdminSyllabusService {
 
       return { script, version: existing.versions[0] };
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   /**
@@ -613,7 +650,7 @@ export class AdminSyllabusService {
     const definitionString = JSON.stringify(data.definition);
     const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
 
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       let script = await tx.lessonScript.findUnique({
         where: { slug },
       });
@@ -669,12 +706,15 @@ export class AdminSyllabusService {
 
       return { script, version };
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   // ==================== REORDERING ====================
 
   public static async reorderTopics(subjectId: string, topicIds: string[]) {
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       for (let i = 0; i < topicIds.length; i++) {
         const topicId = topicIds[i];
         // 1. Update topic.sequence
@@ -691,10 +731,13 @@ export class AdminSyllabusService {
       }
       return { success: true };
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   public static async reorderSubtopics(topicId: string, subtopicIds: string[]) {
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       for (let i = 0; i < subtopicIds.length; i++) {
         const subtopicId = subtopicIds[i];
         // 1. Update subtopic.sequence
@@ -711,6 +754,9 @@ export class AdminSyllabusService {
       }
       return { success: true };
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return result;
   }
 
   // ==================== LINKING / REUSABILITY ====================
@@ -727,13 +773,16 @@ export class AdminSyllabusService {
     });
     const nextSeq = (maxSeq._max.sequence ?? 0) + 1;
 
-    return prisma.subjectTopic.create({
+    const res = await prisma.subjectTopic.create({
       data: {
         subjectId,
         topicId,
         sequence: nextSeq,
       },
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return res;
   }
 
   public static async unlinkTopicFromSubject(subjectId: string, topicId: string) {
@@ -761,6 +810,7 @@ export class AdminSyllabusService {
       }
     }
 
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return { success: true, message: 'Topic unlinked successfully without deletion.' };
   }
 
@@ -776,13 +826,16 @@ export class AdminSyllabusService {
     });
     const nextSeq = (maxSeq._max.sequence ?? 0) + 1;
 
-    return prisma.topicSubtopic.create({
+    const res = await prisma.topicSubtopic.create({
       data: {
         topicId,
         subtopicId,
         sequence: nextSeq,
       },
     });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return res;
   }
 
   public static async unlinkSubtopicFromTopic(topicId: string, subtopicId: string) {
@@ -808,6 +861,7 @@ export class AdminSyllabusService {
       }
     }
 
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return { success: true, message: 'Subtopic unlinked successfully without deletion.' };
   }
 
