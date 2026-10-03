@@ -695,7 +695,14 @@ const BulkImportModal: React.FC<{
         setImportSummary(res.data.data);
       }
     } catch (err: any) {
-      const msg = err.response?.data?.message || err.message || 'Import failed';
+      let msg = err.response?.data?.message || err.message || 'Import failed';
+      if (
+        err.response?.status === 413 ||
+        msg.toLowerCase().includes('too large')
+      ) {
+        msg =
+          'File payload was rejected by the server (too large). Please pull the latest backend commit (which increases limit to 50MB) and restart it with "pm2 restart aptiqu-backend". Also ensure Nginx has "client_max_body_size 50M;".';
+      }
       setErrorMessage(msg);
       alert(`Import failed: ${msg}`);
     } finally {
@@ -840,6 +847,25 @@ const BulkImportModal: React.FC<{
                         })}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              )}
+
+              {loading && (
+                <div style={{
+                  marginTop: '16px',
+                  padding: '16px',
+                  background: '#f0f9ff',
+                  border: '1px solid #bae6fd',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 600, color: '#0369a1', marginBottom: '4px' }}>
+                    <div className="spinner-border spinner-border-sm" role="status" style={{ width: '14px', height: '14px', border: '2px solid #0284c7', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <span>Processing {parsedRows.length} Questions...</span>
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#0c4a6e' }}>
+                    Validating curriculum subtopics, checking duplicate fingerprints & keys, and writing chunked records to database.
                   </div>
                 </div>
               )}

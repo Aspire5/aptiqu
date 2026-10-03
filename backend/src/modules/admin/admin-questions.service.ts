@@ -1,4 +1,5 @@
 import { prisma } from '../../config/prisma';
+import { QuestionStatus } from '@prisma/client';
 import { FingerprintService } from '../question/services/fingerprint.service';
 import { QuestionOption, QuestionOptionId, QuestionDifficulty, CalculationMode } from '../question/domain/question.types';
 import { roadmapProgressionService } from '../roadmap/services/roadmap-progression.service';
@@ -352,27 +353,8 @@ export class AdminQuestionsService {
       throw new Error('No questions provided for import.');
     }
 
-    // 1. Collect all candidate subtopic keys across all rows for a single batched query
-    const rawKeys = new Set<string>();
-    for (const q of rawQuestions) {
-      const key = q.externalSubtopicKey || q.subtopicKey || q.subtopicId || q.subtopicSlug;
-      if (key && typeof key === 'string' && key.trim()) {
-        rawKeys.add(key.trim());
-        rawKeys.add(key.trim().toLowerCase());
-      }
-    }
-    if (defaultSubtopicId && defaultSubtopicId.trim()) {
-      rawKeys.add(defaultSubtopicId.trim());
-      rawKeys.add(defaultSubtopicId.trim().toLowerCase());
-    }
-
+    // 1. Fetch all curriculum subtopics into memory for instant O(1) resolution
     const subtopicList = await prisma.subtopic.findMany({
-      where: {
-        OR: [
-          { slug: { in: Array.from(rawKeys) } },
-          { id: { in: Array.from(rawKeys) } },
-        ],
-      },
       include: { topic: true },
     });
 
@@ -471,6 +453,17 @@ export class AdminQuestionsService {
         ? (difficultyRaw as QuestionDifficulty)
         : 'EASY';
 
+      const validCalculationModes: CalculationMode[] = ['MENTAL', 'LIGHT_PEN_AND_PAPER', 'PEN_AND_PAPER'];
+      let calculationMode: CalculationMode = 'MENTAL';
+      if (q.calculationMode && validCalculationModes.includes(String(q.calculationMode).toUpperCase() as CalculationMode)) {
+        calculationMode = String(q.calculationMode).toUpperCase() as CalculationMode;
+      }
+
+      let status: QuestionStatus = 'PUBLISHED';
+      if (q.status && ['DRAFT', 'REVIEW', 'PUBLISHED', 'ARCHIVED'].includes(String(q.status).toUpperCase())) {
+        status = String(q.status).toUpperCase() as QuestionStatus;
+      }
+
       const fingerprint = FingerprintService.computeFingerprint(prompt, options);
 
       // Duplicate check within batch
@@ -522,9 +515,9 @@ export class AdminQuestionsService {
           method: String(q.method || q.pattern || 'Standard Method'),
           difficulty,
           estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
-          calculationMode: (q.calculationMode || 'MENTAL') as CalculationMode,
+          calculationMode,
           sourceType: 'MANUAL',
-          status: q.status || 'PUBLISHED',
+          status,
           generationMethod: 'AI_EXTRACTED',
           sourceBook,
           sourceEdition,
@@ -539,22 +532,32 @@ export class AdminQuestionsService {
       });
     }
 
-    // 3. Batched duplicate check against database
+    // 3. Batched duplicate check against database (in chunks of 200 to keep queries light & fast)
     const candidateFingerprints = candidates.map((c) => c.fingerprint);
     const candidateExternalKeys = candidates.map((c) => c.externalKey).filter(Boolean) as string[];
 
-    const [existingFpList, existingKeyList] = await Promise.all([
-      prisma.question.findMany({
-        where: { fingerprint: { in: candidateFingerprints } },
+    const FP_CHUNK_SIZE = 200;
+    const existingFpList: Array<{ externalKey: string | null; prompt: string }> = [];
+    for (let i = 0; i < candidateFingerprints.length; i += FP_CHUNK_SIZE) {
+      const chunk = candidateFingerprints.slice(i, i + FP_CHUNK_SIZE);
+      const res = await prisma.question.findMany({
+        where: { fingerprint: { in: chunk } },
         select: { externalKey: true, prompt: true },
-      }),
-      candidateExternalKeys.length > 0
-        ? prisma.question.findMany({
-            where: { externalKey: { in: candidateExternalKeys } },
-            select: { externalKey: true },
-          })
-        : Promise.resolve([]),
-    ]);
+      });
+      existingFpList.push(...res);
+    }
+
+    const existingKeyList: Array<{ externalKey: string | null }> = [];
+    if (candidateExternalKeys.length > 0) {
+      for (let i = 0; i < candidateExternalKeys.length; i += FP_CHUNK_SIZE) {
+        const chunk = candidateExternalKeys.slice(i, i + FP_CHUNK_SIZE);
+        const res = await prisma.question.findMany({
+          where: { externalKey: { in: chunk } },
+          select: { externalKey: true },
+        });
+        existingKeyList.push(...res);
+      }
+    }
 
     if (existingKeyList.length > 0) {
       const dupKey = existingKeyList[0].externalKey;
@@ -570,13 +573,33 @@ export class AdminQuestionsService {
       );
     }
 
-    // 4. All validations & duplicate checks passed -> insert all records
+    // 4. All validations & duplicate checks passed -> insert all records atomically in chunks
     const recordsToInsert = candidates.map((c) => c.data);
-    await prisma.question.createMany({
-      data: recordsToInsert,
-    });
+    const DB_CHUNK_SIZE = 100;
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true).catch(() => {});
+    await prisma.$transaction(
+      async (tx) => {
+        for (let i = 0; i < recordsToInsert.length; i += DB_CHUNK_SIZE) {
+          const chunk = recordsToInsert.slice(i, i + DB_CHUNK_SIZE);
+          await tx.question.createMany({
+            data: chunk,
+          });
+        }
+      },
+      {
+        timeout: 60000,
+      }
+    );
+
+    // Asynchronously trigger roadmap progression sync in background without delaying HTTP response
+    setImmediate(async () => {
+      try {
+        await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+        console.log(`[BulkImport] Successfully synchronized roadmap progression for ${recordsToInsert.length} imported questions.`);
+      } catch (err: any) {
+        console.error('[BulkImport] Roadmap progression sync error (async):', err.message);
+      }
+    });
 
     return {
       success: true,
