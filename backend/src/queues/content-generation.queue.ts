@@ -11,12 +11,22 @@ function parseRedisConnection(urlStr: string) {
       port: parseInt(url.port || '6379', 10),
       password: url.password || undefined,
       maxRetriesPerRequest: null,
+      enableOfflineQueue: false,
+      retryStrategy: (times: number) => {
+        if (times > 3) return 30000;
+        return Math.min(times * 1000, 5000);
+      },
     };
   } catch {
     return {
       host: '127.0.0.1',
       port: 6379,
       maxRetriesPerRequest: null,
+      enableOfflineQueue: false,
+      retryStrategy: (times: number) => {
+        if (times > 3) return 30000;
+        return Math.min(times * 1000, 5000);
+      },
     };
   }
 }
@@ -95,3 +105,15 @@ contentGenWorker.on('completed', (job: Job) => {
 contentGenWorker.on('failed', (job: Job | undefined, err: Error) => {
   console.error(`[ContentGenQueue] Job ${job?.name} (ID: ${job?.id}) failed:`, err);
 });
+
+let lastQueueErrorLog = 0;
+const handleRedisQueueError = (source: string, err: any) => {
+  const now = Date.now();
+  if (now - lastQueueErrorLog > 300000) { // Log once every 5 minutes
+    console.warn(`[ContentGenQueue] Redis is unreachable (${source}): ${err?.message || err}. Background generation paused.`);
+    lastQueueErrorLog = now;
+  }
+};
+
+contentGenQueue.on('error', (err) => handleRedisQueueError('Queue', err));
+contentGenWorker.on('error', (err) => handleRedisQueueError('Worker', err));

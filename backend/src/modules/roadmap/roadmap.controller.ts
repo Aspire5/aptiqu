@@ -156,6 +156,7 @@ export class RoadmapController {
         data: result,
       });
     } catch (err: any) {
+      console.error('[RoadmapController:startStepSession] Error:', err);
       res.status(err.status || 400).json({
         success: false,
         message: err.message || 'Failed to start lesson for roadmap step.',

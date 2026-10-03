@@ -78,7 +78,14 @@ export class LessonSessionService {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
           include: {
-            script: true,
+            script: {
+              include: {
+                versions: {
+                  orderBy: { versionNumber: 'desc' },
+                  take: 1,
+                },
+              },
+            },
             publishedVersion: true,
           },
         },
@@ -151,7 +158,12 @@ export class LessonSessionService {
         step.scriptAssignments.find((sa) => sa.scriptId === session!.scriptId) || assignment;
     }
 
-    if (!assignment || !assignment.script || !assignment.publishedVersionId) {
+    const effectiveVersionId =
+      assignment?.publishedVersionId ||
+      assignment?.script?.publishedVersionId ||
+      (assignment?.script as any)?.versions?.[0]?.id;
+
+    if (!assignment || !assignment.script || !effectiveVersionId) {
       const error: any = new Error(
         `Learning content for "${step.id}" is coming soon. No published script available yet.`
       );
@@ -160,18 +172,38 @@ export class LessonSessionService {
       throw error;
     }
 
+    // Self-heal assignment publishedVersionId if it was null
+    if (!assignment.publishedVersionId && effectiveVersionId) {
+      await prisma.scriptAssignment.update({
+        where: { id: assignment.id },
+        data: { publishedVersionId: effectiveVersionId },
+      }).catch(() => {});
+    }
+
     const script = session?.script || assignment.script;
-    const scriptVersionId = session?.scriptVersionId || assignment.publishedVersionId;
+    const scriptVersionId = session?.scriptVersionId || effectiveVersionId;
 
     let definition: any;
 
     if (!session) {
-      definition = await scriptCacheService.getScriptVersionDefinition(scriptVersionId);
+      definition = await scriptCacheService.getScriptVersionDefinition(scriptVersionId, script.title);
       if (!definition) {
-        throw new Error(`Script version definition "${scriptVersionId}" could not be loaded.`);
+        const latestVer = await prisma.lessonScriptVersion.findFirst({
+          where: { scriptId: script.id },
+          orderBy: { versionNumber: 'desc' },
+        });
+        if (latestVer) {
+          definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, script.title);
+        }
       }
 
-      const entryNodeId = definition.entryNodeId;
+      if (!definition) {
+        const error: any = new Error(`Script version definition "${scriptVersionId}" could not be loaded.`);
+        error.status = 404;
+        throw error;
+      }
+
+      const entryNodeId = definition.entryNodeId || Object.keys(definition.nodes)[0] || 'node_1';
       session = await prisma.lessonSession.create({
         data: {
           userId,
@@ -200,13 +232,28 @@ export class LessonSessionService {
       });
     } else {
       // Resume existing session using its own scriptVersionId
-      definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId);
+      definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId, script.title);
       if (!definition) {
-        throw new Error(`Script version definition "${session.scriptVersionId}" could not be loaded.`);
+        const latestVer = await prisma.lessonScriptVersion.findFirst({
+          where: { scriptId: script.id },
+          orderBy: { versionNumber: 'desc' },
+        });
+        if (latestVer) {
+          definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, script.title);
+        }
+      }
+      if (!definition) {
+        const error: any = new Error(`Script version definition "${session.scriptVersionId}" could not be loaded.`);
+        error.status = 404;
+        throw error;
       }
     }
 
-    const rawNode = definition.nodes[session.currentNodeId];
+    const rawNode =
+      definition.nodes[session.currentNodeId] ||
+      definition.nodes[definition.entryNodeId] ||
+      Object.values(definition.nodes)[0];
+
     if (!rawNode) {
       throw new Error(`Current node "${session.currentNodeId}" not found in script version.`);
     }
@@ -790,7 +837,17 @@ export class LessonSessionService {
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
-          include: { script: true, publishedVersion: true },
+          include: {
+            script: {
+              include: {
+                versions: {
+                  orderBy: { versionNumber: 'desc' },
+                  take: 1,
+                },
+              },
+            },
+            publishedVersion: true,
+          },
         },
       },
     });
@@ -827,9 +884,22 @@ export class LessonSessionService {
     });
 
     if (activeSession) {
-      const definition = await scriptCacheService.getScriptVersionDefinition(activeSession.scriptVersionId);
+      let definition = await scriptCacheService.getScriptVersionDefinition(activeSession.scriptVersionId, activeSession.script.title);
+      if (!definition) {
+        const latestVer = await prisma.lessonScriptVersion.findFirst({
+          where: { scriptId: activeSession.script.id },
+          orderBy: { versionNumber: 'desc' },
+        });
+        if (latestVer) {
+          definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, activeSession.script.title);
+        }
+      }
+
       if (definition) {
-        const rawNode = definition.nodes[activeSession.currentNodeId];
+        const rawNode =
+          definition.nodes[activeSession.currentNodeId] ||
+          definition.nodes[definition.entryNodeId] ||
+          Object.values(definition.nodes)[0];
         const events = await prisma.lessonEvent.findMany({
           where: { sessionId: activeSession.id },
           orderBy: { sequenceNumber: 'asc' },
@@ -929,8 +999,13 @@ export class LessonSessionService {
       step.scriptAssignments.find((sa) => !completedScriptIds.has(sa.scriptId)) ||
       step.scriptAssignments[0];
 
-    const def = nextAssignment.publishedVersionId
-      ? await scriptCacheService.getScriptVersionDefinition(nextAssignment.publishedVersionId)
+    const effectiveVerId =
+      nextAssignment?.publishedVersionId ||
+      nextAssignment?.script?.publishedVersionId ||
+      (nextAssignment?.script as any)?.versions?.[0]?.id;
+
+    const def = effectiveVerId
+      ? await scriptCacheService.getScriptVersionDefinition(effectiveVerId, nextAssignment.script?.title)
       : null;
 
     return {

@@ -24,14 +24,17 @@ export class RedisService {
         maxRetriesPerRequest: 1,
         enableOfflineQueue: false,
         connectTimeout: 2000,
-        retryStrategy: (times) => Math.min(times * 100, 3000),
+        retryStrategy: (times) => {
+          if (times > 3) return 30000;
+          return Math.min(times * 1000, 5000);
+        },
       });
 
       this.client.on('connect', () => {
         this.isConnected = true;
       });
 
-      this.client.on('error', () => {
+      this.client.on('error', (_err) => {
         this.isConnected = false;
       });
     } catch {
@@ -89,7 +92,7 @@ export class RedisService {
 
   /**
    * Distributed lock acquisition with unique token.
-   * If Redis is disconnected, fails fast (returns false) to prevent uncoordinated local lock state.
+   * If Redis is disconnected, falls back to in-memory lock.
    */
   public async setNxToken(key: string, token: string, ttlMs: number): Promise<boolean> {
     if (this.isConnected && this.client) {
@@ -97,8 +100,13 @@ export class RedisService {
         const res = await this.client.set(key, token, 'PX', ttlMs, 'NX');
         return res === 'OK';
       } catch {
-        return false;
+        // Fallback to memory
       }
+    }
+    const existing = this.memoryFallback.get(key);
+    if (!existing || (existing.expiresAt > 0 && Date.now() > existing.expiresAt)) {
+      this.memoryFallback.set(key, { value: token, expiresAt: Date.now() + ttlMs });
+      return true;
     }
     return false;
   }
