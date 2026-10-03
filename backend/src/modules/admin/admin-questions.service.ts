@@ -1,6 +1,7 @@
 import { prisma } from '../../config/prisma';
 import { FingerprintService } from '../question/services/fingerprint.service';
 import { QuestionOption, QuestionOptionId, QuestionDifficulty, CalculationMode } from '../question/domain/question.types';
+import { roadmapProgressionService } from '../roadmap/services/roadmap-progression.service';
 
 export interface QuestionListFilter {
   search?: string;
@@ -336,21 +337,33 @@ export class AdminQuestionsService {
   /**
    * Bulk import questions from array (parsed from CSV, XLSX, or JSON)
    */
+  /**
+   * Bulk import questions from array (parsed from CSV, XLSX, or JSON)
+   *
+   * Strict integrity rules:
+   * 1. Subtopic resolution: If no default subtopic is selected, each question MUST
+   *    specify externalSubtopicKey (or subtopicKey/subtopicSlug/subtopicId) matching an existing Subtopic.
+   *    If any subtopic is not found, the import FAILS completely (0 questions imported).
+   * 2. Duplicacy prevention: If any duplicate question exists in the batch or in the database
+   *    (by externalKey or fingerprint), the import FAILS completely (0 questions imported).
+   */
   public static async bulkImport(rawQuestions: any[], defaultSubtopicId?: string) {
-    let successCount = 0;
-    let failedCount = 0;
-    const errors: Array<{ index: number; reason: string }> = [];
+    if (!Array.isArray(rawQuestions) || rawQuestions.length === 0) {
+      throw new Error('No questions provided for import.');
+    }
 
     // 1. Collect all candidate subtopic keys across all rows for a single batched query
     const rawKeys = new Set<string>();
     for (const q of rawQuestions) {
-      const key = q.externalSubtopicKey || q.subtopicId || q.subtopicSlug;
+      const key = q.externalSubtopicKey || q.subtopicKey || q.subtopicId || q.subtopicSlug;
       if (key && typeof key === 'string' && key.trim()) {
         rawKeys.add(key.trim());
+        rawKeys.add(key.trim().toLowerCase());
       }
     }
     if (defaultSubtopicId && defaultSubtopicId.trim()) {
       rawKeys.add(defaultSubtopicId.trim());
+      rawKeys.add(defaultSubtopicId.trim().toLowerCase());
     }
 
     const subtopicList = await prisma.subtopic.findMany({
@@ -365,13 +378,19 @@ export class AdminQuestionsService {
 
     const subtopicMap = new Map<string, any>();
     for (const s of subtopicList) {
-      if (s.slug) subtopicMap.set(s.slug, s);
-      subtopicMap.set(s.id, s);
+      if (s.slug) {
+        subtopicMap.set(s.slug.trim(), s);
+        subtopicMap.set(s.slug.trim().toLowerCase(), s);
+      }
+      subtopicMap.set(s.id.trim(), s);
+      subtopicMap.set(s.id.trim().toLowerCase(), s);
     }
 
-    const resolvedDefaultSubtopic = defaultSubtopicId ? subtopicMap.get(defaultSubtopicId.trim()) : null;
+    const resolvedDefaultSubtopic = defaultSubtopicId
+      ? (subtopicMap.get(defaultSubtopicId.trim()) || subtopicMap.get(defaultSubtopicId.trim().toLowerCase()))
+      : null;
 
-    // 2. First pass: parse, validate format, and compute fingerprints
+    // 2. Validate format, resolve subtopics, and check for duplicates within the batch
     interface ValidatedCandidate {
       index: number;
       data: any;
@@ -385,123 +404,139 @@ export class AdminQuestionsService {
 
     for (let i = 0; i < rawQuestions.length; i++) {
       const q = rawQuestions[i];
-      try {
-        const prompt = String(q.prompt || q.question || '').trim();
-        if (!prompt) throw new Error('Missing prompt/question text');
+      const rowNum = i + 1;
 
-        // Parse options
-        let options: QuestionOption[] = [];
-        if (Array.isArray(q.options) && q.options.length > 0) {
-          options = q.options.map((opt: any, idx: number) => {
-            const letter = (['A', 'B', 'C', 'D'][idx] || 'A') as QuestionOptionId;
-            return {
-              id: (opt.id || letter) as QuestionOptionId,
-              text: String(opt.text || opt.label || opt || '').trim(),
-            };
-          });
-        } else if (q.optionA || q.option_a || q.A) {
-          options = [
-            { id: 'A', text: String(q.optionA || q.option_a || q.A || '').trim() },
-            { id: 'B', text: String(q.optionB || q.option_b || q.B || '').trim() },
-            { id: 'C', text: String(q.optionC || q.option_c || q.C || '').trim() },
-            { id: 'D', text: String(q.optionD || q.option_d || q.D || '').trim() },
-          ];
-        }
+      const prompt = String(q.prompt || q.question || '').trim();
+      if (!prompt) {
+        throw new Error(`Row ${rowNum}: Question prompt/text is missing.`);
+      }
 
-        if (options.length < 2) {
-          throw new Error('Question must contain at least 2 options');
-        }
+      // Parse options
+      let options: QuestionOption[] = [];
+      if (Array.isArray(q.options) && q.options.length > 0) {
+        options = q.options.map((opt: any, idx: number) => {
+          const letter = (['A', 'B', 'C', 'D'][idx] || 'A') as QuestionOptionId;
+          return {
+            id: (opt.id || letter) as QuestionOptionId,
+            text: String(opt.text || opt.label || opt || '').trim(),
+          };
+        });
+      } else if (q.optionA || q.option_a || q.A) {
+        options = [
+          { id: 'A', text: String(q.optionA || q.option_a || q.A || '').trim() },
+          { id: 'B', text: String(q.optionB || q.option_b || q.B || '').trim() },
+          { id: 'C', text: String(q.optionC || q.option_c || q.C || '').trim() },
+          { id: 'D', text: String(q.optionD || q.option_d || q.D || '').trim() },
+        ];
+      }
 
-        const rawCorrect = String(q.correctAnswer || q.correct_answer || q.answer || 'A').toUpperCase().trim();
-        const correctAnswer = (['A', 'B', 'C', 'D'].includes(rawCorrect) ? rawCorrect : 'A') as QuestionOptionId;
+      if (options.length < 2) {
+        throw new Error(`Row ${rowNum}: Question must contain at least 2 options.`);
+      }
 
-        // Subtopic lookup
-        const rawTargetKey = (q.externalSubtopicKey || q.subtopicId || q.subtopicSlug || '') as string;
-        const targetSubtopicKey = rawTargetKey.trim();
+      const rawCorrect = String(q.correctAnswer || q.correct_answer || q.answer || 'A').toUpperCase().trim();
+      const correctAnswer = (['A', 'B', 'C', 'D'].includes(rawCorrect) ? rawCorrect : 'A') as QuestionOptionId;
 
-        let subtopic = targetSubtopicKey ? subtopicMap.get(targetSubtopicKey) : null;
-        if (!subtopic && resolvedDefaultSubtopic) {
-          subtopic = resolvedDefaultSubtopic;
-        }
+      // Subtopic lookup
+      const rawTargetKey = String(
+        q.externalSubtopicKey ||
+        q.subtopicKey ||
+        q.subtopicSlug ||
+        q.subtopicId ||
+        ''
+      ).trim();
 
-        if (!subtopic) {
+      let subtopic = rawTargetKey
+        ? (subtopicMap.get(rawTargetKey) || subtopicMap.get(rawTargetKey.toLowerCase()))
+        : null;
+
+      if (!subtopic && resolvedDefaultSubtopic) {
+        subtopic = resolvedDefaultSubtopic;
+      }
+
+      if (!subtopic) {
+        if (!rawTargetKey) {
           throw new Error(
-            targetSubtopicKey
-              ? `Unknown subtopic key: "${targetSubtopicKey}"`
-              : 'No subtopic key provided and no default subtopic configured'
+            `Row ${rowNum}: No subtopic specified. Question "${prompt.slice(0, 35)}..." has no 'externalSubtopicKey' and no target subtopic was selected. Import aborted.`
+          );
+        } else {
+          throw new Error(
+            `Row ${rowNum}: Subtopic with key "${rawTargetKey}" not found in curriculum. Please ensure this subtopic exists or set its slug/key in Curriculum before importing. Import aborted.`
           );
         }
-
-        const difficultyRaw = String(q.difficulty || 'EASY').toUpperCase().trim();
-        const difficulty: QuestionDifficulty = ['EASY', 'MEDIUM', 'HARD'].includes(difficultyRaw)
-          ? (difficultyRaw as QuestionDifficulty)
-          : 'EASY';
-
-        const fingerprint = FingerprintService.computeFingerprint(prompt, options);
-
-        if (seenFingerprintsInBatch.has(fingerprint)) {
-          failedCount++;
-          errors.push({ index: i + 1, reason: `Duplicate question within batch: "${prompt.slice(0, 30)}..."` });
-          continue;
-        }
-
-        const externalKey = q.externalQuestionKey || q.externalKey ? String(q.externalQuestionKey || q.externalKey).trim() : null;
-        if (externalKey && seenExternalKeysInBatch.has(externalKey)) {
-          failedCount++;
-          errors.push({ index: i + 1, reason: `Duplicate externalKey within batch: "${externalKey}"` });
-          continue;
-        }
-
-        seenFingerprintsInBatch.add(fingerprint);
-        if (externalKey) seenExternalKeysInBatch.add(externalKey);
-
-        const pyq = q.pyq ? String(q.pyq).trim() : null;
-        const alternativeExplanation = q.alternativeExplanation ? String(q.alternativeExplanation).trim() : null;
-        const preferredSolution = q.preferredSolution === 'ALTERNATIVE' ? 'ALTERNATIVE' : q.preferredSolution === 'BOOK' ? 'BOOK' : null;
-        const preferredReason = q.preferredReason ? String(q.preferredReason).trim() : null;
-
-        const sourceBook = q.provenance?.bookTitle || q.sourceBook ? String(q.provenance?.bookTitle || q.sourceBook).trim() : null;
-        const sourceEdition = q.provenance?.edition || q.sourceEdition ? String(q.provenance?.edition || q.sourceEdition).trim() : null;
-        const sourceChapter = q.provenance?.chapter || q.sourceChapter ? String(q.provenance?.chapter || q.sourceChapter).trim() : null;
-        const sourcePageRange = q.provenance?.pageRange || q.sourcePageRange ? String(q.provenance?.pageRange || q.sourcePageRange).trim() : null;
-
-        candidates.push({
-          index: i + 1,
-          fingerprint,
-          externalKey,
-          data: {
-            subjectId: subtopic.topic.subjectId,
-            topicId: subtopic.topicId,
-            subtopicId: subtopic.id,
-            externalKey,
-            pattern: q.pattern || 'STANDARD_MCQ',
-            prompt,
-            options: options as any,
-            correctAnswer,
-            hints: Array.isArray(q.hints) ? q.hints : (q.hint ? [String(q.hint)] : []),
-            explanation: String(q.explanation || ''),
-            method: String(q.method || q.pattern || 'Standard Method'),
-            difficulty,
-            estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
-            calculationMode: (q.calculationMode || 'MENTAL') as CalculationMode,
-            sourceType: 'MANUAL',
-            status: q.status || 'REVIEW',
-            generationMethod: 'AI_EXTRACTED',
-            sourceBook,
-            sourceEdition,
-            sourceChapter,
-            sourcePageRange,
-            pyq,
-            alternativeExplanation,
-            preferredSolution,
-            preferredReason,
-            fingerprint,
-          },
-        });
-      } catch (err: any) {
-        failedCount++;
-        errors.push({ index: i + 1, reason: err.message || 'Validation error' });
       }
+
+      const difficultyRaw = String(q.difficulty || 'EASY').toUpperCase().trim();
+      const difficulty: QuestionDifficulty = ['EASY', 'MEDIUM', 'HARD'].includes(difficultyRaw)
+        ? (difficultyRaw as QuestionDifficulty)
+        : 'EASY';
+
+      const fingerprint = FingerprintService.computeFingerprint(prompt, options);
+
+      // Duplicate check within batch
+      if (seenFingerprintsInBatch.has(fingerprint)) {
+        throw new Error(
+          `Import aborted: Duplicate question detected within file at Row ${rowNum}: "${prompt.slice(0, 40)}...".`
+        );
+      }
+
+      const externalKey = q.externalQuestionKey || q.externalKey
+        ? String(q.externalQuestionKey || q.externalKey).trim()
+        : null;
+
+      if (externalKey) {
+        if (seenExternalKeysInBatch.has(externalKey)) {
+          throw new Error(
+            `Import aborted: Duplicate question key "${externalKey}" detected within file at Row ${rowNum}.`
+          );
+        }
+        seenExternalKeysInBatch.add(externalKey);
+      }
+      seenFingerprintsInBatch.add(fingerprint);
+
+      const pyq = q.pyq ? String(q.pyq).trim() : null;
+      const alternativeExplanation = q.alternativeExplanation ? String(q.alternativeExplanation).trim() : null;
+      const preferredSolution = q.preferredSolution === 'ALTERNATIVE' ? 'ALTERNATIVE' : q.preferredSolution === 'BOOK' ? 'BOOK' : null;
+      const preferredReason = q.preferredReason ? String(q.preferredReason).trim() : null;
+
+      const sourceBook = q.provenance?.bookTitle || q.sourceBook ? String(q.provenance?.bookTitle || q.sourceBook).trim() : null;
+      const sourceEdition = q.provenance?.edition || q.sourceEdition ? String(q.provenance?.edition || q.sourceEdition).trim() : null;
+      const sourceChapter = q.provenance?.chapter || q.sourceChapter ? String(q.provenance?.chapter || q.sourceChapter).trim() : null;
+      const sourcePageRange = q.provenance?.pageRange || q.sourcePageRange ? String(q.provenance?.pageRange || q.sourcePageRange).trim() : null;
+
+      candidates.push({
+        index: rowNum,
+        fingerprint,
+        externalKey,
+        data: {
+          subjectId: subtopic.topic.subjectId,
+          topicId: subtopic.topicId,
+          subtopicId: subtopic.id,
+          externalKey,
+          pattern: q.pattern || 'STANDARD_MCQ',
+          prompt,
+          options: options as any,
+          correctAnswer,
+          hints: Array.isArray(q.hints) ? q.hints : (q.hint ? [String(q.hint)] : []),
+          explanation: String(q.explanation || ''),
+          method: String(q.method || q.pattern || 'Standard Method'),
+          difficulty,
+          estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
+          calculationMode: (q.calculationMode || 'MENTAL') as CalculationMode,
+          sourceType: 'MANUAL',
+          status: q.status || 'PUBLISHED',
+          generationMethod: 'AI_EXTRACTED',
+          sourceBook,
+          sourceEdition,
+          sourceChapter,
+          sourcePageRange,
+          pyq,
+          alternativeExplanation,
+          preferredSolution,
+          preferredReason,
+          fingerprint,
+        },
+      });
     }
 
     // 3. Batched duplicate check against database
@@ -511,7 +546,7 @@ export class AdminQuestionsService {
     const [existingFpList, existingKeyList] = await Promise.all([
       prisma.question.findMany({
         where: { fingerprint: { in: candidateFingerprints } },
-        select: { fingerprint: true },
+        select: { externalKey: true, prompt: true },
       }),
       candidateExternalKeys.length > 0
         ? prisma.question.findMany({
@@ -521,39 +556,34 @@ export class AdminQuestionsService {
         : Promise.resolve([]),
     ]);
 
-    const existingFps = new Set(existingFpList.map((e) => e.fingerprint));
-    const existingKeys = new Set(existingKeyList.map((e) => e.externalKey));
-
-    const recordsToInsert: any[] = [];
-    for (const c of candidates) {
-      if (existingFps.has(c.fingerprint)) {
-        failedCount++;
-        errors.push({ index: c.index, reason: `Question already exists in database (duplicate fingerprint)` });
-        continue;
-      }
-      if (c.externalKey && existingKeys.has(c.externalKey)) {
-        failedCount++;
-        errors.push({ index: c.index, reason: `Question with externalKey "${c.externalKey}" already exists in database.` });
-        continue;
-      }
-      recordsToInsert.push(c.data);
+    if (existingKeyList.length > 0) {
+      const dupKey = existingKeyList[0].externalKey;
+      throw new Error(
+        `Import aborted to avoid duplicacy: Question with key "${dupKey}" already exists in the database. No questions were imported.`
+      );
     }
 
-    // 4. Batch insert all accepted records
-    if (recordsToInsert.length > 0) {
-      await prisma.question.createMany({
-        data: recordsToInsert,
-        skipDuplicates: true,
-      });
-      successCount = recordsToInsert.length;
+    if (existingFpList.length > 0) {
+      const dup = existingFpList[0];
+      throw new Error(
+        `Import aborted to avoid duplicacy: Question already exists in database (identical prompt: "${dup.prompt.slice(0, 40)}..."). No questions were imported.`
+      );
     }
+
+    // 4. All validations & duplicate checks passed -> insert all records
+    const recordsToInsert = candidates.map((c) => c.data);
+    await prisma.question.createMany({
+      data: recordsToInsert,
+    });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true).catch(() => {});
 
     return {
       success: true,
       totalProcessed: rawQuestions.length,
-      successCount,
-      failedCount,
-      errors: errors.slice(0, 50),
+      successCount: recordsToInsert.length,
+      failedCount: 0,
+      errors: [],
     };
   }
 }

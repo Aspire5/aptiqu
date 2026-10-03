@@ -557,6 +557,15 @@ export const SyllabusPage: React.FC = () => {
                                           </div>
                                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <span style={{ fontSize: '13px', fontWeight: 600 }}>{subtopic.name}</span>
+                                            {subtopic.slug && (
+                                              <span
+                                                className="badge"
+                                                title={`External Subtopic Key / Slug: ${subtopic.slug}`}
+                                                style={{ fontSize: '10px', background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', fontFamily: 'monospace' }}
+                                              >
+                                                {subtopic.slug}
+                                              </span>
+                                            )}
                                             {subtopic.isLinked && (
                                               <span className="badge" style={{ fontSize: '9px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }}>
                                                 <LinkIcon size={8} style={{ marginRight: '2px' }} /> Linked
@@ -1105,6 +1114,7 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
   onSuccess,
 }) => {
   const [name, setName] = useState(editItem?.name || '');
+  const [slug, setSlug] = useState(editItem?.slug || editItem?.id || '');
   const [description, setDescription] = useState(editItem?.description || '');
   const [sequence, setSequence] = useState(editItem?.sequence ?? 0);
   const [importance, setImportance] = useState(editItem?.importance || 'medium');
@@ -1116,10 +1126,27 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
     e.preventDefault();
     setLoading(true);
     try {
+      const payloadSlug = slug.trim() || undefined;
       if (editItem) {
-        await api.updateSubtopic(editItem.id, { name, description, sequence, importance, teachingMinutes, isActive });
+        await api.updateSubtopic(editItem.id, {
+          name,
+          slug: payloadSlug,
+          description,
+          sequence,
+          importance,
+          teachingMinutes,
+          isActive,
+        });
       } else {
-        await api.createSubtopic({ topicId, name, description, sequence, importance, teachingMinutes });
+        await api.createSubtopic({
+          topicId,
+          name,
+          slug: payloadSlug,
+          description,
+          sequence,
+          importance,
+          teachingMinutes,
+        });
       }
       onSuccess();
     } catch (err: any) {
@@ -1141,6 +1168,22 @@ const SubtopicFormModal: React.FC<{ topicId: string; editItem?: any; onClose: ()
             <div className="form-group">
               <label className="form-label">Subtopic Name</label>
               <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>External Subtopic Key / Slug</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>e.g. <code>ns-01-place-value-notation</code></span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                placeholder="e.g. ns-01-place-value-notation"
+              />
+              <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                Used by bulk question imports to automatically match questions with this subtopic.
+              </span>
             </div>
             <div className="form-group">
               <label className="form-label">Description</label>

@@ -71,7 +71,8 @@ export class AdminQuestionsController {
       const result = await AdminQuestionsService.bulkImport(questions, defaultSubtopicId);
       res.status(200).json({ success: true, data: result });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      console.error('[AdminQuestionsController:bulkImport] Error:', err.message);
+      res.status(err.status || 400).json({ success: false, message: err.message });
     }
   }
 }

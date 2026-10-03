@@ -375,6 +375,7 @@ export class AdminSyllabusService {
 
   public static async updateSubtopic(id: string, data: {
     name?: string;
+    slug?: string;
     description?: string;
     sequence?: number;
     importance?: string;
@@ -382,9 +383,13 @@ export class AdminSyllabusService {
     teachingMinutes?: number;
     isActive?: boolean;
   }) {
+    const updateData: any = { ...data };
+    if (updateData.slug !== undefined) {
+      updateData.slug = updateData.slug ? updateData.slug.trim() : null;
+    }
     const result = await prisma.subtopic.update({
       where: { id },
-      data,
+      data: updateData,
     });
 
     await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);

@@ -581,78 +581,101 @@ const BulkImportModal: React.FC<{
   onClose: () => void;
   onSuccess: () => void;
 }> = ({ subtopics, onClose, onSuccess }) => {
-  const [defaultSubtopicId, setDefaultSubtopicId] = useState(subtopics[0]?.id || '');
+  const [defaultSubtopicId, setDefaultSubtopicId] = useState('');
   const [parsedRows, setParsedRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [importSummary, setImportSummary] = useState<any>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setErrorMessage(null);
+    setImportSummary(null);
+
     const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const bstr = evt.target?.result;
-        const wb = XLSX.read(bstr, { type: 'binary' });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws);
-        setParsedRows(data);
-      } catch (err: any) {
-        alert(`Failed to parse file: ${err.message}`);
-      }
-    };
-    reader.readAsBinaryString(file);
+    if (file.name.toLowerCase().endsWith('.json')) {
+      reader.onload = (evt) => {
+        try {
+          const content = evt.target?.result as string;
+          const parsed = JSON.parse(content);
+          const rows = Array.isArray(parsed) ? parsed : (parsed.questions || parsed.data || []);
+          if (!Array.isArray(rows) || rows.length === 0) {
+            throw new Error('JSON file must contain an array of question objects (or an object with a "questions" array).');
+          }
+          setParsedRows(rows);
+        } catch (err: any) {
+          setErrorMessage(`Failed to parse JSON file: ${err.message}`);
+          alert(`Failed to parse JSON file: ${err.message}`);
+        }
+      };
+      reader.readAsText(file);
+    } else {
+      reader.onload = (evt) => {
+        try {
+          const bstr = evt.target?.result;
+          const wb = XLSX.read(bstr, { type: 'binary' });
+          const wsname = wb.SheetNames[0];
+          const ws = wb.Sheets[wsname];
+          const data = XLSX.utils.sheet_to_json(ws);
+          setParsedRows(data);
+        } catch (err: any) {
+          setErrorMessage(`Failed to parse file: ${err.message}`);
+          alert(`Failed to parse file: ${err.message}`);
+        }
+      };
+      reader.readAsBinaryString(file);
+    }
   };
 
   const handleDownloadSample = () => {
     const sampleData = [
       {
-        externalKey: 'rs-agg-ch01-q001',
-        subtopicKey: '', // optional if default subtopic is selected
-        prompt: 'What is 25% of 80?',
-        optionA: '15',
-        optionB: '20',
-        optionC: '25',
-        optionD: '30',
+        externalQuestionKey: 'rs-agg-ch01-q001',
+        externalSubtopicKey: 'ns-01-place-value-notation',
+        prompt: 'What is the place value of 7 in 84725?',
+        optionA: '70',
+        optionB: '700',
+        optionC: '7000',
+        optionD: '7',
         correctAnswer: 'B',
         difficulty: 'EASY',
-        explanation: '25% of 80 is 80 / 4 = 20.',
-        method: 'Fraction equivalent 1/4',
-        alternativeExplanation: '10% is 8, so 20% is 16, and 5% is 4. 16 + 4 = 20.',
+        explanation: '7 is in hundreds place, so 7 * 100 = 700.',
+        method: 'Standard Place Value Notation',
+        alternativeExplanation: 'Count digits to the right: 2 digits = two zeros = 700.',
         preferredSolution: 'ALTERNATIVE',
-        preferredReason: 'Mental math breakdown eliminates division step.',
+        preferredReason: 'Faster mental determination.',
         pyq: 'SSC CGL (2022)',
         sourceBook: 'Quantitative Aptitude for Competitive Examinations',
         sourceEdition: '2024 Revised',
-        sourceChapter: 'Chapter 10: Percentage',
-        sourcePageRange: 'pp. 142-143',
-        hints: 'Think of 25% as one quarter.',
+        sourceChapter: 'Chapter 01: Number System',
+        sourcePageRange: 'pp. 12-14',
+        hints: 'Look at the hundreds digit position.',
         calculationMode: 'MENTAL',
       },
       {
-        externalKey: 'rs-agg-ch21-q014',
-        subtopicKey: '',
-        prompt: 'If a car travels at 60 km/h, how far does it travel in 2.5 hours?',
-        optionA: '120 km',
-        optionB: '140 km',
-        optionC: '150 km',
-        optionD: '160 km',
+        externalQuestionKey: 'rs-agg-ch01-q002',
+        externalSubtopicKey: 'ns-02-number-types-and-rationality',
+        prompt: 'Which of the following numbers is irrational?',
+        optionA: '0.333...',
+        optionB: 'sqrt(4)',
+        optionC: 'sqrt(7)',
+        optionD: '22/7',
         correctAnswer: 'C',
-        difficulty: 'EASY',
-        explanation: 'Distance = Speed * Time = 60 * 2.5 = 150 km.',
-        method: 'Standard Distance Formula',
-        alternativeExplanation: '60 * 2 = 120 km. In 0.5 hours it goes 30 km. 120 + 30 = 150 km.',
+        difficulty: 'MEDIUM',
+        explanation: 'sqrt(7) is non-repeating and non-terminating, hence irrational.',
+        method: 'Definition of Irrational Numbers',
+        alternativeExplanation: '4 is a perfect square so sqrt(4)=2 (rational). 7 is not a square.',
         preferredSolution: 'BOOK',
-        preferredReason: 'Simple scalar multiplication.',
-        pyq: 'TCS NQT (2023), CAT (2012)',
+        preferredReason: 'Standard definition check.',
+        pyq: 'CAT (2018)',
         sourceBook: 'Quantitative Aptitude for Competitive Examinations',
         sourceEdition: '2024 Revised',
-        sourceChapter: 'Chapter 21: Time and Distance',
-        sourcePageRange: 'pp. 310-312',
-        hints: 'Multiply 60 by 2 then add half of 60.',
-        calculationMode: 'MENTAL',
+        sourceChapter: 'Chapter 01: Number System',
+        sourcePageRange: 'pp. 15-16',
+        hints: 'Check if the square root yields an integer.',
+        calculationMode: 'CONCEPTUAL',
       },
     ];
 
@@ -665,13 +688,16 @@ const BulkImportModal: React.FC<{
   const handleImportSubmit = async () => {
     if (parsedRows.length === 0) return;
     setLoading(true);
+    setErrorMessage(null);
     try {
-      const res = await api.bulkImportQuestions(parsedRows, defaultSubtopicId);
+      const res = await api.bulkImportQuestions(parsedRows, defaultSubtopicId || undefined);
       if (res.data?.success) {
         setImportSummary(res.data.data);
       }
     } catch (err: any) {
-      alert(`Import failed: ${err.response?.data?.message || err.message}`);
+      const msg = err.response?.data?.message || err.message || 'Import failed';
+      setErrorMessage(msg);
+      alert(`Import failed: ${msg}`);
     } finally {
       setLoading(false);
     }
@@ -679,11 +705,11 @@ const BulkImportModal: React.FC<{
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content" style={{ maxWidth: '780px' }}>
+      <div className="modal-content" style={{ maxWidth: '820px' }}>
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileSpreadsheet size={20} color="#1a73e8" />
-            <h3 className="modal-title">Bulk Import Questions from Google Sheet / Excel</h3>
+            <h3 className="modal-title">Bulk Import Questions (JSON, Excel, CSV)</h3>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
             <X size={18} />
@@ -701,7 +727,7 @@ const BulkImportModal: React.FC<{
               </p>
               {importSummary.errors?.length > 0 && (
                 <div style={{ marginTop: '16px', textAlign: 'left', background: '#fff1f2', padding: '12px', borderRadius: '8px', fontSize: '12px' }}>
-                  <strong>Skipped details:</strong>
+                  <strong>Import issues:</strong>
                   <ul>
                     {importSummary.errors.map((err: any, i: number) => (
                       <li key={i}>Row {err.index}: {err.reason}</li>
@@ -714,7 +740,7 @@ const BulkImportModal: React.FC<{
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <p style={{ fontSize: '13px', color: '#475569' }}>
-                  Upload an <code>.xlsx</code> or <code>.csv</code> file with columns: <strong>prompt, optionA, optionB, optionC, optionD, correctAnswer</strong>.
+                  Upload a <code>.json</code> question bank or <code>.xlsx</code> / <code>.csv</code> spreadsheet.
                 </p>
                 <button className="btn-secondary" style={{ fontSize: '12px', padding: '6px 12px' }} onClick={handleDownloadSample}>
                   <Download size={14} />
@@ -722,13 +748,31 @@ const BulkImportModal: React.FC<{
                 </button>
               </div>
 
-              <div className="form-group" style={{ marginTop: '8px' }}>
-                <label className="form-label">Target Subtopic for Imported Questions</label>
+              {errorMessage && (
+                <div style={{ marginTop: '12px', padding: '12px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#b91c1c', fontSize: '13px' }}>
+                  <strong>⚠️ Import Blocked:</strong>
+                  <div style={{ marginTop: '4px', whiteSpace: 'pre-wrap' }}>{errorMessage}</div>
+                </div>
+              )}
+
+              <div className="form-group" style={{ marginTop: '12px' }}>
+                <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Target Subtopic Resolution</span>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>
+                    {defaultSubtopicId ? 'Forced into selected subtopic' : 'Auto-matching each question by key'}
+                  </span>
+                </label>
                 <select className="form-control" value={defaultSubtopicId} onChange={(e) => setDefaultSubtopicId(e.target.value)}>
+                  <option value="">⚡ Auto-resolve per question (via externalSubtopicKey in file)</option>
                   {subtopics.map((s) => (
-                    <option key={s.id} value={s.id}>{s.topicName} → {s.name}</option>
+                    <option key={s.id} value={s.id}>Override / Force into: {s.topicName} → {s.name}</option>
                   ))}
                 </select>
+                <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                  {defaultSubtopicId
+                    ? 'All questions in the file will be assigned directly to this selected subtopic.'
+                    : 'Each question will be linked to its subtopic using "externalSubtopicKey" (e.g. "ns-01-place-value-notation"). If any key does not match a subtopic in the database or if questions are duplicates, the import will fail completely.'}
+                </span>
               </div>
 
               <div style={{
@@ -740,10 +784,10 @@ const BulkImportModal: React.FC<{
                 marginTop: '12px',
               }}>
                 <Upload size={32} color="#1a73e8" style={{ marginBottom: '8px' }} />
-                <p style={{ fontSize: '14px', fontWeight: 600 }}>Select or Drop Excel/CSV File</p>
+                <p style={{ fontSize: '14px', fontWeight: 600 }}>Select or Drop JSON, Excel or CSV File</p>
                 <input
                   type="file"
-                  accept=".xlsx, .xls, .csv"
+                  accept=".json, .xlsx, .xls, .csv"
                   onChange={handleFileUpload}
                   style={{ marginTop: '12px' }}
                 />
@@ -752,15 +796,17 @@ const BulkImportModal: React.FC<{
               {parsedRows.length > 0 && (
                 <div style={{ marginTop: '16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Parsed Rows Preview ({parsedRows.length} questions):</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600 }}>
+                      Parsed Preview ({parsedRows.length} questions loaded):
+                    </span>
                   </div>
-                  <div style={{ maxHeight: '160px', overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
+                  <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
                     <table className="table-custom" style={{ fontSize: '11px' }}>
                       <thead>
                         <tr>
                           <th>#</th>
                           <th>Key</th>
-                          <th>Subtopic</th>
+                          <th>Subtopic Key</th>
                           <th>Prompt</th>
                           <th>PYQ</th>
                           <th>Ans</th>
@@ -768,17 +814,30 @@ const BulkImportModal: React.FC<{
                         </tr>
                       </thead>
                       <tbody>
-                        {parsedRows.slice(0, 10).map((r, i) => (
-                          <tr key={i}>
-                            <td>{i + 1}</td>
-                            <td><code style={{ fontSize: '10px' }}>{r.externalKey || r.externalId || '-'}</code></td>
-                            <td>{r.subtopicKey || r.subtopicSlug || 'default'}</td>
-                            <td>{(r.prompt || r.question || '').slice(0, 45)}...</td>
-                            <td>{r.pyq ? <span style={{ color: '#b45309', fontWeight: 600 }}>🏛️ {r.pyq}</span> : '-'}</td>
-                            <td>{r.correctAnswer || r.answer}</td>
-                            <td>{r.difficulty || 'EASY'}</td>
-                          </tr>
-                        ))}
+                        {parsedRows.slice(0, 10).map((r, i) => {
+                          const subKey = r.externalSubtopicKey || r.subtopicKey || r.subtopicSlug;
+                          return (
+                            <tr key={i}>
+                              <td>{i + 1}</td>
+                              <td><code style={{ fontSize: '10px' }}>{r.externalQuestionKey || r.externalKey || r.externalId || r.id || '-'}</code></td>
+                              <td>
+                                {subKey ? (
+                                  <code style={{ fontSize: '10px', background: '#eff6ff', color: '#1d4ed8', padding: '2px 4px', borderRadius: '3px' }}>
+                                    {subKey}
+                                  </code>
+                                ) : defaultSubtopicId ? (
+                                  <span style={{ color: '#64748b' }}>Default Selected</span>
+                                ) : (
+                                  <span style={{ color: '#ef4444', fontWeight: 600 }}>⚠️ Missing Key</span>
+                                )}
+                              </td>
+                              <td>{(r.prompt || r.question || '').slice(0, 45)}...</td>
+                              <td>{r.pyq ? <span style={{ color: '#b45309', fontWeight: 600 }}>🏛️ {r.pyq}</span> : '-'}</td>
+                              <td>{r.correctAnswer || r.answer || (typeof r.options === 'object' ? r.options.find((o: any) => o.isCorrect)?.text : '-')}</td>
+                              <td>{r.difficulty || 'EASY'}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -799,7 +858,7 @@ const BulkImportModal: React.FC<{
                 disabled={parsedRows.length === 0 || loading}
                 onClick={handleImportSubmit}
               >
-                {loading ? 'Importing Questions...' : `Import ${parsedRows.length} Questions`}
+                {loading ? 'Validating & Importing Questions...' : `Import ${parsedRows.length} Questions`}
               </button>
             </>
           )}
