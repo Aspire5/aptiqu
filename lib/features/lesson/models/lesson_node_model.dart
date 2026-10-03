@@ -146,6 +146,10 @@ class LessonNodeModel {
       );
     }
 
+    if (parsedOptions.isEmpty && parsedInline != null && parsedInline.options.isNotEmpty) {
+      parsedOptions = parsedInline.options;
+    }
+
     return LessonNodeModel(
       id: json['id'] as String,
       type: json['type'] as String,

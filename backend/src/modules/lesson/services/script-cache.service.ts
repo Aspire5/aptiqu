@@ -192,6 +192,19 @@ export class ScriptCacheService {
       await redisService.del(lockKey);
     }
   }
+
+  public async invalidateScriptCache(slug?: string, versionId?: string): Promise<void> {
+    if (slug) {
+      await redisService.del(`script:slug:published:${slug}`);
+    }
+    if (versionId) {
+      await redisService.del(`script:def:${versionId}`);
+    }
+  }
+
+  public async invalidateAllScriptCaches(): Promise<void> {
+    await redisService.delByPattern('script:*');
+  }
 }
 
 export const scriptCacheService = ScriptCacheService.getInstance();

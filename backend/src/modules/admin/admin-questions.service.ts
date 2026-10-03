@@ -3,6 +3,7 @@ import { QuestionStatus } from '@prisma/client';
 import { FingerprintService } from '../question/services/fingerprint.service';
 import { QuestionOption, QuestionOptionId, QuestionDifficulty, CalculationMode } from '../question/domain/question.types';
 import { roadmapProgressionService } from '../roadmap/services/roadmap-progression.service';
+import { scriptCacheService } from '../lesson/services/script-cache.service';
 
 export interface QuestionListFilter {
   search?: string;
@@ -591,13 +592,14 @@ export class AdminQuestionsService {
       }
     );
 
-    // Asynchronously trigger roadmap progression sync in background without delaying HTTP response
+    // Asynchronously trigger cache invalidation and roadmap progression sync in background without delaying HTTP response
     setImmediate(async () => {
       try {
+        await scriptCacheService.invalidateAllScriptCaches();
         await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
-        console.log(`[BulkImport] Successfully synchronized roadmap progression for ${recordsToInsert.length} imported questions.`);
+        console.log(`[BulkImport] Successfully synchronized roadmap progression and invalidated script caches for ${recordsToInsert.length} imported questions.`);
       } catch (err: any) {
-        console.error('[BulkImport] Roadmap progression sync error (async):', err.message);
+        console.error('[BulkImport] Post-import sync error (async):', err.message);
       }
     });
 

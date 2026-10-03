@@ -135,6 +135,29 @@ export class RedisService {
     }
     this.memoryFallback.delete(key);
   }
+
+  public async delByPattern(pattern: string): Promise<void> {
+    if (this.isConnected && this.client) {
+      try {
+        const stream = this.client.scanStream({ match: pattern, count: 100 });
+        for await (const keys of stream) {
+          if (keys && keys.length > 0) {
+            const pipeline = this.client.pipeline();
+            keys.forEach((k: string) => pipeline.del(k));
+            await pipeline.exec();
+          }
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    const prefix = pattern.replace(/\*/g, '');
+    for (const k of Array.from(this.memoryFallback.keys())) {
+      if (k.startsWith(prefix)) {
+        this.memoryFallback.delete(k);
+      }
+    }
+  }
 }
 
 export const redisService = RedisService.getInstance();

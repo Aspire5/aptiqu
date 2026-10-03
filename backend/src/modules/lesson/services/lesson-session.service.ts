@@ -1,6 +1,7 @@
 import { prisma } from '../../../config/prisma';
 import { redisService } from './redis.service';
 import { scriptCacheService } from './script-cache.service';
+import { questionHydrationService } from './question-hydration.service';
 import { questionService } from './question.service';
 import { masteryService } from './mastery.service';
 import { defaultAiProvider } from '../providers/stub-ai.provider';
@@ -26,9 +27,15 @@ export class LessonSessionService {
    */
   private sanitizeNode(node: LessonNode): LessonNode {
     const cloned = JSON.parse(JSON.stringify(node)) as LessonNode;
-    if (cloned.type === 'QUESTION' && cloned.questionReference?.inlineData) {
+    if (
+      (cloned.type === 'QUESTION' || cloned.type === 'CHOICE') &&
+      cloned.questionReference?.inlineData
+    ) {
       delete (cloned.questionReference.inlineData as any).correctOptionId;
       delete (cloned.questionReference.inlineData as any).explanation;
+      delete (cloned.questionReference.inlineData as any).alternativeExplanation;
+      delete (cloned.questionReference.inlineData as any).preferredSolution;
+      delete (cloned.questionReference.inlineData as any).preferredReason;
     }
     return cloned;
   }
@@ -194,6 +201,7 @@ export class LessonSessionService {
         });
         if (latestVer) {
           definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, script.title);
+          definition = await questionHydrationService.hydrateScriptDefinition(definition);
         }
       }
 
@@ -240,6 +248,7 @@ export class LessonSessionService {
         });
         if (latestVer) {
           definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, script.title);
+          definition = await questionHydrationService.hydrateScriptDefinition(definition);
         }
       }
       if (!definition) {

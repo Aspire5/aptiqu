@@ -509,6 +509,7 @@ export class AdminSyllabusService {
       return { script, version };
     });
 
+    await scriptCacheService.invalidateScriptCache(slug, result.version?.id);
     await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return result;
   }
@@ -574,6 +575,7 @@ export class AdminSyllabusService {
       return { script, version: existing.versions[0] };
     });
 
+    await scriptCacheService.invalidateScriptCache(result.script?.slug, result.version?.id);
     await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return result;
   }
@@ -720,6 +722,7 @@ export class AdminSyllabusService {
       return { script, version };
     });
 
+    await scriptCacheService.invalidateScriptCache(slug, result.version?.id);
     await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return result;
   }
