@@ -29,16 +29,42 @@ export class PvpSetGenerationService {
   public async generatePvpQuestionSet(): Promise<any> {
     const lockToken = await ConcurrencyLockService.acquireLock('PVP_SET_GENERATION', 60000);
     if (!lockToken) {
-      // Another thread is generating a set. Wait and return an available published set.
+      // Another thread is generating a set. Wait and return an available published set with all active questions.
       await ConcurrencyLockService.waitForCondition(async () => {
         const count = await prisma.pvpQuestionSet.count({
-          where: { status: 'PUBLISHED' },
+          where: {
+            status: 'PUBLISHED',
+            setQuestions: {
+              none: {
+                question: {
+                  OR: [
+                    { subject: { isActive: false } },
+                    { topic: { isActive: false } },
+                    { subtopic: { isActive: false } },
+                  ],
+                },
+              },
+            },
+          },
         });
         return count > 0;
       }, 15000);
 
       const existing = await prisma.pvpQuestionSet.findFirst({
-        where: { status: 'PUBLISHED' },
+        where: {
+          status: 'PUBLISHED',
+          setQuestions: {
+            none: {
+              question: {
+                OR: [
+                  { subject: { isActive: false } },
+                  { topic: { isActive: false } },
+                  { subtopic: { isActive: false } },
+                ],
+              },
+            },
+          },
+        },
         include: {
           setQuestions: {
             include: { question: true },

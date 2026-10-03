@@ -17,6 +17,22 @@ export class LiveCurriculumService {
    * with an active published version.
    */
   public static async isSubtopicLive(subtopicId: string): Promise<boolean> {
+    // 0. Verify subtopic and its parent hierarchy are ACTIVE
+    const subtopic = await prisma.subtopic.findUnique({
+      where: { id: subtopicId },
+      include: {
+        topic: {
+          include: {
+            subject: true,
+          },
+        },
+      },
+    });
+
+    if (!subtopic || !subtopic.isActive || !subtopic.topic.isActive || !subtopic.topic.subject.isActive) {
+      return false;
+    }
+
     // 1. Direct check on LessonScript with this subtopicId
     const scriptCount = await prisma.lessonScript.count({
       where: {
@@ -29,29 +45,29 @@ export class LiveCurriculumService {
     if (scriptCount > 0) return true;
 
     // 2. Check if subtopic's parent topic has published scripts
-    const subtopic = await prisma.subtopic.findUnique({
-      where: { id: subtopicId },
-      select: { topicId: true },
+    const topicScriptCount = await prisma.lessonScript.count({
+      where: {
+        topicId: subtopic.topicId,
+        status: 'PUBLISHED',
+        publishedVersionId: { not: null },
+      },
     });
-
-    if (subtopic) {
-      const topicScriptCount = await prisma.lessonScript.count({
-        where: {
-          topicId: subtopic.topicId,
-          status: 'PUBLISHED',
-          publishedVersionId: { not: null },
-        },
-      });
-      if (topicScriptCount > 0) return true;
-    }
-
-    return false;
+    return topicScriptCount > 0;
   }
 
   /**
-   * Checks if a Topic is LIVE (has at least one published script).
+   * Checks if a Topic is LIVE (is active, subject is active, and has at least one published script).
    */
   public static async isTopicLive(topicId: string): Promise<boolean> {
+    const topic = await prisma.topic.findUnique({
+      where: { id: topicId },
+      include: { subject: true },
+    });
+
+    if (!topic || !topic.isActive || !topic.subject.isActive) {
+      return false;
+    }
+
     const scriptCount = await prisma.lessonScript.count({
       where: {
         topicId,
@@ -64,23 +80,24 @@ export class LiveCurriculumService {
   }
 
   /**
-   * Returns all LIVE subtopics for a specific topic.
+   * Returns all LIVE and ACTIVE subtopics for a specific topic.
    */
   public static async getLiveSubtopicsForTopic(topicId: string): Promise<LiveSubtopicWithContext[]> {
     const isLive = await this.isTopicLive(topicId);
     if (!isLive) return [];
 
     const topic = await prisma.topic.findUnique({
-      where: { id: topicId },
+      where: { id: topicId, isActive: true, subject: { isActive: true } },
       include: {
         subject: true,
         subtopics: {
+          where: { isActive: true },
           orderBy: { sequence: 'asc' },
         },
       },
     });
 
-    if (!topic) return [];
+    if (!topic || !topic.isActive || !topic.subject.isActive) return [];
 
     return topic.subtopics.map((s) => ({
       id: s.id,
@@ -95,6 +112,7 @@ export class LiveCurriculumService {
 
   /**
    * Returns all LIVE topics and subtopics in the universe that have published scripts.
+   * Inactive subjects, topics, or subtopics are strictly excluded.
    * Topics/subjects without scripts (coming soon) are excluded.
    */
   public static async getAllLiveCurriculumUniverse(): Promise<
@@ -124,26 +142,33 @@ export class LiveCurriculumService {
     const topicIds = Array.from(new Set(publishedScripts.map((s) => s.topicId)));
 
     const topics = await prisma.topic.findMany({
-      where: { id: { in: topicIds } },
+      where: {
+        id: { in: topicIds },
+        isActive: true,
+        subject: { isActive: true },
+      },
       include: {
         subject: true,
         subtopics: {
+          where: { isActive: true },
           orderBy: { sequence: 'asc' },
         },
       },
       orderBy: { createdAt: 'asc' },
     });
 
-    return topics.map((t) => ({
-      subjectId: t.subject.id,
-      subjectName: t.subject.name,
-      topicId: t.id,
-      topicName: t.name,
-      subtopics: t.subtopics.map((s) => ({
-        id: s.id,
-        name: s.name,
-        description: s.description,
-      })),
-    }));
+    return topics
+      .filter((t) => t.isActive && t.subject.isActive && t.subtopics.length > 0)
+      .map((t) => ({
+        subjectId: t.subject.id,
+        subjectName: t.subject.name,
+        topicId: t.id,
+        topicName: t.name,
+        subtopics: t.subtopics.map((s) => ({
+          id: s.id,
+          name: s.name,
+          description: s.description,
+        })),
+      }));
   }
 }

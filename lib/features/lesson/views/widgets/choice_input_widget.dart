@@ -21,6 +21,42 @@ class ChoiceInputWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final bool anyLong = node.choiceOptions.any((opt) => opt.label.trim().length > 14);
+
+    if (anyLong) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: node.choiceOptions.map((opt) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AptiquColors.surfaceContainerHigh,
+                  foregroundColor: AptiquColors.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: const BorderSide(color: AptiquColors.primaryContainer),
+                  ),
+                  elevation: 2,
+                ),
+                onPressed: isSubmitting ? null : () => onSelect(opt.id, opt.label),
+                child: Text(
+                  opt.label,
+                  textAlign: TextAlign.center,
+                  style: AptiquTypography.bodyMd.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Wrap(

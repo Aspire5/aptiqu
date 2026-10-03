@@ -51,8 +51,8 @@ export class QuestionGenerationService {
       },
     });
 
-    if (!subtopic) {
-      throw new Error(`Subtopic with ID "${subtopicId}" not found.`);
+    if (!subtopic || !subtopic.isActive || !subtopic.topic.isActive || !subtopic.topic.subject.isActive) {
+      throw new Error(`Subtopic with ID "${subtopicId}" is inactive or not found.`);
     }
 
     const lockToken = await ConcurrencyLockService.acquireLock(subtopicId, 60000);

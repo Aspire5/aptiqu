@@ -36,12 +36,20 @@ export class PracticeSelectionService {
     }
 
     // 2. QUERY SCALABLE DATABASE-LEVEL: Eligible unsolved MANUAL questions
+    // Inactive subjects/topics/subtopics are strictly excluded.
     // Unsolved = user has never answered correctly (userProgress.none with timesCorrect > 0)
     const unsolvedManual = await prisma.question.findMany({
       where: {
         subtopicId: { in: subtopicIds },
         sourceType: 'MANUAL',
         status: 'PUBLISHED',
+        subtopic: {
+          isActive: true,
+          topic: {
+            isActive: true,
+            subject: { isActive: true },
+          },
+        },
         userProgress: {
           none: {
             userId,
@@ -81,6 +89,13 @@ export class PracticeSelectionService {
           subtopicId: { in: subtopicIds },
           sourceType: 'MANUAL',
           status: 'PUBLISHED',
+          subtopic: {
+            isActive: true,
+            topic: {
+              isActive: true,
+              subject: { isActive: true },
+            },
+          },
           id: { notIn: unsolvedManual.map((q) => q.id) },
         },
         take: needed,
@@ -102,6 +117,13 @@ export class PracticeSelectionService {
         subtopicId: { in: subtopicIds },
         sourceType: 'AI_GENERATED',
         status: 'PUBLISHED',
+        subtopic: {
+          isActive: true,
+          topic: {
+            isActive: true,
+            subject: { isActive: true },
+          },
+        },
         userProgress: {
           none: {
             userId,

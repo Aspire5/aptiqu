@@ -89,9 +89,10 @@ export class PvpMatchService {
 
   /**
    * Selects a published PvP set, preferring one unseen by both players.
+   * Strictly excludes any set containing questions from inactive subjects, topics, or subtopics.
    */
   private async selectPvPSetForPlayers(player1Id: string, player2Id: string) {
-    // 1. Prefer set unseen by both players
+    // 1. Prefer set unseen by both players (all questions active)
     const unseenBoth = await prisma.$queryRaw<Array<{ id: string }>>`
       SELECT qs.id FROM learning.pvp_question_sets qs
       WHERE qs.status = 'PUBLISHED'
@@ -99,12 +100,21 @@ export class PvpMatchService {
           SELECT 1 FROM learning.pvp_player_set_history h
           WHERE h.question_set_id = qs.id AND h.user_id IN (${player1Id}::uuid, ${player2Id}::uuid)
         )
+        AND NOT EXISTS (
+          SELECT 1 FROM learning.pvp_question_set_questions psq
+          JOIN learning.questions q ON q.id = psq.question_id
+          JOIN learning.subtopics st ON st.id = q.subtopic_id
+          JOIN learning.topics t ON t.id = q.topic_id
+          JOIN learning.subjects s ON s.id = q.subject_id
+          WHERE psq.set_id = qs.id
+            AND (st.is_active = false OR t.is_active = false OR s.is_active = false)
+        )
       ORDER BY qs.updated_at ASC LIMIT 1;
     `;
 
     let selectedSetId = unseenBoth[0]?.id;
 
-    // 2. Fallback: unseen by at least one
+    // 2. Fallback: unseen by at least one (all questions active)
     if (!selectedSetId) {
       const unseenOne = await prisma.$queryRaw<Array<{ id: string }>>`
         SELECT qs.id FROM learning.pvp_question_sets qs
@@ -119,16 +129,34 @@ export class PvpMatchService {
               WHERE h.question_set_id = qs.id AND h.user_id = ${player2Id}::uuid
             )
           )
+          AND NOT EXISTS (
+            SELECT 1 FROM learning.pvp_question_set_questions psq
+            JOIN learning.questions q ON q.id = psq.question_id
+            JOIN learning.subtopics st ON st.id = q.subtopic_id
+            JOIN learning.topics t ON t.id = q.topic_id
+            JOIN learning.subjects s ON s.id = q.subject_id
+            WHERE psq.set_id = qs.id
+              AND (st.is_active = false OR t.is_active = false OR s.is_active = false)
+          )
         ORDER BY qs.updated_at ASC LIMIT 1;
       `;
       selectedSetId = unseenOne[0]?.id;
     }
 
-    // 3. Fallback: least recently used published set
+    // 3. Fallback: least recently used published set (all questions active)
     if (!selectedSetId) {
       const lru = await prisma.$queryRaw<Array<{ id: string }>>`
         SELECT qs.id FROM learning.pvp_question_sets qs
         WHERE qs.status = 'PUBLISHED'
+          AND NOT EXISTS (
+            SELECT 1 FROM learning.pvp_question_set_questions psq
+            JOIN learning.questions q ON q.id = psq.question_id
+            JOIN learning.subtopics st ON st.id = q.subtopic_id
+            JOIN learning.topics t ON t.id = q.topic_id
+            JOIN learning.subjects s ON s.id = q.subject_id
+            WHERE psq.set_id = qs.id
+              AND (st.is_active = false OR t.is_active = false OR s.is_active = false)
+          )
         ORDER BY qs.updated_at ASC LIMIT 1;
       `;
       selectedSetId = lru[0]?.id;
@@ -136,15 +164,44 @@ export class PvpMatchService {
 
     if (!selectedSetId) return null;
 
-    return await prisma.pvpQuestionSet.findUnique({
+    const questionSet = await prisma.pvpQuestionSet.findUnique({
       where: { id: selectedSetId },
       include: {
         setQuestions: {
-          include: { question: true },
+          include: {
+            question: {
+              include: {
+                subtopic: true,
+                topic: {
+                  include: {
+                    subject: true,
+                  },
+                },
+              },
+            },
+          },
           orderBy: { sequence: 'asc' },
         },
       },
     });
+
+    if (!questionSet || questionSet.setQuestions.length < (questionSet.questionCount || 10)) {
+      return null;
+    }
+
+    // Explicit defense-in-depth: discard if any question belongs to an inactive subtopic, topic, or subject
+    const hasInactive = questionSet.setQuestions.some(
+      (sq) =>
+        !sq.question?.subtopic?.isActive ||
+        !sq.question?.topic?.isActive ||
+        !sq.question?.topic?.subject?.isActive
+    );
+
+    if (hasInactive) {
+      return null;
+    }
+
+    return questionSet;
   }
 
   /**

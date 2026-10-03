@@ -81,6 +81,8 @@ export class LessonSessionService {
       include: {
         roadmap: true,
         subject: true,
+        topic: true,
+        subtopic: true,
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
@@ -99,7 +101,14 @@ export class LessonSessionService {
       },
     });
 
-    if (!step || !step.isActive || !step.roadmap.isActive || (step.subject && !step.subject.isActive)) {
+    if (
+      !step ||
+      !step.isActive ||
+      !step.roadmap.isActive ||
+      (step.subject && !step.subject.isActive) ||
+      (step.topic && !step.topic.isActive) ||
+      (step.subtopic && !step.subtopic.isActive)
+    ) {
       // Re-resolve active step dynamically if requested step is inactive or belongs to an inactive subject
       const activeRoadmap = await roadmapProgressionService.getUserActiveRoadmap(userId).catch(() => null);
       if (activeRoadmap) {
@@ -843,6 +852,8 @@ export class LessonSessionService {
       include: {
         roadmap: true,
         subject: true,
+        topic: true,
+        subtopic: true,
         scriptAssignments: {
           where: { status: 'PUBLISHED' },
           orderBy: { sequence: 'asc' },
@@ -866,6 +877,8 @@ export class LessonSessionService {
       !step.isActive ||
       !step.roadmap.isActive ||
       (step.subject && !step.subject.isActive) ||
+      (step.topic && !step.topic.isActive) ||
+      (step.subtopic && !step.subtopic.isActive) ||
       !step.scriptAssignments.length
     ) {
       // Step is inactive, belongs to an inactive subject, or has no scripts. Re-resolve dynamically from active roadmap!

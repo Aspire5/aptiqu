@@ -352,10 +352,18 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
   }
 
   /// 1. SELECT INPUT TYPE (Buttons/Options)
+  /// Modern adaptive option layout:
+  /// - When all options are concise words/numbers (<= 9 chars, no spaces/newlines): uses a compact 2x2 grid (or 2-button row for binary) with soft-wrapping and no ellipsis.
+  /// - When options contain longer expressions, sentences, or math formulations: uses full-width vertical option cards with ample padding, left-aligned typography, badge letters, and full multiline readability.
   Widget _buildSelectInput(QuestionData q) {
-    final isBinaryChoice = q.options.length <= 2;
+    if (q.options.isEmpty) return const SizedBox.shrink();
 
-    if (isBinaryChoice) {
+    // Check if options are short single-word tokens (e.g. "42", "A", "True")
+    final bool allShort = q.options.every(
+        (opt) => opt.trim().length <= 9 && !opt.contains(' ') && !opt.contains('\n'));
+
+    // Compact side-by-side Row for short binary choices
+    if (q.options.length <= 2 && allShort) {
       return Row(
         children: List.generate(q.options.length, (idx) {
           final optionText = q.options[idx];
@@ -418,7 +426,7 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
                   decoration: BoxDecoration(
                     gradient: (bgColor == null &&
                             (isSelected || (isPrimaryAction && !q.isCompleted)))
@@ -439,8 +447,9 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
                         child: Text(
                           optionText,
                           textAlign: TextAlign.center,
+                          softWrap: true,
                           style: AptiquTypography.bodySm.copyWith(
-                            fontSize: 12,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w700,
                             color: (isCorrect ||
                                     isWrongSelected ||
@@ -465,136 +474,188 @@ class _QuestionContainerWidgetState extends State<QuestionContainerWidget> {
       );
     }
 
-    // Grid for 4-option MCQs (A, B, C, D)
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 2.8,
-      ),
-      itemCount: q.options.length,
-      itemBuilder: (context, optIdx) {
+    // Compact 2x2 grid ONLY when exactly 4 options and all are ultra-short tokens
+    if (q.options.length == 4 && allShort) {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 2.3,
+        ),
+        itemCount: q.options.length,
+        itemBuilder: (context, optIdx) {
+          final optionText = q.options[optIdx];
+          final optionLetter = String.fromCharCode(65 + optIdx); // A, B, C, D
+          final isSelected = q.selectedOptionIndex == optIdx;
+          final isCorrect = _isOptionCorrect(q, optIdx);
+          final isWrongSelected = _isOptionWrongSelected(q, optIdx);
+
+          return _buildOptionTile(
+            q: q,
+            optIdx: optIdx,
+            optionText: optionText,
+            optionLetter: optionLetter,
+            isSelected: isSelected,
+            isCorrect: isCorrect,
+            isWrongSelected: isWrongSelected,
+            isCompactGrid: true,
+          );
+        },
+      );
+    }
+
+    // Default & Best UX for questions with expressions, sentences, or math:
+    // Full-width vertical list of option cards. Never truncates, wraps naturally, and is effortlessly readable!
+    return Column(
+      children: List.generate(q.options.length, (optIdx) {
         final optionText = q.options[optIdx];
-        final optionLetter = String.fromCharCode(65 + optIdx); // A, B, C, D
+        final optionLetter = String.fromCharCode(65 + optIdx);
         final isSelected = q.selectedOptionIndex == optIdx;
         final isCorrect = _isOptionCorrect(q, optIdx);
         final isWrongSelected = _isOptionWrongSelected(q, optIdx);
 
-        Color bgColor;
-        Color borderColor;
-        Color letterBgColor;
-        Color letterTextColor;
-        Widget? trailingIcon;
-        List<BoxShadow>? shadows;
-
-        if (isCorrect) {
-          bgColor = const Color(0xFF10B981).withValues(alpha: 0.22);
-          borderColor = const Color(0xFF10B981);
-          letterBgColor = const Color(0xFF10B981).withValues(alpha: 0.35);
-          letterTextColor = const Color(0xFF34D399);
-          trailingIcon = const Icon(Icons.check_circle_rounded,
-              color: Color(0xFF10B981), size: 17);
-          shadows = [
-            BoxShadow(
-              color: const Color(0xFF10B981).withValues(alpha: 0.3),
-              blurRadius: 8,
-            )
-          ];
-        } else if (isWrongSelected) {
-          bgColor = const Color(0xFFEF4444).withValues(alpha: 0.22);
-          borderColor = const Color(0xFFEF4444);
-          letterBgColor = const Color(0xFFEF4444).withValues(alpha: 0.35);
-          letterTextColor = const Color(0xFFF87171);
-          trailingIcon = const Icon(Icons.cancel_rounded,
-              color: Color(0xFFEF4444), size: 17);
-          shadows = [
-            BoxShadow(
-              color: const Color(0xFFEF4444).withValues(alpha: 0.3),
-              blurRadius: 8,
-            )
-          ];
-        } else if (isSelected) {
-          bgColor = AptiquColors.secondary.withValues(alpha: 0.18);
-          borderColor = AptiquColors.secondary;
-          letterBgColor = AptiquColors.secondary.withValues(alpha: 0.25);
-          letterTextColor = AptiquColors.secondary;
-          shadows = AptiquColors.secondaryGlow;
-        } else {
-          bgColor = AptiquColors.surfaceContainer;
-          borderColor = AptiquColors.outlineVariant.withValues(alpha: 0.8);
-          letterBgColor = AptiquColors.surfaceContainerHigh;
-          letterTextColor = AptiquColors.onSurfaceVariant;
-        }
-
-        return InkWell(
-          onTap: q.isCompleted
-              ? null
-              : () => widget.controller.handleOptionSelection(
-                    widget.messageId,
-                    optIdx,
-                  ),
-          borderRadius: BorderRadius.circular(12),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: borderColor,
-                width: (isCorrect || isWrongSelected || isSelected) ? 1.5 : 1.0,
-              ),
-              boxShadow: shadows,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: letterBgColor,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    optionLetter,
-                    style: AptiquTypography.labelCapsBold.copyWith(
-                      fontSize: 10,
-                      color: letterTextColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    optionText,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: AptiquTypography.metricMd.copyWith(
-                      fontSize: 13,
-                      color: (isSelected || isCorrect || isWrongSelected)
-                          ? Colors.white
-                          : AptiquColors.onSurface,
-                      fontWeight:
-                          (isSelected || isCorrect || isWrongSelected)
-                              ? FontWeight.w700
-                              : FontWeight.w600,
-                    ),
-                  ),
-                ),
-                if (trailingIcon != null) ...[
-                  const SizedBox(width: 4),
-                  trailingIcon,
-                ],
-              ],
-            ),
+        return Padding(
+          padding: EdgeInsets.only(bottom: optIdx < q.options.length - 1 ? 8.0 : 0),
+          child: _buildOptionTile(
+            q: q,
+            optIdx: optIdx,
+            optionText: optionText,
+            optionLetter: optionLetter,
+            isSelected: isSelected,
+            isCorrect: isCorrect,
+            isWrongSelected: isWrongSelected,
+            isCompactGrid: false,
           ),
         );
-      },
+      }),
+    );
+  }
+
+  Widget _buildOptionTile({
+    required QuestionData q,
+    required int optIdx,
+    required String optionText,
+    required String optionLetter,
+    required bool isSelected,
+    required bool isCorrect,
+    required bool isWrongSelected,
+    required bool isCompactGrid,
+  }) {
+    Color bgColor;
+    Color borderColor;
+    Color letterBgColor;
+    Color letterTextColor;
+    Widget? trailingIcon;
+    List<BoxShadow>? shadows;
+
+    if (isCorrect) {
+      bgColor = const Color(0xFF10B981).withValues(alpha: 0.22);
+      borderColor = const Color(0xFF10B981);
+      letterBgColor = const Color(0xFF10B981).withValues(alpha: 0.35);
+      letterTextColor = const Color(0xFF34D399);
+      trailingIcon = const Icon(Icons.check_circle_rounded,
+          color: Color(0xFF10B981), size: 18);
+      shadows = [
+        BoxShadow(
+          color: const Color(0xFF10B981).withValues(alpha: 0.3),
+          blurRadius: 8,
+        )
+      ];
+    } else if (isWrongSelected) {
+      bgColor = const Color(0xFFEF4444).withValues(alpha: 0.22);
+      borderColor = const Color(0xFFEF4444);
+      letterBgColor = const Color(0xFFEF4444).withValues(alpha: 0.35);
+      letterTextColor = const Color(0xFFF87171);
+      trailingIcon = const Icon(Icons.cancel_rounded,
+          color: Color(0xFFEF4444), size: 18);
+      shadows = [
+        BoxShadow(
+          color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+          blurRadius: 8,
+        )
+      ];
+    } else if (isSelected) {
+      bgColor = AptiquColors.secondary.withValues(alpha: 0.18);
+      borderColor = AptiquColors.secondary;
+      letterBgColor = AptiquColors.secondary.withValues(alpha: 0.25);
+      letterTextColor = AptiquColors.secondary;
+      shadows = AptiquColors.secondaryGlow;
+    } else {
+      bgColor = AptiquColors.surfaceContainer;
+      borderColor = AptiquColors.outlineVariant.withValues(alpha: 0.8);
+      letterBgColor = AptiquColors.surfaceContainerHigh;
+      letterTextColor = AptiquColors.onSurfaceVariant;
+    }
+
+    return InkWell(
+      onTap: q.isCompleted
+          ? null
+          : () => widget.controller.handleOptionSelection(
+                widget.messageId,
+                optIdx,
+              ),
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: isCompactGrid
+            ? const EdgeInsets.symmetric(horizontal: 10, vertical: 8)
+            : const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: borderColor,
+            width: (isCorrect || isWrongSelected || isSelected) ? 1.5 : 1.0,
+          ),
+          boxShadow: shadows,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: isCompactGrid ? 22 : 26,
+              height: isCompactGrid ? 22 : 26,
+              decoration: BoxDecoration(
+                color: letterBgColor,
+                borderRadius: BorderRadius.circular(isCompactGrid ? 6 : 8),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                optionLetter,
+                style: AptiquTypography.labelCapsBold.copyWith(
+                  fontSize: isCompactGrid ? 10 : 11.5,
+                  color: letterTextColor,
+                ),
+              ),
+            ),
+            SizedBox(width: isCompactGrid ? 8 : 12),
+            Expanded(
+              child: Text(
+                optionText,
+                textAlign: isCompactGrid ? TextAlign.center : TextAlign.start,
+                softWrap: true,
+                style: AptiquTypography.bodyMedium.copyWith(
+                  fontSize: isCompactGrid ? 12.5 : 13.5,
+                  height: 1.35,
+                  color: (isSelected || isCorrect || isWrongSelected)
+                      ? Colors.white
+                      : AptiquColors.onSurface,
+                  fontWeight: (isSelected || isCorrect || isWrongSelected)
+                      ? FontWeight.w700
+                      : FontWeight.w500,
+                ),
+              ),
+            ),
+            if (trailingIcon != null) ...[
+              const SizedBox(width: 8),
+              trailingIcon,
+            ],
+          ],
+        ),
+      ),
     );
   }
 

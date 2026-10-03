@@ -32,6 +32,23 @@ export class PracticeSessionService {
       if (!resolvedTopicId && liveUniverse.length > 0) {
         resolvedTopicId = liveUniverse[0].topicId;
       }
+    } else {
+      // Validate requested subtopics: strictly discard any inactive subtopic/topic/subject
+      const activeSubtopics = await prisma.subtopic.findMany({
+        where: {
+          id: { in: resolvedSubtopicIds },
+          isActive: true,
+          topic: {
+            isActive: true,
+            subject: { isActive: true },
+          },
+        },
+        select: { id: true, topicId: true },
+      });
+      if (activeSubtopics.length === 0) {
+        throw new Error('Selected subtopics or topics are inactive or unavailable.');
+      }
+      resolvedSubtopicIds = activeSubtopics.map((s) => s.id);
     }
 
     if (!resolvedTopicId && resolvedSubtopicIds.length > 0) {
@@ -51,8 +68,8 @@ export class PracticeSessionService {
       include: { subject: true },
     });
 
-    if (!topic) {
-      throw new Error(`Topic "${resolvedTopicId}" not found.`);
+    if (!topic || !topic.isActive || !topic.subject.isActive) {
+      throw new Error(`Topic "${resolvedTopicId}" is inactive or not found.`);
     }
 
     console.log(
