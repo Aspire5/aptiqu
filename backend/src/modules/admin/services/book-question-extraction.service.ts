@@ -245,6 +245,26 @@ Extract all practice questions, worked examples, and problem sets from these pag
 
       for (let p = topic.startPage; p <= topic.endPage; p += CHUNK_PAGES) {
         const chunkEnd = Math.min(p + CHUNK_PAGES - 1, topic.endPage);
+        const pageRangeStr = `pp. ${p}-${chunkEnd}`;
+
+        // Skip AI call if this page chunk already has extracted questions in DB
+        const existingInChunk = await prisma.question.count({
+          where: {
+            subjectId: bookSource.subject.id,
+            topicId: dbTopicId,
+            sourcePageRange: { in: [pageRangeStr, `p. ${p}`] },
+          },
+        });
+
+        if (existingInChunk > 0) {
+          console.log(
+            `[BookQuestionExtractionService] Pages ${p}-${chunkEnd} for topic "${topic.name}" already have ${existingInChunk} questions. Skipping AI call.`
+          );
+          totalExtracted += existingInChunk;
+          topicQuestionSeq += existingInChunk;
+          continue;
+        }
+
         try {
           const chunkQuestions = await this.extractQuestionsFromPageRange(
             bookId,

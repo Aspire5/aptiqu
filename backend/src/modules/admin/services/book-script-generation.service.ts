@@ -222,6 +222,24 @@ entryNodeId must be "start".
 
     for (let i = 0; i < totalSubtopics; i++) {
       const item = allSubtopics[i];
+
+      // Skip subtopics that already have a generated lesson script
+      const existingScript = await prisma.lessonScript.findFirst({
+        where: { subtopicId: item.subtopic.id },
+        include: { versions: { take: 1 } },
+      });
+
+      if (existingScript && existingScript.versions && existingScript.versions.length > 0) {
+        console.log(
+          `[BookScriptGenerationService] Subtopic ${item.subtopic.id} already has a generated script. Skipping AI synthesis.`
+        );
+        completedCount++;
+        if (onProgress) {
+          await onProgress((i + 1) / totalSubtopics, completedCount, totalSubtopics);
+        }
+        continue;
+      }
+
       try {
         await this.generateScriptForSubtopic(
           bookId,

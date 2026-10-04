@@ -44,11 +44,7 @@ export const BOOK_INGESTION_QUEUE_NAME = 'book-ingestion';
 export const bookIngestionQueue = new Queue(BOOK_INGESTION_QUEUE_NAME, {
   connection,
   defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 5000,
-    },
+    attempts: 1, // Never automatically loop-retry on failure; wait for explicit user action
     removeOnComplete: true,
     removeOnFail: false,
   },
@@ -121,18 +117,44 @@ export const bookIngestionWorker = new Worker(
     try {
       switch (name) {
         case 'process-full-book': {
-          // Stage 1: Parse PDF Pages
-          console.log(`[BookIngestionQueue:${bookId}] Stage 1: Parsing PDF pages...`);
-          await updateJobStageProgress(bookId, 'PARSING_PAGES', 0.1);
-          await pdfParserService.parseBookPdf(bookId, async (prog) => {
-            await updateJobStageProgress(bookId, 'PARSING_PAGES', prog);
+          const currentBook = await prisma.bookSource.findUnique({
+            where: { id: bookId },
+            include: {
+              subject: {
+                include: {
+                  topics: true,
+                },
+              },
+            },
           });
 
-          // Stage 2: Discover Topics
-          console.log(`[BookIngestionQueue:${bookId}] Stage 2: Discovering topics...`);
-          await updateJobStageProgress(bookId, 'DETECTING_TOPICS', 0.1);
-          const topics = await topicDiscoveryService.discoverTopics(bookId);
-          await updateJobStageProgress(bookId, 'TOPICS_DETECTED', 1.0, topics.length, topics.length);
+          if (!currentBook) {
+            throw new Error(`BookSource not found: ${bookId}`);
+          }
+
+          // Stage 1: Parse PDF Pages (Skip if already parsed)
+          const pageCount = await prisma.bookPage.count({ where: { bookId } });
+          if (currentBook.totalPages > 0 && pageCount >= currentBook.totalPages) {
+            console.log(`[BookIngestionQueue:${bookId}] Stage 1: All ${pageCount} pages already parsed. Skipping to Stage 2.`);
+          } else {
+            console.log(`[BookIngestionQueue:${bookId}] Stage 1: Parsing PDF pages...`);
+            await updateJobStageProgress(bookId, 'PARSING_PAGES', 0.1);
+            await pdfParserService.parseBookPdf(bookId, async (prog) => {
+              await updateJobStageProgress(bookId, 'PARSING_PAGES', prog);
+            });
+          }
+
+          // Stage 2: Discover Topics (Skip if already detected)
+          const metadata = (currentBook.metadata as any) || {};
+          let topics = metadata.detectedTopics || [];
+          if (topics.length > 0 && currentBook.subject.topics.length > 0) {
+            console.log(`[BookIngestionQueue:${bookId}] Stage 2: ${topics.length} topics already discovered. Skipping to Stage 3.`);
+          } else {
+            console.log(`[BookIngestionQueue:${bookId}] Stage 2: Discovering topics...`);
+            await updateJobStageProgress(bookId, 'DETECTING_TOPICS', 0.1);
+            topics = await topicDiscoveryService.discoverTopics(bookId);
+            await updateJobStageProgress(bookId, 'TOPICS_DETECTED', 1.0, topics.length, topics.length);
+          }
 
           // Stage 3: Discover Subtopics
           console.log(`[BookIngestionQueue:${bookId}] Stage 3: Discovering subtopics...`);
@@ -220,12 +242,15 @@ export const bookIngestionWorker = new Worker(
           errorMessage: err.message || 'Unknown processing error',
         },
       });
-      throw err;
+      return { success: false, error: err.message };
     }
   },
   {
     connection,
-    concurrency: 2,
+    concurrency: 1, // Strict single-worker to prevent concurrent loop runs
+    lockDuration: 900000, // 15 minutes lock window so long AI calls never falsely trigger stalled watchdog
+    stalledInterval: 60000, // Check stalled jobs once per minute
+    maxStalledCount: 1,
   }
 );
 

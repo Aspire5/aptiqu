@@ -153,6 +153,23 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
 
       const dbTopicId = matchingTopic ? matchingTopic.id : `${bookSource.subject.slug}-${topicCandidate.suggestedSlug}`;
 
+      // Skip AI synthesis if topic already has subtopics from a prior run
+      const existingSubtopics = await prisma.subtopic.findMany({
+        where: { topicId: dbTopicId },
+        orderBy: { sequence: 'asc' },
+      });
+
+      if (existingSubtopics.length >= 2) {
+        console.log(
+          `[SubtopicDiscoveryService] Topic "${topicCandidate.name}" already has ${existingSubtopics.length} subtopics. Skipping AI synthesis.`
+        );
+        subtopicsByTopicCode[topicCandidate.code] = existingSubtopics as any;
+        if (onProgress) {
+          await onProgress((i + 1) / totalTopics, i + 1, totalTopics);
+        }
+        continue;
+      }
+
       try {
         const discovered = await this.discoverSubtopicsForTopic(bookId, topicCandidate, dbTopicId);
         subtopicsByTopicCode[topicCandidate.code] = discovered;
