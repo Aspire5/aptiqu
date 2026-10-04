@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { prisma } from '../../../config/prisma';
 import { geminiProvider } from '../../ai/gemini.provider';
 import { pdfParserService } from './pdf-parser.service';
@@ -111,8 +112,17 @@ Extract all practice questions, worked examples, and problem sets from these pag
         continue;
       }
 
-      const externalKey = `${topicCandidate.code.toLowerCase()}-q-${String(currentSeq).padStart(3, '0')}`;
+      // Generate collision-proof externalKey scoped to topic, book, and sequence
+      const bookPrefix = bookSource.id.replace(/-/g, '').slice(0, 6);
+      let externalKey = `${topicCandidate.code.toLowerCase()}-q-${String(currentSeq).padStart(3, '0')}-${bookPrefix}`;
       currentSeq++;
+
+      // Verify key doesn't collide with any existing question in DB
+      let uniqueKey = externalKey;
+      let collisionSuffix = 1;
+      while (await prisma.question.findUnique({ where: { externalKey: uniqueKey } })) {
+        uniqueKey = `${externalKey}-${collisionSuffix++}`;
+      }
 
       const difficulty = (['EASY', 'MEDIUM', 'HARD'].includes(q.difficulty) ? q.difficulty : 'MEDIUM') as QuestionDifficultyEnum;
       const calculationMode = (['MENTAL', 'LIGHT_PEN_AND_PAPER', 'PEN_AND_PAPER'].includes(q.calculationMode)
@@ -125,41 +135,59 @@ Extract all practice questions, worked examples, and problem sets from these pag
         ? PreferredSolution.BOOK
         : null;
 
+      const questionData = {
+        subjectId: bookSource.subject.id,
+        topicId: dbTopicId,
+        subtopicId: defaultSubtopicId, // Initially default; classified in Stage 5
+        externalKey: uniqueKey,
+        pattern: q.pattern || 'STANDARD_MCQ',
+        prompt: promptText,
+        options: options as any,
+        correctAnswer,
+        hints: Array.isArray(q.hints) ? q.hints : [],
+        explanation: String(q.explanation || 'Step-by-step solution derived from source.'),
+        method: String(q.method || 'Standard Method'),
+        difficulty,
+        estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
+        calculationMode,
+        sourceType: 'MANUAL' as const,
+        status: 'DRAFT' as const, // Remains DRAFT until published
+        generationMethod: 'AI_EXTRACTED' as const,
+        sourceBook: bookSource.title,
+        sourceEdition: bookSource.edition,
+        sourceChapter: topicCandidate.name,
+        sourcePageRange: q.sourcePageNumber ? `p. ${q.sourcePageNumber}` : `pp. ${startPage}-${endPage}`,
+        pyq: q.pyq ? String(q.pyq).trim() : null,
+        alternativeExplanation: q.alternativeExplanation ? String(q.alternativeExplanation).trim() : null,
+        preferredSolution,
+        preferredReason: q.preferredReason ? String(q.preferredReason).trim() : null,
+        fingerprint,
+        generatedAt: new Date(),
+      };
+
       try {
         const record = await prisma.question.create({
-          data: {
-            subjectId: bookSource.subject.id,
-            topicId: dbTopicId,
-            subtopicId: defaultSubtopicId, // Initially default; classified in Stage 7
-            externalKey,
-            pattern: q.pattern || 'STANDARD_MCQ',
-            prompt: promptText,
-            options: options as any,
-            correctAnswer,
-            hints: Array.isArray(q.hints) ? q.hints : [],
-            explanation: String(q.explanation || 'Step-by-step solution derived from source.'),
-            method: String(q.method || 'Standard Method'),
-            difficulty,
-            estimatedTimeSeconds: Number(q.estimatedTimeSeconds) || 60,
-            calculationMode,
-            sourceType: 'MANUAL',
-            status: 'DRAFT', // Remains DRAFT until published
-            generationMethod: 'AI_EXTRACTED',
-            sourceBook: bookSource.title,
-            sourceEdition: bookSource.edition,
-            sourceChapter: topicCandidate.name,
-            sourcePageRange: q.sourcePageNumber ? `p. ${q.sourcePageNumber}` : `pp. ${startPage}-${endPage}`,
-            pyq: q.pyq ? String(q.pyq).trim() : null,
-            alternativeExplanation: q.alternativeExplanation ? String(q.alternativeExplanation).trim() : null,
-            preferredSolution,
-            preferredReason: q.preferredReason ? String(q.preferredReason).trim() : null,
-            fingerprint,
-            generatedAt: new Date(),
-          },
+          data: questionData,
         });
         createdRecords.push(record);
       } catch (err: any) {
-        console.warn(`[BookQuestionExtractionService] Skipping question due to DB insert error: ${err.message}`);
+        // Fallback with crypto random hash if concurrent collision occurred
+        if (err.message?.includes('external_key') || err.message?.includes('Unique constraint')) {
+          try {
+            const fallbackKey = `${uniqueKey}-${crypto.randomBytes(3).toString('hex')}`;
+            const fallbackRecord = await prisma.question.create({
+              data: {
+                ...questionData,
+                externalKey: fallbackKey,
+              },
+            });
+            createdRecords.push(fallbackRecord);
+          } catch (retryErr: any) {
+            console.warn(`[BookQuestionExtractionService] Skipping question due to persistent DB error: ${retryErr.message}`);
+          }
+        } else {
+          console.warn(`[BookQuestionExtractionService] Skipping question due to DB insert error: ${err.message}`);
+        }
       }
     }
 
@@ -206,7 +234,14 @@ Extract all practice questions, worked examples, and problem sets from these pag
       );
       const dbTopicId = dbTopic ? dbTopic.id : `${bookSource.subject.slug}-${topic.suggestedSlug}`;
 
-      let topicQuestionSeq = 1;
+      // Resume sequence count from existing questions in database for this topic
+      const existingTopicQCount = await prisma.question.count({
+        where: {
+          subjectId: bookSource.subject.id,
+          topicId: dbTopicId,
+        },
+      });
+      let topicQuestionSeq = existingTopicQCount + 1;
 
       for (let p = topic.startPage; p <= topic.endPage; p += CHUNK_PAGES) {
         const chunkEnd = Math.min(p + CHUNK_PAGES - 1, topic.endPage);
@@ -219,7 +254,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
             chunkEnd,
             topicQuestionSeq
           );
-          topicQuestionSeq += chunkQuestions.length;
+          topicQuestionSeq += Math.max(chunkQuestions.length, 1);
           totalExtracted += chunkQuestions.length;
 
           if (onProgress) {
@@ -231,7 +266,11 @@ Extract all practice questions, worked examples, and problem sets from these pag
             `[BookQuestionExtractionService] Error extracting from pages ${p}-${chunkEnd} for topic "${topic.name}":`,
             err.message
           );
+          topicQuestionSeq += 5; // ensure sequence advances even on failure
         }
+
+        // Pacing delay between chunks to ensure smooth token distribution
+        await new Promise((resolve) => setTimeout(resolve, 1500));
       }
     }
 

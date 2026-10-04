@@ -240,6 +240,11 @@ entryNodeId must be "start".
       if (onProgress) {
         await onProgress((i + 1) / totalSubtopics, completedCount, totalSubtopics);
       }
+
+      // Pacing delay between script generations
+      if (i < totalSubtopics - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
     }
 
     console.log(`[BookScriptGenerationService] Finished generating ${completedCount}/${totalSubtopics} lesson scripts.`);

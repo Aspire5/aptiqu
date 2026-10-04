@@ -31,13 +31,17 @@ export class SubtopicDiscoveryService {
       `[SubtopicDiscoveryService] Discovering subtopics for topic "${topicCandidate.name}" (Pages ${topicCandidate.startPage}-${topicCandidate.endPage})...`
     );
 
-    // Retrieve topic source text (capped to 25 pages max per LLM context call to prevent token overflow)
-    const maxEndPage = Math.min(topicCandidate.endPage, topicCandidate.startPage + 30);
-    const sourceText = await pdfParserService.getPagesText(
+    // Retrieve topic source text (capped to 10 introductory theory/concept pages to prevent token overflow)
+    const maxEndPage = Math.min(topicCandidate.endPage, topicCandidate.startPage + 10);
+    let sourceText = await pdfParserService.getPagesText(
       bookId,
       topicCandidate.startPage,
       maxEndPage
     );
+
+    if (sourceText.length > 25000) {
+      sourceText = sourceText.slice(0, 25000) + '\n\n[... Remaining exercise pages omitted for subtopic outline synthesis ...]';
+    }
 
     const prompt = `
 Topic Name: ${topicCandidate.name} (Code: ${topicCandidate.code})
@@ -162,6 +166,11 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
 
       if (onProgress) {
         await onProgress((i + 1) / totalTopics, i + 1, totalTopics);
+      }
+
+      // Pacing delay between topics
+      if (i < totalTopics - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
 

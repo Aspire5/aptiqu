@@ -137,6 +137,9 @@ Assign each question to the most appropriate subtopic ID from the list above.
           const prog = (tIdx + (i + batch.length) / questions.length) / topics.length;
           await onProgress(prog, totalClassified);
         }
+
+        // Pacing delay between classification batches
+        await new Promise((resolve) => setTimeout(resolve, 1500));
       }
     }
 
