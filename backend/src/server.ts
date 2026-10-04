@@ -45,7 +45,7 @@ async function bootstrap() {
         const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
         const tomorrowDateString = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(tomorrow);
         await contentGenQueue.add('prewarm-daily-challenge', { targetDate: tomorrowDateString }, {
-          jobId: `prewarm:daily:${tomorrowDateString}`,
+          jobId: `prewarm-daily-${tomorrowDateString}`,
           removeOnComplete: true,
         });
         console.log(`🚀 [Cron] Enqueued pre-warming job for tomorrow's challenge (${tomorrowDateString})`);

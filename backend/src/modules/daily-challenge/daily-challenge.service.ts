@@ -387,7 +387,7 @@ export class DailyChallengeService {
       if (!script) {
         // Enqueue emergency background generation without blocking user HTTP request
         contentGenQueue.add('prewarm-daily-challenge', { targetDate: sync.todayDate }, {
-          jobId: `emergency:daily:${sync.todayDate}`,
+          jobId: `emergency-daily-${sync.todayDate}`,
           removeOnComplete: true,
         }).catch((err) => {
           console.warn('[DailyChallenge] Failed to enqueue emergency prewarm job:', err);

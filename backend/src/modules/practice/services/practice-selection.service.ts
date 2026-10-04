@@ -144,7 +144,7 @@ export class PracticeSelectionService {
       // Trigger background replenishment for requested subtopics
       for (const targetId of subtopicIds) {
         contentGenQueue.add('generate-subtopic-questions', { subtopicId: targetId }, {
-          jobId: `subtopic:${targetId}`,
+          jobId: `subtopic-${targetId}`,
           removeOnComplete: true,
         }).catch((err) => {
           console.warn(`[PracticeSelection] Failed to enqueue background generation for subtopic ${targetId}:`, err);

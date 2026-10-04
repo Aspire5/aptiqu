@@ -47,7 +47,7 @@ export class AdminBooksController {
         'process-full-book',
         { bookId: bookSource.id },
         {
-          jobId: `book-process:${bookSource.id}`,
+          jobId: `book-process-${bookSource.id}-${Date.now()}`,
           removeOnComplete: true,
         }
       );
