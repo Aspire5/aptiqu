@@ -112,7 +112,10 @@ export const BooksPage: React.FC = () => {
     try {
       const res = await api.getBooks();
       if (res.data?.success) {
-        setBooks(res.data.data || []);
+        const bookList = Array.isArray(res.data.data)
+          ? res.data.data
+          : (Array.isArray(res.data.data?.books) ? res.data.data.books : []);
+        setBooks(bookList);
       }
     } catch (err: any) {
       console.error('Failed to load books:', err);
@@ -322,10 +325,11 @@ export const BooksPage: React.FC = () => {
   };
 
   // Overall Stats
-  const totalBooks = books.length;
-  const inProgressBooks = books.filter((b) => !['PUBLISHED', 'FAILED', 'READY_FOR_REVIEW'].includes(b.status)).length;
-  const reviewBooks = books.filter((b) => b.status === 'READY_FOR_REVIEW').length;
-  const publishedBooks = books.filter((b) => b.status === 'PUBLISHED').length;
+  const bookList = Array.isArray(books) ? books : [];
+  const totalBooks = bookList.length;
+  const inProgressBooks = bookList.filter((b) => !['PUBLISHED', 'FAILED', 'READY_FOR_REVIEW'].includes(b.status)).length;
+  const reviewBooks = bookList.filter((b) => b.status === 'READY_FOR_REVIEW').length;
+  const publishedBooks = bookList.filter((b) => b.status === 'PUBLISHED').length;
 
   return (
     <div className="books-page" style={{ paddingBottom: '60px' }}>
@@ -383,7 +387,7 @@ export const BooksPage: React.FC = () => {
           <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             Loading textbook repositories...
           </div>
-        ) : books.length === 0 ? (
+        ) : bookList.length === 0 ? (
           <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             <BookOpen size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
             <h4 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>No books uploaded yet</h4>
@@ -408,12 +412,12 @@ export const BooksPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {books.map((b) => (
+                {bookList.map((b) => (
                   <tr key={b.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.2s' }}>
                     <td style={{ padding: '16px 20px' }}>
                       <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '14px' }}>{b.title}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                        Subject Slug: <code>{b.subject.slug}</code>
+                        Subject Slug: <code>{b.subject?.slug || '—'}</code>
                       </div>
                     </td>
                     <td style={{ padding: '16px 20px', fontSize: '13px', color: 'var(--text-primary)' }}>
@@ -430,10 +434,10 @@ export const BooksPage: React.FC = () => {
                     <td style={{ padding: '16px 20px', fontSize: '12px' }}>
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <span className="badge" style={{ background: '#e0f2fe', color: '#0369a1' }}>
-                          {b.subject._count.topics} Chapters
+                          {b.subject?._count?.topics || 0} Chapters
                         </span>
                         <span className="badge" style={{ background: '#f3e8ff', color: '#7e22ce' }}>
-                          {b.subject._count.questions} Questions
+                          {b.subject?._count?.questions || 0} Questions
                         </span>
                       </div>
                     </td>
@@ -724,7 +728,7 @@ export const BooksPage: React.FC = () => {
                 {renderStatusBadge(progressData?.status || selectedBook.status)}
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                Subject ID: <code>{selectedBook.subject.id}</code> • {selectedBook.totalPages} Total Pages
+                Subject ID: <code>{selectedBook.subject?.id || selectedBook.id}</code> • {selectedBook.totalPages} Total Pages
               </div>
             </div>
             <button
@@ -845,7 +849,7 @@ export const BooksPage: React.FC = () => {
                       </span>
                     </div>
                     <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                      Discovered {progressData?.stages.topicDetection.totalTopics || selectedBook.subject._count.topics} chapter boundaries with start/end page grounding.
+                      Discovered {progressData?.stages.topicDetection.totalTopics || selectedBook.subject?._count?.topics || 0} chapter boundaries with start/end page grounding.
                     </div>
                   </div>
 
@@ -871,7 +875,7 @@ export const BooksPage: React.FC = () => {
                       </span>
                     </div>
                     <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                      Extracted {progressData?.stages.questionExtraction.totalQuestions || selectedBook.subject._count.questions} questions with options, step solutions, and PYQ tags.
+                      Extracted {progressData?.stages.questionExtraction.totalQuestions || selectedBook.subject?._count?.questions || 0} questions with options, step solutions, and PYQ tags.
                     </div>
                   </div>
 
