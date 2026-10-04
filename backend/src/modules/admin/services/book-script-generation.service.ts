@@ -63,20 +63,30 @@ export class BookScriptGenerationService {
     const sourceText = await pdfParserService.getPagesText(bookId, startPage, endPage);
 
     const prompt = `
+Generate a rich, deeply instructional interactive lesson script for:
 Subject: ${subjectId}
 Topic: ${subtopic.topic.name}
 Subtopic: ${subtopic.name}
 Subtopic ID: ${subtopic.id}
-Target Teaching Duration: ${subtopic.teachingMinutes || 10} minutes
+Target Teaching Duration: ${subtopic.teachingMinutes || 12} minutes
 
 Source Textbook Content (Pages ${startPage}-${endPage}):
 ${sourceText || 'Cover the foundational principles and speed shortcuts for this subtopic.'}
 
-Available Subtopic Questions to Reference:
-${questionReferenceList || 'No pre-extracted questions; create interactive instruction without questionReference.'}
+REQUIRED PEDAGOGICAL STRUCTURE:
+1. "start" node (CONTENT): Engaging hook addressing the core intuition and common misconception.
+2. 2 to 3 Concept Units:
+   - For each concept:
+     a) "<concept>_teach" (CONTENT): In-depth conceptual explanation with concrete worked examples with numbers.
+     b) "<concept>_check" (CHOICE): Real practice MCQ with 4 plausible options, hints, and step-by-step explanation. Branch:
+        - isCorrect === true -> next concept teaching node
+        - isCorrect === false -> "<concept>_remedy"
+     c) "<concept>_remedy" (CONTENT): Explains the specific trap or mistake that led to the wrong answer. Transitions to retry.
+     d) "<concept>_retry" (CHOICE): Fresh MCQ on the same concept to prove mastery. Transitions to next concept.
+3. "finish" node (COMPLETION): Summarizes the core building blocks, speed shortcuts, and key habits. Transitions: [].
 
-Generate an interactive lesson script in the AptiQu Script DSL format.
 The scriptId must be "script-${subtopic.slug || subtopic.id}".
+entryNodeId must be "start".
 `.trim();
 
     const response = await geminiProvider.generateStructuredContent<ScriptDefinition>({
