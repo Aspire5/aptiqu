@@ -258,6 +258,19 @@ bookIngestionWorker.on('completed', (job: Job) => {
   console.log(`[BookIngestionQueue] Job ${job.name} (ID: ${job.id}) completed.`);
 });
 
-bookIngestionWorker.on('failed', (job: Job | undefined, err: Error) => {
+bookIngestionWorker.on('failed', async (job: Job | undefined, err: Error) => {
   console.error(`[BookIngestionQueue] Job ${job?.name} (ID: ${job?.id}) failed:`, err);
+  if (job?.data?.bookId) {
+    try {
+      await prisma.bookSource.update({
+        where: { id: job.data.bookId },
+        data: {
+          status: 'FAILED',
+          errorMessage: err.message || 'Job stalled or failed unrecoverably',
+        },
+      });
+    } catch (e: any) {
+      console.warn('[BookIngestionQueue] Could not mark book status as FAILED:', e.message);
+    }
+  }
 });

@@ -471,14 +471,14 @@ export const BooksPage: React.FC = () => {
                           </button>
                         )}
 
-                        {b.status === 'FAILED' && (
+                        {b.status !== 'PUBLISHED' && (
                           <button
                             className="btn-secondary"
                             onClick={() => handleRetry(b.id)}
                             style={{ padding: '6px 12px', fontSize: '12px' }}
-                            title="Retry Pipeline"
+                            title="Resume or Retry Ingestion Pipeline"
                           >
-                            <RotateCcw size={13} /> Retry
+                            <RotateCcw size={13} /> {b.status === 'FAILED' ? 'Retry' : 'Resume'}
                           </button>
                         )}
 
@@ -731,12 +731,24 @@ export const BooksPage: React.FC = () => {
                 Subject ID: <code>{selectedBook.subject?.id || selectedBook.id}</code> • {selectedBook.totalPages} Total Pages
               </div>
             </div>
-            <button
-              onClick={() => setSelectedBook(null)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
-            >
-              <X size={22} />
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {selectedBook.status !== 'PUBLISHED' && (
+                <button
+                  className="btn-secondary"
+                  onClick={() => handleRetry(selectedBook.id)}
+                  style={{ padding: '6px 14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  title="Resume or Retry Ingestion Pipeline"
+                >
+                  <RotateCcw size={14} /> Resume / Retry Pipeline
+                </button>
+              )}
+              <button
+                onClick={() => setSelectedBook(null)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
+              >
+                <X size={22} />
+              </button>
+            </div>
           </div>
 
           {/* Drawer Tabs */}
