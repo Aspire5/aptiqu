@@ -14,8 +14,8 @@ export function createApp(): Application {
 
   // Global Middlewares
   app.use(cors());
-  app.use(express.json({ limit: '50mb' }));
-  app.use(express.urlencoded({ limit: '50mb', extended: true }));
+  app.use(express.json({ limit: '150mb' }));
+  app.use(express.urlencoded({ limit: '150mb', extended: true }));
 
   // HTTP Request Logger
   app.use((req: Request, res: Response, next) => {
