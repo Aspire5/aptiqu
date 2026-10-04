@@ -8,6 +8,7 @@ import { SyllabusPage } from './pages/SyllabusPage';
 import { QuestionsPage } from './pages/QuestionsPage';
 import { UsersPage } from './pages/UsersPage';
 import { AiPromptsPage } from './pages/AiPromptsPage';
+import { BooksPage } from './pages/BooksPage';
 
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="syllabus" element={<SyllabusPage />} />
+            <Route path="books" element={<BooksPage />} />
             <Route path="questions" element={<QuestionsPage />} />
             <Route path="ai-prompts" element={<AiPromptsPage />} />
             <Route path="users" element={<UsersPage />} />

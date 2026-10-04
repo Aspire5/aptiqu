@@ -710,6 +710,7 @@ model Subject {
   roadmapSubjects RoadmapSubject[]
   roadmapSteps    RoadmapStep[]
   questions       Question[]
+  bookSource      BookSource?
 
   @@map("subjects")
   @@schema("learning")
@@ -1019,5 +1020,97 @@ model AiPrompt {
   @@map("ai_prompts")
   @@schema("learning")
 }
+
+// =============================================================================
+// BOOK INGESTION MODULE
+// =============================================================================
+
+enum BookProcessingStatus {
+  UPLOADED
+  VALIDATING
+  PARSING_PAGES
+  PAGES_EXTRACTED
+  DETECTING_TOPICS
+  TOPICS_DETECTED
+  DISCOVERING_SUBTOPICS
+  SUBTOPICS_DISCOVERED
+  EXTRACTING_QUESTIONS
+  QUESTIONS_EXTRACTED
+  CLASSIFYING_QUESTIONS
+  GENERATING_SCRIPTS
+  VALIDATING_CONTENT
+  READY_FOR_REVIEW
+  PUBLISHED
+  FAILED
+
+  @@schema("learning")
+}
+
+model BookSource {
+  id               String               @id @default(uuid()) @db.Uuid
+  subjectId        String               @unique @map("subject_id")
+  title            String
+  author           String?
+  edition          String?
+  isbn             String?
+  storagePath      String               @map("storage_path")
+  fileSizeBytes    BigInt               @map("file_size_bytes")
+  fileChecksum     String               @unique @map("file_checksum")
+  totalPages       Int                  @default(0) @map("total_pages")
+  status           BookProcessingStatus @default(UPLOADED)
+  errorMessage     String?              @map("error_message") @db.Text
+  metadata         Json                 @default("{}") @db.JsonB
+  
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  subject          Subject              @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  pages            BookPage[]
+  jobs             BookProcessingJob[]
+
+  @@index([status])
+  @@map("book_sources")
+  @@schema("learning")
+}
+
+model BookPage {
+  id              String      @id @default(uuid()) @db.Uuid
+  bookId          String      @map("book_id") @db.Uuid
+  pageNumber      Int         @map("page_number")
+  rawText         String      @map("raw_text") @db.Text
+  cleanedMarkdown String?     @map("cleaned_markdown") @db.Text
+  hasImages       Boolean     @default(false) @map("has_images")
+  hasFormulas     Boolean     @default(false) @map("has_formulas")
+  hasTables       Boolean     @default(false) @map("has_tables")
+  tokenCount      Int         @default(0) @map("token_count")
+  createdAt       DateTime    @default(now()) @map("created_at")
+
+  book            BookSource  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, pageNumber])
+  @@index([bookId])
+  @@map("book_pages")
+  @@schema("learning")
+}
+
+model BookProcessingJob {
+  id             String               @id @default(uuid()) @db.Uuid
+  bookId         String               @map("book_id") @db.Uuid
+  stage          BookProcessingStatus
+  stageProgress  Float                @default(0.0) @map("stage_progress")
+  totalItems     Int                  @default(0) @map("total_items")
+  completedItems Int                  @default(0) @map("completed_items")
+  failedItems    Int                  @default(0) @map("failed_items")
+  details        Json                 @default("{}") @db.JsonB
+  startedAt      DateTime             @default(now()) @map("started_at")
+  completedAt    DateTime?            @map("completed_at")
+
+  book           BookSource           @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId, stage])
+  @@map("book_processing_jobs")
+  @@schema("learning")
+}
+
 
 

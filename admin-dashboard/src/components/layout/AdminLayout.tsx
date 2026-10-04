@@ -8,7 +8,8 @@ import {
   Users, 
   LogOut, 
   Server,
-  Sparkles
+  Sparkles,
+  BookOpen
 } from 'lucide-react';
 
 export const AdminLayout: React.FC = () => {
@@ -22,6 +23,7 @@ export const AdminLayout: React.FC = () => {
   };
 
   const getPageTitle = () => {
+    if (location.pathname.includes('/books')) return 'Book Ingestion Engine';
     if (location.pathname.includes('/syllabus')) return 'Syllabus & Curriculum';
     if (location.pathname.includes('/questions')) return 'Question Bank';
     if (location.pathname.includes('/ai-prompts')) return 'AI Prompts Control Center';
@@ -62,6 +64,14 @@ export const AdminLayout: React.FC = () => {
           >
             <Layers size={18} />
             <span>Syllabus</span>
+          </NavLink>
+
+          <NavLink
+            to="/books"
+            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          >
+            <BookOpen size={18} />
+            <span>Book Ingestion</span>
           </NavLink>
 
           <NavLink

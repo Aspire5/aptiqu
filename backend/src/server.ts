@@ -6,6 +6,7 @@ import { prisma } from './config/prisma';
 import { pvpSocketServer } from './modules/pvp/pvp.socket';
 import { dailyChallengeService } from './modules/daily-challenge/daily-challenge.service';
 import { contentGenQueue, contentGenWorker } from './queues/content-generation.queue';
+import { bookIngestionQueue, bookIngestionWorker } from './queues/book-ingestion.queue';
 
 async function bootstrap() {
   const app = createApp();
@@ -70,6 +71,8 @@ async function bootstrap() {
     server.close(async () => {
       await contentGenWorker.close();
       await contentGenQueue.close();
+      await bookIngestionWorker.close();
+      await bookIngestionQueue.close();
       await prisma.$disconnect();
       console.log('🔌 Database and Queues disconnected.');
       process.exit(0);

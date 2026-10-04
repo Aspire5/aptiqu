@@ -7,6 +7,7 @@ import { AdminQuestionsController } from './admin-questions.controller';
 import { AdminUsersController } from './admin-users.controller';
 import { AdminAiPromptsController } from './admin-ai-prompts.controller';
 import { AdminController } from './admin.controller';
+import adminBooksRoutes from './routes/admin-books.routes';
 
 const router = Router();
 
@@ -91,6 +92,9 @@ router.get('/ai-prompts/:key', AdminAiPromptsController.getPrompt);
 router.put('/ai-prompts/:key', AdminAiPromptsController.updateDraft);
 router.post('/ai-prompts/:key/publish', AdminAiPromptsController.publishPrompt);
 router.post('/ai-prompts/:key/reset-default', AdminAiPromptsController.resetToDefault);
+
+// 8. Book Content Ingestion Engine
+router.use('/books', adminBooksRoutes);
 
 export default router;
 

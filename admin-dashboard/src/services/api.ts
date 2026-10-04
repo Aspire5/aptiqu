@@ -101,5 +101,25 @@ export const api = {
     apiClient.put(`/ai-prompts/${key}`, { draftPrompt }),
   publishAiPrompt: (key: string) => apiClient.post(`/ai-prompts/${key}/publish`),
   resetAiPromptToDefault: (key: string) => apiClient.post(`/ai-prompts/${key}/reset-default`),
+
+  // Book Ingestion Engine
+  uploadBook: (formData: FormData, onUploadProgress?: (progressEvent: any) => void) =>
+    apiClient.post('/books/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress,
+    }),
+  getBooks: () => apiClient.get('/books'),
+  getBook: (id: string) => apiClient.get(`/books/${id}`),
+  getBookStatus: (id: string) => apiClient.get(`/books/${id}/status`),
+  getBookTopics: (id: string) => apiClient.get(`/books/${id}/topics`),
+  updateBookTopics: (id: string, topics: any[]) => apiClient.put(`/books/${id}/topics`, { topics }),
+  getBookSubtopics: (bookId: string, topicId: string) =>
+    apiClient.get(`/books/${bookId}/subtopics?topicId=${topicId}`),
+  getBookContentPreview: (bookId: string, subtopicId: string) =>
+    apiClient.get(`/books/${bookId}/content-preview?subtopicId=${subtopicId}`),
+  publishBook: (id: string) => apiClient.post(`/books/${id}/publish`),
+  retryBookStage: (id: string, stage?: string) => apiClient.post(`/books/${id}/retry`, { stage }),
+  deleteBook: (id: string, hardDeleteSubject = false) =>
+    apiClient.delete(`/books/${id}?hardDeleteSubject=${hardDeleteSubject}`),
 };
 
