@@ -78,9 +78,9 @@ CRITICAL RULES & COMMON PITFALLS TO AVOID:
 export const SCRIPT_DEFINITION_JSON_SCHEMA = {
   type: 'object',
   properties: {
-    schemaVersion: { type: 'integer', enum: [1] },
+    schemaVersion: { type: 'integer' },
     scriptId: { type: 'string' },
-    version: { type: 'integer', enum: [1] },
+    version: { type: 'integer' },
     sourceType: { type: 'string', enum: ['MANUAL'] },
     entryNodeId: { type: 'string', enum: ['start'] },
     metadata: {

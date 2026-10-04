@@ -82,8 +82,8 @@ export const BOOK_QUESTION_ARRAY_JSON_SCHEMA = {
             description: 'Alternative speed trick explanation, or null.',
           },
           preferredSolution: {
-            type: ['string', 'null'],
-            enum: ['BOOK', 'ALTERNATIVE', null],
+            type: 'string',
+            enum: ['BOOK', 'ALTERNATIVE'],
           },
           preferredReason: {
             type: ['string', 'null'],
