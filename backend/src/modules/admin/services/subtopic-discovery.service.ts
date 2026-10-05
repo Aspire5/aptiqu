@@ -6,6 +6,7 @@ import {
   SUBTOPIC_DISCOVERY_JSON_SCHEMA,
 } from '../prompts/subtopic-discovery.prompt';
 import { DetectedTopicCandidate, DiscoveredSubtopicCandidate } from '../types/book-ingestion.types';
+import { bookCancellationService } from './book-cancellation.service';
 
 export class SubtopicDiscoveryService {
   private static instance: SubtopicDiscoveryService;
@@ -27,6 +28,8 @@ export class SubtopicDiscoveryService {
     topicCandidate: DetectedTopicCandidate,
     dbTopicId: string
   ): Promise<DiscoveredSubtopicCandidate[]> {
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'discoverSubtopicsForTopic');
+
     console.log(
       `[SubtopicDiscoveryService] Discovering subtopics for topic "${topicCandidate.name}" (Pages ${topicCandidate.startPage}-${topicCandidate.endPage})...`
     );
@@ -139,10 +142,13 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
       throw new Error('No detected topics found in book metadata. Run topic discovery first.');
     }
 
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of discoverAllSubtopicsForBook');
+
     const subtopicsByTopicCode: Record<string, DiscoveredSubtopicCandidate[]> = {};
     const totalTopics = detectedTopics.length;
 
     for (let i = 0; i < totalTopics; i++) {
+      bookCancellationService.checkAndThrowIfCancelled(bookId, `discovering subtopics topic index ${i}`);
       const topicCandidate = detectedTopics[i];
       // Find matching dbTopicId
       const matchingTopic = bookSource.subject.topics.find(
@@ -174,6 +180,9 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
         const discovered = await this.discoverSubtopicsForTopic(bookId, topicCandidate, dbTopicId);
         subtopicsByTopicCode[topicCandidate.code] = discovered;
       } catch (err: any) {
+        if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
+          throw err;
+        }
         console.error(
           `[SubtopicDiscoveryService] Error discovering subtopics for topic "${topicCandidate.name}":`,
           err.message

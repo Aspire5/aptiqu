@@ -119,6 +119,7 @@ export const api = {
     apiClient.get(`/books/${bookId}/content-preview?subtopicId=${subtopicId}`),
   publishBook: (id: string) => apiClient.post(`/books/${id}/publish`),
   retryBookStage: (id: string, stage?: string) => apiClient.post(`/books/${id}/retry`, { stage }),
+  cancelBookProcessing: (id: string) => apiClient.post(`/books/${id}/cancel`),
   deleteBook: (id: string, hardDeleteSubject = false) =>
     apiClient.delete(`/books/${id}?hardDeleteSubject=${hardDeleteSubject}`),
 };

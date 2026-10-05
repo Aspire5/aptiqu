@@ -9,6 +9,7 @@ import {
 } from '../prompts/book-question-extraction.prompt';
 import { ExtractedQuestionCandidate, DetectedTopicCandidate } from '../types/book-ingestion.types';
 import { QuestionDifficultyEnum, CalculationMode, PreferredSolution } from '@prisma/client';
+import { bookCancellationService } from './book-cancellation.service';
 
 export class BookQuestionExtractionService {
   private static instance: BookQuestionExtractionService;
@@ -33,6 +34,8 @@ export class BookQuestionExtractionService {
     endPage: number,
     startingSeq: number
   ): Promise<any[]> {
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'extractQuestionsFromPageRange');
+
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
       include: { subject: true },
@@ -46,6 +49,8 @@ export class BookQuestionExtractionService {
     if (!sourceText.trim()) {
       return [];
     }
+
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'before gemini extraction');
 
     const prompt = `
 Book Title: ${bookSource.title}
@@ -67,6 +72,8 @@ Extract all practice questions, worked examples, and problem sets from these pag
       timeoutMs: 90000,
     });
 
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'after gemini extraction');
+
     if (!response.questions || !Array.isArray(response.questions) || response.questions.length === 0) {
       return [];
     }
@@ -87,6 +94,10 @@ Extract all practice questions, worked examples, and problem sets from these pag
     let currentSeq = startingSeq;
 
     for (const q of response.questions) {
+      if (bookCancellationService.isCancelled(bookId)) {
+        console.log(`[BookQuestionExtractionService] Cancellation detected during question persistence. Halting.`);
+        return createdRecords;
+      }
       const promptText = String(q.prompt || '').trim();
       if (!promptText || !Array.isArray(q.options) || q.options.length < 2) {
         continue;
@@ -216,6 +227,8 @@ Extract all practice questions, worked examples, and problem sets from these pag
       throw new Error(`BookSource not found: ${bookId}`);
     }
 
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of extractAllQuestionsForBook');
+
     await prisma.bookSource.update({
       where: { id: bookId },
       data: { status: 'EXTRACTING_QUESTIONS' },
@@ -228,6 +241,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
     const CHUNK_PAGES = 5;
 
     for (let tIdx = 0; tIdx < detectedTopics.length; tIdx++) {
+      bookCancellationService.checkAndThrowIfCancelled(bookId, `topic index ${tIdx}`);
       const topic = detectedTopics[tIdx];
       const dbTopic = bookSource.subject.topics.find(
         (t) => t.name.toLowerCase() === topic.name.toLowerCase() || t.slug.includes(topic.suggestedSlug)
@@ -244,6 +258,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
       let topicQuestionSeq = existingTopicQCount + 1;
 
       for (let p = topic.startPage; p <= topic.endPage; p += CHUNK_PAGES) {
+        bookCancellationService.checkAndThrowIfCancelled(bookId, `pages ${p} for topic ${topic.name}`);
         const chunkEnd = Math.min(p + CHUNK_PAGES - 1, topic.endPage);
         const pageRangeStr = `pp. ${p}-${chunkEnd}`;
 
@@ -282,6 +297,10 @@ Extract all practice questions, worked examples, and problem sets from these pag
             await onProgress(overallProg, totalExtracted);
           }
         } catch (err: any) {
+          if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
+            console.log(`[BookQuestionExtractionService] Extraction aborted for book ${bookId}`);
+            throw err;
+          }
           console.error(
             `[BookQuestionExtractionService] Error extracting from pages ${p}-${chunkEnd} for topic "${topic.name}":`,
             err.message

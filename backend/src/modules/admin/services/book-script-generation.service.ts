@@ -11,6 +11,7 @@ import {
 } from '../prompts/book-script-generation.prompt';
 import { ScriptDefinition } from '../../lesson/interfaces/script-dsl.interface';
 import { DiscoveredSubtopicCandidate } from '../types/book-ingestion.types';
+import { bookCancellationService } from './book-cancellation.service';
 
 export class BookScriptGenerationService {
   private static instance: BookScriptGenerationService;
@@ -34,6 +35,8 @@ export class BookScriptGenerationService {
     subtopicId: string,
     subtopicMeta?: DiscoveredSubtopicCandidate
   ): Promise<any> {
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'generateScriptForSubtopic');
+
     const subtopic = await prisma.subtopic.findUnique({
       where: { id: subtopicId },
       include: {
@@ -205,6 +208,8 @@ entryNodeId must be "start".
       throw new Error(`BookSource not found: ${bookId}`);
     }
 
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of generateAllScriptsForBook');
+
     await prisma.bookSource.update({
       where: { id: bookId },
       data: { status: 'GENERATING_SCRIPTS' },
@@ -221,6 +226,7 @@ entryNodeId must be "start".
     let completedCount = 0;
 
     for (let i = 0; i < totalSubtopics; i++) {
+      bookCancellationService.checkAndThrowIfCancelled(bookId, `generate script subtopic index ${i}`);
       const item = allSubtopics[i];
 
       // Skip subtopics that already have a generated lesson script
@@ -249,6 +255,9 @@ entryNodeId must be "start".
         );
         completedCount++;
       } catch (err: any) {
+        if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
+          throw err;
+        }
         console.error(
           `[BookScriptGenerationService] Error generating script for subtopic ${item.subtopic.id}:`,
           err.message

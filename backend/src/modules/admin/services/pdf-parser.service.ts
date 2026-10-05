@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { prisma } from '../../../config/prisma';
 import { bookStorageService } from './book-storage.service';
+import { bookCancellationService } from './book-cancellation.service';
 
 // Polyfill Node.js environment for pdfjs-dist / pdf-parse across all Node.js versions
 if (typeof (process as any).getBuiltinModule !== 'function') {
@@ -156,6 +157,8 @@ export class PdfParserService {
     bookId: string,
     onProgress?: (progress: number, currentPage: number, totalPages: number) => Promise<void>
   ): Promise<{ totalPages: number }> {
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of parseBookPdf');
+
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
     });
@@ -207,6 +210,9 @@ export class PdfParserService {
     const pagesToInsert: any[] = [];
 
     for (let i = 0; i < totalPages; i++) {
+      if (i % 25 === 0) {
+        bookCancellationService.checkAndThrowIfCancelled(bookId, `parsing page ${i + 1}`);
+      }
       const pageNumber = i + 1;
       const rawText = (rawPages[i]?.text || '').trim();
       const { markdown, hasFormulas, hasTables, headings } = this.cleanPageTextToMarkdown(rawText);

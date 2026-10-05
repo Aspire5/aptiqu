@@ -49,6 +49,7 @@ router.get('/:id/subtopics', AdminBooksController.getSubtopics);
 router.get('/:id/content-preview', AdminBooksController.getContentPreview);
 router.post('/:id/publish', AdminBooksController.publishBook);
 router.post('/:id/retry', AdminBooksController.retryStage);
+router.post('/:id/cancel', AdminBooksController.cancelProcessing);
 router.delete('/:id', AdminBooksController.deleteBook);
 
 export default router;

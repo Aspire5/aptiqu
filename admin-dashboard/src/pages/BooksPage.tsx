@@ -12,7 +12,8 @@ import {
   RotateCcw,
   ChevronRight,
   X,
-  FileCheck
+  FileCheck,
+  StopCircle,
 } from 'lucide-react';
 
 interface BookItem {
@@ -281,8 +282,24 @@ export const BooksPage: React.FC = () => {
     }
   };
 
+  const handleCancel = async (bookId: string) => {
+    if (!window.confirm('Are you sure you want to stop the background ingestion process for this book?')) {
+      return;
+    }
+    try {
+      await api.cancelBookProcessing(bookId);
+      alert('Ingestion pipeline stopped.');
+      fetchBooks();
+      if (selectedBook?.id === bookId) {
+        fetchBookProgress(bookId);
+      }
+    } catch (err: any) {
+      alert(`Stop failed: ${err.response?.data?.message || err.message}`);
+    }
+  };
+
   const handleDelete = async (bookId: string) => {
-    if (!window.confirm('Are you sure you want to delete this book source and its ingested curriculum? This cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to stop any running process and delete this book along with all extracted questions, topics, subtopics, and scripts? This cannot be undone.')) {
       return;
     }
     try {
@@ -479,6 +496,27 @@ export const BooksPage: React.FC = () => {
                             title="Resume or Retry Ingestion Pipeline"
                           >
                             <RotateCcw size={13} /> {b.status === 'FAILED' ? 'Retry' : 'Resume'}
+                          </button>
+                        )}
+
+                        {!['PUBLISHED', 'READY_FOR_REVIEW', 'FAILED'].includes(b.status) && (
+                          <button
+                            onClick={() => handleCancel(b.id)}
+                            style={{
+                              padding: '6px 12px',
+                              fontSize: '12px',
+                              color: '#ef4444',
+                              border: '1px solid #fca5a5',
+                              backgroundColor: '#fff1f2',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}
+                            title="Stop Ongoing Processing"
+                          >
+                            <StopCircle size={13} /> Stop
                           </button>
                         )}
 
@@ -732,6 +770,27 @@ export const BooksPage: React.FC = () => {
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {!['PUBLISHED', 'READY_FOR_REVIEW', 'FAILED'].includes(selectedBook.status) && (
+                <button
+                  onClick={() => handleCancel(selectedBook.id)}
+                  style={{
+                    padding: '6px 14px',
+                    fontSize: '13px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    color: '#ef4444',
+                    border: '1px solid #fca5a5',
+                    backgroundColor: '#fff1f2',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                  }}
+                  title="Stop Ingestion Pipeline"
+                >
+                  <StopCircle size={14} /> Stop Process
+                </button>
+              )}
+
               {selectedBook.status !== 'PUBLISHED' && (
                 <button
                   className="btn-secondary"
@@ -742,6 +801,26 @@ export const BooksPage: React.FC = () => {
                   <RotateCcw size={14} /> Resume / Retry Pipeline
                 </button>
               )}
+
+              <button
+                onClick={() => handleDelete(selectedBook.id)}
+                style={{
+                  background: 'none',
+                  border: '1px solid #fee2e2',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  cursor: 'pointer',
+                  color: '#ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '13px',
+                }}
+                title="Delete Book and Ingested Data"
+              >
+                <Trash2 size={14} /> Delete
+              </button>
+
               <button
                 onClick={() => setSelectedBook(null)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}

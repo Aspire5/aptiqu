@@ -1,5 +1,6 @@
 import { prisma } from '../../../config/prisma';
 import { ScriptValidator } from '../../lesson/engines/script-validator';
+import { bookCancellationService } from './book-cancellation.service';
 
 export interface ValidationIssue {
   entityType: 'QUESTION' | 'SCRIPT' | 'SUBTOPIC';
@@ -32,6 +33,8 @@ export class ContentValidationService {
    * Performs multi-layer validation across all generated questions and scripts for a book.
    */
   public async validateBookContent(bookId: string): Promise<ValidationResult> {
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of validateBookContent');
+
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
       include: {

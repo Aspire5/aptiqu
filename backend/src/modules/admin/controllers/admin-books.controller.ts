@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { prisma } from '../../../config/prisma';
 import { bookStorageService } from '../services/book-storage.service';
 import { bookPublishingService } from '../services/book-publishing.service';
-import { bookIngestionQueue } from '../../../queues/book-ingestion.queue';
+import { bookIngestionQueue, stopBookProcessing } from '../../../queues/book-ingestion.queue';
+import { bookCancellationService } from '../services/book-cancellation.service';
 import { BookIngestionProgress } from '../types/book-ingestion.types';
 
 export class AdminBooksController {
@@ -473,37 +474,293 @@ export class AdminBooksController {
   }
 
   /**
-   * Deletes a book source and optionally cascades to the Subject.
+   * Helper to completely purge all database entities created for a book or subject.
+   */
+  private static async cascadeDeleteBookData(
+    bookId: string,
+    subjectId: string,
+    bookTitle: string,
+    hardDeleteSubject: boolean
+  ): Promise<void> {
+    // 1. Collect all related IDs
+    const topics = await prisma.topic.findMany({
+      where: { subjectId },
+      select: { id: true },
+    });
+    const topicIds = topics.map((t) => t.id);
+
+    const subtopics = await prisma.subtopic.findMany({
+      where: {
+        OR: [
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+    const subtopicIds = subtopics.map((s) => s.id);
+
+    // Collect all Questions linked by subject, topic, subtopic, or sourceBook
+    const questions = await prisma.question.findMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+          ...(subtopicIds.length > 0 ? [{ subtopicId: { in: subtopicIds } }] : []),
+          ...(bookTitle ? [{ sourceBook: bookTitle }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+    const questionIds = questions.map((q) => q.id);
+
+    // Collect all LessonScripts linked by subject or topic
+    const scripts = await prisma.lessonScript.findMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+    const scriptIds = scripts.map((s) => s.id);
+
+    // Collect all Concepts linked by subject or topic
+    const concepts = await prisma.concept.findMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+    const conceptIds = concepts.map((c) => c.id);
+
+    // Collect all RoadmapSteps linked by subject, topic, or subtopic
+    const roadmapSteps = await prisma.roadmapStep.findMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+          ...(subtopicIds.length > 0 ? [{ subtopicId: { in: subtopicIds } }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+    const roadmapStepIds = roadmapSteps.map((r) => r.id);
+
+    // --- STEP A: Clean up dependencies on Question ---
+    if (questionIds.length > 0) {
+      await prisma.dailyChallengeAnswer.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.dailyChallengeScriptQuestion.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.pvpMatchAnswer.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.pvpQuestionSetQuestion.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.practiceSessionQuestion.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.userQuestionProgress.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.questionAttempt.deleteMany({ where: { questionId: { in: questionIds } } });
+      await prisma.xpEvent.deleteMany({ where: { questionId: { in: questionIds } } });
+    }
+
+    // --- STEP B: Delete all matching Questions ---
+    await prisma.question.deleteMany({
+      where: {
+        OR: [
+          ...(questionIds.length > 0 ? [{ id: { in: questionIds } }] : []),
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+          ...(bookTitle ? [{ sourceBook: bookTitle }] : []),
+        ],
+      },
+    });
+
+    // --- STEP C: Clean up dependencies on LessonScript and delete scripts ---
+    if (scriptIds.length > 0) {
+      const sessions = await prisma.lessonSession.findMany({
+        where: { scriptId: { in: scriptIds } },
+        select: { id: true },
+      });
+      const sessionIds = sessions.map((s) => s.id);
+      if (sessionIds.length > 0) {
+        await prisma.lessonEvent.deleteMany({ where: { sessionId: { in: sessionIds } } });
+        await prisma.questionAttempt.deleteMany({ where: { sessionId: { in: sessionIds } } });
+        await prisma.lessonSession.deleteMany({ where: { id: { in: sessionIds } } });
+      }
+      await prisma.scriptAssignment.deleteMany({ where: { scriptId: { in: scriptIds } } });
+      await prisma.lessonScriptVersion.deleteMany({ where: { scriptId: { in: scriptIds } } });
+      await prisma.lessonScript.deleteMany({ where: { id: { in: scriptIds } } });
+    }
+    await prisma.lessonScript.deleteMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+    });
+
+    // --- STEP D: Clean up Concepts ---
+    if (conceptIds.length > 0) {
+      await prisma.studentConceptMastery.deleteMany({ where: { conceptId: { in: conceptIds } } });
+      await prisma.concept.deleteMany({ where: { id: { in: conceptIds } } });
+    }
+    await prisma.concept.deleteMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+    });
+
+    // --- STEP E: Clean up Roadmap associations ---
+    if (roadmapStepIds.length > 0) {
+      await prisma.userRoadmapStepProgress.deleteMany({ where: { roadmapStepId: { in: roadmapStepIds } } });
+      await prisma.scriptAssignment.deleteMany({ where: { roadmapStepId: { in: roadmapStepIds } } });
+      await prisma.roadmapStep.deleteMany({ where: { id: { in: roadmapStepIds } } });
+    }
+    await prisma.roadmapStep.deleteMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+    });
+    await prisma.roadmapSubject.deleteMany({ where: { subjectId } });
+
+    // --- STEP F: Clean up Curriculum Junctions ---
+    await prisma.topicSubtopic.deleteMany({
+      where: {
+        OR: [
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+          ...(subtopicIds.length > 0 ? [{ subtopicId: { in: subtopicIds } }] : []),
+        ],
+      },
+    });
+    await prisma.subjectTopic.deleteMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+    });
+
+    // --- STEP G: Delete Subtopics & Topics ---
+    if (subtopicIds.length > 0) {
+      await prisma.subtopic.deleteMany({ where: { id: { in: subtopicIds } } });
+    }
+    if (topicIds.length > 0) {
+      await prisma.topic.deleteMany({ where: { id: { in: topicIds } } });
+    }
+
+    // --- STEP H: Delete Book Pages, Jobs, and BookSource ---
+    await prisma.bookPage.deleteMany({ where: { bookId } });
+    await prisma.bookProcessingJob.deleteMany({ where: { bookId } });
+    await prisma.bookSource.deleteMany({ where: { id: bookId } });
+
+    // --- STEP I: Delete Subject if requested or if no other book uses it ---
+    await prisma.xpEvent.deleteMany({
+      where: {
+        OR: [
+          { subjectId },
+          ...(topicIds.length > 0 ? [{ topicId: { in: topicIds } }] : []),
+        ],
+      },
+    });
+
+    if (hardDeleteSubject) {
+      await prisma.subject.deleteMany({ where: { id: subjectId } });
+    } else {
+      const remainingBooks = await prisma.bookSource.count({ where: { subjectId } });
+      if (remainingBooks === 0) {
+        await prisma.subject.deleteMany({ where: { id: subjectId } });
+      }
+    }
+  }
+
+  /**
+   * Stops any ongoing processing, cascades deletion of all dependent
+   * questions, scripts, subtopics, topics, book pages, jobs, and storage files.
    */
   public static async deleteBook(req: Request, res: Response): Promise<void> {
-    try {
-      const id = req.params.id as string;
-      const hardDeleteSubject = req.query.hardDeleteSubject === 'true';
+    const id = req.params.id as string;
+    const hardDeleteSubject = req.query.hardDeleteSubject === 'true';
 
+    try {
+      // 1. Immediately signal cancellation and clear queue jobs
+      await stopBookProcessing(id);
+
+      // Short yield to ensure in-flight loop hits cancellation and stops
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
+      // 2. Fetch book details
       const book = await prisma.bookSource.findUnique({
         where: { id },
       });
 
       if (!book) {
+        // Check if subject exists with this id in case BookSource was already gone
+        if (hardDeleteSubject) {
+          const subject = await prisma.subject.findUnique({ where: { id } });
+          if (subject) {
+            await AdminBooksController.cascadeDeleteBookData(id, subject.id, '', true);
+            bookStorageService.deleteBookStorage(id);
+            bookCancellationService.reset(id);
+            res.status(200).json({ success: true, message: 'Subject and associated data deleted successfully' });
+            return;
+          }
+        }
         res.status(404).json({ success: false, message: 'Book not found' });
         return;
       }
 
-      await prisma.$transaction(async (tx) => {
-        if (hardDeleteSubject) {
-          await tx.subject.delete({
-            where: { id: book.subjectId },
-          });
-        } else {
-          await tx.bookSource.delete({
-            where: { id },
-          });
-        }
+      const subjectId = book.subjectId;
+      const bookTitle = book.title;
+
+      // 3. Cascade delete all data created by this book/process
+      await AdminBooksController.cascadeDeleteBookData(id, subjectId, bookTitle, hardDeleteSubject);
+
+      // 4. Clean up disk files
+      bookStorageService.deleteBookStorage(id);
+
+      // 5. Reset cancellation flag
+      bookCancellationService.reset(id);
+
+      res.status(200).json({ success: true, message: 'Book and all created data deleted successfully' });
+    } catch (err: any) {
+      console.error('[AdminBooksController.deleteBook] Error:', err);
+      res.status(400).json({ success: false, message: err.message });
+    }
+  }
+
+  /**
+   * Stops / cancels any ongoing processing for a book without deleting it.
+   */
+  public static async cancelProcessing(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const book = await prisma.bookSource.findUnique({ where: { id } });
+      if (!book) {
+        res.status(404).json({ success: false, message: 'Book not found' });
+        return;
+      }
+
+      await stopBookProcessing(id);
+
+      await prisma.bookSource.update({
+        where: { id },
+        data: {
+          status: 'FAILED',
+          errorMessage: 'Processing was cancelled by admin.',
+        },
       });
 
-      res.status(200).json({ success: true, message: 'Book deleted successfully' });
+      res.status(200).json({ success: true, message: 'Book processing cancelled successfully.' });
     } catch (err: any) {
       res.status(400).json({ success: false, message: err.message });
     }
   }
 }
+

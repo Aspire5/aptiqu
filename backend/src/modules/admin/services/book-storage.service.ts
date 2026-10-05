@@ -180,6 +180,21 @@ export class BookStorageService {
       isDuplicate: false,
     };
   }
+
+  /**
+   * Cleans up all stored files and directories for a book on disk.
+   */
+  public deleteBookStorage(bookId: string): void {
+    try {
+      const dir = path.join(this.storageBaseDir, bookId);
+      if (fs.existsSync(dir)) {
+        fs.rmSync(dir, { recursive: true, force: true });
+        console.log(`[BookStorageService] Cleaned up storage directory for book ${bookId}`);
+      }
+    } catch (err: any) {
+      console.warn(`[BookStorageService] Error cleaning up storage directory for book ${bookId}:`, err.message);
+    }
+  }
 }
 
 export const bookStorageService = BookStorageService.getInstance();

@@ -6,6 +6,7 @@ import {
   TOPIC_DISCOVERY_JSON_SCHEMA,
 } from '../prompts/topic-discovery.prompt';
 import { DetectedTopicCandidate } from '../types/book-ingestion.types';
+import { bookCancellationService } from './book-cancellation.service';
 
 export class TopicDiscoveryService {
   private static instance: TopicDiscoveryService;
@@ -25,6 +26,8 @@ export class TopicDiscoveryService {
    * and creates candidate Topic records in PostgreSQL.
    */
   public async discoverTopics(bookId: string): Promise<DetectedTopicCandidate[]> {
+    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of discoverTopics');
+
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
       include: { subject: true },
