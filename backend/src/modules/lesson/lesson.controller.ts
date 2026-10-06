@@ -26,16 +26,22 @@ export class LessonController {
         }
       }
 
+      const restart = req.body.restart === true;
+
       const result = roadmapStepId
         ? await lessonSessionService.startOrResumeSessionByStep(
             userId,
             roadmapStepId,
-            parsed.clientActionId
+            parsed.clientActionId,
+            scriptSlug,
+            restart
           )
         : await lessonSessionService.startOrResumeSession(
             userId,
             scriptSlug!,
-            parsed.clientActionId
+            parsed.clientActionId,
+            undefined,
+            restart
           );
 
       res.status(200).json({

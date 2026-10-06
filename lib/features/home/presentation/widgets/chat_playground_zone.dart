@@ -46,13 +46,25 @@ class ChatPlaygroundZone extends StatelessWidget {
                         return _buildTopicDivider(msg.topicTitle ?? 'TOPIC');
                       }
 
+                      final isTargeted = msg.id == controller.targetedMessageId ||
+                          (controller.targetedMessageId == null &&
+                              index == controller.messages.length - 1);
+
                       // 2. AI Message Bubble
                       if (msg.sender == MessageSender.ai) {
-                        return _buildAiMessageItem(context, controller, msg);
+                        return KeyedSubtree(
+                          key: isTargeted
+                              ? controller.latestAiMessageKey
+                              : ValueKey(msg.id),
+                          child: _buildAiMessageItem(context, controller, msg),
+                        );
                       }
 
                       // 3. User Message Bubble
-                      return _buildUserMessageItem(msg);
+                      return KeyedSubtree(
+                        key: ValueKey(msg.id),
+                        child: _buildUserMessageItem(msg),
+                      );
                     },
                   );
                 }),
@@ -67,12 +79,12 @@ class ChatPlaygroundZone extends StatelessWidget {
   /// Floating Playing header bar matching the Topics screen subjects header style
   Widget _buildPlayingHeaderBar(BuildContext context, HomeController controller) {
     return Obx(() {
-      final subject = controller.subjects.firstWhereOrNull(
-        (s) => s.id == controller.selectedSubjectId.value,
-      );
-      final subjectName = subject?.name.isNotEmpty == true
-          ? subject!.name
-          : (controller.subjectLearningMap.value?.subjectName ?? 'Aptitude');
+      final currentSubtopic = controller.activeScriptTitle.value.isNotEmpty &&
+              controller.activeScriptTitle.value != 'Playing'
+          ? controller.activeScriptTitle.value
+          : (controller.currentSession.value?.scriptTitle ??
+              controller.subjectLearningMap.value?.subjectName ??
+              'Lesson');
 
       return Container(
         height: 46.0,
@@ -116,10 +128,10 @@ class ChatPlaygroundZone extends StatelessWidget {
             ),
             const SizedBox(width: 10),
 
-            // Subject name (ellipsible)
+            // Subtopic name being played
             Expanded(
               child: Text(
-                subjectName,
+                currentSubtopic,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AptiquTypography.bodySmall.copyWith(
@@ -132,35 +144,27 @@ class ChatPlaygroundZone extends StatelessWidget {
 
             const SizedBox(width: 8),
 
-            // Exit / Pause action button at the very right
+            // Circular Red 'X' Exit Button on top right
             InkWell(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(16),
               onTap: () => controller.exitToSubjectCards(),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                width: 24,
+                height: 24,
                 decoration: BoxDecoration(
-                  color: AptiquColors.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AptiquColors.outlineVariant),
+                  shape: BoxShape.circle,
+                  color: AptiquColors.error.withValues(alpha: 0.16),
+                  border: Border.all(
+                    color: AptiquColors.error.withValues(alpha: 0.5),
+                    width: 1.0,
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.pause_circle_outline_rounded,
-                      size: 13,
-                      color: AptiquColors.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Exit',
-                      style: AptiquTypography.labelCapsBold.copyWith(
-                        color: AptiquColors.onSurfaceVariant,
-                        fontSize: 9.5,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
+                child: const Center(
+                  child: Icon(
+                    Icons.close_rounded,
+                    size: 14,
+                    color: AptiquColors.error,
+                  ),
                 ),
               ),
             ),

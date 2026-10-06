@@ -110,7 +110,7 @@ class QuestionData {
     this.hasEvaluated = false,
     this.isUserCorrect,
     this.correctOptionId,
-  }) : xp = xp ?? 0;
+  }) : xp = xp ?? QuestionInlineModel.calculateQuestionXp(questionType.name, difficultyLevel.name);
 }
 
 class ChatMessageModel {
@@ -188,6 +188,8 @@ class HomeController extends GetxController {
   final RxInt activeScriptSequence = 1.obs;
   final RxBool isLessonActive = false.obs;
   final RxBool isSubmittingAction = false.obs;
+  GlobalKey latestAiMessageKey = GlobalKey();
+  String? targetedMessageId;
 
   // Subject Card Selection Overlay (active on fresh login/boot until a subject is played)
   final RxBool showSubjectCards = true.obs;
@@ -370,7 +372,7 @@ class HomeController extends GetxController {
   }
 
   /// Appends an interactive lesson node to the Home playground
-  void _addNodeToPlayground(LessonNodeModel node) {
+  void _addNodeToPlayground(LessonNodeModel node, {bool updateKey = true}) {
     QuestionData? questionData;
     bool hasContinueAction = false;
 
@@ -420,9 +422,14 @@ class HomeController extends GetxController {
       hasContinueAction = true;
     }
 
+    final messageId = 'node_${node.id}_${DateTime.now().millisecondsSinceEpoch}';
+    if (updateKey) {
+      latestAiMessageKey = GlobalKey();
+      targetedMessageId = messageId;
+    }
     messages.add(
       ChatMessageModel(
-        id: 'node_${node.id}_${DateTime.now().millisecondsSinceEpoch}',
+        id: messageId,
         sender: MessageSender.ai,
         text: node.text,
         time: _getCurrentTime(),
@@ -432,10 +439,12 @@ class HomeController extends GetxController {
         isContinueCompleted: false,
       ),
     );
-    _scrollToBottom();
+    if (updateKey) {
+      _scrollToNewMessage();
+    }
   }
 
-  void _addCompletionToPlayground(LessonSessionModel response) {
+  void _addCompletionToPlayground(LessonSessionModel response, {bool updateKey = true}) {
     final next = response.next;
     final currentSubject = subjects.firstWhereOrNull((s) => s.id == selectedSubjectId.value);
     final currentSubjectName = currentSubject?.name ?? 'Subject';
@@ -477,9 +486,14 @@ class HomeController extends GetxController {
       ];
     }
 
+    final messageId = 'completion_${DateTime.now().millisecondsSinceEpoch}';
+    if (updateKey) {
+      latestAiMessageKey = GlobalKey();
+      targetedMessageId = messageId;
+    }
     messages.add(
       ChatMessageModel(
-        id: 'completion_${DateTime.now().millisecondsSinceEpoch}',
+        id: messageId,
         sender: MessageSender.ai,
         text: aiCelebrationText,
         time: _getCurrentTime(),
@@ -492,7 +506,9 @@ class HomeController extends GetxController {
         ),
       ),
     );
-    _scrollToBottom();
+    if (updateKey) {
+      _scrollToNewMessage();
+    }
   }
 
   /// Handle option selection (InputType.select)
@@ -658,28 +674,33 @@ class HomeController extends GetxController {
       }
 
       // Evaluation explanation if present
+      bool hasExplanation = false;
       if (response.evaluation?.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
+        hasExplanation = true;
+        final evalId = 'eval_${DateTime.now().millisecondsSinceEpoch}';
+        latestAiMessageKey = GlobalKey();
+        targetedMessageId = evalId;
         messages.add(
           ChatMessageModel(
-            id: 'eval_${DateTime.now().millisecondsSinceEpoch}',
+            id: evalId,
             sender: MessageSender.ai,
             text: response.evaluation!.explanation!,
             time: _getCurrentTime(),
             isCorrect: response.evaluation!.isCorrect,
           ),
         );
-        _scrollToBottom();
       }
 
       if (response.isCompleted) {
-        _addCompletionToPlayground(response);
+        _addCompletionToPlayground(response, updateKey: !hasExplanation);
         if (selectedSubjectId.isNotEmpty) {
           fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
         }
       } else {
-        _addNodeToPlayground(response.currentNode);
+        _addNodeToPlayground(response.currentNode, updateKey: !hasExplanation);
       }
+      _scrollToNewMessage();
     } catch (e) {
       messages.add(
         ChatMessageModel(
@@ -767,28 +788,33 @@ class HomeController extends GetxController {
         );
       }
 
+      bool hasExplanation = false;
       if (response.evaluation?.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
+        hasExplanation = true;
+        final evalId = 'eval_${DateTime.now().millisecondsSinceEpoch}';
+        latestAiMessageKey = GlobalKey();
+        targetedMessageId = evalId;
         messages.add(
           ChatMessageModel(
-            id: 'eval_${DateTime.now().millisecondsSinceEpoch}',
+            id: evalId,
             sender: MessageSender.ai,
             text: response.evaluation!.explanation!,
             time: _getCurrentTime(),
             isCorrect: response.evaluation!.isCorrect,
           ),
         );
-        _scrollToBottom();
       }
 
       if (response.isCompleted) {
-        _addCompletionToPlayground(response);
+        _addCompletionToPlayground(response, updateKey: !hasExplanation);
         if (selectedSubjectId.isNotEmpty) {
           fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
         }
       } else {
-        _addNodeToPlayground(response.currentNode);
+        _addNodeToPlayground(response.currentNode, updateKey: !hasExplanation);
       }
+      _scrollToNewMessage();
     } catch (e) {
       msg.isContinueCompleted = false;
       messages.refresh();
@@ -808,23 +834,29 @@ class HomeController extends GetxController {
   /// Start or replay a specific subtopic lesson
   Future<void> startSubtopicLesson({
     required String roadmapStepId,
-    required String scriptSlug,
+    String? scriptSlug,
     String? scriptTitle,
+    bool restart = true,
   }) async {
     selectedNavIndex.value = 0; // Switch directly to Home tab
     showSubjectCards.value = false;
     messages.clear();
+    currentSession.value = null;
+    isLessonActive.value = false;
+    activeRoadmapStepId.value = roadmapStepId;
+    activeScriptTitle.value = scriptTitle ?? 'Playing';
+    targetedMessageId = null;
     isSubmittingAction.value = true;
     try {
       final session = await lessonRepo.startOrResumeSessionByStep(
         roadmapStepId: roadmapStepId,
         clientActionId: _uuid.v4(),
         scriptSlug: scriptSlug,
+        restart: restart,
       );
       currentSession.value = session;
       isLessonActive.value = true;
       activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Playing');
-      activeRoadmapStepId.value = roadmapStepId;
       _addNodeToPlayground(session.currentNode);
       if (selectedSubjectId.isNotEmpty) {
         fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
@@ -893,28 +925,33 @@ class HomeController extends GetxController {
         );
       }
 
+      bool hasExplanation = false;
       if (response.evaluation?.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
+        hasExplanation = true;
+        final evalId = 'eval_${DateTime.now().millisecondsSinceEpoch}';
+        latestAiMessageKey = GlobalKey();
+        targetedMessageId = evalId;
         messages.add(
           ChatMessageModel(
-            id: 'eval_${DateTime.now().millisecondsSinceEpoch}',
+            id: evalId,
             sender: MessageSender.ai,
             text: response.evaluation!.explanation!,
             time: _getCurrentTime(),
             isCorrect: response.evaluation!.isCorrect,
           ),
         );
-        _scrollToBottom();
       }
 
       if (response.isCompleted) {
-        _addCompletionToPlayground(response);
+        _addCompletionToPlayground(response, updateKey: !hasExplanation);
         if (selectedSubjectId.isNotEmpty) {
           fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
         }
       } else {
-        _addNodeToPlayground(response.currentNode);
+        _addNodeToPlayground(response.currentNode, updateKey: !hasExplanation);
       }
+      _scrollToNewMessage();
     } catch (e) {
       messages.add(
         ChatMessageModel(
@@ -1000,16 +1037,51 @@ class HomeController extends GetxController {
       activeRoadmapStepId.value = topic.roadmapStepId;
       showSubjectCards.value = false;
       selectedNavIndex.value = 0; // Go directly to Home playground!
-      loadLessonState(topic.roadmapStepId);
+      final firstSubtopic =
+          topic.subtopics.isNotEmpty ? topic.subtopics.first : null;
+      startSubtopicLesson(
+        roadmapStepId: topic.roadmapStepId,
+        scriptSlug: firstSubtopic?.scriptSlug,
+        scriptTitle: firstSubtopic?.title ?? topic.topicName,
+        restart: true,
+      );
     }
+  }
+
+  void _scrollToNewMessage() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      void performScroll() {
+        final keyContext = latestAiMessageKey.currentContext;
+        if (keyContext != null && keyContext.mounted) {
+          Scrollable.ensureVisible(
+            keyContext,
+            alignment: 0.0,
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeOutCubic,
+          );
+        } else if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+
+      if (latestAiMessageKey.currentContext?.mounted == true) {
+        performScroll();
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) => performScroll());
+      }
+    });
   }
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
         scrollController.animateTo(
-          scrollController.position.maxScrollExtent + 250,
-          duration: const Duration(milliseconds: 350),
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }

@@ -68,7 +68,8 @@ export class LessonSessionService {
     userId: string,
     roadmapStepId: string,
     clientActionId: string,
-    targetScriptSlug?: string
+    targetScriptSlug?: string,
+    restart = false
   ): Promise<any> {
     const idempKey = `idemp:action:${clientActionId}`;
     const cachedResponse = await redisService.get(idempKey);
@@ -152,6 +153,14 @@ export class LessonSessionService {
           session = null;
         }
       }
+    }
+
+    if (restart && session) {
+      await prisma.lessonSession.update({
+        where: { id: session.id },
+        data: { status: 'ABANDONED', endedAt: new Date() },
+      }).catch(() => {});
+      session = null;
     } else if (!session) {
       const completedSessions = await prisma.lessonSession.findMany({
         where: {
@@ -354,7 +363,8 @@ export class LessonSessionService {
     userId: string,
     scriptSlug: string,
     clientActionId: string,
-    roadmapStepId?: string
+    roadmapStepId?: string,
+    restart = false
   ) {
     const idempKey = `idemp:action:${clientActionId}`;
     const cachedResponse = await redisService.get(idempKey);
@@ -407,6 +417,14 @@ export class LessonSessionService {
       },
       orderBy: { startedAt: 'desc' },
     });
+
+    if (restart && session) {
+      await prisma.lessonSession.update({
+        where: { id: session.id },
+        data: { status: 'ABANDONED', endedAt: new Date() },
+      }).catch(() => {});
+      session = null;
+    }
 
     if (!session) {
       const entryNodeId = definition.entryNodeId;

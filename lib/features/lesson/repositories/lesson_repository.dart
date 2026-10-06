@@ -39,12 +39,14 @@ class LessonRepository {
     required String roadmapStepId,
     required String clientActionId,
     String? scriptSlug,
+    bool restart = false,
   }) async {
     final response = await _dioClient.dio.post(
       '/roadmaps/steps/$roadmapStepId/start',
       data: {
         'clientActionId': clientActionId,
         if (scriptSlug != null) 'scriptSlug': scriptSlug,
+        if (restart) 'restart': true,
       },
     );
 
