@@ -158,7 +158,7 @@ export class LessonSessionService {
     if (restart && session) {
       await prisma.lessonSession.update({
         where: { id: session.id },
-        data: { status: 'ABANDONED', endedAt: new Date() },
+        data: { status: 'ABANDONED', lastActivityAt: new Date() },
       }).catch(() => {});
       session = null;
     } else if (!session) {
@@ -421,7 +421,7 @@ export class LessonSessionService {
     if (restart && session) {
       await prisma.lessonSession.update({
         where: { id: session.id },
-        data: { status: 'ABANDONED', endedAt: new Date() },
+        data: { status: 'ABANDONED', lastActivityAt: new Date() },
       }).catch(() => {});
       session = null;
     }
