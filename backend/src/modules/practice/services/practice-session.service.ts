@@ -21,6 +21,24 @@ export class PracticeSessionService {
     let resolvedSubtopicIds = subtopicIds;
     let resolvedTopicId = topicId;
 
+    if (resolvedTopicId && (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0)) {
+      const topicSubtopics = await prisma.subtopic.findMany({
+        where: {
+          topicId: resolvedTopicId,
+          isActive: true,
+          topic: {
+            isActive: true,
+            subject: { isActive: true },
+          },
+        },
+        select: { id: true },
+        orderBy: { sequence: 'asc' },
+      });
+      if (topicSubtopics.length > 0) {
+        resolvedSubtopicIds = topicSubtopics.map((s) => s.id);
+      }
+    }
+
     if (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0) {
       const { LiveCurriculumService } = await import('../../curriculum/services/live-curriculum.service');
       const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();

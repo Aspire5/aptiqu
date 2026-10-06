@@ -1307,7 +1307,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   ),
           ),
 
-          // The Practice button appears for any topic with live scripts, with Replay appearing when completed
+          // Topic level actions (Practice & Play/Replay)
           if (isCompleted || topic.scriptAvailable) ...[
             const SizedBox(height: 10),
             Row(
@@ -1317,66 +1317,68 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                     height: 40,
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AptiquColors.outlineVariant),
-                        backgroundColor: AptiquColors.surfaceContainerHigh,
+                        side: const BorderSide(color: AptiquColors.secondary, width: 1.2),
+                        backgroundColor: AptiquColors.secondary.withValues(alpha: 0.12),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        // 1. Close the topic details sheet
-                        Navigator.of(context).pop();
+                        // 1. Close the topic details dock (DO NOT call Navigator.pop!)
+                        setState(() {
+                          _isDockVisible = false;
+                        });
 
-                        // 2. Preselect in PracticeCatalogController
+                        // 2. Direct Practice session launch for this topic
                         final practiceController = Get.isRegistered<PracticeCatalogController>()
                             ? Get.find<PracticeCatalogController>()
                             : Get.put(PracticeCatalogController());
 
-                        practiceController.preselectTopic(
+                        practiceController.startPracticeSessionForTopic(
                           subjectId: widget.selectedSubjectId,
                           topicId: topic.topicId,
                         );
-
-                        // 3. Switch to Practice tab (index 2)
-                        final homeController = Get.find<HomeController>();
-                        homeController.selectedNavIndex.value = 2;
                       },
                       icon: const Icon(Icons.sports_esports_rounded, size: 16, color: AptiquColors.secondary),
                       label: Text(
-                        'Practice',
+                        'Practice Topic',
                         style: AptiquTypography.headlineSm.copyWith(
                           fontSize: 13,
+                          fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                     ),
                   ),
                 ),
-                if (isCompleted) ...[
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AptiquColors.secondary,
-                          foregroundColor: AptiquColors.onSecondary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          elevation: 2,
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () => widget.onTopicTap(topic),
-                        icon: const Icon(Icons.replay_rounded, size: 17),
-                        label: Text(
-                          'Replay Topic',
-                          style: AptiquTypography.headlineSm.copyWith(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                          ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 40,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isCompleted ? AptiquColors.secondary : const Color(0xFF7C3AED),
+                        foregroundColor: isCompleted ? AptiquColors.onSecondary : Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        elevation: 2,
+                        padding: EdgeInsets.zero,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isDockVisible = false;
+                        });
+                        widget.onTopicTap(topic);
+                      },
+                      icon: Icon(isCompleted ? Icons.replay_rounded : Icons.play_arrow_rounded, size: 17),
+                      label: Text(
+                        isCompleted ? 'Replay Topic' : 'Play Topic',
+                        style: AptiquTypography.headlineSm.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
               ],
             ),
           ],
@@ -1392,57 +1394,46 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   ) {
     final controller = Get.find<HomeController>();
     final isDone = subtopic.isCompleted;
-    final isLocked = subtopic.isLocked;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: isDone
             ? AptiquColors.secondaryContainer.withValues(alpha: 0.08)
-            : (isLocked
-                ? AptiquColors.surfaceContainerLowest.withValues(alpha: 0.35)
-                : AptiquColors.surfaceContainerHigh.withValues(alpha: 0.6)),
+            : AptiquColors.surfaceContainerHigh.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDone
               ? AptiquColors.secondary.withValues(alpha: 0.35)
-              : (isLocked
-                  ? AptiquColors.outlineVariant.withValues(alpha: 0.2)
-                  : AptiquColors.primary.withValues(alpha: 0.5)),
+              : AptiquColors.outlineVariant.withValues(alpha: 0.4),
           width: 0.8,
         ),
       ),
       child: Row(
         children: [
-          // Status Icon: Green check for completed, play for unlocked, lock for locked
+          // Subtle Status Indicator: Subtle soft checkmark if completed once, or clean play outline
           Container(
             width: 24,
             height: 24,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isDone
-                  ? AptiquColors.secondary.withValues(alpha: 0.2)
-                  : (isLocked
-                      ? AptiquColors.surfaceContainerHighest.withValues(alpha: 0.4)
-                      : AptiquColors.primary.withValues(alpha: 0.25)),
+                  ? AptiquColors.secondary.withValues(alpha: 0.15)
+                  : AptiquColors.surfaceContainerHighest.withValues(alpha: 0.4),
             ),
             child: Icon(
               isDone
-                  ? Icons.check_circle_rounded
-                  : (isLocked
-                      ? Icons.lock_outline_rounded
-                      : Icons.play_arrow_rounded),
+                  ? Icons.check_circle_outline_rounded
+                  : Icons.play_circle_outline_rounded,
               size: 14,
               color: isDone
                   ? AptiquColors.secondary
-                  : (isLocked
-                      ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.4)
-                      : AptiquColors.primary),
+                  : AptiquColors.onSurfaceVariant,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
 
-          // Subtopic details
+          // Subtopic details with subtle completion badge / indicator
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1454,97 +1445,122 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   overflow: TextOverflow.ellipsis,
                   style: AptiquTypography.bodyMd.copyWith(
                     fontSize: 12,
-                    fontWeight: isDone ? FontWeight.w600 : (isLocked ? FontWeight.normal : FontWeight.w700),
-                    color: isLocked
-                        ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.5)
-                        : Colors.white,
+                    fontWeight: isDone ? FontWeight.w600 : FontWeight.w700,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 1),
-                Text(
-                  isDone
-                      ? 'Completed'
-                      : (isLocked
-                          ? 'Complete previous subtopic first'
-                          : 'Up next'),
-                  style: AptiquTypography.bodySm.copyWith(
-                    fontSize: 9.5,
-                    color: isDone
-                        ? AptiquColors.secondary
-                        : (isLocked
-                            ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.4)
-                            : AptiquColors.primary),
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isDone) ...[
+                      Text(
+                        'Completed',
+                        style: AptiquTypography.bodySm.copyWith(
+                          fontSize: 9.5,
+                          color: AptiquColors.secondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ] else ...[
+                      Text(
+                        'Ready to play',
+                        style: AptiquTypography.bodySm.copyWith(
+                          fontSize: 9.5,
+                          color: AptiquColors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
           ),
 
-          // Action button
-          if (isDone) ...[
-            SizedBox(
-              height: 28,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AptiquColors.secondary.withValues(alpha: 0.5), width: 0.8),
-                  backgroundColor: AptiquColors.secondaryContainer.withValues(alpha: 0.15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+          const SizedBox(width: 6),
+
+          // Action 1: Practice Drill Button for this specific subtopic
+          SizedBox(
+            height: 28,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: AptiquColors.secondary.withValues(alpha: 0.45),
+                  width: 0.8,
                 ),
-                onPressed: () {
-                  setState(() => _isDockVisible = false);
+                backgroundColor: AptiquColors.secondaryContainer.withValues(alpha: 0.12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(horizontal: 7),
+              ),
+              onPressed: () {
+                setState(() => _isDockVisible = false);
+                final practiceController = Get.isRegistered<PracticeCatalogController>()
+                    ? Get.find<PracticeCatalogController>()
+                    : Get.put(PracticeCatalogController());
+                practiceController.startPracticeSessionForTopic(
+                  subjectId: widget.selectedSubjectId,
+                  topicId: topic.topicId,
+                  subtopicIds: [subtopic.id],
+                );
+              },
+              icon: const Icon(Icons.sports_esports_rounded, size: 12, color: AptiquColors.secondary),
+              label: Text(
+                'Practice',
+                style: AptiquTypography.labelCapsBold.copyWith(
+                  color: AptiquColors.secondary,
+                  fontSize: 9.5,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 6),
+
+          // Action 2: Start / Replay Lesson Script
+          SizedBox(
+            height: 28,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isDone
+                    ? AptiquColors.surfaceContainerHigh
+                    : const Color(0xFF7C3AED),
+                foregroundColor: Colors.white,
+                side: isDone
+                    ? BorderSide(
+                        color: AptiquColors.outlineVariant.withValues(alpha: 0.6),
+                        width: 0.8,
+                      )
+                    : BorderSide.none,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                elevation: isDone ? 0 : 2,
+              ),
+              onPressed: () {
+                setState(() => _isDockVisible = false);
+                if (subtopic.scriptSlug != null) {
                   controller.startSubtopicLesson(
                     roadmapStepId: topic.roadmapStepId,
-                    scriptSlug: subtopic.scriptSlug ?? topic.scriptSlug ?? '',
+                    scriptSlug: subtopic.scriptSlug!,
                     scriptTitle: subtopic.title,
                   );
-                },
-                icon: const Icon(Icons.replay_rounded, size: 12, color: AptiquColors.secondary),
-                label: Text(
-                  'Replay',
-                  style: AptiquTypography.labelCapsBold.copyWith(
-                    color: AptiquColors.secondary,
-                    fontSize: 10,
-                  ),
+                } else {
+                  widget.onTopicTap(topic);
+                }
+              },
+              icon: Icon(
+                isDone ? Icons.replay_rounded : Icons.play_arrow_rounded,
+                size: 13,
+                color: isDone ? AptiquColors.onSurfaceVariant : Colors.white,
+              ),
+              label: Text(
+                isDone ? 'Replay' : 'Start',
+                style: AptiquTypography.labelCapsBold.copyWith(
+                  color: isDone ? AptiquColors.onSurfaceVariant : Colors.white,
+                  fontSize: 9.5,
                 ),
               ),
             ),
-          ] else if (!isLocked) ...[
-            SizedBox(
-              height: 28,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7C3AED), // Vibrant purple
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  elevation: 2,
-                ),
-                onPressed: () {
-                  setState(() => _isDockVisible = false);
-                  if (subtopic.scriptSlug != null) {
-                    controller.startSubtopicLesson(
-                      roadmapStepId: topic.roadmapStepId,
-                      scriptSlug: subtopic.scriptSlug!,
-                      scriptTitle: subtopic.title,
-                    );
-                  } else {
-                    widget.onTopicTap(topic);
-                  }
-                },
-                icon: const Icon(Icons.play_arrow_rounded, size: 14, color: Colors.white),
-                label: Text(
-                  'Start',
-                  style: AptiquTypography.labelCapsBold.copyWith(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ],
       ),
     );

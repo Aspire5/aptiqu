@@ -712,16 +712,9 @@ export class RoadmapProgressionService {
           activeStepId = step.id;
         }
       } else {
-        // Step has a published script and is not completed
-        if (!foundFirstIncompletePublished) {
-          state = 'AVAILABLE';
-          foundFirstIncompletePublished = true;
-          if (!activeStepId) {
-            activeStepId = step.id;
-          }
-        } else {
-          // If a prior published step is incomplete, subsequent steps are locked
-          state = 'LOCKED';
+        state = 'AVAILABLE';
+        if (!activeStepId) {
+          activeStepId = step.id;
         }
       }
 
@@ -732,7 +725,6 @@ export class RoadmapProgressionService {
 
       if (topicSubtopics.length > 0) {
         totalSubtopics = topicSubtopics.length;
-        let foundIncomplete = false;
 
         subtopics = topicSubtopics.map((st: any, idx: number) => {
           const sa = assignments.find(
@@ -743,21 +735,8 @@ export class RoadmapProgressionService {
             const isDone = completedScriptIds.has(sa.scriptId);
             if (isDone) completedSubtopics++;
 
-            let isLocked = false;
-            if (!isDone) {
-              if (
-                !foundIncomplete &&
-                (step.id === activeStepId ||
-                  state === 'AVAILABLE' ||
-                  state === 'IN_PROGRESS' ||
-                  completedStepIds.has(step.id))
-              ) {
-                isLocked = false;
-                foundIncomplete = true;
-              } else {
-                isLocked = true;
-              }
-            }
+            // Any subtopic with a script is playable in any order
+            const isLocked = false;
 
             return {
               id: sa.id,
@@ -775,32 +754,17 @@ export class RoadmapProgressionService {
               title: st.name,
               sequence: st.sequence ?? idx + 1,
               isCompleted: false,
-              isLocked: true,
+              isLocked: false,
               canReplay: false,
             };
           }
         });
       } else if (assignments.length > 0) {
         totalSubtopics = assignments.length;
-        let foundIncomplete = false;
         subtopics = assignments.map((sa) => {
           const isDone = completedScriptIds.has(sa.scriptId);
           if (isDone) completedSubtopics++;
-          let isLocked = false;
-          if (!isDone) {
-            if (
-              !foundIncomplete &&
-              (step.id === activeStepId ||
-                state === 'AVAILABLE' ||
-                state === 'IN_PROGRESS' ||
-                completedStepIds.has(step.id))
-            ) {
-              isLocked = false;
-              foundIncomplete = true;
-            } else {
-              isLocked = true;
-            }
-          }
+          const isLocked = false;
           return {
             id: sa.id,
             scriptId: sa.scriptId,

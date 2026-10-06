@@ -986,12 +986,7 @@ class HomeController extends GetxController {
 
   /// User taps a topic on the Roadmap map
   void onTopicTapped(BuildContext context, LearningMapTopicItemModel topic) {
-    if (topic.isAvailable || topic.isInProgress || topic.isCompleted) {
-      activeRoadmapStepId.value = topic.roadmapStepId;
-      showSubjectCards.value = false;
-      selectedNavIndex.value = 0; // Go directly to Home playground!
-      loadLessonState(topic.roadmapStepId);
-    } else if (topic.isComingSoon) {
+    if (topic.isComingSoon) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -1001,16 +996,11 @@ class HomeController extends GetxController {
           behavior: SnackBarBehavior.floating,
         ),
       );
-    } else if (topic.isLocked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Topic Locked: Complete preceding topics in your roadmap to unlock "${topic.topicName}".',
-          ),
-          backgroundColor: AptiquColors.surfaceContainer,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+    } else {
+      activeRoadmapStepId.value = topic.roadmapStepId;
+      showSubjectCards.value = false;
+      selectedNavIndex.value = 0; // Go directly to Home playground!
+      loadLessonState(topic.roadmapStepId);
     }
   }
 

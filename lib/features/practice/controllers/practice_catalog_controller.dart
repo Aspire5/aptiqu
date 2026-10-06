@@ -249,6 +249,42 @@ class PracticeCatalogController extends GetxController {
     }
   }
 
+  /// Directly starts a practice session for a specified topic and optional subtopics
+  Future<void> startPracticeSessionForTopic({
+    required String subjectId,
+    required String topicId,
+    List<String>? subtopicIds,
+  }) async {
+    isStartingSession.value = true;
+    _showNotice('Loading Drill', 'Preparing practice session...');
+    try {
+      final session = await _repository.createSession(
+        topicId: topicId,
+        subtopicIds: subtopicIds,
+      );
+
+      debugPrint('[Practice] Direct session created: ${session.id}, totalQuestions: ${session.totalQuestions}');
+
+      if (Get.isRegistered<PracticeSessionController>()) {
+        Get.delete<PracticeSessionController>();
+      }
+
+      AppRouter.router.push(
+        AppRoutes.practiceSession,
+        extra: session,
+      );
+    } catch (err, stack) {
+      debugPrint('[Practice] startPracticeSessionForTopic failed: $err\n$stack');
+      _showNotice(
+        'Practice Notice',
+        err.toString().replaceAll('Exception: ', ''),
+        isError: true,
+      );
+    } finally {
+      isStartingSession.value = false;
+    }
+  }
+
   /// Fetches practice history including replays and PvP replays
   Future<void> fetchHistory({bool refresh = false}) async {
     isLoadingHistory.value = true;

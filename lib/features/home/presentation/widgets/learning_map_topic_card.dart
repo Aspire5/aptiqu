@@ -19,7 +19,6 @@ class LearningMapTopicCard extends StatelessWidget {
     final isInProgress = topic.isInProgress;
     final isCompleted = topic.isCompleted;
     final isComingSoon = topic.isComingSoon;
-    final isLocked = topic.isLocked;
 
     // Card border and shadow styling based on state
     Color borderColor;
@@ -99,7 +98,7 @@ class LearningMapTopicCard extends StatelessWidget {
                 Text(
                   topic.topicName,
                   style: AptiquTypography.headlineSm.copyWith(
-                    color: (isComingSoon || isLocked)
+                    color: isComingSoon
                         ? Colors.white.withValues(alpha: 0.65)
                         : Colors.white,
                     fontWeight: FontWeight.bold,
