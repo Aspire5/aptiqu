@@ -38,15 +38,22 @@ export class PracticeSessionService {
 
     // 2. If subtopicIds were provided, resolve any ScriptAssignment IDs or slugs to actual subtopic IDs
     if (resolvedSubtopicIds && resolvedSubtopicIds.length > 0) {
-      const assignments = await prisma.scriptAssignment.findMany({
-        where: {
-          OR: [
-            { id: { in: resolvedSubtopicIds } },
-            { scriptId: { in: resolvedSubtopicIds } },
-          ],
-        },
-        include: { script: true },
-      });
+      const isUuid = (val: string) =>
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+
+      const uuidSubtopicIds = resolvedSubtopicIds.filter(isUuid);
+      const assignments =
+        uuidSubtopicIds.length > 0
+          ? await prisma.scriptAssignment.findMany({
+              where: {
+                OR: [
+                  { id: { in: uuidSubtopicIds } },
+                  { scriptId: { in: uuidSubtopicIds } },
+                ],
+              },
+              include: { script: true },
+            })
+          : [];
 
       const candidateSubtopicIds = new Set<string>();
       for (const id of resolvedSubtopicIds) {
@@ -67,11 +74,47 @@ export class PracticeSessionService {
           ],
           isActive: true,
         },
-        select: { id: true, topicId: true },
+        select: { id: true, slug: true, topicId: true },
       });
 
+      // If not directly matched, check if passed IDs match lessonScript slugs or UUIDs
+      if (foundSubtopics.length === 0) {
+        const scripts = await prisma.lessonScript.findMany({
+          where: {
+            OR: [
+              { slug: { in: Array.from(candidateSubtopicIds) } },
+              ...(uuidSubtopicIds.length > 0 ? [{ id: { in: uuidSubtopicIds } }] : []),
+            ],
+          },
+          select: { subtopicId: true, topicId: true },
+        });
+        const scriptSubtopicIds = scripts
+          .map((s) => s.subtopicId)
+          .filter((id): id is string => !!id);
+        if (scriptSubtopicIds.length > 0) {
+          const subsFromScripts = await prisma.subtopic.findMany({
+            where: {
+              OR: [
+                { id: { in: scriptSubtopicIds } },
+                { slug: { in: scriptSubtopicIds } },
+              ],
+              isActive: true,
+            },
+            select: { id: true, slug: true, topicId: true },
+          });
+          if (subsFromScripts.length > 0) {
+            foundSubtopics.push(...subsFromScripts);
+          }
+        }
+      }
+
       if (foundSubtopics.length > 0) {
-        resolvedSubtopicIds = foundSubtopics.map((s) => s.id);
+        const resolvedIds = new Set<string>();
+        for (const s of foundSubtopics) {
+          resolvedIds.add(s.id);
+          if (s.slug) resolvedIds.add(s.slug);
+        }
+        resolvedSubtopicIds = Array.from(resolvedIds);
         if (!resolvedTopicId) {
           resolvedTopicId = foundSubtopics[0].topicId;
         }
@@ -82,11 +125,16 @@ export class PracticeSessionService {
             topicId: resolvedTopicId,
             isActive: true,
           },
-          select: { id: true },
+          select: { id: true, slug: true },
           orderBy: { sequence: 'asc' },
         });
         if (topicSubs.length > 0) {
-          resolvedSubtopicIds = topicSubs.map((s) => s.id);
+          const resolvedIds = new Set<string>();
+          for (const s of topicSubs) {
+            resolvedIds.add(s.id);
+            if (s.slug) resolvedIds.add(s.slug);
+          }
+          resolvedSubtopicIds = Array.from(resolvedIds);
         }
       }
     }

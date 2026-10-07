@@ -18,8 +18,13 @@ export class LiveCurriculumService {
    */
   public static async isSubtopicLive(subtopicId: string): Promise<boolean> {
     // 0. Verify subtopic and its parent hierarchy are ACTIVE
-    const subtopic = await prisma.subtopic.findUnique({
-      where: { id: subtopicId },
+    const subtopic = await prisma.subtopic.findFirst({
+      where: {
+        OR: [
+          { id: subtopicId },
+          { slug: subtopicId },
+        ],
+      },
       include: {
         topic: {
           include: {
@@ -29,14 +34,17 @@ export class LiveCurriculumService {
       },
     });
 
-    if (!subtopic || !subtopic.isActive || !subtopic.topic.isActive || !subtopic.topic.subject.isActive) {
+    if (!subtopic || !subtopic.isActive || (subtopic.topic && !subtopic.topic.isActive) || (subtopic.topic?.subject && !subtopic.topic.subject.isActive)) {
       return false;
     }
 
-    // 1. Direct check on LessonScript with this subtopicId
+    // 1. Direct check on LessonScript with this subtopicId or slug
     const scriptCount = await prisma.lessonScript.count({
       where: {
-        subtopicId,
+        OR: [
+          { subtopicId: subtopic.id },
+          ...(subtopic.slug ? [{ subtopicId: subtopic.slug }] : []),
+        ],
         status: 'PUBLISHED',
         publishedVersionId: { not: null },
       },
@@ -47,36 +55,96 @@ export class LiveCurriculumService {
     // 2. Check if subtopic's parent topic has published scripts
     const topicScriptCount = await prisma.lessonScript.count({
       where: {
-        topicId: subtopic.topicId,
+        OR: [
+          { topicId: subtopic.topicId },
+          ...(subtopic.topic?.slug ? [{ topicId: subtopic.topic.slug }] : []),
+        ],
         status: 'PUBLISHED',
         publishedVersionId: { not: null },
       },
     });
-    return topicScriptCount > 0;
+    if (topicScriptCount > 0) return true;
+
+    // 3. Check if roadmap steps have published script assignments for this topic/subtopic
+    const stepWithScript = await prisma.roadmapStep.findFirst({
+      where: {
+        OR: [
+          { subtopicId: subtopic.id },
+          { topicId: subtopic.topicId },
+        ],
+        scriptAssignments: {
+          some: {
+            status: 'PUBLISHED',
+          },
+        },
+      },
+    });
+    if (stepWithScript) return true;
+
+    // 4. Check if published questions exist for this subtopic or topic
+    const questionCount = await prisma.question.count({
+      where: {
+        OR: [
+          { subtopicId: subtopic.id },
+          ...(subtopic.slug ? [{ subtopicId: subtopic.slug }] : []),
+          { topicId: subtopic.topicId },
+        ],
+        status: 'PUBLISHED',
+      },
+    });
+    return questionCount > 0;
   }
 
   /**
-   * Checks if a Topic is LIVE (is active, subject is active, and has at least one published script).
+   * Checks if a Topic is LIVE (is active, subject is active, and has at least one published script or question).
    */
   public static async isTopicLive(topicId: string): Promise<boolean> {
-    const topic = await prisma.topic.findUnique({
-      where: { id: topicId },
+    const topic = await prisma.topic.findFirst({
+      where: {
+        OR: [
+          { id: topicId },
+          { slug: topicId },
+        ],
+      },
       include: { subject: true },
     });
 
-    if (!topic || !topic.isActive || !topic.subject.isActive) {
+    if (!topic || !topic.isActive || (topic.subject && !topic.subject.isActive)) {
       return false;
     }
 
     const scriptCount = await prisma.lessonScript.count({
       where: {
-        topicId,
+        OR: [
+          { topicId: topic.id },
+          ...(topic.slug ? [{ topicId: topic.slug }] : []),
+        ],
         status: 'PUBLISHED',
         publishedVersionId: { not: null },
       },
     });
 
-    return scriptCount > 0;
+    if (scriptCount > 0) return true;
+
+    const stepWithScript = await prisma.roadmapStep.findFirst({
+      where: {
+        topicId: topic.id,
+        scriptAssignments: {
+          some: {
+            status: 'PUBLISHED',
+          },
+        },
+      },
+    });
+    if (stepWithScript) return true;
+
+    const questionCount = await prisma.question.count({
+      where: {
+        topicId: topic.id,
+        status: 'PUBLISHED',
+      },
+    });
+    return questionCount > 0;
   }
 
   /**
@@ -86,8 +154,14 @@ export class LiveCurriculumService {
     const isLive = await this.isTopicLive(topicId);
     if (!isLive) return [];
 
-    const topic = await prisma.topic.findUnique({
-      where: { id: topicId, isActive: true, subject: { isActive: true } },
+    const topic = await prisma.topic.findFirst({
+      where: {
+        OR: [
+          { id: topicId },
+          { slug: topicId },
+        ],
+        isActive: true,
+      },
       include: {
         subject: true,
         subtopics: {
@@ -97,7 +171,7 @@ export class LiveCurriculumService {
       },
     });
 
-    if (!topic || !topic.isActive || !topic.subject.isActive) return [];
+    if (!topic || !topic.isActive || (topic.subject && !topic.subject.isActive)) return [];
 
     return topic.subtopics.map((s) => ({
       id: s.id,

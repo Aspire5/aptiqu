@@ -153,7 +153,6 @@ export class PracticeSelectionService {
     }
 
     // 7. Safety fallback: If still less than count, reuse least recently updated published questions for the SAME subtopics
-    // STRICT RULE: Do NOT introduce adjacent subtopic questions. Preserve selected subtopic semantics.
     if (aiCandidates.length < count) {
       const fallbackQuestions = await prisma.question.findMany({
         where: {
@@ -167,7 +166,33 @@ export class PracticeSelectionService {
       aiCandidates.push(...fallbackQuestions);
     }
 
-    // 8. If zero valid questions exist for this subtopic, return clean preparation state
+    // 8. Topic fallback: If still less than count, find published questions under the same topic
+    if (aiCandidates.length < count && subtopicIds.length > 0) {
+      const subtopicsWithTopic = await prisma.subtopic.findMany({
+        where: {
+          OR: [
+            { id: { in: subtopicIds } },
+            { slug: { in: subtopicIds } },
+          ],
+        },
+        select: { topicId: true },
+      });
+      const topicIds = Array.from(new Set(subtopicsWithTopic.map((s) => s.topicId).filter(Boolean)));
+      if (topicIds.length > 0) {
+        const topicFallback = await prisma.question.findMany({
+          where: {
+            topicId: { in: topicIds },
+            status: 'PUBLISHED',
+            id: { notIn: aiCandidates.map((q) => q.id) },
+          },
+          take: count - aiCandidates.length,
+          orderBy: { updatedAt: 'asc' },
+        });
+        aiCandidates.push(...topicFallback);
+      }
+    }
+
+    // 9. If zero valid questions exist, return clean preparation state
     if (aiCandidates.length === 0) {
       const err: any = new Error(
         'Practice questions for this subtopic are currently being prepared. Please check back shortly.'
