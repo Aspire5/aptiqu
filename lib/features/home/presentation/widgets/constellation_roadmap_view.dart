@@ -1533,16 +1533,15 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   ),
                   onPressed: () {
                     setState(() => _isDockVisible = false);
-                    if (subtopic.scriptSlug != null) {
-                      controller.startSubtopicLesson(
-                        roadmapStepId: topic.roadmapStepId,
-                        scriptSlug: subtopic.scriptSlug!,
-                        scriptTitle: subtopic.title,
-                        restart: true,
-                      );
-                    } else {
-                      widget.onTopicTap(topic);
-                    }
+                    final effectiveSlug = (subtopic.scriptSlug?.isNotEmpty == true)
+                        ? subtopic.scriptSlug
+                        : subtopic.id;
+                    controller.startSubtopicLesson(
+                      roadmapStepId: topic.roadmapStepId,
+                      scriptSlug: effectiveSlug,
+                      scriptTitle: subtopic.title,
+                      restart: true,
+                    );
                   },
                   icon: Icon(
                     isDone ? Icons.replay_rounded : Icons.play_arrow_rounded,

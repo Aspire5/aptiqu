@@ -146,41 +146,96 @@ export class LessonSessionService {
     let assignment = step.scriptAssignments[0];
 
     if (targetScriptSlug) {
-      const target = step.scriptAssignments.find((sa) => sa.script.slug === targetScriptSlug);
-      if (target) {
-        assignment = target;
-        if (session && session.scriptId !== target.scriptId) {
-          session = null;
+      let target = step.scriptAssignments.find((sa) => sa.script?.slug === targetScriptSlug);
+
+      if (!target) {
+        // Fallback 1: match by scriptId or subtopicId among step assignments
+        target = step.scriptAssignments.find(
+          (sa) => sa.scriptId === targetScriptSlug || sa.script?.subtopicId === targetScriptSlug
+        );
+      }
+
+      if (!target) {
+        // Fallback 2: lookup script by slug, id, or subtopicId directly across lesson scripts
+        const directScript = await prisma.lessonScript.findFirst({
+          where: {
+            OR: [
+              { slug: targetScriptSlug },
+              { id: targetScriptSlug },
+              { subtopicId: targetScriptSlug },
+            ],
+            status: { in: ['PUBLISHED', 'REVIEW'] },
+          },
+          include: {
+            versions: {
+              where: { status: { in: ['PUBLISHED', 'REVIEW'] } },
+              orderBy: { versionNumber: 'desc' },
+              take: 1,
+            },
+          },
+        });
+
+        if (directScript) {
+          const effectiveVersion = directScript.versions?.[0];
+          target = {
+            id: directScript.id,
+            roadmapStepId: step.id,
+            scriptId: directScript.id,
+            publishedVersionId: directScript.publishedVersionId || effectiveVersion?.id || null,
+            status: 'PUBLISHED',
+            sequence: 1,
+            isRequired: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            script: directScript,
+            publishedVersion: effectiveVersion || null,
+          } as any;
         }
       }
-    }
 
-    if (restart && session) {
-      await prisma.lessonSession.update({
-        where: { id: session.id },
-        data: { status: 'ABANDONED', lastActivityAt: new Date() },
-      }).catch(() => {});
-      session = null;
-    } else if (!session) {
-      const completedSessions = await prisma.lessonSession.findMany({
-        where: {
-          userId,
-          roadmapStepId: step.id,
-          status: 'COMPLETED',
-        },
-        select: { scriptId: true },
-      });
-      const completedScriptIds = new Set(completedSessions.map((s) => s.scriptId));
+      if (target) {
+        assignment = target;
 
-      const nextAssignment = step.scriptAssignments.find(
-        (sa) => !completedScriptIds.has(sa.scriptId)
-      );
-      if (nextAssignment) {
-        assignment = nextAssignment;
+        if (session) {
+          if (session.scriptId !== target.scriptId || restart) {
+            // Abandon prior session for different script or if restart requested
+            await prisma.lessonSession.update({
+              where: { id: session.id },
+              data: { status: 'ABANDONED', lastActivityAt: new Date() },
+            }).catch(() => {});
+            session = null;
+          }
+        }
       }
     } else {
-      assignment =
-        step.scriptAssignments.find((sa) => sa.scriptId === session!.scriptId) || assignment;
+      // ONLY when NO targetScriptSlug was specified (e.g. general Play Topic tap):
+      if (restart && session) {
+        await prisma.lessonSession.update({
+          where: { id: session.id },
+          data: { status: 'ABANDONED', lastActivityAt: new Date() },
+        }).catch(() => {});
+        session = null;
+      } else if (!session) {
+        const completedSessions = await prisma.lessonSession.findMany({
+          where: {
+            userId,
+            roadmapStepId: step.id,
+            status: 'COMPLETED',
+          },
+          select: { scriptId: true },
+        });
+        const completedScriptIds = new Set(completedSessions.map((s) => s.scriptId));
+
+        const nextAssignment = step.scriptAssignments.find(
+          (sa) => !completedScriptIds.has(sa.scriptId)
+        );
+        if (nextAssignment) {
+          assignment = nextAssignment;
+        }
+      } else {
+        assignment =
+          step.scriptAssignments.find((sa) => sa.scriptId === session!.scriptId) || assignment;
+      }
     }
 
     const effectiveVersionId =

@@ -728,7 +728,13 @@ export class RoadmapProgressionService {
 
         subtopics = topicSubtopics.map((st: any, idx: number) => {
           const sa = assignments.find(
-            (a) => a.script?.subtopicId === st.id || a.sequence === st.sequence
+            (a) =>
+              a.script?.subtopicId === st.id ||
+              a.script?.subtopicId === st.slug ||
+              a.script?.slug === st.slug ||
+              a.script?.slug === `script-${st.slug}` ||
+              a.sequence === st.sequence ||
+              a.sequence === (idx + 1)
           ) || (idx < assignments.length && !assignments.some((a) => a.script?.subtopicId) ? assignments[idx] : null);
 
           if (sa) {
