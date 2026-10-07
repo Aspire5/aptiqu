@@ -745,7 +745,8 @@ export class RoadmapProgressionService {
             const isLocked = false;
 
             return {
-              id: sa.id,
+              id: st.id || sa.id,
+              scriptAssignmentId: sa.id,
               scriptId: sa.scriptId,
               scriptSlug: sa.script.slug,
               title: sa.script.title || st.name,
