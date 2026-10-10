@@ -265,33 +265,7 @@ export class AdminSyllabusService {
     defaultImportance?: string;
     defaultTeachingDepth?: number;
     defaultTeachingMinutes?: number;
-    subtopics?: Array<{
-      name: string;
-      description?: string;
-      priority?: string;
-      externalSubTopicKey?: string;
-      externalSubtopicKey?: string;
-      position?: number;
-      teachingDepth?: number;
-      teachingMinutes?: number;
-    }>;
   }) {
-    const importedSubtopics = data.subtopics ?? [];
-    const keys = new Set<string>();
-    for (const [index, subtopic] of importedSubtopics.entries()) {
-      const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
-      if (!subtopic.name?.trim()) {
-        throw new Error(`Subtopic ${index + 1} must have a name.`);
-      }
-      if (key && keys.has(key)) {
-        throw new Error(`Duplicate externalSubTopicKey '${key}' in subtopics.`);
-      }
-      if (key) keys.add(key);
-      if (subtopic.position !== undefined && (!Number.isInteger(subtopic.position) || subtopic.position < 0)) {
-        throw new Error(`Subtopic '${subtopic.name}' has an invalid position.`);
-      }
-    }
-
     const slug = data.slug || `${data.subjectId}-${data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
     const id = data.id || slug;
 
@@ -306,27 +280,7 @@ export class AdminSyllabusService {
         defaultTeachingDepth: data.defaultTeachingDepth ?? 3,
         defaultTeachingMinutes: data.defaultTeachingMinutes ?? 30,
         isActive: true,
-        subtopics: importedSubtopics.length ? {
-          create: importedSubtopics.map((subtopic, index) => {
-            const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
-            const subtopicSlug = key || `${id}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
-            return {
-              id: subtopicSlug,
-              slug: subtopicSlug,
-              name: subtopic.name.trim(),
-              description: subtopic.description || '',
-              sequence: subtopic.position ?? index,
-              importance: ['high', 'medium', 'low'].includes((subtopic.priority || '').toLowerCase())
-                ? subtopic.priority!.toLowerCase()
-                : 'medium',
-              teachingDepth: subtopic.teachingDepth ?? 3,
-              teachingMinutes: subtopic.teachingMinutes ?? 30,
-              isActive: true,
-            };
-          }),
-        } : undefined,
       },
-      include: { subtopics: { orderBy: { sequence: 'asc' } } },
     });
 
     await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
@@ -387,6 +341,66 @@ export class AdminSyllabusService {
   }
 
   // ==================== SUBTOPIC CRUD ====================
+
+  public static async importSubtopics(topicId: string, subtopics: Array<{
+    name: string;
+    description?: string;
+    priority?: string;
+    externalSubTopicKey?: string;
+    externalSubtopicKey?: string;
+    position?: number;
+    teachingDepth?: number;
+    teachingMinutes?: number;
+  }>) {
+    if (!Array.isArray(subtopics) || subtopics.length === 0) {
+      throw new Error('subtopics must be a non-empty array.');
+    }
+
+    const ids = new Set<string>();
+    for (const [index, subtopic] of subtopics.entries()) {
+      if (!subtopic?.name?.trim()) throw new Error(`Subtopic ${index + 1} must have a name.`);
+      const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
+      const generated = key || `${topicId}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+      if (ids.has(generated)) throw new Error(`Duplicate subtopic key or name '${generated}'.`);
+      ids.add(generated);
+      if (subtopic.position !== undefined && (!Number.isInteger(subtopic.position) || subtopic.position < 0)) {
+        throw new Error(`Subtopic '${subtopic.name}' has an invalid position.`);
+      }
+    }
+
+    const created = await prisma.$transaction(async (tx) => {
+      const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
+      if (!topic) throw new Error(`Topic '${topicId}' was not found.`);
+      const existing = await tx.subtopic.findMany({ where: { topicId }, select: { id: true, slug: true } });
+
+      for (const [index, subtopic] of subtopics.entries()) {
+        const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
+        const id = key || `${topicId}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+        const priority = (subtopic.priority || '').toLowerCase();
+        const matched = existing.find((item) => item.id === id || (key && item.slug === key));
+        const values = {
+          slug: key || id,
+          name: subtopic.name.trim(),
+          description: subtopic.description || '',
+          sequence: subtopic.position ?? index,
+          importance: ['high', 'medium', 'low'].includes(priority) ? priority : 'medium',
+          teachingDepth: subtopic.teachingDepth ?? 3,
+          teachingMinutes: subtopic.teachingMinutes ?? 30,
+          isActive: true,
+        };
+        if (matched) {
+          await tx.subtopic.update({ where: { id: matched.id }, data: values });
+        } else {
+          await tx.subtopic.create({ data: { id, topicId, ...values } });
+        }
+      }
+
+      return tx.subtopic.findMany({ where: { topicId }, orderBy: { sequence: 'asc' } });
+    });
+
+    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    return created;
+  }
 
   public static async createSubtopic(data: {
     id?: string;

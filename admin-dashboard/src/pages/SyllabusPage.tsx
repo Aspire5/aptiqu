@@ -27,6 +27,7 @@ export const SyllabusPage: React.FC = () => {
   const [subjectModal, setSubjectModal] = useState<{ open: boolean; editItem?: any }>({ open: false });
   const [topicModal, setTopicModal] = useState<{ open: boolean; subjectId?: string; editItem?: any }>({ open: false });
   const [subtopicModal, setSubtopicModal] = useState<{ open: boolean; topicId?: string; editItem?: any }>({ open: false });
+  const [subtopicImportModal, setSubtopicImportModal] = useState<{ open: boolean; topicId?: string; topicName?: string }>({ open: false });
   const [deleteModal, setDeleteModal] = useState<{
     open: boolean;
     type: 'subject' | 'topic' | 'subtopic';
@@ -467,6 +468,15 @@ export const SyllabusPage: React.FC = () => {
                                 >
                                   <Plus size={12} />
                                   <span>Add Subtopic</span>
+                                </button>
+                                <button
+                                  className="btn-secondary"
+                                  style={{ padding: '4px 10px', fontSize: '11px', color: '#1a73e8', borderColor: '#bfdbfe' }}
+                                  title={`Bulk import subtopics for ${topic.name}`}
+                                  onClick={() => setSubtopicImportModal({ open: true, topicId: topic.id, topicName: topic.name })}
+                                >
+                                  <FileCode size={12} />
+                                  <span>Bulk Import</span>
                                 </button>
                                 <button
                                   className="btn-secondary"
@@ -960,6 +970,18 @@ export const SyllabusPage: React.FC = () => {
           }}
         />
       )}
+
+      {subtopicImportModal.open && (
+        <SubtopicImportModal
+          topicId={subtopicImportModal.topicId!}
+          topicName={subtopicImportModal.topicName!}
+          onClose={() => setSubtopicImportModal({ open: false })}
+          onSuccess={() => {
+            setSubtopicImportModal({ open: false });
+            fetchSyllabus();
+          }}
+        />
+      )}
     </div>
   );
 };
@@ -1042,30 +1064,7 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
   const [defaultImportance, setDefaultImportance] = useState(editItem?.defaultImportance || 'medium');
   const [defaultTeachingMinutes, setDefaultTeachingMinutes] = useState(editItem?.defaultTeachingMinutes ?? 30);
   const [isActive, setIsActive] = useState(editItem?.isActive ?? true);
-  const [importedSubtopics, setImportedSubtopics] = useState<any[] | null>(null);
-  const [importFileName, setImportFileName] = useState('');
-  const [importError, setImportError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const handleSubtopicsFile = async (file?: File) => {
-    setImportedSubtopics(null);
-    setImportFileName('');
-    setImportError('');
-    if (!file) return;
-    try {
-      const parsed = JSON.parse(await file.text());
-      if (!Array.isArray(parsed) || parsed.length === 0) {
-        throw new Error('The file must contain a non-empty JSON array of subtopics.');
-      }
-      if (parsed.some((item) => !item || typeof item.name !== 'string' || !item.name.trim())) {
-        throw new Error('Every subtopic entry must have a name.');
-      }
-      setImportedSubtopics(parsed);
-      setImportFileName(file.name);
-    } catch (err: any) {
-      setImportError(err instanceof SyntaxError ? 'The selected file is not valid JSON.' : err.message);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1074,7 +1073,7 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
       if (editItem) {
         await api.updateTopic(editItem.id, { name, description, defaultImportance, defaultTeachingMinutes, isActive });
       } else {
-        await api.createTopic({ subjectId, name, description, defaultImportance, defaultTeachingMinutes, subtopics: importedSubtopics || undefined });
+        await api.createTopic({ subjectId, name, description, defaultImportance, defaultTeachingMinutes });
       }
       onSuccess();
     } catch (err: any) {
@@ -1113,22 +1112,6 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
               <label className="form-label">Teaching Minutes</label>
               <input type="number" className="form-control" value={defaultTeachingMinutes} onChange={(e) => setDefaultTeachingMinutes(Number(e.target.value))} />
             </div>
-            {!editItem && (
-              <div className="form-group">
-                <label className="form-label">Import Subtopics (optional)</label>
-                <input
-                  type="file"
-                  className="form-control"
-                  accept=".json,application/json"
-                  onChange={(e) => handleSubtopicsFile(e.target.files?.[0])}
-                />
-                <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>
-                  Choose the topic's subtopics.json file. Names, descriptions, priorities, external keys, and order are imported.
-                  {importFileName && ` ${importFileName}: ${importedSubtopics?.length} subtopics ready.`}
-                </span>
-                {importError && <span style={{ fontSize: '12px', color: '#dc2626', display: 'block', marginTop: '4px' }}>{importError}</span>}
-              </div>
-            )}
             {editItem && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
                 <input type="checkbox" id="topicActive" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
@@ -1139,6 +1122,88 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
           <div className="modal-footer">
             <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
             <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Saving...' : 'Save'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const SubtopicImportModal: React.FC<{ topicId: string; topicName: string; onClose: () => void; onSuccess: () => void }> = ({
+  topicId,
+  topicName,
+  onClose,
+  onSuccess,
+}) => {
+  const [subtopics, setSubtopics] = useState<any[] | null>(null);
+  const [fileName, setFileName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleFile = async (file?: File) => {
+    setSubtopics(null);
+    setFileName('');
+    setError('');
+    if (!file) return;
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        throw new Error('The file must contain a non-empty JSON array of subtopics.');
+      }
+      if (parsed.some((item) => !item || typeof item.name !== 'string' || !item.name.trim())) {
+        throw new Error('Every subtopic entry must have a name.');
+      }
+      setSubtopics(parsed);
+      setFileName(file.name);
+    } catch (err: any) {
+      setError(err instanceof SyntaxError ? 'The selected file is not valid JSON.' : err.message);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subtopics) return;
+    setLoading(true);
+    try {
+      await api.importSubtopics(topicId, subtopics);
+      onSuccess();
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content" style={{ maxWidth: '520px' }}>
+        <div className="modal-header">
+          <h3 className="modal-title">Bulk Import Subtopics</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <p style={{ fontSize: '13px', color: '#475569', marginTop: 0 }}>
+              Import ordered subtopics into <strong>{topicName}</strong> from its <code>subtopics.json</code> file.
+              Names, descriptions, priorities, external keys, and positions are used. Matching subtopics are updated; other subtopics are kept.
+            </p>
+            <div className="form-group">
+              <label className="form-label">Subtopics JSON file</label>
+              <input
+                type="file"
+                className="form-control"
+                accept=".json,application/json"
+                onChange={(e) => handleFile(e.target.files?.[0])}
+              />
+              {fileName && <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>{fileName}: {subtopics?.length} subtopics ready.</span>}
+              {error && <span style={{ fontSize: '12px', color: '#dc2626', display: 'block', marginTop: '6px' }}>{error}</span>}
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
+            <button type="submit" className="btn-primary" disabled={!subtopics || loading}>
+              {loading ? 'Importing...' : `Import ${subtopics?.length || ''} Subtopics`}
+            </button>
           </div>
         </form>
       </div>

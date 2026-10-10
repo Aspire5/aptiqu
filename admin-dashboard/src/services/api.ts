@@ -55,6 +55,8 @@ export const api = {
   deleteTopic: (id: string, hard = false) => apiClient.delete(`/syllabus/topics/${id}?hard=${hard}`),
 
   createSubtopic: (data: any) => apiClient.post('/syllabus/subtopics', data),
+  importSubtopics: (topicId: string, subtopics: any[]) =>
+    apiClient.post(`/syllabus/topics/${topicId}/subtopics/import`, { subtopics }),
   updateSubtopic: (id: string, data: any) => apiClient.put(`/syllabus/subtopics/${id}`, data),
   deleteSubtopic: (id: string, hard = false) => apiClient.delete(`/syllabus/subtopics/${id}?hard=${hard}`),
 

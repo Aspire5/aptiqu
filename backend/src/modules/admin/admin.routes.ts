@@ -43,6 +43,7 @@ router.delete('/syllabus/topics/:id', AdminSyllabusController.deleteTopic);
 
 // Subtopic CRUD
 router.post('/syllabus/subtopics', AdminSyllabusController.createSubtopic);
+router.post('/syllabus/topics/:topicId/subtopics/import', AdminSyllabusController.importSubtopics);
 router.put('/syllabus/subtopics/:id', AdminSyllabusController.updateSubtopic);
 router.delete('/syllabus/subtopics/:id', AdminSyllabusController.deleteSubtopic);
 

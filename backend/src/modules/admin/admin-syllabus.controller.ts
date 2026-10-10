@@ -79,6 +79,18 @@ export class AdminSyllabusController {
     }
   }
 
+  public static async importSubtopics(req: Request, res: Response): Promise<void> {
+    try {
+      const subtopics = await AdminSyllabusService.importSubtopics(
+        req.params.topicId as string,
+        req.body.subtopics,
+      );
+      res.status(201).json({ success: true, data: subtopics });
+    } catch (err: any) {
+      res.status(400).json({ success: false, message: err.message });
+    }
+  }
+
   public static async updateSubtopic(req: Request, res: Response): Promise<void> {
     try {
       const subtopic = await AdminSyllabusService.updateSubtopic(req.params.id as string, req.body);
