@@ -2,6 +2,7 @@ import { readFile, readdir } from 'fs/promises';
 import path from 'path';
 import { prisma } from '../../../config/prisma';
 import { roadmapProgressionService } from '../../roadmap/services/roadmap-progression.service';
+import { scriptCacheService } from '../../lesson/services/script-cache.service';
 import { AdminSyllabusService } from '../admin-syllabus.service';
 
 const SUBJECT_NAME = 'RS Aggarwal - Quantitative Aptitude';
@@ -170,8 +171,9 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
       for (const fileName of scriptFiles) {
         try {
           const definition = JSON.parse(await readFile(path.join(scriptDir, fileName), 'utf8'));
+          const normalized = scriptCacheService.normalizeScriptDefinition(definition);
           const fileKey = path.parse(fileName).name;
-          const scriptId = definition.scriptId;
+          const scriptId = normalized.scriptId;
           if (typeof scriptId !== 'string' || !scriptId.trim()) {
             throw new Error('Missing scriptId.');
           }
@@ -179,7 +181,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
           const matches = subtopics.filter((item) =>
             item.id === fileKey || item.slug === fileKey ||
             item.id === candidateKey || item.slug === candidateKey ||
-            normalizedName(item.name) === normalizedName(definition.metadata?.title || '')
+            normalizedName(item.name) === normalizedName(normalized.metadata?.title || '')
           );
           if (matches.length !== 1) {
             throw new Error(`Expected one matching subtopic for ${fileName}; found ${matches.length}.`);

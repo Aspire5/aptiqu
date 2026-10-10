@@ -134,8 +134,14 @@ export class ScriptCacheService {
       }
     }
 
+    // Book-authored scripts use "1.0" for the same schema version as numeric 1.
+    const rawSchemaVersion = def.schemaVersion;
+    const schemaVersion = typeof rawSchemaVersion === 'string' && /^[1-9]\d*(?:\.0+)?$/.test(rawSchemaVersion.trim())
+      ? Number(rawSchemaVersion)
+      : rawSchemaVersion ?? 1;
+
     return {
-      schemaVersion: def.schemaVersion ?? 1,
+      schemaVersion,
       scriptId: def.scriptId || 'script-default',
       version: def.version ?? 1,
       entryNodeId,
