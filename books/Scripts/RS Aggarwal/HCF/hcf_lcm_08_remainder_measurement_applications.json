@@ -1,0 +1,3189 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Today we are turning H.C.F. into a problem-solving tool.\n\nIn earlier lessons, H.C.F. meant the greatest number that divides each given number exactly. Here, the same idea appears in disguise: a divisor, a measuring length, a container size, a group size, or a daily wage must work equally for several quantities.\n\nThe key question is:\n\nWhat is the largest common unit that fits all the given quantities exactly?\n\nThat is H.C.F.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_unit"
+        }
+      ]
+    },
+    "hcf_unit": {
+      "id": "hcf_unit",
+      "type": "CONTENT",
+      "content": {
+        "text": "Think of 120 pencils and 56 pencils. If you want equal groups with no pencil left over, the group size must divide both 120 and 56.\n\nThe largest possible group size is their H.C.F.\n\nSo H.C.F. is not only a number-theory operation. It is also a way of finding the largest equal unit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_unit_check"
+        }
+      ]
+    },
+    "hcf_unit_check": {
+      "id": "hcf_unit_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "The smallest possible group size"
+          },
+          {
+            "id": "b",
+            "label": "The largest common group size that divides every quantity exactly"
+          },
+          {
+            "id": "c",
+            "label": "The sum of all quantities"
+          },
+          {
+            "id": "d",
+            "label": "The largest quantity itself"
+          }
+        ]
+      },
+      "content": {
+        "text": "What does H.C.F. represent in an equal-grouping problem?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_unit_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The group size must divide every quantity exactly.",
+            "Because the question asks for the largest such size, think H.C.F."
+          ],
+          "prompt": "What does H.C.F. represent in an equal-grouping problem?",
+          "options": [
+            {
+              "id": "a",
+              "label": "The smallest possible group size"
+            },
+            {
+              "id": "b",
+              "label": "The largest common group size that divides every quantity exactly"
+            },
+            {
+              "id": "c",
+              "label": "The sum of all quantities"
+            },
+            {
+              "id": "d",
+              "label": "The largest quantity itself"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. gives the largest common unit that divides every quantity exactly.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "hcf_unit_check_remedy": {
+      "id": "hcf_unit_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A valid group size must divide every quantity without a remainder. We also want it to be as large as possible. That is exactly the H.C.F. idea.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_unit_check_retry"
+        }
+      ]
+    },
+    "hcf_unit_check_retry": {
+      "id": "hcf_unit_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "The H.C.F."
+          },
+          {
+            "id": "b",
+            "label": "The total sum only"
+          },
+          {
+            "id": "c",
+            "label": "The largest original number only"
+          },
+          {
+            "id": "d",
+            "label": "Any prime number"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which quantity must divide every amount exactly when forming equal groups?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "Which quantity must divide every amount exactly when forming equal groups?",
+          "options": [
+            {
+              "id": "a",
+              "label": "The H.C.F."
+            },
+            {
+              "id": "b",
+              "label": "The total sum only"
+            },
+            {
+              "id": "c",
+              "label": "The largest original number only"
+            },
+            {
+              "id": "d",
+              "label": "Any prime number"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The H.C.F. is the greatest number that divides each given quantity exactly.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "same_remainder": {
+      "id": "same_remainder",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now for the first major shortcut.\n\nSuppose a number d divides several numbers and leaves the SAME remainder r each time.\n\nExample from the chapter:\n1657 leaves remainder 6 and 2037 leaves remainder 5 under a different-remainder condition; we will handle that separately. First look at the equal-remainder idea.\n\nIf two numbers leave the same remainder r, then subtracting r from each removes the common remainder. What remains must be exactly divisible by d.\n\nSo the divisor can be found from the H.C.F. of the adjusted numbers:\n\nRequired divisor = H.C.F. of (N1 - r), (N2 - r), ...",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder_check"
+        }
+      ]
+    },
+    "same_remainder_check": {
+      "id": "same_remainder_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "H.C.F. of 3 + 9 + 15"
+          },
+          {
+            "id": "b",
+            "label": "H.C.F. of 3 - r, 9 - r and 15 - r"
+          },
+          {
+            "id": "c",
+            "label": "L.C.M. of 3, 9 and 15"
+          },
+          {
+            "id": "d",
+            "label": "15 - 3"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 3, 9 and 15 leave the same remainder when divided by d, which expression gives the possible greatest d?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Remove the common remainder first.",
+            "After subtracting r, the resulting numbers must be divisible by d."
+          ],
+          "prompt": "If 3, 9 and 15 leave the same remainder when divided by d, which expression gives the possible greatest d?",
+          "options": [
+            {
+              "id": "a",
+              "label": "H.C.F. of 3 + 9 + 15"
+            },
+            {
+              "id": "b",
+              "label": "H.C.F. of 3 - r, 9 - r and 15 - r"
+            },
+            {
+              "id": "c",
+              "label": "L.C.M. of 3, 9 and 15"
+            },
+            {
+              "id": "d",
+              "label": "15 - 3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Exactly. Once the same remainder is removed, the adjusted numbers are all divisible by d, so their H.C.F. gives the greatest possible divisor.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "same_remainder_check_remedy": {
+      "id": "same_remainder_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The important transformation is N becomes N - r. Equal remainder disappears, leaving multiples of the required divisor.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder_check_retry"
+        }
+      ]
+    },
+    "same_remainder_check_retry": {
+      "id": "same_remainder_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "H.C.F. of 43, 91 and 183"
+          },
+          {
+            "id": "b",
+            "label": "L.C.M. of 43, 91 and 183"
+          },
+          {
+            "id": "c",
+            "label": "Pairwise differences such as 91 - 43 and 183 - 91"
+          },
+          {
+            "id": "d",
+            "label": "43 + 91 + 183"
+          }
+        ]
+      },
+      "content": {
+        "text": "If numbers 43, 91 and 183 leave the same remainder, what should you calculate first?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "If numbers 43, 91 and 183 leave the same remainder, what should you calculate first?",
+          "options": [
+            {
+              "id": "a",
+              "label": "H.C.F. of 43, 91 and 183"
+            },
+            {
+              "id": "b",
+              "label": "L.C.M. of 43, 91 and 183"
+            },
+            {
+              "id": "c",
+              "label": "Pairwise differences such as 91 - 43 and 183 - 91"
+            },
+            {
+              "id": "d",
+              "label": "43 + 91 + 183"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The chapter's solution uses the equivalent difference idea: H.C.F. of 48, 92 and 140 = 4. ",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "same_remainder_example": {
+      "id": "same_remainder_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter gives this objective example:\n\nFind the greatest number that will divide 43, 91 and 183 so as to leave the same remainder in each case.\n\nWe can avoid finding the remainder first. Subtract one number from another:\n\n91 - 43 = 48\n183 - 91 = 92\n183 - 43 = 140\n\nThen find:\nH.C.F. of 48, 92 and 140 = 4\n\nSo the greatest divisor is 4.\n\nWhy does this work? If 43, 91 and 183 all leave the same remainder on division by d, their differences must all be multiples of d.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "difference_check"
+        }
+      ]
+    },
+    "difference_check": {
+      "id": "difference_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "content": {
+        "text": "Using 43, 91 and 183, what is H.C.F.(48, 92, 140)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "different_remainders"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "difference_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "48 and 92 have common factor 4.",
+            "Check whether 140 is also divisible by 4."
+          ],
+          "prompt": "Using 43, 91 and 183, what is H.C.F.(48, 92, 140)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Right. 48, 92 and 140 have H.C.F. 4, so the greatest divisor is 4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "difference_check_remedy": {
+      "id": "difference_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The equal-remainder method can be remembered as a difference method: common remainder means common differences. Compute pairwise differences, then H.C.F.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "difference_check_retry"
+        }
+      ]
+    },
+    "difference_check_retry": {
+      "id": "difference_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "content": {
+        "text": "Find the greatest number that divides 3026 and 5053 leaving remainders 11 and 13 respectively.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "different_remainders"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "Find the greatest number that divides 3026 and 5053 leaving remainders 11 and 13 respectively.",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Subtract the stated remainders: 3026 - 11 = 3015 and 5053 - 13 = 5040. Their H.C.F. is 45.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "different_remainders": {
+      "id": "different_remainders",
+      "type": "CONTENT",
+      "content": {
+        "text": "Different remainders are handled the same way conceptually, but now you subtract EACH number's own stated remainder.\n\nFor example:\n\n3026 leaves 11\n5053 leaves 13\n\nSo any valid divisor d must divide:\n3026 - 11 = 3015\n5053 - 13 = 5040\n\nTherefore:\nRequired d = H.C.F. of 3015 and 5040 = 45.\n\nThe key is not to force a common remainder that was never given. Remove each known remainder separately.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "diff_rem_check"
+        }
+      ]
+    },
+    "diff_rem_check": {
+      "id": "diff_rem_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "964, 1238, 1400"
+          },
+          {
+            "id": "b",
+            "label": "923, 1207, 1349"
+          },
+          {
+            "id": "c",
+            "label": "905, 1207, 1351"
+          },
+          {
+            "id": "d",
+            "label": "41, 31, 51"
+          }
+        ]
+      },
+      "content": {
+        "text": "For 964, 1238 and 1400 leaving remainders 41, 31 and 51 respectively, which numbers should be used for the H.C.F.?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "diff_rem_advanced"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "diff_rem_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Subtract 41 from 964.",
+            "Subtract 31 from 1238 and 51 from 1400."
+          ],
+          "prompt": "For 964, 1238 and 1400 leaving remainders 41, 31 and 51 respectively, which numbers should be used for the H.C.F.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "964, 1238, 1400"
+            },
+            {
+              "id": "b",
+              "label": "923, 1207, 1349"
+            },
+            {
+              "id": "c",
+              "label": "905, 1207, 1351"
+            },
+            {
+              "id": "d",
+              "label": "41, 31, 51"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The adjusted numbers are 923, 1207 and 1349. The book then finds their H.C.F. as 71.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "diff_rem_check_remedy": {
+      "id": "diff_rem_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "When remainders differ, the adjustment is individual: N1-r1, N2-r2, N3-r3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "diff_rem_check_retry"
+        }
+      ]
+    },
+    "diff_rem_check_retry": {
+      "id": "diff_rem_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "61"
+          },
+          {
+            "id": "b",
+            "label": "71"
+          },
+          {
+            "id": "c",
+            "label": "73"
+          },
+          {
+            "id": "d",
+            "label": "81"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is H.C.F. of 923, 1207 and 1349?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "diff_rem_advanced"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "What is H.C.F. of 923, 1207 and 1349?",
+          "options": [
+            {
+              "id": "a",
+              "label": "61"
+            },
+            {
+              "id": "b",
+              "label": "71"
+            },
+            {
+              "id": "c",
+              "label": "73"
+            },
+            {
+              "id": "d",
+              "label": "81"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The greatest divisor is 71.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "diff_rem_advanced": {
+      "id": "diff_rem_advanced",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's see the full chapter example:\n\nFind the greatest number that will divide 964, 1238 and 1400 leaving remainders 41, 31 and 51 respectively.\n\nSubtract the remainders:\n964 - 41 = 923\n1238 - 31 = 1207\n1400 - 51 = 1349\n\nNow:\nH.C.F. of 923, 1207 and 1349 = 71\n\nSo the answer is 71.\n\nThis is especially useful when the question gives the remainders directly, because you do not have to guess or calculate them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "measurement_bridge"
+        }
+      ]
+    },
+    "measurement_bridge": {
+      "id": "measurement_bridge",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now switch from numbers to real objects.\n\nA measuring length, tile size, rod-part length, container capacity, book-stack size, or group size must fit each quantity exactly.\n\nWhen the question asks for the GREATEST possible size, use H.C.F.\n\nAnd when that maximum unit is found, the number of units is usually found by division.\n\nThis creates a very common pattern:\n\nMaximum unit size = H.C.F.\nMinimum number of units = total quantity ÷ maximum unit size, or sum of the separate quotients.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "measurement_check"
+        }
+      ]
+    },
+    "measurement_check": {
+      "id": "measurement_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "L.C.M."
+          },
+          {
+            "id": "b",
+            "label": "H.C.F."
+          },
+          {
+            "id": "c",
+            "label": "Addition"
+          },
+          {
+            "id": "d",
+            "label": "Multiplication"
+          }
+        ]
+      },
+      "content": {
+        "text": "A problem asks for the largest tile size that exactly fits two side lengths. Which operation is the natural first step?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "unit_conversion"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "measurement_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Largest exact common size means greatest common divisor.",
+            "Think of a tile as a unit that must divide both lengths."
+          ],
+          "prompt": "A problem asks for the largest tile size that exactly fits two side lengths. Which operation is the natural first step?",
+          "options": [
+            {
+              "id": "a",
+              "label": "L.C.M."
+            },
+            {
+              "id": "b",
+              "label": "H.C.F."
+            },
+            {
+              "id": "c",
+              "label": "Addition"
+            },
+            {
+              "id": "d",
+              "label": "Multiplication"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The largest equal tile size is the H.C.F. of the relevant lengths.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "measurement_check_remedy": {
+      "id": "measurement_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "For cutting or paving, the unit must divide every length exactly. The largest such unit is the H.C.F.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "measurement_check_retry"
+        }
+      ]
+    },
+    "measurement_check_retry": {
+      "id": "measurement_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70 cm"
+          },
+          {
+            "id": "b",
+            "label": "700 cm"
+          },
+          {
+            "id": "c",
+            "label": "7000 cm"
+          },
+          {
+            "id": "d",
+            "label": "0.7 cm"
+          }
+        ]
+      },
+      "content": {
+        "text": "Convert 7 m to centimetres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unit_conversion"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "Convert 7 m to centimetres.",
+          "options": [
+            {
+              "id": "a",
+              "label": "70 cm"
+            },
+            {
+              "id": "b",
+              "label": "700 cm"
+            },
+            {
+              "id": "c",
+              "label": "7000 cm"
+            },
+            {
+              "id": "d",
+              "label": "0.7 cm"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 1 m = 100 cm, so 7 m = 700 cm.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "unit_conversion": {
+      "id": "unit_conversion",
+      "type": "CONTENT",
+      "content": {
+        "text": "Before applying H.C.F., put all quantities in the SAME unit.\n\nThe book does this explicitly in measurement problems.\n\nFor example:\n7 m = 700 cm\n3 m 85 cm = 385 cm\n12 m 95 cm = 1295 cm\n\nOnly after the units match do we calculate the H.C.F.\n\nThis is not a separate trick. It is simply making the quantities comparable before applying the H.C.F.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "length_example"
+        }
+      ]
+    },
+    "length_example": {
+      "id": "length_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Book example:\n\nFind the greatest possible length which can be used to measure exactly 7 m, 3 m 85 cm and 12 m 95 cm.\n\nConvert all to centimetres:\n700 cm, 385 cm, 1295 cm\n\nThen:\nH.C.F. of 700, 385 and 1295 = 35 cm\n\nSo the greatest measuring length is 35 cm. fileciteturn23file0",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "length_check"
+        }
+      ]
+    },
+    "length_check": {
+      "id": "length_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 cm"
+          },
+          {
+            "id": "b",
+            "label": "25 cm"
+          },
+          {
+            "id": "c",
+            "label": "35 cm"
+          },
+          {
+            "id": "d",
+            "label": "42 cm"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the greatest measuring length in the book's 7 m, 3 m 85 cm and 12 m 95 cm example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pots_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "length_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Convert everything to centimetres first.",
+            "Then find H.C.F. of 700, 385 and 1295."
+          ],
+          "prompt": "What is the greatest measuring length in the book's 7 m, 3 m 85 cm and 12 m 95 cm example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 cm"
+            },
+            {
+              "id": "b",
+              "label": "25 cm"
+            },
+            {
+              "id": "c",
+              "label": "35 cm"
+            },
+            {
+              "id": "d",
+              "label": "42 cm"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The H.C.F. is 35 cm, so 35 cm is the greatest possible measuring length.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "length_check_remedy": {
+      "id": "length_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The largest size must be a common divisor of all three lengths, so the H.C.F. gives the answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "length_check_retry"
+        }
+      ]
+    },
+    "length_check_retry": {
+      "id": "length_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 litres"
+          },
+          {
+            "id": "b",
+            "label": "7 litres"
+          },
+          {
+            "id": "c",
+            "label": "8 litres"
+          },
+          {
+            "id": "d",
+            "label": "14 litres"
+          }
+        ]
+      },
+      "content": {
+        "text": "Two pots contain 120 litres and 56 litres. What is the largest exact measuring capacity?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pots_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "Two pots contain 120 litres and 56 litres. What is the largest exact measuring capacity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 litres"
+            },
+            {
+              "id": "b",
+              "label": "7 litres"
+            },
+            {
+              "id": "c",
+              "label": "8 litres"
+            },
+            {
+              "id": "d",
+              "label": "14 litres"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 120 and 56 is 8 litres.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "pots_example": {
+      "id": "pots_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Measurement can also involve volume.\n\nFor the two pots with 120 litres and 56 litres, the largest container that measures both exactly has capacity:\n\nH.C.F. of 120 and 56 = 8 litres\n\nThe chapter then converts this to cubic centimetres:\n8 litres = 8000 cc\n\nusing 1 litre = 1000 cc.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pots_check"
+        }
+      ]
+    },
+    "pots_check": {
+      "id": "pots_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "800 cc"
+          },
+          {
+            "id": "b",
+            "label": "8000 cc"
+          },
+          {
+            "id": "c",
+            "label": "80,000 cc"
+          },
+          {
+            "id": "d",
+            "label": "8,000,000 cc"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 8 litres in cubic centimetres?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "trees_groups"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pots_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 1 litre = 1000 cc.",
+            "Multiply 8 by 1000."
+          ],
+          "prompt": "What is 8 litres in cubic centimetres?",
+          "options": [
+            {
+              "id": "a",
+              "label": "800 cc"
+            },
+            {
+              "id": "b",
+              "label": "8000 cc"
+            },
+            {
+              "id": "c",
+              "label": "80,000 cc"
+            },
+            {
+              "id": "d",
+              "label": "8,000,000 cc"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 8 × 1000 = 8000 cc.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "pots_check_remedy": {
+      "id": "pots_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The conversion is direct: litres × 1000 = cubic centimetres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pots_check_retry"
+        }
+      ]
+    },
+    "pots_check_retry": {
+      "id": "pots_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "17"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "content": {
+        "text": "21 mango trees, 42 apple trees and 56 orange trees are to be arranged in equal-size rows by variety. What is the minimum number of rows?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "trees_groups"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "21 mango trees, 42 apple trees and 56 orange trees are to be arranged in equal-size rows by variety. What is the minimum number of rows?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "17"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 21, 42 and 56 is 7 trees per row. Then 21/7 + 42/7 + 56/7 = 3 + 6 + 8 = 17 rows.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "trees_groups": {
+      "id": "trees_groups",
+      "type": "CONTENT",
+      "content": {
+        "text": "This example shows the H.C.F. + minimum-count connection very clearly.\n\n21 mango trees, 42 apple trees and 56 orange trees must be planted so that each row has the same number of trees of one variety only.\n\nFor the MINIMUM number of rows, each row should contain the MAXIMUM possible number of trees.\n\nMaximum trees per row = H.C.F. of 21, 42, 56 = 7\n\nRows:\n21 ÷ 7 = 3\n42 ÷ 7 = 6\n56 ÷ 7 = 8\n\nTotal = 17 rows.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "students_example"
+        }
+      ]
+    },
+    "students_example": {
+      "id": "students_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same logic works when distributing items equally.\n\nThe book asks for the maximum number of students among whom 1001 pens and 910 pencils can be distributed so that each student gets the same number of pens and the same number of pencils.\n\nThe maximum number of students is the H.C.F.:\n\nH.C.F. of 1001 and 910 = 91\n\nSo 91 students can receive equal shares of both items.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "students_check"
+        }
+      ]
+    },
+    "students_check": {
+      "id": "students_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "91"
+          },
+          {
+            "id": "b",
+            "label": "100"
+          },
+          {
+            "id": "c",
+            "label": "910"
+          },
+          {
+            "id": "d",
+            "label": "1001"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the maximum number of students in the 1001 pens and 910 pencils example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "books_stacks"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "students_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Maximum equal group count comes from H.C.F.",
+            "Find H.C.F. of 1001 and 910."
+          ],
+          "prompt": "What is the maximum number of students in the 1001 pens and 910 pencils example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "91"
+            },
+            {
+              "id": "b",
+              "label": "100"
+            },
+            {
+              "id": "c",
+              "label": "910"
+            },
+            {
+              "id": "d",
+              "label": "1001"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 1001 and 910 is 91.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "students_check_remedy": {
+      "id": "students_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Whenever a quantity must be split into the largest possible number of equal groups, H.C.F. gives that group count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "students_check_retry"
+        }
+      ]
+    },
+    "students_check_retry": {
+      "id": "students_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "21"
+          },
+          {
+            "id": "c",
+            "label": "22"
+          },
+          {
+            "id": "d",
+            "label": "48"
+          }
+        ]
+      },
+      "content": {
+        "text": "336 English, 240 Mathematics and 96 Science books are stacked subjectwise with the same height per stack. How many stacks are required in total?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "books_stacks"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "336 English, 240 Mathematics and 96 Science books are stacked subjectwise with the same height per stack. How many stacks are required in total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "21"
+            },
+            {
+              "id": "c",
+              "label": "22"
+            },
+            {
+              "id": "d",
+              "label": "48"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 336, 240 and 96 is 48 books per stack, giving 7 + 5 + 2 = 14 stacks.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "books_stacks": {
+      "id": "books_stacks",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the book-stack problem, the H.C.F. gives the maximum number of books in each stack because the stack height is to be the same.\n\nH.C.F. of 336, 240 and 96 = 48 books per stack.\n\nThen count stacks subjectwise:\n336 ÷ 48 = 7\n240 ÷ 48 = 5\n96 ÷ 48 = 2\n\nTotal stacks = 14. fileciteturn23file0",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "books_check"
+        }
+      ]
+    },
+    "books_check": {
+      "id": "books_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "36"
+          },
+          {
+            "id": "c",
+            "label": "48"
+          },
+          {
+            "id": "d",
+            "label": "96"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the H.C.F. of 336, 240 and 96?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "rods_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "books_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "48 divides all three quantities exactly.",
+            "Check whether a larger common divisor exists."
+          ],
+          "prompt": "What is the H.C.F. of 336, 240 and 96?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "36"
+            },
+            {
+              "id": "c",
+              "label": "48"
+            },
+            {
+              "id": "d",
+              "label": "96"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The book uses 48 books per stack.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "books_check_remedy": {
+      "id": "books_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The pattern is always: largest equal stack size first, then divide each subject total by that size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "books_check_retry"
+        }
+      ]
+    },
+    "books_check_retry": {
+      "id": "books_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "27"
+          },
+          {
+            "id": "b",
+            "label": "36"
+          },
+          {
+            "id": "c",
+            "label": "43"
+          },
+          {
+            "id": "d",
+            "label": "480"
+          }
+        ]
+      },
+      "content": {
+        "text": "Four rods of 78 cm, 104 cm, 117 cm and 169 cm are cut into equal longest pieces. What is the maximum number of pieces altogether?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rods_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "Four rods of 78 cm, 104 cm, 117 cm and 169 cm are cut into equal longest pieces. What is the maximum number of pieces altogether?",
+          "options": [
+            {
+              "id": "a",
+              "label": "27"
+            },
+            {
+              "id": "b",
+              "label": "36"
+            },
+            {
+              "id": "c",
+              "label": "43"
+            },
+            {
+              "id": "d",
+              "label": "480"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. is 13 cm per piece, so 78/13 + 104/13 + 117/13 + 169/13 = 36 pieces.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "rods_example": {
+      "id": "rods_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "For cutting rods, the phrase 'each part must be as long as possible' is a direct signal for H.C.F.\n\nLengths:\n78 cm, 104 cm, 117 cm, 169 cm\n\nMaximum equal piece length:\nH.C.F. = 13 cm\n\nNumber of pieces:\n78 ÷ 13 = 6\n104 ÷ 13 = 8\n117 ÷ 13 = 9\n169 ÷ 13 = 13\n\nTotal = 6 + 8 + 9 + 13 = 36 pieces. fileciteturn23file0",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rods_check"
+        }
+      ]
+    },
+    "rods_check": {
+      "id": "rods_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "We want the smallest possible piece"
+          },
+          {
+            "id": "b",
+            "label": "The piece must divide every rod exactly and be as long as possible"
+          },
+          {
+            "id": "c",
+            "label": "The pieces must multiply to the rod lengths"
+          },
+          {
+            "id": "d",
+            "label": "L.C.M. always gives a physical length"
+          }
+        ]
+      },
+      "content": {
+        "text": "Why is H.C.F. used to find the rod-piece length?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "wage_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "rods_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look for 'as long as possible' plus exact division.",
+            "That is the largest common size pattern."
+          ],
+          "prompt": "Why is H.C.F. used to find the rod-piece length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "We want the smallest possible piece"
+            },
+            {
+              "id": "b",
+              "label": "The piece must divide every rod exactly and be as long as possible"
+            },
+            {
+              "id": "c",
+              "label": "The pieces must multiply to the rod lengths"
+            },
+            {
+              "id": "d",
+              "label": "L.C.M. always gives a physical length"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Exactly. The piece length must divide every rod and be maximum, so it is the H.C.F.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "rods_check_remedy": {
+      "id": "rods_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Physical cutting problems are just common-divisor problems expressed in centimetres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rods_check_retry"
+        }
+      ]
+    },
+    "rods_check_retry": {
+      "id": "rods_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "125"
+          },
+          {
+            "id": "b",
+            "label": "250"
+          },
+          {
+            "id": "c",
+            "label": "375"
+          },
+          {
+            "id": "d",
+            "label": "500"
+          }
+        ]
+      },
+      "content": {
+        "text": "A labourer was due 5750 but received 5000. What was the maximum possible daily wage?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wage_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "A labourer was due 5750 but received 5000. What was the maximum possible daily wage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "125"
+            },
+            {
+              "id": "b",
+              "label": "250"
+            },
+            {
+              "id": "c",
+              "label": "375"
+            },
+            {
+              "id": "d",
+              "label": "500"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 5750 and 5000 is 250.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "wage_example": {
+      "id": "wage_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Even money can behave like a divisible quantity.\n\nThe chapter's daily-wage problem gives total amounts of 5750 and 5000. The maximum possible daily wage must divide both amounts exactly.\n\nTherefore:\nMaximum possible daily wage = H.C.F. of 5750 and 5000 = 250.\n\nThe wording is different from a tile or rod problem, but the mathematical structure is the same: find the largest unit that fits both totals exactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wage_check"
+        }
+      ]
+    },
+    "wage_check": {
+      "id": "wage_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "125"
+          },
+          {
+            "id": "b",
+            "label": "250"
+          },
+          {
+            "id": "c",
+            "label": "500"
+          },
+          {
+            "id": "d",
+            "label": "750"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the H.C.F. of 5750 and 5000?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mixed_remainder_challenge"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "wage_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "250 divides both totals exactly.",
+            "Check whether any larger common divisor works."
+          ],
+          "prompt": "What is the H.C.F. of 5750 and 5000?",
+          "options": [
+            {
+              "id": "a",
+              "label": "125"
+            },
+            {
+              "id": "b",
+              "label": "250"
+            },
+            {
+              "id": "c",
+              "label": "500"
+            },
+            {
+              "id": "d",
+              "label": "750"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 250 is the maximum possible daily wage under the chapter's conditions.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "wage_check_remedy": {
+      "id": "wage_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The important recognition skill is to ignore the story and identify the divisor structure underneath it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wage_check_retry"
+        }
+      ]
+    },
+    "wage_check_retry": {
+      "id": "wage_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "28"
+          }
+        ]
+      },
+      "content": {
+        "text": "For 7654, 8506 and 9997, the greatest divisor d leaves the same remainder r. The book asks for d - r. What is it?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_remainder_challenge"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "For 7654, 8506 and 9997, the greatest divisor d leaves the same remainder r. The book asks for d - r. What is it?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "28"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. d = H.C.F. of 852, 1491 and 2343 = 213; the common remainder is 199, so d - r = 14.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "mixed_remainder_challenge": {
+      "id": "mixed_remainder_challenge",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is an important advanced remainder pattern.\n\nWhen each of 7654, 8506 and 9997 is divided by the greatest number d, the remainder is the SAME value r.\n\nUse differences:\n8506 - 7654 = 852\n9997 - 8506 = 1491\n9997 - 7654 = 2343\n\nSo:\nd = H.C.F. of 852, 1491 and 2343 = 213\n\nNow divide one original number by 213 to obtain the common remainder:\n7654 = 213 × 35 + 199\n\nHence:\nd - r = 213 - 199 = 14. fileciteturn23file0",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_remainder_check"
+        }
+      ]
+    },
+    "mixed_remainder_check": {
+      "id": "mixed_remainder_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "d=213, r=199"
+          },
+          {
+            "id": "b",
+            "label": "d=199, r=213"
+          },
+          {
+            "id": "c",
+            "label": "d=14, r=199"
+          },
+          {
+            "id": "d",
+            "label": "d=199, r=14"
+          }
+        ]
+      },
+      "content": {
+        "text": "In the 7654, 8506 and 9997 problem, what are d and r?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "measurement_advanced"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mixed_remainder_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First get d from H.C.F. of the pairwise differences.",
+            "Then find the remainder of any original number on division by d."
+          ],
+          "prompt": "In the 7654, 8506 and 9997 problem, what are d and r?",
+          "options": [
+            {
+              "id": "a",
+              "label": "d=213, r=199"
+            },
+            {
+              "id": "b",
+              "label": "d=199, r=213"
+            },
+            {
+              "id": "c",
+              "label": "d=14, r=199"
+            },
+            {
+              "id": "d",
+              "label": "d=199, r=14"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. d = 213 and r = 199, so d - r = 14.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "mixed_remainder_check_remedy": {
+      "id": "mixed_remainder_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not stop after finding the divisor. If the question asks about the remainder too, substitute back into an original division.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_remainder_check_retry"
+        }
+      ]
+    },
+    "mixed_remainder_check_retry": {
+      "id": "mixed_remainder_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14 cm"
+          },
+          {
+            "id": "b",
+            "label": "21 cm"
+          },
+          {
+            "id": "c",
+            "label": "42 cm"
+          },
+          {
+            "id": "d",
+            "label": "None of these"
+          }
+        ]
+      },
+      "content": {
+        "text": "A rectangular courtyard is 3.78 m long and 5.25 m wide. What is the largest square-tile size that fits exactly?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "measurement_advanced"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "A rectangular courtyard is 3.78 m long and 5.25 m wide. What is the largest square-tile size that fits exactly?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14 cm"
+            },
+            {
+              "id": "b",
+              "label": "21 cm"
+            },
+            {
+              "id": "c",
+              "label": "42 cm"
+            },
+            {
+              "id": "d",
+              "label": "None of these"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Convert to 378 cm and 525 cm, then H.C.F. = 21 cm.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "measurement_advanced": {
+      "id": "measurement_advanced",
+      "type": "CONTENT",
+      "content": {
+        "text": "For mixed units, convert before taking H.C.F.\n\n3.78 m = 378 cm\n5.25 m = 525 cm\n\nLargest square tile size = H.C.F. of 378 and 525 = 21 cm.\n\nNotice the phrase 'largest size'. That is the signal for H.C.F.\n\nThen, if the question asks for the number of tiles, use the maximum tile size to minimize the count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "tile_check"
+        }
+      ]
+    },
+    "tile_check": {
+      "id": "tile_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Larger tiles mean more tiles are needed"
+          },
+          {
+            "id": "b",
+            "label": "For an exact covering, the largest valid tile size covers the dimensions with the fewest pieces"
+          },
+          {
+            "id": "c",
+            "label": "H.C.F. and L.C.M. always give the same number of tiles"
+          },
+          {
+            "id": "d",
+            "label": "Tile area is irrelevant"
+          }
+        ]
+      },
+      "content": {
+        "text": "Why does choosing the maximum tile size also help minimize the number of tiles?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "ceiling_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "tile_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The total covered area is fixed.",
+            "Use the largest allowed exact tile size to reduce the number of pieces."
+          ],
+          "prompt": "Why does choosing the maximum tile size also help minimize the number of tiles?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Larger tiles mean more tiles are needed"
+            },
+            {
+              "id": "b",
+              "label": "For an exact covering, the largest valid tile size covers the dimensions with the fewest pieces"
+            },
+            {
+              "id": "c",
+              "label": "H.C.F. and L.C.M. always give the same number of tiles"
+            },
+            {
+              "id": "d",
+              "label": "Tile area is irrelevant"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The book explicitly notes that for the least number of tiles, the tile size must be maximum.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "tile_check_remedy": {
+      "id": "tile_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is a general pattern across the chapter: maximum unit size gives minimum count when all units are equal and must fit exactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "tile_check_retry"
+        }
+      ]
+    },
+    "tile_check_retry": {
+      "id": "tile_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "656"
+          },
+          {
+            "id": "b",
+            "label": "738"
+          },
+          {
+            "id": "c",
+            "label": "814"
+          },
+          {
+            "id": "d",
+            "label": "902"
+          }
+        ]
+      },
+      "content": {
+        "text": "A ceiling is 15 m 17 cm by 9 m 2 cm. The maximum square-tile side is 41 cm. How many tiles are required?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "ceiling_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "A ceiling is 15 m 17 cm by 9 m 2 cm. The maximum square-tile side is 41 cm. How many tiles are required?",
+          "options": [
+            {
+              "id": "a",
+              "label": "656"
+            },
+            {
+              "id": "b",
+              "label": "738"
+            },
+            {
+              "id": "c",
+              "label": "814"
+            },
+            {
+              "id": "d",
+              "label": "902"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Convert to 1517 cm × 902 cm, use 41 cm tiles, and the book obtains 814 tiles.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "ceiling_example": {
+      "id": "ceiling_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's ceiling problem combines unit conversion, H.C.F., area and counting.\n\n15 m 17 cm = 1517 cm\n9 m 2 cm = 902 cm\n\nMaximum tile side = H.C.F. of 1517 and 902 = 41 cm\n\nThen:\nNumber of tiles = (1517 × 902) ÷ (41 × 41) = 814\n\nThe reasoning order matters:\n1. Put dimensions in one unit.\n2. Find the largest exact tile side with H.C.F.\n3. Use area to count tiles.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "ceil_check"
+        }
+      ]
+    },
+    "ceil_check": {
+      "id": "ceil_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 cm"
+          },
+          {
+            "id": "b",
+            "label": "35 cm"
+          },
+          {
+            "id": "c",
+            "label": "41 cm"
+          },
+          {
+            "id": "d",
+            "label": "49 cm"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the maximum square-tile side in the ceiling example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "bottles_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "ceil_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 1517 cm and 902 cm.",
+            "Find their H.C.F."
+          ],
+          "prompt": "What is the maximum square-tile side in the ceiling example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 cm"
+            },
+            {
+              "id": "b",
+              "label": "35 cm"
+            },
+            {
+              "id": "c",
+              "label": "41 cm"
+            },
+            {
+              "id": "d",
+              "label": "49 cm"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 1517 and 902 is 41 cm.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "ceil_check_remedy": {
+      "id": "ceil_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The H.C.F. determines the largest square side because it must divide both dimensions exactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "ceil_check_retry"
+        }
+      ]
+    },
+    "ceil_check_retry": {
+      "id": "ceil_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "34"
+          },
+          {
+            "id": "b",
+            "label": "44"
+          },
+          {
+            "id": "c",
+            "label": "46"
+          },
+          {
+            "id": "d",
+            "label": "None of these"
+          }
+        ]
+      },
+      "content": {
+        "text": "403 litres, 465 litres and 496 litres are to be bottled in equal-size bottles. What is the least possible number of bottles?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bottles_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "403 litres, 465 litres and 496 litres are to be bottled in equal-size bottles. What is the least possible number of bottles?",
+          "options": [
+            {
+              "id": "a",
+              "label": "34"
+            },
+            {
+              "id": "b",
+              "label": "44"
+            },
+            {
+              "id": "c",
+              "label": "46"
+            },
+            {
+              "id": "d",
+              "label": "None of these"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Bottle capacity is H.C.F. = 31 litres, so 403/31 + 465/31 + 496/31 = 44 bottles.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "bottles_example": {
+      "id": "bottles_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bottle problems reverse the words but keep the structure.\n\nFor the least possible number of equal bottles, each bottle must have the MAXIMUM possible capacity.\n\nCapacity = H.C.F. of 403, 465 and 496 = 31 litres\n\nThen count:\n403 ÷ 31 = 13\n465 ÷ 31 = 15\n496 ÷ 31 = 16\n\nTotal = 44 bottles.\n\nSo remember:\nleast number of containers → maximum valid container size → H.C.F.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bottles_check"
+        }
+      ]
+    },
+    "bottles_check": {
+      "id": "bottles_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 litres"
+          },
+          {
+            "id": "b",
+            "label": "31 litres"
+          },
+          {
+            "id": "c",
+            "label": "41 litres"
+          },
+          {
+            "id": "d",
+            "label": "44 litres"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the maximum bottle capacity in the 403, 465 and 496 litre example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "milkman_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "bottles_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find H.C.F. of the three quantities.",
+            "Check 31 divides all three exactly."
+          ],
+          "prompt": "What is the maximum bottle capacity in the 403, 465 and 496 litre example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 litres"
+            },
+            {
+              "id": "b",
+              "label": "31 litres"
+            },
+            {
+              "id": "c",
+              "label": "41 litres"
+            },
+            {
+              "id": "d",
+              "label": "44 litres"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Each bottle can hold 31 litres, giving the minimum total of 44 bottles.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "bottles_check_remedy": {
+      "id": "bottles_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The word 'least' refers to the number of containers, not the container size. To minimize the count, maximize each exact container size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bottles_check_retry"
+        }
+      ]
+    },
+    "bottles_check_retry": {
+      "id": "bottles_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 litres"
+          },
+          {
+            "id": "b",
+            "label": "16 litres"
+          },
+          {
+            "id": "c",
+            "label": "24 litres"
+          },
+          {
+            "id": "d",
+            "label": "None of these"
+          }
+        ]
+      },
+      "content": {
+        "text": "A milkman has 57, 129 and 177 litres. A measuring can leaves the same amount unmeasured in each jar. What is the largest can size?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "milkman_example"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "A milkman has 57, 129 and 177 litres. A measuring can leaves the same amount unmeasured in each jar. What is the largest can size?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 litres"
+            },
+            {
+              "id": "b",
+              "label": "16 litres"
+            },
+            {
+              "id": "c",
+              "label": "24 litres"
+            },
+            {
+              "id": "d",
+              "label": "None of these"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The common unmeasured remainder disappears when pairwise differences are taken: H.C.F. of 72, 48 and 120 = 24 litres.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "milkman_example": {
+      "id": "milkman_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is a beautiful bridge between remainder problems and measurement.\n\nA can measures each jar exactly a different number of times and leaves the SAME amount unmeasured.\n\nSo the three quantities have the same remainder when divided by the can size.\n\nUse differences:\n129 - 57 = 72\n177 - 129 = 48\n177 - 57 = 120\n\nLargest can size = H.C.F. of 72, 48 and 120 = 24 litres.\n\nThe story is about milk, but mathematically it is an equal-remainder problem. fileciteturn23file3",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "milk_check"
+        }
+      ]
+    },
+    "milk_check": {
+      "id": "milk_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the H.C.F. of 72, 48 and 120?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pairwise_rule"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "milk_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "24 divides 72, 48 and 120.",
+            "Check whether 36 divides all three."
+          ],
+          "prompt": "What is the H.C.F. of 72, 48 and 120?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 24 litres is the largest can size that gives the same unmeasured remainder in all three jars.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "milk_check_remedy": {
+      "id": "milk_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is why equal remainder and exact measurement often appear together in the same question family.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "milk_check_retry"
+        }
+      ]
+    },
+    "milk_check_retry": {
+      "id": "milk_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Differences cancel the common remainder"
+          },
+          {
+            "id": "b",
+            "label": "Differences always equal the L.C.M."
+          },
+          {
+            "id": "c",
+            "label": "Differences remove all factors"
+          },
+          {
+            "id": "d",
+            "label": "Differences are always smaller than H.C.F."
+          }
+        ]
+      },
+      "content": {
+        "text": "For equal remainders, why can pairwise differences replace the remainder-subtraction step?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pairwise_rule"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "For equal remainders, why can pairwise differences replace the remainder-subtraction step?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Differences cancel the common remainder"
+            },
+            {
+              "id": "b",
+              "label": "Differences always equal the L.C.M."
+            },
+            {
+              "id": "c",
+              "label": "Differences remove all factors"
+            },
+            {
+              "id": "d",
+              "label": "Differences are always smaller than H.C.F."
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. If A and B have the same remainder r, then (A-r) - (B-r) = A-B, so the common remainder cancels automatically.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "pairwise_rule": {
+      "id": "pairwise_rule",
+      "type": "CONTENT",
+      "content": {
+        "text": "There are TWO equivalent ways to think about equal-remainder questions.\n\nMethod 1: subtract the common remainder r from each number, then take H.C.F.\n\nMethod 2: skip the unknown remainder and take H.C.F. of pairwise differences.\n\nFor example, with 43, 91 and 183:\n\n91 - 43 = 48\n183 - 91 = 92\n183 - 43 = 140\n\nH.C.F. = 4\n\nWhy? If A = dq1 + r and B = dq2 + r, then A - B = d(q1-q2). The remainder vanishes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "method_choice"
+        }
+      ]
+    },
+    "method_choice": {
+      "id": "method_choice",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Pairwise differences"
+          },
+          {
+            "id": "b",
+            "label": "Add all the numbers"
+          },
+          {
+            "id": "c",
+            "label": "Take L.C.M. of the original numbers"
+          },
+          {
+            "id": "d",
+            "label": "Divide the smallest by the largest"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which method is especially useful when the common remainder is NOT given?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_mixed"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "method_choice_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "If r is unknown, remove it by subtraction between numbers.",
+            "Common remainders cancel in differences."
+          ],
+          "prompt": "Which method is especially useful when the common remainder is NOT given?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Pairwise differences"
+            },
+            {
+              "id": "b",
+              "label": "Add all the numbers"
+            },
+            {
+              "id": "c",
+              "label": "Take L.C.M. of the original numbers"
+            },
+            {
+              "id": "d",
+              "label": "Divide the smallest by the largest"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Exactly. Pairwise differences let you eliminate an unknown common remainder.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "method_choice_remedy": {
+      "id": "method_choice_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "This shortcut is one of the most useful recognition patterns in the chapter.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "method_choice_retry"
+        }
+      ]
+    },
+    "method_choice_retry": {
+      "id": "method_choice_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1356, 1868, 2764"
+          },
+          {
+            "id": "b",
+            "label": "1344, 1856, 2752"
+          },
+          {
+            "id": "c",
+            "label": "12, 12, 12"
+          },
+          {
+            "id": "d",
+            "label": "64, 124, 156"
+          }
+        ]
+      },
+      "content": {
+        "text": "A problem asks for the greatest number dividing 1356, 1868 and 2764 leaving remainder 12 in each case. What is the H.C.F. input?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_mixed"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "A problem asks for the greatest number dividing 1356, 1868 and 2764 leaving remainder 12 in each case. What is the H.C.F. input?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1356, 1868, 2764"
+            },
+            {
+              "id": "b",
+              "label": "1344, 1856, 2752"
+            },
+            {
+              "id": "c",
+              "label": "12, 12, 12"
+            },
+            {
+              "id": "d",
+              "label": "64, 124, 156"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Subtract 12 from each: 1344, 1856 and 2752. Their H.C.F. is 64.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_mixed": {
+      "id": "final_mixed",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's finish by combining the patterns.\n\nFor 1356, 1868 and 2764, each has remainder 12.\n\nSubtract the SAME remainder:\n1344, 1856, 2752\n\nThen H.C.F. = 64.\n\nNotice how this fits the complete framework:\n\nRemainder language → remove the remainder\nEqual-share or exact-measure language → find the common divisor\nLargest possible size → H.C.F.\nMinimum number of units → use the maximum H.C.F.-based unit\nDifferent stated remainders → subtract each remainder separately\nUnknown common remainder → use pairwise differences",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_check"
+        }
+      ]
+    },
+    "final_check": {
+      "id": "final_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Largest equal exact unit → H.C.F."
+          },
+          {
+            "id": "b",
+            "label": "Minimum number of equal containers → use maximum H.C.F.-based container size"
+          },
+          {
+            "id": "c",
+            "label": "Different known remainders → subtract each number's own remainder, then H.C.F."
+          },
+          {
+            "id": "d",
+            "label": "All of the above"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which rule correctly matches the problem type?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_check_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "All three are direct chapter patterns.",
+            "Read the words carefully: greatest size, minimum count, or stated remainders."
+          ],
+          "prompt": "Which rule correctly matches the problem type?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Largest equal exact unit → H.C.F."
+            },
+            {
+              "id": "b",
+              "label": "Minimum number of equal containers → use maximum H.C.F.-based container size"
+            },
+            {
+              "id": "c",
+              "label": "Different known remainders → subtract each number's own remainder, then H.C.F."
+            },
+            {
+              "id": "d",
+              "label": "All of the above"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Perfect. All of these are valid H.C.F. recognition patterns from the chapter.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "final_check_remedy": {
+      "id": "final_check_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The real skill is recognizing the H.C.F. structure hidden inside the wording.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_check_retry"
+        }
+      ]
+    },
+    "final_check_retry": {
+      "id": "final_check_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Always use L.C.M. first"
+          },
+          {
+            "id": "b",
+            "label": "Convert units, remove remainders when needed, then look for the largest common exact unit"
+          },
+          {
+            "id": "c",
+            "label": "Always multiply every given quantity"
+          },
+          {
+            "id": "d",
+            "label": "Ignore the words and only look at the largest number"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which statement is the best final habit for H.C.F. remainder and measurement questions?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Apply the same idea one step at a time.",
+            "Check the operation before choosing."
+          ],
+          "prompt": "Which statement is the best final habit for H.C.F. remainder and measurement questions?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Always use L.C.M. first"
+            },
+            {
+              "id": "b",
+              "label": "Convert units, remove remainders when needed, then look for the largest common exact unit"
+            },
+            {
+              "id": "c",
+              "label": "Always multiply every given quantity"
+            },
+            {
+              "id": "d",
+              "label": "Ignore the words and only look at the largest number"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Match the story to the divisor structure: make units consistent, remove remainders appropriately, then use H.C.F. for the largest exact common unit.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Excellent work.\n\nYou can now recognize the main H.C.F. application patterns in this chapter:\n\n1. Same remainder → subtract the common remainder, then take H.C.F.\n\n2. Same remainder but remainder is unknown → take H.C.F. of pairwise differences.\n\n3. Different known remainders → subtract each number's own remainder, then take H.C.F.\n\n4. Greatest measuring length, largest tile, longest equal rod piece, largest bottle or container size → H.C.F.\n\n5. Maximum equal group size or maximum number of students receiving equal shares → H.C.F.\n\n6. Minimum number of rows, stacks, bottles or tiles → first maximize the common unit using H.C.F., then divide to count.\n\n7. Mixed units must be converted into one common unit before taking H.C.F.\n\nThe biggest habit to remember is simple:\n\nWhen several quantities must be divided, measured, grouped or cut exactly, and the question asks for the GREATEST possible common unit, think H.C.F.\n\nYou're ready for the next subtopic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "H.C.F. in Remainder & Measurement Problems",
+    "description": "Learn to recognize H.C.F. in equal-remainder, difference, measurement, grouping, cutting and maximum-unit/minimum-count problems.",
+    "targetDurationMinutes": 32
+  },
+  "scriptId": "script-hcf-lcm-08-remainder-measurement-applications",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

@@ -1,0 +1,1669 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Today we are learning a very useful L.C.M. pattern:\n\nWhen a number must be exactly divisible by several given numbers, it must be a multiple of their L.C.M.\n\nSo the first move is almost always:\n\nFind the L.C.M. of the given divisors.\n\nThen use that L.C.M. to locate the required number.\n\nThis lesson focuses on direct divisibility and on questions with digit or range restrictions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_meaning"
+        }
+      ]
+    },
+    "lcm_meaning": {
+      "id": "lcm_meaning",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose a number must be divisible by 6, 8 and 9.\n\nIt has to contain every requirement at the same time. So it must be a common multiple of 6, 8 and 9.\n\nThe least such number is their L.C.M.\n\nTherefore:\n\nRequired least number = L.C.M. of the given divisors.\n\nThis is exactly why L.C.M. is the natural tool for direct divisibility questions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_meaning_check"
+        }
+      ]
+    },
+    "lcm_meaning_check": {
+      "id": "lcm_meaning_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Their H.C.F."
+          },
+          {
+            "id": "b",
+            "label": "Their L.C.M."
+          },
+          {
+            "id": "c",
+            "label": "Their sum"
+          },
+          {
+            "id": "d",
+            "label": "Their difference"
+          }
+        ]
+      },
+      "content": {
+        "text": "To find the least number exactly divisible by several given numbers, what should you find first?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_direct_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_meaning_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Think of the least common multiple: it is the smallest number divisible by every given number.",
+            "The question asks for a common multiple, not a common divisor."
+          ],
+          "prompt": "To find the least number exactly divisible by several given numbers, what should you find first?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Their H.C.F."
+            },
+            {
+              "id": "b",
+              "label": "Their L.C.M."
+            },
+            {
+              "id": "c",
+              "label": "Their sum"
+            },
+            {
+              "id": "d",
+              "label": "Their difference"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. A number divisible by all the given numbers must be a common multiple, and the least such number is their L.C.M.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "lcm_meaning_remedy": {
+      "id": "lcm_meaning_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Look at the word divisible.\n\nWe need one number that can be divided exactly by every given divisor.\n\nThat means we need a common multiple.\n\nBecause the question asks for the least one, we use L.C.M.\n\nSo remember:\n\nSeveral divisibility conditions\n→ find their L.C.M.\n→ required number must be a multiple of that L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_direct_example"
+        }
+      ]
+    },
+    "lcm_direct_example": {
+      "id": "lcm_direct_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's use the chapter's solved example.\n\nFind the least number exactly divisible by 32, 36, 45, 60 and 80.\n\nThe book first finds:\n\nL.C.M. of 32, 36, 45, 60 and 80 = 1440\n\nTherefore the least number satisfying all five divisibility conditions is:\n\n1440\n\nThere is no boundary here. We simply need the least common multiple.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_direct_check"
+        }
+      ]
+    },
+    "lcm_direct_check": {
+      "id": "lcm_direct_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1800"
+          },
+          {
+            "id": "b",
+            "label": "1920"
+          },
+          {
+            "id": "c",
+            "label": "2520"
+          },
+          {
+            "id": "d",
+            "label": "5040"
+          }
+        ]
+      },
+      "content": {
+        "text": "Find the least natural number which leaves no remainder when divided by all the digits from 1 to 9.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_direct_retry"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_direct_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The number must be divisible by every integer from 1 through 9.",
+            "Find the L.C.M. of 1, 2, 3, 4, 5, 6, 7, 8 and 9."
+          ],
+          "prompt": "Find the least natural number which leaves no remainder when divided by all the digits from 1 to 9.",
+          "options": [
+            {
+              "id": "a",
+              "label": "1800"
+            },
+            {
+              "id": "b",
+              "label": "1920"
+            },
+            {
+              "id": "c",
+              "label": "2520"
+            },
+            {
+              "id": "d",
+              "label": "5040"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The required number is L.C.M. of 1 through 9 = 2520.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "lcm_direct_remedy": {
+      "id": "lcm_direct_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "For divisibility by every number from 1 to 9, the required number must be a common multiple of all of them.\n\nThe least such number is:\n\nL.C.M. of 1, 2, 3, 4, 5, 6, 7, 8, 9 = 2520\n\nSo the answer is 2520.\n\nThe important idea is not the arithmetic alone. Recognize the phrase 'divisible by all' and immediately think L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_direct_retry"
+        }
+      ]
+    },
+    "lcm_direct_retry": {
+      "id": "lcm_direct_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "196"
+          },
+          {
+            "id": "b",
+            "label": "630"
+          },
+          {
+            "id": "c",
+            "label": "1260"
+          },
+          {
+            "id": "d",
+            "label": "2520"
+          }
+        ]
+      },
+      "content": {
+        "text": "What will be the least number which when doubled will be exactly divisible by 12, 18, 21 and 30?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "boundary_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "direct_retry_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First find L.C.M. of 12, 18, 21 and 30.",
+            "The doubled number must equal a multiple of that L.C.M."
+          ],
+          "prompt": "What will be the least number which when doubled will be exactly divisible by 12, 18, 21 and 30?",
+          "options": [
+            {
+              "id": "a",
+              "label": "196"
+            },
+            {
+              "id": "b",
+              "label": "630"
+            },
+            {
+              "id": "c",
+              "label": "1260"
+            },
+            {
+              "id": "d",
+              "label": "2520"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. = 1260, so 2N = 1260 and N = 630.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "direct_retry_remedy": {
+      "id": "direct_retry_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The divisibility condition is on 2N, not directly on N.\n\nFirst:\n\nL.C.M. of 12, 18, 21 and 30 = 1260\n\nSo:\n\n2N = 1260\n\nTherefore:\n\nN = 630\n\nThis is still an L.C.M. problem. The only extra step is to notice which expression must be divisible.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "boundary_intro"
+        }
+      ]
+    },
+    "boundary_intro": {
+      "id": "boundary_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now add a boundary.\n\nSuppose we need the least number of a certain number of digits that is divisible by several numbers.\n\nThe L.C.M. tells us the spacing between valid numbers. The digit requirement tells us where to start looking.\n\nFor a five-digit number, the lower boundary is 10000.\n\nFor a four-digit number, the upper boundary is 9999.\n\nFor a six-digit number, the lower boundary is 100000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "boundary_nearest_multiple"
+        }
+      ]
+    },
+    "boundary_nearest_multiple": {
+      "id": "boundary_nearest_multiple",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here is the key technique.\n\nStep 1: Find the L.C.M. of the divisors.\n\nStep 2: Look at the boundary number.\n\nStep 3: Divide the boundary by the L.C.M. and inspect the remainder.\n\nIf we want the greatest divisible number at or below a boundary, subtract the remainder.\n\nIf we want the smallest divisible number at or above a lower boundary, move forward by the amount needed to reach the next multiple.\n\nThat is the main engine behind the book's digit-bound examples.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "smallest_five_example"
+        }
+      ]
+    },
+    "smallest_five_example": {
+      "id": "smallest_five_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Book example:\n\nFind the smallest number of five digits exactly divisible by 16, 24, 36 and 54.\n\nSmallest five-digit number = 10000\n\nL.C.M. of 16, 24, 36 and 54 = 432\n\nNow divide 10000 by 432.\n\nRemainder = 64\n\nSo 10000 is 64 above a multiple of 432.\n\nTo reach the next multiple, add:\n\n432 - 64 = 368\n\nTherefore:\n\n10000 + 368 = 10368\n\nRequired number = 10368.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "smallest_five_check"
+        }
+      ]
+    },
+    "smallest_five_check": {
+      "id": "smallest_five_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10010"
+          },
+          {
+            "id": "b",
+            "label": "10015"
+          },
+          {
+            "id": "c",
+            "label": "10020"
+          },
+          {
+            "id": "d",
+            "label": "10080"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number of five digits which is exactly divisible by 12, 15 and 18 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "smallest_five_retry"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "smallest_five_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Start with 10000, the smallest five-digit number.",
+            "Find L.C.M. of 12, 15 and 18, then move from 10000 to the next multiple."
+          ],
+          "prompt": "The least number of five digits which is exactly divisible by 12, 15 and 18 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "10010"
+            },
+            {
+              "id": "b",
+              "label": "10015"
+            },
+            {
+              "id": "c",
+              "label": "10020"
+            },
+            {
+              "id": "d",
+              "label": "10080"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M. of 12, 15 and 18 is 180. 10000 leaves remainder 100, so add 80: 10080.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "smallest_five_remedy": {
+      "id": "smallest_five_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start at the smallest five-digit number:\n\n10000\n\nThen:\n\nL.C.M. of 12, 15 and 18 = 180\n\n10000 ÷ 180 leaves remainder 100.\n\nSo the next multiple is:\n\n10000 + (180 - 100) = 10080\n\nThe answer must be five digits, so we begin at 10000, not at zero.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "smallest_five_retry"
+        }
+      ]
+    },
+    "smallest_five_retry": {
+      "id": "smallest_five_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "100000"
+          },
+          {
+            "id": "b",
+            "label": "100020"
+          },
+          {
+            "id": "c",
+            "label": "100040"
+          },
+          {
+            "id": "d",
+            "label": "100060"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number of six digits which is exactly divisible by 4, 6, 10 and 15 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "greatest_five_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "six_digit_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The smallest six-digit number is 100000.",
+            "Find L.C.M. of 4, 6, 10 and 15 and move to the next multiple."
+          ],
+          "prompt": "The least number of six digits which is exactly divisible by 4, 6, 10 and 15 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "100000"
+            },
+            {
+              "id": "b",
+              "label": "100020"
+            },
+            {
+              "id": "c",
+              "label": "100040"
+            },
+            {
+              "id": "d",
+              "label": "100060"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. = 60. 100000 leaves remainder 40, so add 20 to get 100020.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "six_digit_remedy": {
+      "id": "six_digit_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a six-digit minimum, begin with:\n\n100000\n\nL.C.M. of 4, 6, 10 and 15 = 60\n\n100000 ÷ 60 leaves remainder 40.\n\nThe next multiple is:\n\n100000 + (60 - 40) = 100020\n\nIn the chapter's objective problem, the number then has an additional same-remainder condition of 2 and becomes 100022. Here we are isolating the direct divisibility part.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "greatest_five_example"
+        }
+      ]
+    },
+    "greatest_five_example": {
+      "id": "greatest_five_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now move in the opposite direction.\n\nFind the greatest number of five digits divisible by 15, 21 and 36.\n\nGreatest five-digit number = 99999\n\nL.C.M. of 15, 21 and 36 = 1260\n\n99999 ÷ 1260 leaves remainder 459.\n\nSo move backward:\n\n99999 - 459 = 99540\n\nTherefore the greatest five-digit multiple is 99540.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "greatest_five_check"
+        }
+      ]
+    },
+    "greatest_five_check": {
+      "id": "greatest_five_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9000"
+          },
+          {
+            "id": "b",
+            "label": "9400"
+          },
+          {
+            "id": "c",
+            "label": "9600"
+          },
+          {
+            "id": "d",
+            "label": "9800"
+          }
+        ]
+      },
+      "content": {
+        "text": "The greatest number of four digits which is divisible by 15, 25, 40 and 75 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "greatest_four_retry"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "greatest_five_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Start from 9999, the greatest four-digit number.",
+            "Find L.C.M. of 15, 25, 40 and 75 and subtract the remainder."
+          ],
+          "prompt": "The greatest number of four digits which is divisible by 15, 25, 40 and 75 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "9000"
+            },
+            {
+              "id": "b",
+              "label": "9400"
+            },
+            {
+              "id": "c",
+              "label": "9600"
+            },
+            {
+              "id": "d",
+              "label": "9800"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M. = 600. 9999 leaves remainder 399, so 9999 - 399 = 9600.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "greatest_five_remedy": {
+      "id": "greatest_five_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a greatest four-digit answer, start from:\n\n9999\n\nNow:\n\nL.C.M. of 15, 25, 40 and 75 = 600\n\n9999 ÷ 600 leaves remainder 399.\n\nTherefore the greatest multiple below 9999 is:\n\n9999 - 399 = 9600",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "greatest_four_retry"
+        }
+      ]
+    },
+    "greatest_four_retry": {
+      "id": "greatest_four_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8739"
+          },
+          {
+            "id": "b",
+            "label": "9831"
+          },
+          {
+            "id": "c",
+            "label": "9834"
+          },
+          {
+            "id": "d",
+            "label": "9893"
+          }
+        ]
+      },
+      "content": {
+        "text": "The largest four-digit number which when divided by 4, 7 or 13 leaves a remainder of 3 in each case is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "range_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "greatest_four_retry_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First remove the common remainder 3 from the target form.",
+            "Find L.C.M. of 4, 7 and 13, then work from 9999."
+          ],
+          "prompt": "The largest four-digit number which when divided by 4, 7 or 13 leaves a remainder of 3 in each case is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "8739"
+            },
+            {
+              "id": "b",
+              "label": "9831"
+            },
+            {
+              "id": "c",
+              "label": "9834"
+            },
+            {
+              "id": "d",
+              "label": "9893"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. = 364. 9999 leaves remainder 171, so the greatest divisible value is 9828; adding the required remainder 3 gives 9831.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "greatest_four_retry_remedy": {
+      "id": "greatest_four_retry_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "This chapter problem has two layers.\n\nFirst find the greatest four-digit number divisible by 4, 7 and 13:\n\n9999 ÷ 364 leaves 171\n\nSo:\n\n9999 - 171 = 9828\n\nBut the actual number must leave remainder 3 when divided by each divisor.\n\nSo add 3:\n\n9828 + 3 = 9831\n\nThat takes us from a pure L.C.M. boundary question to a shifted divisibility condition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "range_example"
+        }
+      ]
+    },
+    "range_example": {
+      "id": "range_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "A range gives us both a lower and an upper boundary.\n\nBook objective example:\n\nFind the number between 4000 and 5000 divisible by 12, 18, 21 and 32.\n\nThe book finds:\n\nL.C.M. = 2016\n\nNow inspect the multiples around the range:\n\n2016 × 1 = 2016\n2016 × 2 = 4032\n2016 × 3 = 6048\n\nOnly 4032 lies between 4000 and 5000.\n\nSo the required number is 4032.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "range_check"
+        }
+      ]
+    },
+    "range_check": {
+      "id": "range_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4023"
+          },
+          {
+            "id": "b",
+            "label": "4032"
+          },
+          {
+            "id": "c",
+            "label": "4203"
+          },
+          {
+            "id": "d",
+            "label": "4302"
+          }
+        ]
+      },
+      "content": {
+        "text": "The number between 4000 and 5000 which is divisible by 12, 18, 21 and 32 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "range_retry"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "range_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the L.C.M. first: 2016.",
+            "Check the multiples of 2016 around the given range."
+          ],
+          "prompt": "The number between 4000 and 5000 which is divisible by 12, 18, 21 and 32 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "4023"
+            },
+            {
+              "id": "b",
+              "label": "4032"
+            },
+            {
+              "id": "c",
+              "label": "4203"
+            },
+            {
+              "id": "d",
+              "label": "4302"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 2016 × 2 = 4032, and 4032 lies between 4000 and 5000.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "range_remedy": {
+      "id": "range_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "When the range is narrow, you do not need to test every number.\n\nFind the L.C.M.\n\nHere:\n\nL.C.M. = 2016\n\nNow find the multiple just above 4000:\n\n2016 × 2 = 4032\n\nThe next multiple is:\n\n2016 × 3 = 6048\n\nSo only 4032 lies in the range.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "range_retry"
+        }
+      ]
+    },
+    "range_retry": {
+      "id": "range_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "43500"
+          },
+          {
+            "id": "b",
+            "label": "43550"
+          },
+          {
+            "id": "c",
+            "label": "43600"
+          },
+          {
+            "id": "d",
+            "label": "43650"
+          }
+        ]
+      },
+      "content": {
+        "text": "The number nearest to 43582 divisible by each of 25, 50 and 75 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "add_subtract_boundary"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "range_retry_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find L.C.M. of 25, 50 and 75.",
+            "Compare the nearest multiple below and above 43582."
+          ],
+          "prompt": "The number nearest to 43582 divisible by each of 25, 50 and 75 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "43500"
+            },
+            {
+              "id": "b",
+              "label": "43550"
+            },
+            {
+              "id": "c",
+              "label": "43600"
+            },
+            {
+              "id": "d",
+              "label": "43650"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. = 150. 43582 leaves remainder 82; the next multiple is 43650, which is 68 away and therefore nearer than 43500.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "range_retry_remedy": {
+      "id": "range_retry_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Find:\n\nL.C.M. of 25, 50 and 75 = 150\n\nNow:\n\n43582 ÷ 150 leaves remainder 82.\n\nThe multiple below is:\n\n43582 - 82 = 43500\n\nThe next multiple is:\n\n43500 + 150 = 43650\n\nDistances:\n\nTo 43500 = 82\nTo 43650 = 68\n\nSo 43650 is the nearer multiple.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "add_subtract_boundary"
+        }
+      ]
+    },
+    "add_subtract_boundary": {
+      "id": "add_subtract_boundary",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the question asks how much to add or subtract.\n\nThe logic is the same.\n\nExample from the chapter:\n\n2497 must be increased until the result is exactly divisible by 5, 6, 4 and 3.\n\nL.C.M. of 5, 6, 4 and 3 = 60\n\n2497 ÷ 60 leaves remainder 37\n\nSo add:\n\n60 - 37 = 23\n\nTherefore:\n\n2497 + 23 = 2520\n\nThe question is asking for the smallest amount to add, so we move forward to the next multiple.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "add_check"
+        }
+      ]
+    },
+    "add_check": {
+      "id": "add_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "13"
+          },
+          {
+            "id": "c",
+            "label": "23"
+          },
+          {
+            "id": "d",
+            "label": "33"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number which should be added to 2497 so that the sum is exactly divisible by 5, 6, 4 and 3 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "subtract_check"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "add_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "L.C.M. of 5, 6, 4 and 3 is 60.",
+            "Find the remainder when 2497 is divided by 60."
+          ],
+          "prompt": "The least number which should be added to 2497 so that the sum is exactly divisible by 5, 6, 4 and 3 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "13"
+            },
+            {
+              "id": "c",
+              "label": "23"
+            },
+            {
+              "id": "d",
+              "label": "33"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Remainder = 37, so the amount to add is 60 - 37 = 23.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "add_remedy": {
+      "id": "add_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The nearest multiple of 60 above 2497 is 2520.\n\nSo the gap is:\n\n2520 - 2497 = 23\n\nThat is exactly:\n\n60 - 37 = 23\n\nThe remainder tells you how far you are from the previous multiple. Subtract that remainder from the divisor to get the forward gap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "subtract_check"
+        }
+      ]
+    },
+    "subtract_check": {
+      "id": "subtract_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1120"
+          },
+          {
+            "id": "b",
+            "label": "4714"
+          },
+          {
+            "id": "c",
+            "label": "5200"
+          },
+          {
+            "id": "d",
+            "label": "5600"
+          }
+        ]
+      },
+      "content": {
+        "text": "The greatest number which when subtracted from 5834 gives a number exactly divisible by 20, 28, 32 and 35 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "digit_boundary_more"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "subtract_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find L.C.M. of 20, 28, 32 and 35.",
+            "The expression after subtraction must land on a multiple of that L.C.M."
+          ],
+          "prompt": "The greatest number which when subtracted from 5834 gives a number exactly divisible by 20, 28, 32 and 35 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "1120"
+            },
+            {
+              "id": "b",
+              "label": "4714"
+            },
+            {
+              "id": "c",
+              "label": "5200"
+            },
+            {
+              "id": "d",
+              "label": "5600"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M. = 1120. The greatest valid subtrahend is 5834 - 1120 = 4714.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "subtract_remedy": {
+      "id": "subtract_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book finds:\n\nL.C.M. of 20, 28, 32 and 35 = 1120\n\nWe want the greatest number X such that:\n\n5834 - X\n\nis divisible by 1120.\n\nThe book chooses the least positive divisible result, 1120.\n\nSo:\n\nX = 5834 - 1120 = 4714\n\nThis is a useful boundary interpretation:\n\nChoose the smallest positive L.C.M. multiple that can remain, then subtract.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "digit_boundary_more"
+        }
+      ]
+    },
+    "digit_boundary_more": {
+      "id": "digit_boundary_more",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's combine everything in the book's three-digit boundary example.\n\nThe greatest three-digit number is 999.\n\nL.C.M. of 6, 9 and 12 = 36\n\n999 ÷ 36 leaves remainder 27.\n\nSo the greatest multiple below 999 is:\n\n999 - 27 = 972\n\nThe actual objective question asks for a remainder of 3, so:\n\n972 + 3 = 975\n\nThis is the same pattern:\n\nfind the boundary\n→ find the L.C.M.\n→ locate the nearest multiple\n→ apply the stated remainder when required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "digit_three_check"
+        }
+      ]
+    },
+    "digit_three_check": {
+      "id": "digit_three_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "903"
+          },
+          {
+            "id": "b",
+            "label": "939"
+          },
+          {
+            "id": "c",
+            "label": "975"
+          },
+          {
+            "id": "d",
+            "label": "996"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the greatest number of 3 digits which when divided by 6, 9 and 12 leaves a remainder of 3 in each case?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "digit_six_check"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "digit_three_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find L.C.M. of 6, 9 and 12 = 36.",
+            "Start from 999 and first find the greatest nearby multiple of 36."
+          ],
+          "prompt": "What is the greatest number of 3 digits which when divided by 6, 9 and 12 leaves a remainder of 3 in each case?",
+          "options": [
+            {
+              "id": "a",
+              "label": "903"
+            },
+            {
+              "id": "b",
+              "label": "939"
+            },
+            {
+              "id": "c",
+              "label": "975"
+            },
+            {
+              "id": "d",
+              "label": "996"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 999 - 27 = 972, and 972 + 3 = 975.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "digit_three_remedy": {
+      "id": "digit_three_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work in the same order as the book:\n\nL.C.M. of 6, 9 and 12 = 36\n\nGreatest three-digit number = 999\n\n999 ÷ 36 leaves remainder 27\n\nGreatest multiple below 999:\n\n999 - 27 = 972\n\nNow restore the required common remainder 3:\n\n972 + 3 = 975\n\nAnswer = 975.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "digit_six_check"
+        }
+      ]
+    },
+    "digit_six_check": {
+      "id": "digit_six_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "Let the least number of six digits which when divided by 4, 6, 10 and 15 leaves the same remainder of 2 be N. What is the sum of the digits in N?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "least_multiple_13_check"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "digit_six_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The least six-digit boundary is 100000.",
+            "L.C.M. of 4, 6, 10 and 15 is 60.",
+            "First find the least six-digit number of the form 60k + 2."
+          ],
+          "prompt": "Let the least number of six digits which when divided by 4, 6, 10 and 15 leaves the same remainder of 2 be N. What is the sum of the digits in N?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 100000 leaves remainder 40 on division by 60, so the first number of the form 60k + 2 is 100022. Digit sum = 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "digit_six_remedy": {
+      "id": "digit_six_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book first finds:\n\nL.C.M. of 4, 6, 10 and 15 = 60\n\nWe need a number of the form:\n\n60k + 2\n\nThe least six-digit number is 100000.\n\n100000 ÷ 60 leaves remainder 40.\n\nThe next multiple is 100020.\n\nAdd 2:\n\n100022\n\nDigit sum:\n\n1 + 0 + 0 + 0 + 2 + 2 = 5\n\nSo the answer is 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "least_multiple_13_check"
+        }
+      ]
+    },
+    "least_multiple_13_check": {
+      "id": "least_multiple_13_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "840"
+          },
+          {
+            "id": "b",
+            "label": "842"
+          },
+          {
+            "id": "c",
+            "label": "2520"
+          },
+          {
+            "id": "d",
+            "label": "2522"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least multiple of 13, which on dividing by 4, 5, 6, 7 and 8 leaves remainder 2 in each case is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "perfect_square_boundary"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "least_multiple_13_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "L.C.M. of 4, 5, 6, 7 and 8 is 840.",
+            "The required number is of the form 840k + 2.",
+            "Choose the least k that makes the number a multiple of 13."
+          ],
+          "prompt": "The least multiple of 13, which on dividing by 4, 5, 6, 7 and 8 leaves remainder 2 in each case is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "840"
+            },
+            {
+              "id": "b",
+              "label": "842"
+            },
+            {
+              "id": "c",
+              "label": "2520"
+            },
+            {
+              "id": "d",
+              "label": "2522"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. Required number = 840k + 2. The least suitable k is 3, giving 2522.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "least_multiple_13_remedy": {
+      "id": "least_multiple_13_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book gives:\n\nL.C.M. of 4, 5, 6, 7 and 8 = 840\n\nBecause the required number leaves remainder 2 in every case, write it as:\n\n840k + 2\n\nBut it must also be divisible by 13.\n\nFor k = 3:\n\n840 × 3 + 2 = 2522\n\nAnd 2522 is divisible by 13.\n\nSo the answer is 2522.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "perfect_square_boundary"
+        }
+      ]
+    },
+    "perfect_square_boundary": {
+      "id": "perfect_square_boundary",
+      "type": "CONTENT",
+      "content": {
+        "text": "One chapter objective continues from the L.C.M. idea into another condition:\n\nFind the least number divisible by 16, 20 and 24 that is also a perfect square.\n\nFirst:\n\nL.C.M. of 16, 20 and 24 = 240\n\nThe least divisible number is therefore 240.\n\nThen the additional perfect-square condition is handled by adjusting its prime factors, giving:\n\n240 × 3 × 5 = 3600\n\nThis shows how L.C.M. can provide the starting structure while another condition narrows the answer further.\n\nThe detailed perfect-square method belongs to a later structural subtopic; here we only recognize the L.C.M. role.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "ex24_subtract_10000"
+        }
+      ]
+    },
+    "final_practice": {
+      "id": "final_practice",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4023"
+          },
+          {
+            "id": "b",
+            "label": "4032"
+          },
+          {
+            "id": "c",
+            "label": "4203"
+          },
+          {
+            "id": "d",
+            "label": "4302"
+          }
+        ]
+      },
+      "content": {
+        "text": "The number between 4000 and 5000 which is divisible by 12, 18, 21 and 32 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "last_check"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_practice_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use L.C.M. of the four divisors.",
+            "Check the multiple of the L.C.M. lying inside 4000 to 5000."
+          ],
+          "prompt": "The number between 4000 and 5000 which is divisible by 12, 18, 21 and 32 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "4023"
+            },
+            {
+              "id": "b",
+              "label": "4032"
+            },
+            {
+              "id": "c",
+              "label": "4203"
+            },
+            {
+              "id": "d",
+              "label": "4302"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Exactly. L.C.M. = 2016 and 2016 × 2 = 4032, the only multiple in the range.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_practice_remedy": {
+      "id": "final_practice_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The L.C.M. is:\n\n2016\n\nMultiples around the range are:\n\n2016\n4032\n6048\n\nOnly 4032 lies between 4000 and 5000.\n\nSo the answer is 4032.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "last_check"
+        }
+      ]
+    },
+    "last_check": {
+      "id": "last_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10010"
+          },
+          {
+            "id": "b",
+            "label": "10015"
+          },
+          {
+            "id": "c",
+            "label": "10020"
+          },
+          {
+            "id": "d",
+            "label": "10080"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number of five digits which is exactly divisible by 12, 15 and 18 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "last_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Begin with 10000.",
+            "The next multiple of L.C.M. = 180 is the answer."
+          ],
+          "prompt": "The least number of five digits which is exactly divisible by 12, 15 and 18 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "10010"
+            },
+            {
+              "id": "b",
+              "label": "10015"
+            },
+            {
+              "id": "c",
+              "label": "10020"
+            },
+            {
+              "id": "d",
+              "label": "10080"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 10000 leaves remainder 100 on division by 180, so the next multiple is 10080.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "last_remedy": {
+      "id": "last_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M. of 12, 15 and 18 = 180.\n\nStarting from 10000:\n\n10000 = 180 × 55 + 100\n\nSo move forward by:\n\n180 - 100 = 80\n\nTherefore:\n\n10000 + 80 = 10080.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "CONTENT",
+      "content": {
+        "text": "Great work.\n\nYou can now recognize the full direct-divisibility and boundary pattern:\n\nSeveral divisors\n→ find their L.C.M.\n\nNo bound\n→ the least valid number is the L.C.M.\n\nSmallest fixed-digit number\n→ start at that digit boundary and move to the next L.C.M. multiple.\n\nGreatest fixed-digit number\n→ start at the upper boundary and move back to the previous L.C.M. multiple.\n\nSpecified range\n→ find the L.C.M. and inspect its nearby multiples.\n\nNeed the amount to add\n→ move forward to the next multiple.\n\nNeed the amount to subtract\n→ move back to the appropriate multiple.\n\nNeed a shifted remainder condition\n→ first find the L.C.M. structure, then apply the required remainder or offset.\n\nThe biggest skill is recognition: when several divisibility conditions appear together, think L.C.M. first.\n\nYou're ready for the next subtopic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    },
+    "ex24_subtract_10000": {
+      "id": "ex24_subtract_10000",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here is another solved example from the chapter.\n\nFind the largest number which, when subtracted from 10000, leaves a remainder divisible by 32, 36, 48 and 50.\n\nFirst find:\n\nL.C.M. of 32, 36, 48 and 50 = 864\n\nThe number left after subtraction must be a multiple of 864.\n\nTo make the subtracted number as large as possible, leave the smallest positive multiple of 864:\n\n864\n\nTherefore:\n\nRequired number = 10000 - 864 = 9136\n\nThis is a boundary question in reverse: instead of moving upward from a lower boundary, we move downward from 10000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_practice"
+        }
+      ]
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "L.C.M. for Direct Divisibility & Number Bounds",
+    "description": "Use L.C.M. to solve direct divisibility questions and locate least or greatest valid numbers under digit-length and range restrictions.",
+    "targetDurationMinutes": 31
+  },
+  "scriptId": "script-hcf-lcm-09-divisibility-bounds",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

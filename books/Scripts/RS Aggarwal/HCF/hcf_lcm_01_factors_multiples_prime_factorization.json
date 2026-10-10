@@ -1,0 +1,1260 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Before we find H.C.F. and L.C.M., we need three simple ideas to become automatic:\n\nFactors.\nMultiples.\nPrime factorization.\n\nThink of a number as something that can be built in different ways.\n\nFor example, 12 can be made as:\n\n1 × 12\n2 × 6\n3 × 4\n\nThe numbers that divide 12 exactly are its factors.\n\nThese ideas are the building blocks we will use later for H.C.F. and L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factors_basics"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Great work. You now have the foundation for the next H.C.F. and L.C.M. ideas.\n\nFactor = a number that divides another number exactly.\n\nMultiple = a number obtained by multiplying another number by a whole number.\n\nPrime number = a number with exactly two factors: 1 and itself.\n\nPrime factorization = writing a number as a product of prime factors.\n\nPerfect number = the sum of its divisors, excluding itself, equals the number.\n\nOne mental picture to keep:\n\nFactors are the pieces that fit exactly into a number.\nMultiples are the numbers you reach by repeated multiplication.\nPrime factorization breaks a number down into its prime building blocks.\n\nThose prime building blocks are what we will use next to find H.C.F. and L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    },
+    "prime_check": {
+      "id": "prime_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "15"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which number is prime?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "prime_factorization"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "prime_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "A prime number has exactly two factors.",
+            "Check whether the number has any factor other than 1 and itself."
+          ],
+          "prompt": "Which number is prime?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "15"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 2 has exactly two factors, 1 and 2, so it is prime.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "prime_retry": {
+      "id": "prime_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "11"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which number is prime?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "prime_factorization"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Check whether the number has exactly two factors.",
+            "11 can only be divided exactly by 1 and 11."
+          ],
+          "prompt": "Which number is prime?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "11"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 11 has exactly two factors, 1 and 11, so it is prime.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "factor_check": {
+      "id": "factor_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which of these is a factor of 24?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiple_basics"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "factor_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "A factor must divide the number exactly.",
+            "Check which option divides 24 with no remainder."
+          ],
+          "prompt": "Which of these is a factor of 24?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 24 ÷ 4 = 6 with no remainder, so 4 is a factor of 24.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "factor_retry": {
+      "id": "factor_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "7"
+          },
+          {
+            "id": "c",
+            "label": "11"
+          },
+          {
+            "id": "d",
+            "label": "13"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is a factor of 48?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_basics"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Divide 48 by each option.",
+            "Look for exact division."
+          ],
+          "prompt": "Which is a factor of 48?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "7"
+            },
+            {
+              "id": "c",
+              "label": "11"
+            },
+            {
+              "id": "d",
+              "label": "13"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 48 ÷ 6 = 8, so 6 is a factor of 48.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "prime_remedy": {
+      "id": "prime_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the definition, not a guess.\n\nA prime number has exactly two factors:\n1 and itself.\n\nFor example:\n\n4 has factors 1, 2 and 4 → not prime.\n9 has factors 1, 3 and 9 → not prime.\n15 has factors 1, 3, 5 and 15 → not prime.\n\n2 has only 1 and 2 → prime.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "prime_retry"
+        }
+      ]
+    },
+    "factor_remedy": {
+      "id": "factor_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's use one test only:\n\nA factor must divide the number with no remainder.\n\nFor 24:\n\n24 ÷ 4 = 6 ✓\n24 ÷ 5 = 4.8 ✗\n24 ÷ 7 leaves a remainder ✗\n24 ÷ 11 leaves a remainder ✗\n\nSo 4 is the correct factor.\n\nDon't ask whether a number simply looks related to 24. Ask: can 24 be divided by it exactly?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factor_retry"
+        }
+      ]
+    },
+    "perfect_check": {
+      "id": "perfect_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "9"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which of these is a perfect number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "perfect_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use the definition, not a shortcut.",
+            "For 6, the proper divisors are 1, 2 and 3."
+          ],
+          "prompt": "Which of these is a perfect number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "9"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 1 + 2 + 3 = 6, so 6 is perfect under the definition used in this chapter.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "perfect_retry": {
+      "id": "perfect_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "9"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "content": {
+        "text": "Again: which number is perfect?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "For 6: 1 + 2 + 3 = 6.",
+            "Do not include 6 itself in the divisor sum."
+          ],
+          "prompt": "Again: which number is perfect?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "9"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 6 is the perfect-number example used in this chapter.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "prime_numbers": {
+      "id": "prime_numbers",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now we need the smallest building blocks: prime numbers.\n\nA prime number has exactly two factors: 1 and itself.\n\nExamples:\n\n2 → 1 and 2\n3 → 1 and 3\n5 → 1 and 5\n7 → 1 and 7\n\nThese numbers cannot be broken into smaller factors apart from 1 and themselves.\n\nA non-prime number can be broken further.\n\nFor example:\n\n12 = 2 × 6\n6 = 2 × 3\n\nSo:\n\n12 = 2 × 2 × 3\n\nNow every factor on the right is prime.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "prime_check"
+        }
+      ]
+    },
+    "factors_basics": {
+      "id": "factors_basics",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's start with factors.\n\nIf a number divides another number exactly, without leaving a remainder, it is called a factor of that number.\n\nTake 12:\n\n12 ÷ 3 = 4\n\nNothing is left over, so 3 is a factor of 12.\n\nThe same is true for 1, 2, 4, 6 and 12.\n\nSo the factors of 12 are:\n\n1, 2, 3, 4, 6, 12\n\nReal-world picture:\nImagine 12 chocolates. If they can be shared equally among 3 people with nothing left over, 3 is a factor of 12.\n\nThe key word is exactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factor_check"
+        }
+      ]
+    },
+    "multiple_check": {
+      "id": "multiple_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "22"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which number is a multiple of 6?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "factor_multiple_relationship"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiple_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Multiples of 6 come from 6 × 1, 6 × 2, 6 × 3, ...",
+            "Check which option can be written as 6 multiplied by a whole number."
+          ],
+          "prompt": "Which number is a multiple of 6?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "22"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 18 = 6 × 3, so 18 is a multiple of 6.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "multiple_retry": {
+      "id": "multiple_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "21"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "29"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which number is a multiple of 8?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factor_multiple_relationship"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Write a few multiples of 8.",
+            "8 × 3 = 24."
+          ],
+          "prompt": "Which number is a multiple of 8?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "21"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "29"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 24 = 8 × 3, so 24 is a multiple of 8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "perfect_number": {
+      "id": "perfect_number",
+      "type": "CONTENT",
+      "content": {
+        "text": "One final idea from this part of the chapter is the perfect number.\n\nA number is called perfect if the sum of all its divisors, excluding the number itself, is equal to the number.\n\nTake 6.\n\nThe divisors of 6 other than 6 are:\n\n1, 2, 3\n\nAdd them:\n\n1 + 2 + 3 = 6\n\nSo 6 is a perfect number.\n\nFor this idea, simply follow the definition:\n1. Find the divisors except the number itself.\n2. Add them.\n3. Check whether the sum equals the original number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "perfect_check"
+        }
+      ]
+    },
+    "perfect_remedy": {
+      "id": "perfect_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's apply the definition carefully.\n\nFor 6, leave 6 itself out.\n\nDivisors: 1, 2, 3\nSum: 1 + 2 + 3 = 6\n\nThe sum equals the original number, so 6 is perfect.\n\nThe common trap is including the number itself in the sum. The definition specifically excludes it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "perfect_retry"
+        }
+      ]
+    },
+    "multiple_basics": {
+      "id": "multiple_basics",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now turn the idea around.\n\nIf 3 divides 12 exactly, then 3 is a factor of 12 and 12 is a multiple of 3.\n\nMultiples are formed by multiplying a number by whole numbers:\n\n3 × 1 = 3\n3 × 2 = 6\n3 × 3 = 9\n3 × 4 = 12\n3 × 5 = 15\n\nSo 3, 6, 9, 12, 15, ... are multiples of 3.\n\nReal-world picture:\nThink of packs containing 3 items. One pack gives 3, two packs give 6, three packs give 9, and so on.\n\nSo:\nFactor → divides into the number exactly.\nMultiple → comes from multiplying the number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_check"
+        }
+      ]
+    },
+    "multiple_remedy": {
+      "id": "multiple_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Remember the direction of the relationship.\n\nIf 6 × 3 = 18, then:\n\n6 is a factor of 18.\n18 is a multiple of 6.\n\nA factor goes into a number exactly.\nA multiple is produced from the number by multiplication.\n\nFor 6, the first few multiples are 6, 12, 18, 24, ...",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_retry"
+        }
+      ]
+    },
+    "factorization_330": {
+      "id": "factorization_330",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's use a number from the chapter: 330.\n\nBreak it into smaller parts:\n\n330 = 33 × 10\n33 = 3 × 11\n10 = 2 × 5\n\nTherefore:\n\n330 = 2 × 3 × 5 × 11\n\nThis is why prime factorization is useful in H.C.F. and L.C.M. problems. It exposes the basic prime building blocks inside a number.\n\nThe order of the prime factors does not matter. What matters is that multiplying them gives the original number and every factor is prime.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factorization_check"
+        }
+      ]
+    },
+    "prime_factor_check": {
+      "id": "prime_factor_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 2 × 3 × 7"
+          },
+          {
+            "id": "b",
+            "label": "2 × 6 × 7"
+          },
+          {
+            "id": "c",
+            "label": "4 × 3 × 7"
+          },
+          {
+            "id": "d",
+            "label": "1 × 84"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the prime factorization of 84?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "factorization_330"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "prime_factor_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Keep breaking composite factors until only primes remain.",
+            "84 = 2 × 2 × 21, and 21 = 3 × 7."
+          ],
+          "prompt": "Which is the prime factorization of 84?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 2 × 3 × 7"
+            },
+            {
+              "id": "b",
+              "label": "2 × 6 × 7"
+            },
+            {
+              "id": "c",
+              "label": "4 × 3 × 7"
+            },
+            {
+              "id": "d",
+              "label": "1 × 84"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 84 = 2 × 2 × 3 × 7, and every factor in the final expression is prime.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "prime_factor_retry": {
+      "id": "prime_factor_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 3 × 5"
+          },
+          {
+            "id": "b",
+            "label": "2 × 5 × 6"
+          },
+          {
+            "id": "c",
+            "label": "3 × 10"
+          },
+          {
+            "id": "d",
+            "label": "1 × 30"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the prime factorization of 30?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factorization_330"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Every final factor must be prime.",
+            "30 = 2 × 15 = 2 × 3 × 5."
+          ],
+          "prompt": "Which is the prime factorization of 30?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 3 × 5"
+            },
+            {
+              "id": "b",
+              "label": "2 × 5 × 6"
+            },
+            {
+              "id": "c",
+              "label": "3 × 10"
+            },
+            {
+              "id": "d",
+              "label": "1 × 30"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 30 = 2 × 3 × 5, and 2, 3 and 5 are all prime.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "factorization_check": {
+      "id": "factorization_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 3 × 5 × 11"
+          },
+          {
+            "id": "b",
+            "label": "2 × 4 × 5 × 11"
+          },
+          {
+            "id": "c",
+            "label": "2 × 3 × 7 × 13"
+          },
+          {
+            "id": "d",
+            "label": "3 × 5 × 13"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which prime-factor form represents 330?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "book_factorization_examples"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "factorization_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "330 = 33 × 10.",
+            "Break 33 and 10 into prime factors."
+          ],
+          "prompt": "Which prime-factor form represents 330?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 3 × 5 × 11"
+            },
+            {
+              "id": "b",
+              "label": "2 × 4 × 5 × 11"
+            },
+            {
+              "id": "c",
+              "label": "2 × 3 × 7 × 13"
+            },
+            {
+              "id": "d",
+              "label": "3 × 5 × 13"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 330 = 2 × 3 × 5 × 11, and all four factors are prime.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "factorization_retry": {
+      "id": "factorization_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 2 × 3 × 7"
+          },
+          {
+            "id": "b",
+            "label": "2 × 6 × 7"
+          },
+          {
+            "id": "c",
+            "label": "4 × 3 × 7"
+          },
+          {
+            "id": "d",
+            "label": "1 × 84"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the prime factorization of 84?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "book_factorization_examples"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Do not leave composite numbers such as 6 or 4 in the final answer.",
+            "84 = 2 × 2 × 3 × 7."
+          ],
+          "prompt": "Which is the prime factorization of 84?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 2 × 3 × 7"
+            },
+            {
+              "id": "b",
+              "label": "2 × 6 × 7"
+            },
+            {
+              "id": "c",
+              "label": "4 × 3 × 7"
+            },
+            {
+              "id": "d",
+              "label": "1 × 84"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 84 = 2 × 2 × 3 × 7, with only prime factors remaining.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "prime_factor_remedy": {
+      "id": "prime_factor_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Prime factorization is not finished while a composite number is still present.\n\nFor 84:\n\n84 = 2 × 42\n= 2 × 2 × 21\n= 2 × 2 × 3 × 7\n\nSo 2 × 6 × 7 is not the final form because 6 is composite.\n\nThe final line must contain only prime numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "prime_factor_retry"
+        }
+      ]
+    },
+    "prime_factorization": {
+      "id": "prime_factorization",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now put the ideas together.\n\nPrime factorization means writing a number as a product of prime factors.\n\nTake 84:\n\n84 = 2 × 42\n42 = 2 × 21\n21 = 3 × 7\n\nSo:\n\n84 = 2 × 2 × 3 × 7\n\nThe final factors are all prime.\n\nReal-world picture:\nImagine a machine made from smaller parts. If one part is still made from smaller parts, we keep taking it apart until only the basic parts remain.\n\nPrime factorization does the same thing to a number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "prime_factor_check"
+        }
+      ]
+    },
+    "factorization_remedy": {
+      "id": "factorization_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start from the number itself:\n\n330 = 33 × 10\n\nNow break both parts:\n\n33 = 3 × 11\n10 = 2 × 5\n\nSo:\n\n330 = 2 × 3 × 5 × 11\n\nCheck the final expression:\nEvery factor is prime, and the product is 330.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factorization_retry"
+        }
+      ]
+    },
+    "book_factorization_check": {
+      "id": "book_factorization_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 3 × 11 × 17"
+          },
+          {
+            "id": "b",
+            "label": "3 × 11 × 17 × 2"
+          },
+          {
+            "id": "c",
+            "label": "9 × 11 × 17 × 2"
+          },
+          {
+            "id": "d",
+            "label": "3 × 11 × 17 × 3"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the prime factorization of 1122?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "perfect_number"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "book_factorization_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Break 1122 into smaller factors.",
+            "The final expression must contain only prime numbers."
+          ],
+          "prompt": "Which is the prime factorization of 1122?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 3 × 11 × 17"
+            },
+            {
+              "id": "b",
+              "label": "3 × 11 × 17 × 2"
+            },
+            {
+              "id": "c",
+              "label": "9 × 11 × 17 × 2"
+            },
+            {
+              "id": "d",
+              "label": "3 × 11 × 17 × 3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 1122 = 2 × 3 × 11 × 17, and all four factors are prime.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "book_factorization_retry": {
+      "id": "book_factorization_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 2 × 3 × 3 × 7"
+          },
+          {
+            "id": "b",
+            "label": "2 × 2 × 9 × 7"
+          },
+          {
+            "id": "c",
+            "label": "4 × 3 × 21"
+          },
+          {
+            "id": "d",
+            "label": "2 × 126"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the prime factorization of 252?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "perfect_number"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Keep breaking composite factors.",
+            "252 = 2 × 2 × 3 × 3 × 7."
+          ],
+          "prompt": "Which is the prime factorization of 252?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 2 × 3 × 3 × 7"
+            },
+            {
+              "id": "b",
+              "label": "2 × 2 × 9 × 7"
+            },
+            {
+              "id": "c",
+              "label": "4 × 3 × 21"
+            },
+            {
+              "id": "d",
+              "label": "2 × 126"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 252 = 2 × 2 × 3 × 3 × 7, with only prime factors remaining.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "book_factorization_remedy": {
+      "id": "book_factorization_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's break 1122 down carefully.\n\n1122 = 2 × 561\n561 = 3 × 187\n187 = 11 × 17\n\nTherefore:\n\n1122 = 2 × 3 × 11 × 17\n\nNotice that 9, 561 and 187 are not prime, so they cannot remain in the final prime factorization.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "book_factorization_retry"
+        }
+      ]
+    },
+    "book_factorization_examples": {
+      "id": "book_factorization_examples",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book uses this same prime-factor idea with several numbers.\n\nFor 1122:\n\n1122 = 2 × 561\n= 2 × 3 × 187\n= 2 × 3 × 11 × 17\n\nSo its prime factors are 2, 3, 11 and 17.\n\nAnother example is 252:\n\n252 = 2 × 2 × 3 × 3 × 7\n\nThese examples show the main habit: keep breaking the number until every factor left is prime.\n\nOnce the prime building blocks are visible, H.C.F. and L.C.M. questions become much easier to organize.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "book_factorization_check"
+        }
+      ]
+    },
+    "factor_multiple_relationship": {
+      "id": "factor_multiple_relationship",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here is the relationship in one line:\n\nIf a × b = c, then a and b are factors of c, and c is a multiple of both a and b.\n\nExample:\n\n4 × 5 = 20\n\nSo 4 and 5 are factors of 20.\n20 is a multiple of 4 and also a multiple of 5.\n\nThis simple relationship is the language used throughout H.C.F. and L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "prime_numbers"
+        }
+      ]
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Factors, Multiples & Prime Factorization",
+    "description": "Build the foundation for H.C.F. and L.C.M. by learning factors, multiples, prime numbers, prime factorization, factor recognition, and the perfect-number definition used in the chapter.",
+    "sourceScope": "Based strictly on the H.C.F. and L.C.M. of Numbers chapter content covering Factors and Multiples, prime-factor forms used in the chapter, factor recognition, and the perfect-number definition/example. No divisor-count formula is introduced.",
+    "targetDurationMinutes": 14
+  },
+  "scriptId": "script-hcf-lcm-01-factors-multiples-prime-factorization",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

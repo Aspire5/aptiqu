@@ -1,0 +1,1494 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "This subtopic adds one extra condition to an L.C.M. problem.\n\nThe chapter's pattern is:\n\nFirst, use L.C.M. to satisfy the divisibility requirement.\n\nThen, apply the extra condition.\n\nHere the extra condition is:\n\nthe required number must also be a perfect square.\n\nSo the workflow is:\n\ndivisibility requirement\n→ find the required L.C.M.\n→ inspect its prime-factor powers\n→ multiply by the missing prime factors\n→ obtain the required perfect square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "stage1_check"
+        }
+      ]
+    },
+    "stage1_check": {
+      "id": "stage1_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Make it a square immediately"
+          },
+          {
+            "id": "b",
+            "label": "Find the required L.C.M."
+          },
+          {
+            "id": "c",
+            "label": "Find the H.C.F. of the divisors"
+          },
+          {
+            "id": "d",
+            "label": "Add the divisors"
+          }
+        ]
+      },
+      "content": {
+        "text": "When a number must be divisible by several numbers and also be a perfect square, what should you do first?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "stage1_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at the order of the source solution.",
+            "The source starts with L.C.M. before the square condition."
+          ],
+          "prompt": "When a number must be divisible by several numbers and also be a perfect square, what should you do first?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Make it a square immediately"
+            },
+            {
+              "id": "b",
+              "label": "Find the required L.C.M."
+            },
+            {
+              "id": "c",
+              "label": "Find the H.C.F. of the divisors"
+            },
+            {
+              "id": "d",
+              "label": "Add the divisors"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The chapter first finds the L.C.M. to satisfy the divisibility condition.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "stage1_retry": {
+      "id": "stage1_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Follow the source's order.\n\nFirst satisfy divisibility:\n\nfind the L.C.M. of the given numbers.\n\nOnly after that do we modify the result to make it a perfect square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_example"
+        }
+      ]
+    },
+    "lcm_example": {
+      "id": "lcm_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's example asks for the least number that is:\n\n1. divisible by 16, 20 and 24\n2. also a perfect square.\n\nStep 1: find the L.C.M.\n\nL.C.M.(16, 20, 24) = 240\n\nSo 240 is the least number that satisfies the divisibility requirement.\n\nBut 240 is not yet the required answer because the question also requires a perfect square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factor_240"
+        }
+      ]
+    },
+    "factor_240": {
+      "id": "factor_240",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now inspect 240 in prime-factor form.\n\n240 = 2 × 2 × 2 × 2 × 3 × 5\n\nSo we can group it as:\n\n240 = 2^4 × 3 × 5\n\nThe source then looks at the prime-factor powers.\n\nThe power of 2 is already paired:\n\n2^4\n\nBut 3 and 5 each occur only once.\n\nThe source therefore multiplies by:\n\n3 × 5\n\nto make those factors paired as well.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "factor_check"
+        }
+      ]
+    },
+    "factor_check": {
+      "id": "factor_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 × 3"
+          },
+          {
+            "id": "b",
+            "label": "2 × 5"
+          },
+          {
+            "id": "c",
+            "label": "3 × 5"
+          },
+          {
+            "id": "d",
+            "label": "2 × 3 × 5"
+          }
+        ]
+      },
+      "content": {
+        "text": "In 240 = 2^4 × 3 × 5, which prime factors does the chapter multiply in to make the result a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "square_result"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "factor_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The 2-power is already 4.",
+            "The remaining single 3 and single 5 are the factors the source adds."
+          ],
+          "prompt": "In 240 = 2^4 × 3 × 5, which prime factors does the chapter multiply in to make the result a perfect square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 × 3"
+            },
+            {
+              "id": "b",
+              "label": "2 × 5"
+            },
+            {
+              "id": "c",
+              "label": "3 × 5"
+            },
+            {
+              "id": "d",
+              "label": "2 × 3 × 5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source multiplies 240 by 3 × 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "factor_retry": {
+      "id": "factor_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write:\n\n240 = 2^4 × 3 × 5\n\nThe factor 2 already has an even count: 4.\n\nThe source therefore supplies one more 3 and one more 5:\n\n3 × 5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "square_result"
+        }
+      ]
+    },
+    "square_result": {
+      "id": "square_result",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now complete the source calculation.\n\nRequired number:\n\n240 × 3 × 5\n\n= 240 × 15\n\n= 3600\n\nAnd:\n\n3600 = 60^2\n\nSo the required number is:\n\n3600",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "square_check"
+        }
+      ]
+    },
+    "square_check": {
+      "id": "square_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1600"
+          },
+          {
+            "id": "b",
+            "label": "2400"
+          },
+          {
+            "id": "c",
+            "label": "3600"
+          },
+          {
+            "id": "d",
+            "label": "6400"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the final answer in the chapter's example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "why_square"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "square_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Start from the L.C.M. 240.",
+            "Multiply by 3 × 5."
+          ],
+          "prompt": "What is the final answer in the chapter's example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1600"
+            },
+            {
+              "id": "b",
+              "label": "2400"
+            },
+            {
+              "id": "c",
+              "label": "3600"
+            },
+            {
+              "id": "d",
+              "label": "6400"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The chapter gets 240 × 3 × 5 = 3600.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "square_retry": {
+      "id": "square_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source calculation is:\n\nL.C.M. = 240\n\nMissing factors = 3 × 5\n\nRequired number:\n\n240 × 3 × 5 = 3600",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "why_square"
+        }
+      ]
+    },
+    "why_square": {
+      "id": "why_square",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why were 3 and 5 added?\n\nFrom:\n\n240 = 2^4 × 3 × 5\n\nthe 2-factor already appears four times.\n\nBut 3 appears once and 5 appears once.\n\nThe source's adjustment adds one copy of each:\n\n3 → 3^2\n5 → 5^2\n\nSo the result becomes:\n\n2^4 × 3^2 × 5^2\n\nwhich is:\n\n(2^2 × 3 × 5)^2\n= 60^2\n= 3600.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pair_check"
+        }
+      ]
+    },
+    "pair_check": {
+      "id": "pair_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2^4 × 3 × 5"
+          },
+          {
+            "id": "b",
+            "label": "2^4 × 3^2 × 5^2"
+          },
+          {
+            "id": "c",
+            "label": "2^3 × 3^2 × 5^2"
+          },
+          {
+            "id": "d",
+            "label": "2^2 × 3 × 5"
+          }
+        ]
+      },
+      "content": {
+        "text": "After multiplying 240 by 3 × 5, what is the factorized form of the result?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "two_stage"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pair_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Only the 3 and 5 powers change.",
+            "2^4 stays unchanged."
+          ],
+          "prompt": "After multiplying 240 by 3 × 5, what is the factorized form of the result?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2^4 × 3 × 5"
+            },
+            {
+              "id": "b",
+              "label": "2^4 × 3^2 × 5^2"
+            },
+            {
+              "id": "c",
+              "label": "2^3 × 3^2 × 5^2"
+            },
+            {
+              "id": "d",
+              "label": "2^2 × 3 × 5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Adding one 3 and one 5 changes their powers from 1 to 2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "pair_retry": {
+      "id": "pair_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start with:\n\n240 = 2^4 × 3 × 5\n\nMultiply by:\n\n3 × 5\n\nThen:\n\n240 × 3 × 5\n= 2^4 × 3^2 × 5^2\n\nThat is the square form used by the source.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "two_stage"
+        }
+      ]
+    },
+    "two_stage": {
+      "id": "two_stage",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the chapter's process as two separate stages.\n\nStage 1 — divisibility:\nFind the L.C.M. of the given numbers.\n\nStage 2 — perfect-square condition:\nResolve that L.C.M. into prime factors and see which prime factors need one more copy.\n\nThen multiply the L.C.M. by those missing factors.\n\nDo not skip Stage 1. The square must still satisfy all the original divisibility conditions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "stage2_check"
+        }
+      ]
+    },
+    "stage2_check": {
+      "id": "stage2_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Because the square must still satisfy the original divisibility requirement"
+          },
+          {
+            "id": "b",
+            "label": "Because perfect squares cannot be divisible by 16"
+          },
+          {
+            "id": "c",
+            "label": "Because L.C.M. is only used for H.C.F. problems"
+          },
+          {
+            "id": "d",
+            "label": "Because the answer must be a prime number"
+          }
+        ]
+      },
+      "content": {
+        "text": "Why can't we simply choose any convenient perfect square after finding the divisors?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "repeated_factor"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "stage2_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The original condition does not disappear.",
+            "The source begins by finding an L.C.M. for that reason."
+          ],
+          "prompt": "Why can't we simply choose any convenient perfect square after finding the divisors?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Because the square must still satisfy the original divisibility requirement"
+            },
+            {
+              "id": "b",
+              "label": "Because perfect squares cannot be divisible by 16"
+            },
+            {
+              "id": "c",
+              "label": "Because L.C.M. is only used for H.C.F. problems"
+            },
+            {
+              "id": "d",
+              "label": "Because the answer must be a prime number"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The final square must preserve the original divisibility requirement.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "stage2_retry": {
+      "id": "stage2_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The final answer must satisfy both parts:\n\n1. divisible by all the given numbers\n2. a perfect square\n\nThat is why the L.C.M. comes first and the square adjustment comes second.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "repeated_factor"
+        }
+      ]
+    },
+    "repeated_factor": {
+      "id": "repeated_factor",
+      "type": "CONTENT",
+      "content": {
+        "text": "When the L.C.M. is factorized, inspect each prime factor separately.\n\nIn the source example:\n\n240 = 2^4 × 3 × 5\n\nRead it factor by factor:\n\n2^4 → already paired\n3 → one copy\n5 → one copy\n\nThe source adds one 3 and one 5.\n\nThe important practical habit is:\n\nwrite the L.C.M. in prime-factor form before deciding what to multiply.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "inspect_check"
+        }
+      ]
+    },
+    "inspect_check": {
+      "id": "inspect_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Because 2 is not prime"
+          },
+          {
+            "id": "b",
+            "label": "Because 2 already has four copies"
+          },
+          {
+            "id": "c",
+            "label": "Because 2 cannot occur in a square"
+          },
+          {
+            "id": "d",
+            "label": "Because 240 contains no 2"
+          }
+        ]
+      },
+      "content": {
+        "text": "Why is 2 not included in the extra multiplier for 240?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mini_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "inspect_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at the exponent of 2.",
+            "It is 4."
+          ],
+          "prompt": "Why is 2 not included in the extra multiplier for 240?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Because 2 is not prime"
+            },
+            {
+              "id": "b",
+              "label": "Because 2 already has four copies"
+            },
+            {
+              "id": "c",
+              "label": "Because 2 cannot occur in a square"
+            },
+            {
+              "id": "d",
+              "label": "Because 240 contains no 2"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 240 = 2^4 × 3 × 5, so the 2-factor is already complete in the source's square-making step.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "inspect_retry": {
+      "id": "inspect_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The factorization is:\n\n240 = 2^4 × 3 × 5\n\nThe factor 2 appears four times.\n\nThe source leaves that part unchanged and only adds:\n\n3 × 5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mini_example"
+        }
+      ]
+    },
+    "mini_example": {
+      "id": "mini_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rehearse the same reasoning without changing the method.\n\nSuppose the L.C.M. obtained in a problem is:\n\n120\n\nFactorize:\n\n120 = 2^3 × 3 × 5\n\nThe source uses this exact style in the chapter's perfect-square applications: inspect the prime-factor powers and multiply by the factors needed to complete them.\n\nHere, the 2-part is 2^3, while 3 and 5 occur once.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mini_check"
+        }
+      ]
+    },
+    "mini_check": {
+      "id": "mini_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3 × 5"
+          },
+          {
+            "id": "c",
+            "label": "2 × 3 × 5"
+          },
+          {
+            "id": "d",
+            "label": "Nothing"
+          }
+        ]
+      },
+      "content": {
+        "text": "For 120 = 2^3 × 3 × 5, which factors would need to be multiplied in using the chapter's square-making pattern?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mini_result"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mini_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at 2^3, 3^1 and 5^1.",
+            "Each unpaired factor needs one more copy in this square-making pattern."
+          ],
+          "prompt": "For 120 = 2^3 × 3 × 5, which factors would need to be multiplied in using the chapter's square-making pattern?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3 × 5"
+            },
+            {
+              "id": "c",
+              "label": "2 × 3 × 5"
+            },
+            {
+              "id": "d",
+              "label": "Nothing"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. One more 2, one more 3 and one more 5 are needed to pair all the prime-factor counts, giving 2^4 × 3^2 × 5^2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "mini_retry": {
+      "id": "mini_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start with:\n\n120 = 2^3 × 3 × 5\n\nThe exponents are:\n\n3, 1, 1\n\nThe source-style adjustment supplies one additional copy of each corresponding prime:\n\n2 × 3 × 5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mini_result"
+        }
+      ]
+    },
+    "mini_result": {
+      "id": "mini_result",
+      "type": "CONTENT",
+      "content": {
+        "text": "Then:\n\n120 × 2 × 3 × 5\n= 120 × 30\n= 3600\n\nAnd:\n\n3600 = 60^2\n\nThis is the same two-stage pattern:\n\nL.C.M. first\n→ inspect factors\n→ multiply missing copies\n→ perfect square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mini_result_check"
+        }
+      ]
+    },
+    "mini_result_check": {
+      "id": "mini_result_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1200"
+          },
+          {
+            "id": "b",
+            "label": "2400"
+          },
+          {
+            "id": "c",
+            "label": "3600"
+          },
+          {
+            "id": "d",
+            "label": "7200"
+          }
+        ]
+      },
+      "content": {
+        "text": "What perfect square is obtained from 120 × 2 × 3 × 5?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mini_result_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "2 × 3 × 5 = 30.",
+            "120 × 30 = 3600."
+          ],
+          "prompt": "What perfect square is obtained from 120 × 2 × 3 × 5?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1200"
+            },
+            {
+              "id": "b",
+              "label": "2400"
+            },
+            {
+              "id": "c",
+              "label": "3600"
+            },
+            {
+              "id": "d",
+              "label": "7200"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 120 × 30 = 3600 = 60^2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "mini_result_retry": {
+      "id": "mini_result_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Calculate:\n\n2 × 3 × 5 = 30\n\nThen:\n\n120 × 30 = 3600\n\nSo the resulting perfect square is 3600.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "objective_intro"
+        }
+      ]
+    },
+    "objective_intro": {
+      "id": "objective_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now solve the chapter's objective question.\n\nThe question asks for the least number which is:\n\na perfect square\nand\ndivisible by 16, 20 and 24.\n\nThe source's answer choices are:\n\n1600\n3600\n6400\n14400\n\nWe already know the source's worked calculation:\n\nL.C.M.(16,20,24) = 240\n\n240 = 2^4 × 3 × 5\n\nMultiply by 3 × 5:\n\n240 × 3 × 5 = 3600.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "objective_q"
+        }
+      ]
+    },
+    "objective_q": {
+      "id": "objective_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1600"
+          },
+          {
+            "id": "b",
+            "label": "3600"
+          },
+          {
+            "id": "c",
+            "label": "6400"
+          },
+          {
+            "id": "d",
+            "label": "14400"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least perfect square divisible by 16, 20 and 24 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective_explain"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First find L.C.M.(16,20,24) = 240.",
+            "Then multiply by 3 × 5."
+          ],
+          "prompt": "The least perfect square divisible by 16, 20 and 24 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "1600"
+            },
+            {
+              "id": "b",
+              "label": "3600"
+            },
+            {
+              "id": "c",
+              "label": "6400"
+            },
+            {
+              "id": "d",
+              "label": "14400"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source gives 3600.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "objective_retry": {
+      "id": "objective_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the exact source route.\n\nL.C.M.(16,20,24) = 240\n\nPrime factors:\n\n240 = 2^4 × 3 × 5\n\nThe source adds:\n\n3 × 5\n\nTherefore:\n\n240 × 3 × 5 = 3600",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "objective_explain"
+        }
+      ]
+    },
+    "objective_explain": {
+      "id": "objective_explain",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why is 3600 the correct choice?\n\nIt keeps the divisibility condition because it is a multiple of 240.\n\nAnd the factor structure becomes:\n\n3600 = 2^4 × 3^2 × 5^2\n\nSo the prime factors have been completed in pairs, giving:\n\n3600 = 60^2\n\nTherefore the correct option is 3600.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "divisibility_check"
+        }
+      ]
+    },
+    "divisibility_check": {
+      "id": "divisibility_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "It is the final perfect square"
+          },
+          {
+            "id": "b",
+            "label": "It is the L.C.M. satisfying the divisibility requirement"
+          },
+          {
+            "id": "c",
+            "label": "It is the H.C.F. of 16, 20 and 24"
+          },
+          {
+            "id": "d",
+            "label": "It is the extra factor multiplied at the end"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which statement best describes the role of 240 in the source's solution?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_factor_check"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "divisibility_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "240 comes before the square adjustment.",
+            "The source explicitly calculates L.C.M. = 240."
+          ],
+          "prompt": "Which statement best describes the role of 240 in the source's solution?",
+          "options": [
+            {
+              "id": "a",
+              "label": "It is the final perfect square"
+            },
+            {
+              "id": "b",
+              "label": "It is the L.C.M. satisfying the divisibility requirement"
+            },
+            {
+              "id": "c",
+              "label": "It is the H.C.F. of 16, 20 and 24"
+            },
+            {
+              "id": "d",
+              "label": "It is the extra factor multiplied at the end"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 240 is the L.C.M. of 16, 20 and 24.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "divisibility_retry": {
+      "id": "divisibility_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source obtains:\n\nL.C.M.(16,20,24) = 240\n\nSo 240 is the first-stage result.\n\nIt is not yet the final answer because the question also requires a perfect square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_factor_check"
+        }
+      ]
+    },
+    "extra_factor_check": {
+      "id": "extra_factor_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "3 × 5"
+          }
+        ]
+      },
+      "content": {
+        "text": "What extra multiplier does the source use after obtaining L.C.M. = 240?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_factor_explain"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_factor_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at 240 = 2^4 × 3 × 5.",
+            "The source adds one more 3 and one more 5."
+          ],
+          "prompt": "What extra multiplier does the source use after obtaining L.C.M. = 240?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "3 × 5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source multiplies 240 by 3 × 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "extra_factor_retry": {
+      "id": "extra_factor_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source writes:\n\n240 = 2^4 × 3 × 5\n\nThe extra multiplier is:\n\n3 × 5\n\nSo:\n\n240 × 3 × 5 = 3600.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_factor_explain"
+        }
+      ]
+    },
+    "extra_factor_explain": {
+      "id": "extra_factor_explain",
+      "type": "CONTENT",
+      "content": {
+        "text": "The extra multiplier is not chosen randomly.\n\nIt comes from the prime-factor structure of the L.C.M.\n\nFor 240:\n\n2^4 is already complete in the source's square-making step.\n\n3 appears once → add 3.\n\n5 appears once → add 5.\n\nSo the multiplier is:\n\n3 × 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_rehearsal"
+        }
+      ]
+    },
+    "final_rehearsal": {
+      "id": "final_rehearsal",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's run the whole method one last time without skipping any step.\n\nQuestion:\n\nFind the least perfect square divisible by 16, 20 and 24.\n\nStep 1:\nFind the L.C.M.\n\nL.C.M.(16,20,24) = 240\n\nStep 2:\nPrime-factorize the L.C.M.\n\n240 = 2^4 × 3 × 5\n\nStep 3:\nInspect the factors.\n\n2 has four copies.\n3 has one copy.\n5 has one copy.\n\nStep 4:\nMultiply by the missing copies used by the source:\n\n3 × 5\n\nStep 5:\nCalculate:\n\n240 × 3 × 5 = 3600\n\nStep 6:\nRecognize the result as:\n\n3600 = 60^2\n\nAnswer:\n\n3600",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q1"
+        }
+      ]
+    },
+    "final_q1": {
+      "id": "final_q1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120"
+          },
+          {
+            "id": "b",
+            "label": "180"
+          },
+          {
+            "id": "c",
+            "label": "240"
+          },
+          {
+            "id": "d",
+            "label": "360"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the correct first-stage result for the source's perfect-square problem?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q1_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the L.C.M. of 16, 20 and 24.",
+            "The source gives 240."
+          ],
+          "prompt": "What is the correct first-stage result for the source's perfect-square problem?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120"
+            },
+            {
+              "id": "b",
+              "label": "180"
+            },
+            {
+              "id": "c",
+              "label": "240"
+            },
+            {
+              "id": "d",
+              "label": "360"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M.(16,20,24) = 240.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "final_q1_retry": {
+      "id": "final_q1_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The divisibility stage is:\n\nL.C.M.(16,20,24) = 240\n\nOnly after obtaining 240 do we apply the perfect-square condition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q2"
+        }
+      ]
+    },
+    "final_q2": {
+      "id": "final_q2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "3 × 5"
+          }
+        ]
+      },
+      "content": {
+        "text": "After factorizing 240 as 2^4 × 3 × 5, what extra multiplier does the source use?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q2_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "2 already has power 4.",
+            "The single 3 and single 5 are the factors added."
+          ],
+          "prompt": "After factorizing 240 as 2^4 × 3 × 5, what extra multiplier does the source use?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "3 × 5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source multiplies by 3 × 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "final_q2_retry": {
+      "id": "final_q2_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "From:\n\n240 = 2^4 × 3 × 5\n\nthe source leaves 2^4 alone and adds:\n\n3 × 5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q3"
+        }
+      ]
+    },
+    "final_q3": {
+      "id": "final_q3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "240"
+          },
+          {
+            "id": "b",
+            "label": "1200"
+          },
+          {
+            "id": "c",
+            "label": "3600"
+          },
+          {
+            "id": "d",
+            "label": "9600"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the final required number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q3_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Calculate 3 × 5 = 15.",
+            "240 × 15 = 3600."
+          ],
+          "prompt": "What is the final required number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "240"
+            },
+            {
+              "id": "b",
+              "label": "1200"
+            },
+            {
+              "id": "c",
+              "label": "3600"
+            },
+            {
+              "id": "d",
+              "label": "9600"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 240 × 3 × 5 = 3600.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "final_q3_retry": {
+      "id": "final_q3_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Calculate the source's final step:\n\n240 × 3 × 5\n= 240 × 15\n= 3600\n\nSo the required number is 3600.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "CONTENT",
+      "content": {
+        "text": "Excellent.\n\nThis subtopic has one main pattern:\n\nFirst satisfy the divisibility condition with L.C.M.\n\nThen satisfy the perfect-square condition by looking at the prime-factor form of that L.C.M. and multiplying by the missing prime factors used in the chapter's solution.\n\nThe source example:\n\nL.C.M.(16,20,24) = 240\n240 = 2^4 × 3 × 5\nextra multiplier = 3 × 5\nrequired number = 240 × 3 × 5 = 3600\n\nAnd:\n\n3600 = 60^2\n\nThe matching objective question has the same answer:\n\n3600.\n\nSo when you see:\n\n'least number'\n+ 'divisible by these numbers'\n+ 'perfect square'\n\nthink:\n\nL.C.M. first\n→ inspect prime factors\n→ add the missing copies\n→ final square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "LCM with Perfect-Square & Structural Conditions",
+    "description": "Learn the chapter's method for first finding an L.C.M. and then modifying it to satisfy a perfect-square condition.",
+    "targetDurationMinutes": 24
+  },
+  "scriptId": "script-hcf-lcm-13-perfect-square-conditions",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

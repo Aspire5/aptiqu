@@ -1,0 +1,2169 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Several events repeat after fixed intervals. When will they happen together again?\n\nThe key idea is:\n\nIf the intervals are t1, t2, t3, ...\n\nthe next common occurrence comes after the L.C.M. of those intervals.\n\nWhy? Because the elapsed time must be a multiple of every interval at the same time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "core_check"
+        }
+      ]
+    },
+    "core_check": {
+      "id": "core_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 seconds"
+          },
+          {
+            "id": "b",
+            "label": "18 seconds"
+          },
+          {
+            "id": "c",
+            "label": "24 seconds"
+          },
+          {
+            "id": "d",
+            "label": "48 seconds"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three events repeat every 6 s, 8 s and 12 s. After how much time will they next occur together?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "traffic_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "core_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The elapsed time must be divisible by all three intervals.",
+            "Because we want the first common time, use the L.C.M."
+          ],
+          "prompt": "Three events repeat every 6 s, 8 s and 12 s. After how much time will they next occur together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 seconds"
+            },
+            {
+              "id": "b",
+              "label": "18 seconds"
+            },
+            {
+              "id": "c",
+              "label": "24 seconds"
+            },
+            {
+              "id": "d",
+              "label": "48 seconds"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M.(6, 8, 12) = 24 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "core_remedy": {
+      "id": "core_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The common time must be a common multiple of 6, 8 and 12.\n\nThe least common multiple is:\n\nL.C.M.(6, 8, 12) = 24\n\nSo they next occur together after 24 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "traffic_intro"
+        }
+      ]
+    },
+    "traffic_intro": {
+      "id": "traffic_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Book example: three traffic lights change every 48 s, 72 s and 108 s.\n\nThey all change together at 8:20:00.\n\nFirst find the common interval:\n\nL.C.M.(48, 72, 108) = 432 seconds\n\nConvert:\n\n432 seconds = 7 minutes 12 seconds\n\nSo the next common change is:\n\n8:20:00 + 7:12 = 8:27:12\n\nThe L.C.M. gives elapsed time; the starting clock time comes afterward.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "traffic_q"
+        }
+      ]
+    },
+    "traffic_q": {
+      "id": "traffic_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8:26:48"
+          },
+          {
+            "id": "b",
+            "label": "8:27:00"
+          },
+          {
+            "id": "c",
+            "label": "8:27:12"
+          },
+          {
+            "id": "d",
+            "label": "8:28:12"
+          }
+        ]
+      },
+      "content": {
+        "text": "If traffic lights change every 48 s, 72 s and 108 s and start together at 8:20:00, when do they next change together?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "traffic_ok"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "traffic_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find L.C.M.(48,72,108).",
+            "Convert 432 seconds to minutes and seconds before adding it."
+          ],
+          "prompt": "If traffic lights change every 48 s, 72 s and 108 s and start together at 8:20:00, when do they next change together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8:26:48"
+            },
+            {
+              "id": "b",
+              "label": "8:27:00"
+            },
+            {
+              "id": "c",
+              "label": "8:27:12"
+            },
+            {
+              "id": "d",
+              "label": "8:28:12"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 432 seconds = 7 minutes 12 seconds, so 8:20:00 + 7:12 = 8:27:12.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "traffic_bad": {
+      "id": "traffic_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M.(48, 72, 108) = 432 seconds.\n\n432 = 7 × 60 + 12\n\nSo the interval is 7 minutes 12 seconds.\n\n8:20:00 + 7:12 = 8:27:12",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "traffic_retry"
+        }
+      ]
+    },
+    "traffic_retry": {
+      "id": "traffic_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7:27:15"
+          },
+          {
+            "id": "b",
+            "label": "7:27:30"
+          },
+          {
+            "id": "c",
+            "label": "7:27:45"
+          },
+          {
+            "id": "d",
+            "label": "7:28:00"
+          }
+        ]
+      },
+      "content": {
+        "text": "Traffic lights change every 45 s, 75 s and 90 s. If they change together at 7:20:15, when will they next change together?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "unit_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "traffic_retry_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the L.C.M. first.",
+            "450 seconds = 7 minutes 30 seconds."
+          ],
+          "prompt": "Traffic lights change every 45 s, 75 s and 90 s. If they change together at 7:20:15, when will they next change together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7:27:15"
+            },
+            {
+              "id": "b",
+              "label": "7:27:30"
+            },
+            {
+              "id": "c",
+              "label": "7:27:45"
+            },
+            {
+              "id": "d",
+              "label": "7:28:00"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M.(45,75,90) = 450 s = 7 min 30 s. 7:20:15 + 7:30 = 7:27:45.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "traffic_retry_bad": {
+      "id": "traffic_retry_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book's later traffic-light question uses 45, 75 and 90 seconds.\n\nL.C.M. = 450 seconds.\n\n450 seconds = 7 minutes 30 seconds.\n\nStarting at 7:20:15:\n\n7:20:15 + 7:30 = 7:27:45.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unit_intro"
+        }
+      ]
+    },
+    "traffic_ok": {
+      "id": "traffic_ok",
+      "type": "CONTENT",
+      "content": {
+        "text": "Good. The pattern is now automatic:\n\nfixed intervals → L.C.M. → elapsed common time → add to the starting clock time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unit_intro"
+        }
+      ]
+    },
+    "unit_intro": {
+      "id": "unit_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Before taking an L.C.M., all intervals must be expressed in one common unit.\n\nFor this chapter:\n\n1 minute = 60 seconds\n1 hour = 60 minutes = 3600 seconds\n\nFor example:\n\n30 minutes = 30 minutes\n1 hour = 60 minutes\n1.5 hours = 90 minutes\n1 hour 45 minutes = 105 minutes\n\nNow the intervals are ready for one L.C.M. calculation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unit_q"
+        }
+      ]
+    },
+    "unit_q": {
+      "id": "unit_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Seconds"
+          },
+          {
+            "id": "b",
+            "label": "Minutes"
+          },
+          {
+            "id": "c",
+            "label": "Hours only"
+          },
+          {
+            "id": "d",
+            "label": "No conversion"
+          }
+        ]
+      },
+      "content": {
+        "text": "For intervals of 30 min, 1 hour, 1.5 hours and 1 hour 45 min, which unit is most convenient before finding the L.C.M.?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "devices_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "unit_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Convert every interval to the same unit.",
+            "30, 60, 90 and 105 are all whole minutes."
+          ],
+          "prompt": "For intervals of 30 min, 1 hour, 1.5 hours and 1 hour 45 min, which unit is most convenient before finding the L.C.M.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Seconds"
+            },
+            {
+              "id": "b",
+              "label": "Minutes"
+            },
+            {
+              "id": "c",
+              "label": "Hours only"
+            },
+            {
+              "id": "d",
+              "label": "No conversion"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The convenient common-unit set is 30, 60, 90 and 105 minutes.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "unit_bad": {
+      "id": "unit_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use minutes:\n\n30 min\n1 hour = 60 min\n1.5 hours = 90 min\n1 hour 45 min = 105 min\n\nThen take the L.C.M. of 30, 60, 90 and 105.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "devices_intro"
+        }
+      ]
+    },
+    "devices_intro": {
+      "id": "devices_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Book example: four devices beep after 30 min, 1 hour, 1.5 hours and 1 hour 45 min.\n\nConvert to minutes:\n\n30, 60, 90, 105\n\nThe book finds:\n\nL.C.M. = 1260 minutes\n\n1260 minutes = 21 hours.\n\nIf they all beep together at 12 noon, the next common time is:\n\n12 noon + 21 hours = 9 a.m. the next day.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "devices_q"
+        }
+      ]
+    },
+    "devices_q": {
+      "id": "devices_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 midnight"
+          },
+          {
+            "id": "b",
+            "label": "3 a.m."
+          },
+          {
+            "id": "c",
+            "label": "6 a.m."
+          },
+          {
+            "id": "d",
+            "label": "9 a.m."
+          }
+        ]
+      },
+      "content": {
+        "text": "Four devices beep every 30, 60, 90 and 105 minutes and start together at 12 noon. When will they next beep together?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "runner_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "devices_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find L.C.M.(30,60,90,105).",
+            "1260 minutes is 21 hours."
+          ],
+          "prompt": "Four devices beep every 30, 60, 90 and 105 minutes and start together at 12 noon. When will they next beep together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 midnight"
+            },
+            {
+              "id": "b",
+              "label": "3 a.m."
+            },
+            {
+              "id": "c",
+              "label": "6 a.m."
+            },
+            {
+              "id": "d",
+              "label": "9 a.m."
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M. = 1260 min = 21 h, so the next common beep is 9 a.m. the next day.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "devices_bad": {
+      "id": "devices_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M.(30,60,90,105) = 1260 minutes.\n\n1260 minutes = 21 hours.\n\nStarting at noon, 21 hours later is 9 a.m. the next day.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "runner_intro"
+        }
+      ]
+    },
+    "runner_intro": {
+      "id": "runner_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "For runners on one circular track, use the time for one complete revolution as each interval.\n\nIf a runner needs 54 seconds for one round, every 54 seconds that runner returns to the starting point.\n\nAll runners are together at the starting point again when the elapsed time is a common multiple of all revolution times.\n\nSo again:\n\nmeeting time = L.C.M. of revolution times.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "runner_example"
+        }
+      ]
+    },
+    "runner_example": {
+      "id": "runner_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "Book solved example:\n\nSeema, Meena and Reema complete one revolution in:\n\n54 s\n42 s\n63 s\n\nThe source finds:\n\nL.C.M.(54,42,63) = 378 s\n\n378 s = 6 min 18 s\n\nTherefore they meet again at the starting point after 6 minutes 18 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "runner_q"
+        }
+      ]
+    },
+    "runner_q": {
+      "id": "runner_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 min 18 sec"
+          },
+          {
+            "id": "b",
+            "label": "6 min 18 sec"
+          },
+          {
+            "id": "c",
+            "label": "6 min 28 sec"
+          },
+          {
+            "id": "d",
+            "label": "7 min 18 sec"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three runners complete one round in 54 s, 42 s and 63 s. After how much time will they all return together to the starting point?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "runner_more"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "runner_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Take the L.C.M. of 54, 42 and 63.",
+            "Then convert 378 seconds to minutes and seconds."
+          ],
+          "prompt": "Three runners complete one round in 54 s, 42 s and 63 s. After how much time will they all return together to the starting point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 min 18 sec"
+            },
+            {
+              "id": "b",
+              "label": "6 min 18 sec"
+            },
+            {
+              "id": "c",
+              "label": "6 min 28 sec"
+            },
+            {
+              "id": "d",
+              "label": "7 min 18 sec"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 378 seconds = 6 minutes 18 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "runner_bad": {
+      "id": "runner_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M.(54,42,63) = 378 seconds.\n\n378 = 6 × 60 + 18\n\nSo the answer is:\n\n6 min 18 sec.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "runner_more"
+        }
+      ]
+    },
+    "runner_more": {
+      "id": "runner_more",
+      "type": "CONTENT",
+      "content": {
+        "text": "Another source-backed example uses round times:\n\n24 s, 36 s and 48 s.\n\nL.C.M.(24,36,48) = 144 seconds\n\n144 seconds = 2 minutes 24 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "runner_more_q"
+        }
+      ]
+    },
+    "runner_more_q": {
+      "id": "runner_more_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 min 20 sec"
+          },
+          {
+            "id": "b",
+            "label": "2 min 24 sec"
+          },
+          {
+            "id": "c",
+            "label": "3 min 36 sec"
+          },
+          {
+            "id": "d",
+            "label": "4 min 12 sec"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three girls complete one round in 24 s, 36 s and 48 s. After how much time will they meet at one point?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "fraction_runner_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "runner_more_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the L.C.M. of the three round times.",
+            "144 seconds = 2 minutes 24 seconds."
+          ],
+          "prompt": "Three girls complete one round in 24 s, 36 s and 48 s. After how much time will they meet at one point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 min 20 sec"
+            },
+            {
+              "id": "b",
+              "label": "2 min 24 sec"
+            },
+            {
+              "id": "c",
+              "label": "3 min 36 sec"
+            },
+            {
+              "id": "d",
+              "label": "4 min 12 sec"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M.(24,36,48) = 144 seconds = 2 minutes 24 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "runner_more_bad": {
+      "id": "runner_more_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M.(24,36,48) = 144 seconds.\n\n144 seconds = 2 minutes 24 seconds.\n\nSo they next meet after 2 minutes 24 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "fraction_runner_intro"
+        }
+      ]
+    },
+    "fraction_runner_intro": {
+      "id": "fraction_runner_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter also includes fractional revolution times.\n\nThe source uses:\n\n91/6 seconds\n65/4 seconds\n56/3 seconds\n\nTo handle these, the chapter applies its fraction L.C.M. rule:\n\nL.C.M. of fractions\n= L.C.M. of numerators / H.C.F. of denominators\n\nSo:\n\nL.C.M.(91/6,65/4,56/3)\n= L.C.M.(91,65,56) / H.C.F.(6,4,3)\n= 3640 seconds\n\n3640 seconds = 1 hour 40 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "fraction_runner_q"
+        }
+      ]
+    },
+    "fraction_runner_q": {
+      "id": "fraction_runner_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "364 s"
+          },
+          {
+            "id": "b",
+            "label": "3640 s"
+          },
+          {
+            "id": "c",
+            "label": "36400 s"
+          },
+          {
+            "id": "d",
+            "label": "1 hour 40 minutes"
+          }
+        ]
+      },
+      "content": {
+        "text": "For 91/6 s, 65/4 s and 56/3 s per revolution, what common return time does the source obtain?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "stadium_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "fraction_runner_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use the fraction L.C.M. rule from the chapter.",
+            "The source's final result is 3640 seconds."
+          ],
+          "prompt": "For 91/6 s, 65/4 s and 56/3 s per revolution, what common return time does the source obtain?",
+          "options": [
+            {
+              "id": "a",
+              "label": "364 s"
+            },
+            {
+              "id": "b",
+              "label": "3640 s"
+            },
+            {
+              "id": "c",
+              "label": "36400 s"
+            },
+            {
+              "id": "d",
+              "label": "1 hour 40 minutes"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source gets 3640 seconds = 1 hour 40 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "fraction_runner_bad": {
+      "id": "fraction_runner_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use:\n\nL.C.M.(91,65,56) / H.C.F.(6,4,3)\n\nThe source obtains:\n\n3640 seconds\n\n= 3600 + 40\n= 1 hour 40 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "stadium_intro"
+        }
+      ]
+    },
+    "stadium_intro": {
+      "id": "stadium_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Another source-backed stadium example gives round times:\n\n252 s\n308 s\n198 s\n\nThe source finds:\n\nL.C.M.(252,308,198) = 2772 s\n\nConvert:\n\n2772 = 46 × 60 + 12\n\nSo they meet again at the common starting point after:\n\n46 min 12 sec.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "stadium_q"
+        }
+      ]
+    },
+    "stadium_q": {
+      "id": "stadium_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "42 min 36 sec"
+          },
+          {
+            "id": "b",
+            "label": "45 min"
+          },
+          {
+            "id": "c",
+            "label": "46 min 12 sec"
+          },
+          {
+            "id": "d",
+            "label": "48 min 12 sec"
+          }
+        ]
+      },
+      "content": {
+        "text": "Runners take 252 s, 308 s and 198 s per round. When do they next meet at the starting point?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "count_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "stadium_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Take the L.C.M. of 252, 308 and 198.",
+            "Convert 2772 seconds."
+          ],
+          "prompt": "Runners take 252 s, 308 s and 198 s per round. When do they next meet at the starting point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "42 min 36 sec"
+            },
+            {
+              "id": "b",
+              "label": "45 min"
+            },
+            {
+              "id": "c",
+              "label": "46 min 12 sec"
+            },
+            {
+              "id": "d",
+              "label": "48 min 12 sec"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 2772 seconds = 46 minutes 12 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "stadium_bad": {
+      "id": "stadium_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M.(252,308,198) = 2772 seconds.\n\n2772 - 2760 = 12\n2760 seconds = 46 minutes\n\nSo:\n\n2772 seconds = 46 min 12 sec.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "count_intro"
+        }
+      ]
+    },
+    "count_intro": {
+      "id": "count_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter also asks how many simultaneous events occur during a fixed duration.\n\nThere is one important counting convention:\n\nWhen all events start together at time zero, the initial simultaneous event is included.\n\nSo if:\n\ncommon interval = T\nduration = D\n\nand D is exactly a whole number of T intervals, the chapter counts:\n\nD/T + 1\n\nThe +1 is the starting event at time zero.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "count_q"
+        }
+      ]
+    },
+    "count_q": {
+      "id": "count_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "If events occur together at time 0 and every 10 seconds afterward, how many simultaneous occurrences are counted during 30 seconds?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "bells_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "count_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "List the actual times.",
+            "The initial event at time zero is counted."
+          ],
+          "prompt": "If events occur together at time 0 and every 10 seconds afterward, how many simultaneous occurrences are counted during 30 seconds?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The occurrences are at 0, 10, 20 and 30 seconds: 4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "count_bad": {
+      "id": "count_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "The times are:\n\n0 s\n10 s\n20 s\n30 s\n\nSo there are 4 simultaneous occurrences.\n\nThis is why the chapter uses:\n\nD/T + 1\n\nwhen D is an exact multiple of T and the initial event is included.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bells_intro"
+        }
+      ]
+    },
+    "bells_intro": {
+      "id": "bells_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Book objective example:\n\nSix bells toll at intervals of:\n\n2, 4, 6, 8, 10 and 12 seconds.\n\nFirst:\n\nL.C.M.(2,4,6,8,10,12) = 120 seconds\n\nSo they toll together every 120 seconds.\n\nThirty minutes = 1800 seconds.\n\nNumber of complete 120-second intervals:\n\n1800/120 = 15\n\nInclude the starting toll:\n\n15 + 1 = 16\n\nSo the book's answer is 16 simultaneous tolls.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bells_q"
+        }
+      ]
+    },
+    "bells_q": {
+      "id": "bells_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "16"
+          }
+        ]
+      },
+      "content": {
+        "text": "Six bells start together and toll every 2, 4, 6, 8, 10 and 12 s. How many times do they toll together in 30 min?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "bells_hour_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "bells_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "30 min = 1800 s.",
+            "Use the common interval 120 s and include the initial toll."
+          ],
+          "prompt": "Six bells start together and toll every 2, 4, 6, 8, 10 and 12 s. How many times do they toll together in 30 min?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 1800/120 + 1 = 16.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "bells_bad": {
+      "id": "bells_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "Common interval:\n\nL.C.M.(2,4,6,8,10,12) = 120 s\n\nDuration:\n\n30 min = 1800 s\n\nSo:\n\n1800/120 = 15 intervals\n\nPlus the initial event:\n\n15 + 1 = 16.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bells_hour_intro"
+        }
+      ]
+    },
+    "bells_hour_intro": {
+      "id": "bells_hour_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Next source-backed example:\n\nFour bells toll at:\n\n6 s\n7 s\n8 s\n9 s\n\nCommon interval:\n\nL.C.M.(6,7,8,9) = 504 s\n\nDuration:\n\n1.54 hours = 1.54 × 3600 = 5544 s\n\nNumber of complete intervals:\n\n5544/504 = 11\n\nInclude the initial event:\n\n11 + 1 = 12\n\nSo the source gives:\n\n12 times, at a common interval of 504 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "bells_hour_q"
+        }
+      ]
+    },
+    "bells_hour_q": {
+      "id": "bells_hour_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14 times, 504 s"
+          },
+          {
+            "id": "b",
+            "label": "14 times, 480 s"
+          },
+          {
+            "id": "c",
+            "label": "12 times, 504 s"
+          },
+          {
+            "id": "d",
+            "label": "16 times, 580 s"
+          }
+        ]
+      },
+      "content": {
+        "text": "Four bells toll every 6, 7, 8 and 9 seconds. In 1.54 hours, how many times do they toll together and what is the interval?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "time_language"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "bells_hour_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "L.C.M.(6,7,8,9) = 504.",
+            "1.54 hours = 5544 seconds. Then 5544/504 + 1."
+          ],
+          "prompt": "Four bells toll every 6, 7, 8 and 9 seconds. In 1.54 hours, how many times do they toll together and what is the interval?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14 times, 504 s"
+            },
+            {
+              "id": "b",
+              "label": "14 times, 480 s"
+            },
+            {
+              "id": "c",
+              "label": "12 times, 504 s"
+            },
+            {
+              "id": "d",
+              "label": "16 times, 580 s"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. Common interval = 504 s and the count including the initial event is 12.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "bells_hour_bad": {
+      "id": "bells_hour_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "Compute:\n\nL.C.M.(6,7,8,9) = 504 s\n\n1.54 hours = 5544 s\n\n5544/504 = 11\n\nIncluding the initial toll:\n\n11 + 1 = 12",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "time_language"
+        }
+      ]
+    },
+    "time_language": {
+      "id": "time_language",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep elapsed time and clock time separate.\n\nIf the common interval is 450 seconds, that means the next coincidence is 450 seconds after the starting event.\n\nOnly after finding the interval do we add it to a clock time.\n\nSo:\n\n450 s = 7 min 30 s\n\nStarting at 7:20:15:\n\n7:20:15 + 7:30 = 7:27:45",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "time_q"
+        }
+      ]
+    },
+    "time_q": {
+      "id": "time_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7:27:15"
+          },
+          {
+            "id": "b",
+            "label": "7:27:30"
+          },
+          {
+            "id": "c",
+            "label": "7:27:45"
+          },
+          {
+            "id": "d",
+            "label": "7:28:45"
+          }
+        ]
+      },
+      "content": {
+        "text": "If the common interval is 450 seconds and all events coincide at 7:20:15, what is the next coincidence time?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "seeta_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "time_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Convert 450 seconds to 7 min 30 sec.",
+            "Add it to 7:20:15."
+          ],
+          "prompt": "If the common interval is 450 seconds and all events coincide at 7:20:15, what is the next coincidence time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7:27:15"
+            },
+            {
+              "id": "b",
+              "label": "7:27:30"
+            },
+            {
+              "id": "c",
+              "label": "7:27:45"
+            },
+            {
+              "id": "d",
+              "label": "7:28:45"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 450 seconds = 7 minutes 30 seconds, giving 7:27:45.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "time_bad": {
+      "id": "time_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "450 seconds = 7 minutes 30 seconds.\n\nThen:\n\n7:20:15 + 0:07:30 = 7:27:45.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "seeta_intro"
+        }
+      ]
+    },
+    "seeta_intro": {
+      "id": "seeta_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source also includes a simple repeated-group problem:\n\nSeeta makes necklaces using exactly 16, 20 or 36 beads, with none left over.\n\nThe least possible total must be divisible by all three.\n\nSo:\n\nRequired total = L.C.M.(16,20,36) = 720 beads.\n\nThis is not a clock question, but the same common-multiple idea is underneath it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "seeta_q"
+        }
+      ]
+    },
+    "seeta_q": {
+      "id": "seeta_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "700"
+          },
+          {
+            "id": "b",
+            "label": "720"
+          },
+          {
+            "id": "c",
+            "label": "750"
+          },
+          {
+            "id": "d",
+            "label": "780"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the least number of beads that can be grouped exactly into necklaces of 16, 20 or 36 beads?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "wheel_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "seeta_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The total must be a common multiple of 16, 20 and 36.",
+            "Use the least common multiple."
+          ],
+          "prompt": "What is the least number of beads that can be grouped exactly into necklaces of 16, 20 or 36 beads?",
+          "options": [
+            {
+              "id": "a",
+              "label": "700"
+            },
+            {
+              "id": "b",
+              "label": "720"
+            },
+            {
+              "id": "c",
+              "label": "750"
+            },
+            {
+              "id": "d",
+              "label": "780"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M.(16,20,36) = 720.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "seeta_bad": {
+      "id": "seeta_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M.(16,20,36) = 720.\n\nSo 720 is the least total that can be divided exactly into groups of 16, 20 or 36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wheel_intro"
+        }
+      ]
+    },
+    "wheel_intro": {
+      "id": "wheel_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "The wheels problem is different because the source gives revolutions per minute, not seconds per revolution.\n\nThree wheels make:\n\n40 rpm\n24 rpm\n16 rpm\n\nThere is a red spot on each wheel, all touching the ground together at time zero.\n\nFirst convert RPM into time for one revolution.\n\nFormula used here:\n\ntime for one revolution = 60 seconds / revolutions per minute.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wheel_convert"
+        }
+      ]
+    },
+    "wheel_convert": {
+      "id": "wheel_convert",
+      "type": "CONTENT",
+      "content": {
+        "text": "Convert each wheel:\n\n40 rpm:\n60/40 = 3/2 seconds per revolution\n\n24 rpm:\n60/24 = 5/2 seconds per revolution\n\n16 rpm:\n60/16 = 15/4 seconds per revolution\n\nNow it is a common-period problem for:\n\n3/2 s, 5/2 s and 15/4 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wheel_lcm"
+        }
+      ]
+    },
+    "wheel_lcm": {
+      "id": "wheel_lcm",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source uses the fraction L.C.M. rule:\n\nL.C.M. = L.C.M. of numerators / H.C.F. of denominators\n\nSo:\n\nL.C.M.(3/2,5/2,15/4)\n= L.C.M.(3,5,15) / H.C.F.(2,2,4)\n= 15/2 seconds\n= 7.5 seconds\n= 7 1/2 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "wheel_q"
+        }
+      ]
+    },
+    "wheel_q": {
+      "id": "wheel_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 1/2 sec"
+          },
+          {
+            "id": "b",
+            "label": "7 1/2 sec"
+          },
+          {
+            "id": "c",
+            "label": "18 sec"
+          },
+          {
+            "id": "d",
+            "label": "7 1/2 min"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three wheels rotate at 40, 24 and 16 revolutions per minute. When do their marked spots next touch the ground together?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pendulum_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "wheel_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Convert RPM to seconds per revolution first.",
+            "Then use the fraction L.C.M. rule."
+          ],
+          "prompt": "Three wheels rotate at 40, 24 and 16 revolutions per minute. When do their marked spots next touch the ground together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 1/2 sec"
+            },
+            {
+              "id": "b",
+              "label": "7 1/2 sec"
+            },
+            {
+              "id": "c",
+              "label": "18 sec"
+            },
+            {
+              "id": "d",
+              "label": "7 1/2 min"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The source converts to 3/2, 5/2 and 15/4 seconds per revolution and gets 15/2 = 7.5 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "wheel_bad": {
+      "id": "wheel_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not take the L.C.M. of 40, 24 and 16 directly.\n\nThese are rates.\n\nFirst convert:\n\n40 rpm → 3/2 s\n24 rpm → 5/2 s\n16 rpm → 15/4 s\n\nThen:\n\nL.C.M. = 15/2 = 7 1/2 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pendulum_intro"
+        }
+      ]
+    },
+    "pendulum_intro": {
+      "id": "pendulum_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "The pendulum problem is the most specialized cyclic example in this chapter.\n\nThe source states:\n\nFirst pendulum: 5 strikes in 3 seconds\nSecond pendulum: 7 strikes in 4 seconds\n\nThe source interprets the intervals as:\n\n3/5 second\n4/7 second\n\nThen it applies the fraction L.C.M. rule:\n\nL.C.M.(3/5,4/7)\n= L.C.M.(3,4) / H.C.F.(5,7)\n= 12 seconds\n\nSo, according to the source solution, they strike together every 12 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pendulum_q"
+        }
+      ]
+    },
+    "pendulum_q": {
+      "id": "pendulum_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 seconds"
+          },
+          {
+            "id": "b",
+            "label": "4 seconds"
+          },
+          {
+            "id": "c",
+            "label": "7 seconds"
+          },
+          {
+            "id": "d",
+            "label": "12 seconds"
+          }
+        ]
+      },
+      "content": {
+        "text": "According to the chapter's solution, how often do the two pendulums strike together?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pendulum_count"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pendulum_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Follow the chapter's stated interpretation of the strike rates.",
+            "Apply the fraction L.C.M. rule to 3/5 and 4/7."
+          ],
+          "prompt": "According to the chapter's solution, how often do the two pendulums strike together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 seconds"
+            },
+            {
+              "id": "b",
+              "label": "4 seconds"
+            },
+            {
+              "id": "c",
+              "label": "7 seconds"
+            },
+            {
+              "id": "d",
+              "label": "12 seconds"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source obtains a common interval of 12 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "pendulum_bad": {
+      "id": "pendulum_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source uses:\n\n3/5 second\n4/7 second\n\nThen:\n\nL.C.M.(3,4) / H.C.F.(5,7)\n= 12/1\n= 12 seconds\n\nSo the source answer is 12 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pendulum_count"
+        }
+      ]
+    },
+    "pendulum_count": {
+      "id": "pendulum_count",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now count clear strikes in 1 minute using the source's method.\n\nFirst pendulum:\n\n60 × 5/3 = 100 strikes\n\nSecond pendulum:\n\n60 × 7/4 = 105 strikes\n\nTotal individual counts:\n\n100 + 105 = 205\n\nThey strike together every 12 seconds.\n\nThe source counts simultaneous strike moments in 1 minute as:\n\n60/12 + 1 = 6\n\nbecause the initial simultaneous strike is included.\n\nThose 6 moments were counted in both 100 and 105, so subtract 6 once:\n\n205 - 6 = 199 clear strikes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pendulum_q2"
+        }
+      ]
+    },
+    "pendulum_q2": {
+      "id": "pendulum_q2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "195"
+          },
+          {
+            "id": "b",
+            "label": "199"
+          },
+          {
+            "id": "c",
+            "label": "200"
+          },
+          {
+            "id": "d",
+            "label": "205"
+          }
+        ]
+      },
+      "content": {
+        "text": "A pendulum strikes 5 times in 3 seconds and another 7 times in 4 seconds. If both start together, how many clear strikes are heard in 1 minute?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "fractional_persons"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "pendulum_q2_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Count 100 and 105 individual strikes.",
+            "Subtract the 6 simultaneous strike moments counted twice."
+          ],
+          "prompt": "A pendulum strikes 5 times in 3 seconds and another 7 times in 4 seconds. If both start together, how many clear strikes are heard in 1 minute?",
+          "options": [
+            {
+              "id": "a",
+              "label": "195"
+            },
+            {
+              "id": "b",
+              "label": "199"
+            },
+            {
+              "id": "c",
+              "label": "200"
+            },
+            {
+              "id": "d",
+              "label": "205"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The source gives 100 + 105 - 6 = 199 clear strikes.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "pendulum_q2_bad": {
+      "id": "pendulum_q2_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "Source method:\n\n100 strikes from the first\n105 strikes from the second\n\nTotal = 205\n\nCommon strikes every 12 s:\n\n60/12 + 1 = 6\n\nClear strikes:\n\n205 - 6 = 199",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "fractional_persons"
+        }
+      ]
+    },
+    "fractional_persons": {
+      "id": "fractional_persons",
+      "type": "CONTENT",
+      "content": {
+        "text": "The source also gives three persons with fractional times for one complete revolution:\n\n91/6 s\n65/4 s\n56/3 s\n\nand obtains:\n\nL.C.M. of the periods = 3640 s\n\n= 1 hour 40 seconds.\n\nThe lesson here is simple:\n\nWhen a cyclic interval is fractional, keep the physical meaning first — 'time for one cycle' — and then use the fraction L.C.M. rule from the chapter.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_mix"
+        }
+      ]
+    },
+    "final_mix": {
+      "id": "final_mix",
+      "type": "CONTENT",
+      "content": {
+        "text": "At this point, the situations may look different, but the recognition pattern is the same.\n\nTraffic lights:\nintervals in seconds → L.C.M. → add to starting time.\n\nElectronic devices:\nconvert minutes/hours → L.C.M. → add to starting time.\n\nRunners:\ntime per revolution → L.C.M. → common return.\n\nWheels:\nRPM → time per revolution → fraction L.C.M.\n\nBells:\nL.C.M. → common interval → count simultaneous events, including the initial event as the chapter does.\n\nPendulums:\nfollow the source's rate-to-interval interpretation → common interval → count strikes → remove overlap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q1"
+        }
+      ]
+    },
+    "final_q1": {
+      "id": "final_q1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "The H.C.F. of the intervals"
+          },
+          {
+            "id": "b",
+            "label": "The L.C.M. of the intervals"
+          },
+          {
+            "id": "c",
+            "label": "The sum of the intervals"
+          },
+          {
+            "id": "d",
+            "label": "The difference of the intervals"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the main quantity that determines the next time several fixed-interval repeating events coincide?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q1_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Think 'first common multiple' of all the intervals.",
+            "The intervals must all divide the elapsed common time."
+          ],
+          "prompt": "What is the main quantity that determines the next time several fixed-interval repeating events coincide?",
+          "options": [
+            {
+              "id": "a",
+              "label": "The H.C.F. of the intervals"
+            },
+            {
+              "id": "b",
+              "label": "The L.C.M. of the intervals"
+            },
+            {
+              "id": "c",
+              "label": "The sum of the intervals"
+            },
+            {
+              "id": "d",
+              "label": "The difference of the intervals"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The next simultaneous occurrence is governed by the L.C.M. of the repeating intervals.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_q1_bad": {
+      "id": "final_q1_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "The events coincide again when the elapsed time is divisible by every interval.\n\nThe first such elapsed time is their L.C.M.\n\nSo:\n\nfixed repeating intervals → L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q2"
+        }
+      ]
+    },
+    "final_q2": {
+      "id": "final_q2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "content": {
+        "text": "Six bells have a common interval of 120 seconds. Over 1800 seconds, using the chapter's initial-event convention, how many simultaneous tolls are counted?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q2_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use duration/common interval.",
+            "Add one for the initial event at time zero."
+          ],
+          "prompt": "Six bells have a common interval of 120 seconds. Over 1800 seconds, using the chapter's initial-event convention, how many simultaneous tolls are counted?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 1800/120 = 15 intervals, plus the initial simultaneous toll = 16.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "final_q2_bad": {
+      "id": "final_q2_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "1800/120 = 15 complete common intervals.\n\nThe source's convention includes the initial occurrence:\n\n15 + 1 = 16.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q3"
+        }
+      ]
+    },
+    "final_q3": {
+      "id": "final_q3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/40 second"
+          },
+          {
+            "id": "b",
+            "label": "3/2 seconds"
+          },
+          {
+            "id": "c",
+            "label": "40/60 seconds"
+          },
+          {
+            "id": "d",
+            "label": "60 seconds"
+          }
+        ]
+      },
+      "content": {
+        "text": "A wheel rotates at 40 revolutions per minute. What is its time for one revolution?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q3_bad"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Convert minutes to seconds.",
+            "Time for one revolution = 60/RPM."
+          ],
+          "prompt": "A wheel rotates at 40 revolutions per minute. What is its time for one revolution?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/40 second"
+            },
+            {
+              "id": "b",
+              "label": "3/2 seconds"
+            },
+            {
+              "id": "c",
+              "label": "40/60 seconds"
+            },
+            {
+              "id": "d",
+              "label": "60 seconds"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. One revolution takes 60/40 = 3/2 seconds.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_q3_bad": {
+      "id": "final_q3_bad",
+      "type": "CONTENT",
+      "content": {
+        "text": "At 40 revolutions per minute:\n\n60 seconds / 40 revolutions\n= 3/2 seconds per revolution.\n\nThat period, not the RPM itself, is used in the cyclic L.C.M. calculation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "CONTENT",
+      "content": {
+        "text": "Excellent work.\n\nYou now have the complete cyclic-event framework from this chapter:\n\nCore rule:\nfixed repeating intervals → next simultaneous occurrence after their L.C.M.\n\nStarting-time problems:\nfind the common interval first, then add it to the given clock time.\n\nUnit conversion:\nmake all intervals use the same unit before taking the L.C.M.\n\nTraffic lights and electronic devices:\nL.C.M. gives the elapsed common interval.\n\nCircular runners:\nuse the time for one revolution as each repeating interval, then take the L.C.M.\n\nFractional revolution times:\nuse the chapter's fraction L.C.M. rule.\n\nWheels:\nfirst convert revolutions per minute into seconds per revolution:\n60/RPM\n\nThen take the L.C.M. of the resulting periods.\n\nCounting:\nfor a duration containing D/T whole common intervals, the chapter includes the starting simultaneous event, giving D/T + 1.\n\nBells:\nuse that counting convention directly.\n\nPendulums:\nfollow the source's stated conversion of strike rates into intervals, find the common interval, count individual strikes, and subtract simultaneous overlap once to obtain clear strikes.\n\nThe surface story changes — lights, bells, runners, wheels, devices or pendulums — but the underlying question stays the same:\n\nWhen will these repeating cycles line up again?\n\nThink L.C.M.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "LCM in Repeating Events & Cyclic Problems",
+    "description": "Use L.C.M. to find when repeating events coincide again and how many simultaneous occurrences happen in a stated duration.",
+    "targetDurationMinutes": 38
+  },
+  "scriptId": "script-hcf-lcm-11-cyclic-events",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

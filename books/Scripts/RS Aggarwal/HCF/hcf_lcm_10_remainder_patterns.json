@@ -1,0 +1,2632 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Today we move into the harder remainder patterns of the chapter.\n\nThe big idea is simple:\n\nWhen a number has to satisfy several division conditions at the same time, the L.C.M. usually gives the repeating structure.\n\nWe will learn three forms:\n\nN = L.C.M. × k + r\n\nN = L.C.M. × k - k0\n\nand, when an extra divisibility condition is added, we will find the smallest k that makes the whole expression divisible by the extra number.\n\nThe important skill is recognizing the pattern before doing the arithmetic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remainder_definition"
+        }
+      ]
+    },
+    "remainder_definition": {
+      "id": "remainder_definition",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose N leaves the same remainder r when divided by several numbers.\n\nThen N - r is exactly divisible by every one of those numbers.\n\nSo N - r must be a multiple of their L.C.M.\n\nTherefore the chapter uses the standard form:\n\nN = L.C.M. × k + r\n\nThis is just another way of saying:\n\nN - r = L.C.M. × k.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder_check"
+        }
+      ]
+    },
+    "same_remainder_check": {
+      "id": "same_remainder_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "N = L.C.M. × k - 5"
+          },
+          {
+            "id": "b",
+            "label": "N = L.C.M. × k + 5"
+          },
+          {
+            "id": "c",
+            "label": "N = 5 × k + L.C.M."
+          },
+          {
+            "id": "d",
+            "label": "N = L.C.M. + 5 only"
+          }
+        ]
+      },
+      "content": {
+        "text": "If a number N leaves remainder 5 when divided by 12, 15 and 20, which form captures the common structure?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Subtract the stated remainder from N.",
+            "The remaining part must be a multiple of the L.C.M."
+          ],
+          "prompt": "If a number N leaves remainder 5 when divided by 12, 15 and 20, which form captures the common structure?",
+          "options": [
+            {
+              "id": "a",
+              "label": "N = L.C.M. × k - 5"
+            },
+            {
+              "id": "b",
+              "label": "N = L.C.M. × k + 5"
+            },
+            {
+              "id": "c",
+              "label": "N = 5 × k + L.C.M."
+            },
+            {
+              "id": "d",
+              "label": "N = L.C.M. + 5 only"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Since N leaves remainder 5, subtracting 5 makes it exactly divisible by all the divisors. So N = L.C.M. × k + 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "same_remainder_remedy": {
+      "id": "same_remainder_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "If N leaves remainder 5, then:\n\nN - 5 is divisible by every divisor.\n\nSo:\n\nN - 5 = L.C.M. × k\n\nand therefore:\n\nN = L.C.M. × k + 5\n\nThink of the remainder as the fixed amount left after one complete L.C.M. block.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder_example"
+        }
+      ]
+    },
+    "same_remainder_example": {
+      "id": "same_remainder_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's solved example gives a direct case.\n\nFind the least number which when divided by 6, 7, 8, 9 and 12 leaves the same remainder 1 in each case.\n\nThe book finds:\n\nL.C.M. of 6, 7, 8, 9 and 12 = 504\n\nSo the required number is taken in the form:\n\n504 × k + 1\n\nFor the first positive L.C.M. cycle used in the chapter:\n\nk = 1\n\nTherefore:\n\nN = 504 + 1 = 505.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_remainder_objective"
+        }
+      ]
+    },
+    "same_remainder_objective": {
+      "id": "same_remainder_objective",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "504"
+          },
+          {
+            "id": "b",
+            "label": "536"
+          },
+          {
+            "id": "c",
+            "label": "544"
+          },
+          {
+            "id": "d",
+            "label": "548"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number which when divided by 12, 15, 20 and 54 leaves in each case a remainder of 8 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder_objective_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_remainder_objective_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the L.C.M. of 12, 15, 20 and 54.",
+            "The chapter's pattern is L.C.M. + 8."
+          ],
+          "prompt": "The least number which when divided by 12, 15, 20 and 54 leaves in each case a remainder of 8 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "504"
+            },
+            {
+              "id": "b",
+              "label": "536"
+            },
+            {
+              "id": "c",
+              "label": "544"
+            },
+            {
+              "id": "d",
+              "label": "548"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The book gives L.C.M. of 12, 15, 20 and 54 as 540, then uses the remainder pattern to obtain 540 + 8 = 548.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "same_remainder_objective_success": {
+      "id": "same_remainder_objective_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "Exactly:\n\nL.C.M. of 12, 15, 20 and 54 = 540\n\nThen the chapter's form gives:\n\nN = 540 + 8 = 548\n\nThe important recognition is:\n\nsame remainder r\n→ L.C.M. × k + r.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_intro"
+        }
+      ]
+    },
+    "same_remainder_objective_remedy": {
+      "id": "same_remainder_objective_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start from the common block:\n\nL.C.M. of 12, 15, 20 and 54 = 540\n\nThe question says the remainder is 8.\n\nSo the chapter's required form is:\n\nN = 540 + 8 = 548\n\nThe key is to use the L.C.M. first and attach the stated remainder.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_intro"
+        }
+      ]
+    },
+    "complementary_intro": {
+      "id": "complementary_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now for a more interesting pattern.\n\nSometimes the remainders are different, but the 'distance from the divisor' is the same.\n\nFor example:\n\n12 - 7 = 5\n15 - 10 = 5\n16 - 11 = 5\n\nThe common difference is 5.\n\nThat means if N leaves those remainders, then:\n\nN + 5\n\nis divisible by 12, 15 and 16.\n\nEquivalently, the chapter writes the required number as:\n\nL.C.M. - 5\n\nfor the least positive case.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_check"
+        }
+      ]
+    },
+    "complementary_check": {
+      "id": "complementary_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 + 7 = 19, 15 + 10 = 25, 16 + 11 = 27"
+          },
+          {
+            "id": "b",
+            "label": "12 - 7 = 5, 15 - 10 = 5, 16 - 11 = 5"
+          },
+          {
+            "id": "c",
+            "label": "7 + 10 + 11 = 28"
+          },
+          {
+            "id": "d",
+            "label": "12 × 7, 15 × 10, 16 × 11"
+          }
+        ]
+      },
+      "content": {
+        "text": "For divisors 12, 15 and 16 with remainders 7, 10 and 11 respectively, what common quantity should you notice first?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "complementary_example"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "complementary_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Subtract each remainder from its divisor.",
+            "Look for one common difference."
+          ],
+          "prompt": "For divisors 12, 15 and 16 with remainders 7, 10 and 11 respectively, what common quantity should you notice first?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 + 7 = 19, 15 + 10 = 25, 16 + 11 = 27"
+            },
+            {
+              "id": "b",
+              "label": "12 - 7 = 5, 15 - 10 = 5, 16 - 11 = 5"
+            },
+            {
+              "id": "c",
+              "label": "7 + 10 + 11 = 28"
+            },
+            {
+              "id": "d",
+              "label": "12 × 7, 15 × 10, 16 × 11"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The three complements are all 5. That means N + 5 is divisible by all three divisors.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "complementary_remedy": {
+      "id": "complementary_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not compare the remainders themselves.\n\nCompare each remainder with its own divisor:\n\n12 - 7 = 5\n15 - 10 = 5\n16 - 11 = 5\n\nThe common value 5 is the signal.\n\nSo:\n\nN + 5 is divisible by 12, 15 and 16.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_example"
+        }
+      ]
+    },
+    "complementary_example": {
+      "id": "complementary_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's worked result is:\n\n(12 - 7) = 5\n(15 - 10) = 5\n(16 - 11) = 5\n\nL.C.M. of 12, 15 and 16 = 240\n\nTherefore:\n\nRequired number = 240 - 5 = 235\n\nCheck the idea:\n\n235 + 5 = 240\n\nand 240 is divisible by 12, 15 and 16.\n\nSo the number 235 leaves the required remainders.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_objective"
+        }
+      ]
+    },
+    "complementary_objective": {
+      "id": "complementary_objective",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "115"
+          },
+          {
+            "id": "b",
+            "label": "235"
+          },
+          {
+            "id": "c",
+            "label": "247"
+          },
+          {
+            "id": "d",
+            "label": "475"
+          }
+        ]
+      },
+      "content": {
+        "text": "Find the least number which when divided by 12, 15 and 16 leaves remainders 7, 10 and 11 respectively.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "complementary_objective_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "complementary_objective_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Compute 12 - 7, 15 - 10 and 16 - 11.",
+            "Then use the L.C.M. of 12, 15 and 16."
+          ],
+          "prompt": "Find the least number which when divided by 12, 15 and 16 leaves remainders 7, 10 and 11 respectively.",
+          "options": [
+            {
+              "id": "a",
+              "label": "115"
+            },
+            {
+              "id": "b",
+              "label": "235"
+            },
+            {
+              "id": "c",
+              "label": "247"
+            },
+            {
+              "id": "d",
+              "label": "475"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The complements are all 5, L.C.M. = 240, so the book gives 240 - 5 = 235.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "complementary_objective_success": {
+      "id": "complementary_objective_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "The full pattern is now clear:\n\n12 - 7 = 5\n15 - 10 = 5\n16 - 11 = 5\n\nL.C.M. = 240\n\nTherefore:\n\nN = 240 - 5 = 235\n\nThe number is one common block short of the L.C.M., which creates the complementary remainders.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "large_complementary"
+        }
+      ]
+    },
+    "complementary_objective_remedy": {
+      "id": "complementary_objective_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "All three differences match:\n\n12 - 7 = 5\n15 - 10 = 5\n16 - 11 = 5\n\nSo add 5 to the required number.\n\nThe next number must be divisible by all three divisors, so use:\n\nL.C.M. = 240\n\nThus:\n\nN = 240 - 5 = 235.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "large_complementary"
+        }
+      ]
+    },
+    "large_complementary": {
+      "id": "large_complementary",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now scale the same idea to five divisors.\n\nThe chapter gives:\n\n48 - 38 = 10\n60 - 50 = 10\n72 - 62 = 10\n108 - 98 = 10\n140 - 130 = 10\n\nSo the required number is:\n\nL.C.M. of 48, 60, 72, 108 and 140 - 10\n\nThe book's L.C.M. is 15120.\n\nTherefore:\n\nN = 15120 - 10 = 15110.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "large_complementary_check"
+        }
+      ]
+    },
+    "large_complementary_check": {
+      "id": "large_complementary_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "11115"
+          },
+          {
+            "id": "b",
+            "label": "15110"
+          },
+          {
+            "id": "c",
+            "label": "15120"
+          },
+          {
+            "id": "d",
+            "label": "15210"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number which when divided by 48, 60, 72, 108 and 140 leaves remainders 38, 50, 62, 98 and 130 respectively is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "large_complementary_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "large_complementary_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Check all five divisor-minus-remainder values.",
+            "Once they all equal 10, subtract 10 from the L.C.M."
+          ],
+          "prompt": "The least number which when divided by 48, 60, 72, 108 and 140 leaves remainders 38, 50, 62, 98 and 130 respectively is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "11115"
+            },
+            {
+              "id": "b",
+              "label": "15110"
+            },
+            {
+              "id": "c",
+              "label": "15120"
+            },
+            {
+              "id": "d",
+              "label": "15210"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. Each divisor minus its remainder is 10. The book finds L.C.M. = 15120, then 15120 - 10 = 15110.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "large_complementary_success": {
+      "id": "large_complementary_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the same structure, just with more numbers:\n\ncommon complement = 10\n\nL.C.M. = 15120\n\nRequired number = 15120 - 10 = 15110\n\nSo do not get distracted by the number of divisors. The pattern remains the same.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_form"
+        }
+      ]
+    },
+    "large_complementary_remedy": {
+      "id": "large_complementary_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write the complements:\n\n48 - 38 = 10\n60 - 50 = 10\n72 - 62 = 10\n108 - 98 = 10\n140 - 130 = 10\n\nNow the problem becomes:\n\nFind L.C.M. of 48, 60, 72, 108 and 140.\n\nThe book gives:\n\nL.C.M. = 15120\n\nTherefore:\n\n15120 - 10 = 15110.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_form"
+        }
+      ]
+    },
+    "multiple_form": {
+      "id": "multiple_form",
+      "type": "CONTENT",
+      "content": {
+        "text": "The phrase 'least number' is important.\n\nOnce you have the common complement k0, the general structure is:\n\nN = L.C.M. × m - k0\n\nThe least positive number in the chapter's pattern comes from the first relevant L.C.M. block.\n\nBut when the question asks for a greatest number of a fixed number of digits, we may need a larger multiple:\n\nN = L.C.M. × m - k0\n\nChoose the largest m that keeps N inside the required boundary.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "greatest_complement_example"
+        }
+      ]
+    },
+    "greatest_complement_example": {
+      "id": "greatest_complement_example",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's objective problem asks for the greatest four-digit number which leaves remainders:\n\n1, 2, 3, 4 and 5\n\nwhen divided by:\n\n4, 5, 6, 7 and 8.\n\nNotice:\n\n4 - 1 = 3\n5 - 2 = 3\n6 - 3 = 3\n7 - 4 = 3\n8 - 5 = 3\n\nSo:\n\nN = 840 × m - 3\n\nbecause:\n\nL.C.M. of 4, 5, 6, 7 and 8 = 840.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "greatest_complement_check"
+        }
+      ]
+    },
+    "greatest_complement_check": {
+      "id": "greatest_complement_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9237"
+          },
+          {
+            "id": "b",
+            "label": "9240"
+          },
+          {
+            "id": "c",
+            "label": "9840"
+          },
+          {
+            "id": "d",
+            "label": "9999"
+          }
+        ]
+      },
+      "content": {
+        "text": "Find the greatest four-digit number which when divided by 4, 5, 6, 7 and 8 leaves 1, 2, 3, 4 and 5 as remainders.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "greatest_complement_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "greatest_complement_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use N = 840m - 3.",
+            "The largest four-digit candidate must be just below the largest suitable 840-multiple."
+          ],
+          "prompt": "Find the greatest four-digit number which when divided by 4, 5, 6, 7 and 8 leaves 1, 2, 3, 4 and 5 as remainders.",
+          "options": [
+            {
+              "id": "a",
+              "label": "9237"
+            },
+            {
+              "id": "b",
+              "label": "9240"
+            },
+            {
+              "id": "c",
+              "label": "9840"
+            },
+            {
+              "id": "d",
+              "label": "9999"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The book takes the greatest four-digit boundary 9999, finds the greatest nearby multiple of 840 as 9240, then subtracts 3 to obtain 9237.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "greatest_complement_success": {
+      "id": "greatest_complement_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start at the top boundary:\n\n9999\n\nL.C.M. = 840\n\n9999 ÷ 840 leaves remainder 759.\n\nThe greatest multiple of 840 below 9999 is:\n\n9999 - 759 = 9240\n\nNow subtract the common complement 3:\n\n9240 - 3 = 9237\n\nSo the answer is 9237.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "offset_equation"
+        }
+      ]
+    },
+    "greatest_complement_remedy": {
+      "id": "greatest_complement_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The common complement is 3, so:\n\nN = 840m - 3\n\nThe greatest four-digit multiple of 840 is:\n\n840 × 11 = 9240\n\nTherefore:\n\nN = 9240 - 3 = 9237\n\nThe upper boundary controls which L.C.M. multiple you choose.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "offset_equation"
+        }
+      ]
+    },
+    "offset_equation": {
+      "id": "offset_equation",
+      "type": "CONTENT",
+      "content": {
+        "text": "A very useful habit is to translate the wording into one equation.\n\nIf every divisor and remainder has the same difference:\n\ndivisor - remainder = c\n\nthen:\n\nN + c\n\nis divisible by every divisor.\n\nSo:\n\nN + c = L.C.M. × k\n\nand:\n\nN = L.C.M. × k - c\n\nThis is the complementary-remainder trick in its most reusable form.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "offset_objective"
+        }
+      ]
+    },
+    "offset_objective": {
+      "id": "offset_objective",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "504k + 11"
+          },
+          {
+            "id": "b",
+            "label": "504k - 11"
+          },
+          {
+            "id": "c",
+            "label": "11k + 504"
+          },
+          {
+            "id": "d",
+            "label": "504 - 11k"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 18 - 7 = 11, 21 - 10 = 11 and 24 - 13 = 11, what form should the required number take?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "offset_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "offset_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the common divisor-minus-remainder value.",
+            "Then subtract that value from an L.C.M. multiple."
+          ],
+          "prompt": "If 18 - 7 = 11, 21 - 10 = 11 and 24 - 13 = 11, what form should the required number take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "504k + 11"
+            },
+            {
+              "id": "b",
+              "label": "504k - 11"
+            },
+            {
+              "id": "c",
+              "label": "11k + 504"
+            },
+            {
+              "id": "d",
+              "label": "504 - 11k"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Since the common complement is 11, N + 11 is divisible by all three numbers, so N = 504k - 11.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "offset_success": {
+      "id": "offset_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "Exactly:\n\n18 - 7 = 11\n21 - 10 = 11\n24 - 13 = 11\n\nL.C.M. of 18, 21 and 24 = 504\n\nSo:\n\nN = 504k - 11",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_intro"
+        }
+      ]
+    },
+    "offset_remedy": {
+      "id": "offset_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The common complement is 11.\n\nSo adding 11 to the required number must produce a multiple of all three divisors.\n\nTherefore:\n\nN + 11 = 504k\n\nand:\n\nN = 504k - 11",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_intro"
+        }
+      ]
+    },
+    "extra_condition_intro": {
+      "id": "extra_condition_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now we add one more condition.\n\nSuppose:\n\nN = L.C.M. × k + r\n\nand N must also be divisible by another number.\n\nThe chapter's method is:\n\n1. Find the L.C.M. of the first set.\n2. Write N in the correct remainder form.\n3. Substitute the smallest possible k values.\n4. Stop at the first k that makes N divisible by the extra number.\n\nThe L.C.M. handles the first group of conditions. The extra divisor determines which cycle is acceptable.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_simple"
+        }
+      ]
+    },
+    "extra_condition_simple": {
+      "id": "extra_condition_simple",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book's objective problem says:\n\nFind the least number which when divided by 5, 6, 7 and 8 leaves remainder 3, but when divided by 9 leaves no remainder.\n\nFirst:\n\nL.C.M. of 5, 6, 7 and 8 = 840\n\nSo:\n\nN = 840k + 3\n\nNow N must also be divisible by 9.\n\nThe book tries the smallest k until this works.\n\nk = 2 gives:\n\nN = 840 × 2 + 3 = 1683\n\nand 1683 is divisible by 9.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_check"
+        }
+      ]
+    },
+    "extra_condition_check": {
+      "id": "extra_condition_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1677"
+          },
+          {
+            "id": "b",
+            "label": "1683"
+          },
+          {
+            "id": "c",
+            "label": "2523"
+          },
+          {
+            "id": "d",
+            "label": "3363"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number which when divided by 5, 6, 7 and 8 leaves remainder 3, but when divided by 9 leaves no remainder, is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_condition_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_condition_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "L.C.M. of 5, 6, 7 and 8 is 840.",
+            "Use N = 840k + 3 and test k from the smallest value."
+          ],
+          "prompt": "The least number which when divided by 5, 6, 7 and 8 leaves remainder 3, but when divided by 9 leaves no remainder, is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "1677"
+            },
+            {
+              "id": "b",
+              "label": "1683"
+            },
+            {
+              "id": "c",
+              "label": "2523"
+            },
+            {
+              "id": "d",
+              "label": "3363"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The chapter uses N = 840k + 3 and the first valid k is 2, giving 1683.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "extra_condition_success": {
+      "id": "extra_condition_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "The pattern is:\n\nFirst set:\nN = 840k + 3\n\nExtra condition:\nN is divisible by 9.\n\nThe first valid value is:\n\nk = 2\n\nTherefore:\n\nN = 840 × 2 + 3 = 1683\n\nThe lesson: do not recompute everything from scratch. Keep the L.C.M. structure and use the extra divisor only to choose k.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_16"
+        }
+      ]
+    },
+    "extra_condition_remedy": {
+      "id": "extra_condition_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start with the first condition:\n\nL.C.M. of 5, 6, 7 and 8 = 840\n\nTherefore:\n\nN = 840k + 3\n\nNow test the extra condition, divisibility by 9.\n\nFor k = 1:\n\nN = 843, which is not divisible by 9.\n\nFor k = 2:\n\nN = 1683, which is divisible by 9.\n\nSo the required number is 1683.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_16"
+        }
+      ]
+    },
+    "extra_condition_16": {
+      "id": "extra_condition_16",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now use the same method with four larger divisors.\n\nThe chapter gives:\n\nL.C.M. of 16, 18, 20 and 25 = 3600\n\nThe number leaves remainder 4 in every case, so:\n\nN = 3600k + 4\n\nBut N must also be divisible by 7.\n\nThe book finds the first suitable value:\n\nk = 5\n\nHence:\n\nN = 3600 × 5 + 4 = 18004.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_16_check"
+        }
+      ]
+    },
+    "extra_condition_16_check": {
+      "id": "extra_condition_16_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17004"
+          },
+          {
+            "id": "b",
+            "label": "18000"
+          },
+          {
+            "id": "c",
+            "label": "18002"
+          },
+          {
+            "id": "d",
+            "label": "18004"
+          }
+        ]
+      },
+      "content": {
+        "text": "Find the least number which when divided by 16, 18, 20 and 25 leaves remainder 4 in each case, but when divided by 7 leaves no remainder.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_condition_16_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "extra_condition_16_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "L.C.M. = 3600.",
+            "Write N = 3600k + 4.",
+            "Use the extra condition N divisible by 7."
+          ],
+          "prompt": "Find the least number which when divided by 16, 18, 20 and 25 leaves remainder 4 in each case, but when divided by 7 leaves no remainder.",
+          "options": [
+            {
+              "id": "a",
+              "label": "17004"
+            },
+            {
+              "id": "b",
+              "label": "18000"
+            },
+            {
+              "id": "c",
+              "label": "18002"
+            },
+            {
+              "id": "d",
+              "label": "18004"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. N = 3600k + 4 and the first value satisfying divisibility by 7 is k = 5, giving 18004.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "extra_condition_16_success": {
+      "id": "extra_condition_16_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "The structure is:\n\nN = 3600k + 4\n\nTest k until N is divisible by 7.\n\nThe first valid value is:\n\nk = 5\n\nSo:\n\nN = 18004\n\nAgain, the L.C.M. creates the family of candidates; the extra divisor selects one member of that family.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "extra_condition_16_remedy"
+        }
+      ]
+    },
+    "extra_condition_16_remedy": {
+      "id": "extra_condition_16_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "First:\n\nL.C.M. of 16, 18, 20 and 25 = 3600\n\nSince the common remainder is 4:\n\nN = 3600k + 4\n\nNow require divisibility by 7.\n\nThe book's first successful value is:\n\nk = 5\n\nSo:\n\nN = 3600 × 5 + 4 = 18004.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "gardener_pattern"
+        }
+      ]
+    },
+    "gardener_pattern": {
+      "id": "gardener_pattern",
+      "type": "CONTENT",
+      "content": {
+        "text": "Another source-backed example combines a common remainder pattern with an extra divisibility condition.\n\nA gardener has a number of trees.\n\nWhen planted in rows of 6, 8, 10 or 12, five are left over.\n\nSo the number has the form:\n\nN = L.C.M. of 6, 8, 10 and 12 × k + 5\n\nThe L.C.M. is 120.\n\nThus:\n\nN = 120k + 5\n\nBut when planted in rows of 13, none are left.\n\nSo N must also be divisible by 13.\n\nThe book finds k = 7:\n\nN = 120 × 7 + 5 = 845.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "gardener_check"
+        }
+      ]
+    },
+    "gardener_check": {
+      "id": "gardener_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "485"
+          },
+          {
+            "id": "b",
+            "label": "725"
+          },
+          {
+            "id": "c",
+            "label": "845"
+          },
+          {
+            "id": "d",
+            "label": "None of these"
+          }
+        ]
+      },
+      "content": {
+        "text": "A gardener has to plant trees in rows containing equal numbers. If he plants in rows of 6, 8, 10 or 12, five trees are left unplanted, but in rows of 13 no tree is left. What is the number of trees?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "gardener_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "sequence_intro"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use N = 120k + 5.",
+            "Then impose divisibility by 13."
+          ],
+          "prompt": "A gardener has to plant trees in rows containing equal numbers. If he plants in rows of 6, 8, 10 or 12, five trees are left unplanted, but in rows of 13 no tree is left. What is the number of trees?",
+          "options": [
+            {
+              "id": "a",
+              "label": "485"
+            },
+            {
+              "id": "b",
+              "label": "725"
+            },
+            {
+              "id": "c",
+              "label": "845"
+            },
+            {
+              "id": "d",
+              "label": "None of these"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. of 6, 8, 10 and 12 is 120, so N = 120k + 5. The first multiple of 13 in this form is 845.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "gardener_remedy": {
+      "id": "gardener_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "First group:\n\nL.C.M. of 6, 8, 10 and 12 = 120\n\nFive trees are left:\n\nN = 120k + 5\n\nExtra condition:\n\nN is divisible by 13.\n\nThe first successful value in the book is:\n\nk = 7\n\nTherefore:\n\nN = 120 × 7 + 5 = 845.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "sequence_intro"
+        }
+      ]
+    },
+    "sequence_intro": {
+      "id": "sequence_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now look at the special sequence condition.\n\nSuppose a number leaves:\n\nremainder 1 when divided by 2,\nremainder 2 when divided by 3,\nremainder 3 when divided by 4.\n\nNotice:\n\n2 - 1 = 1\n3 - 2 = 1\n4 - 3 = 1\n\nSo the common complement is 1.\n\nThat means:\n\nN + 1\n\nis divisible by 2, 3 and 4.\n\nTheir L.C.M. is 12.\n\nTherefore the sequence has the form:\n\nN = 12k - 1\n\nwhere k = 1, 2, 3, ...",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "sequence_check"
+        }
+      ]
+    },
+    "sequence_check": {
+      "id": "sequence_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12k + 1"
+          },
+          {
+            "id": "b",
+            "label": "12k - 1"
+          },
+          {
+            "id": "c",
+            "label": "4k - 1"
+          },
+          {
+            "id": "d",
+            "label": "6k + 1"
+          }
+        ]
+      },
+      "content": {
+        "text": "The chapter's sequence with remainders 1, 2 and 3 on division by 2, 3 and 4 has the form:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "sequence_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "sequence_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Compare each divisor with its remainder.",
+            "The common difference is 1."
+          ],
+          "prompt": "The chapter's sequence with remainders 1, 2 and 3 on division by 2, 3 and 4 has the form:",
+          "options": [
+            {
+              "id": "a",
+              "label": "12k + 1"
+            },
+            {
+              "id": "b",
+              "label": "12k - 1"
+            },
+            {
+              "id": "c",
+              "label": "4k - 1"
+            },
+            {
+              "id": "d",
+              "label": "6k + 1"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The common complement is 1 and L.C.M. of 2, 3 and 4 is 12, so N = 12k - 1.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "sequence_success": {
+      "id": "sequence_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "The general term is:\n\n12k - 1\n\nSo:\n\n1st term = 12 × 1 - 1 = 11\n2nd term = 12 × 2 - 1 = 23\n3rd term = 12 × 3 - 1 = 35\n\nThe book asks for the third term and gives:\n\n35",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "sequence_objective"
+        }
+      ]
+    },
+    "sequence_remedy": {
+      "id": "sequence_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Calculate the complements:\n\n2 - 1 = 1\n3 - 2 = 1\n4 - 3 = 1\n\nSo:\n\nN = L.C.M.(2, 3, 4) × k - 1\n\nL.C.M. = 12\n\nTherefore:\n\nN = 12k - 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "sequence_objective"
+        }
+      ]
+    },
+    "sequence_objective": {
+      "id": "sequence_objective",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "11"
+          },
+          {
+            "id": "b",
+            "label": "17"
+          },
+          {
+            "id": "c",
+            "label": "19"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the third term in a sequence of numbers that leave remainders 1, 2 and 3 when divided by 2, 3 and 4 respectively?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "sequence_objective_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "range_shifted"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use the form 12k - 1.",
+            "For the third term use k = 3."
+          ],
+          "prompt": "What is the third term in a sequence of numbers that leave remainders 1, 2 and 3 when divided by 2, 3 and 4 respectively?",
+          "options": [
+            {
+              "id": "a",
+              "label": "11"
+            },
+            {
+              "id": "b",
+              "label": "17"
+            },
+            {
+              "id": "c",
+              "label": "19"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. Third term = 12 × 3 - 1 = 35.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "sequence_objective_remedy": {
+      "id": "sequence_objective_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sequence is:\n\nN = 12k - 1\n\nFor k = 3:\n\nN = 12 × 3 - 1\n  = 36 - 1\n  = 35\n\nSo the third term is 35.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "range_shifted"
+        }
+      ]
+    },
+    "range_shifted": {
+      "id": "range_shifted",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now compare four closely related question types:\n\n1. Least N with the same remainder:\n   N = L.C.M. × k + r\n\n2. Least N with complementary remainders:\n   N = L.C.M. × k - c\n\n3. Greatest fixed-digit N:\n   choose the largest L.C.M. multiple that stays within the upper boundary.\n\n4. Extra divisibility:\n   keep the same L.C.M. form and select the first k satisfying the additional divisor.\n\nThe next examples combine these ideas.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "least_remainder_7"
+        }
+      ]
+    },
+    "least_remainder_7": {
+      "id": "least_remainder_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's objective question:\n\nFind the smallest number which when diminished by 7 is divisible by 12, 16, 18, 21 and 28.\n\nThe statement means:\n\nN - 7 is divisible by all five numbers.\n\nSo:\n\nN = L.C.M. × k + 7\n\nThe book finds:\n\nL.C.M. of 12, 16, 18, 21 and 28 = 1008\n\nThus:\n\nN = 1008 + 7 = 1015.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "least_remainder_7_check"
+        }
+      ]
+    },
+    "least_remainder_7_check": {
+      "id": "least_remainder_7_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1008"
+          },
+          {
+            "id": "b",
+            "label": "1015"
+          },
+          {
+            "id": "c",
+            "label": "1022"
+          },
+          {
+            "id": "d",
+            "label": "1032"
+          }
+        ]
+      },
+      "content": {
+        "text": "The smallest number which when diminished by 7 is divisible by 12, 16, 18, 21 and 28 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "least_remainder_7_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "least_remainder_7_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Translate 'diminished by 7' as N - 7.",
+            "Then make N - 7 equal to the L.C.M. multiple used by the chapter."
+          ],
+          "prompt": "The smallest number which when diminished by 7 is divisible by 12, 16, 18, 21 and 28 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "1008"
+            },
+            {
+              "id": "b",
+              "label": "1015"
+            },
+            {
+              "id": "c",
+              "label": "1022"
+            },
+            {
+              "id": "d",
+              "label": "1032"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The book uses L.C.M. = 1008 and adds 7, giving 1015.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "least_remainder_7_success": {
+      "id": "least_remainder_7_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "Translate the wording first:\n\nN - 7 is divisible by all five divisors.\n\nTherefore:\n\nN - 7 = 1008\n\nand:\n\nN = 1015\n\nThis is the same remainder structure, just stated as a subtraction in the question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "least_remainder_5"
+        }
+      ]
+    },
+    "least_remainder_7_remedy": {
+      "id": "least_remainder_7_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The five divisors have:\n\nL.C.M. = 1008\n\nThe question says N is diminished by 7 to become divisible.\n\nSo:\n\nN - 7 = 1008\n\nTherefore:\n\nN = 1008 + 7 = 1015.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "least_remainder_5"
+        }
+      ]
+    },
+    "least_remainder_5": {
+      "id": "least_remainder_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Another objective example says:\n\nFind the least number which when increased by 5 is divisible by 24, 32, 36 and 54.\n\nHere:\n\nN + 5 is divisible by all four.\n\nThe book finds:\n\nL.C.M. = 864\n\nSo:\n\nN + 5 = 864\n\nand:\n\nN = 864 - 5 = 859.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "least_remainder_5_check"
+        }
+      ]
+    },
+    "least_remainder_5_check": {
+      "id": "least_remainder_5_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "427"
+          },
+          {
+            "id": "b",
+            "label": "859"
+          },
+          {
+            "id": "c",
+            "label": "869"
+          },
+          {
+            "id": "d",
+            "label": "4320"
+          }
+        ]
+      },
+      "content": {
+        "text": "The least number which when increased by 5 is divisible by each one of 24, 32, 36 and 54 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "least_remainder_5_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "nearest_cycle"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "'Increased by 5' means N + 5.",
+            "Set N + 5 equal to the chapter's first L.C.M. multiple."
+          ],
+          "prompt": "The least number which when increased by 5 is divisible by each one of 24, 32, 36 and 54 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "427"
+            },
+            {
+              "id": "b",
+              "label": "859"
+            },
+            {
+              "id": "c",
+              "label": "869"
+            },
+            {
+              "id": "d",
+              "label": "4320"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. = 864, so N + 5 = 864 and N = 859.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "least_remainder_5_remedy": {
+      "id": "least_remainder_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because:\n\nN + 5\n\nmust be divisible by 24, 32, 36 and 54, first find:\n\nL.C.M. = 864\n\nThen:\n\nN + 5 = 864\n\nSo:\n\nN = 859.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "nearest_cycle"
+        }
+      ]
+    },
+    "nearest_cycle": {
+      "id": "nearest_cycle",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a number near a target, the L.C.M. still gives the spacing.\n\nThe chapter asks for the number nearest 43582 that is divisible by 25, 50 and 75.\n\nL.C.M. = 150\n\nNearby multiples are:\n\n43500\n43650\n\nDistances from 43582:\n\n82 and 68\n\nSo 43650 is nearer.\n\nThis is the same L.C.M. structure viewed from both sides of a target.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "nearest_cycle_check"
+        }
+      ]
+    },
+    "nearest_cycle_check": {
+      "id": "nearest_cycle_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "43500"
+          },
+          {
+            "id": "b",
+            "label": "43550"
+          },
+          {
+            "id": "c",
+            "label": "43600"
+          },
+          {
+            "id": "d",
+            "label": "43650"
+          }
+        ]
+      },
+      "content": {
+        "text": "The number nearest to 43582 divisible by each of 25, 50 and 75 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "nearest_cycle_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "four_digit_extra"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the L.C.M. first.",
+            "Check the multiples immediately below and above the target."
+          ],
+          "prompt": "The number nearest to 43582 divisible by each of 25, 50 and 75 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "43500"
+            },
+            {
+              "id": "b",
+              "label": "43550"
+            },
+            {
+              "id": "c",
+              "label": "43600"
+            },
+            {
+              "id": "d",
+              "label": "43650"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. L.C.M. = 150, and 43650 is 68 away while 43500 is 82 away.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "nearest_cycle_remedy": {
+      "id": "nearest_cycle_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "L.C.M. of 25, 50 and 75 = 150.\n\nPrevious multiple:\n\n43500\n\nNext multiple:\n\n43650\n\nSince:\n\n43582 - 43500 = 82\n43650 - 43582 = 68\n\nthe nearest one is 43650.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "four_digit_extra"
+        }
+      ]
+    },
+    "four_digit_extra": {
+      "id": "four_digit_extra",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's greatest four-digit shifted-remainder problem can also be written as:\n\nN = 840k - 3\n\nbecause:\n\n4 - 1 = 3\n5 - 2 = 3\n6 - 3 = 3\n7 - 4 = 3\n8 - 5 = 3\n\nFor a greatest four-digit value, choose the largest suitable k.\n\n840 × 11 = 9240\n\nThen:\n\n9240 - 3 = 9237.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_107"
+        }
+      ]
+    },
+    "compound_107": {
+      "id": "compound_107",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now revisit the book's three-divisor extra-condition problem:\n\nRemainders are:\n\n7, 10 and 13\n\nfor divisors:\n\n18, 21 and 24.\n\nThe complements are:\n\n18 - 7 = 11\n21 - 10 = 11\n24 - 13 = 11\n\nSo:\n\nN = 504k - 11\n\nbecause L.C.M. of 18, 21 and 24 = 504.\n\nBut the number must also be divisible by 23.\n\nThe book finds:\n\nk = 6\n\nTherefore:\n\nN = 504 × 6 - 11\n  = 3024 - 11\n  = 3013.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_107_check"
+        }
+      ]
+    },
+    "compound_107_check": {
+      "id": "compound_107_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3002"
+          },
+          {
+            "id": "b",
+            "label": "3013"
+          },
+          {
+            "id": "c",
+            "label": "3024"
+          },
+          {
+            "id": "d",
+            "label": "3036"
+          }
+        ]
+      },
+      "content": {
+        "text": "Find the least multiple of 23 which when divided by 18, 21 and 24 leaves remainders 7, 10 and 13 respectively.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_107_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_107_success"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the common complement 11.",
+            "Use N = 504k - 11.",
+            "Then impose divisibility by 23."
+          ],
+          "prompt": "Find the least multiple of 23 which when divided by 18, 21 and 24 leaves remainders 7, 10 and 13 respectively.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3002"
+            },
+            {
+              "id": "b",
+              "label": "3013"
+            },
+            {
+              "id": "c",
+              "label": "3024"
+            },
+            {
+              "id": "d",
+              "label": "3036"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. N = 504k - 11, and the first value satisfying divisibility by 23 is k = 6, giving 3013.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "compound_107_success": {
+      "id": "compound_107_success",
+      "type": "CONTENT",
+      "content": {
+        "text": "This example combines all three ideas:\n\nComplementary remainders:\nN = 504k - 11\n\nExtra divisibility:\nN is divisible by 23\n\nFirst valid cycle:\nk = 6\n\nAnswer:\n3013",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_107_remedy"
+        }
+      ]
+    },
+    "compound_107_remedy": {
+      "id": "compound_107_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "First compute:\n\n18 - 7 = 11\n21 - 10 = 11\n24 - 13 = 11\n\nL.C.M. = 504\n\nSo:\n\nN = 504k - 11\n\nNow impose:\n\n504k - 11 is divisible by 23.\n\nThe chapter's least valid value is:\n\nk = 6\n\nTherefore:\n\nN = 3013.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_109"
+        }
+      ]
+    },
+    "compound_109": {
+      "id": "compound_109",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter also asks for the greatest four-digit number with unequal remainders:\n\ndivide by 4, 5, 6, 7 and 8\nleave 1, 2, 3, 4 and 5.\n\nWe already saw that all complements equal 3.\n\nTherefore:\n\nN = 840k - 3\n\nGreatest four-digit upper boundary = 9999.\n\nThe greatest useful multiple is:\n\n840 × 11 = 9240\n\nSo:\n\nN = 9240 - 3 = 9237.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_109_check"
+        }
+      ]
+    },
+    "compound_109_check": {
+      "id": "compound_109_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9237"
+          },
+          {
+            "id": "b",
+            "label": "9240"
+          },
+          {
+            "id": "c",
+            "label": "9840"
+          },
+          {
+            "id": "d",
+            "label": "9999"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the greatest four-digit number which when divided by 4, 5, 6, 7 and 8 leaves 1, 2, 3, 4 and 5 respectively?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_109_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_110"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use N = 840k - 3.",
+            "The greatest suitable multiple below 10000 is 9240."
+          ],
+          "prompt": "What is the greatest four-digit number which when divided by 4, 5, 6, 7 and 8 leaves 1, 2, 3, 4 and 5 respectively?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9237"
+            },
+            {
+              "id": "b",
+              "label": "9240"
+            },
+            {
+              "id": "c",
+              "label": "9840"
+            },
+            {
+              "id": "d",
+              "label": "9999"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The book gives 9237.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "compound_109_remedy": {
+      "id": "compound_109_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because all complements equal 3:\n\nN = 840k - 3\n\nFor the greatest four-digit result, use:\n\n840 × 11 = 9240\n\nThen:\n\n9240 - 3 = 9237.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_110"
+        }
+      ]
+    },
+    "compound_110": {
+      "id": "compound_110",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three consecutive extra-condition patterns from the chapter are worth comparing.\n\nQ110:\nN = 840k + 3, and N must be divisible by 9.\nAnswer = 1683.\n\nQ111:\nN = 3600k + 4, and N must be divisible by 7.\nAnswer = 18004.\n\nQ112:\nN = 120k + 5, and N must be divisible by 13.\nAnswer = 845.\n\nThe arithmetic changes, but the architecture does not:\n\nL.C.M. → remainder form → extra divisor → smallest valid k.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_110_check"
+        }
+      ]
+    },
+    "compound_110_check": {
+      "id": "compound_110_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "840k - 3"
+          },
+          {
+            "id": "b",
+            "label": "840k + 3"
+          },
+          {
+            "id": "c",
+            "label": "9k + 840"
+          },
+          {
+            "id": "d",
+            "label": "840 + 9k"
+          }
+        ]
+      },
+      "content": {
+        "text": "In the Q110 pattern, which expression represents the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_110_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_111"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The L.C.M. of 5, 6, 7 and 8 is 840.",
+            "The question says remainder 3, not complement 3."
+          ],
+          "prompt": "In the Q110 pattern, which expression represents the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "840k - 3"
+            },
+            {
+              "id": "b",
+              "label": "840k + 3"
+            },
+            {
+              "id": "c",
+              "label": "9k + 840"
+            },
+            {
+              "id": "d",
+              "label": "840 + 9k"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The common remainder is 3, so N = 840k + 3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "compound_110_remedy": {
+      "id": "compound_110_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first four divisors are 5, 6, 7 and 8.\n\nTheir L.C.M. is 840.\n\nThe stated remainder is 3.\n\nSo the candidate family is:\n\nN = 840k + 3\n\nThen divisibility by 9 chooses k.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_111"
+        }
+      ]
+    },
+    "compound_111": {
+      "id": "compound_111",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the Q111 pattern:\n\nL.C.M. of 16, 18, 20 and 25 = 3600\n\nRemainder = 4\n\nTherefore:\n\nN = 3600k + 4\n\nExtra condition:\n\nN divisible by 7\n\nFirst valid k:\n\n5\n\nAnswer:\n\n18004.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_111_check"
+        }
+      ]
+    },
+    "compound_111_check": {
+      "id": "compound_111_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "content": {
+        "text": "Using the Q111 pattern, what is the first valid value of k?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_111_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_112"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use N = 3600k + 4.",
+            "Require divisibility by 7."
+          ],
+          "prompt": "Using the Q111 pattern, what is the first valid value of k?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The book finds k = 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "compound_111_remedy": {
+      "id": "compound_111_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The candidate family is:\n\nN = 3600k + 4\n\nTesting the smallest values against divisibility by 7, the book's first successful value is:\n\nk = 5\n\nSo:\n\nN = 18004.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_112"
+        }
+      ]
+    },
+    "compound_112": {
+      "id": "compound_112",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the Q112 gardener pattern:\n\nL.C.M. of 6, 8, 10 and 12 = 120\n\nFive are left over:\n\nN = 120k + 5\n\nThe number must also be divisible by 13.\n\nThe book finds:\n\nk = 7\n\nso:\n\nN = 845.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "compound_112_check"
+        }
+      ]
+    },
+    "compound_112_check": {
+      "id": "compound_112_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120k - 5"
+          },
+          {
+            "id": "b",
+            "label": "120k + 5"
+          },
+          {
+            "id": "c",
+            "label": "13k + 120"
+          },
+          {
+            "id": "d",
+            "label": "120 + 5k"
+          }
+        ]
+      },
+      "content": {
+        "text": "In the gardener problem, what is the correct form for the number before applying divisibility by 13?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "compound_112_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_mastery"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "L.C.M. of 6, 8, 10 and 12 is 120.",
+            "A remainder of 5 means add 5 to an L.C.M. multiple."
+          ],
+          "prompt": "In the gardener problem, what is the correct form for the number before applying divisibility by 13?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120k - 5"
+            },
+            {
+              "id": "b",
+              "label": "120k + 5"
+            },
+            {
+              "id": "c",
+              "label": "13k + 120"
+            },
+            {
+              "id": "d",
+              "label": "120 + 5k"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Five trees remain, so N = 120k + 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "compound_112_remedy": {
+      "id": "compound_112_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The number leaves remainder 5 when divided by 6, 8, 10 and 12.\n\nSo:\n\nN = 120k + 5\n\nThen divisibility by 13 is used to select k.\n\nThe book's first valid result is 845.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_mastery"
+        }
+      ]
+    },
+    "final_mastery": {
+      "id": "final_mastery",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's finish by testing whether you can identify the structure without being told which method to use.\n\nAsk yourself, in this order:\n\nWhat are the divisors?\nWhat are the remainders?\nAre the remainders equal?\nIf not, are divisor - remainder values equal?\nIf yes, should the form be L.C.M. × k + r or L.C.M. × k - c?\nIs there a digit/range boundary?\nIs there an extra divisibility condition?\nIf there is, which k is the first one that works?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mastery_equal"
+        }
+      ]
+    },
+    "mastery_equal": {
+      "id": "mastery_equal",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "L.C.M. × k - 2"
+          },
+          {
+            "id": "b",
+            "label": "L.C.M. × k + 2"
+          },
+          {
+            "id": "c",
+            "label": "2k - L.C.M."
+          },
+          {
+            "id": "d",
+            "label": "L.C.M. + 2 only"
+          }
+        ]
+      },
+      "content": {
+        "text": "A number leaves the same remainder 2 when divided by several numbers. Which family must it belong to?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mastery_complement"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mastery_equal_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Subtract the common remainder from N.",
+            "What remains must be a multiple of the L.C.M."
+          ],
+          "prompt": "A number leaves the same remainder 2 when divided by several numbers. Which family must it belong to?",
+          "options": [
+            {
+              "id": "a",
+              "label": "L.C.M. × k - 2"
+            },
+            {
+              "id": "b",
+              "label": "L.C.M. × k + 2"
+            },
+            {
+              "id": "c",
+              "label": "2k - L.C.M."
+            },
+            {
+              "id": "d",
+              "label": "L.C.M. + 2 only"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Same remainder 2 means N - 2 is divisible by all the divisors, so N = L.C.M. × k + 2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "mastery_equal_remedy": {
+      "id": "mastery_equal_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Same remainder r means:\n\nN - r is divisible by every divisor.\n\nTherefore:\n\nN = L.C.M. × k + r\n\nWith r = 2:\n\nN = L.C.M. × k + 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mastery_complement"
+        }
+      ]
+    },
+    "mastery_complement": {
+      "id": "mastery_complement",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "L.C.M. × k + 5"
+          },
+          {
+            "id": "b",
+            "label": "L.C.M. × k - 5"
+          },
+          {
+            "id": "c",
+            "label": "5 × k + L.C.M."
+          },
+          {
+            "id": "d",
+            "label": "L.C.M. × 5 - k"
+          }
+        ]
+      },
+      "content": {
+        "text": "The divisors and remainders satisfy:\n12 - 7 = 5\n15 - 10 = 5\n16 - 11 = 5\n\nWhich structure should you use?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mastery_extra"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mastery_complement_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Check divisor - remainder.",
+            "A common complement means add that complement to N."
+          ],
+          "prompt": "The divisors and remainders satisfy:\n12 - 7 = 5\n15 - 10 = 5\n16 - 11 = 5\n\nWhich structure should you use?",
+          "options": [
+            {
+              "id": "a",
+              "label": "L.C.M. × k + 5"
+            },
+            {
+              "id": "b",
+              "label": "L.C.M. × k - 5"
+            },
+            {
+              "id": "c",
+              "label": "5 × k + L.C.M."
+            },
+            {
+              "id": "d",
+              "label": "L.C.M. × 5 - k"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. A common complement 5 means N + 5 is divisible by all the divisors, so N = L.C.M. × k - 5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "mastery_complement_remedy": {
+      "id": "mastery_complement_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The common complement is 5.\n\nSo:\n\nN + 5 is divisible by all three divisors.\n\nHence:\n\nN = L.C.M. × k - 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mastery_extra"
+        }
+      ]
+    },
+    "mastery_extra": {
+      "id": "mastery_extra",
+      "type": "CONTENT",
+      "content": {
+        "text": "Finally:\n\nSuppose you have:\n\nN = 120k + 5\n\nand N must also be divisible by 13.\n\nDo not replace the first condition.\n\nKeep:\n\nN = 120k + 5\n\nThen test k from the smallest relevant value until the expression is divisible by 13.\n\nThat is the central idea behind Q110, Q111, Q112 and the gardener example.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mastery_extra_check"
+        }
+      ]
+    },
+    "mastery_extra_check": {
+      "id": "mastery_extra_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "The L.C.M. alone"
+          },
+          {
+            "id": "b",
+            "label": "The extra divisibility condition"
+          },
+          {
+            "id": "c",
+            "label": "The remainder alone"
+          },
+          {
+            "id": "d",
+            "label": "The digit count only"
+          }
+        ]
+      },
+      "content": {
+        "text": "For N = 120k + 5, which part determines the value of k?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mastery_extra_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The L.C.M. gives the 120k structure.",
+            "What remains to be satisfied is divisibility by the extra number."
+          ],
+          "prompt": "For N = 120k + 5, which part determines the value of k?",
+          "options": [
+            {
+              "id": "a",
+              "label": "The L.C.M. alone"
+            },
+            {
+              "id": "b",
+              "label": "The extra divisibility condition"
+            },
+            {
+              "id": "c",
+              "label": "The remainder alone"
+            },
+            {
+              "id": "d",
+              "label": "The digit count only"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The L.C.M. creates the candidate family; the extra divisibility condition chooses the required k.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "mastery_extra_remedy": {
+      "id": "mastery_extra_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The L.C.M. gives the family:\n\nN = 120k + 5\n\nBut many values of k are possible.\n\nThe extra condition, divisibility by 13, tells us which k is acceptable.\n\nSo the extra divisor selects the member of the L.C.M. family.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "CONTENT",
+      "content": {
+        "text": "Excellent.\n\nYou now have the chapter's major remainder-pattern tools:\n\nSame remainder:\nN = L.C.M. × k + r\n\nCommon complementary remainder:\nIf divisor - remainder = c for every divisor,\nN = L.C.M. × k - c\n\nGreatest boundary:\nchoose the largest L.C.M. multiple that keeps N inside the required digit range, then apply the offset.\n\nLeast boundary:\nstart from the required lower boundary when one is given, then move to the appropriate L.C.M. multiple.\n\nExtra divisibility:\nkeep the L.C.M.-based expression and find the smallest k that makes the full number divisible by the extra divisor.\n\nSequence with remainders one less than divisors:\nN = L.C.M. × k - 1\n\nThe most important habit is pattern recognition:\n\nFirst find the L.C.M.\nThen translate the remainders.\nThen handle the boundary or extra condition.\n\nThat is the complete remainder-pattern framework used by this part of the chapter.\n\nYou're ready for the next subtopic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "Remainder Patterns, Offsets & Extra Divisibility Conditions",
+    "description": "Solve advanced remainder problems using L.C.M.-based forms, complementary remainders, boundaries, sequences and extra divisibility conditions.",
+    "targetDurationMinutes": 36
+  },
+  "scriptId": "script-hcf-lcm-10-remainder-patterns",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

@@ -1,0 +1,1202 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Decimal numbers can look different from ordinary whole numbers, but the book gives us a simple procedure for finding their H.C.F. and L.C.M.\\n\\nThe key idea is: make the decimal places equal, remove the decimal point, solve the whole-number problem, and then restore the decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "why_equal_places"
+        }
+      ]
+    },
+    "why_equal_places": {
+      "id": "why_equal_places",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why do we first make the same number of decimal places?\\n\\nSuppose the numbers are 0.63, 1.05 and 2.1.\\n\\nThe first two numbers have two decimal places, but 2.1 has only one.\\n\\nSo we write:\\n\\n0.63, 1.05, 2.10\\n\\nWe have not changed the value of 2.1. We have only written it with the same decimal-place length as the others.\\n\\nThink of it like putting three measuring sticks into the same unit before comparing or combining them. The numbers are now prepared in the same format.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "decimal_places_check"
+        }
+      ]
+    },
+    "decimal_places_check": {
+      "id": "decimal_places_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.63, 1.05, 2.1"
+          },
+          {
+            "id": "b",
+            "label": "0.63, 1.05, 2.01"
+          },
+          {
+            "id": "c",
+            "label": "0.63, 1.05, 2.10"
+          },
+          {
+            "id": "d",
+            "label": "0.630, 1.050, 2.1000"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the correctly equalized form of 0.63, 1.05 and 2.1?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "decimal_places_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_63_start"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look for the greatest number of decimal places in the given numbers.",
+            "The book writes 2.1 as 2.10."
+          ],
+          "prompt": "Which is the correctly equalized form of 0.63, 1.05 and 2.1?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.63, 1.05, 2.1"
+            },
+            {
+              "id": "b",
+              "label": "0.63, 1.05, 2.01"
+            },
+            {
+              "id": "c",
+              "label": "0.63, 1.05, 2.10"
+            },
+            {
+              "id": "d",
+              "label": "0.630, 1.050, 2.1000"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The book first makes the decimal places equal: 0.63, 1.05 and 2.10.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "decimal_places_remedy": {
+      "id": "decimal_places_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's count carefully.\\n\\n0.63 → 2 decimal places\\n1.05 → 2 decimal places\\n2.1 → 1 decimal place\\n\\nSo the common format uses 2 decimal places. Append one zero to 2.1:\\n\\n2.1 → 2.10\\n\\nTherefore:\\n\\n0.63, 1.05, 2.10",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_63_start"
+        }
+      ]
+    },
+    "hcf_63_start": {
+      "id": "hcf_63_start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now apply the next step from the book.\\n\\nGiven:\\n0.63, 1.05 and 2.10\\n\\nRemove the decimal points and treat them as whole numbers:\\n\\n63, 105 and 210\\n\\nThen find the H.C.F. of these whole numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_63_compute"
+        }
+      ]
+    },
+    "hcf_63_compute": {
+      "id": "hcf_63_compute",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "42"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the H.C.F. of 63, 105 and 210?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_63_restore"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_63_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "21 divides 63, 105 and 210 exactly.",
+            "The book's worked example gives H.C.F. = 21."
+          ],
+          "prompt": "What is the H.C.F. of 63, 105 and 210?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "42"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. H.C.F. of 63, 105 and 210 is 21.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "hcf_63_remedy": {
+      "id": "hcf_63_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's verify the common factor.\\n\\n63 = 21 × 3\\n105 = 21 × 5\\n210 = 21 × 10\\n\\nSo 21 divides all three numbers exactly. The book gives H.C.F. = 21.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_63_restore"
+        }
+      ]
+    },
+    "hcf_63_restore": {
+      "id": "hcf_63_restore",
+      "type": "CONTENT",
+      "content": {
+        "text": "We are not finished yet. This is the step students often skip.\\n\\nThe original numbers were written with 2 decimal places after equalization:\\n\\n0.63, 1.05, 2.10\\n\\nOur whole-number H.C.F. is 21. Restore the 2 decimal places:\\n\\n21 → 0.21\\n\\nTherefore:\\n\\nH.C.F. of 0.63, 1.05 and 2.1 = 0.21",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_63_restore_check"
+        }
+      ]
+    },
+    "hcf_63_restore_check": {
+      "id": "hcf_63_restore_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21"
+          },
+          {
+            "id": "b",
+            "label": "2.1"
+          },
+          {
+            "id": "c",
+            "label": "0.21"
+          },
+          {
+            "id": "d",
+            "label": "0.021"
+          }
+        ]
+      },
+      "content": {
+        "text": "After finding H.C.F. = 21 for 63, 105 and 210, what is the H.C.F. of the original decimal numbers?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_63_start"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_63_restore_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Restore the two decimal places used in the equalized numbers.",
+            "Move the decimal point so 21 becomes a number with two decimal places."
+          ],
+          "prompt": "After finding H.C.F. = 21 for 63, 105 and 210, what is the H.C.F. of the original decimal numbers?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21"
+            },
+            {
+              "id": "b",
+              "label": "2.1"
+            },
+            {
+              "id": "c",
+              "label": "0.21"
+            },
+            {
+              "id": "d",
+              "label": "0.021"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Exactly. 21 with two decimal places restored becomes 0.21.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "hcf_63_restore_remedy": {
+      "id": "hcf_63_restore_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Remember the full chain:\\n\\n0.63, 1.05, 2.10\\n→ 63, 105, 210\\n→ H.C.F. = 21\\n→ restore 2 decimal places\\n→ 0.21\\n\\nThe final answer must be in the same decimal scale used for the equalized numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_63_start"
+        }
+      ]
+    },
+    "lcm_63_start": {
+      "id": "lcm_63_start",
+      "type": "CONTENT",
+      "content": {
+        "text": "The exact same preparation works for L.C.M.\\n\\nFor 0.63, 1.05 and 2.1:\\n\\n0.63, 1.05, 2.10\\n→ 63, 105, 210\\n\\nNow find the L.C.M. of 63, 105 and 210. The book gives 630.\\n\\nThen restore the 2 decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_63_check"
+        }
+      ]
+    },
+    "lcm_63_check": {
+      "id": "lcm_63_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "210"
+          },
+          {
+            "id": "b",
+            "label": "315"
+          },
+          {
+            "id": "c",
+            "label": "420"
+          },
+          {
+            "id": "d",
+            "label": "630"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the L.C.M. of 63, 105 and 210?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_63_restore"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_63_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "630 is divisible by 63, 105 and 210.",
+            "Use the whole-number L.C.M. before restoring decimal places."
+          ],
+          "prompt": "What is the L.C.M. of 63, 105 and 210?",
+          "options": [
+            {
+              "id": "a",
+              "label": "210"
+            },
+            {
+              "id": "b",
+              "label": "315"
+            },
+            {
+              "id": "c",
+              "label": "420"
+            },
+            {
+              "id": "d",
+              "label": "630"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. L.C.M. of 63, 105 and 210 is 630.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "lcm_63_remedy": {
+      "id": "lcm_63_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the multiples.\\n\\n630 ÷ 63 = 10\\n630 ÷ 105 = 6\\n630 ÷ 210 = 3\\n\\nSo 630 is exactly divisible by all three. It is the required L.C.M. of the whole-number forms.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_63_restore"
+        }
+      ]
+    },
+    "lcm_63_restore": {
+      "id": "lcm_63_restore",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now restore the two decimal places.\\n\\nWhole-number L.C.M. = 630\\n\\nRestore 2 decimal places:\\n\\n630 → 6.30\\n\\nTherefore:\\n\\nL.C.M. of 0.63, 1.05 and 2.1 = 6.30\\n\\nThe book writes this as 6.30, which is equal in value to 6.3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_63_restore_check"
+        }
+      ]
+    },
+    "lcm_63_restore_check": {
+      "id": "lcm_63_restore_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.63"
+          },
+          {
+            "id": "b",
+            "label": "0.21"
+          },
+          {
+            "id": "c",
+            "label": "6.30"
+          },
+          {
+            "id": "d",
+            "label": "63.0"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the book's final L.C.M. for 0.63, 1.05 and 2.1?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_175_start"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_63_restore_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The whole-number L.C.M. is 630.",
+            "Restore two decimal places."
+          ],
+          "prompt": "What is the book's final L.C.M. for 0.63, 1.05 and 2.1?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.63"
+            },
+            {
+              "id": "b",
+              "label": "0.21"
+            },
+            {
+              "id": "c",
+              "label": "6.30"
+            },
+            {
+              "id": "d",
+              "label": "63.0"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The book gives 6.30.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "lcm_63_restore_remedy": {
+      "id": "lcm_63_restore_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not leave the decimal point out.\\n\\n630 with two decimal places is:\\n\\n6.30\\n\\nSo the book's answer is 6.30.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_175_start"
+        }
+      ]
+    },
+    "hcf_175_start": {
+      "id": "hcf_175_start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's use the procedure on another H.C.F. example from the objective section:\\n\\n1.75, 5.6 and 7\\n\\nThere are 2 decimal places in 1.75, 1 in 5.6, and 0 in 7.\\n\\nMake them equal:\\n1.75, 5.60, 7.00\\n\\nRemove decimal points:\\n175, 560, 700\\n\\nThe book's solution gives H.C.F. of these whole numbers as 35.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_175_check"
+        }
+      ]
+    },
+    "hcf_175_check": {
+      "id": "hcf_175_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.07"
+          },
+          {
+            "id": "b",
+            "label": "0.35"
+          },
+          {
+            "id": "c",
+            "label": "0.70"
+          },
+          {
+            "id": "d",
+            "label": "3.50"
+          }
+        ]
+      },
+      "content": {
+        "text": "Using the book's procedure, what is the H.C.F. of 1.75, 5.6 and 7?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_108_start"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_175_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First use 175, 560 and 700.",
+            "Their H.C.F. is 35, then restore two decimal places."
+          ],
+          "prompt": "Using the book's procedure, what is the H.C.F. of 1.75, 5.6 and 7?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.07"
+            },
+            {
+              "id": "b",
+              "label": "0.35"
+            },
+            {
+              "id": "c",
+              "label": "0.70"
+            },
+            {
+              "id": "d",
+              "label": "3.50"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 175, 560 and 700 have H.C.F. 35. Restoring two decimal places gives 0.35.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "hcf_175_remedy": {
+      "id": "hcf_175_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The equalized numbers are:\\n\\n1.75, 5.60, 7.00\\n\\nWithout decimal points:\\n175, 560, 700\\n\\nH.C.F. = 35\\n\\nRestore 2 decimal places:\\n35 → 0.35\\n\\nSo the answer is 0.35.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_108_start"
+        }
+      ]
+    },
+    "hcf_108_start": {
+      "id": "hcf_108_start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now consider:\\n\\n1.08, 0.36 and 0.9\\n\\nEqualize the decimal places:\\n\\n1.08, 0.36, 0.90\\n\\nRemove the decimal points:\\n\\n108, 36, 90\\n\\nThe book gives H.C.F. of 108, 36 and 90 as 18. Restore the two decimal places to get the final answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_108_check"
+        }
+      ]
+    },
+    "hcf_108_check": {
+      "id": "hcf_108_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.03"
+          },
+          {
+            "id": "b",
+            "label": "0.09"
+          },
+          {
+            "id": "c",
+            "label": "0.18"
+          },
+          {
+            "id": "d",
+            "label": "0.90"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the H.C.F. of 1.08, 0.36 and 0.9?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_54_start"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_108_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The whole-number problem is H.C.F. of 108, 36 and 90.",
+            "The book gives 18 before decimal restoration."
+          ],
+          "prompt": "What is the H.C.F. of 1.08, 0.36 and 0.9?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.03"
+            },
+            {
+              "id": "b",
+              "label": "0.09"
+            },
+            {
+              "id": "c",
+              "label": "0.18"
+            },
+            {
+              "id": "d",
+              "label": "0.90"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 18 with two decimal places restored becomes 0.18.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "hcf_108_remedy": {
+      "id": "hcf_108_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work in the book's order:\\n\\n1.08, 0.36, 0.90\\n→ 108, 36, 90\\n→ H.C.F. = 18\\n→ restore 2 decimal places\\n→ 0.18\\n\\nSo the answer is 0.18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_54_start"
+        }
+      ]
+    },
+    "hcf_54_start": {
+      "id": "hcf_54_start",
+      "type": "CONTENT",
+      "content": {
+        "text": "One more H.C.F. example uses different-looking decimal lengths:\\n\\n0.54, 1.8 and 7.2\\n\\nEqualize:\\n0.54, 1.80 and 7.20\\n\\nRemove decimal points:\\n54, 180 and 720\\n\\nThe book gives H.C.F. = 18 for the whole numbers. Restore two decimal places for the original answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "hcf_54_check"
+        }
+      ]
+    },
+    "hcf_54_check": {
+      "id": "hcf_54_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.018"
+          },
+          {
+            "id": "b",
+            "label": "0.18"
+          },
+          {
+            "id": "c",
+            "label": "1.8"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the H.C.F. of 0.54, 1.8 and 7.2?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_decimal_start"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "hcf_54_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 54, 180 and 720 after removing the decimal points.",
+            "The whole-number H.C.F. is 18."
+          ],
+          "prompt": "What is the H.C.F. of 0.54, 1.8 and 7.2?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.018"
+            },
+            {
+              "id": "b",
+              "label": "0.18"
+            },
+            {
+              "id": "c",
+              "label": "1.8"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 18 becomes 0.18 after restoring two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "hcf_54_remedy": {
+      "id": "hcf_54_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sequence is:\\n\\n0.54, 1.80, 7.20\\n→ 54, 180, 720\\n→ H.C.F. = 18\\n→ 0.18\\n\\nDo not stop at 18. The decimal restoration step is part of the method.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_decimal_start"
+        }
+      ]
+    },
+    "lcm_decimal_start": {
+      "id": "lcm_decimal_start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now switch back to L.C.M. with the book's example:\\n\\n3, 2.7 and 0.09\\n\\nMake the decimal places equal:\\n\\n3.00, 2.70 and 0.09\\n\\nRemove decimal points:\\n\\n300, 270 and 9\\n\\nThe book gives L.C.M. of these whole numbers as 2700. Restore the two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_decimal_check"
+        }
+      ]
+    },
+    "lcm_decimal_check": {
+      "id": "lcm_decimal_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2.7"
+          },
+          {
+            "id": "b",
+            "label": "0.27"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "270"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the L.C.M. of 3, 2.7 and 0.09?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_decimal_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_decimal_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 300, 270 and 9 after equalizing and removing decimal points.",
+            "The whole-number L.C.M. is 2700."
+          ],
+          "prompt": "What is the L.C.M. of 3, 2.7 and 0.09?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2.7"
+            },
+            {
+              "id": "b",
+              "label": "0.27"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "270"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 2700 restored to two decimal places is 27.00, which the book also writes as 27.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "lcm_decimal_remedy": {
+      "id": "lcm_decimal_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's complete the chain carefully:\\n\\n3.00, 2.70, 0.09\\n→ 300, 270, 9\\n→ L.C.M. = 2700\\n→ restore 2 decimal places\\n→ 27.00\\n\\nThe book writes:\\n27.00 = 27\\n\\nSo the final answer is 27.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "restoration_trap"
+        }
+      ]
+    },
+    "restoration_trap": {
+      "id": "restoration_trap",
+      "type": "CONTENT",
+      "content": {
+        "text": "The most important habit in this method is to keep the four stages separate:\\n\\nStage 1: Equalize decimal places.\\nStage 2: Remove decimal points.\\nStage 3: Find H.C.F. or L.C.M. of the whole numbers.\\nStage 4: Restore the decimal places.\\n\\nFor H.C.F. and L.C.M., the arithmetic in Stage 3 is an ordinary whole-number H.C.F./L.C.M. problem. The decimal scale is handled before and after that calculation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "restoration_check"
+        }
+      ]
+    },
+    "restoration_check": {
+      "id": "restoration_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Use 35 as the final decimal answer"
+          },
+          {
+            "id": "b",
+            "label": "Multiply 35 by 100"
+          },
+          {
+            "id": "c",
+            "label": "Restore two decimal places in 35"
+          },
+          {
+            "id": "d",
+            "label": "Find the L.C.M. again"
+          }
+        ]
+      },
+      "content": {
+        "text": "A set has been equalized to two decimal places and the whole-number H.C.F. is 35. What should you do next?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_check"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "restoration_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The decimal calculation is not finished after the whole-number H.C.F. is found.",
+            "Two decimal places must be restored."
+          ],
+          "prompt": "A set has been equalized to two decimal places and the whole-number H.C.F. is 35. What should you do next?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Use 35 as the final decimal answer"
+            },
+            {
+              "id": "b",
+              "label": "Multiply 35 by 100"
+            },
+            {
+              "id": "c",
+              "label": "Restore two decimal places in 35"
+            },
+            {
+              "id": "d",
+              "label": "Find the L.C.M. again"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Exactly. Restore the two decimal places, giving 0.35.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "restoration_remedy": {
+      "id": "restoration_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the equalized inputs use two decimal places, the result must also be written with two decimal places.\\n\\n35 → 0.35\\n\\nThat is why the book's H.C.F. examples do not finish with 35 or 18; they finish with 0.35 or 0.18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_check"
+        }
+      ]
+    },
+    "final_check": {
+      "id": "final_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54, 18, 72 → H.C.F. → restore"
+          },
+          {
+            "id": "b",
+            "label": "0.54, 1.8, 7.2 → H.C.F. directly → remove decimals"
+          },
+          {
+            "id": "c",
+            "label": "0.54, 1.80, 7.20 → 54, 180, 720 → H.C.F. 18 → 0.18"
+          },
+          {
+            "id": "d",
+            "label": "0.540, 1.800, 7.200 → 540, 1800, 7200 → stop at 18"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which sequence correctly finds the H.C.F. of 0.54, 1.8 and 7.2?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish_remedy"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First make the decimal places equal.",
+            "Then remove decimal points, solve, and restore the decimal places."
+          ],
+          "prompt": "Which sequence correctly finds the H.C.F. of 0.54, 1.8 and 7.2?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54, 18, 72 → H.C.F. → restore"
+            },
+            {
+              "id": "b",
+              "label": "0.54, 1.8, 7.2 → H.C.F. directly → remove decimals"
+            },
+            {
+              "id": "c",
+              "label": "0.54, 1.80, 7.20 → 54, 180, 720 → H.C.F. 18 → 0.18"
+            },
+            {
+              "id": "d",
+              "label": "0.540, 1.800, 7.200 → 540, 1800, 7200 → stop at 18"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Perfect. That is the complete procedure used throughout this part of the chapter.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "final_remedy": {
+      "id": "final_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the four-stage checklist:\\n\\nEqualize → Remove decimal points → Find H.C.F./L.C.M. → Restore decimal places.\\n\\nFor 0.54, 1.8, 7.2:\\n0.54, 1.80, 7.20\\n→ 54, 180, 720\\n→ H.C.F. 18\\n→ 0.18",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish_remedy": {
+      "id": "finish_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "You have the method. Remember that the decimal-point handling is not part of the H.C.F./L.C.M. calculation itself. It is a preparation step and a restoration step around an ordinary whole-number calculation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Great work.\\n\\nYou now know the book's procedure for H.C.F. and L.C.M. of decimal fractions:\\n\\n1. Make all given numbers have the same number of decimal places by annexing zeros where necessary.\\n\\n2. Remove the decimal points.\\n\\n3. Find the H.C.F. or L.C.M. of the resulting whole numbers.\\n\\n4. Restore the decimal places in the result.\\n\\nBook examples to remember:\\n\\n0.63, 1.05, 2.1 → H.C.F. = 0.21 and L.C.M. = 6.30.\\n\\n1.75, 5.6, 7 → H.C.F. = 0.35.\\n\\n1.08, 0.36, 0.9 → H.C.F. = 0.18.\\n\\n0.54, 1.8, 7.2 → H.C.F. = 0.18.\\n\\n3, 2.7, 0.09 → L.C.M. = 27.\\n\\nThe biggest trap is stopping at the whole-number answer. Always restore the decimal places before giving the final answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "H.C.F. & L.C.M. of Decimal Fractions",
+    "description": "Learn and practice the book's procedure for finding H.C.F. and L.C.M. of decimal fractions by equalizing decimal places, removing decimal points, solving the whole-number problem, and restoring the decimal places.",
+    "targetDurationMinutes": 20
+  },
+  "scriptId": "script-hcf-lcm-06-decimal-fractions",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

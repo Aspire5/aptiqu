@@ -1,0 +1,2104 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Fractions do not always have the same denominator, so their numerators cannot be compared directly.\n\nFor example, to compare:\n\n17/18 and 31/36\n\nwe first rewrite them so that both have the same denominator.\n\nThe chapter's method is:\n\n1. Find the L.C.M. of the denominators.\n2. Convert each fraction to that common denominator.\n3. Compare the new numerators.\n4. For ascending order, write from smallest numerator to largest.\n5. For descending order, reverse that order.\n\nBecause every fraction keeps the same value after an equivalent conversion, the comparison is valid.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rule_check"
+        }
+      ]
+    },
+    "rule_check": {
+      "id": "rule_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Compare the numerators directly"
+          },
+          {
+            "id": "b",
+            "label": "Find the L.C.M. of the denominators"
+          },
+          {
+            "id": "c",
+            "label": "Find the H.C.F. of the numerators"
+          },
+          {
+            "id": "d",
+            "label": "Convert every fraction to a decimal"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the first step in the chapter's fraction-comparison method?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "equal_form"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "rule_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at the denominators first.",
+            "The chapter uses their L.C.M. as the common denominator."
+          ],
+          "prompt": "What is the first step in the chapter's fraction-comparison method?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Compare the numerators directly"
+            },
+            {
+              "id": "b",
+              "label": "Find the L.C.M. of the denominators"
+            },
+            {
+              "id": "c",
+              "label": "Find the H.C.F. of the numerators"
+            },
+            {
+              "id": "d",
+              "label": "Convert every fraction to a decimal"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The chapter starts by finding the L.C.M. of the denominators.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "rule_retry": {
+      "id": "rule_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not compare unlike fractions by looking only at their numerators.\n\nThe chapter begins with the denominators because we want one common denominator.\n\nSo the first step is:\n\nFind the L.C.M. of the denominators.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "equal_form"
+        }
+      ]
+    },
+    "equal_form": {
+      "id": "equal_form",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose we have:\n\na/b\n\nand multiply both numerator and denominator by the same number k:\n\n(a × k)/(b × k)\n\nThe fraction's value does not change.\n\nThat is exactly what we need here: change the denominator without changing the fraction.\n\nFor example:\n\n17/18\n\nTo make 18 into 180, multiply by 10:\n\n17/18 = (17 × 10)/(18 × 10) = 170/180\n\nThe value stays the same.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiplier_check"
+        }
+      ]
+    },
+    "multiplier_check": {
+      "id": "multiplier_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "content": {
+        "text": "To convert 17/18 into a fraction with denominator 180, what should we multiply the numerator and denominator by?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_denominator"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiplier_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Ask: 18 × what = 180?",
+            "The multiplier is 10."
+          ],
+          "prompt": "To convert 17/18 into a fraction with denominator 180, what should we multiply the numerator and denominator by?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 18 × 10 = 180, so 17/18 = 170/180.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "multiplier_retry": {
+      "id": "multiplier_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "We need:\n\n18 × ? = 180\n\nSo:\n\n? = 10\n\nMultiply both parts by 10:\n\n17/18 = 170/180.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_denominator"
+        }
+      ]
+    },
+    "lcm_denominator": {
+      "id": "lcm_denominator",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why do we use the L.C.M. of the denominators?\n\nA common denominator must be divisible by every original denominator.\n\nThe L.C.M. gives the least such common denominator.\n\nSo for:\n\n17/18, 31/36, 43/45, 59/60\n\nthe denominators are:\n\n18, 36, 45, 60\n\nTheir L.C.M. is:\n\n180\n\nThat is the common denominator used in the chapter's worked example.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "lcm_check"
+        }
+      ]
+    },
+    "lcm_check": {
+      "id": "lcm_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "90"
+          },
+          {
+            "id": "b",
+            "label": "120"
+          },
+          {
+            "id": "c",
+            "label": "180"
+          },
+          {
+            "id": "d",
+            "label": "360"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the L.C.M. of 18, 36, 45 and 60 in the chapter's worked example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "worked_setup"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "lcm_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find a number divisible by 18, 36, 45 and 60.",
+            "The chapter's worked example uses 180."
+          ],
+          "prompt": "What is the L.C.M. of 18, 36, 45 and 60 in the chapter's worked example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "90"
+            },
+            {
+              "id": "b",
+              "label": "120"
+            },
+            {
+              "id": "c",
+              "label": "180"
+            },
+            {
+              "id": "d",
+              "label": "360"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The book uses 180 as the common denominator.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "lcm_retry": {
+      "id": "lcm_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the worked example, the common denominator must be divisible by:\n\n18, 36, 45 and 60.\n\nThe chapter gives:\n\nL.C.M.(18, 36, 45, 60) = 180\n\nSo 180 is the common denominator.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "worked_setup"
+        }
+      ]
+    },
+    "worked_setup": {
+      "id": "worked_setup",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now follow the chapter's worked example carefully.\n\nCompare:\n\n17/18, 31/36, 43/45, 59/60\n\nStep 1:\n\nL.C.M.(18, 36, 45, 60) = 180\n\nStep 2: convert each fraction to denominator 180.\n\n17/18:\n180 ÷ 18 = 10\n\nSo:\n\n17/18 = 170/180",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "worked_second"
+        }
+      ]
+    },
+    "worked_second": {
+      "id": "worked_second",
+      "type": "CONTENT",
+      "content": {
+        "text": "Continue:\n\n31/36\n\n180 ÷ 36 = 5\n\nSo:\n\n31/36 = (31 × 5)/(36 × 5)\n      = 155/180\n\nEvery step uses the same rule:\n\nmultiply numerator and denominator by the same number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "worked_third"
+        }
+      ]
+    },
+    "worked_third": {
+      "id": "worked_third",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now:\n\n43/45\n\n180 ÷ 45 = 4\n\nSo:\n\n43/45 = 172/180\n\nAnd:\n\n59/60\n\n180 ÷ 60 = 3\n\nSo:\n\n59/60 = 177/180",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "worked_compare"
+        }
+      ]
+    },
+    "worked_compare": {
+      "id": "worked_compare",
+      "type": "CONTENT",
+      "content": {
+        "text": "We now have:\n\n17/18 = 170/180\n31/36 = 155/180\n43/45 = 172/180\n59/60 = 177/180\n\nAll denominators are identical.\n\nSo we compare only the numerators:\n\n155, 170, 172, 177\n\nThe chapter notes:\n\n155 < 170 < 172 < 177\n\nTherefore:\n\n31/36 < 17/18 < 43/45 < 59/60\n\nThat is the ascending order.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "worked_compare_check"
+        }
+      ]
+    },
+    "worked_compare_check": {
+      "id": "worked_compare_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17/18 = 170/180"
+          },
+          {
+            "id": "b",
+            "label": "31/36 = 155/180"
+          },
+          {
+            "id": "c",
+            "label": "43/45 = 172/180"
+          },
+          {
+            "id": "d",
+            "label": "59/60 = 177/180"
+          }
+        ]
+      },
+      "content": {
+        "text": "In the worked example, which fraction has the smallest numerator after conversion to denominator 180?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "ascending_descending"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "worked_compare_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Compare 170, 155, 172 and 177.",
+            "The smallest number among them is 155."
+          ],
+          "prompt": "In the worked example, which fraction has the smallest numerator after conversion to denominator 180?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17/18 = 170/180"
+            },
+            {
+              "id": "b",
+              "label": "31/36 = 155/180"
+            },
+            {
+              "id": "c",
+              "label": "43/45 = 172/180"
+            },
+            {
+              "id": "d",
+              "label": "59/60 = 177/180"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The smallest transformed numerator is 155, so 31/36 is the smallest fraction.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "worked_compare_retry": {
+      "id": "worked_compare_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "After conversion, the numerators are:\n\n170\n155\n172\n177\n\nThe smallest is 155.\n\nSo the smallest fraction is:\n\n155/180 = 31/36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "ascending_descending"
+        }
+      ]
+    },
+    "ascending_descending": {
+      "id": "ascending_descending",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once all fractions have the same denominator, ordering becomes very simple.\n\nAscending means:\n\nsmallest → largest\n\nSo in the worked example:\n\n155/180 < 170/180 < 172/180 < 177/180\n\nwhich gives:\n\n31/36 < 17/18 < 43/45 < 59/60\n\nDescending means:\n\nlargest → smallest\n\nSo the same comparison written backwards is:\n\n59/60 > 43/45 > 17/18 > 31/36",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "order_check"
+        }
+      ]
+    },
+    "order_check": {
+      "id": "order_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31/36, 17/18, 43/45, 59/60"
+          },
+          {
+            "id": "b",
+            "label": "59/60, 43/45, 17/18, 31/36"
+          },
+          {
+            "id": "c",
+            "label": "43/45, 59/60, 17/18, 31/36"
+          },
+          {
+            "id": "d",
+            "label": "59/60, 17/18, 43/45, 31/36"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the descending order of the chapter's four fractions?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiplier_zero"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "order_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Descending starts with the greatest value.",
+            "The ascending order was 31/36, 17/18, 43/45, 59/60."
+          ],
+          "prompt": "What is the descending order of the chapter's four fractions?",
+          "options": [
+            {
+              "id": "a",
+              "label": "31/36, 17/18, 43/45, 59/60"
+            },
+            {
+              "id": "b",
+              "label": "59/60, 43/45, 17/18, 31/36"
+            },
+            {
+              "id": "c",
+              "label": "43/45, 59/60, 17/18, 31/36"
+            },
+            {
+              "id": "d",
+              "label": "59/60, 17/18, 43/45, 31/36"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Descending reverses the ascending order: 59/60, 43/45, 17/18, 31/36.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "order_retry": {
+      "id": "order_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The ascending order is:\n\n31/36 < 17/18 < 43/45 < 59/60\n\nReverse it for descending:\n\n59/60 > 43/45 > 17/18 > 31/36",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiplier_zero"
+        }
+      ]
+    },
+    "multiplier_zero": {
+      "id": "multiplier_zero",
+      "type": "CONTENT",
+      "content": {
+        "text": "There is a useful mechanical step worth mastering.\n\nOnce the L.C.M. is known, find each multiplier by:\n\ncommon denominator ÷ original denominator\n\nFor the worked example:\n\n180 ÷ 18 = 10\n180 ÷ 36 = 5\n180 ÷ 45 = 4\n180 ÷ 60 = 3\n\nThen multiply the numerator by the same multiplier.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiplier_check2"
+        }
+      ]
+    },
+    "multiplier_check2": {
+      "id": "multiplier_check2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "content": {
+        "text": "What multiplier converts 43/45 into denominator 180?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiplier_check3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiplier_retry2"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use common denominator ÷ original denominator.",
+            "180 ÷ 45 = 4."
+          ],
+          "prompt": "What multiplier converts 43/45 into denominator 180?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 180 ÷ 45 = 4, so 43/45 = 172/180.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "multiplier_retry2": {
+      "id": "multiplier_retry2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 43/45:\n\n180 ÷ 45 = 4\n\nSo multiply numerator and denominator by 4:\n\n43/45 = (43 × 4)/(45 × 4) = 172/180.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiplier_check3"
+        }
+      ]
+    },
+    "multiplier_check3": {
+      "id": "multiplier_check3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "content": {
+        "text": "What multiplier converts 59/60 into denominator 180?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_denominator_demo"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "multiplier_retry3"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Calculate 180 ÷ 60.",
+            "The multiplier is 3."
+          ],
+          "prompt": "What multiplier converts 59/60 into denominator 180?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 180 ÷ 60 = 3, so 59/60 = 177/180.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "multiplier_retry3": {
+      "id": "multiplier_retry3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 59/60:\n\n180 ÷ 60 = 3\n\nSo:\n\n59/60 = (59 × 3)/(60 × 3)\n      = 177/180",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_denominator_demo"
+        }
+      ]
+    },
+    "same_denominator_demo": {
+      "id": "same_denominator_demo",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why can we compare numerators only after conversion?\n\nCompare:\n\n155/180 and 170/180.\n\nBoth have exactly the same denominator.\n\nSo 170/180 is larger because its numerator is larger.\n\nThis shortcut is safe only because the denominators are equal.\n\nBefore conversion, comparing 17 and 31 directly would be meaningless because 18 and 36 are different denominators.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "same_denom_check"
+        }
+      ]
+    },
+    "same_denom_check": {
+      "id": "same_denom_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Because the original denominators no longer matter"
+          },
+          {
+            "id": "b",
+            "label": "Because equal denominators make the larger numerator give the larger fraction"
+          },
+          {
+            "id": "c",
+            "label": "Because numerators are always more important than denominators"
+          },
+          {
+            "id": "d",
+            "label": "Because the fractions become whole numbers"
+          }
+        ]
+      },
+      "content": {
+        "text": "Why can we compare the numerators after converting fractions to the same denominator?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective85_intro"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "same_denom_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at 155/180 and 170/180.",
+            "Their denominators are identical, so only the numerators differ."
+          ],
+          "prompt": "Why can we compare the numerators after converting fractions to the same denominator?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Because the original denominators no longer matter"
+            },
+            {
+              "id": "b",
+              "label": "Because equal denominators make the larger numerator give the larger fraction"
+            },
+            {
+              "id": "c",
+              "label": "Because numerators are always more important than denominators"
+            },
+            {
+              "id": "d",
+              "label": "Because the fractions become whole numbers"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. With equal positive denominators, the fraction with the larger numerator has the larger value.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "same_denom_retry": {
+      "id": "same_denom_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key is:\n\nsame denominator → compare numerators.\n\nFor example:\n\n155/180 < 170/180\n\nbecause:\n\n155 < 170\n\nThis is the comparison step in the chapter's method.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "objective85_intro"
+        }
+      ]
+    },
+    "objective85_intro": {
+      "id": "objective85_intro",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now use the exact objective question from the chapter.\n\nWhich of the following fractions is the largest?\n\n7/8\n13/16\n31/40\n63/80\n\nThe source solves it by taking:\n\nL.C.M.(8, 16, 40, 80) = 80\n\nThen converting:\n\n7/8 = 70/80\n13/16 = 65/80\n31/40 = 62/80\n63/80 = 63/80",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "objective85_q"
+        }
+      ]
+    },
+    "objective85_q": {
+      "id": "objective85_q",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7/8"
+          },
+          {
+            "id": "b",
+            "label": "13/16"
+          },
+          {
+            "id": "c",
+            "label": "31/40"
+          },
+          {
+            "id": "d",
+            "label": "63/80"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which of these fractions is the largest: 7/8, 13/16, 31/40 or 63/80?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective85_compare"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective85_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use denominator 80.",
+            "The transformed numerators are 70, 65, 62 and 63."
+          ],
+          "prompt": "Which of these fractions is the largest: 7/8, 13/16, 31/40 or 63/80?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7/8"
+            },
+            {
+              "id": "b",
+              "label": "13/16"
+            },
+            {
+              "id": "c",
+              "label": "31/40"
+            },
+            {
+              "id": "d",
+              "label": "63/80"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. After conversion to denominator 80, 7/8 = 70/80, the largest numerator.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "objective85_retry": {
+      "id": "objective85_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use denominator 80.\n\nThe source converts:\n\n7/8 = 70/80\n13/16 = 65/80\n31/40 = 62/80\n63/80 = 63/80\n\nNow compare:\n\n70, 65, 62, 63\n\nThe greatest is 70.\n\nSo:\n\n7/8 is the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "objective85_compare"
+        }
+      ]
+    },
+    "objective85_compare": {
+      "id": "objective85_compare",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70/80"
+          },
+          {
+            "id": "b",
+            "label": "65/80"
+          },
+          {
+            "id": "c",
+            "label": "62/80"
+          },
+          {
+            "id": "d",
+            "label": "63/80"
+          }
+        ]
+      },
+      "content": {
+        "text": "After conversion to denominator 80, which transformed fraction is greatest?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "shortcut_warning"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "objective85_compare_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Compare 70, 65, 62 and 63.",
+            "The greatest numerator is 70."
+          ],
+          "prompt": "After conversion to denominator 80, which transformed fraction is greatest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "70/80"
+            },
+            {
+              "id": "b",
+              "label": "65/80"
+            },
+            {
+              "id": "c",
+              "label": "62/80"
+            },
+            {
+              "id": "d",
+              "label": "63/80"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 70/80 has the greatest numerator, so the original largest fraction is 7/8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "objective85_compare_retry": {
+      "id": "objective85_compare_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The transformed numerators are:\n\n70\n65\n62\n63\n\nThe greatest is 70.\n\nTherefore:\n\n70/80 = 7/8\n\nis the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "shortcut_warning"
+        }
+      ]
+    },
+    "shortcut_warning": {
+      "id": "shortcut_warning",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter's comparison method is mechanical and reliable.\n\nDo not switch back and forth between unrelated comparison tricks.\n\nFor this subtopic, keep the process:\n\nLCM of denominators\n→ equivalent fractions\n→ same denominator\n→ compare numerators.\n\nAlso remember that a denominator may already be the L.C.M. In that case its multiplier is simply 1.\n\nFor example:\n\n63/80 already has denominator 80, so:\n\n63/80 = 63/80",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "existing_denominator_check"
+        }
+      ]
+    },
+    "existing_denominator_check": {
+      "id": "existing_denominator_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "80"
+          }
+        ]
+      },
+      "content": {
+        "text": "In the objective question, what multiplier is used for 63/80 when the common denominator is 80?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "ascending_algorithm"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "existing_denominator_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use common denominator ÷ original denominator.",
+            "80 ÷ 80 = 1."
+          ],
+          "prompt": "In the objective question, what multiplier is used for 63/80 when the common denominator is 80?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "80"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 80 ÷ 80 = 1, so the fraction stays 63/80.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "existing_denominator_retry": {
+      "id": "existing_denominator_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 63/80:\n\n80 ÷ 80 = 1\n\nSo:\n\n63/80 = (63 × 1)/(80 × 1)\n\n= 63/80\n\nNo visible change is needed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "ascending_algorithm"
+        }
+      ]
+    },
+    "ascending_algorithm": {
+      "id": "ascending_algorithm",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here is the complete algorithm for ascending order.\n\nSuppose several fractions are given.\n\nStep 1:\nWrite down all denominators.\n\nStep 2:\nFind their L.C.M.\n\nStep 3:\nFor each fraction, calculate:\n\nmultiplier = L.C.M. ÷ denominator\n\nStep 4:\nMultiply numerator and denominator by that multiplier.\n\nStep 5:\nWrite all fractions with the same denominator.\n\nStep 6:\nCompare the numerators.\n\nStep 7:\nFor ascending order, arrange from smallest numerator to largest.\n\nFor descending order, reverse the sequence.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "algorithm_check"
+        }
+      ]
+    },
+    "algorithm_check": {
+      "id": "algorithm_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "The original denominators"
+          },
+          {
+            "id": "b",
+            "label": "The transformed numerators"
+          },
+          {
+            "id": "c",
+            "label": "The L.C.M. itself"
+          },
+          {
+            "id": "d",
+            "label": "The sum of numerator and denominator"
+          }
+        ]
+      },
+      "content": {
+        "text": "After converting all fractions to the common denominator, what determines their order?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "descending_algorithm"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "algorithm_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look at the final form such as 155/180, 170/180, etc.",
+            "Same denominator means the numerators decide the order."
+          ],
+          "prompt": "After converting all fractions to the common denominator, what determines their order?",
+          "options": [
+            {
+              "id": "a",
+              "label": "The original denominators"
+            },
+            {
+              "id": "b",
+              "label": "The transformed numerators"
+            },
+            {
+              "id": "c",
+              "label": "The L.C.M. itself"
+            },
+            {
+              "id": "d",
+              "label": "The sum of numerator and denominator"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Once denominators are equal, compare the transformed numerators.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "algorithm_retry": {
+      "id": "algorithm_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "After conversion, every fraction has the same denominator.\n\nSo the only changing part is the numerator.\n\nTherefore:\n\nsmallest numerator → smallest fraction\nlargest numerator → largest fraction",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "descending_algorithm"
+        }
+      ]
+    },
+    "descending_algorithm": {
+      "id": "descending_algorithm",
+      "type": "CONTENT",
+      "content": {
+        "text": "For descending order, the method does not change.\n\nYou still:\n\nfind L.C.M.\n→ convert to one denominator\n→ compare numerators\n\nThe only difference is the direction of the final arrangement.\n\nExample from the worked fractions:\n\n155/180 < 170/180 < 172/180 < 177/180\n\nAscending:\n\n31/36 < 17/18 < 43/45 < 59/60\n\nDescending:\n\n59/60 > 43/45 > 17/18 > 31/36",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "direction_check"
+        }
+      ]
+    },
+    "direction_check": {
+      "id": "direction_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7, 12, 15, 19"
+          },
+          {
+            "id": "b",
+            "label": "19, 15, 12, 7"
+          },
+          {
+            "id": "c",
+            "label": "15, 19, 7, 12"
+          },
+          {
+            "id": "d",
+            "label": "19, 12, 15, 7"
+          }
+        ]
+      },
+      "content": {
+        "text": "If the transformed numerators are 12, 19, 15 and 7, which sequence represents descending order?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "worked_reconstruct"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "direction_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Start with the greatest numerator.",
+            "Then move from larger to smaller."
+          ],
+          "prompt": "If the transformed numerators are 12, 19, 15 and 7, which sequence represents descending order?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7, 12, 15, 19"
+            },
+            {
+              "id": "b",
+              "label": "19, 15, 12, 7"
+            },
+            {
+              "id": "c",
+              "label": "15, 19, 7, 12"
+            },
+            {
+              "id": "d",
+              "label": "19, 12, 15, 7"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Descending means largest to smallest: 19, 15, 12, 7.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "direction_retry": {
+      "id": "direction_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Descending means largest to smallest.\n\nFor:\n\n12, 19, 15, 7\n\nthe order is:\n\n19, 15, 12, 7",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "worked_reconstruct"
+        }
+      ]
+    },
+    "worked_reconstruct": {
+      "id": "worked_reconstruct",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild the chapter's worked example from scratch.\n\nFractions:\n\n17/18, 31/36, 43/45, 59/60\n\nCommon denominator:\n\n180\n\nMultipliers:\n\n10, 5, 4, 3\n\nTransformed fractions:\n\n170/180\n155/180\n172/180\n177/180\n\nThe numerator order is:\n\n155 < 170 < 172 < 177\n\nSo the fractions in ascending order are:\n\n31/36 < 17/18 < 43/45 < 59/60",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "reconstruct_q1"
+        }
+      ]
+    },
+    "reconstruct_q1": {
+      "id": "reconstruct_q1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17/18"
+          },
+          {
+            "id": "b",
+            "label": "31/36"
+          },
+          {
+            "id": "c",
+            "label": "43/45"
+          },
+          {
+            "id": "d",
+            "label": "59/60"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which original fraction becomes 172/180 in the worked example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "reconstruct_q2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "reconstruct_q1_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "180 ÷ 45 = 4.",
+            "43 × 4 = 172."
+          ],
+          "prompt": "Which original fraction becomes 172/180 in the worked example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17/18"
+            },
+            {
+              "id": "b",
+              "label": "31/36"
+            },
+            {
+              "id": "c",
+              "label": "43/45"
+            },
+            {
+              "id": "d",
+              "label": "59/60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 43/45 is multiplied by 4 to become 172/180.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "reconstruct_q1_retry": {
+      "id": "reconstruct_q1_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "For denominator 45:\n\n180 ÷ 45 = 4\n\nThen:\n\n43 × 4 = 172\n\nSo:\n\n43/45 = 172/180.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "reconstruct_q2"
+        }
+      ]
+    },
+    "reconstruct_q2": {
+      "id": "reconstruct_q2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17/18"
+          },
+          {
+            "id": "b",
+            "label": "31/36"
+          },
+          {
+            "id": "c",
+            "label": "43/45"
+          },
+          {
+            "id": "d",
+            "label": "59/60"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which original fraction becomes 155/180?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "reconstruct_q3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "reconstruct_q2_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "180 ÷ 36 = 5.",
+            "31 × 5 = 155."
+          ],
+          "prompt": "Which original fraction becomes 155/180?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17/18"
+            },
+            {
+              "id": "b",
+              "label": "31/36"
+            },
+            {
+              "id": "c",
+              "label": "43/45"
+            },
+            {
+              "id": "d",
+              "label": "59/60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 31/36 is multiplied by 5 to become 155/180.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "reconstruct_q2_retry": {
+      "id": "reconstruct_q2_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "For denominator 36:\n\n180 ÷ 36 = 5\n\nThen:\n\n31 × 5 = 155\n\nSo:\n\n31/36 = 155/180.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "reconstruct_q3"
+        }
+      ]
+    },
+    "reconstruct_q3": {
+      "id": "reconstruct_q3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "59/60 < 43/45 < 17/18 < 31/36"
+          },
+          {
+            "id": "b",
+            "label": "31/36 < 17/18 < 43/45 < 59/60"
+          },
+          {
+            "id": "c",
+            "label": "17/18 < 31/36 < 59/60 < 43/45"
+          },
+          {
+            "id": "d",
+            "label": "31/36 < 43/45 < 17/18 < 59/60"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which is the correct ascending order from the worked example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "method_mistakes"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "reconstruct_q3_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 155 < 170 < 172 < 177.",
+            "Match each transformed numerator back to its original fraction."
+          ],
+          "prompt": "Which is the correct ascending order from the worked example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "59/60 < 43/45 < 17/18 < 31/36"
+            },
+            {
+              "id": "b",
+              "label": "31/36 < 17/18 < 43/45 < 59/60"
+            },
+            {
+              "id": "c",
+              "label": "17/18 < 31/36 < 59/60 < 43/45"
+            },
+            {
+              "id": "d",
+              "label": "31/36 < 43/45 < 17/18 < 59/60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. The source gives 31/36 < 17/18 < 43/45 < 59/60.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "reconstruct_q3_retry": {
+      "id": "reconstruct_q3_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The transformed numerators are:\n\n31/36 → 155\n17/18 → 170\n43/45 → 172\n59/60 → 177\n\nSince:\n\n155 < 170 < 172 < 177\n\nthe ascending order is:\n\n31/36 < 17/18 < 43/45 < 59/60",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "method_mistakes"
+        }
+      ]
+    },
+    "method_mistakes": {
+      "id": "method_mistakes",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three mistakes are especially easy to make.\n\nMistake 1:\nComparing numerators before making denominators equal.\n\nMistake 2:\nMultiplying only the numerator instead of multiplying numerator and denominator by the same number.\n\nMistake 3:\nFinding a common multiple of denominators but not using the L.C.M. when the chapter asks for this method.\n\nThe safe routine is:\n\nLCM → multiplier → equivalent fraction → compare numerators.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mistake_check"
+        }
+      ]
+    },
+    "mistake_check": {
+      "id": "mistake_check",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31 × 5 / 36"
+          },
+          {
+            "id": "b",
+            "label": "(31 × 5)/(36 × 5)"
+          },
+          {
+            "id": "c",
+            "label": "(31 + 5)/(36 + 5)"
+          },
+          {
+            "id": "d",
+            "label": "(31 × 4)/(36 × 4)"
+          }
+        ]
+      },
+      "content": {
+        "text": "To convert 31/36 to denominator 180, which expression is correct?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "largest_recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "mistake_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The numerator and denominator must use the same multiplier.",
+            "36 × 5 = 180."
+          ],
+          "prompt": "To convert 31/36 to denominator 180, which expression is correct?",
+          "options": [
+            {
+              "id": "a",
+              "label": "31 × 5 / 36"
+            },
+            {
+              "id": "b",
+              "label": "(31 × 5)/(36 × 5)"
+            },
+            {
+              "id": "c",
+              "label": "(31 + 5)/(36 + 5)"
+            },
+            {
+              "id": "d",
+              "label": "(31 × 4)/(36 × 4)"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Both numerator and denominator must be multiplied by 5: (31 × 5)/(36 × 5).",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "mistake_retry": {
+      "id": "mistake_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because:\n\n36 × 5 = 180\n\nwe must multiply both parts by 5:\n\n31/36 = (31 × 5)/(36 × 5)\n      = 155/180\n\nMultiplying only one part would change the value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "largest_recap"
+        }
+      ]
+    },
+    "largest_recap": {
+      "id": "largest_recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's lock in the chapter's method.\n\nFor comparing fractions:\n\n1. Find the L.C.M. of all denominators.\n2. Convert every fraction to that denominator.\n3. For each fraction, use:\n   multiplier = L.C.M. ÷ denominator\n4. Multiply numerator and denominator by that same multiplier.\n5. Compare the resulting numerators.\n6. Ascending = smallest to largest.\n7. Descending = largest to smallest.\n\nSource worked example:\n\n17/18 = 170/180\n31/36 = 155/180\n43/45 = 172/180\n59/60 = 177/180\n\nTherefore:\n\n31/36 < 17/18 < 43/45 < 59/60\n\nSource objective:\n\n7/8 = 70/80\n13/16 = 65/80\n31/40 = 62/80\n63/80 = 63/80\n\nTherefore 7/8 is the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q1"
+        }
+      ]
+    },
+    "final_q1": {
+      "id": "final_q1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Because 7 > 63"
+          },
+          {
+            "id": "b",
+            "label": "Because after conversion 70/80 > 63/80"
+          },
+          {
+            "id": "c",
+            "label": "Because 8 > 80"
+          },
+          {
+            "id": "d",
+            "label": "Because 7/8 has the smaller denominator"
+          }
+        ]
+      },
+      "content": {
+        "text": "In the source objective, why is 7/8 larger than 63/80?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q1_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Convert 7/8 to denominator 80.",
+            "7/8 = 70/80, then compare 70 with 63."
+          ],
+          "prompt": "In the source objective, why is 7/8 larger than 63/80?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Because 7 > 63"
+            },
+            {
+              "id": "b",
+              "label": "Because after conversion 70/80 > 63/80"
+            },
+            {
+              "id": "c",
+              "label": "Because 8 > 80"
+            },
+            {
+              "id": "d",
+              "label": "Because 7/8 has the smaller denominator"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Once both have denominator 80, compare 70 and 63.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_q1_retry": {
+      "id": "final_q1_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Convert:\n\n7/8 = 70/80\n\nThe other fraction is:\n\n63/80\n\nNow compare:\n\n70/80 > 63/80\n\nSo:\n\n7/8 > 63/80",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q2"
+        }
+      ]
+    },
+    "final_q2": {
+      "id": "final_q2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "The original numerators"
+          },
+          {
+            "id": "b",
+            "label": "The transformed numerators"
+          },
+          {
+            "id": "c",
+            "label": "The original denominators"
+          },
+          {
+            "id": "d",
+            "label": "The L.C.M. and H.C.F. together"
+          }
+        ]
+      },
+      "content": {
+        "text": "If all transformed fractions have the same denominator, what should you compare?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q2_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look only after the common-denominator conversion.",
+            "The final numerators carry the ordering information."
+          ],
+          "prompt": "If all transformed fractions have the same denominator, what should you compare?",
+          "options": [
+            {
+              "id": "a",
+              "label": "The original numerators"
+            },
+            {
+              "id": "b",
+              "label": "The transformed numerators"
+            },
+            {
+              "id": "c",
+              "label": "The original denominators"
+            },
+            {
+              "id": "d",
+              "label": "The L.C.M. and H.C.F. together"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Compare the transformed numerators.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_q2_retry": {
+      "id": "final_q2_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "After conversion, the denominators are identical.\n\nSo compare the transformed numerators.\n\nFor example:\n\n155/180 < 170/180\n\nbecause:\n\n155 < 170.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_q3"
+        }
+      ]
+    },
+    "final_q3": {
+      "id": "final_q3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31/36, 17/18, 43/45, 59/60"
+          },
+          {
+            "id": "b",
+            "label": "59/60, 43/45, 17/18, 31/36"
+          },
+          {
+            "id": "c",
+            "label": "43/45, 59/60, 31/36, 17/18"
+          },
+          {
+            "id": "d",
+            "label": "17/18, 31/36, 59/60, 43/45"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is the correct descending order of the four fractions from the worked example?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "finish"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "final_q3_retry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Start with the greatest transformed numerator: 177.",
+            "The greatest fraction is 59/60."
+          ],
+          "prompt": "What is the correct descending order of the four fractions from the worked example?",
+          "options": [
+            {
+              "id": "a",
+              "label": "31/36, 17/18, 43/45, 59/60"
+            },
+            {
+              "id": "b",
+              "label": "59/60, 43/45, 17/18, 31/36"
+            },
+            {
+              "id": "c",
+              "label": "43/45, 59/60, 31/36, 17/18"
+            },
+            {
+              "id": "d",
+              "label": "17/18, 31/36, 59/60, 43/45"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. Descending reverses the source's ascending order.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "final_q3_retry": {
+      "id": "final_q3_retry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The transformed numerators are:\n\n31/36 → 155\n17/18 → 170\n43/45 → 172\n59/60 → 177\n\nLargest to smallest:\n\n177, 172, 170, 155\n\nTherefore:\n\n59/60 > 43/45 > 17/18 > 31/36",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "CONTENT",
+      "content": {
+        "text": "Excellent.\n\nYou now have the exact fraction-comparison workflow used in this chapter.\n\nThe pattern to remember is:\n\nFind L.C.M. of denominators\n→ convert every fraction to that denominator\n→ compare transformed numerators\n→ write ascending or descending order.\n\nThe chapter's worked example gives:\n\n31/36 < 17/18 < 43/45 < 59/60\n\nand its objective question gives:\n\n7/8 as the largest among 7/8, 13/16, 31/40 and 63/80.\n\nThe important part is not memorizing these answers. It is recognizing the method:\n\nsame denominator first,\nthen compare numerators.\n\nOnce the denominators are equal, the fraction comparison becomes straightforward.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 2,
+  "metadata": {
+    "title": "Comparing Fractions Using L.C.M.",
+    "description": "Learn the chapter's method for arranging fractions in ascending or descending order by converting them to a common denominator.",
+    "targetDurationMinutes": 27
+  },
+  "scriptId": "script-hcf-lcm-12-comparing-fractions",
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}
