@@ -1,0 +1,2046 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "num-05-consecutive-number-patterns",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Consecutive Numbers and Number Patterns",
+    "description": "Represent consecutive integers, odd or even numbers, and regular multiples so their sums and products become manageable equations.",
+    "teachingApproach": "Build the number model, derive each equation or identity, solve with visible intermediate steps, then verify the value against the original conditions. Targeted remedial paths diagnose common representation and constraint errors.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 7 “Problems on Numbers,” printed pages 240–263. Approved scope: Represent consecutive integers as x,x+1,…; consecutive even or odd integers as x,x+2,…; and consecutive multiples as successive multiples of a fixed step. Derive how their sum changes with the starting value, use the average or middle term as a check, and solve chapter-level conditions involving sums, products, squares, and differences. Clarify whether the problem asks for the next block or the next individual number, and distinguish positive integers from unrestricted integers. Learners should choose a parameterization that preserves the required parity or spacing, calculate the term count correctly, and verify every term and condition."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Consecutive numbers are modeled by a starting value and a fixed step. Use a step of 1 for all integers, 2 for odd/even integers, and the stated interval for other regular patterns.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "intro_2"
+        }
+      ]
+    },
+    "intro_2": {
+      "id": "intro_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Count terms and preserve parity before solving; then check the endpoint the question actually requests.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Five consecutive integers can be written x,x+1,x+2,x+3,x+4. Their sum is 5x+10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the total is 115, then 5x+10=115, so x=21. The terms are 21 through 25 and the middle is 23.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean 115/5=23 confirms the middle. Count four increments from first to last; five terms have only four gaps.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive integers total 115. Find the middle integer.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "23"
+          },
+          {
+            "id": "b",
+            "label": "21"
+          },
+          {
+            "id": "c",
+            "label": "22"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive integers total 115. Find the middle integer.",
+          "options": [
+            {
+              "id": "a",
+              "label": "23"
+            },
+            {
+              "id": "b",
+              "label": "21"
+            },
+            {
+              "id": "c",
+              "label": "22"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The middle is the average of five consecutive values.",
+            "Divide the total by 5."
+          ],
+          "explanation": "115/5=23; the sequence is 21,22,23,24,25."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For five terms the middle is the third, so the mean is the middle value. Do not divide by the number of gaps.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "List two values on either side of 23 to check the sequence.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Seven consecutive integers total 210. Find the smallest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "26"
+          },
+          {
+            "id": "b",
+            "label": "28"
+          },
+          {
+            "id": "c",
+            "label": "29"
+          },
+          {
+            "id": "d",
+            "label": "27"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Seven consecutive integers total 210. Find the smallest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "26"
+            },
+            {
+              "id": "b",
+              "label": "28"
+            },
+            {
+              "id": "c",
+              "label": "29"
+            },
+            {
+              "id": "d",
+              "label": "27"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The mean is the fourth term.",
+            "Move three steps below it."
+          ],
+          "explanation": "The mean is 30; the smallest is 30−3=27."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean is the middle (fourth) value, not the first. There are three terms below it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_1_part_2"
+        }
+      ]
+    },
+    "retry_remedy_1_part_2": {
+      "id": "retry_remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check that 27 through 33 sum to 210.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Consecutive even or odd integers have a step of 2: x,x+2,x+4,… . For four consecutive even terms with total 124, 4x+12=124, hence x=28 and the largest is 34.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean is 31, halfway between the middle terms 30 and 32. The starting value is even as required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the algebra gives an odd x for an even sequence, check the model or arithmetic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four consecutive even integers sum to 124. Find the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32"
+          },
+          {
+            "id": "b",
+            "label": "36"
+          },
+          {
+            "id": "c",
+            "label": "38"
+          },
+          {
+            "id": "d",
+            "label": "34"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four consecutive even integers sum to 124. Find the largest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32"
+            },
+            {
+              "id": "b",
+              "label": "36"
+            },
+            {
+              "id": "c",
+              "label": "38"
+            },
+            {
+              "id": "d",
+              "label": "34"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Represent the terms as x,x+2,x+4,x+6.",
+            "Solve 4x+12=124."
+          ],
+          "explanation": "x=28, so the terms are 28,30,32,34 and the largest is 34."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not use step 1 for even integers. Their terms differ by 2, and the offsets total 12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Solve for the first term and add 6 for the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three consecutive odd integers sum to 147. Find the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "47"
+          },
+          {
+            "id": "b",
+            "label": "51"
+          },
+          {
+            "id": "c",
+            "label": "49"
+          },
+          {
+            "id": "d",
+            "label": "53"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three consecutive odd integers sum to 147. Find the largest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "47"
+            },
+            {
+              "id": "b",
+              "label": "51"
+            },
+            {
+              "id": "c",
+              "label": "49"
+            },
+            {
+              "id": "d",
+              "label": "53"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The middle term is the mean.",
+            "Add 2 to reach the largest."
+          ],
+          "explanation": "147/3=49 is the middle; terms 47,49,51 give largest 51."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean gives the middle, not the largest. Consecutive odd terms step by 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_2_part_2"
+        }
+      ]
+    },
+    "retry_remedy_2_part_2": {
+      "id": "retry_remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The values 47,49,51 sum to 147.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For n consecutive integers starting at x, the terms are x through x+n−1. Their sum is nx+n(n−1)/2: n copies of x plus the sum of offsets 0 through n−1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For six terms totaling 99, the offsets sum to 15, so 6x+15=99 and x=14; the largest is 19.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean is 16.5, which is halfway between the two middle integers. A fractional mean does not imply fractional terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Six consecutive integers sum to 99. Find the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "19"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Six consecutive integers sum to 99. Find the largest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "19"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Add the six offsets 0+1+2+3+4+5.",
+            "Solve for x, then add 5."
+          ],
+          "explanation": "6x+15=99 gives x=14; the largest x+5=19."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not count six copies of x and forget the offsets. Their total is 15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Solve 6x+15=99 and add five to reach the endpoint.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Eight consecutive integers sum to 148. Find the smallest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Eight consecutive integers sum to 148. Find the smallest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The offsets 0 through 7 total 28.",
+            "Set 8x+28=148."
+          ],
+          "explanation": "8x=120, so the smallest x=15; the set 15 through 22 checks."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "With eight terms, avoid trying to count from a fractional mean. Write x through x+7; offsets total 28.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_3_part_2"
+        }
+      ]
+    },
+    "retry_remedy_3_part_2": {
+      "id": "retry_remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first term is 15; verify the eight-term sum.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For products, factor pairs give a systematic way to identify adjacent integers. Around √210, the adjacent pair 14 and 15 multiplies to 210.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A factor pair must satisfy both the product and adjacency condition. Other pairs such as 10 and 21 multiply to 210 but are not consecutive.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For three consecutive factors, verify all three values and their product rather than stopping at a pair.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two consecutive positive integers have product 210. Find the larger.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two consecutive positive integers have product 210. Find the larger.",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Search adjacent factors near the square root.",
+            "Check 14×15."
+          ],
+          "explanation": "14×15=210, so the larger is 15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A product match alone is insufficient. Check that the factors differ by exactly 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The adjacent pair is 14 and 15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three consecutive positive integers have product 336. Find the middle.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three consecutive positive integers have product 336. Find the middle.",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "9"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Test consecutive factors near the cube root.",
+            "Check 6×7×8."
+          ],
+          "explanation": "6×7×8=336, so the middle integer is 7."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not stop at a two-factor decomposition. The requested three terms must be consecutive.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_4_part_2"
+        }
+      ]
+    },
+    "retry_remedy_4_part_2": {
+      "id": "retry_remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The set 6,7,8 satisfies that pattern and has product 336.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a later block of five consecutive odd numbers, each term is 10 greater than its counterpart in the previous block: the first number advances by five odd-number gaps.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the first block totals 255, the next block's total rises by 5×10=50, giving 305.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This differs from the next individual odd number, which advances by only 2. Read whether the question asks for a next term or a next block.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive odd numbers sum to 255. What is the sum of the next five?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "305"
+          },
+          {
+            "id": "b",
+            "label": "285"
+          },
+          {
+            "id": "c",
+            "label": "295"
+          },
+          {
+            "id": "d",
+            "label": "315"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive odd numbers sum to 255. What is the sum of the next five?",
+          "options": [
+            {
+              "id": "a",
+              "label": "305"
+            },
+            {
+              "id": "b",
+              "label": "285"
+            },
+            {
+              "id": "c",
+              "label": "295"
+            },
+            {
+              "id": "d",
+              "label": "315"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Each term in the next block is 10 greater.",
+            "Increase the total by five such shifts."
+          ],
+          "explanation": "The sum rises by 5×10=50, so the next block totals 305."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Adding 2 only moves one term to the next odd number. The next five-term block shifts every term by 10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add 50 to the given total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four consecutive even numbers sum to 76. What is the sum of the next four?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "100"
+          },
+          {
+            "id": "b",
+            "label": "108"
+          },
+          {
+            "id": "c",
+            "label": "104"
+          },
+          {
+            "id": "d",
+            "label": "112"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four consecutive even numbers sum to 76. What is the sum of the next four?",
+          "options": [
+            {
+              "id": "a",
+              "label": "100"
+            },
+            {
+              "id": "b",
+              "label": "108"
+            },
+            {
+              "id": "c",
+              "label": "104"
+            },
+            {
+              "id": "d",
+              "label": "112"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The first term of the next block is 8 greater.",
+            "All four terms shift by that amount."
+          ],
+          "explanation": "The first block is 16,18,20,22; next is 24,26,28,30. Total rises by 32 to 108."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "After four even terms, the next block begins 8 higher than the earlier first term. Each of four values shifts by 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_5_part_2"
+        }
+      ]
+    },
+    "retry_remedy_5_part_2": {
+      "id": "retry_remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The new sum is 76+32=108.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For an odd sequence, the middle term equals its mean. Three consecutive odd integers summing to 99 are 31,33,35; the mean 33 is the middle.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For even counts, the mean lies halfway between central values. Four consecutive evens centered at 20 are 16,18,20,22 only if the mean is 19; check the endpoints rather than assuming the mean is itself a term.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "List the terms when parity or count could cause a mistaken endpoint.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three consecutive odd numbers sum to 99. Find the smallest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "29"
+          },
+          {
+            "id": "b",
+            "label": "33"
+          },
+          {
+            "id": "c",
+            "label": "35"
+          },
+          {
+            "id": "d",
+            "label": "31"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three consecutive odd numbers sum to 99. Find the smallest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "29"
+            },
+            {
+              "id": "b",
+              "label": "33"
+            },
+            {
+              "id": "c",
+              "label": "35"
+            },
+            {
+              "id": "d",
+              "label": "31"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Divide by three for the middle.",
+            "Subtract 2 for the smallest."
+          ],
+          "explanation": "The middle is 33, so the terms are 31,33,35; smallest 31."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average identifies the middle of three terms. The smallest odd number is 2 less.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the three values sum to 99.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Six consecutive even numbers have mean 25. Find the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "28"
+          },
+          {
+            "id": "b",
+            "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "34"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Six consecutive even numbers have mean 25. Find the largest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "28"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "34"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The six values straddle the mean symmetrically.",
+            "List three even values below and above 25."
+          ],
+          "explanation": "The terms are 20,22,24,26,28,30; the largest is 30."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "With an even count, the mean is between the two central terms (24 and 26), not one of the terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_6_part_2"
+        }
+      ]
+    },
+    "retry_remedy_6_part_2": {
+      "id": "retry_remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Continue the even step to 30 and verify the six values average 25.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Parity is part of the model. If x,x+2,x+4 represent consecutive odd values, x must be odd; for consecutive even values, x must be even.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The endpoint depends on the term count. Four consecutive odd values are x,x+2,x+4,x+6, so the largest is x+6 rather than x+4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "After solving, list the terms to check parity, count, sum, and the requested endpoint.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four consecutive odd integers sum to 88. Find the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21"
+          },
+          {
+            "id": "b",
+            "label": "23"
+          },
+          {
+            "id": "c",
+            "label": "25"
+          },
+          {
+            "id": "d",
+            "label": "27"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four consecutive odd integers sum to 88. Find the largest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "21"
+            },
+            {
+              "id": "b",
+              "label": "23"
+            },
+            {
+              "id": "c",
+              "label": "25"
+            },
+            {
+              "id": "d",
+              "label": "27"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Write x,x+2,x+4,x+6.",
+            "Solve the sum and add 6 to the first term."
+          ],
+          "explanation": "4x+12=88 gives x=19; terms 19,21,23,25, largest 25."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Solving gives x=19 as the first value; the largest is three steps later, x+6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "List the four odd values and confirm their total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive even integers sum to 110. Find the largest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "26"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "28"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive even integers sum to 110. Find the largest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "26"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "28"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Offsets are 0,2,4,6,8.",
+            "Solve 5x+20=110, then add 8."
+          ],
+          "explanation": "x=18; terms 18,20,22,24,26, so the largest is 26."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first value is 18, but the question asks for the fifth. Add four step-2 gaps, or 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_remedy_7_part_2"
+        }
+      ]
+    },
+    "retry_remedy_7_part_2": {
+      "id": "retry_remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the listed terms total 110.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiples of a fixed number form an equally spaced sequence. The first five positive multiples of 3 are 3,6,9,12,15; their mean is halfway between 3 and 15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The common step is 3, so midpoint reasoning applies as it did for consecutive integers. Verify both the count and endpoints.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not confuse the first n multiples of m with all numbers from m through n.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the largest of the first five positive multiples of 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the largest of the first five positive multiples of 3.",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "List the first five multiples in order.",
+            "Check the fifth term, not the next one."
+          ],
+          "explanation": "The list is 3,6,9,12,15; largest is 15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first five multiples end at 5×3=15. The next multiple is not included.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "List the terms to check the count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the largest of the first four positive multiples of 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the largest of the first four positive multiples of 5.",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Write 5,10,15,20.",
+            "Count four terms."
+          ],
+          "explanation": "The fourth positive multiple is 20."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first four are 5,10,15,20. Do not include the fifth.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Represent each sequence with the correct step, solve using its sum or product, and verify term count, parity, order, and requested endpoint. Use the mean as a check, not a substitute for correct counting.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

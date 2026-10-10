@@ -1,0 +1,1768 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "script-df-03-decimal-addition-subtraction",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Addition and Subtraction of Decimals",
+    "description": "Add and subtract decimals, including multi-term expressions and missing-value equations.",
+    "targetDurationMinutes": 40,
+    "teachingApproach": "Place-value alignment → regrouping → equation solving → estimation, inverse checks, and mixed review.",
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 3: decimal addition/subtraction rules and solved examples 4-7 on printed pages 71-72; objective patterns in decimal sums, differences and missing values on printed pages 74-76."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Decimal addition and subtraction use base-ten place values. Align decimal points so ones, tenths, hundredths, and smaller units share their columns. Then add with carrying or subtract with borrowing. This lesson extends the method to multiple terms, missing-value equations, convenient regrouping, and checks by estimation or inverse operations. At every step, preserve the value of each term and the equality of each equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "align_decimal_points"
+        }
+      ]
+    },
+    "align_decimal_points": {
+      "id": "align_decimal_points",
+      "type": "CONTENT",
+      "content": {
+        "text": "Decimal points mark the boundary between whole units and tenths. Place numbers one under another so the points share a column. Then ones align with ones, tenths with tenths, and hundredths with hundredths. Appending right-hand zeroes exposes empty places without changing a terminating decimal.\n\nFor 3.6 + 0.47, write 3.60 + 0.47. The aligned sum is 4.07. Lining up final digits instead of decimal points can combine unlike units.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_align_decimal_points"
+        }
+      ]
+    },
+    "q_align_decimal_points": {
+      "id": "q_align_decimal_points",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 8.2 + 0.375.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8.575"
+          },
+          {
+            "id": "b",
+            "label": "8.557"
+          },
+          {
+            "id": "c",
+            "label": "8.725"
+          },
+          {
+            "id": "d",
+            "label": "8.257"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "addition_carrying",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_align_decimal_points",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 8.2 + 0.375.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "8.575"
+            },
+            {
+              "id": "b",
+              "label": "8.557"
+            },
+            {
+              "id": "c",
+              "label": "8.725"
+            },
+            {
+              "id": "d",
+              "label": "8.257"
+            }
+          ],
+          "hints": [
+            "Write 8.2 as 8.200.",
+            "Add corresponding place-value columns."
+          ],
+          "explanation": "8.200 + 0.375 = 8.575.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_align_decimal_points": {
+      "id": "remedy_align_decimal_points",
+      "type": "CONTENT",
+      "content": {
+        "text": "Align 8.2 as 8.200, then add 8.200 + 0.375 by place-value columns.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_align_decimal_points"
+        }
+      ]
+    },
+    "retry_align_decimal_points": {
+      "id": "retry_align_decimal_points",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 31.4 + 0.572.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31.612"
+          },
+          {
+            "id": "b",
+            "label": "36.12"
+          },
+          {
+            "id": "c",
+            "label": "31.972"
+          },
+          {
+            "id": "d",
+            "label": "31.4572"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "addition_carrying"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 31.4 + 0.572.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "options": [
+            {
+              "id": "a",
+              "label": "31.612"
+            },
+            {
+              "id": "b",
+              "label": "36.12"
+            },
+            {
+              "id": "c",
+              "label": "31.972"
+            },
+            {
+              "id": "d",
+              "label": "31.4572"
+            }
+          ],
+          "hints": [
+            "Write 31.4 as 31.400.",
+            "Add the aligned values."
+          ],
+          "explanation": "31.400 + 0.572 = 31.972.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "addition_carrying": {
+      "id": "addition_carrying",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a column total reaches ten units of that place, regroup into one unit of the next place. The decimal point does not move during addition. With several addends, align every point first and track each carry.\n\nFor 11.11 + 111.1 + 1,111.11, write 11.11 + 111.10 + 1,111.11. The total is 1,233.32. Estimating about 11 + 111 + 1,111 = 1,233 checks the scale.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_addition_carrying"
+        }
+      ]
+    },
+    "q_addition_carrying": {
+      "id": "q_addition_carrying",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 22.22 + 222.2 + 2,222.22.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2,466.64"
+          },
+          {
+            "id": "b",
+            "label": "2,456.64"
+          },
+          {
+            "id": "c",
+            "label": "2,466.54"
+          },
+          {
+            "id": "d",
+            "label": "24,666.4"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "subtraction_borrowing",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_addition_carrying",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 22.22 + 222.2 + 2,222.22.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "2,466.64"
+            },
+            {
+              "id": "b",
+              "label": "2,456.64"
+            },
+            {
+              "id": "c",
+              "label": "2,466.54"
+            },
+            {
+              "id": "d",
+              "label": "24,666.4"
+            }
+          ],
+          "hints": [
+            "Align the decimal points by appending a zero to 222.2.",
+            "Estimate near 2,467."
+          ],
+          "explanation": "22.22 + 222.20 + 2,222.22 = 2,466.64.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_addition_carrying": {
+      "id": "remedy_addition_carrying",
+      "type": "CONTENT",
+      "content": {
+        "text": "Align 22.22, 222.20, and 2,222.22. Add one place-value column at a time and estimate near 2,467.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_addition_carrying"
+        }
+      ]
+    },
+    "retry_addition_carrying": {
+      "id": "retry_addition_carrying",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 620.25 + 62.025 + 6.2025 + 0.62025.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "689.09775"
+          },
+          {
+            "id": "b",
+            "label": "689.0975"
+          },
+          {
+            "id": "c",
+            "label": "688.09775"
+          },
+          {
+            "id": "d",
+            "label": "6,890.9775"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "subtraction_borrowing"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 620.25 + 62.025 + 6.2025 + 0.62025.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "689.09775"
+            },
+            {
+              "id": "b",
+              "label": "689.0975"
+            },
+            {
+              "id": "c",
+              "label": "688.09775"
+            },
+            {
+              "id": "d",
+              "label": "6,890.9775"
+            }
+          ],
+          "hints": [
+            "Align using five decimal places.",
+            "Estimate near 620 + 62 + 6 + 1."
+          ],
+          "explanation": "620.25000 + 62.02500 + 6.20250 + 0.62025 = 689.09775.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "subtraction_borrowing": {
+      "id": "subtraction_borrowing",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtraction needs the same alignment. If a top digit is too small, regroup from the next place, even when zeroes lie between. Each borrowed unit is one tenth, hundredth, or another place unit according to its column.\n\nFor 31.004 − 17.2386, write 31.0040 − 17.2386 and borrow through the zero columns. The difference is 13.7654. The estimate 31 − 17 ≈ 14 supports its magnitude.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_subtraction_borrowing"
+        }
+      ]
+    },
+    "q_subtraction_borrowing": {
+      "id": "q_subtraction_borrowing",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 49.002 − 27.1685.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21.8335"
+          },
+          {
+            "id": "b",
+            "label": "22.1665"
+          },
+          {
+            "id": "c",
+            "label": "21.835"
+          },
+          {
+            "id": "d",
+            "label": "218.335"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_subtractions",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_subtraction_borrowing",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 49.002 − 27.1685.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "21.8335"
+            },
+            {
+              "id": "b",
+              "label": "22.1665"
+            },
+            {
+              "id": "c",
+              "label": "21.835"
+            },
+            {
+              "id": "d",
+              "label": "218.335"
+            }
+          ],
+          "hints": [
+            "Write 49.0020 so the decimal places align.",
+            "Subtract from the right, borrowing across zeroes as needed."
+          ],
+          "explanation": "49.0020 − 27.1685 = 21.8335.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_subtraction_borrowing": {
+      "id": "remedy_subtraction_borrowing",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write 49.0020 above 27.1685. Regroup across the zeroes and preserve all four decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_subtraction_borrowing"
+        }
+      ]
+    },
+    "retry_subtraction_borrowing": {
+      "id": "retry_subtraction_borrowing",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 13 − 5.1967.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.8033"
+          },
+          {
+            "id": "b",
+            "label": "8.1967"
+          },
+          {
+            "id": "c",
+            "label": "7.803"
+          },
+          {
+            "id": "d",
+            "label": "0.78033"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_subtractions"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 13 − 5.1967.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.8033"
+            },
+            {
+              "id": "b",
+              "label": "8.1967"
+            },
+            {
+              "id": "c",
+              "label": "7.803"
+            },
+            {
+              "id": "d",
+              "label": "0.78033"
+            }
+          ],
+          "hints": [
+            "Write 13 as 13.0000.",
+            "Subtract with aligned places."
+          ],
+          "explanation": "13.0000 − 5.1967 = 7.8033.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "multiple_subtractions": {
+      "id": "multiple_subtractions",
+      "type": "CONTENT",
+      "content": {
+        "text": "In a − b − c − d, the subtrahends can be added first because subtracting them in sequence is equivalent to subtracting their sum. Keep signs and grouping explicit.\n\nFor 58.621 − 13.829 − 7.302 − 1.214, the removed amounts total 22.345. Then 58.621 − 22.345 = 36.276. Grouping reduces repeated borrowing without changing the expression.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_multiple_subtractions"
+        }
+      ]
+    },
+    "q_multiple_subtractions": {
+      "id": "q_multiple_subtractions",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 75.214 − 18.326 − 4.575 − 2.003.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50.310"
+          },
+          {
+            "id": "b",
+            "label": "50.301"
+          },
+          {
+            "id": "c",
+            "label": "51.310"
+          },
+          {
+            "id": "d",
+            "label": "503.10"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_grouping",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_multiple_subtractions",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 75.214 − 18.326 − 4.575 − 2.003.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "50.310"
+            },
+            {
+              "id": "b",
+              "label": "50.301"
+            },
+            {
+              "id": "c",
+              "label": "51.310"
+            },
+            {
+              "id": "d",
+              "label": "503.10"
+            }
+          ],
+          "hints": [
+            "Align all four values.",
+            "Subtract sequentially or add the subtrahends first."
+          ],
+          "explanation": "75.214 − 18.326 = 56.888; 56.888 − 4.575 − 2.003 = 50.310.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_multiple_subtractions": {
+      "id": "remedy_multiple_subtractions",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add the subtrahends: 18.326 + 4.575 + 2.003 = 24.904. Subtract 24.904 from 75.214 to get 50.310.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_multiple_subtractions"
+        }
+      ]
+    },
+    "retry_multiple_subtractions": {
+      "id": "retry_multiple_subtractions",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 43.231 − 12.779 − 6.542 − 0.669.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "23.241"
+          },
+          {
+            "id": "b",
+            "label": "22.241"
+          },
+          {
+            "id": "c",
+            "label": "24.241"
+          },
+          {
+            "id": "d",
+            "label": "23.421"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complementary_grouping"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 43.231 − 12.779 − 6.542 − 0.669.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "23.241"
+            },
+            {
+              "id": "b",
+              "label": "22.241"
+            },
+            {
+              "id": "c",
+              "label": "24.241"
+            },
+            {
+              "id": "d",
+              "label": "23.421"
+            }
+          ],
+          "hints": [
+            "Combine the subtrahends.",
+            "12.779 + 6.542 + 0.669 = 19.990."
+          ],
+          "explanation": "43.231 − 19.990 = 23.241.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "complementary_grouping": {
+      "id": "complementary_grouping",
+      "type": "CONTENT",
+      "content": {
+        "text": "Regroup terms when their decimal parts make a round value. In 10.0001 + 9.9999 − 8.9995, the first two add to exactly 20; subtracting 8.9995 leaves 11.0005. Estimation near 11 checks the scale.\n\nRegrouping is safe only when each sign stays attached to its term. Two subtracted terms remain subtracted when combined.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_complementary_grouping"
+        }
+      ]
+    },
+    "q_complementary_grouping": {
+      "id": "q_complementary_grouping",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 5.0002 + 4.9998 − 3.9995.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6.0005"
+          },
+          {
+            "id": "b",
+            "label": "6.005"
+          },
+          {
+            "id": "c",
+            "label": "7.0005"
+          },
+          {
+            "id": "d",
+            "label": "60.005"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "missing_addend",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_complementary_grouping",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 5.0002 + 4.9998 − 3.9995.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "6.0005"
+            },
+            {
+              "id": "b",
+              "label": "6.005"
+            },
+            {
+              "id": "c",
+              "label": "7.0005"
+            },
+            {
+              "id": "d",
+              "label": "60.005"
+            }
+          ],
+          "hints": [
+            "Look for a pair that totals 10.",
+            "Then subtract 3.9995 from that sum."
+          ],
+          "explanation": "5.0002 + 4.9998 = 10; 10 − 3.9995 = 6.0005.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_complementary_grouping": {
+      "id": "remedy_complementary_grouping",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first two addends total 10. Then 10 − 3.9995 = 6.0005.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_complementary_grouping"
+        }
+      ]
+    },
+    "retry_complementary_grouping": {
+      "id": "retry_complementary_grouping",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 199.75 + 0.25 + 39.6.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "239.6"
+          },
+          {
+            "id": "b",
+            "label": "240.6"
+          },
+          {
+            "id": "c",
+            "label": "239.0"
+          },
+          {
+            "id": "d",
+            "label": "239.75"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "missing_addend"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 199.75 + 0.25 + 39.6.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "239.6"
+            },
+            {
+              "id": "b",
+              "label": "240.6"
+            },
+            {
+              "id": "c",
+              "label": "239.0"
+            },
+            {
+              "id": "d",
+              "label": "239.75"
+            }
+          ],
+          "hints": [
+            "Combine 199.75 and 0.25.",
+            "That pair equals 200."
+          ],
+          "explanation": "200 + 39.6 = 239.6.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "missing_addend": {
+      "id": "missing_addend",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a + b + x = T, subtract the known sum from the total: x = T − (a + b). Align decimals in both operations. Substitution verifies the equation.\n\nFor 5,172.49 + 378.352 + x = 9,318.678, the known sum is 5,550.842. Thus x = 3,767.836. Adding it back restores the stated total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_missing_addend"
+        }
+      ]
+    },
+    "q_missing_addend": {
+      "id": "q_missing_addend",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find x: 2,615.78 + 98.645 + x = 4,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1,285.575"
+          },
+          {
+            "id": "b",
+            "label": "1,286.575"
+          },
+          {
+            "id": "c",
+            "label": "1,285.75"
+          },
+          {
+            "id": "d",
+            "label": "12,855.75"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unknown_subtraction",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_missing_addend",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Find x: 2,615.78 + 98.645 + x = 4,000.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "1,285.575"
+            },
+            {
+              "id": "b",
+              "label": "1,286.575"
+            },
+            {
+              "id": "c",
+              "label": "1,285.75"
+            },
+            {
+              "id": "d",
+              "label": "12,855.75"
+            }
+          ],
+          "hints": [
+            "Add the two known terms first.",
+            "Subtract their sum from 4,000."
+          ],
+          "explanation": "2,615.78 + 98.645 = 2,714.425, so x = 4,000 − 2,714.425 = 1,285.575.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_missing_addend": {
+      "id": "remedy_missing_addend",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract the known sum from the total: 4,000 − (2,615.78 + 98.645) = 1,285.575.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_missing_addend"
+        }
+      ]
+    },
+    "retry_missing_addend": {
+      "id": "retry_missing_addend",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find x: x + 18.45 = 50.2.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31.75"
+          },
+          {
+            "id": "b",
+            "label": "32.25"
+          },
+          {
+            "id": "c",
+            "label": "68.65"
+          },
+          {
+            "id": "d",
+            "label": "31.705"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unknown_subtraction"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Find x: x + 18.45 = 50.2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "31.75"
+            },
+            {
+              "id": "b",
+              "label": "32.25"
+            },
+            {
+              "id": "c",
+              "label": "68.65"
+            },
+            {
+              "id": "d",
+              "label": "31.705"
+            }
+          ],
+          "hints": [
+            "Subtract 18.45 from both sides.",
+            "Use 50.20 − 18.45."
+          ],
+          "explanation": "x = 50.20 − 18.45 = 31.75.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "unknown_subtraction": {
+      "id": "unknown_subtraction",
+      "type": "CONTENT",
+      "content": {
+        "text": "The location of an unknown determines the inverse operation. In a − x = b, x = a − b. In x − a = b, x = a + b. Read the equation before changing sides.\n\nFor 341.42 − 53.74 = x − 62.86, the left side is 287.68. Therefore x = 287.68 + 62.86 = 350.54. Substitution checks the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_unknown_subtraction"
+        }
+      ]
+    },
+    "q_unknown_subtraction": {
+      "id": "q_unknown_subtraction",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find x: 102.35 − 18.74 = x − 7.86.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "91.47"
+          },
+          {
+            "id": "b",
+            "label": "83.61"
+          },
+          {
+            "id": "c",
+            "label": "99.33"
+          },
+          {
+            "id": "d",
+            "label": "9.147"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unknown_both_sides",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_unknown_subtraction",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Find x: 102.35 − 18.74 = x − 7.86.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "91.47"
+            },
+            {
+              "id": "b",
+              "label": "83.61"
+            },
+            {
+              "id": "c",
+              "label": "99.33"
+            },
+            {
+              "id": "d",
+              "label": "9.147"
+            }
+          ],
+          "hints": [
+            "Evaluate the left side.",
+            "Add 7.86 to both sides to isolate x."
+          ],
+          "explanation": "102.35 − 18.74 = 83.61, so x = 83.61 + 7.86 = 91.47.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_unknown_subtraction": {
+      "id": "remedy_unknown_subtraction",
+      "type": "CONTENT",
+      "content": {
+        "text": "The left side is 83.61. Since x − 7.86 = 83.61, add 7.86 to find x = 91.47.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_unknown_subtraction"
+        }
+      ]
+    },
+    "retry_unknown_subtraction": {
+      "id": "retry_unknown_subtraction",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find x: 832.58 − 242.31 = 779.84 − x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "189.57"
+          },
+          {
+            "id": "b",
+            "label": "347.53"
+          },
+          {
+            "id": "c",
+            "label": "590.27"
+          },
+          {
+            "id": "d",
+            "label": "432.05"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "unknown_both_sides"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Find x: 832.58 − 242.31 = 779.84 − x.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "189.57"
+            },
+            {
+              "id": "b",
+              "label": "347.53"
+            },
+            {
+              "id": "c",
+              "label": "590.27"
+            },
+            {
+              "id": "d",
+              "label": "432.05"
+            }
+          ],
+          "hints": [
+            "The left side equals 590.27.",
+            "Find the amount removed from 779.84 to leave 590.27."
+          ],
+          "explanation": "779.84 − x = 590.27, so x = 189.57.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "unknown_both_sides": {
+      "id": "unknown_both_sides",
+      "type": "CONTENT",
+      "content": {
+        "text": "For an unknown in a longer equality, simplify known arithmetic first. Then undo the operation attached to x while preserving equality.\n\nFor 534.596 + 61.472 − 496.708 = x + 27.271, the left side is 99.360. Subtract 27.271 from both sides to get x = 72.089. Substitution gives 72.089 + 27.271 = 99.360.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_unknown_both_sides"
+        }
+      ]
+    },
+    "q_unknown_both_sides": {
+      "id": "q_unknown_both_sides",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find x: 204.75 + 33.125 − 127.6 = x + 18.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "91.775"
+          },
+          {
+            "id": "b",
+            "label": "110.275"
+          },
+          {
+            "id": "c",
+            "label": "92.775"
+          },
+          {
+            "id": "d",
+            "label": "917.75"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "inverse_checks",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_unknown_both_sides",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Find x: 204.75 + 33.125 − 127.6 = x + 18.5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "91.775"
+            },
+            {
+              "id": "b",
+              "label": "110.275"
+            },
+            {
+              "id": "c",
+              "label": "92.775"
+            },
+            {
+              "id": "d",
+              "label": "917.75"
+            }
+          ],
+          "hints": [
+            "Simplify the left side first.",
+            "Subtract 18.5 from both sides."
+          ],
+          "explanation": "204.75 + 33.125 − 127.6 = 110.275, so x = 110.275 − 18.5 = 91.775.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_unknown_both_sides": {
+      "id": "remedy_unknown_both_sides",
+      "type": "CONTENT",
+      "content": {
+        "text": "The left side simplifies to 110.275. Then x = 110.275 − 18.5 = 91.775.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_unknown_both_sides"
+        }
+      ]
+    },
+    "retry_unknown_both_sides": {
+      "id": "retry_unknown_both_sides",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find x: 726.34 + 888.12 − x = 1,001.88.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "612.58"
+          },
+          {
+            "id": "b",
+            "label": "1,614.46"
+          },
+          {
+            "id": "c",
+            "label": "612.68"
+          },
+          {
+            "id": "d",
+            "label": "2,616.34"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "inverse_checks"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Find x: 726.34 + 888.12 − x = 1,001.88.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "612.58"
+            },
+            {
+              "id": "b",
+              "label": "1,614.46"
+            },
+            {
+              "id": "c",
+              "label": "612.68"
+            },
+            {
+              "id": "d",
+              "label": "2,616.34"
+            }
+          ],
+          "hints": [
+            "Add the known terms.",
+            "Subtract 1,001.88 from their sum."
+          ],
+          "explanation": "1,614.46 − x = 1,001.88, so x = 612.58.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "inverse_checks": {
+      "id": "inverse_checks",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a − b = c, then c + b must recover a. If a + x = T, substituting x must restore T. Estimation supplies an independent magnitude check. For 48.95 − 32.006, estimate 49 − 32 ≈ 17. The exact result 16.944 is plausible; adding 32.006 back gives 48.950 = 48.95.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_inverse_checks"
+        }
+      ]
+    },
+    "q_inverse_checks": {
+      "id": "q_inverse_checks",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which equality checks 73.6 − 28.125 = 45.475?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45.475 + 28.125 = 73.600"
+          },
+          {
+            "id": "b",
+            "label": "73.6 + 28.125 = 45.475"
+          },
+          {
+            "id": "c",
+            "label": "45.475 − 28.125 = 73.6"
+          },
+          {
+            "id": "d",
+            "label": "45.475 + 73.6 = 28.125"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_review",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_inverse_checks",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which equality checks 73.6 − 28.125 = 45.475?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "45.475 + 28.125 = 73.600"
+            },
+            {
+              "id": "b",
+              "label": "73.6 + 28.125 = 45.475"
+            },
+            {
+              "id": "c",
+              "label": "45.475 − 28.125 = 73.6"
+            },
+            {
+              "id": "d",
+              "label": "45.475 + 73.6 = 28.125"
+            }
+          ],
+          "hints": [
+            "Undo subtraction with addition.",
+            "The difference plus the subtrahend must recover the minuend."
+          ],
+          "explanation": "45.475 + 28.125 = 73.600 = 73.6.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_inverse_checks": {
+      "id": "remedy_inverse_checks",
+      "type": "CONTENT",
+      "content": {
+        "text": "Undo subtraction with addition: 45.475 + 28.125 = 73.600, confirming 73.6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_inverse_checks"
+        }
+      ]
+    },
+    "retry_inverse_checks": {
+      "id": "retry_inverse_checks",
+      "type": "CHOICE",
+      "content": {
+        "text": "Estimate 79.6 − 21.18, then select the plausible exact result.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "58.42"
+          },
+          {
+            "id": "b",
+            "label": "5.842"
+          },
+          {
+            "id": "c",
+            "label": "100.78"
+          },
+          {
+            "id": "d",
+            "label": "584.2"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_review"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Estimate 79.6 − 21.18, then select the plausible exact result.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "58.42"
+            },
+            {
+              "id": "b",
+              "label": "5.842"
+            },
+            {
+              "id": "c",
+              "label": "100.78"
+            },
+            {
+              "id": "d",
+              "label": "584.2"
+            }
+          ],
+          "hints": [
+            "Estimate about 80 − 21.",
+            "The exact result should be near 59."
+          ],
+          "explanation": "79.60 − 21.18 = 58.42, close to 59.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "mixed_review": {
+      "id": "mixed_review",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a mixed sum and difference, preserve every sign. Grouping positive terms and subtrahends can simplify work: 11.71 − 0.86 + 1.78 − 9.20 = (11.71 + 1.78) − (0.86 + 9.20) = 13.49 − 10.06 = 3.43. Finish with an estimate near 3.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_mixed_review"
+        }
+      ]
+    },
+    "q_mixed_review": {
+      "id": "q_mixed_review",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 20.54 − 1.26 + 3.75 − 14.12.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8.91"
+          },
+          {
+            "id": "b",
+            "label": "9.91"
+          },
+          {
+            "id": "c",
+            "label": "7.91"
+          },
+          {
+            "id": "d",
+            "label": "89.1"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_recap",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_mixed_review",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 20.54 − 1.26 + 3.75 − 14.12.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "8.91"
+            },
+            {
+              "id": "b",
+              "label": "9.91"
+            },
+            {
+              "id": "c",
+              "label": "7.91"
+            },
+            {
+              "id": "d",
+              "label": "89.1"
+            }
+          ],
+          "hints": [
+            "Group positive terms and subtrahends.",
+            "Compute 24.29 − 15.38."
+          ],
+          "explanation": "20.54 + 3.75 = 24.29 and 1.26 + 14.12 = 15.38; the difference is 8.91.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_mixed_review": {
+      "id": "remedy_mixed_review",
+      "type": "CONTENT",
+      "content": {
+        "text": "The positive terms total 24.29; the subtrahends total 15.38. Their difference is 8.91.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_mixed_review"
+        }
+      ]
+    },
+    "retry_mixed_review": {
+      "id": "retry_mixed_review",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 5.064 + 3.98 + 0.7036.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9.7476"
+          },
+          {
+            "id": "b",
+            "label": "9.747"
+          },
+          {
+            "id": "c",
+            "label": "9.7764"
+          },
+          {
+            "id": "d",
+            "label": "97.476"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_recap"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Evaluate 5.064 + 3.98 + 0.7036.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "9.7476"
+            },
+            {
+              "id": "b",
+              "label": "9.747"
+            },
+            {
+              "id": "c",
+              "label": "9.7764"
+            },
+            {
+              "id": "d",
+              "label": "97.476"
+            }
+          ],
+          "hints": [
+            "Write 3.98 as 3.9800.",
+            "Align and add."
+          ],
+          "explanation": "5.0640 + 3.9800 + 0.7036 = 9.7476.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "final_recap": {
+      "id": "final_recap",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Align decimal points; append only right-hand zeroes when useful. Add with carrying and subtract with borrowing while preserving the decimal scale. Find missing addends by subtracting known terms from the total; choose inverse operations according to the unknown's position. Regroup only when signs are preserved. Finish with an estimate or inverse-operation check.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

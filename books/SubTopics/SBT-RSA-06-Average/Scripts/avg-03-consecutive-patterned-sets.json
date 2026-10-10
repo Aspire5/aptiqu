@@ -1,0 +1,1916 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-03-consecutive-patterned-sets",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Averages of Consecutive and Patterned Sets",
+    "description": "Use symmetry and sequence structure to find means of consecutive numbers, multiples, and regular lists efficiently.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Teach the midpoint property for equally spaced lists: for a finite arithmetic progression, the mean is the average of the first and last terms because pairs equidistant from the ends share the same midpoint. Derive rather than merely state the property. Apply it to consecutive integers, odd/even numbers, multiples, and a specified finite set such as primes by summing actual terms when the spacing is irregular. Include first n natural numbers and first n multiples using the chapter's sum formula, and carefully interpret endpoints such as strictly between. Learners should choose between pairing, a sequence formula, and direct summation, then verify term count and boundaries."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Regular sequences have structure that can make an average faster to find. We will derive the midpoint shortcut from paired terms, then distinguish equally spaced lists from irregular sets that still require summation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "In an arithmetic progression, consecutive terms differ by a fixed amount. Pair the first with the last, the second with the next-to-last, and so on. Each pair has the same sum because one term rises by d while its partner falls by d.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 5, 9, 13, 17, 21, the pairs 5+21 and 9+17 both total 26, and the middle term is 13. The mean is 13, also (first+last)÷2=(5+21)÷2. This works because the values are equally spaced, not merely because there are five of them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If there is an even number of terms, the two central terms average to the same midpoint. Verify the step size is constant before using the shortcut.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of 8, 14, 20, 26, 32.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of 8, 14, 20, 26, 32.",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Check whether the terms have a constant difference.",
+            "Use the midpoint of the first and last terms."
+          ],
+          "explanation": "The step is 6, so the list is equally spaced. Its mean is (8+32)÷2=20."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The midpoint shortcut is not a general rule for every list. First verify that each step is the same. Here every term rises by 6; therefore pairs from opposite ends have equal sums.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the steps differ, compute the actual sum or find another justified pattern instead of using (first+last)÷2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of 11, 17, 23, 29.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "21"
+          },
+          {
+            "id": "c",
+            "label": "23"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of 11, 17, 23, 29.",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "21"
+            },
+            {
+              "id": "c",
+              "label": "23"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The terms rise by a constant 6.",
+            "Average the endpoints 11 and 29."
+          ],
+          "explanation": "(11+29)÷2=20. Pairing 11+29 and 17+23 gives two equal totals of 40."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pair opposite terms or use the endpoint midpoint only after confirming constant spacing. The two middle values here are 17 and 23, whose average is also 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For n consecutive integers, the first and last are equally far from the center, so their average is the center. If n is odd, the center is one of the integers; if n is even, the center is halfway between the two middle integers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 12 through 21 inclusive, there are 21−12+1=10 terms. The mean is (12+21)÷2=16.5. The +1 in the count matters: subtracting endpoints alone gives the number of gaps, not the number of integers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A robust check is to list a few end pairs: 12+21=33, 13+20=33, and so on. Each pair has midpoint 16.5, so the full average has that same midpoint.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of the integers from 18 through 27, inclusive.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22"
+          },
+          {
+            "id": "b",
+            "label": "22.5"
+          },
+          {
+            "id": "c",
+            "label": "23"
+          },
+          {
+            "id": "d",
+            "label": "23.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of the integers from 18 through 27, inclusive.",
+          "options": [
+            {
+              "id": "a",
+              "label": "22"
+            },
+            {
+              "id": "b",
+              "label": "22.5"
+            },
+            {
+              "id": "c",
+              "label": "23"
+            },
+            {
+              "id": "d",
+              "label": "23.5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Count is 27−18+1, but the mean can be found from endpoints.",
+            "Average 18 and 27."
+          ],
+          "explanation": "The endpoints are 18 and 27, so the mean is (18+27)÷2=22.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "“Through” includes both endpoints. The range 18 to 27 contains ten integers, not nine. The endpoint midpoint is still valid because the list is consecutive.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If you instead pair values, use 18+27=45, 19+26=45, etc.; each pair has mean 22.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the mean of the integers 31 through 40, inclusive?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "34.5"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "35.5"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the mean of the integers 31 through 40, inclusive?",
+          "options": [
+            {
+              "id": "a",
+              "label": "34.5"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "35.5"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The first and last values are 31 and 40.",
+            "Use their midpoint."
+          ],
+          "explanation": "(31+40)÷2=35.5. The ten integers form an equally spaced list."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not mistake the first middle term for the average when there are an even number of values. The central pair here is 35 and 36; its midpoint is 35.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sum of the first n positive integers is n(n+1)/2. One way to see it is to pair the sequence forward and backward: 1+2+…+n, when written in reverse and added, makes n pairs each totaling n+1. Thus twice the sum is n(n+1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Divide this sum by the count n to get the mean: [n(n+1)/2]/n=(n+1)/2. For the first 40 natural numbers, the mean is 41/2=20.5; the total is 40×41/2=820.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This shortcut depends on starting at 1 and taking every integer through n. If the sequence starts elsewhere or skips values, adjust the sum or use endpoint pairing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the mean of the first 30 positive integers?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15.5"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the mean of the first 30 positive integers?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15.5"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use the mean formula (n+1)/2.",
+            "Substitute n=30."
+          ],
+          "explanation": "(30+1)÷2=15.5. The sum 465 divided by 30 gives the same mean."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sum formula is n(n+1)/2; the mean then divides that total by n. Cancel n carefully to get (n+1)/2. Do not report the total 465 when the question asks for the mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of the first 24 natural numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "12.5"
+          },
+          {
+            "id": "c",
+            "label": "13"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of the first 24 natural numbers.",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "12.5"
+            },
+            {
+              "id": "c",
+              "label": "13"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The mean is (n+1)/2.",
+            "Use n=24."
+          ],
+          "explanation": "(24+1)/2=12.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the count 24 and the correct starting point 1. As a check, the first and last terms 1 and 24 have midpoint 12.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first n multiples of a fixed number k are k, 2k, …, nk. Each is k times the corresponding natural number, so their mean is k times the mean of 1 through n: k(n+1)/2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the first 20 multiples of 7, the mean is 7×21/2=73.5. This also equals the midpoint of the first and last multiples, 7 and 140: (7+140)/2=73.5. The answer has the same unit as the multiples.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common error is treating the first multiple as zero. “First 20 multiples” usually means 7 through 140 unless zero is explicitly included. State the terms or check the endpoint convention.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the mean of the first 18 positive multiples of 4?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "72"
+          },
+          {
+            "id": "d",
+            "label": "38"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the mean of the first 18 positive multiples of 4?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "72"
+            },
+            {
+              "id": "d",
+              "label": "38"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The first and last terms are 4 and 72.",
+            "The list has constant spacing, so average its endpoints."
+          ],
+          "explanation": "(4+72)÷2=38. Equivalently, 4×(18+1)/2=38."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The largest term is 18×4=72, while the first positive multiple is 4. Their midpoint is 38. Do not start the list at zero unless the question includes zero as an observation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by using k(n+1)/2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of the first 12 positive multiples of 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32.5"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "31.5"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of the first 12 positive multiples of 5.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32.5"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "31.5"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The endpoints are 5 and 60.",
+            "Average the endpoints."
+          ],
+          "explanation": "(5+60)÷2=32.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Confirm the sequence contains 12 terms from 5 to 60, not 0 to 55. Its midpoint is 32.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a list contains every d-th integer, its terms still form an arithmetic progression. For numbers divisible by 5 strictly between 6 and 34, the list is 10, 15, 20, 25, 30. The endpoints are 10 and 30, so the mean is 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Notice the boundary words: 5 and 35 are outside the stated interval; 10 and 30 are the first and last qualifying terms. If the interval were inclusive, an endpoint divisible by 5 might need to be included. Find actual first and last terms before applying a midpoint shortcut.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For “strictly between,” exclude both given bounds. For “from…through,” usually include both. Make the term list explicit when the wording is easy to misread.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of all multiples of 6 strictly between 10 and 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "28"
+          },
+          {
+            "id": "b",
+            "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of all multiples of 6 strictly between 10 and 50.",
+          "options": [
+            {
+              "id": "a",
+              "label": "28"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "List the first and last qualifying multiples.",
+            "They are 12 and 48."
+          ],
+          "explanation": "The multiples are 12,18,…,48, equally spaced. Their mean is (12+48)÷2=30."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not use 10 and 50 as the endpoints; neither is a multiple of 6. The actual qualifying values begin at 12 and end at 48.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because the step is constant, their average is the endpoint midpoint. Check that the boundary values were handled according to “strictly between.”",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the mean of multiples of 7 strictly between 20 and 60?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "42"
+          },
+          {
+            "id": "d",
+            "label": "38.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the mean of multiples of 7 strictly between 20 and 60?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "42"
+            },
+            {
+              "id": "d",
+              "label": "38.5"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The first and last qualifying values are 21 and 56.",
+            "Use their midpoint."
+          ],
+          "explanation": "The multiples 21 through 56 have constant step 7. The mean is (21+56)/2=38.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the first and last actual members, not the interval endpoints. Here 21 and 56 are included; 20 and 60 are not multiples of 7.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Not every structured set is equally spaced. Prime numbers, for example, have gaps that vary. The midpoint shortcut is not justified just because the values are ordered; compute their actual total or use a separately proven property.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For primes between 30 and 50, list 31, 37, 41, 43, 47. Their sum is 199, and there are five, so the mean is 199/5=39.8. The result need not be an integer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check both completeness and count: 31, 37, 41, 43, 47 are the five primes in that open interval. Omitting 47 or adding a composite changes the mean. This list-based approach is appropriate when no regular spacing is present.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of 4, 7, 12, and 17.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "11"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of 4, 7, 12, and 17.",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "11"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Check the gaps before using endpoint averaging.",
+            "The total is 40 across four values."
+          ],
+          "explanation": "The gaps are 3, 5, and 5, so the list is not an arithmetic progression. Sum 40 and divide by 4 to get 10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A list does not have to be equally spaced for its mean to exist, but unequal gaps mean the endpoint midpoint may fail. Here (4+17)/2=10.5, which is not the mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the definition: total 40 divided by four observations gives 10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of 3, 8, 14, and 19.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "11"
+          },
+          {
+            "id": "d",
+            "label": "13"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of 3, 8, 14, and 19.",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "11"
+            },
+            {
+              "id": "d",
+              "label": "13"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The gaps are not all equal, so sum the values.",
+            "The total is 44."
+          ],
+          "explanation": "44÷4=11. The endpoint midpoint would be 11, but that agreement is incidental; use the sum because the spacing is irregular."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For an irregular set, calculate the full total and divide by the count. If an endpoint shortcut happens to match, it is not a valid general justification.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Powers form a different pattern from an arithmetic progression. For 1, 2, 4, …, 2ⁿ, there are n+1 terms, and the sum is 1+2+…+2ⁿ=2ⁿ⁺¹−1. The mean is therefore (2ⁿ⁺¹−1)/(n+1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For n=4, the list is 1,2,4,8,16. Its sum is 31 and its mean is 31/5=6.2. Do not average the endpoints: (1+16)/2=8.5, which is wrong because the terms are not equally spaced.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the sequence's actual structure, not a shortcut from another sequence type. The mean must also lie between 1 and 16, which gives a broad but useful check.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of 1, 2, 4, 8, and 16.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6.2"
+          },
+          {
+            "id": "b",
+            "label": "5.2"
+          },
+          {
+            "id": "c",
+            "label": "7.2"
+          },
+          {
+            "id": "d",
+            "label": "8.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of 1, 2, 4, 8, and 16.",
+          "options": [
+            {
+              "id": "a",
+              "label": "6.2"
+            },
+            {
+              "id": "b",
+              "label": "5.2"
+            },
+            {
+              "id": "c",
+              "label": "7.2"
+            },
+            {
+              "id": "d",
+              "label": "8.5"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Add the five powers of two.",
+            "The sum is 31; divide by 5."
+          ],
+          "explanation": "31÷5=6.2. Endpoint averaging would give 8.5 and is invalid for this non-arithmetic sequence."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not apply the arithmetic-progression midpoint to a doubling sequence. The differences are 1, 2, 4, 8, so spacing is not constant.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sum the actual terms: 1+2+4+8+16=31; divide by five. The mean is 6.2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the mean of 1, 2, 4, 8, 16, and 32?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "10.5"
+          },
+          {
+            "id": "c",
+            "label": "63/6"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the mean of 1, 2, 4, 8, 16, and 32?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "10.5"
+            },
+            {
+              "id": "c",
+              "label": "63/6"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The six terms sum to 63.",
+            "Divide by 6 and keep the exact fraction if useful."
+          ],
+          "explanation": "The six terms total 63, so their mean is 63/6=10.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sum is 63 and the count is six. Reduce 63/6 to 10.5 before matching it to an option; equivalent forms must be recognized.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first n positive even integers are 2,4,…,2n. They are twice the first n natural numbers, so their mean is twice (n+1)/2, which simplifies to n+1. Equivalently, their endpoint midpoint is (2+2n)/2=n+1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the first 12 even numbers, the mean is 13. This shortcut depends on including every even number from 2 through 2n; if a list skips terms or starts later, use its actual endpoints or sum.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "As with any mean, confirm the count and unit. The first 12 even numbers are 12 observations, not 11 gaps.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of the first 16 positive even integers.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of the first 16 positive even integers.",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use mean=n+1 for 2,4,…,2n.",
+            "Substitute n=16."
+          ],
+          "explanation": "The mean is 16+1=17."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sequence begins at 2 and ends at 32. Its terms are equally spaced, so the average is the endpoint midpoint (2+32)/2=17. The formula n+1 gives the same result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find the mean of the first 20 positive multiples of 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31.5"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "33"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find the mean of the first 20 positive multiples of 3.",
+          "options": [
+            {
+              "id": "a",
+              "label": "31.5"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "33"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The first and last multiples are 3 and 60.",
+            "Average those endpoints."
+          ],
+          "explanation": "(3+60)/2=31.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "There are 20 equally spaced terms from 3 through 60. Their mean is the midpoint 31.5; do not start the sequence at zero.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "For a finite equally spaced list, the mean is the midpoint of its first and last terms. You also practiced arithmetic-sequence sums, endpoint interpretation, and checking the number of terms. Irregular sets require actual totals unless another structure is given.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

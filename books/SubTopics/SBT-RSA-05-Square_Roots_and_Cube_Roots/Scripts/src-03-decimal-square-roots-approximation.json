@@ -1,0 +1,834 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "src-03-decimal-square-roots-approximation",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Square Roots of Decimals and Approximation",
+    "description": "Handle decimal places carefully when finding exact or approximate square roots.",
+    "teachingApproach": "Build the idea, derive the method, practice transfer, and use targeted remedial feedback.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 5 “Square Roots and Cube Roots,” printed pages 180–205. Approved scope: Teach exact square roots of terminating decimals by grouping decimal digits in pairs and using equivalent fractions or place-value scaling. Explain that adding a zero can make the number of decimal places even without changing its value, and that the root has half as many decimal places when the decimal is a perfect square. For non-square decimals, use digit-pair long division to obtain an approximation and state its precision explicitly. Distinguish exact equality from rounded approximations; show checks by squaring bounds. Cover examples such as √0.0009=0.03, √175.2976=13.24, and approximating √3 or √0.9 to a specified number of decimal places. Learners should avoid shifting the decimal by the wrong number of places."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Decimal roots depend on place value. Pair decimal digits as carefully as whole-number digits, and distinguish an exact terminating root from a rounded approximation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For an exact terminating decimal, group decimal digits in pairs. For 0.0009, the four decimal places form two pairs and the root has two decimal places: √0.0009=0.03 because 0.03²=0.0009.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find √0.0009.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.003"
+          },
+          {
+            "id": "b",
+            "label": "0.03"
+          },
+          {
+            "id": "c",
+            "label": "0.3"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find √0.0009.",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.003"
+            },
+            {
+              "id": "b",
+              "label": "0.03"
+            },
+            {
+              "id": "c",
+              "label": "0.3"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The root has half as many decimal places for this exact square.",
+            "Check 0.03×0.03."
+          ],
+          "explanation": "0.03²=0.0009, so the exact root is 0.03."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. The root has half as many decimal places for this exact square. Check 0.03×0.03. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find √0.16.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.04"
+          },
+          {
+            "id": "b",
+            "label": "0.4"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "0.016"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find √0.16.",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.04"
+            },
+            {
+              "id": "b",
+              "label": "0.4"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "0.016"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Check which option squared gives 0.16.",
+            "0.4×0.4=0.16."
+          ],
+          "explanation": "√0.16=0.4."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a decimal has an odd number of places, append a zero without changing its value. For 2.56, √2.56=1.6 since 1.6²=2.56. Likewise, √0.000064=0.008: six decimal places in the radicand become three in the root.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find √2.56.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.16"
+          },
+          {
+            "id": "b",
+            "label": "1.6"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "1.26"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find √2.56.",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.16"
+            },
+            {
+              "id": "b",
+              "label": "1.6"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "1.26"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The answer should be near 1.5.",
+            "Check 1.6×1.6."
+          ],
+          "explanation": "1.6²=2.56, so √2.56=1.6."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. The answer should be near 1.5. Check 1.6×1.6. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find √0.0004.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.002"
+          },
+          {
+            "id": "b",
+            "label": "0.02"
+          },
+          {
+            "id": "c",
+            "label": "0.2"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find √0.0004.",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.002"
+            },
+            {
+              "id": "b",
+              "label": "0.02"
+            },
+            {
+              "id": "c",
+              "label": "0.2"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Pair the four decimal places.",
+            "Two hundredths squared is four ten-thousandths."
+          ],
+          "explanation": "0.02²=0.0004."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A non-square root may not terminate. Since 1.73²=2.9929 and 1.74²=3.0276, √3 lies between 1.73 and 1.74; to three decimal places √3≈1.732. Use ≈ for a rounded display, because 1.732² is close to 3 but not equal to it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "To three decimal places, √3 is:",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "approximately 1.732"
+          },
+          {
+            "id": "b",
+            "label": "exactly 1.732"
+          },
+          {
+            "id": "c",
+            "label": "approximately 1.733"
+          },
+          {
+            "id": "d",
+            "label": "exactly 3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "To three decimal places, √3 is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "approximately 1.732"
+            },
+            {
+              "id": "b",
+              "label": "exactly 1.732"
+            },
+            {
+              "id": "c",
+              "label": "approximately 1.733"
+            },
+            {
+              "id": "d",
+              "label": "exactly 3"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compare 1.73² and 1.74² with 3.",
+            "A rounded decimal needs an approximation sign."
+          ],
+          "explanation": "√3≈1.732 to three decimal places; 1.732 is not exact."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Compare 1.73² and 1.74² with 3. A rounded decimal needs an approximation sign. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which is correctly written?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√5=2.236 exactly"
+          },
+          {
+            "id": "b",
+            "label": "√5≈2.236 to three decimal places"
+          },
+          {
+            "id": "c",
+            "label": "√5=2.24 exactly"
+          },
+          {
+            "id": "d",
+            "label": "√5≈2.236 exactly"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Which is correctly written?",
+          "options": [
+            {
+              "id": "a",
+              "label": "√5=2.236 exactly"
+            },
+            {
+              "id": "b",
+              "label": "√5≈2.236 to three decimal places"
+            },
+            {
+              "id": "c",
+              "label": "√5=2.24 exactly"
+            },
+            {
+              "id": "d",
+              "label": "√5≈2.236 exactly"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "A rounded root requires ≈.",
+            "Include the precision in the statement."
+          ],
+          "explanation": "√5≈2.236 to three decimal places; it is not exact."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Estimate first and check the decimal position by squaring. Since 0.04²=0.0016 and 0.05²=0.0025, √0.002 lies between 0.04 and 0.05. Moving the decimal by half the number of places is safer than guessing its location.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find √0.000064.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.0008"
+          },
+          {
+            "id": "b",
+            "label": "0.008"
+          },
+          {
+            "id": "c",
+            "label": "0.08"
+          },
+          {
+            "id": "d",
+            "label": "0.8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find √0.000064.",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.0008"
+            },
+            {
+              "id": "b",
+              "label": "0.008"
+            },
+            {
+              "id": "c",
+              "label": "0.08"
+            },
+            {
+              "id": "d",
+              "label": "0.8"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Six decimal places lead to three in the exact root.",
+            "Check 0.008²."
+          ],
+          "explanation": "0.008²=0.000064."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Six decimal places lead to three in the exact root. Check 0.008². Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which interval contains √0.002?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.02 to 0.03"
+          },
+          {
+            "id": "b",
+            "label": "0.04 to 0.05"
+          },
+          {
+            "id": "c",
+            "label": "0.2 to 0.3"
+          },
+          {
+            "id": "d",
+            "label": "2 to 3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Which interval contains √0.002?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.02 to 0.03"
+            },
+            {
+              "id": "b",
+              "label": "0.04 to 0.05"
+            },
+            {
+              "id": "c",
+              "label": "0.2 to 0.3"
+            },
+            {
+              "id": "d",
+              "label": "2 to 3"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compare 0.04² and 0.05² with 0.002.",
+            "0.0016<0.002<0.0025."
+          ],
+          "explanation": "Therefore √0.002 is between 0.04 and 0.05."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Lesson complete. Summarize the main rule, one error to avoid, and one check that verifies your result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

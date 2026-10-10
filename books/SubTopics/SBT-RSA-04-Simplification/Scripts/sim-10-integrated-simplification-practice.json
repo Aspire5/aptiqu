@@ -1,0 +1,782 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-10-integrated-simplification-practice",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Integrated Simplification Practice",
+    "description": "Choose and combine simplification methods independently, then verify results in their original expressions.",
+    "teachingApproach": "Classify the structure; select a valid method; preserve order and conditions; calculate exactly; verify independently.",
+    "targetDurationMinutes": 38,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4 “Simplification,” printed pages 95–179. Approved scope: Consolidate the chapter by combining at least two prior skills in fresh mixed problems: order of operations with fractions or signs, identity recognition within a larger expression, algebraic relationships followed by substitution, equation setup followed by simplification, or set counting with a missing quantity. Teach a deliberate solve plan: classify the expression, preserve grouping, select a shortcut only when its conditions hold, compute exactly, and check by substitution, estimation, or context. Use non-duplicate values rather than copying a previous worked example verbatim. A learner should decide which method to use and explain why its order and conditions are valid. This capstone must stay within the concepts and problem patterns in the Simplification chapter."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "This lesson asks you to choose a method rather than being told which rule to use. A mixed simplification problem may combine order of operations, an identity, fractions, modulus, an equation, or set counting.\n\nBefore calculating, classify the structure and state the method you intend to use. Then preserve grouping, apply any shortcut only when its conditions match, calculate exactly, and check independently with substitution, estimation, or the original context.\n\nMixed problems reward method selection. A long expression is not automatically a BODMAS problem: it may contain a square-difference identity, a set-counting formula, a sign rule, or an equation hidden in fractions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "In (103×97+3²)÷100, the factors are equally spaced around 100. Write 103×97=(100+3)(100−3)=100²−3²=10,000−9=9,991. The additional 3² is 9, so the numerator becomes exactly 10,000 and the quotient is 100.\n\nThe independent estimate supports the result: 103×97 is just below 10,000, and adding 9 brings it to 10,000. The identity is useful because the two factors are a sum and difference around the same center. If they were not matched this way, the shortcut might not apply.\n\nIn a capstone, explain both the calculation and why the method is legal. Correct arithmetic with an invalid identity can produce a convincing but wrong answer.\n\nNotice the purpose of the added square term: it cancels the offset square created by the identity. The numerator becomes a round square, so the division is then immediate. This is a structural shortcut, not an approximation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate (52×48 + 2²) ÷ 25.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "99.91"
+          },
+          {
+            "id": "b",
+            "label": "100"
+          },
+          {
+            "id": "c",
+            "label": "100.09"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate (52×48 + 2²) ÷ 25.",
+          "options": [
+            {
+              "id": "a",
+              "label": "99.91"
+            },
+            {
+              "id": "b",
+              "label": "100"
+            },
+            {
+              "id": "c",
+              "label": "100.09"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Rewrite 52×48 as (50+2)(50−2).",
+            "Use difference of squares; the added 2² cancels the subtraction, then divide by 25."
+          ],
+          "explanation": "52×48=(50+2)(50−2)=50²−2²=2,496. Adding 2² gives 2,500, and 2,500÷25=100. Correct option: B."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The product is a difference of squares. Include the separate square term before dividing; do not stop at the product.\n\nTry a new example using the same reasoning with different values.\n\nAfter using an identity, return to the full original expression and include any terms outside the product. A correct simplified product alone may not be the answer to the whole question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate (41×39 + 1²) ÷ 16.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "100"
+          },
+          {
+            "id": "b",
+            "label": "99"
+          },
+          {
+            "id": "c",
+            "label": "101"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate (41×39 + 1²) ÷ 16.",
+          "options": [
+            {
+              "id": "a",
+              "label": "100"
+            },
+            {
+              "id": "b",
+              "label": "99"
+            },
+            {
+              "id": "c",
+              "label": "101"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Rewrite 41×39 as (40+1)(40−1).",
+            "The product is 40²−1; adding 1² gives 1,600, then divide by 16."
+          ],
+          "explanation": "41×39=40²−1²=1,599; adding 1 gives 1,600, and 1,600÷16=100. The shortcut is valid for the matched factors; apply any remaining operation only after simplifying that part. Correct option: A."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Set counting combines an identity with a complement. If 45 like tea, 38 like coffee, and 17 like both, the union is 45+38−17=66. In a group of 80, neither=80−66=14.\n\nDraw the overlap first: A-only=45−17=28, both=17, and B-only=38−17=21. These three inside regions sum to 66, matching the union; adding the 14 outside gives the total 80. This double-check is independent of the one-line inclusion-exclusion calculation.\n\nIn a mixed test, look at the words “both,” “at least one,” “only,” and “neither.” The target region determines which part of the formula you need.\n\nThe outside region is the population that belongs to neither set. Once the union is calculated correctly, the complement is simple subtraction; verify that inside plus outside regions reconstructs the population.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a group of 120, 67 read newspaper A, 58 read newspaper B, and 21 read both. How many read neither?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "104"
+          },
+          {
+            "id": "b",
+            "label": "46"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "16"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a group of 120, 67 read newspaper A, 58 read newspaper B, and 21 read both. How many read neither?",
+          "options": [
+            {
+              "id": "a",
+              "label": "104"
+            },
+            {
+              "id": "b",
+              "label": "46"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Combine set counting with the outside-region calculation: find the union first.",
+            "Union=67+58−21; subtract it from 120."
+          ],
+          "explanation": "Union=67+58−21=104. Subtract the union from 120 to get 16 who read neither. The overlap must be subtracted once in the union. Correct option: D."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use inclusion-exclusion to avoid counting the overlap twice. Then use the total population to find the outside region.\n\nTry a new example using the same reasoning with different values.\n\nCheck whether the prompt asks for neither, both, or exactly one. Each asks for a different Venn region even though the same group counts may be supplied.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Out of 150 people, 84 use a mobile app, 73 use a website, and 42 use both. How many use neither?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "115"
+          },
+          {
+            "id": "b",
+            "label": "42"
+          },
+          {
+            "id": "c",
+            "label": "35"
+          },
+          {
+            "id": "d",
+            "label": "7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Out of 150 people, 84 use a mobile app, 73 use a website, and 42 use both. How many use neither?",
+          "options": [
+            {
+              "id": "a",
+              "label": "115"
+            },
+            {
+              "id": "b",
+              "label": "42"
+            },
+            {
+              "id": "c",
+              "label": "35"
+            },
+            {
+              "id": "d",
+              "label": "7"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Use inclusion-exclusion to count users of at least one service.",
+            "Subtract the union from 150."
+          ],
+          "explanation": "Union=84+73−42=115, so neither=150−115=35. The shortcut is valid for the matched factors; apply any remaining operation only after simplifying that part. Correct option: C."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For an unknown inside fractional terms, clear denominators only after identifying every term. In (x+4)/3+x/6=7, the least common denominator is 6. Multiply the entire equation by 6: 2(x+4)+x=42. Expand the grouped numerator carefully: 2x+8+x=42, so 3x=34 and x=34/3.\n\nCheck in the original: (x+4)/3=(34/3+12/3)/3=46/9 and x/6=34/18=17/9. Their sum is 63/9=7. Parentheses are essential when multiplying the whole numerator by 2; omitting them would incorrectly produce 2x+4.\n\nA good solution names the method, keeps fractions exact, solves step by step, and substitutes the answer into the original equation.\n\nClearing denominators is equivalent to multiplying every term on both sides by the same nonzero number. Keep multi-term numerators in parentheses so every term is multiplied.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Solve (x+5)/4 + x/2 = 9.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "31"
+          },
+          {
+            "id": "c",
+            "label": "31/3"
+          },
+          {
+            "id": "d",
+            "label": "31/6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Solve (x+5)/4 + x/2 = 9.",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "31"
+            },
+            {
+              "id": "c",
+              "label": "31/3"
+            },
+            {
+              "id": "d",
+              "label": "31/6"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Multiply every term by 4 to clear the denominators.",
+            "You get (x+5)+2x=36; combine like terms and solve."
+          ],
+          "explanation": "Multiply the equation by 4: (x+5)+2x=36. Hence 3x=31 and x=31/3. Substitution gives 23/6+31/6=9. Correct option: C."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply every term by the common denominator and preserve the parentheses around a multi-term numerator. Solve, then substitute into the original equation.\n\nTry a new example using the same reasoning with different values.\n\nWhen clearing denominators, verify that every original term was multiplied. After solving, use the result in the starting equation rather than trusting the transformed line alone.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Solve (y−2)/4 + y/2 = 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "11/3"
+          },
+          {
+            "id": "d",
+            "label": "22/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Solve (y−2)/4 + y/2 = 5.",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "11/3"
+            },
+            {
+              "id": "d",
+              "label": "22/3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Multiply every term by 4.",
+            "Then (y−2)+2y=20."
+          ],
+          "explanation": "Multiply by 4: (y−2)+2y=20, so 3y=22 and y=22/3. The shortcut is valid for the matched factors; apply any remaining operation only after simplifying that part. Correct option: D."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You have completed Integrated Simplification Practice.\n\nFor each new problem: classify the structure; choose the matching rule; preserve the grouping; calculate exactly; and verify independently. State why an identity or set formula applies, rather than treating a shortcut as a trick to memorize.\n\nIf your answer fails an estimate, unit check, or substitution into the original expression, revisit the method choice before repeating the arithmetic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A mixed expression can use more than one valid tool. For (21²−19²)/40+|−3|×4, apply difference of squares to the numerator: (21−19)(21+19)=2×40=80. Divide by 40 to get 2. Then evaluate the modulus and multiply: |−3|×4=3×4=12. Add the components to get 14.\n\nThe precedence still matters: resolve the square difference and modulus inside their parts, do division and multiplication, and perform addition last. Do not add the first square difference to the modulus term before dividing.\n\nCheck independently: the square quotient is 2 and the second term is 12, so the total must be slightly above 12. A result like 140 or 1.4 would signal a misplaced decimal or operation.\n\nComplex expressions are best handled in components. Simplify each identity/modulus component first, then combine them according to the remaining precedence. This reduces the chance that one operation affects the wrong component.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate (31² − 29²) ÷ 60 + |−4| × 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "22"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate (31² − 29²) ÷ 60 + |−4| × 3.",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "22"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Use difference of squares for the numerator and evaluate the modulus.",
+            "The quotient is (2×60)÷60; then add 4×3."
+          ],
+          "explanation": "31²−29²=(31−29)(31+29)=2×60=120, so the quotient is 2. Also |−4|×3=12, and 2+12=14. Correct option: B."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "This expression combines identity recognition, modulus, multiplication, and addition. Simplify each grouped component exactly, then complete the outer operations in precedence order.\n\nNow try a new value set using the same method.\n\nA strong capstone solution names the method and its condition, carries out the arithmetic, and checks the answer. If any part lacks a justification, revisit that step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate (32² − 28²) ÷ 120 + |−5| × 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate (32² − 28²) ÷ 120 + |−5| × 2.",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Factor the difference of squares, and evaluate |−5| as 5.",
+            "(32−28)(32+28)÷120=240÷120; then add 5×2."
+          ],
+          "explanation": "The quotient is (4×60)÷120=2. The modulus term is 5×2=10; the total is 12. The shortcut is valid for the matched factors; apply any remaining operation only after simplifying that part. Correct option: A."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "finish",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,834 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "src-08-nested-square-roots",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Nested and Repeating Square-Root Expressions",
+    "description": "Recognize structure in nested radicals and derive a valid value before calculating.",
+    "teachingApproach": "Build the idea, derive the method, practice transfer, and use targeted remedial feedback.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 5 “Square Roots and Cube Roots,” printed pages 180–205. Approved scope: Teach the chapter's nested and repeating radical patterns, including expressions such as √(a+√(a+...)) when a finite or infinite pattern is explicitly specified. For an infinite repeating expression, define its value as x only when the expression is convergent and non-negative, derive the resulting equation from the repeated structure, solve it, and select the root consistent with the original expression. Distinguish an infinite nested radical from a finite sum and verify by substitution or partial approximations. Also cover finite nested roots and simple radical identities from the source. Learners should expose the repeated structure, justify the admissible solution, and avoid guessing from a few terms."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Nested radicals are evaluated from the inside out. A repeating infinite radical can sometimes be represented by a fixed-point equation, but only after respecting convergence and the non-negative principal-root condition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a finite nested expression, evaluate the innermost root first. √(9+√16)=√(9+4)=√13. The outer radical does not distribute over addition; the inside root must be resolved before simplifying the outer radicand.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate √(9+√16).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "√13"
+          },
+          {
+            "id": "c",
+            "label": "√25"
+          },
+          {
+            "id": "d",
+            "label": "13"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate √(9+√16).",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "√13"
+            },
+            {
+              "id": "c",
+              "label": "√25"
+            },
+            {
+              "id": "d",
+              "label": "13"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Evaluate the inner radical first.",
+            "√16=4, then retain the outer root."
+          ],
+          "explanation": "The expression becomes √(9+4)=√13."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Evaluate the inner radical first. √16=4, then retain the outer root. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate √(4+√25).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "√9"
+          },
+          {
+            "id": "c",
+            "label": "√29"
+          },
+          {
+            "id": "d",
+            "label": "9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate √(4+√25).",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "√9"
+            },
+            {
+              "id": "c",
+              "label": "√29"
+            },
+            {
+              "id": "d",
+              "label": "9"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Evaluate √25 first.",
+            "Then simplify the outer radicand."
+          ],
+          "explanation": "√25=5, so √(4+5)=√9=3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For x=√(6+√(6+...)), the repeating tail has the same value x, so x=√(6+x). Since x is a principal root, x≥0. Squaring gives x²−x−6=0, with candidates 3 and −2; only 3 fits, and √9=3 confirms it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "The value of √(6+√(6+...)) is:",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−2"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The value of √(6+√(6+...)) is:",
+          "options": [
+            {
+              "id": "a",
+              "label": "−2"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Let the repeating value be x, so x=√(6+x).",
+            "Solve x²−x−6=0 and use x≥0."
+          ],
+          "explanation": "The candidates are 3 and −2; only 3 is non-negative, and √9=3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Let the repeating value be x, so x=√(6+x). Solve x²−x−6=0 and use x≥0. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=√(12+x), which equation follows after squaring?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "x²+x=12"
+          },
+          {
+            "id": "b",
+            "label": "x²−x−12=0"
+          },
+          {
+            "id": "c",
+            "label": "x²−12x=1"
+          },
+          {
+            "id": "d",
+            "label": "x−12=x²"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x=√(12+x), which equation follows after squaring?",
+          "options": [
+            {
+              "id": "a",
+              "label": "x²+x=12"
+            },
+            {
+              "id": "b",
+              "label": "x²−x−12=0"
+            },
+            {
+              "id": "c",
+              "label": "x²−12x=1"
+            },
+            {
+              "id": "d",
+              "label": "x−12=x²"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Square: x²=12+x.",
+            "Move all terms to one side."
+          ],
+          "explanation": "Rearranging gives x²−x−12=0."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Algebra gives candidates, not automatic answers. For x=√(a+x), require x≥0, solve x²−x−a=0, retain the admissible candidate, and substitute it back. This method depends on the expression truly repeating in the stated way.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=√(2+x) and x≥0, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−1"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x=√(2+x) and x≥0, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "−1"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Square to get x²=2+x.",
+            "Factor and reject a negative candidate."
+          ],
+          "explanation": "The roots are 2 and −1; x=2 satisfies the original relation."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Square to get x²=2+x. Factor and reject a negative candidate. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=√(3+x), what is the admissible value?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−1"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "(1+√13)/2"
+          },
+          {
+            "id": "d",
+            "label": "Both −1 and 3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x=√(3+x), what is the admissible value?",
+          "options": [
+            {
+              "id": "a",
+              "label": "−1"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "(1+√13)/2"
+            },
+            {
+              "id": "d",
+              "label": "Both −1 and 3"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Solve x²−x−3=0 using the quadratic formula.",
+            "Keep the non-negative root."
+          ],
+          "explanation": "The roots are (1±√13)/2; only (1+√13)/2 is non-negative and it satisfies x=√(3+x)."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "An infinite notation alone does not prove convergence. Repeated approximations can support a limit, while the fixed-point equation identifies a compatible value. Use this shortcut only for a regular repeating pattern and always check the non-negative solution in the original relation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Why must x be non-negative if x=√(5+x)?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Every real number is non-negative"
+          },
+          {
+            "id": "b",
+            "label": "The principal square root is non-negative"
+          },
+          {
+            "id": "c",
+            "label": "x² is always positive"
+          },
+          {
+            "id": "d",
+            "label": "The radicand contains 5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Why must x be non-negative if x=√(5+x)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Every real number is non-negative"
+            },
+            {
+              "id": "b",
+              "label": "The principal square root is non-negative"
+            },
+            {
+              "id": "c",
+              "label": "x² is always positive"
+            },
+            {
+              "id": "d",
+              "label": "The radicand contains 5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Recall the convention for the radical symbol.",
+            "The value of √n is constrained."
+          ],
+          "explanation": "The principal square root is non-negative, so any equal value x must be non-negative."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Recall the convention for the radical symbol. The value of √n is constrained. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "What must be checked after solving a fixed-point equation for an infinite radical?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "That the answer is an integer"
+          },
+          {
+            "id": "b",
+            "label": "That it is non-negative and satisfies the original relation"
+          },
+          {
+            "id": "c",
+            "label": "That its square is smaller than the radicand"
+          },
+          {
+            "id": "d",
+            "label": "Nothing after squaring"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What must be checked after solving a fixed-point equation for an infinite radical?",
+          "options": [
+            {
+              "id": "a",
+              "label": "That the answer is an integer"
+            },
+            {
+              "id": "b",
+              "label": "That it is non-negative and satisfies the original relation"
+            },
+            {
+              "id": "c",
+              "label": "That its square is smaller than the radicand"
+            },
+            {
+              "id": "d",
+              "label": "Nothing after squaring"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Squaring can add an inadmissible candidate.",
+            "Use the radical's domain and substitute back."
+          ],
+          "explanation": "Check the candidate is non-negative and obeys the original repeating equation."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Lesson complete. Summarize the main rule, one error to avoid, and one check that verifies your result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

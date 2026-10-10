@@ -1042,7 +1042,30 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
   const [defaultImportance, setDefaultImportance] = useState(editItem?.defaultImportance || 'medium');
   const [defaultTeachingMinutes, setDefaultTeachingMinutes] = useState(editItem?.defaultTeachingMinutes ?? 30);
   const [isActive, setIsActive] = useState(editItem?.isActive ?? true);
+  const [importedSubtopics, setImportedSubtopics] = useState<any[] | null>(null);
+  const [importFileName, setImportFileName] = useState('');
+  const [importError, setImportError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleSubtopicsFile = async (file?: File) => {
+    setImportedSubtopics(null);
+    setImportFileName('');
+    setImportError('');
+    if (!file) return;
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        throw new Error('The file must contain a non-empty JSON array of subtopics.');
+      }
+      if (parsed.some((item) => !item || typeof item.name !== 'string' || !item.name.trim())) {
+        throw new Error('Every subtopic entry must have a name.');
+      }
+      setImportedSubtopics(parsed);
+      setImportFileName(file.name);
+    } catch (err: any) {
+      setImportError(err instanceof SyntaxError ? 'The selected file is not valid JSON.' : err.message);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1051,7 +1074,7 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
       if (editItem) {
         await api.updateTopic(editItem.id, { name, description, defaultImportance, defaultTeachingMinutes, isActive });
       } else {
-        await api.createTopic({ subjectId, name, description, defaultImportance, defaultTeachingMinutes });
+        await api.createTopic({ subjectId, name, description, defaultImportance, defaultTeachingMinutes, subtopics: importedSubtopics || undefined });
       }
       onSuccess();
     } catch (err: any) {
@@ -1090,6 +1113,22 @@ const TopicFormModal: React.FC<{ subjectId: string; editItem?: any; onClose: () 
               <label className="form-label">Teaching Minutes</label>
               <input type="number" className="form-control" value={defaultTeachingMinutes} onChange={(e) => setDefaultTeachingMinutes(Number(e.target.value))} />
             </div>
+            {!editItem && (
+              <div className="form-group">
+                <label className="form-label">Import Subtopics (optional)</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  accept=".json,application/json"
+                  onChange={(e) => handleSubtopicsFile(e.target.files?.[0])}
+                />
+                <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                  Choose the topic's subtopics.json file. Names, descriptions, priorities, external keys, and order are imported.
+                  {importFileName && ` ${importFileName}: ${importedSubtopics?.length} subtopics ready.`}
+                </span>
+                {importError && <span style={{ fontSize: '12px', color: '#dc2626', display: 'block', marginTop: '4px' }}>{importError}</span>}
+              </div>
+            )}
             {editItem && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
                 <input type="checkbox" id="topicActive" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />

@@ -1,0 +1,1942 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-02-missing-values-reverse-average",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Missing Values and Reverse-Average Equations",
+    "description": "Recover an unknown observation from a group mean, or use multiple averages to solve for missing values.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Use total = mean × count to turn an average statement into an equation. Subtract known observations from the required total to find one missing value; handle two linked averages by solving equations in sequence. Cover an unknown added to a set, one unknown in two overlapping groups, and relationships among unknown values when supported by the chapter. Show how to check by restoring the total and recomputing the mean. Learners should distinguish a missing observation from a missing group count and reject results that violate stated constraints."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "An unknown observation is easiest to find through the total it must complete. We will translate each mean into a total, subtract what is already known, and then use recomputation as a check.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose n observations have mean m. By definition their total is mn. If all but one value are known, the unknown is the required total minus the known subtotal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Worked example: six scores have mean 18, so their total must be 6×18=108. Five known scores total 17+22+14+19+20=92. The missing score is 108−92=16.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by restoring it: 92+16=108, and 108÷6=18. If the result were negative while scores must be nonnegative, the data would contradict the stated context. Keep the group count visible: missing a count often causes a correct equation to give the wrong result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Seven values have mean 31. Six values sum to 192. Find the seventh value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "19"
+          },
+          {
+            "id": "b",
+            "label": "31"
+          },
+          {
+            "id": "c",
+            "label": "25"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Seven values have mean 31. Six values sum to 192. Find the seventh value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "19"
+            },
+            {
+              "id": "b",
+              "label": "31"
+            },
+            {
+              "id": "c",
+              "label": "25"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find the required total from mean×count.",
+            "Seven values must total 217; subtract 192."
+          ],
+          "explanation": "The total must be 31×7=217. The missing value is 217−192=25; recomputing gives mean 31."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not subtract 192 directly from the mean 31. They represent different quantities: 31 is the average per value, while 192 is a subtotal. First convert the mean into the whole-group total by multiplying by seven. Only then subtract the known subtotal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write the equation 192+x=31×7 and solve. Check that the completed seven values total 217.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Six values have mean 23. Five sum to 110. What is the missing value?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "28"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Six values have mean 23. Five sum to 110. What is the missing value?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "28"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The six-value total is 23×6.",
+            "Subtract the known subtotal 110."
+          ],
+          "explanation": "The required total is 138, so x=138−110=28. Checking, 110+28=138 and 138÷6=23."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the same order every time: mean×count gives total; total−known subtotal gives the missing observation. Check by dividing the final sum by the original count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When an unknown appears in a list, write the total equation before trying to guess it. For four values with mean 14, the total is 56. If the values are 9, x, 18, and 11, then 9+x+18+11=56, so x=18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The equation makes the role of each quantity clear. The average is not added to the known numbers; it determines the target sum. After finding x, substitute it into the original list and recompute.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the question gives an average for only part of the list, use that part's own count and total. Do not confuse “the first four” with “four remaining.” A small table with group, count, mean, and total can prevent a count mismatch.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five numbers have mean 24. Four are 18, 22, 27, and 28. Find the fifth.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21"
+          },
+          {
+            "id": "b",
+            "label": "27"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five numbers have mean 24. Four are 18, 22, 27, and 28. Find the fifth.",
+          "options": [
+            {
+              "id": "a",
+              "label": "21"
+            },
+            {
+              "id": "b",
+              "label": "27"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compute the required five-number total.",
+            "Subtract the known sum 95 from 120."
+          ],
+          "explanation": "The total is 5×24=120. The known values total 95, so the fifth is 25."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "First make sure the mean belongs to all five numbers. The target total is 120. Add the four known values to get 95; the difference, not the average itself, is the missing number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Substitution check: 18+22+27+28+25=120, and 120÷5=24.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four numbers average 19. Three are 13, 21, and 24. Find the fourth.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "19"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four numbers average 19. Three are 13, 21, and 24. Find the fourth.",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "19"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The required total is 4×19.",
+            "The known three sum to 58."
+          ],
+          "explanation": "The total is 76. The missing value is 76−58=18; 58+18=76 and 76÷4=19."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "If you add the known values and stop, you have only a subtotal. Subtract that subtotal from mean×count, then verify the restored mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two average statements can reveal two unknowns. Convert each statement to a sum equation, then solve them in a useful order.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: the mean of 2, 7, 6, and x is 5. The total is 4×5=20, so 15+x=20 and x=5. Now if the mean of 18, 1, 6, x, and y is 10, the second total is 5×10=50. Since 18+1+6+5=30, y=20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check both equations separately. The first set sums to 20; the second sums to 50. If you carry x into the second equation before solving it, write the value explicitly so the two groups do not blend together.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "The mean of 3, 8, 5, and x is 6. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The mean of 3, 8, 5, and x is 6. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "9"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Four values with mean 6 have total 24.",
+            "The known three sum to 16."
+          ],
+          "explanation": "x=24−(3+8+5)=24−16=8. The completed total is 24."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common error is dividing the mean by the count. Here mean×count gives 24 as the target sum. The known observations already account for 16, so x must fill the remaining 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If an unknown occurs in more than one average equation, solve the equation with fewer unknowns first and carry its value into the next equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "The average of 4, 9, and x is 8. What is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "11"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The average of 4, 9, and x is 8. What is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "11"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The three values must total 24.",
+            "The known pair sums to 13."
+          ],
+          "explanation": "The total must be 24 and the known values total 13, so x=11. Check: (4+9+11)/3=8."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use a substitution check: the values must add to three times the mean. If your answer does not restore a total of 24, revisit the subtraction.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "An unknown may appear in two overlapping averages. Keep separate equations and count each list exactly as stated.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: the average of a, b, c is 12, so a+b+c=36. The average of b, c, d, e is 15, so b+c+d+e=60. These equations alone do not determine every value, but subtracting them gives d+e−a=24. Additional information is needed to find a single unknown.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is a useful stopping point: not every average problem has enough data. A valid solution must be uniquely determined, not merely one set of values that happens to fit. Identify what is known, what is asked, and whether the equations contain enough independent information.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "The mean of a,b,c is 12 and the mean of b,c,d,e is 15. What is determined for certain?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "a=24"
+          },
+          {
+            "id": "b",
+            "label": "d+e−a=24"
+          },
+          {
+            "id": "c",
+            "label": "d+e=60"
+          },
+          {
+            "id": "d",
+            "label": "All five values are uniquely determined"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The mean of a,b,c is 12 and the mean of b,c,d,e is 15. What is determined for certain?",
+          "options": [
+            {
+              "id": "a",
+              "label": "a=24"
+            },
+            {
+              "id": "b",
+              "label": "d+e−a=24"
+            },
+            {
+              "id": "c",
+              "label": "d+e=60"
+            },
+            {
+              "id": "d",
+              "label": "All five values are uniquely determined"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Write the two total equations.",
+            "Subtract a+b+c=36 from b+c+d+e=60."
+          ],
+          "explanation": "Subtracting yields d+e−a=24. The separate values are not uniquely determined."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not infer an individual value from an equation that still contains several unknowns. The first mean gives a+b+c=36; the second gives b+c+d+e=60. Subtracting cancels the shared b+c, leaving d+e−a=24.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This relation is determined, but a, d, and e are not separately fixed. State exactly what follows instead of inventing extra information.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Mean(a,b)=10 and mean(a,b,c)=12. What is c?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Mean(a,b)=10 and mean(a,b,c)=12. What is c?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Convert both means to totals.",
+            "a+b=20 and a+b+c=36."
+          ],
+          "explanation": "Subtract the first total from the second: c=36−20=16."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When one group contains another, subtract the smaller group's total from the larger. The common observations cancel, leaving the total contribution of the added members.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the missing quantity is a group count rather than an observation. Let the unknown count be n, convert each known mean to a group total, and preserve the count in the combined equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose 8 workers average $30 per hour and another group of n workers averages $42. The combined mean is 36. Then 30×8+42n=36(8+n). Expanding gives 240+42n=288+36n, so 6n=48 and n=8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check with equal group sizes: averaging 30 and 42 gives 36, which matches. If the combined mean were 40, the higher-paid group would need more weight than the lower-paid group. This direction check can expose an algebra sign error.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 6 has mean 20. A second group has mean 32, and the combined mean is 26. How many are in the second group?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 6 has mean 20. A second group has mean 32, and the combined mean is 26. How many are in the second group?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Set 20×6+32n=26(6+n).",
+            "Collect the n terms after expanding."
+          ],
+          "explanation": "120+32n=156+26n, so 6n=36 and n=6. Equal group means balance at 26."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not average the two means without considering group sizes. The unknown is a count, so it multiplies the second group's mean and also contributes to the combined count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write total from group 1 + total from group 2 = combined mean × combined count. Then solve for n and check it is a positive whole number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four people average 15. A second group averages 25; together they average 20. How many are in the second group?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four people average 15. A second group averages 25; together they average 20. How many are in the second group?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Set 4×15+25n=20(4+n).",
+            "The combined mean is midway, suggesting equal group sizes."
+          ],
+          "explanation": "60+25n=80+20n, so n=4."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use a weighted equation even if a midpoint shortcut seems visible. The algebra verifies that equal group sizes are required when the combined mean is exactly halfway between the two means.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Before solving, check whether the stated information can determine the unknown. One equation with two independent unknowns usually gives many possibilities. A mean and count determine a total, but they do not reveal every observation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For example, three numbers average 10, so their total is 30. Many triples fit: 5,10,15 and 8,8,14. Without an extra condition, no single value for the first number is determined. If the question adds that the first two are equal, there is still a family of solutions unless another relation is supplied.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Separate “a possible answer” from “the answer.” Try constructing two different data sets that satisfy the statements but give different requested values. If both work, the information is insufficient.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four numbers have mean 12. Can their first number be determined from this information alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Yes, it must be 12"
+          },
+          {
+            "id": "b",
+            "label": "Yes, it must be 48"
+          },
+          {
+            "id": "c",
+            "label": "No; four numbers cannot average 12"
+          },
+          {
+            "id": "d",
+            "label": "No; many sets can have total 48"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four numbers have mean 12. Can their first number be determined from this information alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Yes, it must be 12"
+            },
+            {
+              "id": "b",
+              "label": "Yes, it must be 48"
+            },
+            {
+              "id": "c",
+              "label": "No; four numbers cannot average 12"
+            },
+            {
+              "id": "d",
+              "label": "No; many sets can have total 48"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The mean fixes the total, not the individual entries.",
+            "Can you form two different four-number sets with sum 48?"
+          ],
+          "explanation": "The total is 4×12=48, but many sets have that total. The first observation is not uniquely known."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean gives one fact: the sum is 48. It does not say how that sum is distributed among the four values. For instance, 12,12,12,12 and 6,10,14,18 both total 48 but have different first values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A problem is determined only if every data set satisfying the conditions gives the same requested answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five numbers average 9, and four are known to sum to 31. Is the fifth value determined?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Yes, it is 14"
+          },
+          {
+            "id": "b",
+            "label": "No, because the mean is rounded"
+          },
+          {
+            "id": "c",
+            "label": "Yes, it is 45"
+          },
+          {
+            "id": "d",
+            "label": "No, because there are five values"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five numbers average 9, and four are known to sum to 31. Is the fifth value determined?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Yes, it is 14"
+            },
+            {
+              "id": "b",
+              "label": "No, because the mean is rounded"
+            },
+            {
+              "id": "c",
+              "label": "Yes, it is 45"
+            },
+            {
+              "id": "d",
+              "label": "No, because there are five values"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The total is 5×9.",
+            "Subtract the known subtotal 31."
+          ],
+          "explanation": "The total is 45, so the fifth is 45−31=14, uniquely determined."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here there is exactly one missing value and the total is fixed, so subtraction determines it. Contrast this with several unknown observations and only one total equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A careful solution should end by substituting the unknown back into every original average statement. This is stronger than checking just one arithmetic line because it catches a value that was attached to the wrong group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose the mean of x, 12, and 18 is 16. The total must be 48; x=48−30=18. If a second statement says the mean of x and y is 20, then 18+y=40, so y=22. Check: (18+12+18)÷3=16 and (18+22)÷2=20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use labels if there are several variables. Keep a list of each group's count and sum; only values belonging to that group should enter its equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The mean of x, 12, and 18 is 16. The mean of x and y is 20. Find y.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The mean of x, 12, and 18 is 16. The mean of x and y is 20. Find y.",
+          "options": [
+            {
+              "id": "a",
+              "label": "22"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "First find x from the three-value mean.",
+            "x+12+18=48, then use x+y=40."
+          ],
+          "explanation": "x=18. Then 18+y=40, so y=22. Both original means check."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Solve in dependency order: the first average contains only x, so determine x before using the second equation. The second mean applies to two values, giving total 40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not use the three-value count in the second equation. Once y is found, substitute both values back into the original groups.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The mean of p, 10, and 14 is 13. The mean of p and q is 18. Find q.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "21"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "26"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The mean of p, 10, and 14 is 13. The mean of p and q is 18. Find q.",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "21"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "26"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The first total is 39, so find p.",
+            "Then p+q=36."
+          ],
+          "explanation": "p=39−(10+14)=15. Since (p+q)/2=18, q=36−15=21."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep each count with its mean. First use the three-term total to find p; then use the separate two-term total for q. Substitute both into both averages to check the answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When several unknowns are linked by a mean, combine the mean equation with the extra relation rather than guessing values. If four numbers average 16, their total is 64. If half the sum of the last three is 23, those three total 46; therefore the first number is 18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The phrase “half the sum” must be translated as 0.5×(x₂+x₃+x₄), not as halving each mean or observation separately. Keep the whole subgroup together inside parentheses.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check: the four values total 64 and the final three total 46, leaving 18 for the first; half of 46 is 23.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four values have mean 16. Half the sum of the last three is 23. Find the first value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "17"
+          },
+          {
+            "id": "d",
+            "label": "19"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four values have mean 16. Half the sum of the last three is 23. Find the first value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "17"
+            },
+            {
+              "id": "d",
+              "label": "19"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The four-value total is 64; the last three total 46.",
+            "Subtract 46 from 64."
+          ],
+          "explanation": "The first value is 64−46=18."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Translate each statement into a total before subtracting. Four values averaging 16 total 64. “Half the last three sum is 23” means their sum is 46.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first value is the remaining 64−46=18. Check both original conditions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five values have mean 14. The last four total 50. Find the first value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "22"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five values have mean 14. The last four total 50. Find the first value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "22"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The five-value total is 70.",
+            "Subtract the last-four total 50."
+          ],
+          "explanation": "The first value is 70−50=20."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the fixed five-value total, then subtract the known four-value subtotal. The first value must be 70−50=20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You can reverse an average statement into a total equation, isolate a missing value, use multiple means to form linked equations, and check whether information determines a unique answer. Always label the count belonging to each mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

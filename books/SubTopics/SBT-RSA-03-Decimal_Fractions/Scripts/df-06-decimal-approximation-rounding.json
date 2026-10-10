@@ -1,0 +1,1941 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "script-df-06-decimal-approximation-rounding",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Approximation, Rounding and Decimal Precision",
+    "description": "Estimate decimal values, round to stated precision and compare approximate answer choices.",
+    "targetDurationMinutes": 38,
+    "teachingApproach": "Exact value versus approximation → decimal-place rounding → significant figures → truncation and estimation → precision checks.",
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 3: objective patterns involving closest-to-zero, nearest values, rounding decimal places, and approximate comparisons (including objective items 24, 43, 62, and later estimation items); the lesson focuses only on the approved approximation and precision scope."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "An exact value and a rounded display are not the same thing. First identify whether the question asks for an exact result, a specified number of decimal places, significant figures, or the nearest listed value. Keep exact values until approximation is requested.\n\nThis lesson separates decimal places from significant figures, explains rounding and truncation, handles carrying into the whole-number part, and uses estimation to judge products, quotients, and closeness to zero. Whenever answer choices are coarse, decide whether they are rounded approximations rather than exact equalities.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "exact_or_approximate"
+        }
+      ]
+    },
+    "exact_or_approximate": {
+      "id": "exact_or_approximate",
+      "type": "CONTENT",
+      "content": {
+        "text": "An exact decimal ends after finitely many digits and represents one precise value. A rounded decimal is a chosen display of a value at a requested precision. For example, 1/3 is exactly a rational number, while 0.33 is only an approximation to it. The symbol ≈ means approximately equal; the equals sign claims exact equality.\n\nBefore selecting an answer, read the wording. “Evaluate” may require an exact result; “to two decimal places” requests rounding; “closest” asks for minimum distance. Do not replace an exact fraction by a rounded decimal too early, because two close candidates can become indistinguishable.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_exact_or_approximate"
+        }
+      ]
+    },
+    "q_exact_or_approximate": {
+      "id": "q_exact_or_approximate",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which pair correctly distinguishes an exact terminating decimal from a rounded repeating decimal?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/8 = 0.125 exactly; 1/3 ≈ 0.333"
+          },
+          {
+            "id": "b",
+            "label": "1/8 ≈ 0.125 only; 1/3 = 0.333 exactly"
+          },
+          {
+            "id": "c",
+            "label": "1/8 = 0.12 exactly; 1/3 = 0.33 exactly"
+          },
+          {
+            "id": "d",
+            "label": "1/8 = 0.125; 1/3 = 0.333 exactly"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "round_decimal_places",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_exact_or_approximate",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which pair correctly distinguishes an exact terminating decimal from a rounded repeating decimal?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/8 = 0.125 exactly; 1/3 ≈ 0.333"
+            },
+            {
+              "id": "b",
+              "label": "1/8 ≈ 0.125 only; 1/3 = 0.333 exactly"
+            },
+            {
+              "id": "c",
+              "label": "1/8 = 0.12 exactly; 1/3 = 0.33 exactly"
+            },
+            {
+              "id": "d",
+              "label": "1/8 = 0.125; 1/3 = 0.333 exactly"
+            }
+          ],
+          "hints": [
+            "One fraction has a terminating decimal expansion; the other does not.",
+            "Use = for the exact conversion and ≈ for a rounded display."
+          ],
+          "explanation": "1/8 = 0.125 exactly, while 0.333 is a rounded approximation to 1/3.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_exact_or_approximate": {
+      "id": "remedy_exact_or_approximate",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use equality for an exact conversion and ≈ for a rounded display. Here 1/8 = 0.125 exactly, while 1/3 ≈ 0.333.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_exact_or_approximate"
+        }
+      ]
+    },
+    "retry_exact_or_approximate": {
+      "id": "retry_exact_or_approximate",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which value is exact?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.125 = 1/8"
+          },
+          {
+            "id": "b",
+            "label": "1/3 = 0.33"
+          },
+          {
+            "id": "c",
+            "label": "2/7 = 0.286"
+          },
+          {
+            "id": "d",
+            "label": "π = 3.14"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "round_decimal_places"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which value is exact?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.125 = 1/8"
+            },
+            {
+              "id": "b",
+              "label": "1/3 = 0.33"
+            },
+            {
+              "id": "c",
+              "label": "2/7 = 0.286"
+            },
+            {
+              "id": "d",
+              "label": "π = 3.14"
+            }
+          ],
+          "hints": [
+            "Convert 1/8 to a terminating decimal.",
+            "The other decimal displays are rounded."
+          ],
+          "explanation": "0.125 = 125/1000 = 1/8 exactly.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "round_decimal_places": {
+      "id": "round_decimal_places",
+      "type": "CONTENT",
+      "content": {
+        "text": "To round to n decimal places, retain n digits after the decimal point and inspect the next digit. If it is 0-4, leave the last retained digit unchanged; if it is 5-9, increase that digit by one. Then omit later digits. This rule rounds to the nearest unit of the requested place.\n\nFor 0.0561 rounded to two decimal places, retain 0.05 and inspect the third decimal digit, 6. Increase the hundredths digit from 5 to 6, giving 0.06. The retained digit is hundredths, not tenths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_round_decimal_places"
+        }
+      ]
+    },
+    "q_round_decimal_places": {
+      "id": "q_round_decimal_places",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 0.0836 to two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.08"
+          },
+          {
+            "id": "b",
+            "label": "0.09"
+          },
+          {
+            "id": "c",
+            "label": "0.084"
+          },
+          {
+            "id": "d",
+            "label": "0.1"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "round_down_cases",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_round_decimal_places",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 0.0836 to two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.08"
+            },
+            {
+              "id": "b",
+              "label": "0.09"
+            },
+            {
+              "id": "c",
+              "label": "0.084"
+            },
+            {
+              "id": "d",
+              "label": "0.1"
+            }
+          ],
+          "hints": [
+            "Keep the hundredths digit.",
+            "The next digit is 3, so the hundredths digit stays the same."
+          ],
+          "explanation": "The thousandths digit is 3, so 0.0836 rounds to 0.08.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_round_decimal_places": {
+      "id": "remedy_round_decimal_places",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two decimal places retain tenths and hundredths. The next digit in 0.0836 is 3, so it rounds to 0.08.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_round_decimal_places"
+        }
+      ]
+    },
+    "retry_round_decimal_places": {
+      "id": "retry_round_decimal_places",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 7.4382 to two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.43"
+          },
+          {
+            "id": "b",
+            "label": "7.44"
+          },
+          {
+            "id": "c",
+            "label": "7.438"
+          },
+          {
+            "id": "d",
+            "label": "7.5"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "round_down_cases"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 7.4382 to two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.43"
+            },
+            {
+              "id": "b",
+              "label": "7.44"
+            },
+            {
+              "id": "c",
+              "label": "7.438"
+            },
+            {
+              "id": "d",
+              "label": "7.5"
+            }
+          ],
+          "hints": [
+            "Retain 7.43 and inspect the next digit.",
+            "The thousandths digit is 8."
+          ],
+          "explanation": "The third decimal digit is 8, so 7.43 rounds to 7.44.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "round_down_cases": {
+      "id": "round_down_cases",
+      "type": "CONTENT",
+      "content": {
+        "text": "When the first discarded digit is below 5, the retained digits stay unchanged. Later digits do not override the first discarded digit in the standard nearest-value rule. For example, 6.274 rounded to two decimal places is 6.27 because the third decimal digit is 4.\n\nTrailing zeroes may be kept when the requested precision matters. Writing 6.27 to two decimal places already shows hundredths; writing 6.2 would not satisfy that precision request even if it were a rough estimate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_round_down_cases"
+        }
+      ]
+    },
+    "q_round_down_cases": {
+      "id": "q_round_down_cases",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 6.273 to two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6.27"
+          },
+          {
+            "id": "b",
+            "label": "6.28"
+          },
+          {
+            "id": "c",
+            "label": "6.3"
+          },
+          {
+            "id": "d",
+            "label": "6.2"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rounding_carry",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_round_down_cases",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 6.273 to two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "6.27"
+            },
+            {
+              "id": "b",
+              "label": "6.28"
+            },
+            {
+              "id": "c",
+              "label": "6.3"
+            },
+            {
+              "id": "d",
+              "label": "6.2"
+            }
+          ],
+          "hints": [
+            "Keep two digits after the decimal point.",
+            "The next digit is 3."
+          ],
+          "explanation": "The thousandths digit is 3, so the hundredths digit remains 7: 6.27.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_round_down_cases": {
+      "id": "remedy_round_down_cases",
+      "type": "CONTENT",
+      "content": {
+        "text": "Inspect the first digit after the requested place. In 6.273 to two decimal places, that digit is 3, so retain 6.27.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_round_down_cases"
+        }
+      ]
+    },
+    "retry_round_down_cases": {
+      "id": "retry_round_down_cases",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 18.632 to two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18.63"
+          },
+          {
+            "id": "b",
+            "label": "18.64"
+          },
+          {
+            "id": "c",
+            "label": "18.6"
+          },
+          {
+            "id": "d",
+            "label": "18.632"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rounding_carry"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 18.632 to two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "18.63"
+            },
+            {
+              "id": "b",
+              "label": "18.64"
+            },
+            {
+              "id": "c",
+              "label": "18.6"
+            },
+            {
+              "id": "d",
+              "label": "18.632"
+            }
+          ],
+          "hints": [
+            "Retain 18.63.",
+            "The next digit is 2, so do not round upward."
+          ],
+          "explanation": "The thousandths digit 2 is below 5, so 18.632 rounds to 18.63.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "rounding_carry": {
+      "id": "rounding_carry",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rounding can create a carry that travels through several 9s and into the integer part. For 9.996 rounded to two decimal places, retain 9.99 and inspect the next digit, 6. Increasing the hundredths digit carries through both 9s, giving 10.00. Keep the requested two places to communicate precision.\n\nThe result is close to 10, as the original number is. Do not stop at 9.100 or write 10 without the requested precision if two decimal places are required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_rounding_carry"
+        }
+      ]
+    },
+    "q_rounding_carry": {
+      "id": "q_rounding_carry",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 2.996 to two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3.00"
+          },
+          {
+            "id": "b",
+            "label": "2.99"
+          },
+          {
+            "id": "c",
+            "label": "2.90"
+          },
+          {
+            "id": "d",
+            "label": "3.0"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "significant_figures",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_rounding_carry",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 2.996 to two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "3.00"
+            },
+            {
+              "id": "b",
+              "label": "2.99"
+            },
+            {
+              "id": "c",
+              "label": "2.90"
+            },
+            {
+              "id": "d",
+              "label": "3.0"
+            }
+          ],
+          "hints": [
+            "The thousandths digit is 6, so round the hundredths digit upward.",
+            "Carry through both 9s."
+          ],
+          "explanation": "2.996 rounds from 2.99 upward to 3.00 at hundredths precision.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_rounding_carry": {
+      "id": "remedy_rounding_carry",
+      "type": "CONTENT",
+      "content": {
+        "text": "The hundredths digit 9 rounds upward because the next digit is 6. Carry through 2.99 to obtain 3.00.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_rounding_carry"
+        }
+      ]
+    },
+    "retry_rounding_carry": {
+      "id": "retry_rounding_carry",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 2.999 to two decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2.99"
+          },
+          {
+            "id": "b",
+            "label": "3.00"
+          },
+          {
+            "id": "c",
+            "label": "2.100"
+          },
+          {
+            "id": "d",
+            "label": "3.0"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "significant_figures"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 2.999 to two decimal places.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "options": [
+            {
+              "id": "a",
+              "label": "2.99"
+            },
+            {
+              "id": "b",
+              "label": "3.00"
+            },
+            {
+              "id": "c",
+              "label": "2.100"
+            },
+            {
+              "id": "d",
+              "label": "3.0"
+            }
+          ],
+          "hints": [
+            "The third decimal digit is 9.",
+            "Carry from hundredths through the two 9s."
+          ],
+          "explanation": "2.999 rounded to two decimal places is 3.00.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "significant_figures": {
+      "id": "significant_figures",
+      "type": "CONTENT",
+      "content": {
+        "text": "Decimal places count positions after the decimal point. Significant figures count meaningful digits starting at the first nonzero digit. Leading zeroes locate the first significant digit but are not significant; zeroes between significant digits are significant.\n\nIn 0.004506, the first significant digit is 4. The digits 4, 5, 0, and 6 are significant; the two leading zeroes are not. To three significant figures, retain 4, 5, and 0, inspect 6, and round to 0.00451. This answer has three significant figures even though it has five digits after the point.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_significant_figures"
+        }
+      ]
+    },
+    "q_significant_figures": {
+      "id": "q_significant_figures",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 0.006237 to three significant figures.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.00624"
+          },
+          {
+            "id": "b",
+            "label": "0.00623"
+          },
+          {
+            "id": "c",
+            "label": "0.0062"
+          },
+          {
+            "id": "d",
+            "label": "0.0063"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "round_significant_figures",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_significant_figures",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 0.006237 to three significant figures.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.00624"
+            },
+            {
+              "id": "b",
+              "label": "0.00623"
+            },
+            {
+              "id": "c",
+              "label": "0.0062"
+            },
+            {
+              "id": "d",
+              "label": "0.0063"
+            }
+          ],
+          "hints": [
+            "Leading zeroes are not significant.",
+            "Keep 6, 2, and 3; inspect the next digit 7."
+          ],
+          "explanation": "The first three significant digits are 6, 2, and 3; the next digit 7 rounds 3 up, giving 0.00624.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_significant_figures": {
+      "id": "remedy_significant_figures",
+      "type": "CONTENT",
+      "content": {
+        "text": "Ignore leading zeroes when counting significant figures. In 0.006237, retain 6, 2, 3; the next digit 7 rounds the 3 up, giving 0.00624.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_significant_figures"
+        }
+      ]
+    },
+    "retry_significant_figures": {
+      "id": "retry_significant_figures",
+      "type": "CHOICE",
+      "content": {
+        "text": "How many significant figures are in 0.02040?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "round_significant_figures"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "How many significant figures are in 0.02040?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "hints": [
+            "Leading zeroes do not count.",
+            "Count 2, the zero between nonzero digits, 4, and the final zero after the decimal."
+          ],
+          "explanation": "The significant digits are 2, 0, 4, 0: four significant figures.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "round_significant_figures": {
+      "id": "round_significant_figures",
+      "type": "CONTENT",
+      "content": {
+        "text": "To round to a stated number of significant figures, begin at the first nonzero digit, keep the requested count, and inspect the following digit. This differs from decimal-place rounding because the number of places after the decimal point can change with the magnitude.\n\nFor 12,486 to three significant figures, retain 1, 2, and 4; the next digit is 8, so increase 4 to 5 and replace following places with zeroes: 1.25 × 10^4 (12,500). Scientific notation makes the retained three significant figures explicit; writing 12,500 alone can be ambiguous.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_round_significant_figures"
+        }
+      ]
+    },
+    "q_round_significant_figures": {
+      "id": "q_round_significant_figures",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 12,486 to three significant figures.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.24 × 10^4"
+          },
+          {
+            "id": "b",
+            "label": "1.25 × 10^4"
+          },
+          {
+            "id": "c",
+            "label": "1.20 × 10^4"
+          },
+          {
+            "id": "d",
+            "label": "1.30 × 10^4"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "truncation_vs_rounding",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_round_significant_figures",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 12,486 to three significant figures.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.24 × 10^4"
+            },
+            {
+              "id": "b",
+              "label": "1.25 × 10^4"
+            },
+            {
+              "id": "c",
+              "label": "1.20 × 10^4"
+            },
+            {
+              "id": "d",
+              "label": "1.30 × 10^4"
+            }
+          ],
+          "hints": [
+            "Keep the first three significant digits: 1, 2, and 4.",
+            "The next digit is 8, so 124 rounds up to 125."
+          ],
+          "explanation": "12,486 rounded to three significant figures is 12,500, written unambiguously as 1.25 × 10^4.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_round_significant_figures": {
+      "id": "remedy_round_significant_figures",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start at the first nonzero digit in 12,486. Retain 1, 2, 4; the next digit 8 rounds 4 to 5, yielding 12,500, or 1.25 × 10^4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_round_significant_figures"
+        }
+      ]
+    },
+    "retry_round_significant_figures": {
+      "id": "retry_round_significant_figures",
+      "type": "CHOICE",
+      "content": {
+        "text": "Round 0.07846 to two significant figures.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.078"
+          },
+          {
+            "id": "b",
+            "label": "0.079"
+          },
+          {
+            "id": "c",
+            "label": "0.08"
+          },
+          {
+            "id": "d",
+            "label": "0.0785"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "truncation_vs_rounding"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Round 0.07846 to two significant figures.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.078"
+            },
+            {
+              "id": "b",
+              "label": "0.079"
+            },
+            {
+              "id": "c",
+              "label": "0.08"
+            },
+            {
+              "id": "d",
+              "label": "0.0785"
+            }
+          ],
+          "hints": [
+            "The first two significant digits are 7 and 8.",
+            "The next digit is 4, so the retained digits stay unchanged."
+          ],
+          "explanation": "The first two significant digits are 7 and 8, and the next digit is 4, so 0.07846 rounds to 0.078, not 0.079.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "truncation_vs_rounding": {
+      "id": "truncation_vs_rounding",
+      "type": "CONTENT",
+      "content": {
+        "text": "Truncation cuts off digits after a chosen place without looking at the next digit. Rounding instead uses the next digit to choose the nearest retained value. These operations can give different answers.\n\nFor 8.376 to two decimal places, truncation gives 8.37; rounding gives 8.38 because the next digit is 6. Unless the prompt explicitly asks to truncate, use the stated rounding convention. Do not label a truncated value as rounded.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_truncation_vs_rounding"
+        }
+      ]
+    },
+    "q_truncation_vs_rounding": {
+      "id": "q_truncation_vs_rounding",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is 7.593 rounded to two decimal places?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.59"
+          },
+          {
+            "id": "b",
+            "label": "7.60"
+          },
+          {
+            "id": "c",
+            "label": "7.5"
+          },
+          {
+            "id": "d",
+            "label": "7.593"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "nearest_value",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_truncation_vs_rounding",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "What is 7.593 rounded to two decimal places?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.59"
+            },
+            {
+              "id": "b",
+              "label": "7.60"
+            },
+            {
+              "id": "c",
+              "label": "7.5"
+            },
+            {
+              "id": "d",
+              "label": "7.593"
+            }
+          ],
+          "hints": [
+            "Keep the hundredths digit.",
+            "The next digit is 3, so do not increase the hundredths digit."
+          ],
+          "explanation": "The thousandths digit is 3, so 7.593 rounds to 7.59.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_truncation_vs_rounding": {
+      "id": "remedy_truncation_vs_rounding",
+      "type": "CONTENT",
+      "content": {
+        "text": "Truncation simply drops later digits. Rounding checks the next digit: 7.593 becomes 7.59 to hundredths because the next digit is 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_truncation_vs_rounding"
+        }
+      ]
+    },
+    "retry_truncation_vs_rounding": {
+      "id": "retry_truncation_vs_rounding",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is 4.829 truncated to two decimal places?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.82"
+          },
+          {
+            "id": "b",
+            "label": "4.83"
+          },
+          {
+            "id": "c",
+            "label": "4.8"
+          },
+          {
+            "id": "d",
+            "label": "4.829"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "nearest_value"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "What is 4.829 truncated to two decimal places?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.82"
+            },
+            {
+              "id": "b",
+              "label": "4.83"
+            },
+            {
+              "id": "c",
+              "label": "4.8"
+            },
+            {
+              "id": "d",
+              "label": "4.829"
+            }
+          ],
+          "hints": [
+            "Truncation discards digits after hundredths without rounding.",
+            "Keep 4.82 exactly as retained."
+          ],
+          "explanation": "Truncating 4.829 to two decimal places gives 4.82; rounding would give 4.83.",
+          "difficulty": "EASY",
+          "xp": 10
+        }
+      }
+    },
+    "nearest_value": {
+      "id": "nearest_value",
+      "type": "CONTENT",
+      "content": {
+        "text": "A nearest-value question asks which candidate has the smallest absolute difference from a target. Estimate the target, then compare distances at enough decimal places. Candidates can lie on either side; direction does not determine closeness.\n\nFor the target 0.25, the candidate 0.2498 is 0.0002 away; 0.2504 is 0.0004 away; 0.24 is 0.01 away; and 0.3 is 0.05 away. Thus 0.2498 is nearest. Avoid rounding all candidates too early, because that may hide their distance differences.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_nearest_value"
+        }
+      ]
+    },
+    "q_nearest_value": {
+      "id": "q_nearest_value",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which value is nearest to 0.25?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.24"
+          },
+          {
+            "id": "b",
+            "label": "0.3"
+          },
+          {
+            "id": "c",
+            "label": "0.2504"
+          },
+          {
+            "id": "d",
+            "label": "0.2498"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "closest_to_zero",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_nearest_value",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which value is nearest to 0.25?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.24"
+            },
+            {
+              "id": "b",
+              "label": "0.3"
+            },
+            {
+              "id": "c",
+              "label": "0.2504"
+            },
+            {
+              "id": "d",
+              "label": "0.2498"
+            }
+          ],
+          "hints": [
+            "Compare absolute distances from 0.25.",
+            "0.2498 is 0.0002 away; 0.2504 is 0.0004 away."
+          ],
+          "explanation": "The distances are 0.01, 0.05, 0.0004, and 0.0002. Therefore 0.2498 is closest.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_nearest_value": {
+      "id": "remedy_nearest_value",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract the target from each candidate and compare absolute differences. The smallest here is 0.0002 for 0.2498.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_nearest_value"
+        }
+      ]
+    },
+    "retry_nearest_value": {
+      "id": "retry_nearest_value",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which value is nearest to 5?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.8"
+          },
+          {
+            "id": "b",
+            "label": "5.03"
+          },
+          {
+            "id": "c",
+            "label": "5.006"
+          },
+          {
+            "id": "d",
+            "label": "4.99"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "closest_to_zero"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which value is nearest to 5?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.8"
+            },
+            {
+              "id": "b",
+              "label": "5.03"
+            },
+            {
+              "id": "c",
+              "label": "5.006"
+            },
+            {
+              "id": "d",
+              "label": "4.99"
+            }
+          ],
+          "hints": [
+            "Measure each distance from 5.",
+            "4.99 is 0.01 away; compare that with 5.006, 0.006 away."
+          ],
+          "explanation": "Actually 5.006 is 0.006 away, smaller than 0.01, 0.03, or 0.2. The nearest choice is 5.006.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "closest_to_zero": {
+      "id": "closest_to_zero",
+      "type": "CONTENT",
+      "content": {
+        "text": "The number closest to zero has the smallest absolute value, regardless of whether it is positive or negative. Absolute value is distance from zero on the number line. For example, −0.008 is closer to zero than 0.01 because 0.008 < 0.01.\n\nThe chapter's comparison pattern may involve evaluating expressions first. Compare their resulting magnitudes, not how complicated or how many operations they contain. Keep enough precision to distinguish close values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_closest_to_zero"
+        }
+      ]
+    },
+    "q_closest_to_zero": {
+      "id": "q_closest_to_zero",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which value is closest to zero?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "(0.09)²"
+          },
+          {
+            "id": "b",
+            "label": "0.09"
+          },
+          {
+            "id": "c",
+            "label": "(1 − 0.9)²"
+          },
+          {
+            "id": "d",
+            "label": "1 − (0.9)²"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "estimate_products_and_quotients",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_closest_to_zero",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which value is closest to zero?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "(0.09)²"
+            },
+            {
+              "id": "b",
+              "label": "0.09"
+            },
+            {
+              "id": "c",
+              "label": "(1 − 0.9)²"
+            },
+            {
+              "id": "d",
+              "label": "1 − (0.9)²"
+            }
+          ],
+          "hints": [
+            "Evaluate the expressions before comparing.",
+            "(0.09)² = 0.0081 and (1 − 0.9)² = 0.01."
+          ],
+          "explanation": "The four values are 0.0081, 0.09, 0.01, and 0.19. Since 0.0081 has the smallest magnitude, it is closest to zero.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_closest_to_zero": {
+      "id": "remedy_closest_to_zero",
+      "type": "CONTENT",
+      "content": {
+        "text": "Find the absolute value of each candidate. The least magnitude is closest to zero, no matter which side of zero it lies on.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_closest_to_zero"
+        }
+      ]
+    },
+    "retry_closest_to_zero": {
+      "id": "retry_closest_to_zero",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which value is closest to zero?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−0.12"
+          },
+          {
+            "id": "b",
+            "label": "0.08"
+          },
+          {
+            "id": "c",
+            "label": "−0.05"
+          },
+          {
+            "id": "d",
+            "label": "0.1"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "estimate_products_and_quotients"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which value is closest to zero?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "options": [
+            {
+              "id": "a",
+              "label": "−0.12"
+            },
+            {
+              "id": "b",
+              "label": "0.08"
+            },
+            {
+              "id": "c",
+              "label": "−0.05"
+            },
+            {
+              "id": "d",
+              "label": "0.1"
+            }
+          ],
+          "hints": [
+            "Compare absolute values 0.12, 0.08, 0.05, and 0.1.",
+            "The smallest distance is 0.05."
+          ],
+          "explanation": "The absolute values are 0.12, 0.08, 0.05, and 0.1. Thus −0.05 is closest to zero.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "estimate_products_and_quotients": {
+      "id": "estimate_products_and_quotients",
+      "type": "CONTENT",
+      "content": {
+        "text": "Estimation checks a product or quotient without replacing the exact calculation. Round factors to convenient nearby values, estimate the magnitude, and then compare the exact result with that estimate. The estimate should be close enough to detect a decimal-point error, not necessarily accurate to the last digit.\n\nFor 19.8 × 4.97, use 20 × 5 ≈ 100. An exact result of 98.406 is plausible; 984.06 is not. For a quotient, estimate with nearby compatible numbers and check whether the answer should be greater or less than one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_estimate_products_and_quotients"
+        }
+      ]
+    },
+    "q_estimate_products_and_quotients": {
+      "id": "q_estimate_products_and_quotients",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which is a reasonable estimate for 32.4 × 5.03?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "About 160"
+          },
+          {
+            "id": "b",
+            "label": "About 16"
+          },
+          {
+            "id": "c",
+            "label": "About 1,600"
+          },
+          {
+            "id": "d",
+            "label": "About 37"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "precision_and_answer_choices",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_estimate_products_and_quotients",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which is a reasonable estimate for 32.4 × 5.03?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "About 160"
+            },
+            {
+              "id": "b",
+              "label": "About 16"
+            },
+            {
+              "id": "c",
+              "label": "About 1,600"
+            },
+            {
+              "id": "d",
+              "label": "About 37"
+            }
+          ],
+          "hints": [
+            "Round to 32 × 5.",
+            "The product should be a little above 160."
+          ],
+          "explanation": "32.4 × 5.03 is close to 32 × 5 = 160.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_estimate_products_and_quotients": {
+      "id": "remedy_estimate_products_and_quotients",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use nearby values: 32.4 is near 32 and 5.03 is near 5, so the product should be near 160.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_estimate_products_and_quotients"
+        }
+      ]
+    },
+    "retry_estimate_products_and_quotients": {
+      "id": "retry_estimate_products_and_quotients",
+      "type": "CHOICE",
+      "content": {
+        "text": "A calculator gives 24.77 for 74.8 ÷ 3.02. Which estimate supports this scale?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "About 2.5"
+          },
+          {
+            "id": "b",
+            "label": "About 25"
+          },
+          {
+            "id": "c",
+            "label": "About 250"
+          },
+          {
+            "id": "d",
+            "label": "About 2,500"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "precision_and_answer_choices"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "A calculator gives 24.77 for 74.8 ÷ 3.02. Which estimate supports this scale?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "options": [
+            {
+              "id": "a",
+              "label": "About 2.5"
+            },
+            {
+              "id": "b",
+              "label": "About 25"
+            },
+            {
+              "id": "c",
+              "label": "About 250"
+            },
+            {
+              "id": "d",
+              "label": "About 2,500"
+            }
+          ],
+          "hints": [
+            "Use 75 ÷ 3 as a compatible estimate.",
+            "The quotient should be near 25."
+          ],
+          "explanation": "74.8 ÷ 3.02 is close to 75 ÷ 3 = 25, supporting a value around 24.77.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "precision_and_answer_choices": {
+      "id": "precision_and_answer_choices",
+      "type": "CONTENT",
+      "content": {
+        "text": "Answer choices sometimes show fewer digits than an exact value. Determine whether the question requests an approximation and whether the options are rounded or truncated. If the wording is unclear, do not claim an approximate option is exactly equal; state the precision issue.\n\nFor a value close to 0.4, options such as 0.40, 0.4000, and 0.3999 may appear similar. Retain enough digits to compare them, and follow the requested precision. This prevents a rounded tie from being mistaken for exact equality.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_precision_and_answer_choices"
+        }
+      ]
+    },
+    "q_precision_and_answer_choices": {
+      "id": "q_precision_and_answer_choices",
+      "type": "CHOICE",
+      "content": {
+        "text": "A value is 0.39996 and choices are shown to three decimal places. What is its rounded display?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.399"
+          },
+          {
+            "id": "b",
+            "label": "0.400"
+          },
+          {
+            "id": "c",
+            "label": "0.3999"
+          },
+          {
+            "id": "d",
+            "label": "0.4 is exact"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_recap",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_precision_and_answer_choices",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "A value is 0.39996 and choices are shown to three decimal places. What is its rounded display?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.399"
+            },
+            {
+              "id": "b",
+              "label": "0.400"
+            },
+            {
+              "id": "c",
+              "label": "0.3999"
+            },
+            {
+              "id": "d",
+              "label": "0.4 is exact"
+            }
+          ],
+          "hints": [
+            "Retain three decimal places: 0.399.",
+            "The next digit is 9, so carry through the 9s."
+          ],
+          "explanation": "Rounding 0.39996 to three decimal places carries 0.399 upward to 0.400. This display is approximate, not an exact equality.",
+          "difficulty": "HARD",
+          "xp": 10
+        }
+      }
+    },
+    "remedy_precision_and_answer_choices": {
+      "id": "remedy_precision_and_answer_choices",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep exact values during comparison. Round only after identifying the requested precision, and describe a finite display of a nonterminating value as approximate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_precision_and_answer_choices"
+        }
+      ]
+    },
+    "retry_precision_and_answer_choices": {
+      "id": "retry_precision_and_answer_choices",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which statement correctly describes 0.333 as a display of 1/3?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "It is exactly equal to 1/3"
+          },
+          {
+            "id": "b",
+            "label": "It is a rounded approximation, depending on requested precision"
+          },
+          {
+            "id": "c",
+            "label": "It is greater than 1/3"
+          },
+          {
+            "id": "d",
+            "label": "It has no relation to 1/3"
+          }
+        ]
+      },
+      "transitions": [
+        {
+          "targetNodeId": "final_recap"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "prompt": "Which statement correctly describes 0.333 as a display of 1/3?",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "options": [
+            {
+              "id": "a",
+              "label": "It is exactly equal to 1/3"
+            },
+            {
+              "id": "b",
+              "label": "It is a rounded approximation, depending on requested precision"
+            },
+            {
+              "id": "c",
+              "label": "It is greater than 1/3"
+            },
+            {
+              "id": "d",
+              "label": "It has no relation to 1/3"
+            }
+          ],
+          "hints": [
+            "1/3 has infinitely many repeating 3s.",
+            "A finite decimal cannot represent it exactly."
+          ],
+          "explanation": "0.333 is a finite approximation to 1/3, not an exact representation.",
+          "difficulty": "MEDIUM",
+          "xp": 10
+        }
+      }
+    },
+    "final_recap": {
+      "id": "final_recap",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Decimal-place rounding keeps a stated number of places after the point; significant figures count from the first nonzero digit. Inspect the next digit: 0-4 leave the retained digit unchanged, while 5-9 increase it by one, carrying if needed. Truncation simply discards later digits and can differ from rounding. Keep exact values until approximation is requested; for nearest-value questions compare distances, and for closest-to-zero questions compare absolute magnitudes. Check the final scale against an estimate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

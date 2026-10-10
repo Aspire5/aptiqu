@@ -1,0 +1,2032 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "script-df-01-decimal-place-value-conversion",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "teachingApproach": "Place-value intuition → worked conversion → guided practice → explain errors → retry → powers of ten → scientific notation → recap.",
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 3 Decimal Fractions: Important Facts and Formulae I-III and worked examples on printed pages 69-73; objective question patterns involving decimal place value, conversion, powers of ten and scientific notation on printed pages 74-76.",
+    "targetDurationMinutes": 35,
+    "description": "Build decimal place-value intuition, convert terminating decimals and power-of-ten fractions, use powers of ten, and read normalized scientific notation.",
+    "title": "Decimal Place Value and Conversion"
+  },
+  "nodes": {
+    "start": {
+      "transitions": [
+        {
+          "targetNodeId": "place_value"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Look at 0.4, 0.04, and 0.004. The same digit appears in all three, but the amounts are different. What changed? Its place.\n\nDecimals are not a new kind of number detached from fractions. They are another way to write tenths, hundredths, thousandths, and smaller parts of one whole. Once the place is clear, the zeros stop feeling like decoration and start doing a useful job: each one holds a position in the scale.\n\nIn this lesson, we will build the place-value picture first, convert terminating decimals to fractions, convert fractions with powers of ten back to decimals, and then use powers of ten and scientific notation to write very large or very small values compactly. At each step, we will check whether the decimal point moved for a reason.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "start"
+    },
+    "place_value": {
+      "transitions": [
+        {
+          "targetNodeId": "zero_position"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Start at the decimal point and move right. The first place is tenths, the second is hundredths, the third is thousandths, then ten-thousandths and hundred-thousandths.\n\nFor 6.381, the 3 contributes 3/10, the 8 contributes 8/100, and the 1 contributes 1/1,000. So the number can be read as 6 + 3/10 + 8/100 + 1/1,000. Each step right is one tenth of the place immediately before it.\n\nThe same expansion works when there are whole-number digits and a zero in the middle. In 47.2506, the digits contribute 4 tens, 7 ones, 2 tenths, 5 hundredths, 0 thousandths, and 6 ten-thousandths:\n47.2506 = 40 + 7 + 0.2 + 0.05 + 0 + 0.0006.\nThe zero term contributes nothing, but it holds the thousandths place so the 6 stays in the ten-thousandths place.\n\nThis is the same positional idea used to the left of the decimal point: each step left is ten times larger. Place value lets us compare a digit with its position instead of treating the written digits as a string.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "place_value"
+    },
+    "zero_position": {
+      "transitions": [
+        {
+          "targetNodeId": "face_place"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "A zero after the decimal point may be a place holder. In 0.407, the 4 is four tenths, the zero holds the hundredths place, and the 7 is seven thousandths. Therefore 0.407 = 407/1,000.\n\nIf the middle zero disappears, 0.47 means 4 tenths and 7 hundredths, or 47/100. That is a different number. A zero at the far right behaves differently: 0.8, 0.80, and 0.800 are equal because the appended places add zero tenths, hundredths, or thousandths.\n\nThe useful question is not “How many digits do I see?” It is “Which place does each digit occupy?”",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "zero_position"
+    },
+    "face_place": {
+      "transitions": [
+        {
+          "targetNodeId": "q_place"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "The face value of a digit is the digit itself. Its place value is the amount it represents in its position.\n\nIn 0.06945, the face value of the 9 is 9. Count from the decimal point: 0 is tenths, 6 is hundredths, 9 is thousandths, 4 is ten-thousandths, and 5 is hundred-thousandths. So the place value of 9 is 9/1,000 = 0.009.\n\nA reliable habit is to say the positions aloud as you count: tenths, hundredths, thousandths. The zero in the tenths position still counts as the first place; it cannot be skipped.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "face_place"
+    },
+    "q_place": {
+      "transitions": [
+        {
+          "targetNodeId": "fraction_intro",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_place_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "9/10",
+            "id": "a"
+          },
+          {
+            "label": "9/100",
+            "id": "b"
+          },
+          {
+            "label": "9/1,000",
+            "id": "c"
+          },
+          {
+            "label": "9/10,000",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_place",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Count the places immediately after the decimal point, including the zero.",
+            "The 9 is the third digit after the decimal point."
+          ],
+          "options": [
+            {
+              "label": "9/10",
+              "id": "a"
+            },
+            {
+              "label": "9/100",
+              "id": "b"
+            },
+            {
+              "label": "9/1,000",
+              "id": "c"
+            },
+            {
+              "label": "9/10,000",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "prompt": "In 0.06945, what is the place value of 9?",
+          "explanation": "The 9 occupies the thousandths place, so its value is 9/1,000, or 0.009."
+        }
+      },
+      "content": {
+        "text": "In 0.06945, what is the place value of 9?",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_place_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_place_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "The places after the decimal point are counted in order: tenths, hundredths, thousandths. The zero is in tenths, the 6 is in hundredths, and the 9 is in thousandths. Its value is therefore 9/1,000. Do not count only the nonzero digits.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_place_remedy"
+    },
+    "q_place_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "fraction_intro"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "8/10",
+            "id": "a"
+          },
+          {
+            "label": "8/100",
+            "id": "b"
+          },
+          {
+            "label": "8/1,000",
+            "id": "c"
+          },
+          {
+            "label": "8/10,000",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_place_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Count every position after the decimal, including both zeroes.",
+            "The 8 is the fourth digit after the decimal point."
+          ],
+          "options": [
+            {
+              "label": "8/10",
+              "id": "a"
+            },
+            {
+              "label": "8/100",
+              "id": "b"
+            },
+            {
+              "label": "8/1,000",
+              "id": "c"
+            },
+            {
+              "label": "8/10,000",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "prompt": "In 0.0048, what is the place value of 8?",
+          "explanation": "The 8 in 0.0048 is the fourth digit after the decimal point, so it is in the ten-thousandths place: 8/10,000."
+        }
+      },
+      "content": {
+        "text": "In 0.0048, what is the place value of 8?",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "fraction_intro": {
+      "transitions": [
+        {
+          "targetNodeId": "fraction_steps"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "A terminating decimal has a finite number of digits after its decimal point. Each digit names a fraction whose denominator is a power of 10.\n\nFor example, 0.6 is six tenths, 6/10. The decimal 0.06 is six hundredths, 6/100. The number 0.006 is six thousandths, 6/1,000. The denominator tells us exactly how many places the final digit occupies.\n\nTo turn a terminating decimal into a vulgar fraction, first count the decimal places. Use 10 for one place, 100 for two, 1,000 for three, and continue in that pattern. Remove the decimal point to make the numerator, then reduce the fraction if possible.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "fraction_intro"
+    },
+    "fraction_steps": {
+      "transitions": [
+        {
+          "targetNodeId": "fraction_mixed"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through 0.75. There are two digits after the decimal point, so write 75 over 100: 0.75 = 75/100. Both numbers are divisible by 25, giving 3/4.\n\nThe denominator comes from the original decimal places, not from how many digits remain after simplifying. Reducing 75/100 to 3/4 changes the fraction form but not its value.\n\nFor 0.0056, there are four decimal places, so begin with 56/10,000. Divide numerator and denominator by 8: 7/1,250. A leading zero after the decimal point counts as a place. Forgetting it would produce a fraction ten times too large.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "fraction_steps"
+    },
+    "fraction_mixed": {
+      "transitions": [
+        {
+          "targetNodeId": "fraction_ratio"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "The same method works when the decimal is greater than 1. For 2.008, there are three places after the decimal point, so write 2,008/1,000. Divide top and bottom by 8 to get 251/125.\n\nYou can also keep the whole-number part visible: 2.008 = 2 + 8/1,000 = 2 + 1/125. Both forms are equal. The improper fraction is often convenient for comparing or operating; the mixed form can make the place value easier to see.\n\nCheck the magnitude before accepting a result. Since 2.008 is a little more than 2, the fraction must also be a little more than 2. A result such as 251/1,250 would be far too small.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "fraction_mixed"
+    },
+    "q_decimal_fraction": {
+      "transitions": [
+        {
+          "targetNodeId": "right_zeros",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_decimal_fraction_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "9/250",
+            "id": "a"
+          },
+          {
+            "label": "36/100",
+            "id": "b"
+          },
+          {
+            "label": "3/25",
+            "id": "c"
+          },
+          {
+            "label": "9/25",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_decimal_fraction",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Write 0.036 over 1,000 because there are three decimal places.",
+            "Reduce 36/1,000 by dividing the numerator and denominator by 4."
+          ],
+          "options": [
+            {
+              "label": "9/250",
+              "id": "a"
+            },
+            {
+              "label": "36/100",
+              "id": "b"
+            },
+            {
+              "label": "3/25",
+              "id": "c"
+            },
+            {
+              "label": "9/25",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "prompt": "Write 0.036 as a fraction in lowest terms.",
+          "explanation": "0.036 = 36/1,000. Dividing both terms by 4 gives 9/250, which is in lowest terms."
+        }
+      },
+      "content": {
+        "text": "Write 0.036 as a fraction in lowest terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_decimal_fraction_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_decimal_fraction_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep all three decimal places: 0.036 = 36/1,000. Reduce both parts by their common factor 4 to obtain 9/250. A denominator of 100 would incorrectly treat the 6 as hundredths rather than thousandths.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_decimal_fraction_remedy"
+    },
+    "q_decimal_fraction_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "right_zeros"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "1/4",
+            "id": "a"
+          },
+          {
+            "label": "1/8",
+            "id": "b"
+          },
+          {
+            "label": "5/40",
+            "id": "c"
+          },
+          {
+            "label": "125/10",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_decimal_fraction_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Write it as 125/1,000, then reduce.",
+            "Divide 125 and 1,000 by 125."
+          ],
+          "options": [
+            {
+              "label": "1/4",
+              "id": "a"
+            },
+            {
+              "label": "1/8",
+              "id": "b"
+            },
+            {
+              "label": "5/40",
+              "id": "c"
+            },
+            {
+              "label": "125/10",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "prompt": "Express 0.125 in lowest fractional terms.",
+          "explanation": "0.125 = 125/1,000 = 1/8. Option 5/40 is equal but not in lowest terms."
+        }
+      },
+      "content": {
+        "text": "Express 0.125 in lowest fractional terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "right_zeros": {
+      "transitions": [
+        {
+          "targetNodeId": "q_zero"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Appending zeros to the right of a terminating decimal does not change its value: 0.8 = 0.80 = 0.800. Each new digit is zero, so it contributes nothing in that place.\n\nA zero inserted before a nonzero digit can change the value. Compare 0.8 and 0.08: the first is eight tenths; the second is eight hundredths. The latter is one tenth as large. This difference matters when converting to a fraction, comparing answers, or placing a decimal point after multiplication.\n\nWhen you make two decimals have the same number of places, append zeros only at the far right. For example, 0.6 = 0.60, which makes a comparison with 0.58 easier: 0.60 is greater than 0.58.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "right_zeros"
+    },
+    "q_zero": {
+      "transitions": [
+        {
+          "targetNodeId": "power_ten",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_zero_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "4.07",
+            "id": "a"
+          },
+          {
+            "label": "4.70",
+            "id": "b"
+          },
+          {
+            "label": "4.007",
+            "id": "c"
+          },
+          {
+            "label": "47",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_zero",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Only a zero added at the far right is guaranteed to leave a decimal unchanged.",
+            "Write 4.7 with two decimal places."
+          ],
+          "options": [
+            {
+              "label": "4.07",
+              "id": "a"
+            },
+            {
+              "label": "4.70",
+              "id": "b"
+            },
+            {
+              "label": "4.007",
+              "id": "c"
+            },
+            {
+              "label": "47",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "prompt": "Which decimal has the same value as 4.7?",
+          "explanation": "4.7 = 4.70. A zero added between the decimal point and 7 would instead change the place value."
+        }
+      },
+      "content": {
+        "text": "Which decimal has the same value as 4.7?",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_zero_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_zero_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "A zero appended at the far right adds zero hundredths, so 4.7 and 4.70 are equal. In 4.07 the 7 is in the hundredths place, which is a different value.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_zero_remedy"
+    },
+    "q_zero_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "power_ten"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "0.063",
+            "id": "a"
+          },
+          {
+            "label": "0.603",
+            "id": "b"
+          },
+          {
+            "label": "0.630",
+            "id": "c"
+          },
+          {
+            "label": "6.3",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_zero_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Add a zero after the final digit, not between existing digits.",
+            "0.63 written to three decimal places is 0.630."
+          ],
+          "options": [
+            {
+              "label": "0.063",
+              "id": "a"
+            },
+            {
+              "label": "0.603",
+              "id": "b"
+            },
+            {
+              "label": "0.630",
+              "id": "c"
+            },
+            {
+              "label": "6.3",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "prompt": "Which decimal is equal to 0.63?",
+          "explanation": "0.630 is equal to 0.63; the extra zero contributes zero thousandths."
+        }
+      },
+      "content": {
+        "text": "Which decimal is equal to 0.63?",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "power_ten": {
+      "transitions": [
+        {
+          "targetNodeId": "q_shift"
+        }
+      ],
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Now use a short decimal shift as a calculation, not just as a rule to memorize. Multiplication by 10,000 means four successive tenfold increases. Division by 10 means one tenfold decrease. Keeping the scale in mind makes it easier to catch a misplaced point.\n\nFor 0.428 × 1,000, think of 428 thousandths multiplied by one thousand: the result is 428. For 3.04 ÷ 10, each unit becomes one tenth as large, so the result is 0.304.\n\nIf a step seems to produce an answer with the wrong size, stop and estimate. A positive number multiplied by 1,000 should not remain a tiny decimal; a number divided by 10 should not grow."
+      },
+      "type": "CONTENT",
+      "id": "power_ten"
+    },
+    "power_ten_fraction": {
+      "transitions": [
+        {
+          "targetNodeId": "q_fraction_to_decimal"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "A fraction whose denominator is a power of ten can be written as a decimal by matching the denominator's number of zeroes to the number of decimal places. For 42/10,000, the denominator has four zeroes, so the decimal must have four places. Place the digits 42 at the end and fill the empty places with zeroes: 42/10,000 = 0.0042. The zeroes before 42 are placeholders; dropping one would change the value by a factor of ten.\n\nFor a mixed number such as 101 27/100,000, convert only the fractional part. The denominator has five zeroes, so 27/100,000 = 0.00027. Combine that part with the whole number: 101 + 0.00027 = 101.00027.\n\nThis is a place-value conversion: the denominator tells us where the numerator ends. Next, practice placing a numerator into its decimal positions; the separate divide-by-a-power-of-ten rule will be handled later with decimal scaling.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "power_ten_fraction"
+    },
+    "q_fraction_to_decimal": {
+      "transitions": [
+        {
+          "targetNodeId": "decimal_shift",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_fraction_to_decimal_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "0.042",
+            "id": "a"
+          },
+          {
+            "label": "0.0042",
+            "id": "b"
+          },
+          {
+            "label": "0.00042",
+            "id": "c"
+          },
+          {
+            "label": "4.2",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_fraction_to_decimal",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "The denominator has four zeroes, so the decimal has four places.",
+            "Place 42 in the ten-thousandths position: 0.0042."
+          ],
+          "options": [
+            {
+              "label": "0.042",
+              "id": "a"
+            },
+            {
+              "label": "0.0042",
+              "id": "b"
+            },
+            {
+              "label": "0.00042",
+              "id": "c"
+            },
+            {
+              "label": "4.2",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "prompt": "Write 42/10,000 as a decimal.",
+          "explanation": "42/10,000 = 0.0042. The zeros before 42 hold the tenths and hundredths places."
+        }
+      },
+      "content": {
+        "text": "Write 42/10,000 as a decimal.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_fraction_to_decimal_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_fraction_to_decimal_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "There are four decimal places in a fraction over 10,000. Put 42 in the final two places, leaving two zero placeholders before it: 0.0042.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_fraction_to_decimal_remedy"
+    },
+    "q_fraction_to_decimal_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "decimal_shift"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "0.7",
+            "id": "a"
+          },
+          {
+            "label": "0.07",
+            "id": "b"
+          },
+          {
+            "label": "0.007",
+            "id": "c"
+          },
+          {
+            "label": "0.0007",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_fraction_to_decimal_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "The denominator names thousandths.",
+            "Write 7 in the third place after the decimal point."
+          ],
+          "options": [
+            {
+              "label": "0.7",
+              "id": "a"
+            },
+            {
+              "label": "0.07",
+              "id": "b"
+            },
+            {
+              "label": "0.007",
+              "id": "c"
+            },
+            {
+              "label": "0.0007",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "prompt": "Write 7/1,000 as a decimal.",
+          "explanation": "7/1,000 = 0.007, or seven thousandths."
+        }
+      },
+      "content": {
+        "text": "Write 7/1,000 as a decimal.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "decimal_shift": {
+      "transitions": [
+        {
+          "targetNodeId": "q_power"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Before moving a decimal point, name the operation and the power. Multiplying by 1,000 makes the number one thousand times larger, so the point moves three places right. Dividing by 1,000 makes it one thousand times smaller, so it moves three places left.\n\nA frequent error is to count zeros in a way that ignores the power. There are three zeros in 1,000, so the shift is three places. For 10,000 there are four zeros and the shift is four places. A quick size check catches direction errors: multiplying a positive decimal by 100 cannot make it smaller.\n\nTry estimating first. 0.006 × 1,000 should be around 6, because six thousandths multiplied by one thousand becomes six whole units.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "decimal_shift"
+    },
+    "q_power": {
+      "transitions": [
+        {
+          "targetNodeId": "divide_power",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_power_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "0.0000063",
+            "id": "a"
+          },
+          {
+            "label": "0.063",
+            "id": "b"
+          },
+          {
+            "label": "6.3",
+            "id": "c"
+          },
+          {
+            "label": "63",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_power",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Multiplication by 1,000 moves the point three places right.",
+            "0.0063 → 0.063 → 0.63 → 6.3."
+          ],
+          "options": [
+            {
+              "label": "0.0000063",
+              "id": "a"
+            },
+            {
+              "label": "0.063",
+              "id": "b"
+            },
+            {
+              "label": "6.3",
+              "id": "c"
+            },
+            {
+              "label": "63",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "prompt": "Evaluate 0.0063 × 1,000.",
+          "explanation": "After three rightward places, 0.0063 becomes 6.3. The result is also plausible because multiplying by 1,000 makes the value much larger."
+        }
+      },
+      "content": {
+        "text": "Evaluate 0.0063 × 1,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_power_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_power_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiplying by 1,000 shifts three places right. If it helps, write 0.0063 as 0.006300 and move the point three places: 6.3.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_power_remedy"
+    },
+    "q_power_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "divide_power"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "0.87",
+            "id": "a"
+          },
+          {
+            "label": "0.087",
+            "id": "b"
+          },
+          {
+            "label": "0.0087",
+            "id": "c"
+          },
+          {
+            "label": "870",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_power_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Division by 100 moves the decimal point two places left.",
+            "8.7 → 0.87 → 0.087."
+          ],
+          "options": [
+            {
+              "label": "0.87",
+              "id": "a"
+            },
+            {
+              "label": "0.087",
+              "id": "b"
+            },
+            {
+              "label": "0.0087",
+              "id": "c"
+            },
+            {
+              "label": "870",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "prompt": "Evaluate 8.7 ÷ 100.",
+          "explanation": "8.7 divided by 100 is 0.087. The quotient is smaller, as expected when dividing by 100."
+        }
+      },
+      "content": {
+        "text": "Evaluate 8.7 ÷ 100.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "divide_power": {
+      "transitions": [
+        {
+          "targetNodeId": "scientific_intro"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Dividing a decimal by 10ⁿ shifts its decimal point n places left, because the quotient is 1/10ⁿ of the original. For 6.4 ÷ 100, move two places left: 6.4 → 0.64 → 0.064. If the digits run out, add zero placeholders: 4 ÷ 1,000 = 0.004, not 0.4.\n\nCheck the direction with size. Dividing a positive number by 100 must make it smaller; multiplying by 100 would move the point right and make it larger. Count exactly two or three places, including any places represented by newly inserted zeroes.\n\nThis operation is different from turning 42/10,000 into 0.0042: there the denominator identifies decimal places in a fraction. Both use place value, but one converts a fraction form while the other scales a decimal by division.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "divide_power"
+    },
+    "scientific_intro": {
+      "transitions": [
+        {
+          "targetNodeId": "scientific_normalize"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Scientific notation is a compact way to write a number as a decimal factor multiplied by a power of 10. In standard scientific notation, the factor is at least 1 and less than 10. The exponent records how many places the decimal point shifted.\n\nFor 518,000,000, move the point eight places left to obtain 5.18. The original number is therefore 5.18 × 10⁸. Because the original number is large, the exponent is positive.\n\nFor 0.000006723, move the point six places right to obtain 6.723. The original number is 6.723 × 10⁻⁶. Because the original number is smaller than 1, the exponent is negative. The sign belongs to the exponent, not to the digits in the factor.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "scientific_intro"
+    },
+    "scientific_normalize": {
+      "transitions": [
+        {
+          "targetNodeId": "q_scientific_scale"
+        }
+      ],
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Let us reverse the notation as well. In 7.2 × 10⁴, the factor 7.2 is multiplied by ten four times, so the decimal point moves four places right: 72,000. In 4.9 × 10⁻³, divide 4.9 by 1,000: 0.0049.\n\nA good check goes both ways. Convert the scientific notation to an ordinary number, then normalize that result again. If you return to the same factor and exponent, the scale is consistent.\n\nThis representation is particularly useful for comparing orders of magnitude. 5.18 × 10⁸ is much larger than 6.723 × 10⁻⁶ because their exponents differ by fourteen powers of ten; the small difference between the factors cannot reverse that scale."
+      },
+      "type": "CONTENT",
+      "id": "scientific_normalize"
+    },
+    "q_scientific": {
+      "transitions": [
+        {
+          "targetNodeId": "scientific_small",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_scientific_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "51.8 × 10⁷",
+            "id": "a"
+          },
+          {
+            "label": "5.18 × 10⁸",
+            "id": "b"
+          },
+          {
+            "label": "0.518 × 10⁹",
+            "id": "c"
+          },
+          {
+            "label": "5.18 × 10⁷",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_scientific",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Place the decimal after the first nonzero digit.",
+            "The decimal point moves eight places left, so use 10⁸."
+          ],
+          "options": [
+            {
+              "label": "51.8 × 10⁷",
+              "id": "a"
+            },
+            {
+              "label": "5.18 × 10⁸",
+              "id": "b"
+            },
+            {
+              "label": "0.518 × 10⁹",
+              "id": "c"
+            },
+            {
+              "label": "5.18 × 10⁷",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "prompt": "Write 518,000,000 in standard scientific notation.",
+          "explanation": "518,000,000 = 5.18 × 10⁸. The factor 5.18 lies between 1 and 10, and eight leftward places are balanced by a positive exponent of 8."
+        }
+      },
+      "content": {
+        "text": "Write 518,000,000 in standard scientific notation.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_scientific_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_scientific_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Move the decimal point in 518,000,000 until the factor is 5.18. That is eight places left, so the power must be 10⁸.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_scientific_remedy"
+    },
+    "q_scientific_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "scientific_small"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "67.23 × 10⁻⁷",
+            "id": "a"
+          },
+          {
+            "label": "6.723 × 10⁻⁶",
+            "id": "b"
+          },
+          {
+            "label": "0.6723 × 10⁻⁵",
+            "id": "c"
+          },
+          {
+            "label": "6.723 × 10⁶",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_scientific_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Move the decimal point right until the factor is between 1 and 10.",
+            "It moves six places right, so the exponent is −6."
+          ],
+          "options": [
+            {
+              "label": "67.23 × 10⁻⁷",
+              "id": "a"
+            },
+            {
+              "label": "6.723 × 10⁻⁶",
+              "id": "b"
+            },
+            {
+              "label": "0.6723 × 10⁻⁵",
+              "id": "c"
+            },
+            {
+              "label": "6.723 × 10⁶",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "prompt": "Write 0.000006723 in standard scientific notation.",
+          "explanation": "0.000006723 = 6.723 × 10⁻⁶. Moving the decimal right six places requires a negative exponent to preserve the original small value."
+        }
+      },
+      "content": {
+        "text": "Write 0.000006723 in standard scientific notation.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "scientific_small": {
+      "transitions": [
+        {
+          "targetNodeId": "q_exponent"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Scientific notation is normalized as a × 10ⁿ, where the coefficient a is at least 1 and less than 10. The exponent depends on the size of the original positive number:\n- If the number is at least 10, the normalized exponent is positive.\n- If it is at least 1 but less than 10, the exponent is 0.\n- If it is greater than 0 but less than 1, the normalized exponent is negative.\n\nFor example, 23.4 = 2.34 × 10¹, while 2.34 = 2.34 × 10⁰. A number just above 1 does not need a positive exponent: its coefficient is already in the required interval.\n\nFor 0.001125, move the decimal point three places right to obtain 1.125. To preserve the value, compensate with 10⁻³: 0.001125 = 1.125 × 10⁻³. Check by multiplying: 1.125/1,000 = 0.001125.\n\nA useful separate pattern is multiplying powers of ten: add their exponents. Thus 0.1 × 0.01 × 0.001 = 10⁻¹ × 10⁻² × 10⁻³ = 10⁻⁶. Multiplying by 10⁷ gives 10¹ = 10. That exponent addition rule is about multiplying powers; it does not replace the normalization rule above.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "scientific_small"
+    },
+    "q_exponent": {
+      "transitions": [
+        {
+          "targetNodeId": "scientific_check",
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          }
+        },
+        {
+          "targetNodeId": "q_exponent_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          }
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "−4",
+            "id": "a"
+          },
+          {
+            "label": "−3",
+            "id": "b"
+          },
+          {
+            "label": "−2",
+            "id": "c"
+          },
+          {
+            "label": "−1",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_exponent",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Compare 1.125 with 0.001125 and count the leftward moves.",
+            "The point moves three places left, so the exponent is negative three."
+          ],
+          "options": [
+            {
+              "label": "−4",
+              "id": "a"
+            },
+            {
+              "label": "−3",
+              "id": "b"
+            },
+            {
+              "label": "−2",
+              "id": "c"
+            },
+            {
+              "label": "−1",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "prompt": "If 1.125 × 10ᵏ = 0.001125, what is k?",
+          "explanation": "1.125 × 10⁻³ = 1.125 ÷ 1,000 = 0.001125; therefore k = −3."
+        }
+      },
+      "content": {
+        "text": "If 1.125 × 10ᵏ = 0.001125, what is k?",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "q_exponent_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_exponent_retry"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Since the target is smaller than 1.125, the exponent must be negative. Dividing by 1,000 moves the point three places left and gives 0.001125.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "q_exponent_remedy"
+    },
+    "q_exponent_retry": {
+      "transitions": [
+        {
+          "targetNodeId": "scientific_check"
+        }
+      ],
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "label": "0.1",
+            "id": "a"
+          },
+          {
+            "label": "1",
+            "id": "b"
+          },
+          {
+            "label": "10",
+            "id": "c"
+          },
+          {
+            "label": "100",
+            "id": "d"
+          }
+        ]
+      },
+      "id": "q_exponent_retry",
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "hints": [
+            "Write each decimal as a power of ten and add the exponents.",
+            "The exponents total −1−2−3+7 = 1."
+          ],
+          "options": [
+            {
+              "label": "0.1",
+              "id": "a"
+            },
+            {
+              "label": "1",
+              "id": "b"
+            },
+            {
+              "label": "10",
+              "id": "c"
+            },
+            {
+              "label": "100",
+              "id": "d"
+            }
+          ],
+          "xp": 10,
+          "questionType": "PRACTICE",
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "prompt": "Evaluate 0.1 × 0.01 × 0.001 × 10⁷.",
+          "explanation": "The product is 10⁻¹ × 10⁻² × 10⁻³ × 10⁷ = 10¹ = 10."
+        }
+      },
+      "content": {
+        "text": "Evaluate 0.1 × 0.01 × 0.001 × 10⁷.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CHOICE"
+    },
+    "scientific_check": {
+      "transitions": [
+        {
+          "targetNodeId": "common_traps"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "We have used three related but distinct skills. Place value tells what a digit contributes. Fraction conversion names the same value with a numerator and denominator. Powers of 10 shift the scale, while scientific notation records that shift compactly.\n\nBefore choosing a method, look at the form of the question:\n- A digit singled out in a decimal usually asks for its place value.\n- A terminating decimal asked as a vulgar fraction needs a power-of-ten denominator followed by reduction.\n- A fraction over 10, 100, 1,000, and so on can be placed directly as a decimal.\n- A very large or very small value may be easier to read in scientific notation.\n\nThese cues help you decide what the digits mean before doing any arithmetic.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "scientific_check"
+    },
+    "common_traps": {
+      "transitions": [
+        {
+          "targetNodeId": "final_recap"
+        }
+      ],
+      "type": "CONTENT",
+      "content": {
+        "text": "Here are the traps worth catching:\n1. Skipping a zero while counting places. The zero in 0.0048 holds the tenths and hundredths positions.\n2. Using too few denominator zeroes. Three decimal places require a denominator of 1,000, even if the decimal begins with zero.\n3. Reducing before the decimal places have been represented correctly. First form the right fraction; simplify afterward.\n4. Moving the decimal in the wrong direction. Multiplication by a power of ten makes a positive number larger; division makes it smaller.\n5. Writing scientific notation with a coefficient outside the normalized interval 1 ≤ a < 10.\n6. Choosing an exponent sign from a vague label such as “large” or “small.” In normalized notation, a number N ≥ 10 has a positive exponent; 1 ≤ N < 10 has exponent 0; and 0 < N < 1 has a negative exponent.\n\nFor each final answer, estimate its size. This quick check catches many place errors.",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "common_traps"
+    },
+    "final_recap": {
+      "transitions": [],
+      "type": "COMPLETION",
+      "content": {
+        "text": "You now have a repeatable way to handle decimal place value and conversion.\n\nA digit's place is counted from the decimal point: tenths, hundredths, thousandths, and onward. To convert a terminating decimal to a fraction, remove the point, use a denominator with one zero for each decimal place, and reduce. To turn a fraction with a power-of-ten denominator into a decimal, put its numerator in the matching place.\n\nAppending a zero at the far right preserves a terminating decimal; inserting a zero between digits can change it. Multiplication or division by 10ⁿ shifts the decimal point n places in the direction required by the operation. Normalized scientific notation has the form a × 10ⁿ with 1 ≤ a < 10: numbers at least 10 use a positive exponent, numbers from 1 up to but not including 10 use exponent 0, and positive numbers below 1 use a negative exponent.\n\nYour final check: does the size of the answer make sense, and did every zero keep its correct place?",
+        "avatarPersona": "TUTOR"
+      },
+      "id": "final_recap"
+    },
+    "fraction_ratio": {
+      "transitions": [
+        {
+          "targetNodeId": "q_fraction_ratio"
+        }
+      ],
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "To write a terminating decimal as a fraction, use the place value to choose a denominator that is a power of ten, then reduce. Consider 0.48. Two decimal places mean hundredths, so 0.48 = 48/100. Dividing the numerator and denominator by 4 gives 12/25.\n\nKeep the two stages in order: first encode every decimal place correctly, then simplify. The reduced fraction must have the same size as the decimal: 12/25 is a little less than one half, matching 0.48. This lesson covers a decimal converted on its own; it does not teach ratios whose numerator and denominator are both decimals."
+      },
+      "type": "CONTENT",
+      "id": "fraction_ratio"
+    },
+    "q_fraction_ratio": {
+      "input": {
+        "options": [
+          {
+            "label": "12/25",
+            "id": "a"
+          },
+          {
+            "label": "12/5",
+            "id": "b"
+          },
+          {
+            "label": "48/10",
+            "id": "c"
+          },
+          {
+            "label": "25/12",
+            "id": "d"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          },
+          "targetNodeId": "fraction_large"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          },
+          "targetNodeId": "q_fraction_ratio_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "options": [
+            {
+              "label": "12/25",
+              "id": "a"
+            },
+            {
+              "label": "12/5",
+              "id": "b"
+            },
+            {
+              "label": "48/10",
+              "id": "c"
+            },
+            {
+              "label": "25/12",
+              "id": "d"
+            }
+          ],
+          "questionType": "PRACTICE",
+          "xp": 10,
+          "explanation": "0.48 = 48/100. Dividing both numerator and denominator by 4 gives 12/25, in lowest terms.",
+          "prompt": "Write 0.48 as a fraction in lowest terms.",
+          "hints": [
+            "Two digits after the decimal point mean hundredths.",
+            "Start with 48/100, then divide numerator and denominator by 4."
+          ],
+          "difficulty": "MEDIUM",
+          "correctOptionId": "a"
+        }
+      },
+      "id": "q_fraction_ratio",
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Write 0.48 as a fraction in lowest terms."
+      }
+    },
+    "q_fraction_ratio_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_fraction_ratio_retry"
+        }
+      ],
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "For 0.48, first write 48/100 because the final digit is in the hundredths place. Then divide top and bottom by 4: 48/100 = 12/25. The decimal is slightly less than one half, and 12/25 = 0.48 confirms the size."
+      },
+      "type": "CONTENT",
+      "id": "q_fraction_ratio_remedy"
+    },
+    "q_fraction_ratio_retry": {
+      "input": {
+        "options": [
+          {
+            "label": "1/40",
+            "id": "a"
+          },
+          {
+            "label": "1/4",
+            "id": "b"
+          },
+          {
+            "label": "25/100",
+            "id": "c"
+          },
+          {
+            "label": "1/400",
+            "id": "d"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "targetNodeId": "fraction_large"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "options": [
+            {
+              "label": "1/40",
+              "id": "a"
+            },
+            {
+              "label": "1/4",
+              "id": "b"
+            },
+            {
+              "label": "25/100",
+              "id": "c"
+            },
+            {
+              "label": "1/400",
+              "id": "d"
+            }
+          ],
+          "questionType": "PRACTICE",
+          "xp": 10,
+          "explanation": "0.025 = 25/1,000. Dividing numerator and denominator by 25 gives 1/40.",
+          "prompt": "Write 0.025 as a fraction in lowest terms.",
+          "hints": [
+            "Three decimal places mean the starting denominator is 1,000.",
+            "Write 25/1,000 and divide top and bottom by 25."
+          ],
+          "difficulty": "MEDIUM",
+          "correctOptionId": "a"
+        }
+      },
+      "id": "q_fraction_ratio_retry",
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Write 0.025 as a fraction in lowest terms."
+      }
+    },
+    "q_shift": {
+      "input": {
+        "options": [
+          {
+            "label": "0.0428",
+            "id": "a"
+          },
+          {
+            "label": "4.28",
+            "id": "b"
+          },
+          {
+            "label": "42.8",
+            "id": "c"
+          },
+          {
+            "label": "428",
+            "id": "d"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          },
+          "targetNodeId": "power_ten_fraction"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          },
+          "targetNodeId": "q_shift_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "options": [
+            {
+              "label": "0.0428",
+              "id": "a"
+            },
+            {
+              "label": "4.28",
+              "id": "b"
+            },
+            {
+              "label": "42.8",
+              "id": "c"
+            },
+            {
+              "label": "428",
+              "id": "d"
+            }
+          ],
+          "questionType": "PRACTICE",
+          "xp": 10,
+          "explanation": "0.428 × 1,000 = 428. The three decimal places in 0.428 move into the units, tens, and hundreds places.",
+          "prompt": "Evaluate 0.428 × 1,000.",
+          "hints": [
+            "Multiplying by 1,000 moves the decimal three places right.",
+            "0.428 → 4.28 → 42.8 → 428."
+          ],
+          "difficulty": "MEDIUM",
+          "correctOptionId": "d"
+        }
+      },
+      "id": "q_shift",
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Evaluate 0.428 × 1,000."
+      }
+    },
+    "q_shift_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_shift_retry"
+        }
+      ],
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Multiplication by 1,000 shifts the point three places right: 0.428 → 4.28 → 42.8 → 428. The answer should be larger than 0.428, not smaller."
+      },
+      "type": "CONTENT",
+      "id": "q_shift_remedy"
+    },
+    "q_shift_retry": {
+      "input": {
+        "options": [
+          {
+            "label": "30.4",
+            "id": "a"
+          },
+          {
+            "label": "3.4",
+            "id": "b"
+          },
+          {
+            "label": "0.304",
+            "id": "c"
+          },
+          {
+            "label": "0.0304",
+            "id": "d"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "targetNodeId": "power_ten_fraction"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "options": [
+            {
+              "label": "30.4",
+              "id": "a"
+            },
+            {
+              "label": "3.4",
+              "id": "b"
+            },
+            {
+              "label": "0.304",
+              "id": "c"
+            },
+            {
+              "label": "0.0304",
+              "id": "d"
+            }
+          ],
+          "questionType": "PRACTICE",
+          "xp": 10,
+          "explanation": "3.04 ÷ 10 = 0.304, one tenth of the original value.",
+          "prompt": "Evaluate 3.04 ÷ 10.",
+          "hints": [
+            "Division by 10 shifts one place left.",
+            "3.04 → 0.304."
+          ],
+          "difficulty": "MEDIUM",
+          "correctOptionId": "c"
+        }
+      },
+      "id": "q_shift_retry",
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Evaluate 3.04 ÷ 10."
+      }
+    },
+    "q_scientific_scale": {
+      "input": {
+        "options": [
+          {
+            "label": "720",
+            "id": "a"
+          },
+          {
+            "label": "7,200",
+            "id": "b"
+          },
+          {
+            "label": "72,000",
+            "id": "c"
+          },
+          {
+            "label": "720,000",
+            "id": "d"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          },
+          "targetNodeId": "q_scientific"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          },
+          "targetNodeId": "q_scientific_scale_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "options": [
+            {
+              "label": "720",
+              "id": "a"
+            },
+            {
+              "label": "7,200",
+              "id": "b"
+            },
+            {
+              "label": "72,000",
+              "id": "c"
+            },
+            {
+              "label": "720,000",
+              "id": "d"
+            }
+          ],
+          "questionType": "PRACTICE",
+          "xp": 10,
+          "explanation": "7.2 × 10⁴ = 72,000. The point moves four places right, adding two zero placeholders after 72.",
+          "prompt": "Write 7.2 × 10⁴ as an ordinary number.",
+          "hints": [
+            "A positive exponent moves the decimal point right.",
+            "Move the point in 7.2 four places right."
+          ],
+          "difficulty": "MEDIUM",
+          "correctOptionId": "c"
+        }
+      },
+      "id": "q_scientific_scale",
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Write 7.2 × 10⁴ as an ordinary number."
+      }
+    },
+    "q_scientific_scale_remedy": {
+      "transitions": [
+        {
+          "targetNodeId": "q_scientific_scale_retry"
+        }
+      ],
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "For 7.2 × 10⁴, move the decimal point four places right. Keep the digits 7 and 2 in order, then use zero placeholders: 72,000."
+      },
+      "type": "CONTENT",
+      "id": "q_scientific_scale_remedy"
+    },
+    "q_scientific_scale_retry": {
+      "input": {
+        "options": [
+          {
+            "label": "0.49",
+            "id": "a"
+          },
+          {
+            "label": "0.049",
+            "id": "b"
+          },
+          {
+            "label": "0.0049",
+            "id": "c"
+          },
+          {
+            "label": "0.00049",
+            "id": "d"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "targetNodeId": "q_scientific"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "options": [
+            {
+              "label": "0.49",
+              "id": "a"
+            },
+            {
+              "label": "0.049",
+              "id": "b"
+            },
+            {
+              "label": "0.0049",
+              "id": "c"
+            },
+            {
+              "label": "0.00049",
+              "id": "d"
+            }
+          ],
+          "questionType": "PRACTICE",
+          "xp": 10,
+          "explanation": "4.9 × 10⁻³ = 4.9/1,000 = 0.0049.",
+          "prompt": "Write 4.9 × 10⁻³ as an ordinary decimal.",
+          "hints": [
+            "A negative exponent means divide by a power of ten.",
+            "Divide 4.9 by 1,000, moving the point three places left."
+          ],
+          "difficulty": "MEDIUM",
+          "correctOptionId": "c"
+        }
+      },
+      "id": "q_scientific_scale_retry",
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Write 4.9 × 10⁻³ as an ordinary decimal."
+      }
+    },
+    "fraction_large": {
+      "content": {
+        "text": "Now check a decimal with a nonzero whole-number part and several decimal places. In 3.004, the final digit is in the thousandths place, so the denominator is 1,000: 3.004 = 3,004/1,000. Divide numerator and denominator by 4 to get 751/250.\n\nNotice what the zeroes did. The two zeroes after the decimal point did not disappear before the fraction was formed; they ensured that the 4 was placed in the thousandths column. Simplification happens only after the entire decimal has been represented correctly.\n\nAs a size check, 751/250 = 3 + 1/250, so the result is just a little more than 3. That matches 3.004.",
+        "avatarPersona": "TUTOR"
+      },
+      "type": "CONTENT",
+      "transitions": [
+        {
+          "targetNodeId": "q_large_decimal"
+        }
+      ],
+      "id": "fraction_large"
+    },
+    "q_large_decimal": {
+      "content": {
+        "text": "Write 3.004 as a fraction in lowest terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "questionReference": {
+        "inlineData": {
+          "prompt": "Write 3.004 as a fraction in lowest terms.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "751/250"
+            },
+            {
+              "id": "b",
+              "label": "751/25"
+            },
+            {
+              "id": "c",
+              "label": "3,004/100"
+            },
+            {
+              "id": "d",
+              "label": "751/125"
+            }
+          ],
+          "explanation": "3.004 = 3,004/1,000 = 751/250. This fraction is just over 3, matching the original decimal.",
+          "hints": [
+            "There are three decimal places, so begin with 3,004/1,000.",
+            "Reduce 3,004/1,000 by dividing both parts by 4."
+          ],
+          "difficulty": "MEDIUM",
+          "xp": 10
+        },
+        "mode": "INLINE"
+      },
+      "input": {
+        "options": [
+          {
+            "id": "a",
+            "label": "751/250"
+          },
+          {
+            "id": "b",
+            "label": "751/25"
+          },
+          {
+            "id": "c",
+            "label": "3,004/100"
+          },
+          {
+            "id": "d",
+            "label": "751/125"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "id": "q_large_decimal",
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "condition": {
+            "value": true,
+            "field": "isCorrect",
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_decimal_fraction"
+        },
+        {
+          "targetNodeId": "q_large_decimal_remedy",
+          "condition": {
+            "value": false,
+            "field": "isCorrect",
+            "operator": "EQUALS"
+          }
+        }
+      ]
+    },
+    "q_large_decimal_remedy": {
+      "content": {
+        "avatarPersona": "TUTOR",
+        "text": "Three places follow the decimal point, so write 3.004 as 3,004/1,000. The greatest common divisor is 4; divide both parts by 4 to get 751/250."
+      },
+      "type": "CONTENT",
+      "transitions": [
+        {
+          "targetNodeId": "q_large_decimal_retry"
+        }
+      ],
+      "id": "q_large_decimal_remedy"
+    },
+    "q_large_decimal_retry": {
+      "content": {
+        "text": "Write 0.0504 as a fraction in lowest terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "questionReference": {
+        "inlineData": {
+          "prompt": "Write 0.0504 as a fraction in lowest terms.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a",
+          "options": [
+            {
+              "id": "a",
+              "label": "63/1,250"
+            },
+            {
+              "id": "b",
+              "label": "63/125"
+            },
+            {
+              "id": "c",
+              "label": "504/100"
+            },
+            {
+              "id": "d",
+              "label": "63/12,500"
+            }
+          ],
+          "explanation": "0.0504 = 504/10,000 = 63/1,250.",
+          "hints": [
+            "There are four decimal places, so start with 504/10,000.",
+            "Divide numerator and denominator by 8."
+          ],
+          "difficulty": "MEDIUM",
+          "xp": 10
+        },
+        "mode": "INLINE"
+      },
+      "input": {
+        "options": [
+          {
+            "id": "a",
+            "label": "63/1,250"
+          },
+          {
+            "id": "b",
+            "label": "63/125"
+          },
+          {
+            "id": "c",
+            "label": "504/100"
+          },
+          {
+            "id": "d",
+            "label": "63/12,500"
+          }
+        ],
+        "type": "CHOICE"
+      },
+      "id": "q_large_decimal_retry",
+      "type": "CHOICE",
+      "transitions": [
+        {
+          "targetNodeId": "q_decimal_fraction"
+        }
+      ]
+    }
+  }
+}

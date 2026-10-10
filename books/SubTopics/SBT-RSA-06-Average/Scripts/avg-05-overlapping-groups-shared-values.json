@@ -1,0 +1,1929 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-05-overlapping-groups-shared-values",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Overlapping Groups and Shared Observations",
+    "description": "Use group totals to handle overlapping lists, shared members, and averages of first and last sections.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Translate each group average into its group total, then account for members included in both groups exactly once. Teach the overlap identity: total(A)+total(B)=total(union)+total(intersection), and its use for a missing shared observation or middle value. Cover first/last overlapping subsets, pairwise sums for three people, and inclusive group counting as shown in the chapter. Label counts and shared members before calculating; explain why subtracting an overlap is necessary. Learners should draw or list group membership, avoid double-counting, solve the unknown, and verify each stated group total."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Groups can overlap, so their totals may count a shared observation twice. We will make membership visible, apply inclusion-exclusion to totals, and solve shared-value problems without double-counting.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For groups A and B, adding their totals counts shared members twice. The union total counts each member once, so total(A)+total(B)=total(union)+total(intersection). Rearranging gives union total = total(A)+total(B)−intersection total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "With one shared observation x, subtract x once from the sum of the two group totals to get the total of all distinct observations. This is the numerical version of inclusion-exclusion.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Draw two labeled circles or write group lists before calculating. Mark the overlap explicitly; a single repeated value is easy to overlook when the group sizes are described in words.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Group A totals 90, group B totals 105, and their single shared value is 15. What is the total of distinct values in their union?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "180"
+          },
+          {
+            "id": "b",
+            "label": "190"
+          },
+          {
+            "id": "c",
+            "label": "195"
+          },
+          {
+            "id": "d",
+            "label": "210"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Group A totals 90, group B totals 105, and their single shared value is 15. What is the total of distinct values in their union?",
+          "options": [
+            {
+              "id": "a",
+              "label": "180"
+            },
+            {
+              "id": "b",
+              "label": "190"
+            },
+            {
+              "id": "c",
+              "label": "195"
+            },
+            {
+              "id": "d",
+              "label": "210"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Adding totals counted the shared 15 twice.",
+            "Subtract the overlap once: 90+105−15."
+          ],
+          "explanation": "The union total is 90+105−15=180; the shared value is counted once."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The two group totals contain the shared value twice, while the union should contain it once. Therefore subtract the shared value one time from the sum of group totals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Compute 90+105=195, then 195−15=180. Adding the means directly would not solve this total problem.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two group totals are 72 and 88, with shared total 20. Find the union total.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120"
+          },
+          {
+            "id": "b",
+            "label": "140"
+          },
+          {
+            "id": "c",
+            "label": "130"
+          },
+          {
+            "id": "d",
+            "label": "160"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two group totals are 72 and 88, with shared total 20. Find the union total.",
+          "options": [
+            {
+              "id": "a",
+              "label": "120"
+            },
+            {
+              "id": "b",
+              "label": "140"
+            },
+            {
+              "id": "c",
+              "label": "130"
+            },
+            {
+              "id": "d",
+              "label": "160"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Subtract the shared amount once.",
+            "72+88−20."
+          ],
+          "explanation": "The distinct total is 140."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Count each shared member once: total the groups, then remove one duplicate copy of the overlap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a list is divided into first and last subsets, the shared middle positions must be identified. If there are 13 papers, the first 7 and last 7 overlap at paper 7 only.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose the mean of all 13 marks is 40, the mean of the first 7 is 38, and the mean of the last 7 is 44. The full total is 520; the two subset totals add to 266+308=574. The excess 54 is the shared seventh mark.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This works because all other papers appear exactly once in the two subsets. Draw positions 1–13 and mark 1–7 and 7–13 before subtracting. If the overlap were multiple papers, the excess would be their combined total, not a single score.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "There are 11 scores with mean 30. The first 6 average 28 and the last 6 average 34. Find the shared sixth score.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32"
+          },
+          {
+            "id": "b",
+            "label": "34"
+          },
+          {
+            "id": "c",
+            "label": "36"
+          },
+          {
+            "id": "d",
+            "label": "42"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "There are 11 scores with mean 30. The first 6 average 28 and the last 6 average 34. Find the shared sixth score.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32"
+            },
+            {
+              "id": "b",
+              "label": "34"
+            },
+            {
+              "id": "c",
+              "label": "36"
+            },
+            {
+              "id": "d",
+              "label": "42"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The full total is 330; subset totals are 168 and 204.",
+            "The sum of subset totals exceeds the full total by the shared score."
+          ],
+          "explanation": "Subset totals are 168 and 204; the full total is 330. The shared score is 168+204−330=42."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first six and last six of eleven overlap at position six. Their totals together count that score twice, while the full total counts it once. Thus shared score = first-subset total + last-subset total − full total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Recompute: 6×28=168, 6×34=204, and 11×30=330. The shared mark is 42.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Nine values average 20. The first five average 18 and the last five average 23. Find the shared fifth value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Nine values average 20. The first five average 18 and the last five average 23. Find the shared fifth value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find all three totals.",
+            "The two five-value sums count the shared value twice."
+          ],
+          "explanation": "The totals are 180, 90, and 115; shared value=90+115−180=25."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The shared position is fifth because the first five and last five of nine overlap only there. Subtract the full total once from the two subset totals to isolate it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "With three people, pairwise averages can determine individual values. Convert each pair mean to a pair sum. If A+B=40, B+C=46, and A+C=42, adding all three equations gives 2(A+B+C)=128, so A+B+C=64. Then C=64−(A+B)=24, B=22, and A=18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why divide by two? Each individual appears in exactly two pair sums. Once the grand total is found, subtract the relevant pair sum to recover the omitted person.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check all three pair sums after solving. This method works only when the pairwise averages refer to the same three people and the stated pairs are complete.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pair means are mean(A,B)=12, mean(B,C)=15, and mean(A,C)=14. Find B.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "11"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "13"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pair means are mean(A,B)=12, mean(B,C)=15, and mean(A,C)=14. Find B.",
+          "options": [
+            {
+              "id": "a",
+              "label": "11"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "13"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Convert to sums: A+B=24, B+C=30, A+C=28.",
+            "Use B=((A+B)+(B+C)−(A+C))/2."
+          ],
+          "explanation": "B=(24+30−28)/2=13."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pair mean is half a pair sum, so first double each mean. Then add the two pair sums containing B and subtract the pair sum that omits B; the result is 2B.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here (24+30−28)=26, so B=13.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pair means are mean(P,Q)=20, mean(Q,R)=24, and mean(P,R)=22. Find Q.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "26"
+          },
+          {
+            "id": "d",
+            "label": "22"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pair means are mean(P,Q)=20, mean(Q,R)=24, and mean(P,R)=22. Find Q.",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "26"
+            },
+            {
+              "id": "d",
+              "label": "22"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Pair sums are 40, 48, and 44.",
+            "Q=(40+48−44)/2."
+          ],
+          "explanation": "Q=44/2=22."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The pair-sum formula for the shared person is half of the two sums containing that person minus the sum of the pair that omits them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The general inclusion-exclusion principle is useful when the overlap contains several values. For two sets, A-total+B-total equals union-total plus overlap-total. Therefore, overlap-total=A-total+B-total−union-total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: a first subset sums to 250, a second to 230, and their union sums to 420. The shared observations total 250+230−420=60. If there are three shared observations, their combined sum is 60; the average of the shared observations would be 60÷3=20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep “overlap total” distinct from “overlap mean.” Convert a mean to a total using the overlap count before using inclusion-exclusion.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two subsets total 170 and 205; their union totals 330. The overlap has 3 observations. What is the overlap mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two subsets total 170 and 205; their union totals 330. The overlap has 3 observations. What is the overlap mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First find overlap total: 170+205−330.",
+            "Divide that overlap sum by three."
+          ],
+          "explanation": "The overlap total is 45; mean 45÷3=15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not confuse the overlap total with its mean. Inclusion-exclusion first gives 170+205−330=45 as the sum of the three shared values. Divide by their count, three, to obtain mean 15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Subset totals are 90 and 130; union total is 190. If two values overlap, what is their mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Subset totals are 90 and 130; union total is 190. If two values overlap, what is their mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Overlap total=90+130−190.",
+            "Divide the result by 2."
+          ],
+          "explanation": "The overlap sum is 90+130−190=30; its mean is 30÷2=15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Calculate the shared sum before averaging it. Here 90+130−190=30; two shared values have mean 30÷2=15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Group membership is often easier to manage with counts before values. If the first 8 of 14 observations average 25 and the last 8 average 31, their overlap contains 2 observations because 8+8−14=2. The two subset totals contain the overlap twice.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the full mean is 28, its total is 14×28=392. The subset totals are 8×25=200 and 8×31=248, so the overlap total is 200+248−392=56. The overlap mean is 56÷2=28.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the overlap count with set sizes and the overlap total with inclusion-exclusion. A count error changes the mean even if every sum is correct.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "In 15 observations, the first 9 average 20 and the last 9 average 26. The full mean is 23. Find the mean of the overlap.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "23"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "22.5"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In 15 observations, the first 9 average 20 and the last 9 average 26. The full mean is 23. Find the mean of the overlap.",
+          "options": [
+            {
+              "id": "a",
+              "label": "23"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "22.5"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Overlap count=9+9−15=3.",
+            "Overlap total=9×20+9×26−15×23."
+          ],
+          "explanation": "Overlap sum=180+234−345=69; divide by 3 to get 23."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "There are three shared observations because the subset sizes total 18 while the union has 15. Compute totals, not means: 180+234−345=69. Then divide the shared total by three.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This two-stage calculation prevents treating a shared sum as a shared average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "There are 12 values. The first 7 average 16, the last 7 average 22, and all 12 average 19. Find the overlap mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17"
+          },
+          {
+            "id": "b",
+            "label": "19"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "There are 12 values. The first 7 average 16, the last 7 average 22, and all 12 average 19. Find the overlap mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "17"
+            },
+            {
+              "id": "b",
+              "label": "19"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The overlap count is 7+7−12=2.",
+            "The overlap total is 112+154−228=38."
+          ],
+          "explanation": "38÷2=19."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "First count the shared positions, then use the total identity. The overlap has two values totaling 38, so the mean is 19.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When combining pairwise totals, write one equation per stated group and label the shared observations. Avoid mentally cancelling symbols until every group is accounted for.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For example, if A+B=28, B+C=34, and A+C=30, then adding gives 2A+2B+2C=92, so A+B+C=46. Subtract A+B from the grand total to get C=18. This is a compact form of the pairwise method.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Substitution is decisive: A=12, B=16, C=18 satisfies all three sums. If a value fails even one pair, revisit the algebra or the doubled-total step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Given A+B=26, B+C=32, and A+C=30, find C.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "22"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Given A+B=26, B+C=32, and A+C=30, find C.",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "22"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The grand total is (26+32+30)/2.",
+            "Subtract A+B from the grand total to isolate C."
+          ],
+          "explanation": "Grand total=44. C=44−26=18."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Adding pair sums counts each person twice. Divide their total by two to get A+B+C, then subtract the pair that omits C.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "(26+32+30)÷2=44; 44−26=18. Check C in the other pair sums after finding A and B if required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Given R+S=42, S+T=48, and R+T=46, find S.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "23"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Given R+S=42, S+T=48, and R+T=46, find S.",
+          "options": [
+            {
+              "id": "a",
+              "label": "22"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "23"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "S=((R+S)+(S+T)−(R+T))/2.",
+            "Substitute 42, 48, and 46."
+          ],
+          "explanation": "S=(42+48−46)÷2=22."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The expression adds the two pairs containing S and removes the pair without S, leaving 2S. Divide by two only after doing that subtraction.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A final overlap audit asks three questions: what is the union, how many members overlap, and whether the question asks for an overlap total or an overlap mean. These are separate quantities.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If two groups of 6 and 7 observations form a union of 10, then the overlap count is 6+7−10=3. If their means are 14 and 20 and the union mean is 17, convert all means to totals before finding the overlap sum: 6×14+7×20−10×17=54. The overlap mean is 54÷3=18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is a strong consistency check: the overlap count must be nonnegative and cannot exceed the smaller group size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Groups of 6 and 7 have means 14 and 20; their union of 10 has mean 17. Find the overlap mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "17"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "19"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Groups of 6 and 7 have means 14 and 20; their union of 10 has mean 17. Find the overlap mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "17"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "19"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Overlap count=6+7−10=3.",
+            "Overlap total=84+140−170."
+          ],
+          "explanation": "Overlap total=54 across 3 observations, so the mean is 18."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not subtract the three means directly. First convert each group mean to its total using its own count; then use inclusion-exclusion on totals. Separately compute the shared count from group sizes and union size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Finally divide shared total by shared count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Groups of 5 and 8 have means 10 and 16; their union of 11 has mean 14. Find the overlap mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Groups of 5 and 8 have means 10 and 16; their union of 11 has mean 14. Find the overlap mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The overlap count is 5+8−11=2.",
+            "Overlap sum=50+128−154=24."
+          ],
+          "explanation": "The overlap total is 24 across two values, so its mean is 12."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use counts and totals separately: overlap count is 2, overlap sum is 24, so overlap mean is 12. A mean should be divided by an observation count only after the correct overlap sum is known.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use both group sizes and totals to find the average of shared observations. Suppose A has 4 values averaging 18, B has 5 values averaging 24, and their union has 7 values averaging 22. The overlap count is 4+5−7=2. The group totals are 72 and 120; the union total is 154. Thus the overlap total is 72+120−154=38, and its mean is 19.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This joins two separate ideas: inclusion-exclusion determines the shared total, while the counts determine how many shared observations there are. Dividing by the wrong count is a common final-step error.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check: the overlap mean 19 is plausible between the group means 18 and 24.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Group A has 4 values averaging 18; group B has 5 averaging 24; their 7-value union averages 22. Find the overlap mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17"
+          },
+          {
+            "id": "b",
+            "label": "19"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Group A has 4 values averaging 18; group B has 5 averaging 24; their 7-value union averages 22. Find the overlap mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "17"
+            },
+            {
+              "id": "b",
+              "label": "19"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Overlap count is 4+5−7=2.",
+            "Overlap total is 72+120−154."
+          ],
+          "explanation": "The overlap total is 38 across two values, so its mean is 19."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "First calculate the overlap count: two values are shared. Then apply inclusion-exclusion to totals: 72+120−154=38. Finally divide the shared total by two to get 19.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the overlap count and overlap sum separate until the last step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two groups of 6 and 4 have means 10 and 16. Their 8-value union has mean 13. Find the mean of the overlap.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two groups of 6 and 4 have means 10 and 16. Their 8-value union has mean 13. Find the mean of the overlap.",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The overlap count is 6+4−8=2.",
+            "Overlap total=60+64−104."
+          ],
+          "explanation": "The overlap total is 20 across two values, so its mean is 10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The shared count is two, and the shared total is 60+64−104=20. Divide 20 by two to find an overlap mean of 10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You can combine group totals with shared observations, recover an overlap, solve pairwise averages, and check each group's total independently. Mark the overlap before adding any group sums.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -1,0 +1,782 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-03-fractions-signs-modulus",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Fractions, Signed Values, and Modulus",
+    "description": "Handle signed fractions and modulus while preserving signs, precedence and exact fractional values.",
+    "teachingApproach": "Track sign and magnitude separately; keep fractions exact; evaluate modulus after its contents.",
+    "targetDurationMinutes": 35,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4 “Simplification,” printed pages 95–179. Approved scope: Teach arithmetic with positive and negative values, including sign rules for multiplication/division, subtraction of a negative, and modulus/absolute value |a| as distance from zero (always non-negative). Cover fraction operations needed in this chapter: finding common denominators for addition/subtraction, multiplying and dividing fractions, simplifying before multiplying when safe, mixed numbers, and fraction-of-a-quantity under order of operations. Distinguish a negative value from its absolute value and keep exact fractions until the final step. A learner should be able to simplify signed fractional expressions, interpret |−a| correctly, and identify sign or denominator errors. Do not broaden into a standalone fractions or decimal curriculum."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Simplification questions often combine fractions with negative numbers. Track the sign separately from the size of a number, and keep fractions exact until the calculation is complete. Modulus, written |a|, means the distance of a from zero, so its value is never negative.\n\nYour plan is to evaluate grouping and modulus, apply multiplication/division sign rules, use reciprocals for fraction division, and only then combine terms with a common denominator.\n\nA number has both a sign and a magnitude. Keep those ideas separate: first determine whether a term is positive or negative, and then calculate the size of the fraction or integer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtraction is addition of the opposite: a−(−b)=a+b. For multiplication and division, equal signs give a positive result and opposite signs give a negative result. Decide the sign before reducing the numbers; this helps catch errors even when the fractions are complicated.\n\nModulus is defined by |a|=a when a≥0 and |a|=−a when a<0. Thus |−7|=7, but −|−7|=−7 because the outside negative sign remains. The bars change the enclosed value into its non-negative magnitude; they do not control an outside sign.\n\nIn −|−7|+|3−8|, evaluate inside the bars first: |−7|=7 and |3−8|=|−5|=5. Then apply the outside sign and add: −7+5=−2. Do not turn the first term into +7.\n\nThink of modulus as distance on a number line: both 7 and −7 are seven units from zero, so both have modulus 7. The original sign returns only if the expression places a sign outside the bars.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate −|−6| + |4 − 10|.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "−12"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "0"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate −|−6| + |4 − 10|.",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "−12"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "0"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Evaluate each modulus, preserving the outside negative sign.",
+            "The terms become −6 and the positive distance from −6 to zero."
+          ],
+          "explanation": "|−6|=6, so the outside minus makes the first term −6. Also |4−10|=|−6|=6. Thus −6+6=0. Correct option: D."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The modulus makes its enclosed value non-negative; it does not erase a sign outside the bars. Apply the outside sign after evaluating the modulus.\n\nTry a new example using the same reasoning with different values.\n\nIf the first term appears positive, inspect whether the minus sign is outside the modulus. The bars turn the inside into a non-negative magnitude; they do not absorb the external sign.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate −|−4| + |2 − 9|.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−3"
+          },
+          {
+            "id": "b",
+            "label": "−11"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate −|−4| + |2 − 9|.",
+          "options": [
+            {
+              "id": "a",
+              "label": "−3"
+            },
+            {
+              "id": "b",
+              "label": "−11"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The first modulus is 4, with a minus outside it.",
+            "The second modulus is the positive distance from −7 to zero."
+          ],
+          "explanation": "−|−4|=−4 and |2−9|=7, so −4+7=3. The outside sign and the sign of the fraction must both be preserved; modulus changes only its enclosed value. Correct option: C."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For fraction addition/subtraction, use a common denominator so the numerators count like-sized parts. For fraction multiplication, multiply numerators and denominators, cancelling common factors first only when the cancellation is valid. For division by a nonzero fraction, multiply by its reciprocal and preserve the sign.\n\nIn −2/3+5/6÷(−5/4), division comes first: 5/6×(−4/5)=−20/30=−2/3. The expression becomes −2/3+(−2/3)=−4/3. Do not add −2/3 and 5/6 before carrying out the division; precedence applies to fractions just as it does to whole numbers.\n\nKeep exact fractions rather than rounding decimals midway. A rounded value can hide a sign mistake or make two different results appear similar.\n\nWhen dividing by a fraction, the denominator of that fraction becomes the numerator of its reciprocal and vice versa. Keep the sign with the reciprocal too; changing −5/4 to +4/5 would change the value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 1/4 + 3/5 ÷ (−9/10).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−5/12"
+          },
+          {
+            "id": "b",
+            "label": "5/12"
+          },
+          {
+            "id": "c",
+            "label": "−11/12"
+          },
+          {
+            "id": "d",
+            "label": "1/12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate 1/4 + 3/5 ÷ (−9/10).",
+          "options": [
+            {
+              "id": "a",
+              "label": "−5/12"
+            },
+            {
+              "id": "b",
+              "label": "5/12"
+            },
+            {
+              "id": "c",
+              "label": "−11/12"
+            },
+            {
+              "id": "d",
+              "label": "1/12"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Divide before adding, and multiply by the reciprocal of −9/10.",
+            "The quotient is −2/3; combine that with 1/4 using denominator 12."
+          ],
+          "explanation": "3/5÷(−9/10)=3/5×(−10/9)=−2/3. Then 1/4−2/3=3/12−8/12=−5/12. The quotient is negative because the signs are opposite. Correct option: A."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Respect order before combining. For division, multiply by the reciprocal and retain its sign; then perform the outer addition or subtraction.\n\nTry a new example using the same reasoning with different values.\n\nOnly combine the fractions after the division has been completed. A common denominator cannot correct an operation-order mistake made earlier in the expression.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 1/2 − 3/4 ÷ (−3/2).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "−1"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate 1/2 − 3/4 ÷ (−3/2).",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "−1"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Divide before subtracting; use the reciprocal of −3/2.",
+            "The quotient is −1/2, so the expression subtracts a negative half."
+          ],
+          "explanation": "3/4×(−2/3)=−1/2, hence 1/2−(−1/2)=1. The outside sign and the sign of the fraction must both be preserved; modulus changes only its enclosed value. Correct option: B."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A mixed number can be changed to an improper fraction before calculation. For example, 1 1/2=3/2. In 1 1/2−(−2/3)×3/4, perform the multiplication first: (−2/3)×3/4=−6/12=−1/2. The expression is 3/2−(−1/2)=3/2+1/2=2.\n\nThe sign check is intuitive: subtracting a negative is the same as adding a positive, so the result should be larger than 3/2. If it is smaller, review the sign before doing the arithmetic again.\n\nWhen simplifying products, cancellation is allowed between factors in a numerator and denominator, not across terms joined by addition or subtraction. Preserve the operation structure throughout.\n\nCancellation can reduce the arithmetic, but it does not change precedence. Perform the fraction product before the outer subtraction, then apply the sign rule to the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 2 − (−4/5) × 5/8.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3/2"
+          },
+          {
+            "id": "b",
+            "label": "1/2"
+          },
+          {
+            "id": "c",
+            "label": "5/2"
+          },
+          {
+            "id": "d",
+            "label": "−5/2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate 2 − (−4/5) × 5/8.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3/2"
+            },
+            {
+              "id": "b",
+              "label": "1/2"
+            },
+            {
+              "id": "c",
+              "label": "5/2"
+            },
+            {
+              "id": "d",
+              "label": "−5/2"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Multiply the fractions before the outer subtraction.",
+            "The product is −1/2, so subtracting it increases 2 by one-half."
+          ],
+          "explanation": "Multiply first: (−4/5)×5/8=−1/2. Then 2−(−1/2)=2+1/2=5/2. Subtracting a negative increases the value. Correct option: C."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiplication comes before the outer subtraction. The product is negative, so subtracting it increases the value.\n\nTry a new example using the same reasoning with different values.\n\nCheck whether your answer should increase or decrease. Subtracting a negative adds its magnitude, while subtracting a positive lowers the starting value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate 2 − (−3/5) × 5/6.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3/2"
+          },
+          {
+            "id": "b",
+            "label": "5/2"
+          },
+          {
+            "id": "c",
+            "label": "1/2"
+          },
+          {
+            "id": "d",
+            "label": "−1/2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate 2 − (−3/5) × 5/6.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3/2"
+            },
+            {
+              "id": "b",
+              "label": "5/2"
+            },
+            {
+              "id": "c",
+              "label": "1/2"
+            },
+            {
+              "id": "d",
+              "label": "−1/2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Multiply first; the product has a negative sign.",
+            "Subtracting the resulting −1/2 becomes addition."
+          ],
+          "explanation": "(−3/5)×5/6=−1/2; 2−(−1/2)=5/2. The outside sign and the sign of the fraction must both be preserved; modulus changes only its enclosed value. Correct option: B."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You have completed Fractions, Signed Values, and Modulus.\n\nDecide signs before reducing fractions, use common denominators for addition/subtraction, multiply by the reciprocal when dividing by a nonzero fraction, and evaluate modulus before applying any outside sign. Keep exact values until the end.\n\nA final check should answer two questions: does the sign make sense, and does the magnitude fit the original expression?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Evaluate the contents of each modulus before applying signs outside the bars. For |−2/3|−|−1/4|+|−3|, the bars give 2/3−1/4+3. Use twelfths for the fractions: 8/12−3/12+36/12=41/12.\n\nModulus also changes how you interpret equations. |x|=5 has two real solutions, x=5 and x=−5, because each is five units from zero. But |x|=−2 has no real solution: a distance cannot be negative.\n\nA useful final check is to remove each pair of bars only after finding the value inside them. Then preserve the signs and operations between the terms. This separates the modulus step from the later fraction arithmetic.\n\nOn a number line, |x|=5 asks for points five units from zero, one on either side. This geometric interpretation explains the two solutions and also explains why an absolute value cannot equal a negative number.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate |−2/3| − |−1/4| + |−3|.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35/12"
+          },
+          {
+            "id": "b",
+            "label": "−41/12"
+          },
+          {
+            "id": "c",
+            "label": "11/3"
+          },
+          {
+            "id": "d",
+            "label": "41/12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate |−2/3| − |−1/4| + |−3|.",
+          "options": [
+            {
+              "id": "a",
+              "label": "35/12"
+            },
+            {
+              "id": "b",
+              "label": "−41/12"
+            },
+            {
+              "id": "c",
+              "label": "11/3"
+            },
+            {
+              "id": "d",
+              "label": "41/12"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Replace each modulus with its non-negative magnitude, then keep the signs between terms.",
+            "Use twelfths for the fractions: 2/3−1/4, then add 3."
+          ],
+          "explanation": "The moduli give 2/3−1/4+3. In twelfths this is 8/12−3/12+36/12=41/12. Correct option: D."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Modulus applies only inside its bars. Convert each enclosed value to its non-negative magnitude, preserve the signs between terms, and then combine.\n\nNow try a new value set using the same method.\n\nAfter removing the bars, do not change the plus or minus signs between terms. Modulus changes each enclosed term, not the operations connecting those terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Evaluate |−3/8| + |−1/2| − |−1|.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "−1/8"
+          },
+          {
+            "id": "b",
+            "label": "1/8"
+          },
+          {
+            "id": "c",
+            "label": "−9/8"
+          },
+          {
+            "id": "d",
+            "label": "9/8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Evaluate |−3/8| + |−1/2| − |−1|.",
+          "options": [
+            {
+              "id": "a",
+              "label": "−1/8"
+            },
+            {
+              "id": "b",
+              "label": "1/8"
+            },
+            {
+              "id": "c",
+              "label": "−9/8"
+            },
+            {
+              "id": "d",
+              "label": "9/8"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Apply modulus to each enclosed value; the last positive magnitude is still subtracted.",
+            "Convert to eighths: 3/8+4/8−8/8."
+          ],
+          "explanation": "3/8+1/2−1=3/8+4/8−8/8=−1/8. The outside sign and the sign of the fraction must both be preserved; modulus changes only its enclosed value. Correct option: A."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "finish",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1942 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-04-weighted-combined-averages",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Weighted and Combined Averages",
+    "description": "Combine subgroup averages using their sizes so each observation contributes the right amount.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Derive the combined mean as (n₁a₁+n₂a₂+…)/(n₁+n₂+…), where each subgroup mean is weighted by its observation count. Explain why averaging subgroup means directly is valid only when group sizes are equal. Apply to boys/girls, sections, workers, time periods, prices, and other chapter-supported grouped data. Convert group means to totals before combining; keep units consistent and distinguish counts from averages. Learners should calculate a weighted mean, infer a missing group mean or count when sufficient information exists, and check that the combined value lies between subgroup means."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A combined average must give every observation equal weight. We will turn each subgroup mean into its total, weight it by the group size, and then combine totals over the combined count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose group 1 has n₁ observations with mean a₁, and group 2 has n₂ with mean a₂. Their totals are n₁a₁ and n₂a₂, so the combined mean is (n₁a₁+n₂a₂)/(n₁+n₂). This follows directly from total ÷ count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 4 students average 70 and 6 students average 80. The total marks are 4×70=280 and 6×80=480. Combined total 760 across 10 students gives mean 76. The simple average (70+80)/2=75 would give the smaller and larger groups equal weight, which is not the case.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Always write each group's count beside its mean before combining.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 3 has mean 12; a group of 5 has mean 20. Find the combined mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "19"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 3 has mean 12; a group of 5 has mean 20. Find the combined mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "17"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "19"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Convert both means into totals.",
+            "(3×12+5×20)÷8."
+          ],
+          "explanation": "Totals are 36 and 100; 136 across eight observations gives mean 17."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The trap is averaging 12 and 20 as though each group had the same number of observations. Here one group contributes three values and the other contributes five.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply each mean by its own count, add those totals, and divide by eight. The result must lie between 12 and 20; 17 is plausible.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two groups of 4 and 6 have means 15 and 25. What is their combined mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "19"
+          },
+          {
+            "id": "b",
+            "label": "21"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "22"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two groups of 4 and 6 have means 15 and 25. What is their combined mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "19"
+            },
+            {
+              "id": "b",
+              "label": "21"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "22"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use totals 4×15 and 6×25.",
+            "Divide their sum by 10."
+          ],
+          "explanation": "The total is 60+150=210 across 10 people, so the mean is 21."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep group sizes in the numerator as weights. The combined mean is not the midpoint unless the group sizes are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A weighted mean is a balance point. The combined result must lie between the subgroup means; it is closer to the mean belonging to the larger group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "In the previous example, the larger group averaged 20, so the combined mean 17 lies closer to 20 than to 12. This directional check is useful before and after calculation. If a proposed result lies outside the subgroup range, a count or total has likely been mishandled.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "When group sizes are equal, the weighted formula simplifies to the ordinary average of the subgroup means. With 5 people at mean 30 and 5 at mean 42, the combined mean is (30+42)/2=36. Equal sizes justify the simple average; unequal sizes do not.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Groups of equal size have means 34 and 46. What is their combined mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "38"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "42"
+          },
+          {
+            "id": "d",
+            "label": "44"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Groups of equal size have means 34 and 46. What is their combined mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "38"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "42"
+            },
+            {
+              "id": "d",
+              "label": "44"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Equal group sizes give each group equal weight.",
+            "Average 34 and 46."
+          ],
+          "explanation": "Equal group sizes make the combined mean (34+46)/2=40."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not use a simple average because it is always valid; it is valid here because the group sizes match. If the group sizes differed, you would need the weighted formula.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The answer should sit exactly halfway between 34 and 46, at 40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two equal-sized sections have means 58 and 70. Find the combined mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "62"
+          },
+          {
+            "id": "b",
+            "label": "66"
+          },
+          {
+            "id": "c",
+            "label": "64"
+          },
+          {
+            "id": "d",
+            "label": "68"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two equal-sized sections have means 58 and 70. Find the combined mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "62"
+            },
+            {
+              "id": "b",
+              "label": "66"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "68"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The groups have equal counts.",
+            "Find the midpoint of 58 and 70."
+          ],
+          "explanation": "The combined mean is (58+70)/2=64."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal counts allow the two group means to be averaged directly. If you obtained 64 by weighting, the same calculation should confirm it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A convenient shortcut uses deviations from a reference value. Choose a value near the subgroup means, calculate each group's total deviation from it, then divide the combined deviation by the total count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 20 workers average 49 units and 30 workers average 54 units. Use 50 as the reference. The first group's deviation is 20×(−1)=−20; the second is 30×4=120. Net deviation 100 over 50 workers raises the mean by 2, giving 52.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The reference cancels algebraically, so any convenient value works. This method reduces large products but requires signed deviations: below the reference is negative, above it positive.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ten values average 48 and 20 values average 57. Find the combined mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "52"
+          },
+          {
+            "id": "b",
+            "label": "53"
+          },
+          {
+            "id": "c",
+            "label": "54"
+          },
+          {
+            "id": "d",
+            "label": "55"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ten values average 48 and 20 values average 57. Find the combined mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "52"
+            },
+            {
+              "id": "b",
+              "label": "53"
+            },
+            {
+              "id": "c",
+              "label": "54"
+            },
+            {
+              "id": "d",
+              "label": "55"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 50 as a reference and weight each deviation.",
+            "10(−2)+20(7)=120; divide by 30 and add 50."
+          ],
+          "explanation": "The weighted total is 480+1,140=1,620; dividing by 30 gives 54."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "In deviation methods, preserve the sign. Ten observations at 48 contribute −20 relative to 50; twenty at 57 contribute +140. Net deviation is +120 over 30 values, so the mean is 54.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A negative deviation lowers the mean; a positive one raises it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Six values average 31 and four values average 36. Find the combined mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32"
+          },
+          {
+            "id": "b",
+            "label": "34"
+          },
+          {
+            "id": "c",
+            "label": "35"
+          },
+          {
+            "id": "d",
+            "label": "33"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Six values average 31 and four values average 36. Find the combined mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32"
+            },
+            {
+              "id": "b",
+              "label": "34"
+            },
+            {
+              "id": "c",
+              "label": "35"
+            },
+            {
+              "id": "d",
+              "label": "33"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 30 as a reference.",
+            "Weighted deviations are 6×1 and 4×6."
+          ],
+          "explanation": "Net deviation 30 across 10 values gives mean 33."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The weighted deviation is (6+24)/10=3 above 30, so the combined mean is 33. Do not average the group means without weighting by 6 and 4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For grouped marks, multiply each section mean by its student count. Example: sections of 30, 40, and 50 students have means 60, 70, and 65. Their totals are 1,800, 2,800, and 3,250; together that is 7,850 marks across 120 students. The overall mean is 7,850÷120≈65.42.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the exact fraction through the calculation; round only if a decimal display is requested. A quick bound is 60≤overall mean≤70, and the result should be pulled toward the 50-student section's mean of 65.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "When counts and means are integers, the combined average need not be an integer. Report a sensible precision and identify it as rounded.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Sections of 20, 30, and 50 students average 60, 70, and 64 marks. Find the overall mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "64"
+          },
+          {
+            "id": "b",
+            "label": "66"
+          },
+          {
+            "id": "c",
+            "label": "67"
+          },
+          {
+            "id": "d",
+            "label": "65"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Sections of 20, 30, and 50 students average 60, 70, and 64 marks. Find the overall mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "64"
+            },
+            {
+              "id": "b",
+              "label": "66"
+            },
+            {
+              "id": "c",
+              "label": "67"
+            },
+            {
+              "id": "d",
+              "label": "65"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compute 20×60+30×70+50×64.",
+            "Divide the total by 100 students."
+          ],
+          "explanation": "The weighted total is 1,200+2,100+3,200=6,500; 6,500/100=65."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The three section means cannot be averaged as (60+70+64)/3 unless all sections have equal sizes. The 50-student section contributes more observations than the 20-student section.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply by 20, 30, and 50 respectively, then divide by 100. This gives 65, which lies within the subgroup range.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Groups of 10, 20, and 30 items have average scores 40, 50, and 60. Find the overall mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "53 1/3"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "52"
+          },
+          {
+            "id": "d",
+            "label": "55"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Groups of 10, 20, and 30 items have average scores 40, 50, and 60. Find the overall mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "53 1/3"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "52"
+            },
+            {
+              "id": "d",
+              "label": "55"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The weighted total is 400+1,000+1,800.",
+            "Divide 3,200 by 60."
+          ],
+          "explanation": "The total is 3,200 across 60 observations, so the mean is 53 1/3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Confirm the total and the total count before matching. The groups contribute 3,200 across 60 observations, giving 53 1/3; retain the exact fraction if the decimal is not required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A mean price per item is also weighted when categories contain different numbers of items. If 5 notebooks cost $4 each and 8 pens cost $2 each, the total cost is 5×4+8×2=$36 across 13 articles. The average cost per article is $36/13≈$2.77.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The denominator is the number of articles, not the number of categories. Averaging $4 and $2 would incorrectly treat five notebooks and eight pens as equal-sized groups.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check units: dollars per item multiplied by item count gives dollars; dividing by 13 items returns dollars per article. Do not mix per-item price with total cost.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A shop sells 6 items at $5 each and 4 items at $8 each. Find the average price per item.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "$6.20"
+          },
+          {
+            "id": "b",
+            "label": "$6.00"
+          },
+          {
+            "id": "c",
+            "label": "$6.50"
+          },
+          {
+            "id": "d",
+            "label": "$7.00"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A shop sells 6 items at $5 each and 4 items at $8 each. Find the average price per item.",
+          "options": [
+            {
+              "id": "a",
+              "label": "$6.20"
+            },
+            {
+              "id": "b",
+              "label": "$6.00"
+            },
+            {
+              "id": "c",
+              "label": "$6.50"
+            },
+            {
+              "id": "d",
+              "label": "$7.00"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find total revenue and total item count.",
+            "(6×5+4×8)÷10."
+          ],
+          "explanation": "Total is $62 over 10 items, giving $6.20 per item."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not take the midpoint of $5 and $8 because the groups contain six and four items. The weighted total is $30+$32=$62; divide by ten items.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the price unit attached to the result: $6.20 per item.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three boxes cost $12 each and seven cost $8 each. What is the mean cost per box?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "$8.80"
+          },
+          {
+            "id": "b",
+            "label": "$9.20"
+          },
+          {
+            "id": "c",
+            "label": "$9.00"
+          },
+          {
+            "id": "d",
+            "label": "$10.00"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three boxes cost $12 each and seven cost $8 each. What is the mean cost per box?",
+          "options": [
+            {
+              "id": "a",
+              "label": "$8.80"
+            },
+            {
+              "id": "b",
+              "label": "$9.20"
+            },
+            {
+              "id": "c",
+              "label": "$9.00"
+            },
+            {
+              "id": "d",
+              "label": "$10.00"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Total cost is 3×12+7×8.",
+            "Divide $92 by 10 boxes."
+          ],
+          "explanation": "$36+$56=$92, and $92÷10=$9.20."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Weight each price by how many boxes have that price, then divide by all ten boxes. The result should be nearer $8 than $12 because seven boxes cost $8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Averages over unequal time spans are weighted by the number of months or days, not averaged as monthly figures. If monthly expenditure averages $2,200 for 3 months and $2,500 for the next 9 months, yearly expenditure is 3×2,200+9×2,500=$29,100. The annual monthly average is $29,100÷12=$2,425.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This same method applies to rates measured across periods. Check that periods cover the full year and do not overlap. A total income or savings amount can be added or subtracted only after the units and time interval match.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful check: the combined mean must lie between 2,200 and 2,500, and be closer to 2,500 because that rate applies for more months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Spending averages $1,800 for 4 months and $2,400 for 8 months. What is the 12-month average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "$2,100"
+          },
+          {
+            "id": "b",
+            "label": "$2,200"
+          },
+          {
+            "id": "c",
+            "label": "$2,300"
+          },
+          {
+            "id": "d",
+            "label": "$2,400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Spending averages $1,800 for 4 months and $2,400 for 8 months. What is the 12-month average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "$2,100"
+            },
+            {
+              "id": "b",
+              "label": "$2,200"
+            },
+            {
+              "id": "c",
+              "label": "$2,300"
+            },
+            {
+              "id": "d",
+              "label": "$2,400"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Weight each monthly mean by its months.",
+            "(4×1800+8×2400)÷12."
+          ],
+          "explanation": "Total is 7,200+19,200=26,400; dividing by 12 gives $2,200."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Averaging $1,800 and $2,400 directly would assume four and eight months have equal weight. Multiply each monthly average by its period length to recover expenditure totals, then divide by all 12 months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the answer is closer to $2,400, which applies for eight months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A worker earns an average of $3,000 per month for 2 months and $3,600 per month for 10 months. Find the 12-month mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "$3,400"
+          },
+          {
+            "id": "b",
+            "label": "$3,450"
+          },
+          {
+            "id": "c",
+            "label": "$3,500"
+          },
+          {
+            "id": "d",
+            "label": "$3,600"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A worker earns an average of $3,000 per month for 2 months and $3,600 per month for 10 months. Find the 12-month mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "$3,400"
+            },
+            {
+              "id": "b",
+              "label": "$3,450"
+            },
+            {
+              "id": "c",
+              "label": "$3,500"
+            },
+            {
+              "id": "d",
+              "label": "$3,600"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compute 2×3000+10×3600.",
+            "Divide by 12."
+          ],
+          "explanation": "The total is 42,000 and the average is $3,500."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the total months at 12. The higher monthly rate applies to most of the year, so a result close to $3,600 is sensible; the weighted calculation gives $3,500.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A combined mean can help recover a missing subgroup mean. Let a known group have n₁ observations and mean a₁, while a second group has n₂ observations and unknown mean x. If the combined mean is M, write n₁a₁+n₂x=M(n₁+n₂), then solve.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 12 learners average 68, and 8 other learners join; the new mean is 72. The combined total is 20×72=1,440. The first group's total is 816, so the added group's total is 624 and its mean is 624÷8=78.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check that 78 is above the old mean, as needed to raise it from 68 to 72.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ten learners average 64. After five more join, the mean becomes 70. What is the new group's mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "76"
+          },
+          {
+            "id": "b",
+            "label": "78"
+          },
+          {
+            "id": "c",
+            "label": "82"
+          },
+          {
+            "id": "d",
+            "label": "80"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ten learners average 64. After five more join, the mean becomes 70. What is the new group's mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "76"
+            },
+            {
+              "id": "b",
+              "label": "78"
+            },
+            {
+              "id": "c",
+              "label": "82"
+            },
+            {
+              "id": "d",
+              "label": "80"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Combined total is 15×70; original total is 10×64.",
+            "Subtract totals, then divide by five."
+          ],
+          "explanation": "The new group totals 1,050−640=410; 410÷5=82, "
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not subtract averages directly to find the added group's mean. First convert both averages to totals. The added five contribute the difference between the combined total and the original total; only then divide that difference by five.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The new group's mean must exceed 70 because it pulled the overall mean above 64.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Eight people average 50. Four join and the new mean is 56. Find the newcomers' mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "62"
+          },
+          {
+            "id": "b",
+            "label": "66"
+          },
+          {
+            "id": "c",
+            "label": "72"
+          },
+          {
+            "id": "d",
+            "label": "68"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Eight people average 50. Four join and the new mean is 56. Find the newcomers' mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "62"
+            },
+            {
+              "id": "b",
+              "label": "66"
+            },
+            {
+              "id": "c",
+              "label": "72"
+            },
+            {
+              "id": "d",
+              "label": "68"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "New total: 12×56; old total: 8×50.",
+            "Divide the added total by four."
+          ],
+          "explanation": "672−400=272; 272÷4=68, which is "
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the group counts with their means: 12×56 gives the full total, and 8×50 gives the original total. The difference belongs to four newcomers; divide by four to get 68.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check a weighted answer with both bounds and direction. If subgroup means are 40 and 70, every combined mean must be between 40 and 70. If there are many more observations in the 70 group, the combined mean should be closer to 70.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful equation check is to multiply your proposed combined mean by the total count. That product must equal the sum of subgroup totals. This catches rounding or count errors.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not round individual subgroup totals unless necessary. If a final answer needs two decimals, combine exact totals first and round only the final quotient.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 2 averages 40 and a group of 8 averages 70. Which is a plausible combined mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35"
+          },
+          {
+            "id": "b",
+            "label": "72"
+          },
+          {
+            "id": "c",
+            "label": "80"
+          },
+          {
+            "id": "d",
+            "label": "64"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 2 averages 40 and a group of 8 averages 70. Which is a plausible combined mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35"
+            },
+            {
+              "id": "b",
+              "label": "72"
+            },
+            {
+              "id": "c",
+              "label": "80"
+            },
+            {
+              "id": "d",
+              "label": "64"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The result must be between the two group means.",
+            "It should be closer to 70 because that group is larger."
+          ],
+          "explanation": "The weighted mean is (2×40+8×70)/10=640/10=64."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The answer must satisfy two checks: remain between 40 and 70, and lie closer to 70 because eight of ten observations come from that group. The exact computation gives 64.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A result outside the range or near 40 would signal a weighting error.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 3 averages 20 and a group of 9 averages 32. Which is the combined mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "29"
+          },
+          {
+            "id": "b",
+            "label": "26"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 3 averages 20 and a group of 9 averages 32. Which is the combined mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "29"
+            },
+            {
+              "id": "b",
+              "label": "26"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Weight by 3 and 9.",
+            "(60+288)÷12."
+          ],
+          "explanation": "348÷12=29, between the means and closer to 32."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Reconstruct the total from the proposed result: 29×12=348, equal to 3×20+9×32. The range and direction checks also hold.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You derived weighted means from subgroup totals, used counts as weights, recovered missing subgroup information, and checked the combined mean against subgroup bounds. Never average group means directly unless their sizes are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -1,0 +1,1942 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-07-ages-marks-time-changes",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Averages Across Ages, Marks, and Time",
+    "description": "Solve average-age and performance problems by tracking totals as time passes or scores are added and removed.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Apply the mean-total-count model to ages, class marks, innings, and repeated tests. Explain that when all k people remain in a group, each person's age rises by t over t years, so the group total rises by kt and the average rises by t; membership changes require separate total accounting. Cover a score changing a running average, excluding high/low observations, adding births or entrants, and time-unit conversions (months to years). Learners should set a clear time reference, calculate totals at that time, respect integer/count constraints, and check the resulting ages or scores in the original scenario."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Age and performance averages change over time, but the same total-count model still applies. The key is to choose a time reference, keep the group membership clear, and convert months, years, or innings consistently.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the same n people remain together, each person's age increases by t years after t years. The group's total rises by nt, so its average rises by nt÷n=t years.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: a class of 25 students has mean age 14 on 1 January. One year later, if the same students remain, every student is one year older and the mean is 15. The average does not rise by 25 years; the total rises by 25 person-years, and dividing by 25 gives one year per person.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If members enter or leave during that interval, this simple shift no longer applies to the changed group. Track the original members and new members separately.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "The same 18 people are observed again 3 years later. Their mean age was 27. What is the new mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "28"
+          },
+          {
+            "id": "b",
+            "label": "29"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "81"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The same 18 people are observed again 3 years later. Their mean age was 27. What is the new mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "28"
+            },
+            {
+              "id": "b",
+              "label": "29"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "81"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Each person ages by the same 3 years.",
+            "The group's mean rises by 3, not by 18×3."
+          ],
+          "explanation": "The new mean is 27+3=30 years."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The total age rises by 18×3=54 person-years, but the count remains 18. The average increase is 54÷18=3 years.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not add the total increase directly to the average; divide the total change by the unchanged group size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fixed group has mean age 32. After 5 years, what is its mean age?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "34"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "160"
+          },
+          {
+            "id": "d",
+            "label": "37"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fixed group has mean age 32. After 5 years, what is its mean age?",
+          "options": [
+            {
+              "id": "a",
+              "label": "34"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "160"
+            },
+            {
+              "id": "d",
+              "label": "37"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Every member becomes five years older.",
+            "Add five to the former mean."
+          ],
+          "explanation": "32+5=37 years."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When the people and count stay fixed, the average age increases by the elapsed years. A count change requires new total accounting.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a family with known subgroup averages, convert each subgroup mean to a total before combining. If two parents average 38 years, their total age is 76. If the three-person family averages 28, the total is 84; the child's age is 84−76=8 years.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The subgroup counts matter: the parents' mean applies to two people, while the family mean applies to three. Subtracting 38 from 28 would compare averages with different group membership and would not find the child's age.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check plausibility and units. A child's age of 8 is younger than the parents' average and restores the family total to 84.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two parents average 36 years. Together with their child, the three average 27. Find the child's age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "9"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two parents average 36 years. Together with their child, the three average 27. Find the child's age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "9"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Parent total is 2×36; family total is 3×27.",
+            "Subtract the parent total from the family total."
+          ],
+          "explanation": "81−72=9 years."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use totals, not the difference between the two averages. The parents total 72 years; the whole family totals 81. The child's age is the difference, 9.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Recheck: (36+36+9)÷3=27.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A couple's mean age is 42. With their child, the mean is 31. Find the child's age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A couple's mean age is 42. With their child, the mean is 31. Find the child's age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The couple's total is 84; the three-person total is 93.",
+            "Find the difference."
+          ],
+          "explanation": "The family total is 93 and the couple total is 84, so the child is 9 years old."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The family total must include all three people. Subtract the two-parent total from the three-person total; that difference is one child's age.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "An added teacher or student changes both the total and the count. Suppose 39 students average 15 years. Including the teacher raises the 40-person mean by 3 months. Convert 3 months to 1/4 year, so the new mean is 15.25 years and the new total is 40×15.25=610 years. The students' total was 39×15=585, so the teacher is 25.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the increase in the combined mean separate from the added person's age. The teacher's age is found from the difference of totals, not by adding three months to 15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by restoring 585+25=610 and 610÷40=15.25.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twenty students average 14 years. With a teacher included, the 21-person mean is 15. Find the teacher's age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twenty students average 14 years. With a teacher included, the 21-person mean is 15. Find the teacher's age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "35"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Student total is 20×14; combined total is 21×15.",
+            "The teacher's age is the difference."
+          ],
+          "explanation": "315−280=35 years."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The one-year rise in the mean is not the teacher's age. Calculate the whole-class total before and after inclusion, then subtract.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The teacher must be older than the student mean to raise it; 35 years is consistent. Verify (280+35)÷21=15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Thirty students average 16 years. Adding the teacher makes the 31-person mean 17. Find the teacher's age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31"
+          },
+          {
+            "id": "b",
+            "label": "47"
+          },
+          {
+            "id": "c",
+            "label": "37"
+          },
+          {
+            "id": "d",
+            "label": "51"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Thirty students average 16 years. Adding the teacher makes the 31-person mean 17. Find the teacher's age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "31"
+            },
+            {
+              "id": "b",
+              "label": "47"
+            },
+            {
+              "id": "c",
+              "label": "37"
+            },
+            {
+              "id": "d",
+              "label": "51"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "New total 31×17; student total 30×16.",
+            "Subtract the totals."
+          ],
+          "explanation": "The teacher is 31×17−30×16=527−480=47 years old."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use 31 for the new count and 30 for the original count. The added person's age equals the difference of those totals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a family is observed at two dates, age changes and membership changes must be separated. If four members averaged 24 ten years ago, their total then was 96. Ten years later those same four contribute 96+4×10=136 years.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If two children have since been born and the six-person family now averages 24, the current total is 144. The children's ages sum to 144−136=8. If they differ by two years, let the younger be x and older x+2; then 2x+2=8, so x=3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This method works because the original four ages are tracked forward before adding the children. Do not age the two children by ten years; they were not present in the earlier group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three adults averaged 30 years 8 years ago. Today they and two children average 27. The children differ by 2 years. Find the younger child’s age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "9.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three adults averaged 30 years 8 years ago. Today they and two children average 27. The children differ by 2 years. Find the younger child’s age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "9.5"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Adults’ current total is 3×30+3×8=114.",
+            "Family total is 5×27=135; the children total 21, with a 2-year gap."
+          ],
+          "explanation": "The children total 135−114=21. Younger=(21−2)/2=9.5 years."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "First age only the original four members forward: their present total is the old total plus four times eight years. Then subtract that from the present six-person total. If the children's sum is negative or cannot accommodate their stated age difference, the given data are inconsistent.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Revise the example data before solving; do not force an impossible age.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three adults averaged 28 years 5 years ago. Now they and two children average 23. The children differ by 2 years. Find the younger age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three adults averaged 28 years 5 years ago. Now they and two children average 23. The children differ by 2 years. Find the younger age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Adults' current total is 3×28+3×5.",
+            "Family total is 5×23; subtract and split the children's sum."
+          ],
+          "explanation": "Adults total 99; the family total is 115, leaving 16 for the children. Younger=(16−2)/2=7."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Track the adults' total forward and compare with the current family total. The children's combined age is the difference; then use their age gap to solve the two-value equation. The younger child is 7 years old; check that the two children total 16 years and differ by 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A running batting average is a total spread across innings. If a player averages 40 after 10 innings, the total is 400 runs. Scoring 72 in the 11th gives 472 runs over 11 innings, so the new average is 472÷11≈42.91.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the new score is above the old average, the average rises; if below, it falls. To find a score from the change in mean, use new total−old total. For n old innings and old mean m, a new score s gives new mean (nm+s)/(n+1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep innings as the count and runs as the total. A score in one inning is not itself the new average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "After 8 innings a batter averages 35. In the 9th innings he scores 53. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "38"
+          },
+          {
+            "id": "c",
+            "label": "37"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After 8 innings a batter averages 35. In the 9th innings he scores 53. What is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "38"
+            },
+            {
+              "id": "c",
+              "label": "37"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The old total is 8×35.",
+            "Add 53 and divide by 9."
+          ],
+          "explanation": "(280+53)÷9=333÷9=37."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The score 53 is added to the old total, then the count becomes nine. Do not average 35 and 53 directly; the old mean represents eight innings.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because 53 is above 35, the new average should rise, and the calculation gives 37.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "After 12 tests a student averages 78. A score of 91 is added. Find the new average.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "78"
+          },
+          {
+            "id": "b",
+            "label": "79 1/13"
+          },
+          {
+            "id": "c",
+            "label": "80"
+          },
+          {
+            "id": "d",
+            "label": "79"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After 12 tests a student averages 78. A score of 91 is added. Find the new average.",
+          "options": [
+            {
+              "id": "a",
+              "label": "78"
+            },
+            {
+              "id": "b",
+              "label": "79 1/13"
+            },
+            {
+              "id": "c",
+              "label": "80"
+            },
+            {
+              "id": "d",
+              "label": "79"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old total is 12×78; new count is 13.",
+            "Add 91 and divide by 13."
+          ],
+          "explanation": "(936+91)÷13=1,027÷13=79."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "After adding the new result, divide by 13 total tests. Keep the exact quotient; here 1,027÷13=79, so the new average rises by one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "If selected results are excluded, subtract their total and their count. A player averages 50 over 40 innings, total 2,000. Removing two innings leaves 38 with mean 48, total 1,824. Therefore the two removed scores sum to 176.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the higher score exceeds the lower by 40, let high=x and low=x−40. Then 2x−40=176, so x=108 and low=68. The requested high score is not the entire removed sum.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check: 108+68=176, and 1,824+176=2,000. State clearly whether you need the sum or an individual removed value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A player averages 45 across 20 innings. Excluding two innings, the remaining 18 average 43. The two scores differ by 10. Find the higher score.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55"
+          },
+          {
+            "id": "b",
+            "label": "68"
+          },
+          {
+            "id": "c",
+            "label": "60"
+          },
+          {
+            "id": "d",
+            "label": "65"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A player averages 45 across 20 innings. Excluding two innings, the remaining 18 average 43. The two scores differ by 10. Find the higher score.",
+          "options": [
+            {
+              "id": "a",
+              "label": "55"
+            },
+            {
+              "id": "b",
+              "label": "68"
+            },
+            {
+              "id": "c",
+              "label": "60"
+            },
+            {
+              "id": "d",
+              "label": "65"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Excluded sum=20×45−18×43.",
+            "Let high x, low x−10; solve their sum."
+          ],
+          "explanation": "The excluded scores sum to 900−774=126 and differ by 10, so the higher is (126+10)/2=68."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract totals to find the combined score of the two excluded innings: 900−774=126. The difference condition then gives high+low=126 and high−low=10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add the equations: 2×high=136, so high=68. The higher score is 68; substitute 68 and 58 to confirm their sum and difference.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Across 16 games the mean is 38. Excluding two games, the other 14 average 36. Their scores differ by 8. Find the higher excluded score.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "46"
+          },
+          {
+            "id": "b",
+            "label": "48"
+          },
+          {
+            "id": "c",
+            "label": "56"
+          },
+          {
+            "id": "d",
+            "label": "50"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Across 16 games the mean is 38. Excluding two games, the other 14 average 36. Their scores differ by 8. Find the higher excluded score.",
+          "options": [
+            {
+              "id": "a",
+              "label": "46"
+            },
+            {
+              "id": "b",
+              "label": "48"
+            },
+            {
+              "id": "c",
+              "label": "56"
+            },
+            {
+              "id": "d",
+              "label": "50"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Excluded total=16×38−14×36.",
+            "Solve high+low=104 and high−low=8."
+          ],
+          "explanation": "Excluded sum=608−504=104; high=(104+8)/2=56."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The two excluded values are found from their sum and difference. Higher=(sum+difference)÷2. Here the high value is 56. Substitute it with 48: their sum is 104 and their difference is 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A replacement problem can reveal a new pair's mean from the change in a fixed group's average. For an 11-player team, a rise of 2 months in average age means the total age rose by 11×2=22 months. If the outgoing players were 18 and 20, the incoming pair total is 38 years plus 22 months = 39 years 10 months. Their mean is 19 years 11 months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Convert months consistently: 22 months is 1 year 10 months. Do not add 22 years or treat the change in average as the total change.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by comparing pair totals: the replacement group is 22 months older in total, so across 11 players the average rises by exactly two months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "On a 12-player team, two replacements raise the average age by 3 months. The outgoing pair totaled 40 years. Find the incoming pair's average age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 years 6 months"
+          },
+          {
+            "id": "b",
+            "label": "20 years 6 months"
+          },
+          {
+            "id": "c",
+            "label": "22 years"
+          },
+          {
+            "id": "d",
+            "label": "23 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "On a 12-player team, two replacements raise the average age by 3 months. The outgoing pair totaled 40 years. Find the incoming pair's average age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 years 6 months"
+            },
+            {
+              "id": "b",
+              "label": "20 years 6 months"
+            },
+            {
+              "id": "c",
+              "label": "22 years"
+            },
+            {
+              "id": "d",
+              "label": "23 years"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The team total rises by 12×3=36 months, or 3 years.",
+            "Incoming pair total is 43 years; divide by 2."
+          ],
+          "explanation": "The incoming total is 43 years, so the pair mean is 21.5 years = 21 years 6 months."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average change applies to all 12 players, so the total age increases by 36 months, or three years. Add that to the outgoing pair's 40-year total to get 43 years.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Divide by two incoming players: 21 years 6 months. Convert before dividing to avoid a months/years mix-up.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 10-player team average rises by 6 months after replacing two players whose total age was 36 years. Find the new pair's average age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 years"
+          },
+          {
+            "id": "b",
+            "label": "20 years 6 months"
+          },
+          {
+            "id": "c",
+            "label": "22 years 6 months"
+          },
+          {
+            "id": "d",
+            "label": "23 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 10-player team average rises by 6 months after replacing two players whose total age was 36 years. Find the new pair's average age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 years"
+            },
+            {
+              "id": "b",
+              "label": "20 years 6 months"
+            },
+            {
+              "id": "c",
+              "label": "22 years 6 months"
+            },
+            {
+              "id": "d",
+              "label": "23 years"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The team total increases by 10×6 months=60 months.",
+            "Add five years to the old pair total, then divide by two."
+          ],
+          "explanation": "The team total rises 60 months, or five years. Incoming total=41 years; mean=20.5 years, or 20 years 6 months."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Six months times ten players is 60 player-months, or five years of total age. Add five years to the outgoing pair's total and divide by two. The answer is 20 years 6 months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep time periods and membership separate in any age or score story. A mean over the first k tests and a mean over all k+1 tests use different totals and counts. A family observed years apart may have births, so the old members' aging total must be tracked before the new members are added.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful table has columns: date or period, members/tests included, count, mean, total. This makes it clear which average belongs to which set.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "At the end, substitute the inferred value into the scenario and check both the group size and the unit. A result in months may need conversion to years; an age cannot be negative, and a score must satisfy any stated range.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A class of 24 students averages 16 years. One year later the same students remain. What is their total age then?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "384 years"
+          },
+          {
+            "id": "b",
+            "label": "400 years"
+          },
+          {
+            "id": "c",
+            "label": "600 years"
+          },
+          {
+            "id": "d",
+            "label": "408 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A class of 24 students averages 16 years. One year later the same students remain. What is their total age then?",
+          "options": [
+            {
+              "id": "a",
+              "label": "384 years"
+            },
+            {
+              "id": "b",
+              "label": "400 years"
+            },
+            {
+              "id": "c",
+              "label": "600 years"
+            },
+            {
+              "id": "d",
+              "label": "408 years"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "After one year, each student's age rises by one.",
+            "New mean is 17; multiply by 24."
+          ],
+          "explanation": "The new total is 24×17=408 years, "
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean after one year is 17, not 16. The question asks for total age, so multiply that new mean by 24 students.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the total increase is 24 person-years from 384 to 408.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 15 students averages 13 years. After 2 years the same students remain. Find their total age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "225"
+          },
+          {
+            "id": "b",
+            "label": "195"
+          },
+          {
+            "id": "c",
+            "label": "210"
+          },
+          {
+            "id": "d",
+            "label": "255"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 15 students averages 13 years. After 2 years the same students remain. Find their total age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "225"
+            },
+            {
+              "id": "b",
+              "label": "195"
+            },
+            {
+              "id": "c",
+              "label": "210"
+            },
+            {
+              "id": "d",
+              "label": "255"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "New mean is 15 years.",
+            "Multiply by the unchanged count, 15."
+          ],
+          "explanation": "15×15=225 years, "
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average age rises by the elapsed two years to 15. Then use total=mean×count. The total rises by 15×2=30 years, from 195 to 225.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You tracked age totals across time, additions to a class, family changes, running scores, and excluded results. Set the time reference first, then rebuild the total for the exact group being averaged.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

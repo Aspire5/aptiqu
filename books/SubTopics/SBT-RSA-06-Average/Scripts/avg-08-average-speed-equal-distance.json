@@ -1,0 +1,1981 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-08-average-speed-equal-distance",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Average Speed for Equal-Distance Journeys",
+    "description": "Find overall speed from distance and time, especially when a journey has equal distances at different speeds.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Define average speed as total distance divided by total time. For equal distances d at speeds x and y, derive total time d/x+d/y and simplify the average speed to 2xy/(x+y), the harmonic mean. Explain why the ordinary arithmetic mean of the speeds is wrong for equal-distance legs, while equal-time legs do use the arithmetic mean of the speeds. Work units consistently and use a magnitude check: the overall speed must lie between the two leg speeds and is closer to the slower speed for equal distances. Learners should identify what is equal, choose the correct formula, and verify using distance/time."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average speed is total distance divided by total time. The arithmetic mean of leg speeds is not generally the journey's average; we will derive the right method from the actual distances and times.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start with the definition: average speed = total distance ÷ total time. It is not defined as the average of the displayed speeds. For each leg, time = distance ÷ speed; add all leg distances and all leg times before dividing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: a vehicle travels 120 km at 60 km/h, then 80 km at 40 km/h. Times are 120/60=2 h and 80/40=2 h. Total distance 200 km divided by 4 h gives average speed 50 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check units: kilometres divided by hours gives km/h. Do not average km/h values while ignoring how long each speed was maintained.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A trip covers 180 km in 3 hours and then 120 km in 2 hours. Find average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 km/h"
+          },
+          {
+            "id": "b",
+            "label": "50 km/h"
+          },
+          {
+            "id": "c",
+            "label": "55 km/h"
+          },
+          {
+            "id": "d",
+            "label": "65 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A trip covers 180 km in 3 hours and then 120 km in 2 hours. Find average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 km/h"
+            },
+            {
+              "id": "b",
+              "label": "50 km/h"
+            },
+            {
+              "id": "c",
+              "label": "55 km/h"
+            },
+            {
+              "id": "d",
+              "label": "65 km/h"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Add distances and add times separately.",
+            "Total distance 300 km; total time 5 h."
+          ],
+          "explanation": "300÷5=60 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average speed uses the journey totals. Adding leg speeds or averaging them without considering duration can give a wrong answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here total distance is 180+120=300 km and total time is 3+2=5 h. Dividing gives 60 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A cyclist travels 84 km in 2 hours and 96 km in 3 hours. Find average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32 km/h"
+          },
+          {
+            "id": "b",
+            "label": "36 km/h"
+          },
+          {
+            "id": "c",
+            "label": "38 km/h"
+          },
+          {
+            "id": "d",
+            "label": "40 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A cyclist travels 84 km in 2 hours and 96 km in 3 hours. Find average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32 km/h"
+            },
+            {
+              "id": "b",
+              "label": "36 km/h"
+            },
+            {
+              "id": "c",
+              "label": "38 km/h"
+            },
+            {
+              "id": "d",
+              "label": "40 km/h"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Combine the 180 km and the 5 hours.",
+            "Average speed is total distance divided by total time."
+          ],
+          "explanation": "180÷5=36 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep distance and time totals in their own columns, then divide the totals. The unit is km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For equal distances d at speeds x and y, each leg takes d/x and d/y hours. Total distance is 2d, and total time is d/x+d/y=d(x+y)/(xy). Dividing gives 2xy/(x+y).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the harmonic mean of the speeds. The slower speed uses more time for the same distance, so it receives more weight in the journey average. This is why the arithmetic mean is too high unless the speeds are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The derivation depends on equal distances. If the journey has equal times instead, the arithmetic mean applies. Identify what is equal before selecting a shortcut.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A car travels equal distances at 40 km/h and 60 km/h. What is its average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50 km/h"
+          },
+          {
+            "id": "b",
+            "label": "48 km/h"
+          },
+          {
+            "id": "c",
+            "label": "52 km/h"
+          },
+          {
+            "id": "d",
+            "label": "100 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A car travels equal distances at 40 km/h and 60 km/h. What is its average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50 km/h"
+            },
+            {
+              "id": "b",
+              "label": "48 km/h"
+            },
+            {
+              "id": "c",
+              "label": "52 km/h"
+            },
+            {
+              "id": "d",
+              "label": "100 km/h"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 2xy/(x+y) for equal distances.",
+            "2×40×60÷100."
+          ],
+          "explanation": "The average is 4,800/100=48 km/h, below the arithmetic mean of 50."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For equal distances, the two legs do not take equal time. The 40 km/h leg takes longer, which pulls the journey mean below 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use total distance divided by (d/40+d/60), or simplify to 2xy/(x+y)=48 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Equal distances are traveled at 30 km/h and 50 km/h. Find the average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35 km/h"
+          },
+          {
+            "id": "b",
+            "label": "40 km/h"
+          },
+          {
+            "id": "c",
+            "label": "37.5 km/h"
+          },
+          {
+            "id": "d",
+            "label": "42 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Equal distances are traveled at 30 km/h and 50 km/h. Find the average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "35 km/h"
+            },
+            {
+              "id": "b",
+              "label": "40 km/h"
+            },
+            {
+              "id": "c",
+              "label": "37.5 km/h"
+            },
+            {
+              "id": "d",
+              "label": "42 km/h"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Apply 2xy/(x+y).",
+            "3000÷80."
+          ],
+          "explanation": "The equal-distance mean is 3,000/80=37.5 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The result should be below the arithmetic midpoint 40 because more time is spent at the slower speed. The harmonic-mean calculation gives 37.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For more than two equal-distance legs at different speeds, use the same definition: if each leg is distance d at speed vᵢ, total distance is nd and total time is dΣ(1/vᵢ). Thus average speed is n/Σ(1/vᵢ).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For equal distances at 30, 40, and 60 km/h, the average is 3/(1/30+1/40+1/60). The denominator is (4+3+2)/120=9/120, so the result is 40 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This formula is a consequence of adding travel times; it is not a rule to apply when the leg distances differ. Check the result lies between 30 and 60 and is pulled toward the slower speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Equal distances are traveled at 20, 30, and 60 km/h. Find the average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32 km/h"
+          },
+          {
+            "id": "b",
+            "label": "33 1/3 km/h"
+          },
+          {
+            "id": "c",
+            "label": "30 km/h"
+          },
+          {
+            "id": "d",
+            "label": "36 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Equal distances are traveled at 20, 30, and 60 km/h. Find the average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32 km/h"
+            },
+            {
+              "id": "b",
+              "label": "33 1/3 km/h"
+            },
+            {
+              "id": "c",
+              "label": "30 km/h"
+            },
+            {
+              "id": "d",
+              "label": "36 km/h"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use 3 divided by (1/20+1/30+1/60).",
+            "The reciprocal sum is 6/60=1/10."
+          ],
+          "explanation": "The reciprocal sum is 1/10, so 3÷(1/10)=30 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For equal distances, calculate total time through reciprocal speeds. Here 1/20+1/30+1/60=(3+2+1)/60=1/10, so n divided by this sum is 3÷0.1=30 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average is not the arithmetic mean 36 because the slow leg takes longest.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three equal-length stages use speeds 24, 36, and 72 km/h. Find the average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32 km/h"
+          },
+          {
+            "id": "b",
+            "label": "40 km/h"
+          },
+          {
+            "id": "c",
+            "label": "44 km/h"
+          },
+          {
+            "id": "d",
+            "label": "36 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three equal-length stages use speeds 24, 36, and 72 km/h. Find the average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32 km/h"
+            },
+            {
+              "id": "b",
+              "label": "40 km/h"
+            },
+            {
+              "id": "c",
+              "label": "44 km/h"
+            },
+            {
+              "id": "d",
+              "label": "36 km/h"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Average = 3/(1/24+1/36+1/72).",
+            "Use denominator 72: reciprocal sum is (3+2+1)/72."
+          ],
+          "explanation": "The reciprocal sum is 1/12, so the average is 3÷(1/12)=36 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add the reciprocal speeds carefully: 1/24+1/36+1/72=(3+2+1)/72=1/12. Then 3 divided by 1/12 is 36 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When distances differ, the equal-distance harmonic-mean shortcut does not apply. Let the distances be d₁ and d₂. Compute times d₁/v₁ and d₂/v₂; then average speed=(d₁+d₂)/(d₁/v₁+d₂/v₂).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 90 km at 45 km/h and 60 km at 30 km/h, both legs take 2 hours, so total distance 150 km in 4 hours gives 37.5 km/h. Here the slower leg has shorter distance but equal travel time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "An arithmetic mean of the speeds would be valid only if the times were equal; in this example they happen to be equal, so the arithmetic mean also gives 37.5. Derive the equality from the distances and speeds rather than assume it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Travel 100 km at 50 km/h, then 60 km at 30 km/h. Find average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35 km/h"
+          },
+          {
+            "id": "b",
+            "label": "42 km/h"
+          },
+          {
+            "id": "c",
+            "label": "45 km/h"
+          },
+          {
+            "id": "d",
+            "label": "40 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Travel 100 km at 50 km/h, then 60 km at 30 km/h. Find average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "35 km/h"
+            },
+            {
+              "id": "b",
+              "label": "42 km/h"
+            },
+            {
+              "id": "c",
+              "label": "45 km/h"
+            },
+            {
+              "id": "d",
+              "label": "40 km/h"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find each leg's time: distance÷speed.",
+            "Both times are 2 hours; total distance is 160 km."
+          ],
+          "explanation": "160 km÷4 h=40 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not call the legs equal-distance: they are 100 km and 60 km. Instead, find each time. Both take two hours, so the arithmetic mean happens to agree, but it is justified by equal time, not by equal distance.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total distance/time gives 160/4=40 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vehicle goes 150 km at 50 km/h and 90 km at 30 km/h. Find the overall speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 km/h"
+          },
+          {
+            "id": "b",
+            "label": "36 km/h"
+          },
+          {
+            "id": "c",
+            "label": "38 km/h"
+          },
+          {
+            "id": "d",
+            "label": "42 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vehicle goes 150 km at 50 km/h and 90 km at 30 km/h. Find the overall speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 km/h"
+            },
+            {
+              "id": "b",
+              "label": "36 km/h"
+            },
+            {
+              "id": "c",
+              "label": "38 km/h"
+            },
+            {
+              "id": "d",
+              "label": "42 km/h"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Each leg takes 3 hours.",
+            "Total distance 240 km over 6 hours."
+          ],
+          "explanation": "240÷6=40 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Calculate times separately: 150/50=3 h and 90/30=3 h. The equal times make the overall speed the arithmetic mean, 40 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal travel times create an arithmetic mean of the speeds. If a person drives for 2 hours at 40 km/h and 2 hours at 60 km/h, the distances are 80 and 120 km. Total 200 km over 4 hours gives 50 km/h, the arithmetic mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This differs from equal distances, where the slower leg takes longer and the result is a harmonic mean. Keep the conditions tied to the derivation: equal times → arithmetic mean; equal distances → harmonic mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful verbal check is to ask whether each speed was maintained for the same duration or over the same distance. Do not choose based on the words “there and back” alone; the route distances might differ.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A runner spends equal times at 8 km/h and 12 km/h. What is the average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 km/h"
+          },
+          {
+            "id": "b",
+            "label": "9 km/h"
+          },
+          {
+            "id": "c",
+            "label": "10.5 km/h"
+          },
+          {
+            "id": "d",
+            "label": "12 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A runner spends equal times at 8 km/h and 12 km/h. What is the average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 km/h"
+            },
+            {
+              "id": "b",
+              "label": "9 km/h"
+            },
+            {
+              "id": "c",
+              "label": "10.5 km/h"
+            },
+            {
+              "id": "d",
+              "label": "12 km/h"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Each speed applies for the same time.",
+            "Equal time means average the speeds arithmetically."
+          ],
+          "explanation": "(8+12)÷2=10 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The equal-time condition gives both speeds the same time weight. You can imagine one hour at each speed: total distance 8+12=20 km in 2 hours, giving 10 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not use the harmonic-mean formula; that formula assumes equal distances.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train runs 90 minutes at 60 km/h and 90 minutes at 80 km/h. Find its average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "65 km/h"
+          },
+          {
+            "id": "b",
+            "label": "70 km/h"
+          },
+          {
+            "id": "c",
+            "label": "68 km/h"
+          },
+          {
+            "id": "d",
+            "label": "72 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train runs 90 minutes at 60 km/h and 90 minutes at 80 km/h. Find its average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "65 km/h"
+            },
+            {
+              "id": "b",
+              "label": "70 km/h"
+            },
+            {
+              "id": "c",
+              "label": "68 km/h"
+            },
+            {
+              "id": "d",
+              "label": "72 km/h"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The times are equal.",
+            "Use the arithmetic mean of 60 and 80."
+          ],
+          "explanation": "(60+80)÷2=70 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "With equal travel durations, distance is proportional to speed, so the combined rate is the arithmetic mean. Check total distance over total time if unsure.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Units must match across the calculation. If one leg time is stated in minutes and another in hours, convert them before adding. Likewise, if distance is in metres and speed in km/h, convert one system consistently.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: travel 30 km at 60 km/h takes 0.5 h; travel 20 km at 40 km/h takes another 0.5 h. Total distance is 50 km and total time is 1 h, so average speed is 50 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common error is adding 30 minutes and 0.5 hours as if they were different durations; they are equal, but only after conversion. Label every time subtotal with its unit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vehicle covers 45 km in 45 minutes. What is its average speed in km/h?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 km/h"
+          },
+          {
+            "id": "b",
+            "label": "60 km/h"
+          },
+          {
+            "id": "c",
+            "label": "50 km/h"
+          },
+          {
+            "id": "d",
+            "label": "75 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vehicle covers 45 km in 45 minutes. What is its average speed in km/h?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 km/h"
+            },
+            {
+              "id": "b",
+              "label": "60 km/h"
+            },
+            {
+              "id": "c",
+              "label": "50 km/h"
+            },
+            {
+              "id": "d",
+              "label": "75 km/h"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Convert 45 minutes to hours.",
+            "45 minutes is 0.75 hour; divide distance by time."
+          ],
+          "explanation": "45÷0.75=60 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not divide 45 km by 45 as though the time were 45 hours. Convert 45 minutes to 45/60=0.75 hour first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Then 45 km÷0.75 h=60 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A cyclist travels 24 km in 40 minutes. What is the average speed in km/h?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 km/h"
+          },
+          {
+            "id": "b",
+            "label": "32 km/h"
+          },
+          {
+            "id": "c",
+            "label": "36 km/h"
+          },
+          {
+            "id": "d",
+            "label": "40 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A cyclist travels 24 km in 40 minutes. What is the average speed in km/h?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 km/h"
+            },
+            {
+              "id": "b",
+              "label": "32 km/h"
+            },
+            {
+              "id": "c",
+              "label": "36 km/h"
+            },
+            {
+              "id": "d",
+              "label": "40 km/h"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "40 minutes=2/3 hour.",
+            "Divide 24 by 2/3."
+          ],
+          "explanation": "24×3/2=36 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Convert minutes to hours before dividing. Multiplying 24 by 3/2 is the same as dividing by 2/3 hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a round trip over the same route, the distances in each direction are equal even if the speeds differ. If the outward speed is 80 km/h and return speed is 50 km/h, average speed is 2×80×50/(80+50)=8,000/130≈61.54 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is lower than the arithmetic average 65 km/h because the return trip at 50 takes longer. To see it directly, choose a 130 km route each way: outward time 1.625 h; return time 2.6 h; total 260 km in 4.225 h, approximately 61.54 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The route length cancels, so any equal one-way distance gives the same harmonic mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_4"
+        }
+      ]
+    },
+    "teach_7_part_4": {
+      "id": "teach_7_part_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check a speed answer in three ways. First, its unit must be distance per time. Second, it must lie between the slowest and fastest leg speeds. Third, ask whether it is nearer the speed that consumed more time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_5"
+        }
+      ]
+    },
+    "teach_7_part_5": {
+      "id": "teach_7_part_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "For equal-distance legs at 30 and 90 km/h, the harmonic mean is 45 km/h—between the speeds and closer to 30. If a calculation gives 100 km/h, it cannot be right.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_6"
+        }
+      ]
+    },
+    "teach_7_part_6": {
+      "id": "teach_7_part_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not confuse average speed with average velocity; this chapter's questions use total distance traveled, including the return leg. Keep direction out of the distance total unless the question asks for displacement.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A driver covers equal distances at 72 km/h outward and 48 km/h on return. Find the average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "56 km/h"
+          },
+          {
+            "id": "b",
+            "label": "60 km/h"
+          },
+          {
+            "id": "c",
+            "label": "57.6 km/h"
+          },
+          {
+            "id": "d",
+            "label": "64 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A driver covers equal distances at 72 km/h outward and 48 km/h on return. Find the average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "56 km/h"
+            },
+            {
+              "id": "b",
+              "label": "60 km/h"
+            },
+            {
+              "id": "c",
+              "label": "57.6 km/h"
+            },
+            {
+              "id": "d",
+              "label": "64 km/h"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Equal distance uses 2xy/(x+y).",
+            "2×72×48÷120."
+          ],
+          "explanation": "6,912÷120=57.6 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The arithmetic midpoint is 60, but equal distances take longer at 48 km/h, so the journey average must be below 60. The harmonic formula gives 57.6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "As a check, assign a convenient distance such as 144 km each way and add the two travel times.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A route is covered at 90 km/h one way and 60 km/h back over the same distance. Find average speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70 km/h"
+          },
+          {
+            "id": "b",
+            "label": "75 km/h"
+          },
+          {
+            "id": "c",
+            "label": "80 km/h"
+          },
+          {
+            "id": "d",
+            "label": "72 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A route is covered at 90 km/h one way and 60 km/h back over the same distance. Find average speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "70 km/h"
+            },
+            {
+              "id": "b",
+              "label": "75 km/h"
+            },
+            {
+              "id": "c",
+              "label": "80 km/h"
+            },
+            {
+              "id": "d",
+              "label": "72 km/h"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use the equal-distance formula.",
+            "2×90×60÷150."
+          ],
+          "explanation": "10,800÷150=72 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For equal distances, the result is the harmonic mean, not 75. The slower return leg occupies more time, producing 72 km/h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For any multi-leg trip, make a small table before calculating: distance, speed, and time for each leg. Fill time as distance÷speed; sum the distance column and time column; then divide.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a round trip with different leg lengths or stops, the simple harmonic formula may fail. A stop adds time with zero distance, reducing average speed. A return route of a different length also changes the distance weights. Use total distance/total elapsed time rather than forcing a special case.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "State whether stops are included and convert all units. This method is general; arithmetic and harmonic shortcuts are special cases derived from it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A traveler covers 60 km at 30 km/h, rests for 1 hour, then covers 60 km at 60 km/h. Find average speed including the rest.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32 km/h"
+          },
+          {
+            "id": "b",
+            "label": "36 km/h"
+          },
+          {
+            "id": "c",
+            "label": "40 km/h"
+          },
+          {
+            "id": "d",
+            "label": "30 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A traveler covers 60 km at 30 km/h, rests for 1 hour, then covers 60 km at 60 km/h. Find average speed including the rest.",
+          "options": [
+            {
+              "id": "a",
+              "label": "32 km/h"
+            },
+            {
+              "id": "b",
+              "label": "36 km/h"
+            },
+            {
+              "id": "c",
+              "label": "40 km/h"
+            },
+            {
+              "id": "d",
+              "label": "30 km/h"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Driving times are 2 h and 1 h; include the 1 h rest.",
+            "Total 120 km over 4 hours."
+          ],
+          "explanation": "120÷4=30 km/h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The rest contributes time but no distance. Driving takes 60/30=2 hours and 60/60=1 hour; with the one-hour stop, elapsed time is four hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Divide 120 km by four hours. Omitting the stop would give 40 km/h and answer a different question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A car travels 100 km at 50 km/h, stops 30 minutes, then travels 60 km at 60 km/h. Find average speed including the stop.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "320/7 km/h (about 45.71)"
+          },
+          {
+            "id": "b",
+            "label": "40 km/h"
+          },
+          {
+            "id": "c",
+            "label": "42 km/h"
+          },
+          {
+            "id": "d",
+            "label": "45 km/h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A car travels 100 km at 50 km/h, stops 30 minutes, then travels 60 km at 60 km/h. Find average speed including the stop.",
+          "options": [
+            {
+              "id": "a",
+              "label": "320/7 km/h (about 45.71)"
+            },
+            {
+              "id": "b",
+              "label": "40 km/h"
+            },
+            {
+              "id": "c",
+              "label": "42 km/h"
+            },
+            {
+              "id": "d",
+              "label": "45 km/h"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Times are 2 h, 0.5 h, and 1 h.",
+            "Total distance is 160 km; total elapsed time is 3.5 h."
+          ],
+          "explanation": "Total distance is 160 km and elapsed time is 3.5 h, so average speed is 160/3.5=320/7 km/h, about 45.71."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Include all elapsed time and divide total distance by it. The exact result is 160÷3.5=320/7=45 5/7 km/h; Keep the exact result 320/7 km/h, or round only if requested.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You derived average speed from total distance/time, distinguished equal-distance from equal-time legs, handled unequal distances and unit conversions, and checked that a journey's average lies between its leg speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

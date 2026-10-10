@@ -265,7 +265,33 @@ export class AdminSyllabusService {
     defaultImportance?: string;
     defaultTeachingDepth?: number;
     defaultTeachingMinutes?: number;
+    subtopics?: Array<{
+      name: string;
+      description?: string;
+      priority?: string;
+      externalSubTopicKey?: string;
+      externalSubtopicKey?: string;
+      position?: number;
+      teachingDepth?: number;
+      teachingMinutes?: number;
+    }>;
   }) {
+    const importedSubtopics = data.subtopics ?? [];
+    const keys = new Set<string>();
+    for (const [index, subtopic] of importedSubtopics.entries()) {
+      const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
+      if (!subtopic.name?.trim()) {
+        throw new Error(`Subtopic ${index + 1} must have a name.`);
+      }
+      if (key && keys.has(key)) {
+        throw new Error(`Duplicate externalSubTopicKey '${key}' in subtopics.`);
+      }
+      if (key) keys.add(key);
+      if (subtopic.position !== undefined && (!Number.isInteger(subtopic.position) || subtopic.position < 0)) {
+        throw new Error(`Subtopic '${subtopic.name}' has an invalid position.`);
+      }
+    }
+
     const slug = data.slug || `${data.subjectId}-${data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
     const id = data.id || slug;
 
@@ -280,7 +306,27 @@ export class AdminSyllabusService {
         defaultTeachingDepth: data.defaultTeachingDepth ?? 3,
         defaultTeachingMinutes: data.defaultTeachingMinutes ?? 30,
         isActive: true,
+        subtopics: importedSubtopics.length ? {
+          create: importedSubtopics.map((subtopic, index) => {
+            const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
+            const subtopicSlug = key || `${id}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+            return {
+              id: subtopicSlug,
+              slug: subtopicSlug,
+              name: subtopic.name.trim(),
+              description: subtopic.description || '',
+              sequence: subtopic.position ?? index,
+              importance: ['high', 'medium', 'low'].includes((subtopic.priority || '').toLowerCase())
+                ? subtopic.priority!.toLowerCase()
+                : 'medium',
+              teachingDepth: subtopic.teachingDepth ?? 3,
+              teachingMinutes: subtopic.teachingMinutes ?? 30,
+              isActive: true,
+            };
+          }),
+        } : undefined,
       },
+      include: { subtopics: { orderBy: { sequence: 'asc' } } },
     });
 
     await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);

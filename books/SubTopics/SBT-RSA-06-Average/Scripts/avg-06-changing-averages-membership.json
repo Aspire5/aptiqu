@@ -1,0 +1,1942 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-06-changing-averages-membership",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Changing Averages: Additions, Departures, and Replacements",
+    "description": "Track how a group total changes when members join, leave, or are replaced, and infer the missing contribution.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Model a group's total before and after a membership change using mean × count. Derive the total increase/decrease from the difference in averages, then isolate the contribution of a person or incoming/outgoing group. Cover a single person joining or leaving, a teacher or student added, and one or more replacements; keep the count correct at every stage. Use consistent units (for example, convert 100 g to 0.1 kg or months to years) and check by reconstructing both group totals. Learners should distinguish change in average from change in total and avoid multiplying by the wrong group size."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a group changes, its average changes because its total and sometimes its count change. We will track both quantities explicitly for additions, departures, and replacements, then reconstruct the totals to verify each result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Begin with the original total: T₁=n₁m₁. After a change, compute T₂=n₂m₂. The difference T₂−T₁ is the net contribution added to the group or removed from it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 20 students average 68 marks, their total is 1,360. After a student leaves, 19 average 67. The remaining total is 1,273, so the departing student's mark was 1,360−1,273=87.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by restoring the original total: 1,273+87=1,360. Notice the count changes from 20 to 19; using 20 for both totals would produce an error.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 15 has mean 24. One member leaves and the remaining 14 have mean 23. Find the departed member's value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30"
+          },
+          {
+            "id": "b",
+            "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "38"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 15 has mean 24. One member leaves and the remaining 14 have mean 23. Find the departed member's value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "30"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "38"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find both group totals using their own counts.",
+            "The departed value is 15×24−14×23."
+          ],
+          "explanation": "360−322=38."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key is to use a different count for each average. The original total is 15×24=360; the remaining total is 14×23=322. The difference is the value that left.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the remaining average is lower, the departed value should be above 24, which is consistent with 38.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twelve items average 18. Remove one item; the remaining 11 average 17. Find the removed item's value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "31"
+          },
+          {
+            "id": "d",
+            "label": "29"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twelve items average 18. Remove one item; the remaining 11 average 17. Find the removed item's value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "31"
+            },
+            {
+              "id": "d",
+              "label": "29"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Original total is 216; remaining total is 187.",
+            "Subtract the remaining total from the original."
+          ],
+          "explanation": "The original total 216 minus the remaining total 187 gives 29."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When one item leaves, subtract the new group's total from the old group's total. Check that the removed item is above the old mean if its removal lowered the average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a new member joins, the new total includes the newcomer and the count rises by one. If 12 employees average $500, their total is $6,000. A thirteenth employee joins and the mean becomes $520, so the new total is $6,760. The newcomer contributes $760.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The newcomer's value is above the old mean, which explains why the group mean rises from $500 to $520. This direction check can catch a subtraction reversal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a group of k new members, find the combined added total first, then divide by k only if the question asks for their average. Do not interpret the change in the overall mean as the new member's value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Eight people average 40. After one person joins, the mean is 42. Find the new person's value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "42"
+          },
+          {
+            "id": "b",
+            "label": "48"
+          },
+          {
+            "id": "c",
+            "label": "60"
+          },
+          {
+            "id": "d",
+            "label": "58"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Eight people average 40. After one person joins, the mean is 42. Find the new person's value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "42"
+            },
+            {
+              "id": "b",
+              "label": "48"
+            },
+            {
+              "id": "c",
+              "label": "60"
+            },
+            {
+              "id": "d",
+              "label": "58"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compare total 8×40 with new total 9×42.",
+            "The difference belongs to the person who joined."
+          ],
+          "explanation": "New total 378 minus old total 320 gives 58."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The overall mean increased by only 2, but that does not mean the new person's value is 2 above the old mean. The newcomer changes the count as well.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Calculate old total 320 and new total 378; the difference 58 is the entrant's value. It must exceed 40 to raise the group's mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ten members average 35. After one joins, the mean is 37. Find the entrant's value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "57"
+          },
+          {
+            "id": "b",
+            "label": "37"
+          },
+          {
+            "id": "c",
+            "label": "47"
+          },
+          {
+            "id": "d",
+            "label": "59"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ten members average 35. After one joins, the mean is 37. Find the entrant's value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "57"
+            },
+            {
+              "id": "b",
+              "label": "37"
+            },
+            {
+              "id": "c",
+              "label": "47"
+            },
+            {
+              "id": "d",
+              "label": "59"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "New total is 11×37.",
+            "Subtract the old total 10×35."
+          ],
+          "explanation": "The new total 407 less the old total 350 gives 57."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the new count, 11, for the new total. Subtract the original total to isolate the entrant. A value well above 35 is needed to lift the average to 37.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Replacement keeps the group count fixed. If one person leaves and another takes their place, the change in total is newcomer minus departing member.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose a 10-person team's mean rises from 72 to 74 after one replacement. Its total increases by 10×(74−72)=20 points. Therefore the incoming player's score is 20 more than the outgoing player's score. The two individual scores are not determined separately unless another fact is supplied.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "This difference method is faster than finding both totals, but it is the same logic: n(m₂−m₁)=net total change. Check the sign—if the mean falls, the new member's value is lower by the corresponding amount.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 12-person group mean rises from 50 to 53 after one replacement. How much greater is the incoming value than the outgoing value?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "53"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 12-person group mean rises from 50 to 53 after one replacement. How much greater is the incoming value than the outgoing value?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "53"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The count stays 12.",
+            "Net total change is 12×(53−50)."
+          ],
+          "explanation": "The total increases by 36, so incoming−outgoing=36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not report the three-point change in the mean as the difference between the two members. The group has 12 members, so a three-point rise means its total rose by 12×3=36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "That is the incoming value minus the outgoing value; neither individual score is known by itself.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a group of 8, a replacement raises the mean from 61 to 64. Find the incoming-minus-outgoing value difference.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "64"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a group of 8, a replacement raises the mean from 61 to 64. Find the incoming-minus-outgoing value difference.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "64"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The number of members is unchanged.",
+            "Multiply the 3-point mean rise by 8."
+          ],
+          "explanation": "The total increases by 8×3=24; the incoming member exceeds the outgoing member by 24."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a replacement, count stays fixed. Multiply the change in mean by that fixed count to find the net change in total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For several entrants, the change in total belongs to the whole incoming group. If 30 workers average 40 units, their total is 1,200. Five workers join and the new mean is 42 across 35 workers; the new total is 1,470. Thus the entrants contribute 270 in total and average 270÷5=54.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The entrant group's mean is above 42, because it raises the old mean of 40 to 42. It is not simply 42: that is the final average across all 35 workers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use a table with before count/mean/total, after count/mean/total, and change. It makes the group whose value is requested explicit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twenty workers average 45. Four join, raising the overall mean to 48. What is the newcomers' average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48"
+          },
+          {
+            "id": "b",
+            "label": "63"
+          },
+          {
+            "id": "c",
+            "label": "55"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twenty workers average 45. Four join, raising the overall mean to 48. What is the newcomers' average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48"
+            },
+            {
+              "id": "b",
+              "label": "63"
+            },
+            {
+              "id": "c",
+              "label": "55"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Old total is 900; new total is 24×48=1,152.",
+            "Find the added total, then divide by four."
+          ],
+          "explanation": "Newcomers total 252; their mean is 252÷4=63."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The final mean 48 belongs to all 24 workers, not only the four entrants. First find the total for all 24, then subtract the original group's total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The difference is the entrants' combined contribution; divide that by four to obtain their average. The answer should exceed 48 because the overall average increased.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Fifteen people average 32. Three join and the new mean becomes 35. Find the entrants' average.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45"
+          },
+          {
+            "id": "b",
+            "label": "55"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Fifteen people average 32. Three join and the new mean becomes 35. Find the entrants' average.",
+          "options": [
+            {
+              "id": "a",
+              "label": "45"
+            },
+            {
+              "id": "b",
+              "label": "55"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "New total is 18×35; old total is 15×32.",
+            "Divide the difference by three."
+          ],
+          "explanation": "The entrants contribute 630−480=150; their mean is 150÷3=50."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The change in overall total is 150 for three entrants, so their mean is 50. Keep the final group count separate from the number of newcomers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A departure is the reverse of an addition. If a subgroup leaves, subtract its total from the original total and subtract its count from the original count. The remaining mean is the remainder total divided by remainder count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 25 boxes average 18 kg, total 450 kg. Five boxes averaging 22 kg are removed, taking 110 kg. The remaining 20 boxes total 340 kg and average 17 kg. The mean falls because the removed group was heavier than the original mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The direction check is useful: removing an above-average subgroup lowers the mean; removing a below-average subgroup raises it. If the computed direction disagrees, inspect the subtraction.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Thirty items average 16. Ten items averaging 19 are removed. What is the remaining mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14.9"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "14.5"
+          },
+          {
+            "id": "d",
+            "label": "15.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Thirty items average 16. Ten items averaging 19 are removed. What is the remaining mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14.9"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "14.5"
+            },
+            {
+              "id": "d",
+              "label": "15.5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Original total is 480; removed total is 190.",
+            "Divide the remaining 290 by 20."
+          ],
+          "explanation": "The remaining mean is (480−190)÷20=14.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract the removed group's total and count, not its mean alone. The original total is 30×16=480; the removed total is 10×19=190. The remainder totals 290 across 20 items.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because the removed subgroup averaged above 16, a lower remaining average is sensible.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twenty-four parts average 30. Six parts averaging 34 are removed. What is the mean of the rest?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "29"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "31"
+          },
+          {
+            "id": "d",
+            "label": "28 2/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twenty-four parts average 30. Six parts averaging 34 are removed. What is the mean of the rest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "29"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "31"
+            },
+            {
+              "id": "d",
+              "label": "28 2/3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find totals 24×30 and 6×34.",
+            "The remaining count is 18."
+          ],
+          "explanation": "The remaining total is 720−204=516 across 18, giving 28 2/3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The remaining mean can be fractional. Compute the remaining total and divide by the remaining count; do not round unless requested.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Many average-change problems use small unit changes. Convert units before multiplying. A reduction of 100 grams is 0.1 kilograms, not 100 kilograms. If the mean weight of 50 students falls from 45 kg to 44.9 kg after one student leaves, compute original total 2,250 kg and remaining total 49×44.9=2,200.1 kg. The departing weight is 49.9 kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check units throughout: kg×students yields kg total; subtract totals to get kg for one student. Convert months to years or cents to dollars before combining if the arithmetic uses common units.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Unit checks often reveal an answer that is off by a factor of 1,000 or 12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A class mean falls by 0.2 kg when one of 40 students leaves. The original mean was 52 kg. What was the leaver's weight?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "44.2 kg"
+          },
+          {
+            "id": "b",
+            "label": "44.4 kg"
+          },
+          {
+            "id": "c",
+            "label": "60.2 kg"
+          },
+          {
+            "id": "d",
+            "label": "59.8 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A class mean falls by 0.2 kg when one of 40 students leaves. The original mean was 52 kg. What was the leaver's weight?",
+          "options": [
+            {
+              "id": "a",
+              "label": "44.2 kg"
+            },
+            {
+              "id": "b",
+              "label": "44.4 kg"
+            },
+            {
+              "id": "c",
+              "label": "60.2 kg"
+            },
+            {
+              "id": "d",
+              "label": "59.8 kg"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Original total is 40×52; remaining mean is 51.8 across 39.",
+            "Subtract the remaining total from the original."
+          ],
+          "explanation": "Original total 2,080; remaining total 39×51.8=2,020.2; difference 59.8 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mean decreases by 0.2 to 51.8 for the remaining 39 students. Find the two totals using their own counts. The departing student's weight is their difference, not simply 52−0.2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Since the mean fell, the leaver must have weighed more than the original mean of 52 kg; 59.8 kg passes that direction check.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group of 30 has mean 64. One person leaves and the remaining mean is 63.5. Find the departed value.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "78.5"
+          },
+          {
+            "id": "b",
+            "label": "63.5"
+          },
+          {
+            "id": "c",
+            "label": "64"
+          },
+          {
+            "id": "d",
+            "label": "78"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group of 30 has mean 64. One person leaves and the remaining mean is 63.5. Find the departed value.",
+          "options": [
+            {
+              "id": "a",
+              "label": "78.5"
+            },
+            {
+              "id": "b",
+              "label": "63.5"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "78"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Original total is 1,920; remaining total is 29×63.5.",
+            "Subtract the new total from the old total."
+          ],
+          "explanation": "29×63.5=1,841.5; difference=78.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the half-unit in the remaining total: 29×63.5=1,841.5. Subtract from the original 1,920 to find the removed observation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes only the average difference is given for a replacement. A group of n members has mean m. If one person is replaced and the mean changes by δ, then total change is nδ, equal to incoming value minus outgoing value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the count changes as well, this shortcut no longer directly gives one person's value. For an entrant, use (n+1)m₂−nm₁. For a departure, use nm₁−(n−1)m₂. These formulas are just the before-and-after totals written compactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write the counts first; then decide whether membership is fixed. This prevents applying the replacement formula to an addition or a departure.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 9-player team mean falls by 2 runs after one player is replaced. By how much does the incoming player's score differ from the outgoing player's?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18 runs lower"
+          },
+          {
+            "id": "b",
+            "label": "2 runs lower"
+          },
+          {
+            "id": "c",
+            "label": "18 runs higher"
+          },
+          {
+            "id": "d",
+            "label": "Cannot determine the difference"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 9-player team mean falls by 2 runs after one player is replaced. By how much does the incoming player's score differ from the outgoing player's?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18 runs lower"
+            },
+            {
+              "id": "b",
+              "label": "2 runs lower"
+            },
+            {
+              "id": "c",
+              "label": "18 runs higher"
+            },
+            {
+              "id": "d",
+              "label": "Cannot determine the difference"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The count stays fixed at 9.",
+            "Net total change is 9×(−2)."
+          ],
+          "explanation": "The net change is −18, so the incoming score is 18 lower than the outgoing score."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average fell by 2 across nine fixed positions, so the total fell by 9×2=18. For a replacement, that net total change equals incoming minus outgoing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The incoming score is therefore 18 lower; the individual scores are not separately determined.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 15-person group's average increases by 1.2 after a replacement. What is incoming minus outgoing?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.2"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "16.2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 15-person group's average increases by 1.2 after a replacement. What is incoming minus outgoing?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.2"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "16.2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Count stays at 15.",
+            "Multiply the mean change by 15."
+          ],
+          "explanation": "15×1.2=18, so incoming−outgoing=18."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The replacement formula is fixed count times change in mean. Keep the sign: an increase means the incoming value exceeds the outgoing value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Build a before-and-after table when a question has several membership changes. For each row, record count, mean, and total. Add a group by increasing count and total; remove one by decreasing both; replace one by keeping count fixed and changing total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For example, 18 members average 50. Two members with mean 44 leave, and three new members join; the final group has 19. If its mean is 52, the original total is 900, removed total 88, final total 988, and newcomers together contribute 176, so their mean is 176÷3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check that 900−88+176=988 and that the counts give 18−2+3=19. This audit catches both arithmetic and membership errors.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twelve members average 30. Two members averaging 24 leave, and three join. The final 13 average 32. Find the entrants' mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "34 2/3"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "44"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twelve members average 30. Two members averaging 24 leave, and three join. The final 13 average 32. Find the entrants' mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "34 2/3"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "44"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Old total 360; removed total 48; final total 416.",
+            "Entrants' total is 416−(360−48), then divide by 3."
+          ],
+          "explanation": "After departures, the old members total 312. The final total is 416, leaving 104 across three entrants; their mean is 34 2/3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Separate the two changes. First remove the two departing members' total from the old total, leaving the unchanged members. Then compare that remainder with the final total to get the three entrants' total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not subtract the original total directly from the final total, because that ignores the departed members. The entrants average 34 2/3; check that this is above the old group mean, as required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ten members average 40. One member with value 35 leaves; two join. The final 11 average 42. Find the entrants' mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "46"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "48.5"
+          },
+          {
+            "id": "d",
+            "label": "52"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ten members average 40. One member with value 35 leaves; two join. The final 11 average 42. Find the entrants' mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "46"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "48.5"
+            },
+            {
+              "id": "d",
+              "label": "52"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Remaining old total is 400−35=365.",
+            "Final total is 11×42=462; entrants total 97 across two."
+          ],
+          "explanation": "97÷2=48.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Track the exiting member first, then compare the remaining old total with the final total. The entrants' mean is their combined contribution divided by two.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You used mean×count to track changing totals, distinguished changes in mean from changes in total, handled additions, departures, replacements, and unit conversions, and checked the before-and-after sums.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

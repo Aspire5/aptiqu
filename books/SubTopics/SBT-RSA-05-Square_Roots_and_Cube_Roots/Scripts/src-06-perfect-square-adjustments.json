@@ -1,0 +1,834 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "src-06-perfect-square-adjustments",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Perfect Squares, Divisibility, and Nearest Squares",
+    "description": "Find the least changes or factors needed to reach a perfect square.",
+    "teachingApproach": "Build the idea, derive the method, practice transfer, and use targeted remedial feedback.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 5 “Square Roots and Cube Roots,” printed pages 180–205. Approved scope: Teach perfect-square tests through prime factorization: a product is a perfect square exactly when every prime exponent is even. Use this to find the least multiplier or divisor that makes a number square, and combine divisibility requirements using an LCM before correcting prime exponents. For nearest-square problems, locate consecutive squares around the number and compare the required addition or subtraction; handle boundary words such as least, greatest, strictly between, and digit-length constraints carefully. Include greatest/least perfect squares in a range and perfect squares with a required digit count. Learners should show factor exponents or consecutive-square bounds and verify the final number."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A positive integer is a perfect square exactly when every prime exponent is even. Nearest-square questions then become comparisons between consecutive squares, with careful attention to endpoint wording.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Factor 72=2³×3². One additional factor of 2 makes all exponents even, so the least multiplier is 2 and 72×2=144=12². To find a least divisor instead, remove the unpaired factors and confirm the quotient remains an integer square.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Least positive multiplier to make 72 a square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Least positive multiplier to make 72 a square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Factor 72 and make each prime exponent even.",
+            "72=2³×3²."
+          ],
+          "explanation": "Multiplying by 2 gives 2⁴×3²=144=12²."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Factor 72 and make each prime exponent even. 72=2³×3². Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Least multiplier to make 150 a square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Least multiplier to make 150 a square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "150=2×3×5².",
+            "The exponents of 2 and 3 each need one more factor."
+          ],
+          "explanation": "Multiply by 2×3=6 to get 900=30²."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If several numbers must divide the target square, first take their LCM and then correct its prime exponents. For example, LCM(6,10)=30=2×3×5; multiplying by 30 again gives 900=30², divisible by both inputs.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Least positive divisor to make 180 a square when divided?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Least positive divisor to make 180 a square when divided?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "180=2²×3²×5.",
+            "Remove the unpaired factor."
+          ],
+          "explanation": "180÷5=36=6²."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. 180=2²×3²×5. Remove the unpaired factor. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Least divisor to make 300 a square when divided?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Least divisor to make 300 a square when divided?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "300=2²×3×5².",
+            "Remove the unpaired 3."
+          ],
+          "explanation": "300÷3=100=10²."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a least addition, find the next square above the number. Since 30²=900 and 31²=961, the least amount to add to 925 is 36. For subtraction, use the lower square. When a number is already square, zero is the least non-negative change unless a positive change is specifically required.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Least number to add to 925 to reach a square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "36"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Least number to add to 925 to reach a square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "36"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find consecutive squares around 925.",
+            "30²=900 and 31²=961."
+          ],
+          "explanation": "961−925=36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. Find consecutive squares around 925. 30²=900 and 31²=961. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Least number to add to 1,000 to reach a square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "23"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "25"
+          },
+          {
+            "id": "d",
+            "label": "26"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Least number to add to 1,000 to reach a square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "23"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "25"
+            },
+            {
+              "id": "d",
+              "label": "26"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "32²=1,024.",
+            "Subtract 1,000 from that next square."
+          ],
+          "explanation": "1,024−1,000=24."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "For squares strictly between 120 and 300, the root integers run from 11 through 17: 11²=121 and 17²=289, while 10² and 18² lie outside. Count the admissible integer roots and check whether the endpoints are included.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "How many squares lie strictly between 120 and 300?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "How many squares lie strictly between 120 and 300?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The square roots are integers 11 through 17.",
+            "Count both endpoints of that integer list."
+          ],
+          "explanation": "There are seven roots, 11 through 17, so seven squares."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let us repair the step behind this question. The square roots are integers 11 through 17. Count both endpoints of that integer list. Revisit the worked reasoning, then try the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "How many squares lie strictly between 50 and 100?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "How many squares lie strictly between 50 and 100?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Check 7², 8², 9², and 10².",
+            "Exclude both endpoints."
+          ],
+          "explanation": "Only 8²=64 and 9²=81 are strictly between 50 and 100."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the explanation to trace the missed step, then carry the corrected rule forward. If needed, reread the previous section before continuing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Lesson complete. Summarize the main rule, one error to avoid, and one check that verifies your result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

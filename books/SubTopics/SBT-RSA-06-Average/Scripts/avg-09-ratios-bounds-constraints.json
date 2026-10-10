@@ -1,0 +1,1981 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "avg-09-ratios-bounds-constraints",
+  "version": 1,
+  "sourceType": "MANUAL",
+  "entryNodeId": "start",
+  "metadata": {
+    "title": "Ratios, Bounds, and Constraints on an Average",
+    "description": "Use average relationships to infer ratios, test possible values, and reason about bounds and percentage changes.",
+    "teachingApproach": "Teach the definition and derivation, model intermediate steps, check direction, units, bounds, and uniqueness, then practice transfer with misconception-specific remediation.",
+    "targetDurationMinutes": 50,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 6 “Average,” printed pages 206–239. Approved scope: Translate average information into equations alongside ratios or inequalities. Cover subgroup ratio weighting, consecutive-value constraints, positive integer conditions, averages of nonnegative or signed observations, and basic maximum/minimum reasoning supported by the chapter. Explain that a mean lies between the minimum and maximum observations, but endpoint inclusion and integrality can narrow possibilities. Include percentage change in an average or rate only when the base value and units are explicit. Learners should identify whether the data determine a unique answer, use bounds to reject impossible options, and avoid treating an average as an individual observation."
+  },
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "An average gives a total relationship, while ratios and bounds add constraints. This lesson combines those facts to test what is possible, what is uniquely determined, and how far an extreme value can go.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_1"
+        }
+      ]
+    },
+    "teach_1_part_1": {
+      "id": "teach_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When subgroup sizes are in a ratio, use proportional counts as weights. If Group A and B have 3k and 2k observations, their totals are 3ka and 2kb, so the combined mean is (3a+2b)/5. The unknown common factor k cancels.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_2"
+        }
+      ]
+    },
+    "teach_1_part_2": {
+      "id": "teach_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For means 40 and 55 in a 3:2 size ratio, combined mean=(3×40+2×55)/5=230/5=46. It lies closer to 40 because Group A is larger.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_part_3"
+        }
+      ]
+    },
+    "teach_1_part_3": {
+      "id": "teach_1_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not reverse the ratio or average the two means equally. Check that the weighted result lies between them and leans toward the larger group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Group sizes are in ratio 2:3; their means are 30 and 50. Find the combined mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "42"
+          },
+          {
+            "id": "b",
+            "label": "38"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "44"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Group sizes are in ratio 2:3; their means are 30 and 50. Find the combined mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "42"
+            },
+            {
+              "id": "b",
+              "label": "38"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "44"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use two and three as the relative weights.",
+            "(2×30+3×50)÷5."
+          ],
+          "explanation": "(60+150)/5=42."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1_part_1": {
+      "id": "remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first mean belongs to the group with weight 2 and the second to weight 3. Multiply before adding; the larger group should pull the combined mean closer to 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_1_part_2"
+        }
+      ]
+    },
+    "remedy_1_part_2": {
+      "id": "remedy_1_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "(60+150)/5=42, which is between 30 and 50 and nearer 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Group sizes have ratio 4:1 with means 25 and 45. Find the overall mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "27"
+          },
+          {
+            "id": "b",
+            "label": "29"
+          },
+          {
+            "id": "c",
+            "label": "31"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Group sizes have ratio 4:1 with means 25 and 45. Find the overall mean.",
+          "options": [
+            {
+              "id": "a",
+              "label": "27"
+            },
+            {
+              "id": "b",
+              "label": "29"
+            },
+            {
+              "id": "c",
+              "label": "31"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Apply weights 4 and 1.",
+            "(4×25+45)÷5."
+          ],
+          "explanation": "145÷5=29."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1_part_1": {
+      "id": "retry_remedy_1_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Relative group sizes act as weights. The larger low-mean group pulls the combined mean close to 25; the result is 29.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_1"
+        }
+      ]
+    },
+    "teach_2_part_1": {
+      "id": "teach_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A combined mean can reveal a group-size ratio. If the subgroup means are a<b and the combined mean is M, the weighted mean equation tells what share comes from the higher group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_2"
+        }
+      ]
+    },
+    "teach_2_part_2": {
+      "id": "teach_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose means are 20 and 35 and the combined mean is 29. Let counts be p and q. Then 20p+35q=29(p+q), so 6q=9p and p:q=2:3. The lower-mean group has two parts; the higher-mean group has three.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_part_3"
+        }
+      ]
+    },
+    "teach_2_part_3": {
+      "id": "teach_2_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The combined mean must be between the subgroup means. If it is closer to 35, the higher-mean group should be larger, as it is here.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Means 10 and 30 combine to 22. What is the ratio of the lower-mean group size to the higher-mean group size?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1:2"
+          },
+          {
+            "id": "b",
+            "label": "3:2"
+          },
+          {
+            "id": "c",
+            "label": "3:1"
+          },
+          {
+            "id": "d",
+            "label": "2:3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Means 10 and 30 combine to 22. What is the ratio of the lower-mean group size to the higher-mean group size?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1:2"
+            },
+            {
+              "id": "b",
+              "label": "3:2"
+            },
+            {
+              "id": "c",
+              "label": "3:1"
+            },
+            {
+              "id": "d",
+              "label": "2:3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let counts be p and q: 10p+30q=22(p+q).",
+            "Solve 8q=12p and reduce p:q."
+          ],
+          "explanation": "8q=12p, so p:q=2:3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2_part_1": {
+      "id": "remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use separate variables for the two group counts and keep each mean with its own variable. After expanding, compare the coefficients; then express lower-group count to higher-group count in the requested order.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_2_part_2"
+        }
+      ]
+    },
+    "remedy_2_part_2": {
+      "id": "remedy_2_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here 8q=12p, so p/q=2/3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Groups with means 40 and 70 combine to mean 58. Find the size ratio lower-mean group : higher-mean group.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2:3"
+          },
+          {
+            "id": "b",
+            "label": "3:2"
+          },
+          {
+            "id": "c",
+            "label": "4:5"
+          },
+          {
+            "id": "d",
+            "label": "5:4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Groups with means 40 and 70 combine to mean 58. Find the size ratio lower-mean group : higher-mean group.",
+          "options": [
+            {
+              "id": "a",
+              "label": "2:3"
+            },
+            {
+              "id": "b",
+              "label": "3:2"
+            },
+            {
+              "id": "c",
+              "label": "4:5"
+            },
+            {
+              "id": "d",
+              "label": "5:4"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let the counts be p and q.",
+            "40p+70q=58p+58q, so 12q=18p."
+          ],
+          "explanation": "The weighted equation gives lower-mean group : higher-mean group = 2:3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2_part_1": {
+      "id": "retry_remedy_2_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The higher mean must have the larger count because 58 lies closer to 70 than 40. Algebra gives p:q=2:3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_1"
+        }
+      ]
+    },
+    "teach_3_part_1": {
+      "id": "teach_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A mean lies between the least and greatest observations. If the mean is 12 for positive values, at least one value is at most 12 and at least one is at least 12; otherwise the mean would be strictly on one side.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_2"
+        }
+      ]
+    },
+    "teach_3_part_2": {
+      "id": "teach_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This does not imply that half the observations lie above 12 or that 12 is one of the observations. For example, 2, 12, 22 average 12, while 8, 10, 18 average 12 without containing the mean as a repeated balance point.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_part_3"
+        }
+      ]
+    },
+    "teach_3_part_3": {
+      "id": "teach_3_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use bounds to reject impossible individual values or proposed group means, but do not infer the full distribution from the mean alone.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five values have mean 20. Which must be true?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Every value equals 20"
+          },
+          {
+            "id": "b",
+            "label": "Exactly two values exceed 20"
+          },
+          {
+            "id": "c",
+            "label": "At least one value is ≤20 and one is ≥20"
+          },
+          {
+            "id": "d",
+            "label": "20 occurs in the list"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five values have mean 20. Which must be true?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Every value equals 20"
+            },
+            {
+              "id": "b",
+              "label": "Exactly two values exceed 20"
+            },
+            {
+              "id": "c",
+              "label": "At least one value is ≤20 and one is ≥20"
+            },
+            {
+              "id": "d",
+              "label": "20 occurs in the list"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "A mean is a balance point within the range.",
+            "Could all values be above 20? Could all be below?"
+          ],
+          "explanation": "At least one observation is no greater than the mean and at least one is no less; the mean need not appear in the list."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3_part_1": {
+      "id": "remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A mean constrains the extremes but not each individual. If all five values were greater than 20, their mean would also be greater than 20; similarly for all below. But nothing requires an observation to equal 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_3_part_2"
+        }
+      ]
+    },
+    "remedy_3_part_2": {
+      "id": "remedy_3_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Avoid stronger claims about how many lie on each side.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A set has mean 8. Which set is possible?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9, 10, 11, 12"
+          },
+          {
+            "id": "b",
+            "label": "1, 3, 5, 7"
+          },
+          {
+            "id": "c",
+            "label": "8, 8, 8, 9, 9"
+          },
+          {
+            "id": "d",
+            "label": "2, 6, 8, 16"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A set has mean 8. Which set is possible?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9, 10, 11, 12"
+            },
+            {
+              "id": "b",
+              "label": "1, 3, 5, 7"
+            },
+            {
+              "id": "c",
+              "label": "8, 8, 8, 9, 9"
+            },
+            {
+              "id": "d",
+              "label": "2, 6, 8, 16"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Check each set by dividing its total by its count.",
+            "A mean of 8 across four values requires a total of 32."
+          ],
+          "explanation": "The first set totals 32 across four values, so its mean is 8; the other sets have different means."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3_part_1": {
+      "id": "retry_remedy_3_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A valid set must total mean×count. Check every proposed list and ensure exactly one satisfies the condition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_1"
+        }
+      ]
+    },
+    "teach_4_part_1": {
+      "id": "teach_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bounds can constrain an extreme value when the other observations have lower or upper limits. If six positive integers average 15, their total is 90. To maximize one value while the other five are each at least 12, place those five at their minimum total of 60; the sixth can be 30.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_2"
+        }
+      ]
+    },
+    "teach_4_part_2": {
+      "id": "teach_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This maximum is attainable: 12,12,12,12,12,30 sum to 90 and average 15. If the remaining values had to be greater than 12 rather than at least 12, their minimum would change. Respect whether a bound is strict.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_part_3"
+        }
+      ]
+    },
+    "teach_4_part_3": {
+      "id": "teach_4_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "For continuous quantities, a strict lower bound may produce a supremum rather than an attainable greatest value. State assumptions and test that your proposed arrangement satisfies them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four positive integers have mean 20. Three are at least 10. What is the greatest possible fourth value?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "59"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four positive integers have mean 20. Three are at least 10. What is the greatest possible fourth value?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "59"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The total is 4×20=80.",
+            "Make the other three as small as allowed: 10 each."
+          ],
+          "explanation": "The total is 80. The other three can total as little as 30, leaving a maximum of 50 for the fourth."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4_part_1": {
+      "id": "remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "To maximize one value while the total is fixed, minimize the others. With three values each at least 10, they total at least 30; the remaining value cannot exceed 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_4_part_2"
+        }
+      ]
+    },
+    "remedy_4_part_2": {
+      "id": "remedy_4_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The data allow 10, 10, 10, 50, so 50 is attainable. Update the options to include 50 uniquely.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five nonnegative values average 12. What is the largest one could be if the other four are each at least 2?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40"
+          },
+          {
+            "id": "b",
+            "label": "44"
+          },
+          {
+            "id": "c",
+            "label": "52"
+          },
+          {
+            "id": "d",
+            "label": "48"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five nonnegative values average 12. What is the largest one could be if the other four are each at least 2?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40"
+            },
+            {
+              "id": "b",
+              "label": "44"
+            },
+            {
+              "id": "c",
+              "label": "52"
+            },
+            {
+              "id": "d",
+              "label": "48"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Total is 60; the other four total at least 8.",
+            "Subtract the minimum other total."
+          ],
+          "explanation": "Largest=60−8=52, "
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4_part_1": {
+      "id": "retry_remedy_4_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the fixed total and minimize the other four values at their lower bound: 4×2=8. The remaining value may be as large as 52.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_1"
+        }
+      ]
+    },
+    "teach_5_part_1": {
+      "id": "teach_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "With signed observations, positive and negative values can cancel. A mean of zero does not mean every observation is zero. Among 20 real numbers with mean zero, at most 19 can be positive: if all 20 were positive, their sum and mean would be positive; 19 positives can be balanced by one negative.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_2"
+        }
+      ]
+    },
+    "teach_5_part_2": {
+      "id": "teach_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For example, nineteen values of 1 and one value of −19 have total zero. This construction proves the bound is attainable. If observations must be positive, zero average is impossible; pay attention to whether values are signed or nonnegative.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_part_3"
+        }
+      ]
+    },
+    "teach_5_part_3": {
+      "id": "teach_5_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average provides a constraint on the total, while sign restrictions determine what arrangements are possible.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twenty real numbers have mean zero. At most how many can be positive?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "19"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twenty real numbers have mean zero. At most how many can be positive?",
+          "options": [
+            {
+              "id": "a",
+              "label": "19"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The total must be zero.",
+            "All 20 cannot be positive; construct 19 positives balanced by one negative."
+          ],
+          "explanation": "At most 19. Nineteen values of 1 and one value −19 attain a zero total."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5_part_1": {
+      "id": "remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "If every value were positive, their sum could not be zero. But one negative value can balance many positives, so the maximum is not 10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_5_part_2"
+        }
+      ]
+    },
+    "remedy_5_part_2": {
+      "id": "remedy_5_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 19 ones and −19 total zero, proving 19 is attainable.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ten real values have mean zero. What is the greatest possible number of positive values?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "9"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ten real values have mean zero. What is the greatest possible number of positive values?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "9"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "All ten positive values would force a positive sum.",
+            "Nine positive values can be balanced by one negative."
+          ],
+          "explanation": "At most nine can be positive; for example, nine ones and one −9 sum to zero."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5_part_1": {
+      "id": "retry_remedy_5_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the total-zero condition and a balancing negative value. With ten values, nine can be positive but not all ten.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_1"
+        }
+      ]
+    },
+    "teach_6_part_1": {
+      "id": "teach_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Percentage change compares a change with the original value. If average weekly sales rise from 15 to 21 cars, the increase is 6 cars per week. Divide by the original 15, not by the new 21: 6/15×100%=40%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_2"
+        }
+      ]
+    },
+    "teach_6_part_2": {
+      "id": "teach_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A percentage increase in a mean is distinct from a percentage increase in total sales unless the observation period and count are unchanged. State the base clearly and preserve units until the ratio is formed; the units cancel in a percentage.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_part_3"
+        }
+      ]
+    },
+    "teach_6_part_3": {
+      "id": "teach_6_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check direction and scale: an increase of 6 on a base of 15 is less than a 50% rise and equals 40%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mean rises from 24 to 30. What is the percentage increase?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "30%"
+          },
+          {
+            "id": "c",
+            "label": "125%"
+          },
+          {
+            "id": "d",
+            "label": "25%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mean rises from 24 to 30. What is the percentage increase?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "30%"
+            },
+            {
+              "id": "c",
+              "label": "125%"
+            },
+            {
+              "id": "d",
+              "label": "25%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Change is 6; compare it with the original 24.",
+            "6÷24×100%."
+          ],
+          "explanation": "6/24×100%=25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6_part_1": {
+      "id": "remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The denominator is the starting mean, 24. Dividing by the new value 30 would answer a different comparison.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_6_part_2"
+        }
+      ]
+    },
+    "remedy_6_part_2": {
+      "id": "remedy_6_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The increase is 6; 6 is one quarter of 24, so the percentage rise is 25%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A weekly average rises from 40 to 50. Find the percentage increase.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25%"
+          },
+          {
+            "id": "b",
+            "label": "10%"
+          },
+          {
+            "id": "c",
+            "label": "20%"
+          },
+          {
+            "id": "d",
+            "label": "125%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A weekly average rises from 40 to 50. Find the percentage increase.",
+          "options": [
+            {
+              "id": "a",
+              "label": "25%"
+            },
+            {
+              "id": "b",
+              "label": "10%"
+            },
+            {
+              "id": "c",
+              "label": "20%"
+            },
+            {
+              "id": "d",
+              "label": "125%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The increase is 10.",
+            "Compare 10 with the original 40."
+          ],
+          "explanation": "10/40×100%=25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6_part_1": {
+      "id": "retry_remedy_6_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the original value as the base. A 10-unit rise on 40 is one quarter, or 25%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_1"
+        }
+      ]
+    },
+    "teach_7_part_1": {
+      "id": "teach_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some average questions ask whether the information determines a unique value. Translate the mean to a total, then count the independent conditions. A single mean of four unknowns gives one sum equation; it generally cannot determine all four values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_2"
+        }
+      ]
+    },
+    "teach_7_part_2": {
+      "id": "teach_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Additional constraints may make the requested expression unique even when individual values are not. For example, if x+y+z=30, the average is fixed at 10, but x alone is not. If the question asks for the sum, it is determined; if it asks for x, it is not.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_part_3"
+        }
+      ]
+    },
+    "teach_7_part_3": {
+      "id": "teach_7_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "State what is uniquely known rather than selecting a plausible individual value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four observations average 15. Is the first observation uniquely determined?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Yes, it is 15"
+          },
+          {
+            "id": "b",
+            "label": "Yes, it is 60"
+          },
+          {
+            "id": "c",
+            "label": "No; only the total 60 is fixed"
+          },
+          {
+            "id": "d",
+            "label": "No; the mean is undefined"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four observations average 15. Is the first observation uniquely determined?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Yes, it is 15"
+            },
+            {
+              "id": "b",
+              "label": "Yes, it is 60"
+            },
+            {
+              "id": "c",
+              "label": "No; only the total 60 is fixed"
+            },
+            {
+              "id": "d",
+              "label": "No; the mean is undefined"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Convert the mean into a total.",
+            "Can different first values be balanced by the other three?"
+          ],
+          "explanation": "The sum is 60, but many sets with different first values have that total. The first value is not unique."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7_part_1": {
+      "id": "remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "One average fixes one total equation. It does not specify how the total is divided among the four observations. For example, (15,15,15,15) and (10,16,16,18) both total 60 but have different first values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_7_part_2"
+        }
+      ]
+    },
+    "remedy_7_part_2": {
+      "id": "remedy_7_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Only claim the total is determined.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three numbers have mean 12. What is uniquely determined?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Each number is 12"
+          },
+          {
+            "id": "b",
+            "label": "The first number is 12"
+          },
+          {
+            "id": "c",
+            "label": "Their largest is 12"
+          },
+          {
+            "id": "d",
+            "label": "Their sum is 36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three numbers have mean 12. What is uniquely determined?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Each number is 12"
+            },
+            {
+              "id": "b",
+              "label": "The first number is 12"
+            },
+            {
+              "id": "c",
+              "label": "Their largest is 12"
+            },
+            {
+              "id": "d",
+              "label": "Their sum is 36"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Mean×count gives a fixed total.",
+            "An average does not assign each individual value."
+          ],
+          "explanation": "The sum is 3×12=36; individual values and the largest are not fixed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7_part_1": {
+      "id": "retry_remedy_7_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Separate the group property from individual values. Mean×count determines the sum, but many different triples can have total 36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_1"
+        }
+      ]
+    },
+    "teach_8_part_1": {
+      "id": "teach_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A constraint problem may ask for a mean of possible integer values. First find the allowable interval, then list or characterize the integers, then average those possibilities. Do not average the endpoints unless the allowed values are symmetric and equally represented.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_2"
+        }
+      ]
+    },
+    "teach_8_part_2": {
+      "id": "teach_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose a whole-number score is greater than 60 and no greater than 66. The possible scores are 61,62,63,64,65,66; their average is (61+66)/2=63.5 because they form a consecutive list. If the upper condition were strict, 66 would be excluded and the mean would change.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_3"
+        }
+      ]
+    },
+    "teach_8_part_3": {
+      "id": "teach_8_part_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Translate “greater than,” “at least,” and “no greater than” precisely before calculating.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_4"
+        }
+      ]
+    },
+    "teach_8_part_4": {
+      "id": "teach_8_part_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A strong average solution ends with a unique-answer check, a bound check, and a unit check. If the data permit multiple arrangements, say so. If a value is bounded by a minimum or maximum, test whether your candidate attains the boundary.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_5"
+        }
+      ]
+    },
+    "teach_8_part_5": {
+      "id": "teach_8_part_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a combined mean, verify the weighted total equation. For a percentage, verify the base. For a maximum-value problem, construct an arrangement meeting the constraints. These checks turn a plausible calculation into a defensible answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_part_6"
+        }
+      ]
+    },
+    "teach_8_part_6": {
+      "id": "teach_8_part_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not infer more than the averages establish: they constrain totals, not the full list of observations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "An integer n satisfies 20<n≤26. What is the mean of all possible values of n?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22.5"
+          },
+          {
+            "id": "b",
+            "label": "23.5"
+          },
+          {
+            "id": "c",
+            "label": "23"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An integer n satisfies 20<n≤26. What is the mean of all possible values of n?",
+          "options": [
+            {
+              "id": "a",
+              "label": "22.5"
+            },
+            {
+              "id": "b",
+              "label": "23.5"
+            },
+            {
+              "id": "c",
+              "label": "23"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "List the integers 21 through 26.",
+            "Use the midpoint of this consecutive set."
+          ],
+          "explanation": "The mean is (21+26)/2=23.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8_part_1": {
+      "id": "remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The lower endpoint 20 is excluded, but 26 is included. Thus the possible integers are 21,22,23,24,25,26. Their evenly spaced mean is the endpoint midpoint 23.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "remedy_8_part_2"
+        }
+      ]
+    },
+    "remedy_8_part_2": {
+      "id": "remedy_8_part_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Recheck the inequality symbols before listing values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "An integer k satisfies 10≤k<16. Find the mean of its possible values.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "13"
+          },
+          {
+            "id": "c",
+            "label": "12.5"
+          },
+          {
+            "id": "d",
+            "label": "13.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An integer k satisfies 10≤k<16. Find the mean of its possible values.",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "13"
+            },
+            {
+              "id": "c",
+              "label": "12.5"
+            },
+            {
+              "id": "d",
+              "label": "13.5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "List 10, 11, 12, 13, 14, 15.",
+            "Average first and last."
+          ],
+          "explanation": "The possible integers are 10 through 15; their mean is (10+15)/2=12.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8_part_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8_part_1": {
+      "id": "retry_remedy_8_part_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The lower bound is included and the upper bound excluded, so the six values are 10 through 15. Their mean is 12.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You used mean equations with ratios, integer constraints, and bounds; tested whether information uniquely determines a value; and checked percentage changes against their base. A mean is a group property, not a guarantee about each member.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}
