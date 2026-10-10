@@ -351,14 +351,18 @@ export class AdminSyllabusService {
     position?: number;
     teachingDepth?: number;
     teachingMinutes?: number;
-  }>) {
+  }>, syncRoadmap = true) {
     if (!Array.isArray(subtopics) || subtopics.length === 0) {
       throw new Error('subtopics must be a non-empty array.');
     }
 
     const ids = new Set<string>();
+    const names = new Set<string>();
     for (const [index, subtopic] of subtopics.entries()) {
       if (!subtopic?.name?.trim()) throw new Error(`Subtopic ${index + 1} must have a name.`);
+      const name = subtopic.name.trim().toLowerCase();
+      if (names.has(name)) throw new Error(`Duplicate subtopic name '${subtopic.name}'.`);
+      names.add(name);
       const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
       const generated = key || `${topicId}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
       if (ids.has(generated)) throw new Error(`Duplicate subtopic key or name '${generated}'.`);
@@ -371,13 +375,18 @@ export class AdminSyllabusService {
     const created = await prisma.$transaction(async (tx) => {
       const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
       if (!topic) throw new Error(`Topic '${topicId}' was not found.`);
-      const existing = await tx.subtopic.findMany({ where: { topicId }, select: { id: true, slug: true } });
+      const existing = await tx.subtopic.findMany({ where: { topicId }, select: { id: true, slug: true, name: true } });
 
       for (const [index, subtopic] of subtopics.entries()) {
         const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
         const id = key || `${topicId}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
         const priority = (subtopic.priority || '').toLowerCase();
-        const matched = existing.find((item) => item.id === id || (key && item.slug === key));
+        let matched = existing.find((item) => item.id === id || (key && item.slug === key));
+        if (!matched) {
+          const byName = existing.filter((item) => item.name.trim().toLowerCase() === subtopic.name.trim().toLowerCase());
+          if (byName.length > 1) throw new Error(`Ambiguous existing subtopic name '${subtopic.name}'.`);
+          matched = byName[0];
+        }
         const values = {
           slug: key || id,
           name: subtopic.name.trim(),
@@ -398,7 +407,7 @@ export class AdminSyllabusService {
       return tx.subtopic.findMany({ where: { topicId }, orderBy: { sequence: 'asc' } });
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    if (syncRoadmap) await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return created;
   }
 
@@ -651,7 +660,7 @@ export class AdminSyllabusService {
     definition?: any;
     scriptDefinition?: any;
     status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED';
-  }) {
+  }, syncRoadmap = true) {
     const rawDef = data.definition || data.scriptDefinition;
     if (!rawDef) {
       throw new Error('Script definition is required.');
@@ -783,7 +792,7 @@ export class AdminSyllabusService {
     });
 
     await scriptCacheService.invalidateScriptCache(slug, result.version?.id);
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+    if (syncRoadmap) await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
     return result;
   }
 

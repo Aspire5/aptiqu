@@ -7,6 +7,7 @@ import { pvpSocketServer } from './modules/pvp/pvp.socket';
 import { dailyChallengeService } from './modules/daily-challenge/daily-challenge.service';
 import { contentGenQueue, contentGenWorker } from './queues/content-generation.queue';
 import { bookIngestionQueue, bookIngestionWorker } from './queues/book-ingestion.queue';
+import { syncRsAggarwalOnStartup } from './modules/admin/services/rs-aggarwal-startup-sync.service';
 
 async function bootstrap() {
   const app = createApp();
@@ -63,6 +64,9 @@ async function bootstrap() {
     console.log(`🚀 Aptiqu Backend Server running on http://localhost:${ENV.PORT}`);
     console.log(`📡 Health Check: http://localhost:${ENV.PORT}/health`);
     console.log(`⚔️ PvP WebSocket: ws://localhost:${ENV.PORT}/ws/pvp`);
+    void syncRsAggarwalOnStartup().catch((err) => {
+      console.error('❌ RS Aggarwal startup sync failed:', err);
+    });
   });
 
   // Graceful shutdown
