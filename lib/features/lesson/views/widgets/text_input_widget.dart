@@ -34,7 +34,6 @@ class _TextInputWidgetState extends State<TextInputWidget> {
     final text = _controller.text.trim();
     if (text.isEmpty || widget.isSubmitting) return;
     widget.onSubmit(text);
-    _controller.clear();
   }
 
   @override

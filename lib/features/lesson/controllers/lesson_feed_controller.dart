@@ -14,11 +14,13 @@ class FeedItem {
   final bool isUser;
   final String text;
   final LessonNodeModel? node;
+  final bool isThinking;
 
   FeedItem({
     required this.isUser,
     required this.text,
     this.node,
+    this.isThinking = false,
   });
 }
 
@@ -27,6 +29,7 @@ class LessonFeedController extends GetxController {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final ScrollController scrollController = ScrollController();
   final _uuid = const Uuid();
+  int _feedGeneration = 0;
 
   final Rx<FeedStatus> status = FeedStatus.initial.obs;
   final RxList<FeedItem> feedItems = <FeedItem>[].obs;
@@ -40,6 +43,8 @@ class LessonFeedController extends GetxController {
   String? currentRoadmapStepId;
 
   Future<void> initLesson({String? scriptSlug, String? roadmapStepId}) async {
+    final generation = ++_feedGeneration;
+    feedItems.clear();
     currentScriptSlug = scriptSlug;
     currentRoadmapStepId = roadmapStepId;
     status.value = FeedStatus.loading;
@@ -58,10 +63,17 @@ class LessonFeedController extends GetxController {
               clientActionId: _uuid.v4(),
             );
 
+      if (generation != _feedGeneration) return;
       _applySession(session);
-      await _saveCheckpoint(session);
+      try {
+        await _saveCheckpoint(session);
+      } catch (_) {
+        // The lesson remains usable if local resume storage is unavailable.
+      }
+      if (generation != _feedGeneration) return;
       status.value = session.isCompleted ? FeedStatus.completed : FeedStatus.active;
     } catch (e) {
+      if (generation != _feedGeneration) return;
       errorMessage.value = e.toString();
       status.value = FeedStatus.error;
     }
@@ -74,14 +86,26 @@ class LessonFeedController extends GetxController {
     String? userDisplayText,
     int? responseTimeMs,
   }) async {
-    if (status.value == FeedStatus.submitting || sessionId == null) return;
+    if (status.value != FeedStatus.active ||
+        sessionId == null ||
+        currentNode.value == null) return;
     status.value = FeedStatus.submitting;
+    final generation = _feedGeneration;
 
     // Display user answer in chat immediately
     if (userDisplayText != null && userDisplayText.isNotEmpty) {
       feedItems.add(FeedItem(isUser: true, text: userDisplayText));
       _scrollToBottom();
     }
+
+    final thinking = FeedItem(
+      isUser: false,
+      text: 'Thinking...',
+      isThinking: true,
+    );
+    final thinkingStarted = Stopwatch()..start();
+    feedItems.add(thinking);
+    _scrollToBottom();
 
     try {
       final response = await _repository.submitAction(
@@ -95,6 +119,12 @@ class LessonFeedController extends GetxController {
         responseTimeMs: responseTimeMs,
       );
 
+      final remaining =
+          const Duration(milliseconds: 500) - thinkingStarted.elapsed;
+      if (remaining > Duration.zero) await Future.delayed(remaining);
+      if (generation != _feedGeneration) return;
+      feedItems.remove(thinking);
+
       if (response.evaluation != null &&
           response.evaluation!.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
@@ -105,7 +135,12 @@ class LessonFeedController extends GetxController {
       }
 
       _applySession(response);
-      await _saveCheckpoint(response);
+      try {
+        await _saveCheckpoint(response);
+      } catch (_) {
+        // Keep the server-confirmed response even if local resume storage fails.
+      }
+      if (generation != _feedGeneration) return;
 
       // Synchronize XP and trigger Level-Up celebration if occurred
       if (response.xp != null && Get.isRegistered<XpController>()) {
@@ -121,8 +156,14 @@ class LessonFeedController extends GetxController {
         status.value = FeedStatus.active;
       }
     } catch (e) {
-      errorMessage.value = 'Failed to submit response. Tap to retry.';
-      status.value = FeedStatus.error;
+      if (generation != _feedGeneration) return;
+      feedItems.remove(thinking);
+      feedItems.add(FeedItem(
+        isUser: false,
+        text: 'Connection hiccup. Please try that action again.',
+      ));
+      _scrollToBottom();
+      status.value = FeedStatus.active;
     }
   }
 
@@ -192,6 +233,7 @@ class LessonFeedController extends GetxController {
 
   @override
   void onClose() {
+    _feedGeneration++;
     scrollController.dispose();
     super.onClose();
   }

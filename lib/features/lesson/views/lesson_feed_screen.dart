@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/aptiqu_colors.dart';
 import '../../../core/theme/aptiqu_typography.dart';
+import '../../../shared/widgets/tutor_thinking_bubble.dart';
 import '../controllers/lesson_feed_controller.dart';
 import 'widgets/chat_bubble_widget.dart';
 import 'widgets/node_renderer_factory.dart';
@@ -142,6 +143,13 @@ class _LessonFeedScreenState extends State<LessonFeedScreen> {
                 itemCount: _controller.feedItems.length,
                 itemBuilder: (context, index) {
                   final item = _controller.feedItems[index];
+                  if (item.isThinking) {
+                    return const TutorThinkingBubble(
+                      avatarIcon: Icons.auto_awesome,
+                      avatarBackgroundColor: AptiquColors.surfaceContainerHigh,
+                      avatarIconColor: AptiquColors.primary,
+                    );
+                  }
                   return ChatBubbleWidget(
                     isUser: item.isUser,
                     text: item.text,
@@ -162,20 +170,25 @@ class _LessonFeedScreenState extends State<LessonFeedScreen> {
                       top: BorderSide(color: AptiquColors.outlineVariant),
                     ),
                   ),
-                  child: NodeRendererFactory.buildNodeInput(
-                    node: currentNode,
-                    isSubmitting: status == FeedStatus.submitting,
-                    onActionSubmitted: (actionType, {actionId, answer, displayText, responseTimeMs}) {
-                      _controller.submitAction(
-                        actionType: actionType,
-                        actionId: actionId,
-                        answer: answer,
-                        userDisplayText: displayText,
-                        responseTimeMs: responseTimeMs,
-                      );
-                    },
-                    onDoubtRequested: () => DoubtSheetWidget.show(context, _controller),
-                    onVoiceRequested: () => VoiceStubSheet.show(context),
+                  child: KeyedSubtree(
+                    key: ValueKey(currentNode.id),
+                    child: NodeRendererFactory.buildNodeInput(
+                      node: currentNode,
+                      isSubmitting: status == FeedStatus.submitting,
+                      onActionSubmitted: (actionType,
+                          {actionId, answer, displayText, responseTimeMs}) {
+                        _controller.submitAction(
+                          actionType: actionType,
+                          actionId: actionId,
+                          answer: answer,
+                          userDisplayText: displayText,
+                          responseTimeMs: responseTimeMs,
+                        );
+                      },
+                      onDoubtRequested: () =>
+                          DoubtSheetWidget.show(context, _controller),
+                      onVoiceRequested: () => VoiceStubSheet.show(context),
+                    ),
                   ),
                 ),
               ),

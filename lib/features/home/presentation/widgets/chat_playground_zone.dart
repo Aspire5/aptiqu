@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import 'package:aptiqu/shared/widgets/background/cyber_ambient_background.dart';
+import 'package:aptiqu/shared/widgets/tutor_thinking_bubble.dart';
 import '../controllers/home_controller.dart';
 import 'question_container_widget.dart';
 
@@ -260,6 +261,7 @@ class ChatPlaygroundZone extends StatelessWidget {
     HomeController controller,
     ChatMessageModel msg,
   ) {
+    if (msg.isThinking) return const TutorThinkingBubble(horizontalPadding: 0);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(

@@ -124,6 +124,7 @@ class ChatMessageModel {
   final bool? isCorrect;
   final LessonNodeModel? node;
   final bool hasContinueAction;
+  final bool isThinking;
   bool isContinueCompleted;
 
   ChatMessageModel({
@@ -137,6 +138,7 @@ class ChatMessageModel {
     this.isCorrect,
     this.node,
     this.hasContinueAction = false,
+    this.isThinking = false,
     this.isContinueCompleted = false,
   });
 }
@@ -188,6 +190,7 @@ class HomeController extends GetxController {
   final RxInt activeScriptSequence = 1.obs;
   final RxBool isLessonActive = false.obs;
   final RxBool isSubmittingAction = false.obs;
+  int _conversationGeneration = 0;
   GlobalKey latestAiMessageKey = GlobalKey();
   String? targetedMessageId;
 
@@ -213,6 +216,9 @@ class HomeController extends GetxController {
   }
 
   void exitToSubjectCards() {
+    _conversationGeneration++;
+    messages.removeWhere((message) => message.isThinking);
+    isSubmittingAction.value = false;
     showSubjectCards.value = true;
     fetchActiveRoadmap();
   }
@@ -299,7 +305,7 @@ class HomeController extends GetxController {
         final session = state.session!;
         currentSession.value = session;
         isLessonActive.value = true;
-        messages.clear();
+        _clearConversation();
 
         // Replay history so user continues right where they left off
         for (final item in session.history) {
@@ -342,7 +348,7 @@ class HomeController extends GetxController {
   }
 
   void _loadInitialConversation({String? title, String? desc}) {
-    messages.clear();
+    _clearConversation();
 
     final displayTitle = title ?? activeScriptTitle.value;
     final cleanTitle =
@@ -520,6 +526,7 @@ class HomeController extends GetxController {
 
     final q = messages[msgIndex].question;
     if (q == null || q.isCompleted) return;
+    if (optionIndex < 0 || optionIndex >= q.options.length) return;
 
     final selectedText = q.options[optionIndex];
 
@@ -542,17 +549,28 @@ class HomeController extends GetxController {
       if (optionIndex == 0) {
         // Start lesson right in the Home playground!
         isSubmittingAction.value = true;
+        final generation = _conversationGeneration;
+        final thinkingStarted = Stopwatch()..start();
+        final thinkingId = _showThinking();
         try {
           final session = await lessonRepo.startOrResumeSessionByStep(
             roadmapStepId: activeRoadmapStepId.value,
             clientActionId: _uuid.v4(),
           );
+          if (!await _finishThinking(thinkingId, thinkingStarted, generation)) {
+            return;
+          }
           currentSession.value = session;
           isLessonActive.value = true;
           activeScriptTitle.value =
               session.scriptTitle ?? activeScriptTitle.value;
           _addNodeToPlayground(session.currentNode);
         } catch (e) {
+          _removeThinking(thinkingId);
+          if (_conversationGeneration != generation) return;
+          q.isCompleted = false;
+          q.selectedOptionIndex = null;
+          messages.refresh();
           messages.add(
             ChatMessageModel(
               id: 'err_${DateTime.now().millisecondsSinceEpoch}',
@@ -563,7 +581,9 @@ class HomeController extends GetxController {
             ),
           );
         } finally {
-          isSubmittingAction.value = false;
+          if (_conversationGeneration == generation) {
+            isSubmittingAction.value = false;
+          }
         }
       } else {
         exitToSubjectCards();
@@ -625,6 +645,9 @@ class HomeController extends GetxController {
     _scrollToBottom();
 
     isSubmittingAction.value = true;
+    final generation = _conversationGeneration;
+    final thinkingStarted = Stopwatch()..start();
+    final thinkingId = _showThinking();
     try {
       String actionType = 'CONTINUE';
       String? actionId;
@@ -654,6 +677,10 @@ class HomeController extends GetxController {
         actionId: actionId,
         answer: answer,
       );
+
+      if (!await _finishThinking(thinkingId, thinkingStarted, generation)) {
+        return;
+      }
 
       currentSession.value = response;
 
@@ -702,6 +729,8 @@ class HomeController extends GetxController {
       }
       _scrollToNewMessage();
     } catch (e) {
+      _removeThinking(thinkingId);
+      if (_conversationGeneration != generation) return;
       messages.add(
         ChatMessageModel(
           id: 'err_${DateTime.now().millisecondsSinceEpoch}',
@@ -713,14 +742,19 @@ class HomeController extends GetxController {
       q.isCompleted = false;
       messages.refresh();
     } finally {
-      isSubmittingAction.value = false;
+      if (_conversationGeneration == generation) {
+        isSubmittingAction.value = false;
+      }
     }
   }
 
   /// Starts the next lesson and clears the playground
   Future<void> startNextLesson({String? stepId}) async {
+    _clearConversation();
+    final generation = _conversationGeneration;
+    final thinkingStarted = Stopwatch()..start();
+    final thinkingId = _showThinking();
     try {
-      messages.clear();
       final targetStep = stepId ?? activeRoadmapStepId.value;
       activeRoadmapStepId.value = targetStep;
 
@@ -728,6 +762,9 @@ class HomeController extends GetxController {
         roadmapStepId: targetStep,
         clientActionId: _uuid.v4(),
       );
+      if (!await _finishThinking(thinkingId, thinkingStarted, generation)) {
+        return;
+      }
       currentSession.value = session;
       activeScriptTitle.value = session.scriptTitle ?? 'Playing';
       isLessonActive.value = true;
@@ -736,6 +773,8 @@ class HomeController extends GetxController {
         fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
       }
     } catch (e) {
+      _removeThinking(thinkingId);
+      if (_conversationGeneration != generation) return;
       exitToSubjectCards();
     }
   }
@@ -749,6 +788,7 @@ class HomeController extends GetxController {
 
     final msg = messages[msgIndex];
     if (msg.isContinueCompleted) return;
+    if (currentSession.value == null) return;
 
     msg.isContinueCompleted = true;
     messages.refresh();
@@ -764,11 +804,13 @@ class HomeController extends GetxController {
     );
     _scrollToBottom();
 
-    if (currentSession.value == null) return;
     final session = currentSession.value!;
     final node = session.currentNode;
 
     isSubmittingAction.value = true;
+    final generation = _conversationGeneration;
+    final thinkingStarted = Stopwatch()..start();
+    final thinkingId = _showThinking();
     try {
       final response = await lessonRepo.submitAction(
         sessionId: session.id,
@@ -777,6 +819,10 @@ class HomeController extends GetxController {
         currentNodeId: node.id,
         actionType: 'CONTINUE',
       );
+
+      if (!await _finishThinking(thinkingId, thinkingStarted, generation)) {
+        return;
+      }
 
       currentSession.value = response;
 
@@ -816,6 +862,8 @@ class HomeController extends GetxController {
       }
       _scrollToNewMessage();
     } catch (e) {
+      _removeThinking(thinkingId);
+      if (_conversationGeneration != generation) return;
       msg.isContinueCompleted = false;
       messages.refresh();
       messages.add(
@@ -827,7 +875,9 @@ class HomeController extends GetxController {
         ),
       );
     } finally {
-      isSubmittingAction.value = false;
+      if (_conversationGeneration == generation) {
+        isSubmittingAction.value = false;
+      }
     }
   }
 
@@ -840,13 +890,16 @@ class HomeController extends GetxController {
   }) async {
     selectedNavIndex.value = 0; // Switch directly to Home tab
     showSubjectCards.value = false;
-    messages.clear();
+    _clearConversation();
     currentSession.value = null;
     isLessonActive.value = false;
     activeRoadmapStepId.value = roadmapStepId;
     activeScriptTitle.value = scriptTitle ?? 'Playing';
     targetedMessageId = null;
     isSubmittingAction.value = true;
+    final generation = _conversationGeneration;
+    final thinkingStarted = Stopwatch()..start();
+    final thinkingId = _showThinking();
     try {
       final session = await lessonRepo.startOrResumeSessionByStep(
         roadmapStepId: roadmapStepId,
@@ -854,6 +907,9 @@ class HomeController extends GetxController {
         scriptSlug: scriptSlug,
         restart: restart,
       );
+      if (!await _finishThinking(thinkingId, thinkingStarted, generation)) {
+        return;
+      }
       currentSession.value = session;
       isLessonActive.value = true;
       activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Playing');
@@ -862,6 +918,8 @@ class HomeController extends GetxController {
         fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
       }
     } catch (e) {
+      _removeThinking(thinkingId);
+      if (_conversationGeneration != generation) return;
       messages.add(
         ChatMessageModel(
           id: 'err_${DateTime.now().millisecondsSinceEpoch}',
@@ -871,7 +929,9 @@ class HomeController extends GetxController {
         ),
       );
     } finally {
-      isSubmittingAction.value = false;
+      if (_conversationGeneration == generation) {
+        isSubmittingAction.value = false;
+      }
     }
   }
 
@@ -884,6 +944,7 @@ class HomeController extends GetxController {
 
     final q = messages[msgIndex].question;
     if (q == null || q.isCompleted) return;
+    if (currentSession.value == null) return;
 
     q.submittedText = text.trim();
     q.isCompleted = true;
@@ -900,11 +961,13 @@ class HomeController extends GetxController {
     );
     _scrollToBottom();
 
-    if (currentSession.value == null) return;
     final session = currentSession.value!;
     final node = session.currentNode;
 
     isSubmittingAction.value = true;
+    final generation = _conversationGeneration;
+    final thinkingStarted = Stopwatch()..start();
+    final thinkingId = _showThinking();
     try {
       final response = await lessonRepo.submitAction(
         sessionId: session.id,
@@ -914,6 +977,10 @@ class HomeController extends GetxController {
         actionType: 'TEXT_INPUT',
         answer: text.trim(),
       );
+
+      if (!await _finishThinking(thinkingId, thinkingStarted, generation)) {
+        return;
+      }
 
       currentSession.value = response;
 
@@ -953,6 +1020,8 @@ class HomeController extends GetxController {
       }
       _scrollToNewMessage();
     } catch (e) {
+      _removeThinking(thinkingId);
+      if (_conversationGeneration != generation) return;
       messages.add(
         ChatMessageModel(
           id: 'err_${DateTime.now().millisecondsSinceEpoch}',
@@ -964,7 +1033,9 @@ class HomeController extends GetxController {
       q.isCompleted = false;
       messages.refresh();
     } finally {
-      isSubmittingAction.value = false;
+      if (_conversationGeneration == generation) {
+        isSubmittingAction.value = false;
+      }
     }
   }
 
@@ -1076,6 +1147,41 @@ class HomeController extends GetxController {
     });
   }
 
+  void _clearConversation() {
+    _conversationGeneration++;
+    isSubmittingAction.value = false;
+    messages.clear();
+  }
+
+  String _showThinking() {
+    final id = 'thinking_${_uuid.v4()}';
+    messages.add(ChatMessageModel(
+      id: id,
+      sender: MessageSender.ai,
+      text: 'Thinking...',
+      time: '',
+      isThinking: true,
+    ));
+    _scrollToBottom();
+    return id;
+  }
+
+  void _removeThinking(String id) {
+    messages.removeWhere((message) => message.id == id);
+  }
+
+  Future<bool> _finishThinking(
+      String id, Stopwatch timer, int generation) async {
+    final remaining = const Duration(milliseconds: 500) - timer.elapsed;
+    if (remaining > Duration.zero) await Future.delayed(remaining);
+    if (_conversationGeneration != generation ||
+        !messages.any((message) => message.id == id)) {
+      return false;
+    }
+    _removeThinking(id);
+    return true;
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
@@ -1099,6 +1205,7 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
+    _conversationGeneration++;
     scrollController.dispose();
     super.onClose();
   }
