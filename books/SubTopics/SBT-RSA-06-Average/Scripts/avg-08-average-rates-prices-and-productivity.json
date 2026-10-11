@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn average rates, prices and productivity with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A rate such as 'kg per rupee' is already a division.\n\nIf you buy the same quantity at different kg-per-rupee rates, you cannot safely average the displayed rates.\nFind actual money spent for each purchase, add the money, then use:\n\naverage kg per rupee = total kg ÷ total rupees.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "2.6666666666666665"
+          }
+        ]
+      },
+      "content": {
+        "text": "You buy 1 kg at 2 kg/₹ and 1 kg at 4 kg/₹. What is the average kg per rupee?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Money spent is ₹1/2 + ₹1/4 = ₹3/4.",
+            "Total quantity is 2 kg; 2÷(3/4)=8/3."
+          ],
+          "prompt": "You buy 1 kg at 2 kg/₹ and 1 kg at 4 kg/₹. What is the average kg per rupee?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "2.6666666666666665"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average rate=8/3 kg per rupee.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The simple average of 2 and 4 is 3, but the two 1-kg purchases do not cost equal money. Convert rates back to totals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.5"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "1.3333333333333333"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "content": {
+        "text": "You buy 1 kg at 1 kg/₹ and 1 kg at 3 kg/₹. What is the average kg per rupee?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Money spent=₹1+₹1/3=₹4/3.",
+            "2 kg ÷ 4/3 = 1.5."
+          ],
+          "prompt": "You buy 1 kg at 1 kg/₹ and 1 kg at 3 kg/₹. What is the average kg per rupee?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.5"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "1.3333333333333333"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The average rate is 1.5 kg/₹.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal quantity means the slower/less generous rate costs more money, so the simple mean of displayed rates is not the answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal money spent at different prices per litre has the reverse shape.\n\nIf you spend ₹M at price p, litres bought = M/p.\nAdd litres across purchases.\n\nAverage cost per litre = total money ÷ total litres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "26"
+          },
+          {
+            "id": "d",
+            "label": "50"
+          }
+        ]
+      },
+      "content": {
+        "text": "You spend ₹600 at ₹20/L and ₹600 at ₹30/L. What is the average cost per litre?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Litres bought are 30 and 20.",
+            "Total money=1200; total litres=50."
+          ],
+          "prompt": "You spend ₹600 at ₹20/L and ₹600 at ₹30/L. What is the average cost per litre?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "26"
+            },
+            {
+              "id": "d",
+              "label": "50"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "₹1200÷50=₹24 per litre.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A simple average ₹25 would be correct for equal litres, not equal money. Here the cheaper price buys more litres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "13.333333333333334"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "content": {
+        "text": "You spend ₹400 at ₹10/L and ₹400 at ₹20/L. What is the average cost per litre?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Litres=40 and 20, so total=60.",
+            "₹800÷60=₹40/3≈₹13.33."
+          ],
+          "prompt": "You spend ₹400 at ₹10/L and ₹400 at ₹20/L. What is the average cost per litre?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "13.333333333333334"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The average cost is ₹40/3 per litre.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal spending gives unequal quantities. Compute the quantities before dividing total cost by total litres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work-time questions often ask average output per worker per minute.\n\nIf a worker completes one unit in t minutes, that worker's rate is 1/t unit per minute.\n\nConvert every worker to output rate first, then average those rates when the question asks per worker per minute.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5/24"
+          },
+          {
+            "id": "b",
+            "label": "1/5"
+          },
+          {
+            "id": "c",
+            "label": "5/12"
+          },
+          {
+            "id": "d",
+            "label": "1/24"
+          }
+        ]
+      },
+      "content": {
+        "text": "Worker A finishes a unit in 4 min and B in 6 min. What is their average output per worker per minute?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Rates are 1/4 and 1/6.",
+            "Average=(1/4+1/6)/2."
+          ],
+          "prompt": "Worker A finishes a unit in 4 min and B in 6 min. What is their average output per worker per minute?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5/24"
+            },
+            {
+              "id": "b",
+              "label": "1/5"
+            },
+            {
+              "id": "c",
+              "label": "5/12"
+            },
+            {
+              "id": "d",
+              "label": "1/24"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "(3/12+2/12)/2=5/12÷2=5/24.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not average 4 and 6 minutes and invert unless the question's weighting supports it. Convert each worker to the requested unit first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/6"
+          },
+          {
+            "id": "b",
+            "label": "1/2"
+          },
+          {
+            "id": "c",
+            "label": "1"
+          },
+          {
+            "id": "d",
+            "label": "1/3"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three workers take 2, 3 and 6 min per unit. What is average output per worker per minute?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Rates are 1/2,1/3,1/6.",
+            "Their sum is 1; divide by 3 workers."
+          ],
+          "prompt": "Three workers take 2, 3 and 6 min per unit. What is average output per worker per minute?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/6"
+            },
+            {
+              "id": "b",
+              "label": "1/2"
+            },
+            {
+              "id": "c",
+              "label": "1"
+            },
+            {
+              "id": "d",
+              "label": "1/3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average rate=1/3 unit per minute.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The question is about units per minute, so work in that direction from the start.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Different kinds of days also act like weights.\n\nIf Sundays average 510 visitors and other days 240, count how many Sundays and ordinary days are in the month.\nTotal visitors = 510×Sundays + 240×other days.\nThen divide by total days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "220"
+          },
+          {
+            "id": "b",
+            "label": "250"
+          },
+          {
+            "id": "c",
+            "label": "233.33333333333334"
+          },
+          {
+            "id": "d",
+            "label": "300"
+          }
+        ]
+      },
+      "content": {
+        "text": "A 30-day month begins on Sunday, so it has 5 Sundays. Sundays average 400 visitors and other days 200. What is the daily average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total=5×400+25×200=7000.",
+            "7000÷30=700/3≈233.33."
+          ],
+          "prompt": "A 30-day month begins on Sunday, so it has 5 Sundays. Sundays average 400 visitors and other days 200. What is the daily average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "220"
+            },
+            {
+              "id": "b",
+              "label": "250"
+            },
+            {
+              "id": "c",
+              "label": "233.33333333333334"
+            },
+            {
+              "id": "d",
+              "label": "300"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The daily average is about 233.33.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not average 400 and 200 directly. There are 5 Sunday-type days and 25 other days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "275"
+          },
+          {
+            "id": "b",
+            "label": "285.7142857142857"
+          },
+          {
+            "id": "c",
+            "label": "300"
+          },
+          {
+            "id": "d",
+            "label": "375"
+          }
+        ]
+      },
+      "content": {
+        "text": "A 28-day period has 4 special days averaging 500 visits and 24 ordinary days averaging 250. What is the overall average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total=2000+6000=8000.",
+            "8000÷28=2000/7≈285.71."
+          ],
+          "prompt": "A 28-day period has 4 special days averaging 500 visits and 24 ordinary days averaging 250. What is the overall average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "275"
+            },
+            {
+              "id": "b",
+              "label": "285.7142857142857"
+            },
+            {
+              "id": "c",
+              "label": "300"
+            },
+            {
+              "id": "d",
+              "label": "375"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Overall average≈285.71 visits per day.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use the number of days as weights for the two daily averages.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average expense per person can fall when a fixed cost is shared by more people.\n\nThe chapter models boarding-house expense as:\nTotal expense = fixed cost + variable cost × number of boarders.\n\nTwo different group sizes give two equations, which can reveal both parts.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "100"
+          },
+          {
+            "id": "b",
+            "label": "500"
+          },
+          {
+            "id": "c",
+            "label": "600"
+          },
+          {
+            "id": "d",
+            "label": "800"
+          }
+        ]
+      },
+      "content": {
+        "text": "Average expense is ₹700 for 20 people and ₹600 for 40 people. If total expense is fixed + v per person, what is v?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Totals are ₹14000 and ₹24000.",
+            "The extra 20 people add ₹10000, so v=₹500."
+          ],
+          "prompt": "Average expense is ₹700 for 20 people and ₹600 for 40 people. If total expense is fixed + v per person, what is v?",
+          "options": [
+            {
+              "id": "a",
+              "label": "100"
+            },
+            {
+              "id": "b",
+              "label": "500"
+            },
+            {
+              "id": "c",
+              "label": "600"
+            },
+            {
+              "id": "d",
+              "label": "800"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Variable cost per person is ₹500.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The change in average is not the variable cost. Convert each average to a total first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "200"
+          },
+          {
+            "id": "b",
+            "label": "700"
+          },
+          {
+            "id": "c",
+            "label": "500"
+          },
+          {
+            "id": "d",
+            "label": "1100"
+          }
+        ]
+      },
+      "content": {
+        "text": "Average expense is ₹900 for 10 people and ₹700 for 20 people. What is the variable cost per person?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Totals are 9000 and 14000.",
+            "10 extra people add 5000."
+          ],
+          "prompt": "Average expense is ₹900 for 10 people and ₹700 for 20 people. What is the variable cost per person?",
+          "options": [
+            {
+              "id": "a",
+              "label": "200"
+            },
+            {
+              "id": "b",
+              "label": "700"
+            },
+            {
+              "id": "c",
+              "label": "500"
+            },
+            {
+              "id": "d",
+              "label": "1100"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Variable cost=₹500 per person.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract total-expense equations. The fixed cost cancels, leaving only the extra people's variable cost.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average charge with different attendance is another weighted rate.\n\nIf ticket charges are ₹15, ₹7.50 and ₹2.50 and attendance ratio is 2:5:13, use those ratio parts as weights.\n\nTotal charge units ÷ total attendance units gives the average charge per visitor.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "12.5"
+          }
+        ]
+      },
+      "content": {
+        "text": "Two days charge ₹20 and ₹10, with attendance ratio 1:3. What is the average charge per visitor?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Weighted charge=20×1+10×3=50.",
+            "Attendance parts=4."
+          ],
+          "prompt": "Two days charge ₹20 and ₹10, with attendance ratio 1:3. What is the average charge per visitor?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "12.5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "₹50÷4=₹12.50.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The day with more visitors must influence the per-person average more strongly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "content": {
+        "text": "Charges are ₹12 and ₹6 with attendance ratio 2:1. What is the average charge?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Weighted total=24+6=30.",
+            "Total parts=3."
+          ],
+          "prompt": "Charges are ₹12 and ₹6 with attendance ratio 2:1. What is the average charge?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average charge=₹10.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Treat the attendance ratio as counts. Two parts pay ₹12 and one part pays ₹6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a displayed quantity is itself a rate, convert it back to real totals first.\n\nCombine total quantity with total cost, total output with workers, or total visitors with days.\nThen form the requested rate from those combined totals.\nThis prevents the common mistake of averaging rates that have different hidden weights.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Average Rates, Prices and Productivity.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Average Rates, Prices and Productivity",
+    "description": "Handle average price, buying rate, work rate and other cases where the denominator itself changes.",
+    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Average Rates, Prices and Productivity. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 18
+  },
+  "scriptId": "script-avg-08-average-rates-prices-and-productivity",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn adding, removing, replacing and correcting observations with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When one new member joins, both total and count change.\n\nOld group: n people, average A → total nA.\nNew group: n+1 people, average B → total (n+1)B.\n\nNew member's value = (n+1)B − nA.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32"
+          },
+          {
+            "id": "b",
+            "label": "52"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "320"
+          }
+        ]
+      },
+      "content": {
+        "text": "10 people average 30. One new person joins and the average becomes 32. What is the new person's value?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Old total=300; new total=11×32=352.",
+            "Difference=52."
+          ],
+          "prompt": "10 people average 30. One new person joins and the average becomes 32. What is the new person's value?",
+          "options": [
+            {
+              "id": "a",
+              "label": "32"
+            },
+            {
+              "id": "b",
+              "label": "52"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "320"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The new person contributes 52.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not use only the 2-point average increase. That increase applies across all 11 people in the new group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35.4"
+          },
+          {
+            "id": "b",
+            "label": "44.6"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "content": {
+        "text": "24 students average 35 kg. A teacher joins and the average becomes 35.4 kg. What is the teacher's weight?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Old total=840; new total=25×35.4=885.",
+            "885−840=45."
+          ],
+          "prompt": "24 students average 35 kg. A teacher joins and the average becomes 35.4 kg. What is the teacher's weight?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35.4"
+            },
+            {
+              "id": "b",
+              "label": "44.6"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The teacher weighs 45 kg.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The new total uses 25 people, not 24. Then subtract the old total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "When one member leaves, subtract the smaller group's total from the original total.\n\nOriginal value of leaver = old total − new total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "49"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "100"
+          },
+          {
+            "id": "d",
+            "label": "69"
+          }
+        ]
+      },
+      "content": {
+        "text": "20 students average 50. One leaves; the remaining 19 average 49. What was the leaving student's score?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Old total=1000; new total=19×49=931.",
+            "Difference=69."
+          ],
+          "prompt": "20 students average 50. One leaves; the remaining 19 average 49. What was the leaving student's score?",
+          "options": [
+            {
+              "id": "a",
+              "label": "49"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "100"
+            },
+            {
+              "id": "d",
+              "label": "69"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The student who left had 69.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not subtract the averages 50−49. The leaving value is the difference between totals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "890"
+          },
+          {
+            "id": "b",
+            "label": "590"
+          },
+          {
+            "id": "c",
+            "label": "600"
+          },
+          {
+            "id": "d",
+            "label": "1190"
+          }
+        ]
+      },
+      "content": {
+        "text": "30 workers average ₹600. One worker leaves and the remaining 29 average ₹590. What was that worker's wage?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Old total=18000; new total=17110.",
+            "Difference=890."
+          ],
+          "prompt": "30 workers average ₹600. One worker leaves and the remaining 29 average ₹590. What was that worker's wage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "890"
+            },
+            {
+              "id": "b",
+              "label": "590"
+            },
+            {
+              "id": "c",
+              "label": "600"
+            },
+            {
+              "id": "d",
+              "label": "1190"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The leaving worker earned ₹890.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "A one-unit drop in average spread over 29 or 30 people can represent a much larger individual value. Totals reveal it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Replacement keeps the count the same.\n\nIf n people have their average change by d, the total changes by n×d.\nThat total change equals:\nnew member − old member.\n\nThis is a fast form of the full-total method.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "66.5"
+          },
+          {
+            "id": "b",
+            "label": "76"
+          },
+          {
+            "id": "c",
+            "label": "77"
+          },
+          {
+            "id": "d",
+            "label": "89"
+          }
+        ]
+      },
+      "content": {
+        "text": "In a group of 8, a 65 kg person is replaced and the average rises by 1.5 kg. What is the new person's weight?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total increase=8×1.5=12 kg.",
+            "New weight=65+12."
+          ],
+          "prompt": "In a group of 8, a 65 kg person is replaced and the average rises by 1.5 kg. What is the new person's weight?",
+          "options": [
+            {
+              "id": "a",
+              "label": "66.5"
+            },
+            {
+              "id": "b",
+              "label": "76"
+            },
+            {
+              "id": "c",
+              "label": "77"
+            },
+            {
+              "id": "d",
+              "label": "89"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The new person weighs 77 kg.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average increase 1.5 kg is not the replacement's personal increase. Multiply it by all 8 group members to get the total change.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "29.2"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "38"
+          }
+        ]
+      },
+      "content": {
+        "text": "A team of 10 replaces a 30-year-old member. Average age falls by 0.8 year. How old is the new member?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total age falls by 10×0.8=8 years.",
+            "New age=30−8."
+          ],
+          "prompt": "A team of 10 replaces a 30-year-old member. Average age falls by 0.8 year. How old is the new member?",
+          "options": [
+            {
+              "id": "a",
+              "label": "29.2"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "38"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The new member is 22 years old.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Same count means average change × count gives the exact change caused by the replacement.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A whole group can enter or leave too.\n\nOld total ± group total = new total.\n\nIf the group entering or leaving has its own average, first turn it into a subtotal by multiplying by that group's size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "52.666666666666664"
+          },
+          {
+            "id": "b",
+            "label": "52"
+          },
+          {
+            "id": "c",
+            "label": "52.5"
+          },
+          {
+            "id": "d",
+            "label": "53"
+          }
+        ]
+      },
+      "content": {
+        "text": "45 students average 52 kg. Five students averaging 48 kg leave and five averaging 54 kg join. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "New total=45×52−5×48+5×54.",
+            "That is 2370; count stays 45."
+          ],
+          "prompt": "45 students average 52 kg. Five students averaging 48 kg leave and five averaging 54 kg join. What is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "52.666666666666664"
+            },
+            {
+              "id": "b",
+              "label": "52"
+            },
+            {
+              "id": "c",
+              "label": "52.5"
+            },
+            {
+              "id": "d",
+              "label": "53"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "2370÷45=52⅔ kg.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Because five leave and five join, the count remains 45. But the total changes by the difference between the two group totals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "28"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "35"
+          },
+          {
+            "id": "d",
+            "label": "32.5"
+          }
+        ]
+      },
+      "content": {
+        "text": "20 people average 30. Four people averaging 20 leave. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Old total=600; removed total=80.",
+            "520 remains for 16 people."
+          ],
+          "prompt": "20 people average 30. Four people averaging 20 leave. What is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "28"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "35"
+            },
+            {
+              "id": "d",
+              "label": "32.5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "520÷16=32.5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "After a group leaves, update both the total and the count before dividing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Wrongly recorded observations are repaired at the total level.\n\nCorrect total = recorded total − wrong entry + correct entry.\n\nThen divide by the same count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "38.92"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "67"
+          },
+          {
+            "id": "d",
+            "label": "41.08"
+          }
+        ]
+      },
+      "content": {
+        "text": "The mean of 25 observations was calculated as 40. A value 69 should have been 96. What is the correct mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Recorded total=25×40=1000.",
+            "Correct total=1000−69+96=1027."
+          ],
+          "prompt": "The mean of 25 observations was calculated as 40. A value 69 should have been 96. What is the correct mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "38.92"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "67"
+            },
+            {
+              "id": "d",
+              "label": "41.08"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "1027÷25=41.08.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not replace 69 with 96 in the average directly. Repair the total by the difference +27.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "69.2"
+          },
+          {
+            "id": "b",
+            "label": "66.8"
+          },
+          {
+            "id": "c",
+            "label": "68"
+          },
+          {
+            "id": "d",
+            "label": "70.4"
+          }
+        ]
+      },
+      "content": {
+        "text": "A class of 20 had average 68. A mark 48 should have been 72. What is the corrected average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Old total=1360; add the correction 24.",
+            "1384÷20=69.2."
+          ],
+          "prompt": "A class of 20 had average 68. A mark 48 should have been 72. What is the corrected average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "69.2"
+            },
+            {
+              "id": "b",
+              "label": "66.8"
+            },
+            {
+              "id": "c",
+              "label": "68"
+            },
+            {
+              "id": "d",
+              "label": "70.4"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The corrected average is 69.2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "A single error changes the total by correct−wrong. Here that is +24, spread across 20 students.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "With two wrong entries, repair both.\n\nExample: recorded mean 40.2 for 10 values. One entry is 18 too high, and another was written 13 instead of 33.\nThe first correction is −18; the second is +20.\nNet correction = +2 to the total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48"
+          },
+          {
+            "id": "b",
+            "label": "49.8"
+          },
+          {
+            "id": "c",
+            "label": "50.2"
+          },
+          {
+            "id": "d",
+            "label": "52"
+          }
+        ]
+      },
+      "content": {
+        "text": "A mean of 50 was reported for 10 values. One value was 12 too high and another was written 20 instead of 30. What is the corrected mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Recorded total=500.",
+            "Net correction=−12+10=−2."
+          ],
+          "prompt": "A mean of 50 was reported for 10 values. One value was 12 too high and another was written 20 instead of 30. What is the corrected mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48"
+            },
+            {
+              "id": "b",
+              "label": "49.8"
+            },
+            {
+              "id": "c",
+              "label": "50.2"
+            },
+            {
+              "id": "d",
+              "label": "52"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct total=498, so mean=49.8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Handle each error with a sign: remove any excess and add any missing amount.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35.5"
+          },
+          {
+            "id": "b",
+            "label": "36"
+          },
+          {
+            "id": "c",
+            "label": "36.5"
+          },
+          {
+            "id": "d",
+            "label": "41"
+          }
+        ]
+      },
+      "content": {
+        "text": "A mean of 36 for 100 scores used 40 instead of 90 once. What is the correct mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The total needs +50.",
+            "3600+50=3650; divide by 100."
+          ],
+          "prompt": "A mean of 36 for 100 scores used 40 instead of 90 once. What is the correct mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35.5"
+            },
+            {
+              "id": "b",
+              "label": "36"
+            },
+            {
+              "id": "c",
+              "label": "36.5"
+            },
+            {
+              "id": "d",
+              "label": "41"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct mean=36.5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The incorrect entry understated the total by 50. Add 50 to the total, not to the average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average changes are easiest at the total level.\n\nJoin: new total − old total gives the entrant.\nLeave: old total − new total gives the leaver.\nReplacement with same count: count × change in average = new value − old value.\nCorrections: repair the recorded total, then divide.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Adding, Removing, Replacing and Correcting Observations.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Adding, Removing, Replacing and Correcting Observations",
+    "description": "Track how an average changes when members enter, leave, are replaced, or when recorded data is corrected.",
+    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Adding, Removing, Replacing and Correcting Observations. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 18
+  },
+  "scriptId": "script-avg-06-add-remove-replace-and-correct",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

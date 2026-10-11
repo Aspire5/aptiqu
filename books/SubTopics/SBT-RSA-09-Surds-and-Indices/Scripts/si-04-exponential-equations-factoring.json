@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's solve exponent equations where the terms are added or subtracted.\n\nA key warning first:\n\n2^a + 2^b is NOT 2^(a+b).\n\nExponent addition works for multiplication, not ordinary addition. For a sum, the useful move is usually to factor out a common power.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Take 2^(x-1) + 2^(x+1).\n\nThe smaller common power is 2^(x-1).\n\n2^(x+1) = 2^(x-1) × 2^2.\n\nSo the sum is:\n2^(x-1)(1+4) = 5×2^(x-1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 2^(x-1) + 2^(x+1) = 20, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Factor out 2^(x-1).",
+            "You get 5×2^(x-1)=20."
+          ],
+          "prompt": "If 2^(x-1) + 2^(x+1) = 20, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 2^(x-1)=4=2^2, so x-1=2 and x=3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 3^x + 3^(x+1) = 108, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Factor out 3^x.",
+            "3^x(1+3)=108, so 3^x=27."
+          ],
+          "prompt": "If 3^x + 3^(x+1) = 108, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 4×3^x=108, so 3^x=27=3^3 and x=3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 2^(x-1) + 2^(x+1) = 20, what is x?\n\nStart from this clue:\nFactor out 2^(x-1).\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n4×3^x=108, so 3^x=27=3^3 and x=3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Differences work the same way.\n\n5^(x+1) - 5^x\n= 5^x(5-1)\n= 4×5^x.\n\nThe subtraction happens in the bracket after the common power is removed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 5^(x+1) - 5^x = 500, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Factor out 5^x.",
+            "4×5^x=500."
+          ],
+          "prompt": "If 5^(x+1) - 5^x = 500, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 5^x=125=5^3, so x=3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 2^(x+2) - 2^x = 48, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Factor out 2^x.",
+            "2^x(4-1)=48."
+          ],
+          "prompt": "If 2^(x+2) - 2^x = 48, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 3×2^x=48, so 2^x=16 and x=4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 5^(x+1) - 5^x = 500, what is x?\n\nStart from this clue:\nFactor out 5^x.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n3×2^x=48, so 2^x=16 and x=4.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Coefficients can join after the same power is identified.\n\n4×3^x + 5×3^x\n= 9×3^x\n= 3^2 × 3^x\n= 3^(x+2).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 4×3^x + 5×3^x = 729, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Combine the coefficients: 4+5=9.",
+            "729=3^6 and 9=3^2."
+          ],
+          "prompt": "If 4×3^x + 5×3^x = 729, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 9×3^x=3^(x+2)=3^6, so x=4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 2×5^x + 3×5^x = 625, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The left side is 5×5^x.",
+            "625=5^4."
+          ],
+          "prompt": "If 2×5^x + 3×5^x = 625, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 5^(x+1)=5^4, so x=3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 4×3^x + 5×3^x = 729, what is x?\n\nStart from this clue:\nCombine the coefficients: 4+5=9.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n5^(x+1)=5^4, so x=3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes one term hides the common base.\n\n4^x + 2×4^x = 3×4^x.\n\nIf this equals 192, then 4^x=64=4^3, so x=3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 4^x + 2×4^x = 192, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Combine like exponential terms first.",
+            "3×4^x=192."
+          ],
+          "prompt": "If 4^x + 2×4^x = 192, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 4^x=64=4^3, so x=3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 9^x + 8×9^x = 729, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The left side is 9×9^x.",
+            "729=9^3."
+          ],
+          "prompt": "If 9^x + 8×9^x = 729, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 9^(x+1)=9^3, so x=2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 4^x + 2×4^x = 192, what is x?\n\nStart from this clue:\nCombine like exponential terms first.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n9^(x+1)=9^3, so x=2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Opposite bases such as 2/3 and 3/2 are reciprocals.\n\n(3/2)^k = (2/3)^(-k).\n\nThis lets both sides use the same base before the exponents are compared.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "content": {
+        "text": "If (2/3)^(2x-1) = (3/2)^(x-5), what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Rewrite the right side as (2/3)^(-(x-5)).",
+            "Then 2x-1 = 5-x."
+          ],
+          "prompt": "If (2/3)^(2x-1) = (3/2)^(x-5), what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 2x-1=5-x gives 3x=6, so x=2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "content": {
+        "text": "If (3/5)^(3x-2) = (5/3)^(x-6), what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Rewrite (5/3)^(x-6) as (3/5)^(6-x).",
+            "Set 3x-2 = 6-x."
+          ],
+          "prompt": "If (3/5)^(3x-2) = (5/3)^(x-6), what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 4x=8, so x=2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf (2/3)^(2x-1) = (3/2)^(x-5), what is x?\n\nStart from this clue:\nRewrite the right side as (2/3)^(-(x-5)).\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n4x=8, so x=2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A capstone may need both a base rewrite and factoring.\n\n2^(2x) + 2^(2x+1)\n= 2^(2x)(1+2)\n= 3×2^(2x)\n= 3×4^x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 2^(2x) + 2^(2x+1) = 48, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Factor out 2^(2x).",
+            "3×4^x=48."
+          ],
+          "prompt": "If 2^(2x) + 2^(2x+1) = 48, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 4^x=16=4^2, so x=2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "content": {
+        "text": "If 3^(2x) + 2×3^(2x) = 243, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The left side is 3×3^(2x).",
+            "243=3^5."
+          ],
+          "prompt": "If 3^(2x) + 2×3^(2x) = 243, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 3^(2x+1)=3^5, so 2x+1=5 and x=2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 2^(2x) + 2^(2x+1) = 48, what is x?\n\nStart from this clue:\nFactor out 2^(2x).\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n3^(2x+1)=3^5, so 2x+1=5 and x=2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "When powers are added or subtracted, do not add or subtract their exponents directly.\n\n1. Pick the smaller common power.\n2. Factor it out.\n3. Simplify the ordinary bracket.\n4. Rewrite to a common base and solve.\n\nExplain why 2^x + 2^(x+1) becomes 3×2^x, not 2^(2x+1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Strong work. The next time you see a sum of powers, ask 'What exponential factor is common to every term?' That question is usually more useful than trying to calculate the powers themselves.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Exponential Equations by Factoring Powers",
+    "description": "Solve sums and differences of exponential terms by taking out a common power.",
+    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Exponential Equations by Factoring Powers. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
+    "targetDurationMinutes": 21
+  },
+  "scriptId": "script-si-04-exponential-equations-factoring",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

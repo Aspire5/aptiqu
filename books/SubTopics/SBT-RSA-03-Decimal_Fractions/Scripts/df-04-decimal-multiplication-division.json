@@ -6,9 +6,9 @@
   "entryNodeId": "start",
   "metadata": {
     "title": "Multiplication, Division and Mixed Decimal Operations",
-    "description": "Multiply and divide decimals, preserve scale, solve missing-term equations and evaluate mixed expressions.",
+    "description": "Multiply and divide decimals, track place shifts, and simplify mixed expressions correctly.",
     "targetDurationMinutes": 45,
-    "teachingApproach": "Products and decimal scale → power-of-ten shifts → division methods → unknown terms → operation order and checks.",
+    "teachingApproach": "Teach through short, connected phone-sized screens: a concrete idea, worked steps on separate lines, a reason and check, then fresh practice. Wrong answers receive a worked correction and a parallel retry that must be answered correctly before the lesson advances.",
     "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 3: operations rules and solved examples 8-16 on printed pages 72-73; objective patterns involving decimal products, quotients, missing terms and mixed expressions on printed pages 75-77 and subsequent exercise pages."
   },
   "nodes": {
@@ -16,7 +16,7 @@
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Decimal multiplication and division are reliable when you track scale explicitly. For a product, first multiply the digits as whole numbers and then count the decimal places in all factors. For division, distinguish a counting-number divisor from a decimal divisor; in the latter case, scale both dividend and divisor equally until the divisor is a whole number.\n\nWe will also use known products to infer scaled results, solve for a missing factor or divisor, and evaluate mixed expressions in the stated order. Estimation and inverse operations help catch misplaced decimal points.",
+        "text": "Let's multiply and divide decimals while keeping track of size.\n\nTwo packets at ₹1.50 each cost ₹3.00, not ₹300. The digits and the decimal scale both matter. We'll use a quick size check after each method.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,7 +29,20 @@
       "id": "multiply_place_count",
       "type": "CONTENT",
       "content": {
-        "text": "To multiply terminating decimals, temporarily ignore their decimal points and multiply as whole numbers. Then count the decimal places in every factor; the product must have that total number of places. This works because each factor is a whole-number count of tenths, hundredths, or smaller units.\n\nFor 2.1693 × 1.4, multiply 21693 × 14 = 303702. The factors have four and one decimal places, so place five in the product: 3.03702. Check the size: a value near 2 multiplied by 1.4 should be near 3, not hundreds.",
+        "text": "Think of 1.2 × 0.3 as twelve tenths times three tenths.\n\n12 × 3 = 36, but tenths × tenths gives hundredths. So the product is 36 hundredths, or 0.36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiply_place_count_step_1"
+        }
+      ]
+    },
+    "multiply_place_count_step_1": {
+      "id": "multiply_place_count_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For any two terminating decimals, multiply the digits as whole numbers first. Then count all decimal places in both factors.\n\nExample: 2.14 × 0.5 uses 214 × 5 = 1,070. There are three decimal places altogether, so 1.070 = 1.07. Check: half of 2.14 is 1.07.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -50,19 +63,19 @@
         "options": [
           {
             "id": "a",
-            "label": "7.865"
+            "label": "0.0007865"
           },
           {
             "id": "b",
-            "label": "78.65"
+            "label": "7.865"
           },
           {
             "id": "c",
-            "label": "0.7865"
+            "label": "78.65"
           },
           {
             "id": "d",
-            "label": "0.0007865"
+            "label": "0.7865"
           }
         ]
       },
@@ -89,23 +102,23 @@
         "inlineData": {
           "prompt": "Evaluate 3.146 × 2.5.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "7.865"
+              "label": "0.0007865"
             },
             {
               "id": "b",
-              "label": "78.65"
+              "label": "7.865"
             },
             {
               "id": "c",
-              "label": "0.7865"
+              "label": "78.65"
             },
             {
               "id": "d",
-              "label": "0.0007865"
+              "label": "0.7865"
             }
           ],
           "hints": [
@@ -122,7 +135,7 @@
       "id": "remedy_multiply_place_count",
       "type": "CONTENT",
       "content": {
-        "text": "Multiply 3146 by 25 to get 78,650. There are four decimal places across the factors, so the product is 7.865.",
+        "text": "Multiply 3146 by 25 to get 78,650. There are four decimal places across the factors, so the product is 7.865.\n\n3.146 × 2.5 = 7.865.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -143,7 +156,7 @@
         "options": [
           {
             "id": "a",
-            "label": "0.00063"
+            "label": "0.000063"
           },
           {
             "id": "b",
@@ -151,17 +164,30 @@
           },
           {
             "id": "c",
-            "label": "0.063"
+            "label": "0.00063"
           },
           {
             "id": "d",
-            "label": "0.000063"
+            "label": "0.063"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "multiple_factor_scale"
+          "targetNodeId": "multiple_factor_scale",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_multiply_place_count_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -169,11 +195,11 @@
         "inlineData": {
           "prompt": "Evaluate 0.09 × 0.007.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "0.00063"
+              "label": "0.000063"
             },
             {
               "id": "b",
@@ -181,11 +207,11 @@
             },
             {
               "id": "c",
-              "label": "0.063"
+              "label": "0.00063"
             },
             {
               "id": "d",
-              "label": "0.000063"
+              "label": "0.063"
             }
           ],
           "hints": [
@@ -198,11 +224,37 @@
         }
       }
     },
+    "retry_multiply_place_count_remedy": {
+      "id": "retry_multiply_place_count_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nCompute 9 × 7 = 63.\n\n9 × 7 = 63 and 2 + 3 = 5 decimal places, so the product is 0.00063.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_multiply_place_count"
+        }
+      ]
+    },
     "multiple_factor_scale": {
       "id": "multiple_factor_scale",
       "type": "CONTENT",
       "content": {
-        "text": "For several decimal factors, add the number of places in every factor before placing the point. A whole-number factor contributes zero decimal places. Leading zeroes may be needed to fill the product to the required length.\n\nFor 0.4 × 0.04 × 0.004 × 40, the whole-number digit product is 4 × 4 × 4 × 40 = 2,560. The factors contribute six decimal places, so the product is 0.002560, equal to 0.00256. The small result is sensible because three factors are below 1.",
+        "text": "With more than two factors, count the decimal places in every factor.\n\nFor 0.4 × 0.04 × 0.004, the digits give 4 × 4 × 4 = 64. The factors have 1, 2, and 3 decimal places.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multiple_factor_scale_step_1"
+        }
+      ]
+    },
+    "multiple_factor_scale_step_1": {
+      "id": "multiple_factor_scale_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "That is six places altogether:\n\n0.4 × 0.04 × 0.004 = 0.000064.\n\nAdd a whole-number factor of 10 and the product becomes 0.00064. A whole number adds no decimal places of its own; it still changes the size through multiplication.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -223,11 +275,11 @@
         "options": [
           {
             "id": "a",
-            "label": "0.00081"
+            "label": "0.0081"
           },
           {
             "id": "b",
-            "label": "0.0081"
+            "label": "0.081"
           },
           {
             "id": "c",
@@ -235,7 +287,7 @@
           },
           {
             "id": "d",
-            "label": "0.081"
+            "label": "0.00081"
           }
         ]
       },
@@ -262,15 +314,15 @@
         "inlineData": {
           "prompt": "Evaluate 0.3 × 0.03 × 0.003 × 30.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "0.00081"
+              "label": "0.0081"
             },
             {
               "id": "b",
-              "label": "0.0081"
+              "label": "0.081"
             },
             {
               "id": "c",
@@ -278,7 +330,7 @@
             },
             {
               "id": "d",
-              "label": "0.081"
+              "label": "0.00081"
             }
           ],
           "hints": [
@@ -295,7 +347,7 @@
       "id": "remedy_multiple_factor_scale",
       "type": "CONTENT",
       "content": {
-        "text": "Multiply the digits and count the decimal places: 0.3 × 0.03 × 0.003 × 30 = 0.00081.",
+        "text": "Multiply the digits and count the decimal places: 0.3 × 0.03 × 0.003 × 30 = 0.00081.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -316,11 +368,11 @@
         "options": [
           {
             "id": "a",
-            "label": "0.000008"
+            "label": "0.00008"
           },
           {
             "id": "b",
-            "label": "0.00008"
+            "label": "0.000008"
           },
           {
             "id": "c",
@@ -334,7 +386,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "powers_of_ten"
+          "targetNodeId": "powers_of_ten",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_multiple_factor_scale_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -342,15 +407,15 @@
         "inlineData": {
           "prompt": "Evaluate 0.2 × 0.02 × 0.002.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "0.000008"
+              "label": "0.00008"
             },
             {
               "id": "b",
-              "label": "0.00008"
+              "label": "0.000008"
             },
             {
               "id": "c",
@@ -371,11 +436,37 @@
         }
       }
     },
+    "retry_multiple_factor_scale_remedy": {
+      "id": "retry_multiple_factor_scale_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe digit product is 2 × 2 × 2 = 8.\n\nThree factors contribute 1 + 2 + 3 = 6 places, so the product is 0.000008.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_multiple_factor_scale"
+        }
+      ]
+    },
     "powers_of_ten": {
       "id": "powers_of_ten",
       "type": "CONTENT",
       "content": {
-        "text": "Multiplying by 10ⁿ shifts a decimal point n places to the right; dividing by 10ⁿ shifts it n places left. If the digits run out, use zero placeholders. The direction follows the size change: multiplication by a positive power makes a positive value larger, division makes it smaller.\n\nFor 0.069 × 10,000, move four places right: 0.0690 → 690. Count the exponent's places, not just the displayed nonzero digits.",
+        "text": "Multiplying by 10 makes a number ten times as large. Each digit moves one place toward a larger place value.\n\nFor 0.047 × 100, two tenfold moves give 4.7.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "powers_of_ten_step_1"
+        }
+      ]
+    },
+    "powers_of_ten_step_1": {
+      "id": "powers_of_ten_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Dividing by 100 reverses those moves:\n\n4.7 ÷ 100 = 0.047.\n\nFor 0.047 × 10,000, move four places toward larger values: 470. Fill empty places with zeros. Check size: multiplication by 10,000 must make a positive number much larger.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -396,7 +487,7 @@
         "options": [
           {
             "id": "a",
-            "label": "470"
+            "label": "4.7"
           },
           {
             "id": "b",
@@ -404,7 +495,7 @@
           },
           {
             "id": "c",
-            "label": "4.7"
+            "label": "470"
           },
           {
             "id": "d",
@@ -435,11 +526,11 @@
         "inlineData": {
           "prompt": "Evaluate 0.047 × 10,000.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "470"
+              "label": "4.7"
             },
             {
               "id": "b",
@@ -447,7 +538,7 @@
             },
             {
               "id": "c",
-              "label": "4.7"
+              "label": "470"
             },
             {
               "id": "d",
@@ -468,7 +559,7 @@
       "id": "remedy_powers_of_ten",
       "type": "CONTENT",
       "content": {
-        "text": "The exponent 4 means four rightward places: 0.047 × 10,000 = 470.",
+        "text": "The exponent 4 means four rightward places: 0.047 × 10,000 = 470.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -489,15 +580,15 @@
         "options": [
           {
             "id": "a",
-            "label": "59.632"
-          },
-          {
-            "id": "b",
             "label": "596.32"
           },
           {
-            "id": "c",
+            "id": "b",
             "label": "5,963.2"
+          },
+          {
+            "id": "c",
+            "label": "59.632"
           },
           {
             "id": "d",
@@ -507,7 +598,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "divide_counting_number"
+          "targetNodeId": "divide_counting_number",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_powers_of_ten_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -515,19 +619,19 @@
         "inlineData": {
           "prompt": "Evaluate 5.9632 × 100.",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "a",
           "options": [
             {
               "id": "a",
-              "label": "59.632"
-            },
-            {
-              "id": "b",
               "label": "596.32"
             },
             {
-              "id": "c",
+              "id": "b",
               "label": "5,963.2"
+            },
+            {
+              "id": "c",
+              "label": "59.632"
             },
             {
               "id": "d",
@@ -544,11 +648,37 @@
         }
       }
     },
+    "retry_powers_of_ten_remedy": {
+      "id": "retry_powers_of_ten_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiplication by 100 shifts two places right.\n\n5.9632 × 100 = 596.32.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_powers_of_ten"
+        }
+      ]
+    },
     "divide_counting_number": {
       "id": "divide_counting_number",
       "type": "CONTENT",
       "content": {
-        "text": "When dividing a decimal by a counting number, divide as usual while keeping the dividend's place-value scale. The quotient is not assigned an arbitrary number of decimal places; the actual division determines its digits. Check by multiplying the quotient by the divisor.\n\nFor 0.0204 ÷ 17, note 204 ÷ 17 = 12. The original dividend is 204 ten-thousandths; dividing by 17 gives 12 ten-thousandths, or 0.0012. Multiplication verifies 0.0012 × 17 = 0.0204.",
+        "text": "Dividing by a whole counting number keeps the same place-value meaning.\n\nSuppose 0.024 litre is shared equally among 6 cups. Each cup gets 0.004 litre because 24 thousandths ÷ 6 = 4 thousandths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "divide_counting_number_step_1"
+        }
+      ]
+    },
+    "divide_counting_number_step_1": {
+      "id": "divide_counting_number_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by multiplying back:\n\n0.004 × 6 = 0.024.\n\nIf the divisor does not fit at first, continue into smaller decimal places. Do not place the quotient's decimal point by guessing how many digits the answer should have.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -641,7 +771,7 @@
       "id": "remedy_divide_counting_number",
       "type": "CONTENT",
       "content": {
-        "text": "Since 306 ÷ 18 = 17 and 0.0306 has four decimal places, the quotient is 0.0017. Verify by multiplying back.",
+        "text": "Since 306 ÷ 18 = 17 and 0.0306 has four decimal places, the quotient is 0.0017. Verify by multiplying back.\n\n0.0306 ÷ 18 = 0.0017.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -662,25 +792,38 @@
         "options": [
           {
             "id": "a",
-            "label": "0.7"
-          },
-          {
-            "id": "b",
-            "label": "0.07"
-          },
-          {
-            "id": "c",
             "label": "0.007"
           },
           {
-            "id": "d",
+            "id": "b",
             "label": "0.0007"
+          },
+          {
+            "id": "c",
+            "label": "0.7"
+          },
+          {
+            "id": "d",
+            "label": "0.07"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "decimal_divisor_scaling"
+          "targetNodeId": "decimal_divisor_scaling",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_divide_counting_number_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -688,23 +831,23 @@
         "inlineData": {
           "prompt": "Evaluate 0.63 ÷ 9.",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "0.7"
-            },
-            {
-              "id": "b",
-              "label": "0.07"
-            },
-            {
-              "id": "c",
               "label": "0.007"
             },
             {
-              "id": "d",
+              "id": "b",
               "label": "0.0007"
+            },
+            {
+              "id": "c",
+              "label": "0.7"
+            },
+            {
+              "id": "d",
+              "label": "0.07"
             }
           ],
           "hints": [
@@ -717,11 +860,37 @@
         }
       }
     },
+    "retry_divide_counting_number_remedy": {
+      "id": "retry_divide_counting_number_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\n63 ÷ 9 = 7.\n\n0.63 ÷ 9 = 0.07 because 0.07 × 9 = 0.63.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_divide_counting_number"
+        }
+      ]
+    },
     "decimal_divisor_scaling": {
       "id": "decimal_divisor_scaling",
       "type": "CONTENT",
       "content": {
-        "text": "To divide by a decimal, multiply both the dividend and divisor by the same power of ten until the divisor is a whole number. This is valid because multiplying numerator and denominator of a quotient by the same nonzero value does not change the quotient.\n\nFor 0.00066 ÷ 0.006, multiply both by 1,000: 0.66 ÷ 6 = 0.11. The divisor becomes 6, and the quotient is unchanged. Never shift only one number; that changes the value of the division.",
+        "text": "A decimal divisor can be changed into a whole number if we scale both numbers equally.\n\nFor 1.44 ÷ 0.12, multiply dividend and divisor by 100:\n\n1.44 ÷ 0.12 = 144 ÷ 12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "decimal_divisor_scaling_step_1"
+        }
+      ]
+    },
+    "decimal_divisor_scaling_step_1": {
+      "id": "decimal_divisor_scaling_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now 144 ÷ 12 = 12.\n\nWhy is the answer unchanged? A quotient is a fraction. Multiplying its top and bottom by the same nonzero number gives an equal fraction.\n\nCheck: 0.12 × 12 = 1.44. Moving only the divisor's point would give a wrong quotient.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -742,7 +911,7 @@
         "options": [
           {
             "id": "a",
-            "label": "0.12"
+            "label": "0.012"
           },
           {
             "id": "b",
@@ -750,7 +919,7 @@
           },
           {
             "id": "c",
-            "label": "0.012"
+            "label": "0.12"
           },
           {
             "id": "d",
@@ -781,11 +950,11 @@
         "inlineData": {
           "prompt": "Evaluate 0.00144 ÷ 0.012.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "0.12"
+              "label": "0.012"
             },
             {
               "id": "b",
@@ -793,7 +962,7 @@
             },
             {
               "id": "c",
-              "label": "0.012"
+              "label": "0.12"
             },
             {
               "id": "d",
@@ -814,7 +983,7 @@
       "id": "remedy_decimal_divisor_scaling",
       "type": "CONTENT",
       "content": {
-        "text": "Scale both numbers equally: 0.00144 ÷ 0.012 = 1.44 ÷ 12 = 0.12.",
+        "text": "Scale both numbers equally: 0.00144 ÷ 0.012 = 1.44 ÷ 12 = 0.12.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -835,7 +1004,7 @@
         "options": [
           {
             "id": "a",
-            "label": "500"
+            "label": "50,000"
           },
           {
             "id": "b",
@@ -843,17 +1012,30 @@
           },
           {
             "id": "c",
-            "label": "50,000"
+            "label": "0.0002"
           },
           {
             "id": "d",
-            "label": "0.0002"
+            "label": "500"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "known_products"
+          "targetNodeId": "known_products",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_decimal_divisor_scaling_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -865,7 +1047,7 @@
           "options": [
             {
               "id": "a",
-              "label": "500"
+              "label": "50,000"
             },
             {
               "id": "b",
@@ -873,11 +1055,11 @@
             },
             {
               "id": "c",
-              "label": "50,000"
+              "label": "0.0002"
             },
             {
               "id": "d",
-              "label": "0.0002"
+              "label": "500"
             }
           ],
           "hints": [
@@ -890,11 +1072,37 @@
         }
       }
     },
+    "retry_decimal_divisor_scaling_remedy": {
+      "id": "retry_decimal_divisor_scaling_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiply both numbers by 10,000 to make the divisor 5.\n\n2.5 ÷ 0.0005 = 25,000 ÷ 5 = 5,000.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_decimal_divisor_scaling"
+        }
+      ]
+    },
     "known_products": {
       "id": "known_products",
       "type": "CONTENT",
       "content": {
-        "text": "A known whole-number product can reveal a decimal product. Removing or adding decimal places scales a factor by a power of ten, so the product must be scaled by the same total factor. Track each factor's scale before placing the decimal point.\n\nIf 268 × 74 = 19,832, then 2.68 × 0.74 has four decimal places across its factors. Its value is 19,832 ÷ 10,000 = 1.9832. The answer is about 2, consistent with multiplying numbers near 3 and 0.7.",
+        "text": "A known whole-number product can save multiplication. Suppose 25 × 16 = 400.\n\nThen 2.5 is one tenth of 25 and 0.16 is one hundredth of 16.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "known_products_step_1"
+        }
+      ]
+    },
+    "known_products_step_1": {
+      "id": "known_products_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "So 2.5 × 0.16 is 400 ÷ (10 × 100) = 0.4.\n\nCheck size: 2.5 × a number smaller than 1 must be smaller than 2.5. Keep track of how each factor changed before placing the decimal point.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -915,15 +1123,15 @@
         "options": [
           {
             "id": "a",
-            "label": "0.6048"
+            "label": "0.06048"
           },
           {
             "id": "b",
-            "label": "6.048"
+            "label": "0.6048"
           },
           {
             "id": "c",
-            "label": "0.06048"
+            "label": "6.048"
           },
           {
             "id": "d",
@@ -954,19 +1162,19 @@
         "inlineData": {
           "prompt": "Given 126 × 48 = 6,048, find 1.26 × 0.48.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "0.6048"
+              "label": "0.06048"
             },
             {
               "id": "b",
-              "label": "6.048"
+              "label": "0.6048"
             },
             {
               "id": "c",
-              "label": "0.06048"
+              "label": "6.048"
             },
             {
               "id": "d",
@@ -987,7 +1195,7 @@
       "id": "remedy_known_products",
       "type": "CONTENT",
       "content": {
-        "text": "Each decimal factor is 100 times smaller than its whole-number counterpart, so the product is 10,000 times smaller: 6,048 ÷ 10,000 = 0.6048.",
+        "text": "Each decimal factor is 100 times smaller than its whole-number counterpart, so the product is 10,000 times smaller: 6,048 ÷ 10,000 = 0.6048.\n\n1.26 × 0.48 = 6,048 ÷ 10,000 = 0.6048.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1008,25 +1216,38 @@
         "options": [
           {
             "id": "a",
-            "label": "0.032"
-          },
-          {
-            "id": "b",
-            "label": "0.32"
-          },
-          {
-            "id": "c",
             "label": "3.2"
           },
           {
-            "id": "d",
+            "id": "b",
             "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "0.32"
+          },
+          {
+            "id": "d",
+            "label": "0.032"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "missing_factor"
+          "targetNodeId": "missing_factor",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_known_products_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1034,23 +1255,23 @@
         "inlineData": {
           "prompt": "Given 168 × 32 = 5,376, find 5.376 ÷ 16.8.",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "0.032"
-            },
-            {
-              "id": "b",
-              "label": "0.32"
-            },
-            {
-              "id": "c",
               "label": "3.2"
             },
             {
-              "id": "d",
+              "id": "b",
               "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "0.32"
+            },
+            {
+              "id": "d",
+              "label": "0.032"
             }
           ],
           "hints": [
@@ -1063,11 +1284,37 @@
         }
       }
     },
+    "retry_known_products_remedy": {
+      "id": "retry_known_products_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nScale both dividend and divisor by 10.\n\n53.76 ÷ 168 = 0.32 because 168 × 0.32 = 53.76.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_known_products"
+        }
+      ]
+    },
     "missing_factor": {
       "id": "missing_factor",
       "type": "CONTENT",
       "content": {
-        "text": "Use inverse operations to find an unknown factor. If a × x = p, then x = p ÷ a. Decimal division may require shifting the point, but the scale must remain consistent.\n\nFor 0.04x = 0.000016, x = 0.000016 ÷ 0.04. Multiplying both by 100 gives 0.0016 ÷ 4 = 0.0004. Check: 0.04 × 0.0004 = 0.000016.",
+        "text": "If 0.04 × x = 0.000016, the missing factor is the product divided by the known factor.\n\nx = 0.000016 ÷ 0.04.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "missing_factor_step_1"
+        }
+      ]
+    },
+    "missing_factor_step_1": {
+      "id": "missing_factor_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Scale both parts of the quotient by 100:\n\nx = 0.0016 ÷ 4 = 0.0004.\n\nCheck: 0.04 × 0.0004 = 0.000016. The result is small because multiplying it by 0.04 still gives a very small product.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1088,7 +1335,7 @@
         "options": [
           {
             "id": "a",
-            "label": "0.0007"
+            "label": "0.7"
           },
           {
             "id": "b",
@@ -1100,7 +1347,7 @@
           },
           {
             "id": "d",
-            "label": "0.7"
+            "label": "0.0007"
           }
         ]
       },
@@ -1127,11 +1374,11 @@
         "inlineData": {
           "prompt": "Solve 0.05x = 0.000035.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "0.0007"
+              "label": "0.7"
             },
             {
               "id": "b",
@@ -1143,7 +1390,7 @@
             },
             {
               "id": "d",
-              "label": "0.7"
+              "label": "0.0007"
             }
           ],
           "hints": [
@@ -1160,7 +1407,7 @@
       "id": "remedy_missing_factor",
       "type": "CONTENT",
       "content": {
-        "text": "Divide the product by the known factor: 0.000035 ÷ 0.05 = 0.0007.",
+        "text": "Divide the product by the known factor: 0.000035 ÷ 0.05 = 0.0007.\n\nx = 0.000035 ÷ 0.05 = 0.0007.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1173,7 +1420,7 @@
       "id": "retry_missing_factor",
       "type": "CHOICE",
       "content": {
-        "text": "Solve 0.009 ÷ x = 0.01.",
+        "text": "Solve 0.06x = 0.000048.",
         "avatarPersona": "TUTOR"
       },
       "input": {
@@ -1181,66 +1428,105 @@
         "options": [
           {
             "id": "a",
-            "label": "0.09"
+            "label": "0.008"
           },
           {
             "id": "b",
-            "label": "0.9"
+            "label": "0.00008"
           },
           {
             "id": "c",
-            "label": "9"
+            "label": "0.08"
           },
           {
             "id": "d",
-            "label": "90"
+            "label": "0.0008"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "missing_divisor"
+          "targetNodeId": "missing_divisor",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_missing_factor_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "prompt": "Solve 0.009 ÷ x = 0.01.",
+          "prompt": "Solve 0.06x = 0.000048.",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "0.09"
+              "label": "0.008"
             },
             {
               "id": "b",
-              "label": "0.9"
+              "label": "0.00008"
             },
             {
               "id": "c",
-              "label": "9"
+              "label": "0.08"
             },
             {
               "id": "d",
-              "label": "90"
+              "label": "0.0008"
             }
           ],
           "hints": [
-            "Multiply both sides by x, then divide by 0.01.",
-            "x = 0.009 ÷ 0.01."
+            "Undo the multiplication by dividing the product by 0.06.",
+            "Scale both parts of 0.000048 ÷ 0.06 by 100, then divide."
           ],
-          "explanation": "0.009 ÷ x = 0.01 gives 0.009 = 0.01x, so x = 0.9.",
+          "explanation": "x = 0.000048 ÷ 0.06 = 0.0008. Check: 0.06 × 0.0008 = 0.000048.",
           "difficulty": "MEDIUM",
           "xp": 10
         }
       }
     },
+    "retry_missing_factor_remedy": {
+      "id": "retry_missing_factor_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The unknown is a factor, so divide the product by the known factor.\n\nx = 0.000048 ÷ 0.06 = 0.0008.\n\nCheck by multiplying: 0.06 × 0.0008 = 0.000048. Try this equation again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_missing_factor"
+        }
+      ]
+    },
     "missing_divisor": {
       "id": "missing_divisor",
       "type": "CONTENT",
       "content": {
-        "text": "For a ÷ x = q, the unknown divisor is x = a ÷ q, provided q is nonzero. For x ÷ a = q, multiply q by a instead. Identify the equation form before calculating.\n\nFor 0.006 ÷ x = 0.6, multiply both sides by x, then divide by 0.6: x = 0.006 ÷ 0.6 = 0.01. Substitution gives 0.006 ÷ 0.01 = 0.6.",
+        "text": "In 0.006 ÷ x = 0.6, x is the divisor. Ask what number multiplied by 0.6 gives 0.006.\n\n0.6x = 0.006.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "missing_divisor_step_1"
+        }
+      ]
+    },
+    "missing_divisor_step_1": {
+      "id": "missing_divisor_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "So x = 0.006 ÷ 0.6 = 0.01.\n\nCheck: 0.006 ÷ 0.01 = 0.6.\n\nIf instead x ÷ 0.6 = 0.006, the unknown is the dividend and you multiply: x = 0.006 × 0.6. The location of x changes the reverse operation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1269,11 +1555,11 @@
           },
           {
             "id": "c",
-            "label": "0.001"
+            "label": "10"
           },
           {
             "id": "d",
-            "label": "10"
+            "label": "0.001"
           }
         ]
       },
@@ -1312,11 +1598,11 @@
             },
             {
               "id": "c",
-              "label": "0.001"
+              "label": "10"
             },
             {
               "id": "d",
-              "label": "10"
+              "label": "0.001"
             }
           ],
           "hints": [
@@ -1333,7 +1619,7 @@
       "id": "remedy_missing_divisor",
       "type": "CONTENT",
       "content": {
-        "text": "From 0.008 ÷ x = 0.8, get 0.008 = 0.8x. Dividing gives x = 0.01.",
+        "text": "From 0.008 ÷ x = 0.8, get 0.008 = 0.8x. Dividing gives x = 0.01.\n\nx = 0.008 ÷ 0.8 = 0.01.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1346,7 +1632,7 @@
       "id": "retry_missing_divisor",
       "type": "CHOICE",
       "content": {
-        "text": "Evaluate 35 ÷ 0.07.",
+        "text": "Find x: 0.012 ÷ x = 0.6.",
         "avatarPersona": "TUTOR"
       },
       "input": {
@@ -1354,66 +1640,105 @@
         "options": [
           {
             "id": "a",
-            "label": "5"
+            "label": "0.02"
           },
           {
             "id": "b",
-            "label": "50"
+            "label": "0.2"
           },
           {
             "id": "c",
-            "label": "500"
+            "label": "0.002"
           },
           {
             "id": "d",
-            "label": "5,000"
+            "label": "2"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "operation_order"
+          "targetNodeId": "operation_order",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_missing_divisor_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "prompt": "Evaluate 35 ÷ 0.07.",
+          "prompt": "Find x: 0.012 ÷ x = 0.6.",
           "questionType": "PRACTICE",
-          "correctOptionId": "c",
+          "correctOptionId": "a",
           "options": [
             {
               "id": "a",
-              "label": "5"
+              "label": "0.02"
             },
             {
               "id": "b",
-              "label": "50"
+              "label": "0.2"
             },
             {
               "id": "c",
-              "label": "500"
+              "label": "0.002"
             },
             {
               "id": "d",
-              "label": "5,000"
+              "label": "2"
             }
           ],
           "hints": [
-            "Scale both values by 100.",
-            "3500 ÷ 7 = ?"
+            "Ask which divisor makes 0.012 become 0.6.",
+            "From 0.012 ÷ x = 0.6, write 0.6x = 0.012."
           ],
-          "explanation": "35 ÷ 0.07 = 3,500 ÷ 7 = 500.",
+          "explanation": "0.012 ÷ x = 0.6 means 0.6x = 0.012, so x = 0.012 ÷ 0.6 = 0.02. Check: 0.012 ÷ 0.02 = 0.6.",
           "difficulty": "MEDIUM",
           "xp": 10
         }
       }
     },
+    "retry_missing_divisor_remedy": {
+      "id": "retry_missing_divisor_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here x is the divisor.\n\n0.012 ÷ x = 0.6 gives 0.6x = 0.012, so x = 0.02. Check 0.012 ÷ 0.02 = 0.6. Try the question again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_missing_divisor"
+        }
+      ]
+    },
     "operation_order": {
       "id": "operation_order",
       "type": "CONTENT",
       "content": {
-        "text": "Mixed decimal expressions follow the usual order: evaluate parentheses first, then multiplication and division from left to right, then addition and subtraction from left to right. Do not add terms before completing a higher-priority operation unless parentheses require it.\n\nFor 12.28 × 1.5 − 36 ÷ 2.4, calculate the product and quotient first: 18.42 − 15 = 3.42. A common error is to subtract before dividing, which changes the expression's meaning.",
+        "text": "In a mixed expression, finish brackets first. Then multiply and divide from left to right. Add and subtract last, also from left to right.\n\nTry 7.5 × 1.2 − 6 ÷ 1.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "operation_order_step_1"
+        }
+      ]
+    },
+    "operation_order_step_1": {
+      "id": "operation_order_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply and divide before subtracting:\n\n7.5 × 1.2 = 9\n6 ÷ 1.5 = 4\n9 − 4 = 5.\n\nCheck the rough size: about 8 × 1 − 6 ÷ 2 is around 5. Adding or subtracting too early changes the grouping.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1434,19 +1759,19 @@
         "options": [
           {
             "id": "a",
-            "label": "2.7"
+            "label": "0.27"
           },
           {
             "id": "b",
-            "label": "2.5"
-          },
-          {
-            "id": "c",
             "label": "26.7"
           },
           {
+            "id": "c",
+            "label": "2.5"
+          },
+          {
             "id": "d",
-            "label": "0.27"
+            "label": "2.7"
           }
         ]
       },
@@ -1473,23 +1798,23 @@
         "inlineData": {
           "prompt": "Evaluate 12.25 × 1.2 − 18 ÷ 1.5.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "2.7"
+              "label": "0.27"
             },
             {
               "id": "b",
-              "label": "2.5"
-            },
-            {
-              "id": "c",
               "label": "26.7"
             },
             {
+              "id": "c",
+              "label": "2.5"
+            },
+            {
               "id": "d",
-              "label": "0.27"
+              "label": "2.7"
             }
           ],
           "hints": [
@@ -1506,7 +1831,7 @@
       "id": "remedy_operation_order",
       "type": "CONTENT",
       "content": {
-        "text": "Complete multiplication and division before subtraction: 12.25 × 1.2 = 14.7 and 18 ÷ 1.5 = 12; then subtract to get 2.7.",
+        "text": "Complete multiplication and division before subtraction: 12.25 × 1.2 = 14.7 and 18 ÷ 1.5 = 12; then subtract to get 2.7.\n\n12.25 × 1.2 = 14.7 and 18 ÷ 1.5 = 12; 14.7 − 12 = 2.7.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1527,25 +1852,38 @@
         "options": [
           {
             "id": "a",
-            "label": "83.35"
+            "label": "132.1"
           },
           {
             "id": "b",
-            "label": "81.46"
+            "label": "83.35"
           },
           {
             "id": "c",
-            "label": "83.5"
+            "label": "81.46"
           },
           {
             "id": "d",
-            "label": "132.1"
+            "label": "83.5"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "brackets_and_mixed_forms"
+          "targetNodeId": "brackets_and_mixed_forms",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_operation_order_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1553,23 +1891,23 @@
         "inlineData": {
           "prompt": "Evaluate 25 × 3.25 + 50.4 ÷ 24.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "83.35"
+              "label": "132.1"
             },
             {
               "id": "b",
-              "label": "81.46"
+              "label": "83.35"
             },
             {
               "id": "c",
-              "label": "83.5"
+              "label": "81.46"
             },
             {
               "id": "d",
-              "label": "132.1"
+              "label": "83.5"
             }
           ],
           "hints": [
@@ -1582,16 +1920,42 @@
         }
       }
     },
-    "brackets_and_mixed_forms": {
-      "id": "brackets_and_mixed_forms",
+    "retry_operation_order_remedy": {
+      "id": "retry_operation_order_remedy",
       "type": "CONTENT",
       "content": {
-        "text": "Brackets make a grouping explicit and must be evaluated before outside operations. A decimal and a fraction can appear together; use an equivalent form only when it helps, and preserve exact values when possible.\n\nFor 0.5 × 5.6 ÷ 0.5 × 12, multiplication and division have equal precedence and are evaluated left to right: 2.8 ÷ 0.5 × 12 = 5.6 × 12 = 67.2. If a different grouping is intended, parentheses must show it. This is why writing the order is part of the solution, not decoration.",
+        "text": "Let’s check this one.\n\nCalculate 25 × 3.25 and 50.4 ÷ 24 first.\n\n81.25 + 2.1 = 83.35.\n\nTry the same question again and check the result.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_brackets_and_mixed_forms"
+          "targetNodeId": "retry_operation_order"
+        }
+      ]
+    },
+    "brackets_and_mixed_forms": {
+      "id": "brackets_and_mixed_forms",
+      "type": "CONTENT",
+      "content": {
+        "text": "An expression with multiplication and division at the same level is read from left to right.\n\nFor 0.5 × 5.6 ÷ 0.5 × 12, do not cancel the two 0.5 values across the middle unless you first rewrite the expression as equal factors with the same grouping.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "brackets_and_mixed_forms_step_1"
+        }
+      ]
+    },
+    "brackets_and_mixed_forms_step_1": {
+      "id": "brackets_and_mixed_forms_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work left to right:\n\n0.5 × 5.6 = 2.8\n2.8 ÷ 0.5 = 5.6\n5.6 × 12 = 67.2.\n\nBrackets can change the meaning. Compare 5.6 ÷ (0.5 × 12), where the denominator is grouped. Copy every bracket before calculating.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "brackets_and_mixed_forms_step_2"
         }
       ]
     },
@@ -1607,7 +1971,7 @@
         "options": [
           {
             "id": "a",
-            "label": "60"
+            "label": "6"
           },
           {
             "id": "b",
@@ -1615,7 +1979,7 @@
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "60"
           },
           {
             "id": "d",
@@ -1646,11 +2010,11 @@
         "inlineData": {
           "prompt": "Evaluate 0.4 × 7.5 ÷ 0.4 × 8 using standard order of operations.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "60"
+              "label": "6"
             },
             {
               "id": "b",
@@ -1658,7 +2022,7 @@
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "60"
             },
             {
               "id": "d",
@@ -1679,7 +2043,7 @@
       "id": "remedy_brackets_and_mixed_forms",
       "type": "CONTENT",
       "content": {
-        "text": "Multiplication and division share precedence and run left to right: 0.4 × 7.5 = 3; 3 ÷ 0.4 = 7.5; 7.5 × 8 = 60.",
+        "text": "Multiplication and division share precedence and run left to right: 0.4 × 7.5 = 3; 3 ÷ 0.4 = 7.5; 7.5 × 8 = 60.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1692,7 +2056,7 @@
       "id": "retry_brackets_and_mixed_forms",
       "type": "CHOICE",
       "content": {
-        "text": "Evaluate (8.4 − 2.4) ÷ 0.3.",
+        "text": "Evaluate (1/2 + 0.25) ÷ 0.3.",
         "avatarPersona": "TUTOR"
       },
       "input": {
@@ -1700,69 +2064,108 @@
         "options": [
           {
             "id": "a",
-            "label": "2"
+            "label": "0.25"
           },
           {
             "id": "b",
-            "label": "20"
+            "label": "2"
           },
           {
             "id": "c",
-            "label": "28"
+            "label": "2.5"
           },
           {
             "id": "d",
-            "label": "0.2"
+            "label": "25"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "final_recap"
+          "targetNodeId": "final_recap",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_brackets_and_mixed_forms_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "prompt": "Evaluate (8.4 − 2.4) ÷ 0.3.",
+          "prompt": "Evaluate (1/2 + 0.25) ÷ 0.3.",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "2"
+              "label": "0.25"
             },
             {
               "id": "b",
-              "label": "20"
+              "label": "2"
             },
             {
               "id": "c",
-              "label": "28"
+              "label": "2.5"
             },
             {
               "id": "d",
-              "label": "0.2"
+              "label": "25"
             }
           ],
           "hints": [
-            "Evaluate the parentheses first.",
-            "6 ÷ 0.3 = ?"
+            "Calculate the bracket first, using 1/2 = 0.5.",
+            "After adding 0.5 and 0.25, divide their total by 0.3."
           ],
-          "explanation": "8.4 − 2.4 = 6, and 6 ÷ 0.3 = 20.",
+          "explanation": "(1/2 + 0.25) ÷ 0.3 = (0.5 + 0.25) ÷ 0.3 = 0.75 ÷ 0.3 = 2.5. Check: 2.5 × 0.3 = 0.75.",
           "difficulty": "MEDIUM",
           "xp": 10
         }
       }
     },
+    "retry_brackets_and_mixed_forms_remedy": {
+      "id": "retry_brackets_and_mixed_forms_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Finish the bracket first.\n\n1/2 = 0.5, so 0.5 + 0.25 = 0.75. Then 0.75 ÷ 0.3 = 2.5. Check 2.5 × 0.3 = 0.75, then try the question again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_brackets_and_mixed_forms"
+        }
+      ]
+    },
     "final_recap": {
       "id": "final_recap",
       "type": "COMPLETION",
       "content": {
-        "text": "For multiplication, count all decimal places in the factors and place that many in the product. Multiplication or division by 10ⁿ shifts the decimal point n places. When dividing by a decimal, multiply dividend and divisor by the same power of ten; the quotient stays unchanged. Use known whole-number facts to scale products or quotients, solve missing terms with inverse operations, and follow brackets and operation precedence. Check every result's magnitude.",
+        "text": "You can now place a decimal point in a product, scale a decimal divisor safely, find a missing factor or divisor, and follow brackets and operation order.\n\nCheck a product or quotient with the inverse operation and a quick size estimate.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
+    },
+    "brackets_and_mixed_forms_step_2": {
+      "id": "brackets_and_mixed_forms_step_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fraction can sit inside the brackets too. Since 1/4 = 0.25 exactly:\n\n(0.5 + 1/4) × 2\n= (0.5 + 0.25) × 2\n= 0.75 × 2 = 1.5.\n\nFinish the bracket before the outside multiplication. Check: doubling three quarters gives one and a half.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_brackets_and_mixed_forms"
+        }
+      ]
     }
   }
 }

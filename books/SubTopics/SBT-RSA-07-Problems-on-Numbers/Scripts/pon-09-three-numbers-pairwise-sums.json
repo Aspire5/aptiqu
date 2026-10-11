@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's solve linked puzzles with three numbers.\n\nThe clues may give pairwise sums, ratios or relationships between the numbers.\n\nThe safest method is to label each equation clearly and use the overlap between them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "If three numbers are added in pairs, add all three equations.\n\n(x+y)+(y+z)+(x+z)=2(x+y+z).\n\nSo the sum of the three pair-sums is twice the total of the three numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "content": {
+        "text": "For three numbers, x+y=12, y+z=17 and x+z=19. What is z?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Add the three pair-sums: 48=2(x+y+z).",
+            "So x+y+z=24; subtract x+y=12."
+          ],
+          "prompt": "For three numbers, x+y=12, y+z=17 and x+z=19. What is z?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "z=24−12=12.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "27"
+          }
+        ]
+      },
+      "content": {
+        "text": "For three numbers, a+b=15, b+c=18 and a+c=21. What is b?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total of pair-sums=54, so a+b+c=27.",
+            "Subtract a+c=21."
+          ],
+          "prompt": "For three numbers, a+b=15, b+c=18 and a+c=21. What is b?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "27"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "b=27−21=6.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nFor three numbers, x+y=12, y+z=17 and x+z=19. What is z?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "b=27−21=6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two ratios that share a middle number can be combined.\n\nIf A:B=2:3 and B:C=5:4, make B match:\n10:15 and 15:12.\nSo A:B:C=10:15:12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50"
+          },
+          {
+            "id": "b",
+            "label": "75"
+          },
+          {
+            "id": "c",
+            "label": "60"
+          },
+          {
+            "id": "d",
+            "label": "90"
+          }
+        ]
+      },
+      "content": {
+        "text": "A:B=2:3 and B:C=5:4. If A+B+C=185, what is B?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "A:B:C=10:15:12.",
+            "Total ratio parts=37."
+          ],
+          "prompt": "A:B=2:3 and B:C=5:4. If A+B+C=185, what is B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50"
+            },
+            {
+              "id": "b",
+              "label": "75"
+            },
+            {
+              "id": "c",
+              "label": "60"
+            },
+            {
+              "id": "d",
+              "label": "90"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "One part is 5, so B=15×5=75.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "48"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "content": {
+        "text": "P:Q=3:4 and Q:R=2:5. If P+Q+R=102, what is R?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Make Q common: P:Q=3:4 and Q:R=4:10.",
+            "So ratio is 3:4:10, total 17 parts."
+          ],
+          "prompt": "P:Q=3:4 and Q:R=2:5. If P+Q+R=102, what is R?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "48"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "One part is 6, so R=60.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA:B=2:3 and B:C=5:4. If A+B+C=185, what is B?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "One part is 6, so R=60.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A total plus relations between the three numbers can be reduced to one variable.\n\nIf first=2×second and third=(1/3)×first, let second=x.\nThen the three numbers are 2x, x and (2/3)x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "42"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three numbers total 66. The first is twice the second, and the third is one-third of the first. What is the largest number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Let second=x, first=2x, third=2x/3.",
+            "(11/3)x=66."
+          ],
+          "prompt": "Three numbers total 66. The first is twice the second, and the third is one-third of the first. What is the largest number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "42"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "x=18, so the numbers are 36,18,12. Largest=36.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three numbers total 81. The first is three times the second, and the third is half the second. What is the second number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Let second=x; first=3x, third=x/2.",
+            "(9/2)x=81."
+          ],
+          "prompt": "Three numbers total 81. The first is three times the second, and the third is half the second. What is the second number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "x=18.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThree numbers total 66. The first is twice the second, and the third is one-third of the first. What is the largest number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "x=18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Linked sum equations can be solved by substitution.\n\nSuppose x+y=48 and y+z=52.\nThen y=48−x and z=52−y.\nA third relation fixes x and completes the chain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "26"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three numbers satisfy x+y=48, y+z=52 and 3x+z=92. What is z?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "From y=48−x, z=52−y=4+x.",
+            "3x+(x+4)=92."
+          ],
+          "prompt": "Three numbers satisfy x+y=48, y+z=52 and 3x+z=92. What is z?",
+          "options": [
+            {
+              "id": "a",
+              "label": "22"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "26"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "4x=88, so x=22 and z=26.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "19"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "content": {
+        "text": "Three numbers satisfy a+b=35, b+c=41 and 2a+c=54. What is c?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "c=41−b and b=35−a, so c=6+a.",
+            "2a+(a+6)=54."
+          ],
+          "prompt": "Three numbers satisfy a+b=35, b+c=41 and 2a+c=54. What is c?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "19"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "3a=48, so a=16 and c=22.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThree numbers satisfy x+y=48, y+z=52 and 3x+z=92. What is z?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "3a=48, so a=16 and c=22.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful three-number identity is\n\n(a+b+c)² = a²+b²+c² + 2(ab+bc+ca).\n\nIf the sum of squares and the pairwise products are known, you can get the total directly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "14"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "content": {
+        "text": "For positive numbers a,b,c, a²+b²+c²=98 and ab+bc+ca=79. What is a+b+c?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Square the total using the identity.",
+            "98+2×79=256."
+          ],
+          "prompt": "For positive numbers a,b,c, a²+b²+c²=98 and ab+bc+ca=79. What is a+b+c?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "14"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "(a+b+c)²=256, so the positive sum is 16.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "content": {
+        "text": "For positive numbers p,q,r, p²+q²+r²=84 and pq+qr+rp=56. What is p+q+r?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "84+2×56=196.",
+            "Take the positive square root."
+          ],
+          "prompt": "For positive numbers p,q,r, p²+q²+r²=84 and pq+qr+rp=56. What is p+q+r?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "(p+q+r)²=196, so p+q+r=14. For example, 2,4,8 satisfy these conditions.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nFor positive numbers a,b,c, a²+b²+c²=98 and ab+bc+ca=79. What is a+b+c?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "(p+q+r)²=196, so p+q+r=14. For example, 2,4,8 satisfy these conditions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Always check all recovered numbers in every original condition.\n\nWith several equations, an arithmetic slip can still produce a believable value.\n\nRe-substitute the final x,y,z into each pair-sum, ratio or total before finishing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Yes, all three equations match"
+          },
+          {
+            "id": "b",
+            "label": "No, x+y is wrong"
+          },
+          {
+            "id": "c",
+            "label": "No, y+z is wrong"
+          },
+          {
+            "id": "d",
+            "label": "No, x+z is wrong"
+          }
+        ]
+      },
+      "content": {
+        "text": "A solution claims x=7,y=5,z=12 for x+y=12, y+z=17 and x+z=19. Is the solution valid?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Check 7+5, 5+12 and 7+12.",
+            "They are 12,17 and 19."
+          ],
+          "prompt": "A solution claims x=7,y=5,z=12 for x+y=12, y+z=17 and x+z=19. Is the solution valid?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Yes, all three equations match"
+            },
+            {
+              "id": "b",
+              "label": "No, x+y is wrong"
+            },
+            {
+              "id": "c",
+              "label": "No, y+z is wrong"
+            },
+            {
+              "id": "d",
+              "label": "No, x+z is wrong"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "All three conditions are satisfied, so the solution is valid.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Nothing is wrong"
+          },
+          {
+            "id": "b",
+            "label": "A:B is wrong"
+          },
+          {
+            "id": "c",
+            "label": "The total is wrong"
+          },
+          {
+            "id": "d",
+            "label": "B:C is wrong"
+          }
+        ]
+      },
+      "content": {
+        "text": "A solution claims A=20,B=30,C=24 for A:B=2:3, B:C=5:4 and total 75. What is wrong?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "20:30=2:3 and 30:24=5:4.",
+            "But 20+30+24=74, not 75."
+          ],
+          "prompt": "A solution claims A=20,B=30,C=24 for A:B=2:3, B:C=5:4 and total 75. What is wrong?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Nothing is wrong"
+            },
+            {
+              "id": "b",
+              "label": "A:B is wrong"
+            },
+            {
+              "id": "c",
+              "label": "The total is wrong"
+            },
+            {
+              "id": "d",
+              "label": "B:C is wrong"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The ratios are correct, but the total fails by 1.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA solution claims x=7,y=5,z=12 for x+y=12, y+z=17 and x+z=19. Is the solution valid?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The ratios are correct, but the total fails by 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pairwise sums are powerful because their total counts each number twice. Chained ratios need a common middle term. Linked equations can be solved by substitution, and (a+b+c)² connects a total with squares and pairwise products. Recheck every original condition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Three Numbers and Pairwise-Sum Puzzles.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Three Numbers and Pairwise-Sum Puzzles",
+    "description": "Recover three unknown numbers from pairwise sums, ratios, identities and linked conditions.",
+    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Three Numbers and Pairwise-Sum Puzzles. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 20
+  },
+  "scriptId": "script-pon-09-three-numbers-pairwise-sums",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

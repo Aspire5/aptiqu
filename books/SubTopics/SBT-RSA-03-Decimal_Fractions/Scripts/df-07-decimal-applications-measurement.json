@@ -6,9 +6,9 @@
   "entryNodeId": "start",
   "metadata": {
     "title": "Decimal Word Problems and Measurement",
-    "description": "Model measurement, money, rate and quantity situations with decimal arithmetic and suitable units.",
+    "description": "Use decimal operations to solve measurement, money, rate and quantity problems.",
     "targetDurationMinutes": 42,
-    "teachingApproach": "Read quantities and units → model with an equation → calculate with consistent scales → interpret whole counts → check dimensions and reasonableness.",
+    "teachingApproach": "Teach through short, connected phone-sized screens: a concrete idea, worked steps on separate lines, a reason and check, then fresh practice. Wrong answers receive a worked correction and a parallel retry that must be answered correctly before the lesson advances.",
     "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 3 Decimal Fractions: objective application patterns on printed pages 74-76 and worked solutions for measurement, repeated consumption, piece counts, changing prices and coin values in the chapter answer section. This lesson follows the approved df-07 scope and leaves isolated computation methods to df-03/df-04."
   },
   "nodes": {
@@ -16,7 +16,7 @@
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "A word problem becomes manageable when the quantities and their units are made explicit before calculating. Identify what is known, what is asked, and how the units relate. Convert units consistently, write an equation, compute, then state the result with its unit.\n\nThis lesson focuses on the chapter's application patterns: length and capacity conversions, repeated use over time, rates and changing prices, counting complete pieces, and finding two coin counts from a total count and value. A final unit check catches many decimal-scale errors.",
+        "text": "Let's turn short stories about measurement and money into calculations.\n\nA number without its unit can mislead us. If a tap gives 2 litres each minute, four minutes means 8 litres. We'll name the quantity and unit before working.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,7 +29,20 @@
       "id": "read_units_and_unknown",
       "type": "CONTENT",
       "content": {
-        "text": "Read the question for both numbers and units. A numerical operation that ignores the unit can produce a value that looks plausible but answers a different question. Label measurements, rates, elapsed periods, and counts; then identify the requested quantity.\n\nFor example, a length divided by a length per piece gives a number of pieces: metres ÷ metres per piece = pieces. A consumption rate in litres per day multiplied by days gives litres. Writing the units beside each factor makes the correct operation easier to see.",
+        "text": "Start with what is given and what is asked. A tap gives 1.5 litres each minute and runs for 6 minutes.\n\nGiven: 1.5 litres/minute\nTime: 6 minutes\nAsked: total litres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "read_units_and_unknown_step_1"
+        }
+      ]
+    },
+    "read_units_and_unknown_step_1": {
+      "id": "read_units_and_unknown_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply rate by time:\n\n1.5 litres/minute × 6 minutes = 9 litres.\n\nThe minutes cancel, leaving litres. Check size: about 1.5 × 6 = 9. If a calculation leaves the wrong unit, revisit the operation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -50,19 +63,19 @@
         "options": [
           {
             "id": "a",
-            "label": "2.5 + 4 litres"
+            "label": "2.5 − 4 litres"
           },
           {
             "id": "b",
-            "label": "2.5 × 4 litres"
-          },
-          {
-            "id": "c",
             "label": "4 ÷ 2.5 minutes"
           },
           {
+            "id": "c",
+            "label": "2.5 + 4 litres"
+          },
+          {
             "id": "d",
-            "label": "2.5 − 4 litres"
+            "label": "2.5 × 4 litres"
           }
         ]
       },
@@ -89,23 +102,23 @@
         "inlineData": {
           "prompt": "A tap flows at 2.5 litres per minute for 4 minutes. Which expression gives the total volume?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "2.5 + 4 litres"
+              "label": "2.5 − 4 litres"
             },
             {
               "id": "b",
-              "label": "2.5 × 4 litres"
-            },
-            {
-              "id": "c",
               "label": "4 ÷ 2.5 minutes"
             },
             {
+              "id": "c",
+              "label": "2.5 + 4 litres"
+            },
+            {
               "id": "d",
-              "label": "2.5 − 4 litres"
+              "label": "2.5 × 4 litres"
             }
           ],
           "hints": [
@@ -122,7 +135,7 @@
       "id": "remedy_read_units_and_unknown",
       "type": "CONTENT",
       "content": {
-        "text": "Write the unit after each given value and after the unknown. Select operations that leave the requested unit in the result.",
+        "text": "Write the unit after each given value and after the unknown. Select operations that leave the requested unit in the result.\n\n2.5 litres per minute × 4 minutes = 10 litres.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -161,7 +174,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "convert_length_units"
+          "targetNodeId": "convert_length_units",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_read_units_and_unknown_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -198,11 +224,37 @@
         }
       }
     },
+    "retry_read_units_and_unknown_remedy": {
+      "id": "retry_read_units_and_unknown_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiply distance per lap by number of laps.\n\n3.2 km/lap × 5 laps = 16 km.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_read_units_and_unknown"
+        }
+      ]
+    },
     "convert_length_units": {
       "id": "convert_length_units",
       "type": "CONTENT",
       "content": {
-        "text": "Convert units before combining measurements. In the metric system, 100 centimetres equal 1 metre and 1,000 metres equal 1 kilometre. Moving between units changes the numerical value inversely: a smaller unit requires more units to represent the same length.\n\nFor 0.01 cm to kilometres, first use 1 km = 100,000 cm. Therefore 0.01 cm = 0.01/100,000 km = 0.0000001 km. Check scale: a centimetre is already small compared with a kilometre, so the result should be a very small fraction of one kilometre.",
+        "text": "A metre contains 100 centimetres. A kilometre contains 1,000 metres, or 100,000 centimetres.\n\nTo change 250 cm into metres, divide by 100:\n250 cm = 2.5 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "convert_length_units_step_1"
+        }
+      ]
+    },
+    "convert_length_units_step_1": {
+      "id": "convert_length_units_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "To change 250 cm into kilometres, divide by 100,000:\n\n250 cm = 0.0025 km.\n\nCheck the direction: kilometres are larger units, so the numerical count is smaller. Write both the number and the new unit.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -227,15 +279,15 @@
           },
           {
             "id": "b",
-            "label": "0.00015 km"
+            "label": "0.0000015 km"
           },
           {
             "id": "c",
-            "label": "0.0015 km"
+            "label": "0.00015 km"
           },
           {
             "id": "d",
-            "label": "0.0000015 km"
+            "label": "0.0015 km"
           }
         ]
       },
@@ -270,15 +322,15 @@
             },
             {
               "id": "b",
-              "label": "0.00015 km"
+              "label": "0.0000015 km"
             },
             {
               "id": "c",
-              "label": "0.0015 km"
+              "label": "0.00015 km"
             },
             {
               "id": "d",
-              "label": "0.0000015 km"
+              "label": "0.0015 km"
             }
           ],
           "hints": [
@@ -295,7 +347,7 @@
       "id": "remedy_convert_length_units",
       "type": "CONTENT",
       "content": {
-        "text": "Use 1 km = 100,000 cm. Divide 1.5 cm by 100,000 to obtain 0.000015 km.",
+        "text": "Use 1 km = 100,000 cm. Divide 1.5 cm by 100,000 to obtain 0.000015 km.\n\n1.5 ÷ 100,000 = 0.000015 km.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -316,7 +368,7 @@
         "options": [
           {
             "id": "a",
-            "label": "3.75 m"
+            "label": "375,000 m"
           },
           {
             "id": "b",
@@ -324,17 +376,30 @@
           },
           {
             "id": "c",
-            "label": "0.375 m"
+            "label": "3.75 m"
           },
           {
             "id": "d",
-            "label": "375,000 m"
+            "label": "0.375 m"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "capacity_and_decimal_units"
+          "targetNodeId": "capacity_and_decimal_units",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_convert_length_units_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -342,11 +407,11 @@
         "inlineData": {
           "prompt": "Convert 375 cm to metres.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "3.75 m"
+              "label": "375,000 m"
             },
             {
               "id": "b",
@@ -354,11 +419,11 @@
             },
             {
               "id": "c",
-              "label": "0.375 m"
+              "label": "3.75 m"
             },
             {
               "id": "d",
-              "label": "375,000 m"
+              "label": "0.375 m"
             }
           ],
           "hints": [
@@ -371,11 +436,37 @@
         }
       }
     },
+    "retry_convert_length_units_remedy": {
+      "id": "retry_convert_length_units_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\n100 cm make 1 m.\n\n375 cm ÷ 100 = 3.75 m.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_convert_length_units"
+        }
+      ]
+    },
     "capacity_and_decimal_units": {
       "id": "capacity_and_decimal_units",
       "type": "CONTENT",
       "content": {
-        "text": "Capacity conversions follow the same unit logic. One litre equals 1,000 millilitres, so divide millilitres by 1,000 to express them in litres. Keep the unit attached through each step; 350 mL is 0.35 L, not 350 L.\n\nIf a problem gives a repeated quantity in millilitres but asks for litres, either convert the rate before multiplying or multiply first and convert the total afterward. Both routes agree when the conversion is consistent.",
+        "text": "One litre holds 1,000 millilitres. To express millilitres in litres, divide by 1,000.\n\nFor 750 mL:\n750 ÷ 1,000 = 0.75 L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "capacity_and_decimal_units_step_1"
+        }
+      ]
+    },
+    "capacity_and_decimal_units_step_1": {
+      "id": "capacity_and_decimal_units_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check by changing back:\n\n0.75 L × 1,000 = 750 mL.\n\nIf a story gives a daily amount in millilitres but asks for a total in litres, convert at one clear step and keep the chosen unit throughout the rest of the calculation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -396,7 +487,7 @@
         "options": [
           {
             "id": "a",
-            "label": "0.16 L"
+            "label": "16 L"
           },
           {
             "id": "b",
@@ -404,7 +495,7 @@
           },
           {
             "id": "c",
-            "label": "16 L"
+            "label": "0.16 L"
           },
           {
             "id": "d",
@@ -439,7 +530,7 @@
           "options": [
             {
               "id": "a",
-              "label": "0.16 L"
+              "label": "16 L"
             },
             {
               "id": "b",
@@ -447,7 +538,7 @@
             },
             {
               "id": "c",
-              "label": "16 L"
+              "label": "0.16 L"
             },
             {
               "id": "d",
@@ -468,7 +559,7 @@
       "id": "remedy_capacity_and_decimal_units",
       "type": "CONTENT",
       "content": {
-        "text": "Since 1 L = 1,000 mL, 350 mL is 350/1,000 = 0.35 L.",
+        "text": "Since 1 L = 1,000 mL, 350 mL is 350/1,000 = 0.35 L.\n\n1,600 mL = 1.6 L because 1 L = 1,000 mL.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -493,11 +584,11 @@
           },
           {
             "id": "b",
-            "label": "75 mL"
+            "label": "750 mL"
           },
           {
             "id": "c",
-            "label": "750 mL"
+            "label": "75 mL"
           },
           {
             "id": "d",
@@ -507,7 +598,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "time_and_repeated_consumption"
+          "targetNodeId": "time_and_repeated_consumption",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_capacity_and_decimal_units_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -515,7 +619,7 @@
         "inlineData": {
           "prompt": "A container holds 0.75 L. How many millilitres is that?",
           "questionType": "PRACTICE",
-          "correctOptionId": "c",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
@@ -523,11 +627,11 @@
             },
             {
               "id": "b",
-              "label": "75 mL"
+              "label": "750 mL"
             },
             {
               "id": "c",
-              "label": "750 mL"
+              "label": "75 mL"
             },
             {
               "id": "d",
@@ -544,11 +648,37 @@
         }
       }
     },
+    "retry_capacity_and_decimal_units_remedy": {
+      "id": "retry_capacity_and_decimal_units_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiply litres by 1,000 to get millilitres.\n\n0.75 L = 750 mL.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_capacity_and_decimal_units"
+        }
+      ]
+    },
     "time_and_repeated_consumption": {
       "id": "time_and_repeated_consumption",
       "type": "CONTENT",
       "content": {
-        "text": "For a constant daily quantity, multiply the per-day amount by the number of days, after converting units if needed. Four weeks contain 4 × 7 = 28 days. A daily use of 1,600 mL is 1.6 L, so in 28 days the total is 1.6 × 28 = 44.8 L.\n\nCheck the dimensions: litres/day × days = litres. Also estimate 1.6 × 30 ≈ 48 L; 44.8 L is a reasonable result. Avoid multiplying by four alone when the rate is per day and the period is stated in weeks.",
+        "text": "A repeated daily amount needs a day count. Suppose someone uses 1,250 mL each day for two weeks.\n\nTwo weeks = 2 × 7 = 14 days.\n1,250 mL = 1.25 L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "time_and_repeated_consumption_step_1"
+        }
+      ]
+    },
+    "time_and_repeated_consumption_step_1": {
+      "id": "time_and_repeated_consumption_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total use:\n\n1.25 L/day × 14 days = 17.5 L.\n\nThe days cancel. Check: a little over 1 litre for 14 days should be a little over 14 litres. Converting weeks and millilitres before multiplying keeps the units clear.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -569,19 +699,19 @@
         "options": [
           {
             "id": "a",
-            "label": "6.4 L"
-          },
-          {
-            "id": "b",
-            "label": "44.8 L"
-          },
-          {
-            "id": "c",
             "label": "448 L"
           },
           {
-            "id": "d",
+            "id": "b",
             "label": "1.6 L"
+          },
+          {
+            "id": "c",
+            "label": "44.8 L"
+          },
+          {
+            "id": "d",
+            "label": "6.4 L"
           }
         ]
       },
@@ -608,23 +738,23 @@
         "inlineData": {
           "prompt": "A person uses 1,600 mL of water each day. How much is used in four weeks?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "6.4 L"
-            },
-            {
-              "id": "b",
-              "label": "44.8 L"
-            },
-            {
-              "id": "c",
               "label": "448 L"
             },
             {
-              "id": "d",
+              "id": "b",
               "label": "1.6 L"
+            },
+            {
+              "id": "c",
+              "label": "44.8 L"
+            },
+            {
+              "id": "d",
+              "label": "6.4 L"
             }
           ],
           "hints": [
@@ -641,7 +771,7 @@
       "id": "remedy_time_and_repeated_consumption",
       "type": "CONTENT",
       "content": {
-        "text": "Convert 1,600 mL to 1.6 L and four weeks to 28 days. Then 1.6 L/day × 28 days = 44.8 L.",
+        "text": "Convert 1,600 mL to 1.6 L and four weeks to 28 days. Then 1.6 L/day × 28 days = 44.8 L.\n\n1,600 mL = 1.6 L and four weeks = 28 days. Total = 1.6 × 28 = 44.8 L.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -662,25 +792,38 @@
         "options": [
           {
             "id": "a",
-            "label": "1.12 L"
-          },
-          {
-            "id": "b",
-            "label": "11.2 L"
-          },
-          {
-            "id": "c",
             "label": "112 L"
           },
           {
-            "id": "d",
+            "id": "b",
             "label": "0.056 L"
+          },
+          {
+            "id": "c",
+            "label": "1.12 L"
+          },
+          {
+            "id": "d",
+            "label": "11.2 L"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "rate_over_multiple_periods"
+          "targetNodeId": "rate_over_multiple_periods",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_time_and_repeated_consumption_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -688,23 +831,23 @@
         "inlineData": {
           "prompt": "A machine uses 0.8 L of oil each day. How much does it use in 14 days?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "1.12 L"
-            },
-            {
-              "id": "b",
-              "label": "11.2 L"
-            },
-            {
-              "id": "c",
               "label": "112 L"
             },
             {
-              "id": "d",
+              "id": "b",
               "label": "0.056 L"
+            },
+            {
+              "id": "c",
+              "label": "1.12 L"
+            },
+            {
+              "id": "d",
+              "label": "11.2 L"
             }
           ],
           "hints": [
@@ -717,11 +860,37 @@
         }
       }
     },
+    "retry_time_and_repeated_consumption_remedy": {
+      "id": "retry_time_and_repeated_consumption_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiply the daily amount by 14.\n\n0.8 L/day × 14 days = 11.2 L.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_time_and_repeated_consumption"
+        }
+      ]
+    },
     "rate_over_multiple_periods": {
       "id": "rate_over_multiple_periods",
       "type": "CONTENT",
       "content": {
-        "text": "When a quantity is given per event or per period, multiply by the number of events only after confirming the units match. For example, 350 mL donated three times in a year is 1,050 mL, or 1.05 L. If that pattern continues for six years, multiply the annual amount by six to obtain 6.3 L.\n\nIf the source instead states a number of events per year, include that event count in the rate. Keep track of whether the quoted amount is per event, per month, or per year; do not multiply by a duration twice.",
+        "text": "Sometimes a quantity repeats several times in each year. Suppose a person donates 250 mL twice a year for four years.\n\nNumber of donations = 2 × 4 = 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "rate_over_multiple_periods_step_1"
+        }
+      ]
+    },
+    "rate_over_multiple_periods_step_1": {
+      "id": "rate_over_multiple_periods_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total volume:\n\n250 mL/donation × 8 donations = 2,000 mL = 2 L.\n\nCheck by year: 500 mL each year for four years is also 2,000 mL. Keep the “times per year” and “number of years” as separate counts.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -742,19 +911,19 @@
         "options": [
           {
             "id": "a",
-            "label": "1.05 L"
-          },
-          {
-            "id": "b",
             "label": "2.1 L"
           },
           {
+            "id": "b",
+            "label": "63 L"
+          },
+          {
             "id": "c",
-            "label": "6.3 L"
+            "label": "1.05 L"
           },
           {
             "id": "d",
-            "label": "63 L"
+            "label": "6.3 L"
           }
         ]
       },
@@ -781,23 +950,23 @@
         "inlineData": {
           "prompt": "A person donates 350 mL three times each year. How much is donated in six years?",
           "questionType": "PRACTICE",
-          "correctOptionId": "c",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "1.05 L"
-            },
-            {
-              "id": "b",
               "label": "2.1 L"
             },
             {
+              "id": "b",
+              "label": "63 L"
+            },
+            {
               "id": "c",
-              "label": "6.3 L"
+              "label": "1.05 L"
             },
             {
               "id": "d",
-              "label": "63 L"
+              "label": "6.3 L"
             }
           ],
           "hints": [
@@ -814,7 +983,7 @@
       "id": "remedy_rate_over_multiple_periods",
       "type": "CONTENT",
       "content": {
-        "text": "Separate the rate from the duration: amount per event × events per year × years. Convert the final millilitres to litres only after obtaining the total.",
+        "text": "Separate the rate from the duration: amount per event × events per year × years. Convert the final millilitres to litres only after obtaining the total.\n\n350 mL × 3 × 6 = 6,300 mL = 6.3 L.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -835,15 +1004,15 @@
         "options": [
           {
             "id": "a",
-            "label": "0.2 L"
-          },
-          {
-            "id": "b",
             "label": "2 L"
           },
           {
-            "id": "c",
+            "id": "b",
             "label": "20 L"
+          },
+          {
+            "id": "c",
+            "label": "0.2 L"
           },
           {
             "id": "d",
@@ -853,7 +1022,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "cut_complete_pieces"
+          "targetNodeId": "cut_complete_pieces",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_rate_over_multiple_periods_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -861,19 +1043,19 @@
         "inlineData": {
           "prompt": "A filter uses 0.25 L per month. How much does it use in eight months?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "a",
           "options": [
             {
               "id": "a",
-              "label": "0.2 L"
-            },
-            {
-              "id": "b",
               "label": "2 L"
             },
             {
-              "id": "c",
+              "id": "b",
               "label": "20 L"
+            },
+            {
+              "id": "c",
+              "label": "0.2 L"
             },
             {
               "id": "d",
@@ -890,11 +1072,37 @@
         }
       }
     },
+    "retry_rate_over_multiple_periods_remedy": {
+      "id": "retry_rate_over_multiple_periods_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiply the monthly rate by 8 months.\n\n0.25 L/month × 8 months = 2 L.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_rate_over_multiple_periods"
+        }
+      ]
+    },
     "cut_complete_pieces": {
       "id": "cut_complete_pieces",
       "type": "CONTENT",
       "content": {
-        "text": "A length divided by the length of each piece gives the number of pieces. If only complete pieces count, take the greatest whole number that does not exceed the quotient; leftover material cannot make another full piece.\n\nFor 37.5 m cut into pieces of 0.125 m, 37.5 ÷ 0.125 = 300 pieces exactly. If the quotient were 300.4, the answer would be 300 complete pieces, with part of a piece left over. Report the remainder or leftover only if the question asks for it.",
+        "text": "A 9 m ribbon is cut into pieces that are each 0.7 m long.\n\n9 ÷ 0.7 ≈ 12.857. That quotient tells us how many piece-lengths fit in the ribbon, including an incomplete one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "cut_complete_pieces_step_1"
+        }
+      ]
+    },
+    "cut_complete_pieces_step_1": {
+      "id": "cut_complete_pieces_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Only complete pieces count, so the answer is 12.\n\nCheck: 12 × 0.7 = 8.4 m. The leftover 0.6 m is too short for another 0.7 m piece. Do not round up to 13, because 13 complete pieces would need 9.1 m.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -919,15 +1127,15 @@
           },
           {
             "id": "b",
-            "label": "16.8"
+            "label": "169"
           },
           {
             "id": "c",
-            "label": "167"
+            "label": "16.8"
           },
           {
             "id": "d",
-            "label": "169"
+            "label": "167"
           }
         ]
       },
@@ -962,15 +1170,15 @@
             },
             {
               "id": "b",
-              "label": "16.8"
+              "label": "169"
             },
             {
               "id": "c",
-              "label": "167"
+              "label": "16.8"
             },
             {
               "id": "d",
-              "label": "169"
+              "label": "167"
             }
           ],
           "hints": [
@@ -987,7 +1195,7 @@
       "id": "remedy_cut_complete_pieces",
       "type": "CONTENT",
       "content": {
-        "text": "Divide total length by length per piece: 25.2 ÷ 0.15 = 2,520 ÷ 15 = 168 complete pieces.",
+        "text": "Divide total length by length per piece: 25.2 ÷ 0.15 = 2,520 ÷ 15 = 168 complete pieces.\n\n25.2 ÷ 0.15 = 168 complete pieces.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1008,11 +1216,11 @@
         "options": [
           {
             "id": "a",
-            "label": "12"
+            "label": "140"
           },
           {
             "id": "b",
-            "label": "14"
+            "label": "12"
           },
           {
             "id": "c",
@@ -1020,13 +1228,26 @@
           },
           {
             "id": "d",
-            "label": "140"
+            "label": "14"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "changing_price_rate"
+          "targetNodeId": "changing_price_rate",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_cut_complete_pieces_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1034,15 +1255,15 @@
         "inlineData": {
           "prompt": "A 5.6 m ribbon is cut into 0.4 m pieces. How many complete pieces are made?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "12"
+              "label": "140"
             },
             {
               "id": "b",
-              "label": "14"
+              "label": "12"
             },
             {
               "id": "c",
@@ -1050,7 +1271,7 @@
             },
             {
               "id": "d",
-              "label": "140"
+              "label": "14"
             }
           ],
           "hints": [
@@ -1063,11 +1284,37 @@
         }
       }
     },
+    "retry_cut_complete_pieces_remedy": {
+      "id": "retry_cut_complete_pieces_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nDivide 5.6 m by 0.4 m per piece.\n\n5.6 ÷ 0.4 = 14, so 14 complete pieces are made.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_cut_complete_pieces"
+        }
+      ]
+    },
     "changing_price_rate": {
       "id": "changing_price_rate",
       "type": "CONTENT",
       "content": {
-        "text": "A starting price that changes by a fixed amount each year can be modelled as starting price + (change per year × years). For two prices, write one expression for each and equate or compare them. Keep the year variable consistent.\n\nSuppose X starts at 4.20 and rises by 0.40 each year; Y starts at 6.30 and rises by 0.15 each year. For X to be 0.40 more than Y after z years: (4.20 + 0.40z) − (6.30 + 0.15z) = 0.40. Simplifying gives 0.25z = 2.50, so z = 10 years. Check by substitution: X = 8.20, Y = 7.80.",
+        "text": "A fixed yearly price change can be written as a starting price plus a change for each year.\n\nSuppose A costs ₹5.00 and rises ₹0.20 yearly. B costs ₹5.80 and rises ₹0.10 yearly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "changing_price_rate_step_1"
+        }
+      ]
+    },
+    "changing_price_rate_step_1": {
+      "id": "changing_price_rate_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "After t years:\n\nA: ₹(5.00 + 0.20t)\nB: ₹(5.80 + 0.10t).\n\nIf A is to cost the same as B, set them equal. Then 0.10t = 0.80, so t = 8 years. Check both prices then: ₹6.60. Keep the same t for both prices.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1088,19 +1335,19 @@
         "options": [
           {
             "id": "a",
-            "label": "8 years"
+            "label": "12 years"
           },
           {
             "id": "b",
-            "label": "6 years"
+            "label": "8 years"
           },
           {
             "id": "c",
-            "label": "10 years"
+            "label": "6 years"
           },
           {
             "id": "d",
-            "label": "12 years"
+            "label": "10 years"
           }
         ]
       },
@@ -1127,23 +1374,23 @@
         "inlineData": {
           "prompt": "X costs 4.50 now and rises 0.30 per year. Y costs 5.70 and rises 0.10 per year. When will X cost 0.40 more than Y?",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "8 years"
+              "label": "12 years"
             },
             {
               "id": "b",
-              "label": "6 years"
+              "label": "8 years"
             },
             {
               "id": "c",
-              "label": "10 years"
+              "label": "6 years"
             },
             {
               "id": "d",
-              "label": "12 years"
+              "label": "10 years"
             }
           ],
           "hints": [
@@ -1160,7 +1407,7 @@
       "id": "remedy_changing_price_rate",
       "type": "CONTENT",
       "content": {
-        "text": "Set (4.50 + 0.30t) − (5.70 + 0.10t) equal to 0.40. The gap closes by 0.20 per year: it takes 6 years to tie and 2 more years to put X 0.40 ahead.",
+        "text": "Set (4.50 + 0.30t) − (5.70 + 0.10t) equal to 0.40. The gap closes by 0.20 per year: it takes 6 years to tie and 2 more years to put X 0.40 ahead.\n\nThe initial gap is 1.20 and closes at 0.20 per year; it takes 6 years to tie, then 2 more years for X to be 0.40 ahead: 8 years.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1173,7 +1420,7 @@
       "id": "retry_changing_price_rate",
       "type": "CHOICE",
       "content": {
-        "text": "A balance begins at 12.50 and increases by 0.75 monthly. What is it after 8 months?",
+        "text": "A costs ₹3.00 now and rises ₹0.50 per year. B costs ₹4.00 and rises ₹0.20 per year. In how many years will A cost ₹0.50 more than B?",
         "avatarPersona": "TUTOR"
       },
       "input": {
@@ -1181,66 +1428,105 @@
         "options": [
           {
             "id": "a",
-            "label": "13.25"
+            "label": "3 years"
           },
           {
             "id": "b",
-            "label": "18.50"
+            "label": "5 years"
           },
           {
             "id": "c",
-            "label": "72.50"
+            "label": "4 years"
           },
           {
             "id": "d",
-            "label": "6.50"
+            "label": "6 years"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "two_coin_counts"
+          "targetNodeId": "two_coin_counts",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_changing_price_rate_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "prompt": "A balance begins at 12.50 and increases by 0.75 monthly. What is it after 8 months?",
+          "prompt": "A costs ₹3.00 now and rises ₹0.50 per year. B costs ₹4.00 and rises ₹0.20 per year. In how many years will A cost ₹0.50 more than B?",
           "questionType": "PRACTICE",
           "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "13.25"
+              "label": "3 years"
             },
             {
               "id": "b",
-              "label": "18.50"
+              "label": "5 years"
             },
             {
               "id": "c",
-              "label": "72.50"
+              "label": "4 years"
             },
             {
               "id": "d",
-              "label": "6.50"
+              "label": "6 years"
             }
           ],
           "hints": [
-            "Add the starting value to 0.75 × 8.",
-            "The increase is 6.00."
+            "Write both prices after t years before comparing them.",
+            "Set 3.00 + 0.50t equal to 4.00 + 0.20t + 0.50."
           ],
-          "explanation": "12.50 + 0.75 × 8 = 12.50 + 6 = 18.50.",
-          "difficulty": "MEDIUM",
+          "explanation": "After t years, A costs ₹(3.00 + 0.50t) and B costs ₹(4.00 + 0.20t). For A to be ₹0.50 above B, 3.00 + 0.50t = 4.50 + 0.20t. Thus 0.30t = 1.50 and t = 5. Check: A ₹5.50, B ₹5.00.",
+          "difficulty": "HARD",
           "xp": 10
         }
       }
+    },
+    "retry_changing_price_rate_remedy": {
+      "id": "retry_changing_price_rate_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the same t for both prices.\n\nA: ₹(3.00 + 0.50t)\nB: ₹(4.00 + 0.20t).\n\nTo make A ₹0.50 dearer, solve 3.00 + 0.50t = 4.50 + 0.20t. This gives t = 5. Check prices ₹5.50 and ₹5.00, then try again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_changing_price_rate"
+        }
+      ]
     },
     "two_coin_counts": {
       "id": "two_coin_counts",
       "type": "CONTENT",
       "content": {
-        "text": "A total count and a total value provide two equations for two unknown coin counts. Let x be the number of higher-value coins and express the other count from the total. Then use the coin values to build the value equation.\n\nFor 80 coins made of 10-paise and 5-paise coins worth 6.25 rupees, let x be the number of 10-paise coins. The number of 5-paise coins is 80 − x. In rupees, 0.10x + 0.05(80 − x) = 6.25. Solving gives x = 45, so there are 35 five-paise coins. Check both: 45 + 35 = 80 and 4.50 + 1.75 = 6.25.",
+        "text": "Two coin types give two useful clues: how many coins and how much money.\n\nSuppose there are 50 coins, some worth 20 paise and the rest 10 paise, with total value ₹7.00. Let x be the number of 20-paise coins.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "two_coin_counts_step_1"
+        }
+      ]
+    },
+    "two_coin_counts_step_1": {
+      "id": "two_coin_counts_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Then 50 − x coins are worth 10 paise. Work in paise:\n\n20x + 10(50 − x) = 700\n10x = 200, so x = 20.\n\nCheck count: 20 + 30 = 50. Check value: 20×20 + 30×10 = 700 paise. Do not mix rupees and paise within one equation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1261,19 +1547,19 @@
         "options": [
           {
             "id": "a",
-            "label": "36"
+            "label": "18"
           },
           {
             "id": "b",
-            "label": "45"
-          },
-          {
-            "id": "c",
             "label": "54"
           },
           {
+            "id": "c",
+            "label": "36"
+          },
+          {
             "id": "d",
-            "label": "18"
+            "label": "45"
           }
         ]
       },
@@ -1300,23 +1586,23 @@
         "inlineData": {
           "prompt": "There are 90 coins, all 20-paise or 10-paise, worth 12.60 rupees. How many are 20-paise coins?",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "36"
+              "label": "18"
             },
             {
               "id": "b",
-              "label": "45"
-            },
-            {
-              "id": "c",
               "label": "54"
             },
             {
+              "id": "c",
+              "label": "36"
+            },
+            {
               "id": "d",
-              "label": "18"
+              "label": "45"
             }
           ],
           "hints": [
@@ -1333,7 +1619,7 @@
       "id": "remedy_two_coin_counts",
       "type": "CONTENT",
       "content": {
-        "text": "If all 90 coins were 10 paise, their value would be 9 rupees. Each 20-paise coin adds 10 paise, so the extra 360 paise represents 36 such coins.",
+        "text": "If all 90 coins were 10 paise, their value would be 9 rupees. Each 20-paise coin adds 10 paise, so the extra 360 paise represents 36 such coins.\n\nThe value is 360 paise above the 9-rupee baseline, so 360 ÷ 10 = 36 coins are 20-paise coins.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1358,11 +1644,11 @@
           },
           {
             "id": "b",
-            "label": "12"
+            "label": "15"
           },
           {
             "id": "c",
-            "label": "15"
+            "label": "12"
           },
           {
             "id": "d",
@@ -1372,7 +1658,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "countable_vs_continuous"
+          "targetNodeId": "countable_vs_continuous",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_two_coin_counts_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1380,7 +1679,7 @@
         "inlineData": {
           "prompt": "A purse has 30 coins of 20-paise and 10-paise denominations, totaling 4.20 rupees. How many are 20-paise coins?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
@@ -1388,11 +1687,11 @@
             },
             {
               "id": "b",
-              "label": "12"
+              "label": "15"
             },
             {
               "id": "c",
-              "label": "15"
+              "label": "12"
             },
             {
               "id": "d",
@@ -1409,11 +1708,37 @@
         }
       }
     },
+    "retry_two_coin_counts_remedy": {
+      "id": "retry_two_coin_counts_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nLet x be the 20-paise coins; then 30 − x are 10-paise.\n\n0.20x + 3 − 0.10x = 4.20, so 0.10x = 1.20 and x = 12.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_two_coin_counts"
+        }
+      ]
+    },
     "countable_vs_continuous": {
       "id": "countable_vs_continuous",
       "type": "CONTENT",
       "content": {
-        "text": "A measured length can be fractional, but a count of complete objects must be a whole number. This distinction matters in cutting, packing, and grouping problems. If a division gives 12.6 pieces, the maximum number of complete pieces is 12, not 12.6 or 13.\n\nDo not round a count upward unless the problem asks how many containers are needed to hold a quantity; that is a different model. Read whether the question asks for complete pieces, minimum containers, or a continuous measurement before deciding how to handle a non-integer quotient.",
+        "text": "A length can be fractional, but a number of complete pieces is a whole count.\n\nIf a 7 m wire is cut into 0.6 m pieces, division gives 7 ÷ 0.6 = 11.666… piece-lengths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "countable_vs_continuous_step_1"
+        }
+      ]
+    },
+    "countable_vs_continuous_step_1": {
+      "id": "countable_vs_continuous_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The largest possible whole count is 11.\n\nCheck: 11 × 0.6 = 6.6 m; 12 × 0.6 = 7.2 m, which is too long. The 0.4 m leftover is a real measurement, but it is not another complete piece.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1438,15 +1763,15 @@
           },
           {
             "id": "b",
-            "label": "12.5"
+            "label": "8"
           },
           {
             "id": "c",
-            "label": "13"
+            "label": "12.5"
           },
           {
             "id": "d",
-            "label": "8"
+            "label": "13"
           }
         ]
       },
@@ -1481,15 +1806,15 @@
             },
             {
               "id": "b",
-              "label": "12.5"
+              "label": "8"
             },
             {
               "id": "c",
-              "label": "13"
+              "label": "12.5"
             },
             {
               "id": "d",
-              "label": "8"
+              "label": "13"
             }
           ],
           "hints": [
@@ -1506,7 +1831,7 @@
       "id": "remedy_countable_vs_continuous",
       "type": "CONTENT",
       "content": {
-        "text": "Identify whether the result is a measurable amount or a count. Complete-piece counts use only whole pieces that fit; do not round up beyond the available material.",
+        "text": "Identify whether the result is a measurable amount or a count. Complete-piece counts use only whole pieces that fit; do not round up beyond the available material.\n\n10 ÷ 0.8 = 12.5, so 12 complete pieces can be cut; 0.4 m remains.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1527,11 +1852,11 @@
         "options": [
           {
             "id": "a",
-            "label": "7"
+            "label": "6"
           },
           {
             "id": "b",
-            "label": "7.5"
+            "label": "7"
           },
           {
             "id": "c",
@@ -1539,13 +1864,26 @@
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "7.5"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "dimensional_reasonableness"
+          "targetNodeId": "dimensional_reasonableness",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_countable_vs_continuous_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1553,15 +1891,15 @@
         "inlineData": {
           "prompt": "A 4.5 kg bag is divided into 0.6 kg portions. How many complete portions are possible?",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "7"
+              "label": "6"
             },
             {
               "id": "b",
-              "label": "7.5"
+              "label": "7"
             },
             {
               "id": "c",
@@ -1569,7 +1907,7 @@
             },
             {
               "id": "d",
-              "label": "6"
+              "label": "7.5"
             }
           ],
           "hints": [
@@ -1582,11 +1920,37 @@
         }
       }
     },
+    "retry_countable_vs_continuous_remedy": {
+      "id": "retry_countable_vs_continuous_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nDivide 4.5 by 0.6.\n\n4.5 ÷ 0.6 = 7.5, so there are 7 complete portions.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_countable_vs_continuous"
+        }
+      ]
+    },
     "dimensional_reasonableness": {
       "id": "dimensional_reasonableness",
       "type": "CONTENT",
       "content": {
-        "text": "A final check asks whether the units and scale make sense. In a rate calculation, cancel units explicitly: 1.6 litres/day × 28 days = 44.8 litres. In a conversion, verify that moving to a smaller unit makes the numerical count larger, while moving to a larger unit makes it smaller.\n\nAn answer without a unit is incomplete when the problem asks for a measurement. A number with the wrong unit may expose a wrong conversion or operation before the arithmetic itself is revisited.",
+        "text": "Units can tell you whether an operation fits the story. A runner moves at 2.4 metres per second for 5 seconds.\n\nRate × time has units:\n(metres/second) × seconds = metres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "dimensional_reasonableness_step_1"
+        }
+      ]
+    },
+    "dimensional_reasonableness_step_1": {
+      "id": "dimensional_reasonableness_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Distance = 2.4 × 5 = 12 metres.\n\nCheck: five seconds at a little over 2 metres each second should be near 10–15 metres. If you end with metres per second, you still have a rate, not the requested distance.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1607,19 +1971,19 @@
         "options": [
           {
             "id": "a",
-            "label": "metres"
-          },
-          {
-            "id": "b",
             "label": "seconds"
           },
           {
-            "id": "c",
+            "id": "b",
             "label": "metres per second squared"
           },
           {
-            "id": "d",
+            "id": "c",
             "label": "metre-seconds per second squared"
+          },
+          {
+            "id": "d",
+            "label": "metres"
           }
         ]
       },
@@ -1646,23 +2010,23 @@
         "inlineData": {
           "prompt": "Which unit results from (3.5 metres per second) × 4 seconds?",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "metres"
-            },
-            {
-              "id": "b",
               "label": "seconds"
             },
             {
-              "id": "c",
+              "id": "b",
               "label": "metres per second squared"
             },
             {
-              "id": "d",
+              "id": "c",
               "label": "metre-seconds per second squared"
+            },
+            {
+              "id": "d",
+              "label": "metres"
             }
           ],
           "hints": [
@@ -1679,7 +2043,7 @@
       "id": "remedy_dimensional_reasonableness",
       "type": "CONTENT",
       "content": {
-        "text": "Write the units through the calculation and estimate the scale. The units should cancel or combine to the unit requested.",
+        "text": "Write the units through the calculation and estimate the scale. The units should cancel or combine to the unit requested.\n\n(metres/second) × seconds leaves metres.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1700,11 +2064,11 @@
         "options": [
           {
             "id": "a",
-            "label": "2.4 km = 240 m"
+            "label": "2.4 km = 2,400 m"
           },
           {
             "id": "b",
-            "label": "2.4 km = 2,400 m"
+            "label": "2.4 km = 240 m"
           },
           {
             "id": "c",
@@ -1718,7 +2082,20 @@
       },
       "transitions": [
         {
-          "targetNodeId": "final_recap"
+          "targetNodeId": "final_recap",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_dimensional_reasonableness_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1726,15 +2103,15 @@
         "inlineData": {
           "prompt": "A length is 2.4 km. Which statement has the correct scale in metres?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "a",
           "options": [
             {
               "id": "a",
-              "label": "2.4 km = 240 m"
+              "label": "2.4 km = 2,400 m"
             },
             {
               "id": "b",
-              "label": "2.4 km = 2,400 m"
+              "label": "2.4 km = 240 m"
             },
             {
               "id": "c",
@@ -1755,11 +2132,24 @@
         }
       }
     },
+    "retry_dimensional_reasonableness_remedy": {
+      "id": "retry_dimensional_reasonableness_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nOne kilometre is 1,000 metres.\n\n2.4 km = 2.4 × 1,000 = 2,400 m.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_dimensional_reasonableness"
+        }
+      ]
+    },
     "final_recap": {
       "id": "final_recap",
       "type": "COMPLETION",
       "content": {
-        "text": "Name each quantity and unit before calculating. Convert all measurements to compatible units; use rate × time for repeated quantities; model changing values with starting amount plus change per period; and set coin counts to satisfy both total count and total value. When counting complete pieces, report a whole-number count and account for leftover length. Check that units cancel or remain appropriate and that the result is reasonable.",
+        "text": "You can translate measurements, rates, pieces, changing prices, and coin totals into decimal equations.\n\nName the requested unit before calculating. Convert units consistently, check the result's size, and report whole counts when only complete objects can be used.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []

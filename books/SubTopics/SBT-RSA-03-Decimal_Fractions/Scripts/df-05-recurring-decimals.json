@@ -6,9 +6,9 @@
   "entryNodeId": "start",
   "metadata": {
     "title": "Recurring Decimals and Fraction Conversion",
-    "description": "Recognize repeating decimals and derive reduced fractions for pure and mixed recurring decimals.",
+    "description": "Recognize repeating decimals and convert pure or mixed recurring decimals into fractions.",
     "targetDurationMinutes": 40,
-    "teachingApproach": "Recognize and notate a repeat → derive pure recurring conversion → handle prefixes and whole parts → verify and apply.",
+    "teachingApproach": "Teach through short, connected phone-sized screens: a concrete idea, worked steps on separate lines, a reason and check, then fresh practice. Wrong answers receive a worked correction and a parallel retry that must be answered correctly before the lesson advances.",
     "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 3: recurring-decimal definitions and conversion rules on printed page 70; solved examples 17-18 on printed pages 72-73; objective patterns on recurring-to-fraction conversion in the chapter exercise and answer section."
   },
   "nodes": {
@@ -16,7 +16,7 @@
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "A recurring decimal has a digit or block of digits that repeats forever. A bar over the repeating block marks exactly which digits recur. Before converting, identify whether repetition starts immediately after the decimal point or after a non-repeating prefix.\n\nThis distinction determines the denominator. A pure recurring block uses as many 9s as repeating digits. A mixed recurring decimal uses those 9s followed by as many zeroes as there are non-repeating digits. We will derive both rules so the denominator is meaningful rather than a memorized pattern.",
+        "text": "Let's understand decimals that never end but follow a pattern.\n\nIn 0.3333…, the digit 3 keeps repeating. We write it as 0.(3). Parentheses show exactly which digits repeat, so we can turn the decimal into an exact fraction.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,7 +29,20 @@
       "id": "recognize_repeat",
       "type": "CONTENT",
       "content": {
-        "text": "A decimal is recurring when a digit or fixed block repeats without end. Parentheses mark the repeating part: 0.(3) means 0.3333…; 0.(27) means 0.272727… . If the written digits stop without a repeat mark, the decimal is terminating, such as 0.375. Do not infer that a finite printed string continues forever.\n\nA pure recurring decimal repeats immediately after the decimal point. A mixed recurring decimal has one or more non-repeating digits first, then a repeating block. The boundary between those portions controls the later conversion.",
+        "text": "A terminating decimal stops, like 0.375. A recurring decimal has a repeating digit or block that continues forever.\n\n0.(34) means 0.343434… . The block 34 starts immediately after the point, so this is a pure recurring decimal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recognize_repeat_step_1"
+        }
+      ]
+    },
+    "recognize_repeat_step_1": {
+      "id": "recognize_repeat_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "0.2(7) means 0.27777… . The 2 appears once; only 7 repeats. Because the repeat begins after a non-repeating prefix, this is mixed recurring.\n\nParentheses are part of the meaning. Without a repeat mark, 0.27 is simply a terminating decimal.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -50,11 +63,11 @@
         "options": [
           {
             "id": "a",
-            "label": "0.375"
+            "label": "0.(45)"
           },
           {
             "id": "b",
-            "label": "0.(45)"
+            "label": "0.375"
           },
           {
             "id": "c",
@@ -89,15 +102,15 @@
         "inlineData": {
           "prompt": "Which number is a pure recurring decimal?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "a",
           "options": [
             {
               "id": "a",
-              "label": "0.375"
+              "label": "0.(45)"
             },
             {
               "id": "b",
-              "label": "0.(45)"
+              "label": "0.375"
             },
             {
               "id": "c",
@@ -122,7 +135,7 @@
       "id": "remedy_recognize_repeat",
       "type": "CONTENT",
       "content": {
-        "text": "Look for parentheses around the repeat block or an explicit ellipsis. 0.375 ends and is terminating; 0.(45) repeats 45 from the first decimal place and is pure recurring.",
+        "text": "Look for parentheses around the repeat block or an explicit ellipsis. 0.375 ends and is terminating; 0.(45) repeats 45 from the first decimal place and is pure recurring.\n\n0.(45) means 0.454545…; the repeating block starts at the first decimal place. The other written decimals terminate.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -151,17 +164,30 @@
           },
           {
             "id": "c",
-            "label": "0.625"
+            "label": "0.(27)"
           },
           {
             "id": "d",
-            "label": "0.(27)"
+            "label": "0.625"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "notation_and_period"
+          "targetNodeId": "notation_and_period",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_recognize_repeat_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -169,7 +195,7 @@
         "inlineData": {
           "prompt": "Which decimal is terminating?",
           "questionType": "PRACTICE",
-          "correctOptionId": "c",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
@@ -181,11 +207,11 @@
             },
             {
               "id": "c",
-              "label": "0.625"
+              "label": "0.(27)"
             },
             {
               "id": "d",
-              "label": "0.(27)"
+              "label": "0.625"
             }
           ],
           "hints": [
@@ -198,11 +224,37 @@
         }
       }
     },
+    "retry_recognize_repeat_remedy": {
+      "id": "retry_recognize_repeat_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nA terminating decimal has finitely many digits and no continuing repeat.\n\n0.625 is a finite decimal. The other choices indicate repeating digits.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_recognize_repeat"
+        }
+      ]
+    },
     "notation_and_period": {
       "id": "notation_and_period",
       "type": "CONTENT",
       "content": {
-        "text": "The repeating block is also called the period. Count the digits in that block, not the total digits shown in a calculator approximation. For example, 0.(27) repeats the two-digit block 27; it is not the same as 0.2(7), where only 7 repeats after a non-repeating 2.\n\nNotation prevents ambiguity. When reading the repeat notation, say the non-repeating prefix first, then name the full block that repeats. This will later tell you how many 9s and zeroes belong in the denominator.",
+        "text": "The repeating block is called the period.\n\n0.(27) repeats 27, a two-digit block:\n0.272727…\n\n0.2(8) repeats only 8:\n0.288888…",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "notation_and_period_step_1"
+        }
+      ]
+    },
+    "notation_and_period_step_1": {
+      "id": "notation_and_period_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Those decimals are different even though their first two written digits follow a similar pattern.\n\nRead the parentheses before counting the period. The number of digits in the period will decide how many 9s appear in its fraction denominator.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -223,19 +275,19 @@
         "options": [
           {
             "id": "a",
-            "label": "2 only"
+            "label": "Nothing repeats"
           },
           {
             "id": "b",
-            "label": "7 only"
-          },
-          {
-            "id": "c",
             "label": "27 together"
           },
           {
+            "id": "c",
+            "label": "7 only"
+          },
+          {
             "id": "d",
-            "label": "Nothing repeats"
+            "label": "2 only"
           }
         ]
       },
@@ -262,23 +314,23 @@
         "inlineData": {
           "prompt": "In 0.2(7), which part repeats?",
           "questionType": "PRACTICE",
-          "correctOptionId": "b",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "2 only"
+              "label": "Nothing repeats"
             },
             {
               "id": "b",
-              "label": "7 only"
-            },
-            {
-              "id": "c",
               "label": "27 together"
             },
             {
+              "id": "c",
+              "label": "7 only"
+            },
+            {
               "id": "d",
-              "label": "Nothing repeats"
+              "label": "2 only"
             }
           ],
           "hints": [
@@ -295,7 +347,7 @@
       "id": "remedy_notation_and_period",
       "type": "CONTENT",
       "content": {
-        "text": "Read the parentheses carefully: 0.(27) has a two-digit period, 27. In 0.2(7), the prefix is 2 and the one-digit period is 7.",
+        "text": "Read the parentheses carefully: 0.(27) has a two-digit period, 27. In 0.2(7), the prefix is 2 and the one-digit period is 7.\n\nThe decimal means 0.2777…: 2 is the prefix and 7 repeats.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -316,25 +368,38 @@
         "options": [
           {
             "id": "a",
-            "label": "1"
-          },
-          {
-            "id": "b",
-            "label": "2"
-          },
-          {
-            "id": "c",
             "label": "3"
           },
           {
-            "id": "d",
+            "id": "b",
             "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "1"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "derive_pure_single"
+          "targetNodeId": "derive_pure_single",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_notation_and_period_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -342,23 +407,23 @@
         "inlineData": {
           "prompt": "How many digits are in the repeating block of 0.(142)?",
           "questionType": "PRACTICE",
-          "correctOptionId": "c",
+          "correctOptionId": "a",
           "options": [
             {
               "id": "a",
-              "label": "1"
-            },
-            {
-              "id": "b",
-              "label": "2"
-            },
-            {
-              "id": "c",
               "label": "3"
             },
             {
-              "id": "d",
+              "id": "b",
               "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "1"
             }
           ],
           "hints": [
@@ -371,11 +436,37 @@
         }
       }
     },
+    "retry_notation_and_period_remedy": {
+      "id": "retry_notation_and_period_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nCount the digits inside the parentheses.\n\nThe period 142 has three digits.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_notation_and_period"
+        }
+      ]
+    },
     "derive_pure_single": {
       "id": "derive_pure_single",
       "type": "CONTENT",
       "content": {
-        "text": "Derive the pure recurring rule by shifting the decimal until the repeating tails line up. Let x = 0.(6) = 0.6666… . Then 10x = 6.6666… . Subtract the first equation from the second: 9x = 6, so x = 6/9 = 2/3. The infinite tails cancel because they are identical.\n\nFor a one-digit repeat, multiplication by 10 shifts one full period. Reduction to lowest terms is still required; 6/9 and 2/3 have the same value, but 2/3 is simplified.",
+        "text": "Why does a repeating 6 become a fraction over 9? Let x = 0.(6) = 0.6666… .\n\nMultiply by 10. One repeated digit moves before the point:\n10x = 6.6666…",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "derive_pure_single_step_1"
+        }
+      ]
+    },
+    "derive_pure_single_step_1": {
+      "id": "derive_pure_single_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now subtract the original x:\n\n10x − x = 6.6666… − 0.6666…\n9x = 6, so x = 6/9 = 2/3.\n\nThe endless tails match and cancel. That is why a one-digit pure repeat uses 9 in the denominator.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -396,19 +487,19 @@
         "options": [
           {
             "id": "a",
-            "label": "8/9"
-          },
-          {
-            "id": "b",
             "label": "7/10"
           },
           {
-            "id": "c",
+            "id": "b",
             "label": "4/5"
           },
           {
-            "id": "d",
+            "id": "c",
             "label": "9/8"
+          },
+          {
+            "id": "d",
+            "label": "8/9"
           }
         ]
       },
@@ -435,23 +526,23 @@
         "inlineData": {
           "prompt": "Convert 0.(8) to a fraction in lowest terms.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "8/9"
-            },
-            {
-              "id": "b",
               "label": "7/10"
             },
             {
-              "id": "c",
+              "id": "b",
               "label": "4/5"
             },
             {
-              "id": "d",
+              "id": "c",
               "label": "9/8"
+            },
+            {
+              "id": "d",
+              "label": "8/9"
             }
           ],
           "hints": [
@@ -468,7 +559,7 @@
       "id": "remedy_derive_pure_single",
       "type": "CONTENT",
       "content": {
-        "text": "If x = 0.666…, then 10x = 6.666…. Subtracting gives 9x = 6, so x = 6/9 = 2/3.",
+        "text": "If x = 0.666…, then 10x = 6.666…. Subtracting gives 9x = 6, so x = 6/9 = 2/3.\n\n9x = 8, so x = 8/9, already in lowest terms.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -489,25 +580,38 @@
         "options": [
           {
             "id": "a",
-            "label": "1/3"
+            "label": "1/9"
           },
           {
             "id": "b",
-            "label": "3/10"
+            "label": "1/3"
           },
           {
             "id": "c",
-            "label": "2/9"
+            "label": "3/10"
           },
           {
             "id": "d",
-            "label": "1/9"
+            "label": "2/9"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "pure_multi_digit"
+          "targetNodeId": "pure_multi_digit",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_derive_pure_single_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -515,23 +619,23 @@
         "inlineData": {
           "prompt": "Convert 0.(3) to a fraction in lowest terms.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "1/3"
+              "label": "1/9"
             },
             {
               "id": "b",
-              "label": "3/10"
+              "label": "1/3"
             },
             {
               "id": "c",
-              "label": "2/9"
+              "label": "3/10"
             },
             {
               "id": "d",
-              "label": "1/9"
+              "label": "2/9"
             }
           ],
           "hints": [
@@ -544,11 +648,37 @@
         }
       }
     },
+    "retry_derive_pure_single_remedy": {
+      "id": "retry_derive_pure_single_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nSubtract x = 0.333… from 10x = 3.333… .\n\n9x = 3, so x = 3/9 = 1/3.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_derive_pure_single"
+        }
+      ]
+    },
     "pure_multi_digit": {
       "id": "pure_multi_digit",
       "type": "CONTENT",
       "content": {
-        "text": "If a pure repeating block has several digits, multiply by the matching power of ten so one full block shifts past the point. For x = 0.(27) = 0.272727…, 100x = 27.272727… . Subtracting x leaves 99x = 27, so x = 27/99 = 3/11. Two repeating digits produce two 9s.\n\nFor a three-digit block, shifting three places produces 999x on subtraction. In general, a k-digit pure block is the integer made by the block divided by k nines, followed by reduction.",
+        "text": "For a two-digit block, shift two places. Let x = 0.(36) = 0.363636… .\n\nThen 100x = 36.363636… . The repeating tails now match those in x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pure_multi_digit_step_1"
+        }
+      ]
+    },
+    "pure_multi_digit_step_1": {
+      "id": "pure_multi_digit_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract:\n\n100x − x = 36\n99x = 36\nx = 36/99 = 4/11.\n\nTwo digits in the period give two 9s. Reduce only after writing the correct fraction. A one-digit shift would leave the tails unmatched.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -569,7 +699,7 @@
         "options": [
           {
             "id": "a",
-            "label": "27/100"
+            "label": "11/3"
           },
           {
             "id": "b",
@@ -577,11 +707,11 @@
           },
           {
             "id": "c",
-            "label": "27/90"
+            "label": "27/100"
           },
           {
             "id": "d",
-            "label": "11/3"
+            "label": "27/90"
           }
         ]
       },
@@ -612,7 +742,7 @@
           "options": [
             {
               "id": "a",
-              "label": "27/100"
+              "label": "11/3"
             },
             {
               "id": "b",
@@ -620,11 +750,11 @@
             },
             {
               "id": "c",
-              "label": "27/90"
+              "label": "27/100"
             },
             {
               "id": "d",
-              "label": "11/3"
+              "label": "27/90"
             }
           ],
           "hints": [
@@ -641,7 +771,7 @@
       "id": "remedy_pure_multi_digit",
       "type": "CONTENT",
       "content": {
-        "text": "For x = 0.272727…, multiply by 100 because the block has two digits. Then 100x − x = 27, so 99x = 27 and x = 27/99 = 3/11.",
+        "text": "For x = 0.272727…, multiply by 100 because the block has two digits. Then 100x − x = 27, so 99x = 27 and x = 27/99 = 3/11.\n\n99x = 27, hence x = 27/99 = 3/11.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -662,25 +792,38 @@
         "options": [
           {
             "id": "a",
-            "label": "142/999"
-          },
-          {
-            "id": "b",
             "label": "142/1000"
           },
           {
+            "id": "b",
+            "label": "999/142"
+          },
+          {
             "id": "c",
-            "label": "142/99"
+            "label": "142/999"
           },
           {
             "id": "d",
-            "label": "999/142"
+            "label": "142/99"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "pure_leading_zero_block"
+          "targetNodeId": "pure_leading_zero_block",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_pure_multi_digit_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -688,23 +831,23 @@
         "inlineData": {
           "prompt": "Convert 0.(142) to a fraction.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "142/999"
-            },
-            {
-              "id": "b",
               "label": "142/1000"
             },
             {
+              "id": "b",
+              "label": "999/142"
+            },
+            {
               "id": "c",
-              "label": "142/99"
+              "label": "142/999"
             },
             {
               "id": "d",
-              "label": "999/142"
+              "label": "142/99"
             }
           ],
           "hints": [
@@ -717,11 +860,37 @@
         }
       }
     },
+    "retry_pure_multi_digit_remedy": {
+      "id": "retry_pure_multi_digit_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe three-digit period produces three 9s.\n\nFor a pure three-digit period, 0.(142) = 142/999. This fraction is already reduced.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_pure_multi_digit"
+        }
+      ]
+    },
     "pure_leading_zero_block": {
       "id": "pure_leading_zero_block",
       "type": "CONTENT",
       "content": {
-        "text": "The block may begin with zeroes. Those zeroes are part of the period and must be counted when choosing how many 9s to use. For 0.(067), the period is 067, so write 67/999, not 67/99. The leading zero in the block does not change the numerator's integer value, but it does contribute to the block length and denominator.\n\nA quick check is to compare sizes: 67/999 is about 0.067, matching the first digits of the recurring decimal. A denominator of 99 would give about 0.677, a clear scale error.",
+        "text": "A period can begin with zero. In 0.(042), the full block is 042:\n\n0.042042042…\n\nIt has three digits, even though its first digit is zero.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "pure_leading_zero_block_step_1"
+        }
+      ]
+    },
+    "pure_leading_zero_block_step_1": {
+      "id": "pure_leading_zero_block_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the denominator has three 9s:\n\n0.(042) = 42/999 = 14/333.\n\nDo not use 42/99; that would mean 0.(42), a different decimal. Check the first digits of the fraction's decimal expansion against the written block.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -742,7 +911,7 @@
         "options": [
           {
             "id": "a",
-            "label": "67/999"
+            "label": "67/1000"
           },
           {
             "id": "b",
@@ -750,11 +919,11 @@
           },
           {
             "id": "c",
-            "label": "67/1000"
+            "label": "999/67"
           },
           {
             "id": "d",
-            "label": "999/67"
+            "label": "67/999"
           }
         ]
       },
@@ -781,11 +950,11 @@
         "inlineData": {
           "prompt": "Convert 0.(067) to a fraction.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "67/999"
+              "label": "67/1000"
             },
             {
               "id": "b",
@@ -793,11 +962,11 @@
             },
             {
               "id": "c",
-              "label": "67/1000"
+              "label": "999/67"
             },
             {
               "id": "d",
-              "label": "999/67"
+              "label": "67/999"
             }
           ],
           "hints": [
@@ -814,7 +983,7 @@
       "id": "remedy_pure_leading_zero_block",
       "type": "CONTENT",
       "content": {
-        "text": "Count all digits inside the parentheses, including the leading zero. The block 067 has length three, so use denominator 999: 67/999.",
+        "text": "Count all digits inside the parentheses, including the leading zero. The block 067 has length three, so use denominator 999: 67/999.\n\nThe block 067 gives numerator 67 and denominator 999: 67/999.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -835,25 +1004,38 @@
         "options": [
           {
             "id": "a",
-            "label": "9"
+            "label": "1000"
           },
           {
             "id": "b",
-            "label": "99"
+            "label": "9"
           },
           {
             "id": "c",
-            "label": "999"
+            "label": "99"
           },
           {
             "id": "d",
-            "label": "1000"
+            "label": "999"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "mixed_one_digit_prefix"
+          "targetNodeId": "mixed_one_digit_prefix",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_pure_leading_zero_block_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -861,23 +1043,23 @@
         "inlineData": {
           "prompt": "What denominator structure is used for the pure repeat 0.(004)?",
           "questionType": "PRACTICE",
-          "correctOptionId": "c",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "9"
+              "label": "1000"
             },
             {
               "id": "b",
-              "label": "99"
+              "label": "9"
             },
             {
               "id": "c",
-              "label": "999"
+              "label": "99"
             },
             {
               "id": "d",
-              "label": "1000"
+              "label": "999"
             }
           ],
           "hints": [
@@ -890,11 +1072,37 @@
         }
       }
     },
+    "retry_pure_leading_zero_block_remedy": {
+      "id": "retry_pure_leading_zero_block_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nCount the three digits in 004, including the zeroes.\n\nThe period 004 has three digits, so its denominator is 999; the fraction is 4/999.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_pure_leading_zero_block"
+        }
+      ]
+    },
     "mixed_one_digit_prefix": {
       "id": "mixed_one_digit_prefix",
       "type": "CONTENT",
       "content": {
-        "text": "A mixed recurring decimal has a finite prefix before the period. To remove both parts, compare two shifted forms. For x = 0.1(6) = 0.1666…, 10x = 1.666… and 100x = 16.666… . Subtract: 100x − 10x = 15, so 90x = 15 and x = 15/90 = 1/6.\n\nThe denominator has one 9 for the one repeating digit, followed by one 0 for the one prefix digit: 90. The numerator is 16 − 1, the integer formed by prefix plus one repeat digit minus the prefix alone.",
+        "text": "Now let one digit appear once before the repeat: x = 0.2(7) = 0.2777… .\n\nOne shift removes the non-repeating prefix:\n10x = 2.7777… .",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_one_digit_prefix_step_1"
+        }
+      ]
+    },
+    "mixed_one_digit_prefix_step_1": {
+      "id": "mixed_one_digit_prefix_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Shift one more place to move a full repeating digit:\n100x = 27.7777… .\n\nSubtract matching tails:\n100x − 10x = 27 − 2\n90x = 25\nx = 25/90 = 5/18.\n\nThe 9 comes from the repeating digit; the 0 comes from the prefix.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -915,7 +1123,7 @@
         "options": [
           {
             "id": "a",
-            "label": "1/6"
+            "label": "15/99"
           },
           {
             "id": "b",
@@ -923,11 +1131,11 @@
           },
           {
             "id": "c",
-            "label": "5/9"
+            "label": "1/6"
           },
           {
             "id": "d",
-            "label": "15/99"
+            "label": "5/9"
           }
         ]
       },
@@ -954,11 +1162,11 @@
         "inlineData": {
           "prompt": "Convert 0.1(6) to a fraction in lowest terms.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "1/6"
+              "label": "15/99"
             },
             {
               "id": "b",
@@ -966,11 +1174,11 @@
             },
             {
               "id": "c",
-              "label": "5/9"
+              "label": "1/6"
             },
             {
               "id": "d",
-              "label": "15/99"
+              "label": "5/9"
             }
           ],
           "hints": [
@@ -987,7 +1195,7 @@
       "id": "remedy_mixed_one_digit_prefix",
       "type": "CONTENT",
       "content": {
-        "text": "For 0.1666…, subtract the shifted values 16.666… − 1.666… = 15. Thus 90x = 15 and x = 1/6.",
+        "text": "For 0.1666…, subtract the shifted values 16.666… − 1.666… = 15. Thus 90x = 15 and x = 1/6.\n\nThe prefix-and-repeat rule gives (16 − 1)/90 = 15/90 = 1/6.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1008,25 +1216,38 @@
         "options": [
           {
             "id": "a",
-            "label": "7/30"
+            "label": "21/99"
           },
           {
             "id": "b",
-            "label": "23/100"
+            "label": "7/30"
           },
           {
             "id": "c",
-            "label": "1/3"
+            "label": "23/100"
           },
           {
             "id": "d",
-            "label": "21/99"
+            "label": "1/3"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "mixed_prefix_two_digits"
+          "targetNodeId": "mixed_prefix_two_digits",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_mixed_one_digit_prefix_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1034,23 +1255,23 @@
         "inlineData": {
           "prompt": "Convert 0.2(3) to a fraction in lowest terms.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "7/30"
+              "label": "21/99"
             },
             {
               "id": "b",
-              "label": "23/100"
+              "label": "7/30"
             },
             {
               "id": "c",
-              "label": "1/3"
+              "label": "23/100"
             },
             {
               "id": "d",
-              "label": "21/99"
+              "label": "1/3"
             }
           ],
           "hints": [
@@ -1063,11 +1284,37 @@
         }
       }
     },
+    "retry_mixed_one_digit_prefix_remedy": {
+      "id": "retry_mixed_one_digit_prefix_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nUse (23 − 2)/90.\n\n(23 − 2)/90 = 21/90 = 7/30.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_mixed_one_digit_prefix"
+        }
+      ]
+    },
     "mixed_prefix_two_digits": {
       "id": "mixed_prefix_two_digits",
       "type": "CONTENT",
       "content": {
-        "text": "For a longer non-repeating prefix, append one full repeat block to the prefix digits to form the first integer, then subtract the prefix integer. The denominator contains as many 9s as repeating digits, followed by as many zeroes as prefix digits.\n\nFor 0.23(4), the prefix is 23 and the one-digit period is 4. The numerator is 234 − 23 = 211; the denominator is 900. Thus the fraction is 211/900. Check that it is near 0.2344…, as the original decimal suggests.",
+        "text": "In 0.14(6), the prefix 14 does not repeat; only 6 does.\n\nBuild the numerator from the digits through one full repeat, then subtract the prefix:\n146 − 14 = 132.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "mixed_prefix_two_digits_step_1"
+        }
+      ]
+    },
+    "mixed_prefix_two_digits_step_1": {
+      "id": "mixed_prefix_two_digits_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use one 9 for the one-digit repeat and two zeros for the two-digit prefix:\n\n0.14(6) = 132/900 = 11/75.\n\nCheck size: 11/75 is between 0.14 and 0.15, matching 0.14666… . The zeros record how far the repeat begins after the point.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1096,11 +1343,11 @@
           },
           {
             "id": "c",
-            "label": "211/990"
+            "label": "23/90"
           },
           {
             "id": "d",
-            "label": "23/90"
+            "label": "211/990"
           }
         ]
       },
@@ -1139,11 +1386,11 @@
             },
             {
               "id": "c",
-              "label": "211/990"
+              "label": "23/90"
             },
             {
               "id": "d",
-              "label": "23/90"
+              "label": "211/990"
             }
           ],
           "hints": [
@@ -1160,7 +1407,7 @@
       "id": "remedy_mixed_prefix_two_digits",
       "type": "CONTENT",
       "content": {
-        "text": "There are two prefix digits and one repeating digit. Compute (234 − 23)/(9 followed by 2 zeroes) = 211/900.",
+        "text": "There are two prefix digits and one repeating digit. Compute (234 − 23)/(9 followed by 2 zeroes) = 211/900.\n\n(234 − 23)/900 = 211/900, already in lowest terms.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1181,7 +1428,7 @@
         "options": [
           {
             "id": "a",
-            "label": "37/300"
+            "label": "11/90"
           },
           {
             "id": "b",
@@ -1189,17 +1436,30 @@
           },
           {
             "id": "c",
-            "label": "124/1000"
+            "label": "37/300"
           },
           {
             "id": "d",
-            "label": "11/90"
+            "label": "124/1000"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "multi_digit_mixed_period"
+          "targetNodeId": "multi_digit_mixed_period",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_mixed_prefix_two_digits_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1207,11 +1467,11 @@
         "inlineData": {
           "prompt": "Convert 0.12(3) to a fraction in lowest terms.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "37/300"
+              "label": "11/90"
             },
             {
               "id": "b",
@@ -1219,11 +1479,11 @@
             },
             {
               "id": "c",
-              "label": "124/1000"
+              "label": "37/300"
             },
             {
               "id": "d",
-              "label": "11/90"
+              "label": "124/1000"
             }
           ],
           "hints": [
@@ -1236,11 +1496,37 @@
         }
       }
     },
+    "retry_mixed_prefix_two_digits_remedy": {
+      "id": "retry_mixed_prefix_two_digits_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nUse (123 − 12)/900.\n\n(123 − 12)/900 = 111/900 = 37/300.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_mixed_prefix_two_digits"
+        }
+      ]
+    },
     "multi_digit_mixed_period": {
       "id": "multi_digit_mixed_period",
       "type": "CONTENT",
       "content": {
-        "text": "When the repeating block has more than one digit, use one 9 for each repeating digit, then append zeroes for the prefix length. For 0.2(35), the prefix is 2 and the period is 35. The numerator is 235 − 2 = 233; the denominator is 990. Therefore 0.2(35) = 233/990.\n\nThis rule comes from shifting until the repeating tails line up: 100x − 10x cancels the common tail. It is not a rule to put every displayed digit over a power of ten; that would represent a terminating approximation instead of the exact recurring value.",
+        "text": "Now look at 0.4(12) = 0.4121212… . The prefix is 4; the period is 12.\n\nTake the digits through one full period, 412, and subtract the prefix, 4:\n412 − 4 = 408.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "multi_digit_mixed_period_step_1"
+        }
+      ]
+    },
+    "multi_digit_mixed_period_step_1": {
+      "id": "multi_digit_mixed_period_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two repeating digits give 99; one prefix digit adds a 0:\n\n0.4(12) = 408/990 = 68/165.\n\nCheck the size: about 0.412. Count the period and prefix separately so that you do not accidentally treat 412 as the repeating block.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1261,15 +1547,15 @@
         "options": [
           {
             "id": "a",
-            "label": "233/990"
+            "label": "233/99"
           },
           {
             "id": "b",
-            "label": "235/1000"
+            "label": "233/990"
           },
           {
             "id": "c",
-            "label": "233/99"
+            "label": "235/1000"
           },
           {
             "id": "d",
@@ -1300,19 +1586,19 @@
         "inlineData": {
           "prompt": "Convert 0.2(35) to a fraction.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "233/990"
+              "label": "233/99"
             },
             {
               "id": "b",
-              "label": "235/1000"
+              "label": "233/990"
             },
             {
               "id": "c",
-              "label": "233/99"
+              "label": "235/1000"
             },
             {
               "id": "d",
@@ -1333,7 +1619,7 @@
       "id": "remedy_multi_digit_mixed_period",
       "type": "CONTENT",
       "content": {
-        "text": "The prefix has one digit and the period has two. Subtract 2 from 235 and use denominator 990: 233/990.",
+        "text": "The prefix has one digit and the period has two. Subtract 2 from 235 and use denominator 990: 233/990.\n\n(235 − 2)/990 = 233/990.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1358,21 +1644,34 @@
           },
           {
             "id": "b",
-            "label": "123/100"
+            "label": "124/100"
           },
           {
             "id": "c",
-            "label": "11/9"
+            "label": "123/100"
           },
           {
             "id": "d",
-            "label": "124/100"
+            "label": "11/9"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "whole_part_and_reduction"
+          "targetNodeId": "whole_part_and_reduction",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_multi_digit_mixed_period_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1388,32 +1687,58 @@
             },
             {
               "id": "b",
-              "label": "123/100"
+              "label": "124/100"
             },
             {
               "id": "c",
-              "label": "11/9"
+              "label": "123/100"
             },
             {
               "id": "d",
-              "label": "124/100"
+              "label": "11/9"
             }
           ],
           "hints": [
             "Use the combined digits: (123 − 12)/90.",
             "Reduce 111/90."
           ],
-          "explanation": "(123 − 12)/90 = 111/90 = 37/30.",
+          "explanation": "Separate the whole part: 1.2(3) = 1 + 0.2(3). The recurring part is (23 − 2)/90 = 7/30. Thus the total is 1 + 7/30 = 37/30.",
           "difficulty": "MEDIUM",
           "xp": 10
         }
       }
     },
+    "retry_multi_digit_mixed_period_remedy": {
+      "id": "retry_multi_digit_mixed_period_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the whole 1 separate.\n\n0.2(3) = (23 − 2)/90 = 7/30, so 1.2(3) = 1 + 7/30 = 37/30. Try this conversion again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_multi_digit_mixed_period"
+        }
+      ]
+    },
     "whole_part_and_reduction": {
       "id": "whole_part_and_reduction",
       "type": "CONTENT",
       "content": {
-        "text": "For a mixed number with a whole-number part, convert only the decimal part and then combine. For 3.(142857), write 3 + 0.(142857). The six-digit period gives 142857/999999 = 1/7, so the value is 3 + 1/7 = 22/7.\n\nReducing the recurring part before adding the whole number keeps the arithmetic clear. If the final answer is requested as an improper fraction, combine using a common denominator; if a mixed number is accepted, state it explicitly.",
+        "text": "A whole-number part can be handled separately. For 2.(36), first convert the decimal part:\n\n0.(36) = 36/99 = 4/11.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "whole_part_and_reduction_step_1"
+        }
+      ]
+    },
+    "whole_part_and_reduction_step_1": {
+      "id": "whole_part_and_reduction_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Put the 2 back:\n\n2 + 4/11 = 26/11.\n\nCheck: 26/11 = 2.363636… = 2.(36). Reducing a fraction does not change its value, but forgetting the whole number does.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1438,15 +1763,15 @@
           },
           {
             "id": "b",
-            "label": "245/99"
-          },
-          {
-            "id": "c",
             "label": "2/9"
           },
           {
-            "id": "d",
+            "id": "c",
             "label": "11/27"
+          },
+          {
+            "id": "d",
+            "label": "245/99"
           }
         ]
       },
@@ -1481,15 +1806,15 @@
             },
             {
               "id": "b",
-              "label": "245/99"
-            },
-            {
-              "id": "c",
               "label": "2/9"
             },
             {
-              "id": "d",
+              "id": "c",
               "label": "11/27"
+            },
+            {
+              "id": "d",
+              "label": "245/99"
             }
           ],
           "hints": [
@@ -1506,7 +1831,7 @@
       "id": "remedy_whole_part_and_reduction",
       "type": "CONTENT",
       "content": {
-        "text": "Separate 3.(142857) as 3 + 0.(142857). The recurring part is 142857/999999 = 1/7, so the total is 3 + 1/7 = 22/7.",
+        "text": "Separate 3.(142857) as 3 + 0.(142857). The recurring part is 142857/999999 = 1/7, so the total is 3 + 1/7 = 22/7.\n\n2.(45) = 2 + 45/99 = 2 + 5/11 = 27/11.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1527,25 +1852,38 @@
         "options": [
           {
             "id": "a",
-            "label": "36/11"
-          },
-          {
-            "id": "b",
-            "label": "3/11"
-          },
-          {
-            "id": "c",
             "label": "30/9"
           },
           {
-            "id": "d",
+            "id": "b",
+            "label": "36/11"
+          },
+          {
+            "id": "c",
             "label": "11/36"
+          },
+          {
+            "id": "d",
+            "label": "3/11"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "verify_and_apply"
+          "targetNodeId": "verify_and_apply",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_whole_part_and_reduction_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1553,23 +1891,23 @@
         "inlineData": {
           "prompt": "Convert 3.(27) to an improper fraction.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "b",
           "options": [
             {
               "id": "a",
-              "label": "36/11"
-            },
-            {
-              "id": "b",
-              "label": "3/11"
-            },
-            {
-              "id": "c",
               "label": "30/9"
             },
             {
-              "id": "d",
+              "id": "b",
+              "label": "36/11"
+            },
+            {
+              "id": "c",
               "label": "11/36"
+            },
+            {
+              "id": "d",
+              "label": "3/11"
             }
           ],
           "hints": [
@@ -1582,11 +1920,37 @@
         }
       }
     },
+    "retry_whole_part_and_reduction_remedy": {
+      "id": "retry_whole_part_and_reduction_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\n0.(27) = 27/99 = 3/11.\n\n3 + 3/11 = 33/11 + 3/11 = 36/11.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_whole_part_and_reduction"
+        }
+      ]
+    },
     "verify_and_apply": {
       "id": "verify_and_apply",
       "type": "CONTENT",
       "content": {
-        "text": "Verify a converted fraction by reversing the reasoning or checking its size and initial digits. For example, 1/6 = 0.1666…, matching 0.1(6). To compare recurring values, convert them exactly: 0.(6) = 2/3 = 66/99, while 0.(61) = 61/99. Thus 0.(6) is greater.\n\nAfter conversion, simple arithmetic may be performed with the fractions. For instance, 0.(6) + 0.(1) = 6/9 + 1/9 = 7/9. A finite display such as 0.167 is only an approximation to 1/6, so keep exact fractions when an exact result is needed.",
+        "text": "A converted fraction should reproduce the repeating pattern. For example:\n\n0.(3) = 1/3\n0.(27) = 27/99 = 3/11.\n\nDividing 3 by 11 begins 0.2727…, which checks the period.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "verify_and_apply_step_1"
+        }
+      ]
+    },
+    "verify_and_apply_step_1": {
+      "id": "verify_and_apply_step_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Fractions also make comparisons exact. For example, 0.(7) = 7/9 = 77/99, while 0.(68) = 68/99.\n\nSince 77/99 > 68/99, we know 0.(7) > 0.(68). Compare their values, not only the first displayed digit.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1607,7 +1971,7 @@
         "options": [
           {
             "id": "a",
-            "label": "0.(6)"
+            "label": "They are equal"
           },
           {
             "id": "b",
@@ -1615,7 +1979,7 @@
           },
           {
             "id": "c",
-            "label": "They are equal"
+            "label": "0.(6)"
           },
           {
             "id": "d",
@@ -1646,11 +2010,11 @@
         "inlineData": {
           "prompt": "Which recurring decimal is greater: 0.(6) or 0.(61)?",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "c",
           "options": [
             {
               "id": "a",
-              "label": "0.(6)"
+              "label": "They are equal"
             },
             {
               "id": "b",
@@ -1658,7 +2022,7 @@
             },
             {
               "id": "c",
-              "label": "They are equal"
+              "label": "0.(6)"
             },
             {
               "id": "d",
@@ -1679,7 +2043,7 @@
       "id": "remedy_verify_and_apply",
       "type": "CONTENT",
       "content": {
-        "text": "Convert each pure recurring decimal exactly: 0.(6) = 6/9 = 2/3 = 66/99, and 0.(61) = 61/99. Since 66/99 > 61/99, 0.(6) is greater.",
+        "text": "Convert each pure recurring decimal exactly: 0.(6) = 6/9 = 2/3 = 66/99, and 0.(61) = 61/99. Since 66/99 > 61/99, 0.(6) is greater.\n\n0.(6) = 2/3 = 66/99, while 0.(61) = 61/99. Thus 0.(6) is greater.\n\nUse the same idea with a new set of values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1700,7 +2064,7 @@
         "options": [
           {
             "id": "a",
-            "label": "7/9"
+            "label": "2/3"
           },
           {
             "id": "b",
@@ -1708,17 +2072,30 @@
           },
           {
             "id": "c",
-            "label": "2/3"
+            "label": "1/9"
           },
           {
             "id": "d",
-            "label": "1/9"
+            "label": "7/9"
           }
         ]
       },
       "transitions": [
         {
-          "targetNodeId": "final_recap"
+          "targetNodeId": "final_recap",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_verify_and_apply_remedy",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
         }
       ],
       "questionReference": {
@@ -1726,11 +2103,11 @@
         "inlineData": {
           "prompt": "Evaluate 0.(6) + 0.(1) as an exact fraction.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a",
+          "correctOptionId": "d",
           "options": [
             {
               "id": "a",
-              "label": "7/9"
+              "label": "2/3"
             },
             {
               "id": "b",
@@ -1738,11 +2115,11 @@
             },
             {
               "id": "c",
-              "label": "2/3"
+              "label": "1/9"
             },
             {
               "id": "d",
-              "label": "1/9"
+              "label": "7/9"
             }
           ],
           "hints": [
@@ -1755,11 +2132,24 @@
         }
       }
     },
+    "retry_verify_and_apply_remedy": {
+      "id": "retry_verify_and_apply_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nConvert the pure repeats to 6/9 and 1/9.\n\n0.(6) = 2/3 = 6/9; 0.(1) = 1/9. Their sum is 7/9.\n\nTry the same question again and check the result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_verify_and_apply"
+        }
+      ]
+    },
     "final_recap": {
       "id": "final_recap",
       "type": "COMPLETION",
       "content": {
-        "text": "Identify the complete repeating block first. For a pure recurring decimal with k repeating digits, write the block over k nines and reduce. For a mixed recurring decimal, subtract the integer made from the non-repeating prefix from the integer made by writing the prefix and one repeat block; use k nines followed by as many zeroes as prefix digits. Separate any whole-number part, reduce, then verify by reversing the conversion. A terminating decimal has no infinite repeating block and uses a power-of-ten denominator instead.",
+        "text": "You can read the exact repeat block and convert pure or mixed recurring decimals into fractions.\n\nCount repeating digits for the 9s and prefix digits for the 0s. Reduce the fraction, then divide or estimate to check that its opening digits match the original decimal.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []

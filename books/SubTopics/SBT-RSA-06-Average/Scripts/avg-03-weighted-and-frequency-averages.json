@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn weighted and frequency averages with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When values occur different numbers of times, each value must carry its count.\n\nSuppose 2 students score 60 and 3 students score 80.\nTotal marks = 2×60 + 3×80 = 360.\nTotal students = 5.\n\nWeighted average = 360÷5 = 72.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "600"
+          },
+          {
+            "id": "b",
+            "label": "650"
+          },
+          {
+            "id": "c",
+            "label": "620"
+          },
+          {
+            "id": "d",
+            "label": "1200"
+          }
+        ]
+      },
+      "content": {
+        "text": "4 workers earn ₹500 each and 6 workers earn ₹700 each. What is the average wage?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find the total wage: 4×500 + 6×700.",
+            "Divide by 10 workers."
+          ],
+          "prompt": "4 workers earn ₹500 each and 6 workers earn ₹700 each. What is the average wage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "600"
+            },
+            {
+              "id": "b",
+              "label": "650"
+            },
+            {
+              "id": "c",
+              "label": "620"
+            },
+            {
+              "id": "d",
+              "label": "1200"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Total=6200, so average=6200÷10=₹620.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not average ₹500 and ₹700 directly. There are more workers at ₹700, so that wage must have more weight.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50"
+          },
+          {
+            "id": "b",
+            "label": "55"
+          },
+          {
+            "id": "c",
+            "label": "110"
+          },
+          {
+            "id": "d",
+            "label": "52"
+          }
+        ]
+      },
+      "content": {
+        "text": "3 items cost ₹40 each and 2 items cost ₹70 each. What is the average cost per item?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total cost=3×40+2×70=260.",
+            "There are 5 items."
+          ],
+          "prompt": "3 items cost ₹40 each and 2 items cost ₹70 each. What is the average cost per item?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50"
+            },
+            {
+              "id": "b",
+              "label": "55"
+            },
+            {
+              "id": "c",
+              "label": "110"
+            },
+            {
+              "id": "d",
+              "label": "52"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "260÷5=₹52 per item.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The weights are the item counts: three copies of ₹40 and two copies of ₹70.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A frequency table is the same idea.\n\nValue × frequency gives that row's contribution to the total.\nAdd all contributions, then divide by total frequency.\n\nThe chapter does this with working-hour intervals by using each interval's midpoint: 3–5 becomes 4 hours, 5–7 becomes 6 hours, and so on.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "23"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "22"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "content": {
+        "text": "A table has values 10, 20, 30 with frequencies 2, 3, 5. What is the mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Weighted total=10×2+20×3+30×5.",
+            "That is 230 across 10 observations."
+          ],
+          "prompt": "A table has values 10, 20, 30 with frequencies 2, 3, 5. What is the mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "23"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "22"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "230÷10=23.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Adding 10+20+30 ignores how often each value occurs. Frequency means repeated observations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "6.666666666666667"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "content": {
+        "text": "Values 4, 6, 8 occur 1, 2 and 3 times. What is the mean?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total=4×1+6×2+8×3=40.",
+            "Count=1+2+3=6."
+          ],
+          "prompt": "Values 4, 6, 8 occur 1, 2 and 3 times. What is the mean?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "6.666666666666667"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Mean=40/6=20/3≈6.67.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the frequency count separate from the weighted total: 40 total units over 6 observations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Weights can also describe importance instead of headcount.\n\nIf monthly tests have weight 1 each and the final exam has weight 2, the final score counts twice in the weighted total and twice in the total weight.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70"
+          },
+          {
+            "id": "b",
+            "label": "80"
+          },
+          {
+            "id": "c",
+            "label": "140"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "content": {
+        "text": "Scores are 60 and 80 with weights 1 and 3. What is the weighted average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Weighted total=60×1+80×3=300.",
+            "Total weight=4."
+          ],
+          "prompt": "Scores are 60 and 80 with weights 1 and 3. What is the weighted average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "70"
+            },
+            {
+              "id": "b",
+              "label": "80"
+            },
+            {
+              "id": "c",
+              "label": "140"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "300÷4=75.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not divide by 2 just because there are two displayed scores. The total weight is 1+3=4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "70"
+          },
+          {
+            "id": "c",
+            "label": "65"
+          },
+          {
+            "id": "d",
+            "label": "210"
+          }
+        ]
+      },
+      "content": {
+        "text": "Marks 50, 70 and 90 have weights 2, 1 and 1. What is the weighted average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Weighted total=100+70+90=260.",
+            "Total weight=4."
+          ],
+          "prompt": "Marks 50, 70 and 90 have weights 2, 1 and 1. What is the weighted average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "70"
+            },
+            {
+              "id": "c",
+              "label": "65"
+            },
+            {
+              "id": "d",
+              "label": "210"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "260÷4=65.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first mark is counted twice, so it contributes 100 to the weighted total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Purchase questions often hide a weighted average.\n\nIf you buy 5 books at ₹10 and 15 books at ₹14, total cost is 50+210=260 for 20 books.\nAverage price = ₹13.\n\nQuantity is the weight.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "13.6"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "32"
+          }
+        ]
+      },
+      "content": {
+        "text": "You buy 8 pens at ₹12 and 2 pens at ₹20. What is the average price per pen?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total cost=8×12+2×20=136.",
+            "Divide by 10 pens."
+          ],
+          "prompt": "You buy 8 pens at ₹12 and 2 pens at ₹20. What is the average price per pen?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "13.6"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "32"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "₹136÷10=₹13.60.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A simple average of 12 and 20 would give 16, but that would pretend you bought equal quantities at both prices.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "37"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "38"
+          },
+          {
+            "id": "d",
+            "label": "70"
+          }
+        ]
+      },
+      "content": {
+        "text": "You buy 3 notebooks at ₹30 and 7 at ₹40. What is the average price?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total cost=90+280=370.",
+            "There are 10 notebooks."
+          ],
+          "prompt": "You buy 3 notebooks at ₹30 and 7 at ₹40. What is the average price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "37"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "38"
+            },
+            {
+              "id": "d",
+              "label": "70"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "370÷10=₹37.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use actual quantity × price for each group, then divide by total quantity.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Combined class or section averages are also weighted.\n\nIf 20 students average 50 and 30 students average 70:\nTotal marks = 20×50 + 30×70 = 3100.\nTotal students = 50.\nAverage = 62.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "52.5"
+          },
+          {
+            "id": "d",
+            "label": "100"
+          }
+        ]
+      },
+      "content": {
+        "text": "A group of 10 has average 40 and a group of 30 has average 60. What is the combined average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Total=10×40+30×60=2200.",
+            "Count=40."
+          ],
+          "prompt": "A group of 10 has average 40 and a group of 30 has average 60. What is the combined average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "52.5"
+            },
+            {
+              "id": "d",
+              "label": "100"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "2200÷40=55.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The subgroup means do not get equal weight because one group has three times as many people.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "64"
+          },
+          {
+            "id": "b",
+            "label": "68"
+          },
+          {
+            "id": "c",
+            "label": "72"
+          },
+          {
+            "id": "d",
+            "label": "136"
+          }
+        ]
+      },
+      "content": {
+        "text": "20 students average 72 and 20 students average 64. What is the combined average?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The group sizes are equal.",
+            "With equal weights, average the two means."
+          ],
+          "prompt": "20 students average 72 and 20 students average 64. What is the combined average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "64"
+            },
+            {
+              "id": "b",
+              "label": "68"
+            },
+            {
+              "id": "c",
+              "label": "72"
+            },
+            {
+              "id": "d",
+              "label": "136"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "(72+64)/2=68.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here the subgroup sizes are equal, so a simple mean of the subgroup means is valid.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can also work backward from a weighted average.\n\nIf two equal-weight tests have scores 70 and x and the weighted average is 80, then 70+x=160, so x=90.\n\nWith unequal weights, multiply by the weights before solving.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72"
+          },
+          {
+            "id": "b",
+            "label": "76"
+          },
+          {
+            "id": "c",
+            "label": "80"
+          },
+          {
+            "id": "d",
+            "label": "84"
+          }
+        ]
+      },
+      "content": {
+        "text": "A score 60 has weight 2 and score x has weight 3. Their weighted average is 72. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "2×60+3x = 72×5.",
+            "120+3x=360."
+          ],
+          "prompt": "A score 60 has weight 2 and score x has weight 3. Their weighted average is 72. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "72"
+            },
+            {
+              "id": "b",
+              "label": "76"
+            },
+            {
+              "id": "c",
+              "label": "80"
+            },
+            {
+              "id": "d",
+              "label": "84"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "3x=240, so x=80.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The total weight is 5, not 2. Rebuild the weighted total 72×5 before solving.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70"
+          },
+          {
+            "id": "b",
+            "label": "72.5"
+          },
+          {
+            "id": "c",
+            "label": "87.5"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "content": {
+        "text": "A score 50 has weight 1 and score x has weight 4. Weighted average is 70. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "50+4x=70×5=350.",
+            "4x=300."
+          ],
+          "prompt": "A score 50 has weight 1 and score x has weight 4. Weighted average is 70. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "70"
+            },
+            {
+              "id": "b",
+              "label": "72.5"
+            },
+            {
+              "id": "c",
+              "label": "87.5"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "x=75.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Give x its full weight of 4: the weighted total is 50+4x, not 50+x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Weighted average = total weighted value ÷ total weight.\n\nFor each row or group, multiply value × weight first.\nThen add the weighted values and add the weights.\nA simple average of subgroup means is safe only when their weights are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Weighted and Frequency Averages.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Weighted and Frequency Averages",
+    "description": "Compute averages when values occur different numbers of times or carry different weights.",
+    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Weighted and Frequency Averages. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 18
+  },
+  "scriptId": "script-avg-03-weighted-and-frequency-averages",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

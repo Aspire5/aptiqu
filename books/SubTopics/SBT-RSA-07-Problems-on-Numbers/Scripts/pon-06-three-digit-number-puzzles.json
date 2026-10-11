@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's extend digit puzzles to three-digit numbers.\n\nWe will keep the hundreds, tens and units digits separate, build the number from place value, and then track what changes when digits swap or follow a relation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a three-digit number, let\nh = hundreds digit\nt = tens digit\nu = units digit.\n\nThen the number is\n100h + 10t + u.\n\nRemember: h cannot be 0, but t or u can be 0.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "246"
+          },
+          {
+            "id": "b",
+            "label": "268"
+          },
+          {
+            "id": "c",
+            "label": "286"
+          },
+          {
+            "id": "d",
+            "label": "824"
+          }
+        ]
+      },
+      "content": {
+        "text": "A three-digit number has hundreds digit 2. Its tens digit is 3 times the hundreds digit and its units digit is 4 times the hundreds digit. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "h=2, so t=6 and u=8.",
+            "Use 100h+10t+u."
+          ],
+          "prompt": "A three-digit number has hundreds digit 2. Its tens digit is 3 times the hundreds digit and its units digit is 4 times the hundreds digit. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "246"
+            },
+            {
+              "id": "b",
+              "label": "268"
+            },
+            {
+              "id": "c",
+              "label": "286"
+            },
+            {
+              "id": "d",
+              "label": "824"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "200+60+8=268.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "336"
+          },
+          {
+            "id": "b",
+            "label": "376"
+          },
+          {
+            "id": "c",
+            "label": "637"
+          },
+          {
+            "id": "d",
+            "label": "367"
+          }
+        ]
+      },
+      "content": {
+        "text": "A three-digit number has hundreds digit 3. Its tens digit is twice the hundreds digit and its units digit is one more than the tens digit. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "h=3, t=6, u=7.",
+            "Build 100h+10t+u."
+          ],
+          "prompt": "A three-digit number has hundreds digit 3. Its tens digit is twice the hundreds digit and its units digit is one more than the tens digit. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "336"
+            },
+            {
+              "id": "b",
+              "label": "376"
+            },
+            {
+              "id": "c",
+              "label": "637"
+            },
+            {
+              "id": "d",
+              "label": "367"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The number is 367.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA three-digit number has hundreds digit 2. Its tens digit is 3 times the hundreds digit and its units digit is 4 times the hundreds digit. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The number is 367.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If you swap only the tens and units digits, the hundreds digit stays fixed.\n\nNew − old = 9(u−t).\n\nSo a change of 27 means the units digit was 3 more than the tens digit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "436"
+          },
+          {
+            "id": "b",
+            "label": "463"
+          },
+          {
+            "id": "c",
+            "label": "445"
+          },
+          {
+            "id": "d",
+            "label": "454"
+          }
+        ]
+      },
+      "content": {
+        "text": "In a three-digit number, swapping the tens and units digits increases the number by 27. If the hundreds digit is 4 and t+u=9, what is the original number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "u−t=27/9=3.",
+            "t+u=9 and u−t=3."
+          ],
+          "prompt": "In a three-digit number, swapping the tens and units digits increases the number by 27. If the hundreds digit is 4 and t+u=9, what is the original number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "436"
+            },
+            {
+              "id": "b",
+              "label": "463"
+            },
+            {
+              "id": "c",
+              "label": "445"
+            },
+            {
+              "id": "d",
+              "label": "454"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "t=3,u=6, so the original number is 436.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "737"
+          },
+          {
+            "id": "b",
+            "label": "764"
+          },
+          {
+            "id": "c",
+            "label": "773"
+          },
+          {
+            "id": "d",
+            "label": "746"
+          }
+        ]
+      },
+      "content": {
+        "text": "Swapping the tens and units digits decreases a three-digit number by 36. The hundreds digit is 7 and t+u=10. What is the original number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "New−old=9(u−t)=−36, so t−u=4.",
+            "t+u=10."
+          ],
+          "prompt": "Swapping the tens and units digits decreases a three-digit number by 36. The hundreds digit is 7 and t+u=10. What is the original number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "737"
+            },
+            {
+              "id": "b",
+              "label": "764"
+            },
+            {
+              "id": "c",
+              "label": "773"
+            },
+            {
+              "id": "d",
+              "label": "746"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "t=7,u=3, so the original number is 773.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nIn a three-digit number, swapping the tens and units digits increases the number by 27. If the hundreds digit is 4 and t+u=9, what is the original number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "t=7,u=3, so the original number is 773.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a three-digit number is fully reversed, the tens digit cancels in the difference.\n\n(100u+10t+h) − (100h+10t+u) = 99(u−h).\n\nThis gives a fast link between the first and last digits.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "653"
+          },
+          {
+            "id": "b",
+            "label": "365"
+          },
+          {
+            "id": "c",
+            "label": "356"
+          },
+          {
+            "id": "d",
+            "label": "563"
+          }
+        ]
+      },
+      "content": {
+        "text": "Reversing a three-digit number increases it by 297. The hundreds and units digits add to 9, and the tens digit is 5. What is the original number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "297=99(u−h), so u−h=3.",
+            "h+u=9."
+          ],
+          "prompt": "Reversing a three-digit number increases it by 297. The hundreds and units digits add to 9, and the tens digit is 5. What is the original number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "653"
+            },
+            {
+              "id": "b",
+              "label": "365"
+            },
+            {
+              "id": "c",
+              "label": "356"
+            },
+            {
+              "id": "d",
+              "label": "563"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "h=3,u=6,t=5, so the original number is 356.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "446"
+          },
+          {
+            "id": "b",
+            "label": "644"
+          },
+          {
+            "id": "c",
+            "label": "648"
+          },
+          {
+            "id": "d",
+            "label": "844"
+          }
+        ]
+      },
+      "content": {
+        "text": "Reversing a three-digit number decreases it by 198. The hundreds and units digits add to 10, and the tens digit is 4. What is the original number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Reverse−original=−198, so u−h=−2.",
+            "h+u=10."
+          ],
+          "prompt": "Reversing a three-digit number decreases it by 198. The hundreds and units digits add to 10, and the tens digit is 4. What is the original number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "446"
+            },
+            {
+              "id": "b",
+              "label": "644"
+            },
+            {
+              "id": "c",
+              "label": "648"
+            },
+            {
+              "id": "d",
+              "label": "844"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "h=6,u=4 and t=4, so the number is 644.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nReversing a three-digit number increases it by 297. The hundreds and units digits add to 9, and the tens digit is 5. What is the original number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "h=6,u=4 and t=4, so the number is 644.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A digit can be linked by multiplication or percentage.\n\nIf t=h+1 and u is 75% of t, write u=(3/4)t.\n\nThe digit condition must still give an integer digit from 0 to 9.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "768"
+          },
+          {
+            "id": "b",
+            "label": "876"
+          },
+          {
+            "id": "c",
+            "label": "687"
+          },
+          {
+            "id": "d",
+            "label": "786"
+          }
+        ]
+      },
+      "content": {
+        "text": "In a three-digit number, the tens digit is 1 more than the hundreds digit. The units digit is 75% of the tens digit. The hundreds and tens digits sum to 15. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "h+t=15 and t=h+1.",
+            "h=7,t=8,u=6."
+          ],
+          "prompt": "In a three-digit number, the tens digit is 1 more than the hundreds digit. The units digit is 75% of the tens digit. The hundreds and tens digits sum to 15. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "768"
+            },
+            {
+              "id": "b",
+              "label": "876"
+            },
+            {
+              "id": "c",
+              "label": "687"
+            },
+            {
+              "id": "d",
+              "label": "786"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The number is 786.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "463"
+          },
+          {
+            "id": "b",
+            "label": "436"
+          },
+          {
+            "id": "c",
+            "label": "643"
+          },
+          {
+            "id": "d",
+            "label": "634"
+          }
+        ]
+      },
+      "content": {
+        "text": "In a three-digit number, the tens digit is 2 more than the hundreds digit. The units digit is half the tens digit. The first two digits sum to 10. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "h+t=10 and t=h+2.",
+            "h=4,t=6,u=3."
+          ],
+          "prompt": "In a three-digit number, the tens digit is 2 more than the hundreds digit. The units digit is half the tens digit. The first two digits sum to 10. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "463"
+            },
+            {
+              "id": "b",
+              "label": "436"
+            },
+            {
+              "id": "c",
+              "label": "643"
+            },
+            {
+              "id": "d",
+              "label": "634"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "h+t=10 and t=h+2 give h=4,t=6. Then u=t/2=3, so the number is 463.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nIn a three-digit number, the tens digit is 1 more than the hundreds digit. The units digit is 75% of the tens digit. The hundreds and tens digits sum to 15. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "h+t=10 and t=h+2 give h=4,t=6. Then u=t/2=3, so the number is 463.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some questions ask how many valid three-digit numbers exist.\n\nExample: h=u and h+t+u=8.\nThen 2h+t=8. Try h=1,2,3,4; each gives a valid t.\n\nCounting valid digit choices is sometimes the whole task.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "How many three-digit numbers have equal hundreds and units digits and digit sum 8?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2h+t=8 with h=1,2,3,4.",
+            "The numbers are 161,242,323,404."
+          ],
+          "prompt": "How many three-digit numbers have equal hundreds and units digits and digit sum 8?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "There are 4 valid numbers.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "content": {
+        "text": "How many three-digit numbers have equal hundreds and units digits and digit sum 6?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2h+t=6.",
+            "Try h=1,2,3."
+          ],
+          "prompt": "How many three-digit numbers have equal hundreds and units digits and digit sum 6?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The valid numbers are 141,222,303, so there are 3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nHow many three-digit numbers have equal hundreds and units digits and digit sum 8?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The valid numbers are 141,222,303, so there are 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Finish every digit puzzle with a digit check.\n\nA solution such as h=7, t=12 is not a valid digit even if it satisfies an algebraic equation.\n\nCheck: h is 1–9; t and u are 0–9; all are integers; and the original digit conditions still hold.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "h=0, t=5, u=8"
+          },
+          {
+            "id": "b",
+            "label": "h=5, t=8, u=0"
+          },
+          {
+            "id": "c",
+            "label": "h=4, t=10, u=2"
+          },
+          {
+            "id": "d",
+            "label": "h=3.5, t=7, u=2"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which proposed digit solution is valid for a three-digit number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The hundreds digit cannot be 0.",
+            "Every digit must be an integer from 0 to 9."
+          ],
+          "prompt": "Which proposed digit solution is valid for a three-digit number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "h=0, t=5, u=8"
+            },
+            {
+              "id": "b",
+              "label": "h=5, t=8, u=0"
+            },
+            {
+              "id": "c",
+              "label": "h=4, t=10, u=2"
+            },
+            {
+              "id": "d",
+              "label": "h=3.5, t=7, u=2"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Only h=5,t=8,u=0 satisfies all digit rules.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "h=0, t=9, u=4"
+          },
+          {
+            "id": "b",
+            "label": "h=8, t=−1, u=3"
+          },
+          {
+            "id": "c",
+            "label": "h=6, t=4.5, u=2"
+          },
+          {
+            "id": "d",
+            "label": "h=9, t=0, u=4"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which proposed solution can represent the digits of a three-digit number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Check the digit ranges.",
+            "Only the hundreds digit must be nonzero; 0 is allowed in tens or units."
+          ],
+          "prompt": "Which proposed solution can represent the digits of a three-digit number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "h=0, t=9, u=4"
+            },
+            {
+              "id": "b",
+              "label": "h=8, t=−1, u=3"
+            },
+            {
+              "id": "c",
+              "label": "h=6, t=4.5, u=2"
+            },
+            {
+              "id": "d",
+              "label": "h=9, t=0, u=4"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "h=9,t=0,u=4 is valid, giving 904.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nWhich proposed digit solution is valid for a three-digit number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "h=9,t=0,u=4 is valid, giving 904.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "For digits h,t,u: number=100h+10t+u. Swapping t and u changes the value by 9(u−t); full reversal changes it by 99(u−h). Every algebraic solution still has to pass the digit-range check.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Three-Digit Number Puzzles.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Three-Digit Number Puzzles",
+    "description": "Use hundreds, tens and units place value to solve three-digit digit-relation problems.",
+    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Three-Digit Number Puzzles. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 20
+  },
+  "scriptId": "script-pon-06-three-digit-number-puzzles",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

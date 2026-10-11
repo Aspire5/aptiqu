@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's make unusual-looking powers feel ordinary.\n\nAn exponent can be a fraction, a negative number, or a decimal.\n\nThe book handles all three by rewriting them into familiar roots and reciprocals. We will keep the numbers chosen so every answer can be found exactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The index 1/n means an nth root.\n\n64^(1/3) = cube root of 64 = 4, because 4^3 = 64.\n\nLikewise, 81^(1/4) is the fourth root of 81.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "16"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 64^(1/3)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "1/3 means cube root.",
+            "Which number cubed gives 64?"
+          ],
+          "prompt": "What is 64^(1/3)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 64^(1/3) = ∛64 = 4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 81^(1/4)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "1/4 means fourth root.",
+            "3^4 = 81."
+          ],
+          "prompt": "What is 81^(1/4)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 81^(1/4) = 3 because 3^4 = 81.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 64^(1/3)?\n\nStart from this clue:\n1/3 means cube root.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n81^(1/4) = 3 because 3^4 = 81.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a^(m/n), the denominator tells the root and the numerator tells the power.\n\n27^(2/3) = (∛27)^2 = 3^2 = 9.\n\nYou can also power first and root later when it stays simple.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 27^(2/3)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Take the cube root first.",
+            "∛27 = 3, then square 3."
+          ],
+          "prompt": "What is 27^(2/3)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 27^(2/3) = (∛27)^2 = 9.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "64"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 16^(3/4)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Fourth root of 16 is 2.",
+            "Then calculate 2^3."
+          ],
+          "prompt": "What is 16^(3/4)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "64"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. 16^(3/4) = (⁴√16)^3 = 2^3 = 8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 27^(2/3)?\n\nStart from this clue:\nTake the cube root first.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n16^(3/4) = (⁴√16)^3 = 2^3 = 8.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A negative exponent does not make the value negative. It turns the power into a reciprocal.\n\na^(-n) = 1/a^n.\n\nSo 5^(-2) = 1/25.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "-25"
+          },
+          {
+            "id": "b",
+            "label": "-10"
+          },
+          {
+            "id": "c",
+            "label": "25"
+          },
+          {
+            "id": "d",
+            "label": "1/25"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 5^(-2)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Negative exponent means reciprocal.",
+            "5^2 = 25, then take 1/25."
+          ],
+          "prompt": "What is 5^(-2)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "-25"
+            },
+            {
+              "id": "b",
+              "label": "-10"
+            },
+            {
+              "id": "c",
+              "label": "25"
+            },
+            {
+              "id": "d",
+              "label": "1/25"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 5^(-2) = 1/5^2 = 1/25.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "-8"
+          },
+          {
+            "id": "b",
+            "label": "1/8"
+          },
+          {
+            "id": "c",
+            "label": "1/6"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 2^(-3)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First find 2^3.",
+            "Then take its reciprocal."
+          ],
+          "prompt": "What is 2^(-3)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "-8"
+            },
+            {
+              "id": "b",
+              "label": "1/8"
+            },
+            {
+              "id": "c",
+              "label": "1/6"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 2^(-3) = 1/2^3 = 1/8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 5^(-2)?\n\nStart from this clue:\nNegative exponent means reciprocal.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n2^(-3) = 1/2^3 = 1/8.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A negative fractional exponent combines both ideas.\n\n16^(-3/4) = 1 / 16^(3/4).\nThe fourth root of 16 is 2, and 2^3 = 8.\n\nSo the value is 1/8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "-8"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "1/8"
+          },
+          {
+            "id": "d",
+            "label": "1/4"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 16^(-3/4)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Ignore the minus sign for one moment and find 16^(3/4).",
+            "Then take the reciprocal."
+          ],
+          "prompt": "What is 16^(-3/4)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "-8"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "1/8"
+            },
+            {
+              "id": "d",
+              "label": "1/4"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 16^(3/4)=8, so 16^(-3/4)=1/8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/9"
+          },
+          {
+            "id": "b",
+            "label": "-9"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "1/6"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 27^(-2/3)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "27^(2/3) = 9.",
+            "A negative exponent takes the reciprocal."
+          ],
+          "prompt": "What is 27^(-2/3)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/9"
+            },
+            {
+              "id": "b",
+              "label": "-9"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "1/6"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 27^(-2/3)=1/27^(2/3)=1/9.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 16^(-3/4)?\n\nStart from this clue:\nIgnore the minus sign for one moment and find 16^(3/4).\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n27^(-2/3)=1/27^(2/3)=1/9.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A terminating decimal exponent can be rewritten as a fraction.\n\n0.25 = 1/4, so:\n\n256^0.25 = 256^(1/4) = 4.\n\nAnd 0.2 = 1/5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "64"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 256^0.25?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "0.25 = 1/4.",
+            "Find the fourth root of 256."
+          ],
+          "prompt": "What is 256^0.25?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 256^0.25 = 256^(1/4) = 4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "6.4"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 32^0.2?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "0.2 = 1/5.",
+            "2^5 = 32."
+          ],
+          "prompt": "What is 32^0.2?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "6.4"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 32^0.2 = 32^(1/5) = 2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 256^0.25?\n\nStart from this clue:\n0.25 = 1/4.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n32^0.2 = 32^(1/5) = 2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Decimal exponents still obey the normal index laws.\n\n16^0.25 × 16^0.75\n= 16^(0.25+0.75)\n= 16^1\n= 16.\n\nThe strange-looking decimals do not change the rule for multiplying same bases.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "32"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 16^0.25 × 16^0.75?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The base is the same.",
+            "Add 0.25 + 0.75 = 1."
+          ],
+          "prompt": "What is 16^0.25 × 16^0.75?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "32"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. The exponents add to 1, so the value is 16^1 = 16.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "625"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is 25^0.4 × 25^0.6?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Add the decimal exponents.",
+            "0.4 + 0.6 = 1."
+          ],
+          "prompt": "What is 25^0.4 × 25^0.6?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "625"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. 25^(0.4+0.6) = 25^1 = 25.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 16^0.25 × 16^0.75?\n\nStart from this clue:\nThe base is the same.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n25^(0.4+0.6) = 25^1 = 25.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Fractional index → root.\n\na^(1/n) = nth root of a.\na^(m/n) means take the nth root and use the mth power.\nA negative exponent means reciprocal.\nA terminating decimal exponent can often be changed to a simple fraction first.\n\nExplain why 16^(-1/2) is 1/4, not -4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Good. When an exponent looks unfamiliar, rewrite the exponent before touching the base. Ask: is it a root, a reciprocal, or both? That one habit prevents most sign and root mistakes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Fractional, Negative and Decimal Indices",
+    "description": "Connect roots, reciprocals and terminating decimal exponents to the index laws in the chapter.",
+    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Fractional, Negative and Decimal Indices. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
+    "targetDurationMinutes": 20
+  },
+  "scriptId": "script-si-02-fractional-negative-decimal-indices",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

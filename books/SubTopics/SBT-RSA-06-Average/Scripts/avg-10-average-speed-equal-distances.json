@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn average speed for equal distances with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average speed is total distance ÷ total time.\n\nFor equal outward and return distances, the slower trip takes more time. That is why the simple average of the two speeds is usually wrong.\n\nExample: 60 km at 60 km/h takes 1 hour.\n60 km at 30 km/h takes 2 hours.\nTotal: 120 km in 3 hours → 40 km/h, not 45.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "90"
+          }
+        ]
+      },
+      "content": {
+        "text": "A car travels equal distances at 60 km/h and 30 km/h. What is the average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use total distance ÷ total time.",
+            "Or use 2xy/(x+y)."
+          ],
+          "prompt": "A car travels equal distances at 60 km/h and 30 km/h. What is the average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "90"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "2×60×30/(60+30)=40 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The ordinary mean 45 assumes equal time at each speed. Here the distances are equal, so the slower speed lasts longer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "53.333333333333336"
+          },
+          {
+            "id": "d",
+            "label": "120"
+          }
+        ]
+      },
+      "content": {
+        "text": "Equal distances are covered at 80 km/h and 40 km/h. Average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2×80×40/(80+40).",
+            "6400/120=160/3."
+          ],
+          "prompt": "Equal distances are covered at 80 km/h and 40 km/h. Average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "53.333333333333336"
+            },
+            {
+              "id": "d",
+              "label": "120"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed=53⅓ km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The result must lie between 40 and 80 and should be closer to 40 because more time is spent on the slower leg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter gives the equal-distance shortcut directly:\n\nAverage speed = 2xy/(x+y).\n\nHere x and y are the two speeds.\nThe distance itself cancels, so you do not need to know how long the route is as long as the two legs cover equal distances.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "55"
+          },
+          {
+            "id": "c",
+            "label": "120"
+          },
+          {
+            "id": "d",
+            "label": "57.6"
+          }
+        ]
+      },
+      "content": {
+        "text": "Equal distances are covered at 72 km/h and 48 km/h. What is the average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2×72×48/(72+48).",
+            "6912/120=57.6."
+          ],
+          "prompt": "Equal distances are covered at 72 km/h and 48 km/h. What is the average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "55"
+            },
+            {
+              "id": "c",
+              "label": "120"
+            },
+            {
+              "id": "d",
+              "label": "57.6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed is 57.6 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not average 72 and 48 to get 60. Equal distance does not mean equal time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "67.2"
+          },
+          {
+            "id": "b",
+            "label": "70"
+          },
+          {
+            "id": "c",
+            "label": "64"
+          },
+          {
+            "id": "d",
+            "label": "140"
+          }
+        ]
+      },
+      "content": {
+        "text": "A train covers equal distances at 84 km/h and 56 km/h. Average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2×84×56/(84+56).",
+            "9408/140=67.2."
+          ],
+          "prompt": "A train covers equal distances at 84 km/h and 56 km/h. Average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "67.2"
+            },
+            {
+              "id": "b",
+              "label": "70"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "140"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed=67.2 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "This mirrors the chapter's return-journey pattern: equal route length each way, different speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A return journey is the most common wording.\n\nIf A to B is d km and B to A is also d km, the distances are equal automatically.\nSo the shortcut applies even if the question gives the route length as extra information.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "37.5"
+          },
+          {
+            "id": "d",
+            "label": "80"
+          }
+        ]
+      },
+      "content": {
+        "text": "A motorist goes 150 km at 50 km/h and returns 150 km at 30 km/h. Average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Equal distances: use 2×50×30/(50+30).",
+            "3000/80=37.5."
+          ],
+          "prompt": "A motorist goes 150 km at 50 km/h and returns 150 km at 30 km/h. Average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "37.5"
+            },
+            {
+              "id": "d",
+              "label": "80"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed=37.5 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The total route is 300 km, but you can use the shortcut because both legs are 150 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "75"
+          },
+          {
+            "id": "b",
+            "label": "72"
+          },
+          {
+            "id": "c",
+            "label": "70"
+          },
+          {
+            "id": "d",
+            "label": "150"
+          }
+        ]
+      },
+      "content": {
+        "text": "A bus goes from P to Q at 90 km/h and returns over the same route at 60 km/h. Average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2×90×60/(150).",
+            "10800/150=72."
+          ],
+          "prompt": "A bus goes from P to Q at 90 km/h and returns over the same route at 60 km/h. Average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "75"
+            },
+            {
+              "id": "b",
+              "label": "72"
+            },
+            {
+              "id": "c",
+              "label": "70"
+            },
+            {
+              "id": "d",
+              "label": "150"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed=72 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Same route means equal distance each way. The route length is not needed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can derive the formula so it is easier to remember.\n\nLet each leg be d km.\nTime out = d/x.\nTime back = d/y.\n\nAverage speed = 2d ÷ (d/x+d/y).\nThe d cancels, leaving 2xy/(x+y).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "d/x + d/y"
+          },
+          {
+            "id": "b",
+            "label": "x/d + y/d"
+          },
+          {
+            "id": "c",
+            "label": "2d/(x+y)"
+          },
+          {
+            "id": "d",
+            "label": "d/(x+y)"
+          }
+        ]
+      },
+      "content": {
+        "text": "If equal legs are d km at speeds x and y, which expression is total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Time = distance ÷ speed for each leg.",
+            "Add the two travel times."
+          ],
+          "prompt": "If equal legs are d km at speeds x and y, which expression is total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "d/x + d/y"
+            },
+            {
+              "id": "b",
+              "label": "x/d + y/d"
+            },
+            {
+              "id": "c",
+              "label": "2d/(x+y)"
+            },
+            {
+              "id": "d",
+              "label": "d/(x+y)"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Total time is d/x+d/y.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not add speeds to get time. Each time is distance divided by its own speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 hours"
+          },
+          {
+            "id": "b",
+            "label": "3 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "5 hours"
+          }
+        ]
+      },
+      "content": {
+        "text": "If each leg is 120 km at 60 and 40 km/h, what is total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Times are 120/60=2 and 120/40=3.",
+            "Add them."
+          ],
+          "prompt": "If each leg is 120 km at 60 and 40 km/h, what is total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 hours"
+            },
+            {
+              "id": "b",
+              "label": "3 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "5 hours"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Total time=5 hours.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The slower leg takes 3 hours, which is why it pulls the average speed downward.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A quick sense-check helps.\n\nFor two positive speeds on equal distances, the average speed must lie between them.\nIt is usually closer to the slower speed than the simple arithmetic mean is.\n\nIf the two speeds are equal, the average is that same speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "62.5"
+          },
+          {
+            "id": "c",
+            "label": "110"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "content": {
+        "text": "Equal distances are travelled at 100 and 25 km/h. Which could be the average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 2×100×25/(125).",
+            "The result is 40."
+          ],
+          "prompt": "Equal distances are travelled at 100 and 25 km/h. Which could be the average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "62.5"
+            },
+            {
+              "id": "c",
+              "label": "110"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed=40 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "An answer below 25 or above 100 cannot be correct. The simple mean 62.5 is too high because the 25 km/h leg takes much longer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "75"
+          },
+          {
+            "id": "d",
+            "label": "100"
+          }
+        ]
+      },
+      "content": {
+        "text": "Equal distances are travelled at 50 km/h both ways. Average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Put x=y=50 in the formula.",
+            "2×50×50/100=50."
+          ],
+          "prompt": "Equal distances are travelled at 50 km/h both ways. Average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "75"
+            },
+            {
+              "id": "d",
+              "label": "100"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The average stays 50 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "When both speeds are identical, there is no slower-leg imbalance, so the average must equal that speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "The shortcut has a condition: equal distances.\n\nIf one leg is longer than the other, do not force 2xy/(x+y).\nReturn to the definition:\n\naverage speed = total distance ÷ total time.\n\nThis boundary is part of using the chapter's formula correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48"
+          },
+          {
+            "id": "b",
+            "label": "45"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "content": {
+        "text": "A trip covers 60 km at 60 km/h and 120 km at 40 km/h. What is the average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Times are 1 hour and 3 hours.",
+            "Total distance 180 km; total time 4 hours."
+          ],
+          "prompt": "A trip covers 60 km at 60 km/h and 120 km at 40 km/h. What is the average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48"
+            },
+            {
+              "id": "b",
+              "label": "45"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "180÷4=45 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The distances are not equal, so the equal-distance shortcut does not apply.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "33.33"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "37.5"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "content": {
+        "text": "A trip covers 100 km at 50 km/h and 50 km at 25 km/h. What is the average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Times are 2 hours and 2 hours.",
+            "150 km in 4 hours."
+          ],
+          "prompt": "A trip covers 100 km at 50 km/h and 50 km at 25 km/h. What is the average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "33.33"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "37.5"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Average speed=37.5 km/h.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here the times happen to be equal, but the distances are not. Use total distance ÷ total time directly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average speed is always total distance ÷ total time.\n\nFor equal distances at speeds x and y, this becomes 2xy/(x+y).\nDo not replace it with (x+y)/2 unless the travel times, not distances, are equal.\nIf the distances differ, return to total distance and total time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Average Speed for Equal Distances.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Average Speed for Equal Distances",
+    "description": "Understand and use the chapter's special average-speed formula for equal outward and return distances.",
+    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Average Speed for Equal Distances. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 18
+  },
+  "scriptId": "script-avg-10-average-speed-equal-distances",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn missing, overlapping and partial averages with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Partial averages become partial totals.\n\nFive numbers average 30 → total 150.\nFirst two average 20 → total 40.\nLast two average 35 → total 70.\n\nThe middle number is 150−40−70=40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "55"
+          },
+          {
+            "id": "d",
+            "label": "250"
+          }
+        ]
+      },
+      "content": {
+        "text": "Five numbers average 50. The first two average 40 and the last two average 55. What is the middle number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Whole total=250.",
+            "First pair total=80; last pair total=110."
+          ],
+          "prompt": "Five numbers average 50. The first two average 40 and the last two average 55. What is the middle number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "55"
+            },
+            {
+              "id": "d",
+              "label": "250"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Middle=250−80−110=60.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not subtract the averages themselves. Convert every average to the subtotal it represents.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17"
+          },
+          {
+            "id": "b",
+            "label": "29"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "140"
+          }
+        ]
+      },
+      "content": {
+        "text": "Seven numbers average 20. First three average 15 and last three average 22. What is the fourth number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Whole total=140.",
+            "Known totals=45 and 66."
+          ],
+          "prompt": "Seven numbers average 20. First three average 15 and last three average 22. What is the fourth number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17"
+            },
+            {
+              "id": "b",
+              "label": "29"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "140"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Fourth=140−45−66=29.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The first three and last three do not overlap in a 7-item list; the single uncounted item is the fourth.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Watch for overlap.\n\nFor 13 papers, 'first 7' and 'last 7' both contain paper 7.\nIf you add those two subtotals, paper 7 is counted twice.\n\nSo overlap value = first-subtotal + last-subtotal − whole-total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30"
+          },
+          {
+            "id": "b",
+            "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "62"
+          }
+        ]
+      },
+      "content": {
+        "text": "The average of 9 numbers is 30. The first 5 average 28 and the last 5 average 34. What is the 5th number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First subtotal=140; last subtotal=170.",
+            "Whole total=270; overlap=140+170−270."
+          ],
+          "prompt": "The average of 9 numbers is 30. The first 5 average 28 and the last 5 average 34. What is the 5th number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "62"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The 5th number is 40.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Adding the two 5-item groups counts 10 positions, but the list has only 9. The middle observation is the one counted twice.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "content": {
+        "text": "11 numbers average 25. First 6 average 20 and last 6 average 30. What is the 6th number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Subtotals are 120 and 180.",
+            "Whole total is 275."
+          ],
+          "prompt": "11 numbers average 25. First 6 average 20 and last 6 average 30. What is the 6th number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Overlap=120+180−275=25.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use 'two partial totals minus whole total' to isolate the shared observation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pairwise averages can reveal individual values.\n\nIf average of A and B is 20, then A+B=40.\nIf B+C averages 19, B+C=38.\nIf A+C averages 21, A+C=42.\n\nAdd all three equations: 2(A+B+C)=120, so A+B+C=60. Then subtract a pair sum to get the remaining person.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "content": {
+        "text": "Average of A and B is 15, B and C is 18, A and C is 17. What is B?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Pair sums are 30, 36 and 34.",
+            "A+B+C=(30+36+34)/2=50; B=50−34."
+          ],
+          "prompt": "Average of A and B is 15, B and C is 18, A and C is 17. What is B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "B=16.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not average the three pairwise averages. First turn each into a two-person sum.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "content": {
+        "text": "Average of P and Q is 20, Q and R is 25, P and R is 23. What is P?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Pair sums are 40,50,46.",
+            "P+Q+R=68; subtract Q+R=50."
+          ],
+          "prompt": "Average of P and Q is 20, Q and R is 25, P and R is 23. What is P?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "P=18.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The three pair sums total twice the sum of all three people. Halve first, then subtract the opposite pair.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Overlapping time windows work the same way.\n\nFirst four days average 40 → total 160.\nLast four days average 42 → total 168.\nWhole seven days average 41 → total 287.\n\nDay 4 is in both four-day groups, so day 4 = 160+168−287 = 41.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "27"
+          },
+          {
+            "id": "c",
+            "label": "52"
+          },
+          {
+            "id": "d",
+            "label": "26"
+          }
+        ]
+      },
+      "content": {
+        "text": "First 4 days average 25, last 4 days average 27, whole 7 days average 26. What was day 4?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Totals are 100,108 and 182.",
+            "Overlap=100+108−182."
+          ],
+          "prompt": "First 4 days average 25, last 4 days average 27, whole 7 days average 26. What was day 4?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "27"
+            },
+            {
+              "id": "c",
+              "label": "52"
+            },
+            {
+              "id": "d",
+              "label": "26"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Day 4 was 26.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Treat the date exactly like an overlapping list position. Day 4 belongs to both 4-day windows.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "70"
+          },
+          {
+            "id": "c",
+            "label": "65"
+          },
+          {
+            "id": "d",
+            "label": "130"
+          }
+        ]
+      },
+      "content": {
+        "text": "First 3 scores average 60, last 3 average 70, and all 5 average 65. What is the 3rd score?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "First subtotal=180; last subtotal=210; whole=325.",
+            "Overlap=180+210−325."
+          ],
+          "prompt": "First 3 scores average 60, last 3 average 70, and all 5 average 65. What is the 3rd score?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "70"
+            },
+            {
+              "id": "c",
+              "label": "65"
+            },
+            {
+              "id": "d",
+              "label": "130"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The shared 3rd score is 65.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The middle score is counted in both three-score groups, so subtract the whole total once.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "To find the average of an unmentioned remainder, subtract totals and then divide by the remaining count.\n\nWhole: 12 numbers average 15 → 180.\nFirst 2 average 14 → 28.\nRemaining 10 total 152 → average 15.2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "26.666666666666668"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "content": {
+        "text": "20 numbers average 30. The first 5 average 40. What is the average of the other 15?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Whole total=600; first-five total=200.",
+            "Remaining total=400; divide by 15."
+          ],
+          "prompt": "20 numbers average 30. The first 5 average 40. What is the average of the other 15?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "26.666666666666668"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "400/15=80/3≈26.67.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not divide the remaining total by 20. Once 5 observations are removed, only 15 remain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40"
+          },
+          {
+            "id": "b",
+            "label": "45"
+          },
+          {
+            "id": "c",
+            "label": "55"
+          },
+          {
+            "id": "d",
+            "label": "42.5"
+          }
+        ]
+      },
+      "content": {
+        "text": "18 items average 50. Six items average 65. What is the average of the other 12?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Whole total=900; known total=390.",
+            "Remainder=510 across 12 items."
+          ],
+          "prompt": "18 items average 50. Six items average 65. What is the average of the other 12?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40"
+            },
+            {
+              "id": "b",
+              "label": "45"
+            },
+            {
+              "id": "c",
+              "label": "55"
+            },
+            {
+              "id": "d",
+              "label": "42.5"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "510÷12=42.5.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Track both what total remains and how many observations remain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some objective questions ask whether the information is enough.\n\nTranslate each statement into sums, then ask: can the target be found uniquely?\n\nIf A+B+C is known and B+D+E is known, adding them gives A+C+D+E+2B. To find A+B+C+D+E, you still need B. Without it, the five-person average is not fixed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "No"
+          },
+          {
+            "id": "b",
+            "label": "Yes, it is 270"
+          },
+          {
+            "id": "c",
+            "label": "Yes, it is 135"
+          },
+          {
+            "id": "d",
+            "label": "Only if A=C"
+          }
+        ]
+      },
+      "content": {
+        "text": "You know A+B+C=150 and B+D+E=120. Can you determine A+B+C+D+E without knowing B?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Add the two known sums.",
+            "You get target total + B."
+          ],
+          "prompt": "You know A+B+C=150 and B+D+E=120. Can you determine A+B+C+D+E without knowing B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "No"
+            },
+            {
+              "id": "b",
+              "label": "Yes, it is 270"
+            },
+            {
+              "id": "c",
+              "label": "Yes, it is 135"
+            },
+            {
+              "id": "d",
+              "label": "Only if A=C"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "No. The two sums add to the five-person total plus an extra B, so B is still needed.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common mistake is to add the two totals and divide by 5. That double-counts B.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "No"
+          },
+          {
+            "id": "b",
+            "label": "Yes, it is 75"
+          },
+          {
+            "id": "c",
+            "label": "Yes, it is 90"
+          },
+          {
+            "id": "d",
+            "label": "Yes, it is 45"
+          }
+        ]
+      },
+      "content": {
+        "text": "You know P+Q=40, Q+R=50 and Q=15. Is P+Q+R determined?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "P=25 and R=35.",
+            "Then total=25+15+35."
+          ],
+          "prompt": "You know P+Q=40, Q+R=50 and Q=15. Is P+Q+R determined?",
+          "options": [
+            {
+              "id": "a",
+              "label": "No"
+            },
+            {
+              "id": "b",
+              "label": "Yes, it is 75"
+            },
+            {
+              "id": "c",
+              "label": "Yes, it is 90"
+            },
+            {
+              "id": "d",
+              "label": "Yes, it is 45"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Yes. The total is 75.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once the shared value Q is known, both pair equations give the other two values, so the total is uniquely determined.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Partial-average problems are bookkeeping with totals.\n\nMark which observations belong to each subtotal.\nIf two groups overlap, their shared observations are counted twice when subtotals are added.\nFor data sufficiency, stop and ask whether the target is uniquely determined before doing extra arithmetic.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Missing, Overlapping and Partial Averages.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Missing, Overlapping and Partial Averages",
+    "description": "Use totals to recover hidden observations when subsets overlap or only part of a list is described.",
+    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Missing, Overlapping and Partial Averages. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 18
+  },
+  "scriptId": "script-avg-05-missing-overlapping-and-partial-averages",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's simplify roots that contain another root inside them.\n\nAn expression such as 5 + 2√6 looks awkward until we notice a familiar square:\n\n(√3 + √2)^2 = 3 + 2 + 2√6 = 5 + 2√6.\n\nSo its square root becomes simple.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The plus pattern is:\n\n(√m + √n)^2 = m+n + 2√(mn).\n\nFor 5+2√6, we need m+n=5 and mn=6. The pair 3 and 2 works.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "(√3 - √2)^2"
+          },
+          {
+            "id": "b",
+            "label": "(√5 + √6)^2"
+          },
+          {
+            "id": "c",
+            "label": "(3 + 2√6)^2"
+          },
+          {
+            "id": "d",
+            "label": "(√3 + √2)^2"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which square equals 5 + 2√6?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Look for m+n=5 and mn=6.",
+            "3 and 2 satisfy both."
+          ],
+          "prompt": "Which square equals 5 + 2√6?",
+          "options": [
+            {
+              "id": "a",
+              "label": "(√3 - √2)^2"
+            },
+            {
+              "id": "b",
+              "label": "(√5 + √6)^2"
+            },
+            {
+              "id": "c",
+              "label": "(3 + 2√6)^2"
+            },
+            {
+              "id": "d",
+              "label": "(√3 + √2)^2"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. (√3+√2)^2=3+2+2√6=5+2√6.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "(2 - √3)^2"
+          },
+          {
+            "id": "b",
+            "label": "(2 + √3)^2"
+          },
+          {
+            "id": "c",
+            "label": "(√7 + √3)^2"
+          },
+          {
+            "id": "d",
+            "label": "(3 + √4)^2"
+          }
+        ]
+      },
+      "content": {
+        "text": "Which square equals 7 + 4√3?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "2^2+3=7.",
+            "2×2×√3 = 4√3."
+          ],
+          "prompt": "Which square equals 7 + 4√3?",
+          "options": [
+            {
+              "id": "a",
+              "label": "(2 - √3)^2"
+            },
+            {
+              "id": "b",
+              "label": "(2 + √3)^2"
+            },
+            {
+              "id": "c",
+              "label": "(√7 + √3)^2"
+            },
+            {
+              "id": "d",
+              "label": "(3 + √4)^2"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. (2+√3)^2=4+3+4√3=7+4√3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhich square equals 5 + 2√6?\n\nStart from this clue:\nLook for m+n=5 and mn=6.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n(2+√3)^2=4+3+4√3=7+4√3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once the hidden square is found, the outer root cancels it.\n\n√(5+2√6) = √3+√2.\n\nThe result is positive, matching the principal square root.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√3 - √2"
+          },
+          {
+            "id": "b",
+            "label": "5 + √6"
+          },
+          {
+            "id": "c",
+            "label": "√3 + √2"
+          },
+          {
+            "id": "d",
+            "label": "3 + 2√6"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify √(5 + 2√6).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Recognize 5+2√6 as (√3+√2)^2.",
+            "Take the positive square root."
+          ],
+          "prompt": "Simplify √(5 + 2√6).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√3 - √2"
+            },
+            {
+              "id": "b",
+              "label": "5 + √6"
+            },
+            {
+              "id": "c",
+              "label": "√3 + √2"
+            },
+            {
+              "id": "d",
+              "label": "3 + 2√6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. √(5+2√6)=√3+√2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 + √3"
+          },
+          {
+            "id": "b",
+            "label": "2 - √3"
+          },
+          {
+            "id": "c",
+            "label": "√7 + √3"
+          },
+          {
+            "id": "d",
+            "label": "4 + √3"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify √(7 + 4√3).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "7+4√3=(2+√3)^2.",
+            "Take the non-negative square root."
+          ],
+          "prompt": "Simplify √(7 + 4√3).",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 + √3"
+            },
+            {
+              "id": "b",
+              "label": "2 - √3"
+            },
+            {
+              "id": "c",
+              "label": "√7 + √3"
+            },
+            {
+              "id": "d",
+              "label": "4 + √3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "Correct. √(7+4√3)=2+√3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nSimplify √(5 + 2√6).\n\nStart from this clue:\nRecognize 5+2√6 as (√3+√2)^2.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n√(7+4√3)=2+√3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A minus middle term uses the minus square:\n\n(√m - √n)^2 = m+n - 2√(mn).\n\nSo 5-2√6 = (√3-√2)^2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√3 + √2"
+          },
+          {
+            "id": "b",
+            "label": "√3 - √2"
+          },
+          {
+            "id": "c",
+            "label": "5 - √6"
+          },
+          {
+            "id": "d",
+            "label": "√6 - √5"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify √(5 - 2√6).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use the same pair 3 and 2.",
+            "The negative middle term chooses the minus sign."
+          ],
+          "prompt": "Simplify √(5 - 2√6).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√3 + √2"
+            },
+            {
+              "id": "b",
+              "label": "√3 - √2"
+            },
+            {
+              "id": "c",
+              "label": "5 - √6"
+            },
+            {
+              "id": "d",
+              "label": "√6 - √5"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 5-2√6=(√3-√2)^2, and √3>√2, so the principal root is √3-√2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 + √3"
+          },
+          {
+            "id": "b",
+            "label": "√7 - √3"
+          },
+          {
+            "id": "c",
+            "label": "√3 - 2"
+          },
+          {
+            "id": "d",
+            "label": "2 - √3"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify √(7 - 4√3).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "7-4√3=(2-√3)^2.",
+            "2-√3 is positive."
+          ],
+          "prompt": "Simplify √(7 - 4√3).",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 + √3"
+            },
+            {
+              "id": "b",
+              "label": "√7 - √3"
+            },
+            {
+              "id": "c",
+              "label": "√3 - 2"
+            },
+            {
+              "id": "d",
+              "label": "2 - √3"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. The principal square root is 2-√3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nSimplify √(5 - 2√6).\n\nStart from this clue:\nUse the same pair 3 and 2.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\nThe principal square root is 2-√3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "The ordinary term may not immediately show the pair.\n\nFor 8-2√15, we need m+n=8 and mn=15.\n\nThe pair is 5 and 3.\nSo 8-2√15=(√5-√3)^2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√5 - √3"
+          },
+          {
+            "id": "b",
+            "label": "√5 + √3"
+          },
+          {
+            "id": "c",
+            "label": "√15 - √8"
+          },
+          {
+            "id": "d",
+            "label": "5 - 3"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify √(8 - 2√15).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Find two numbers with sum 8 and product 15.",
+            "They are 5 and 3."
+          ],
+          "prompt": "Simplify √(8 - 2√15).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√5 - √3"
+            },
+            {
+              "id": "b",
+              "label": "√5 + √3"
+            },
+            {
+              "id": "c",
+              "label": "√15 - √8"
+            },
+            {
+              "id": "d",
+              "label": "5 - 3"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 8-2√15=(√5-√3)^2, so the root is √5-√3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√5 + 2"
+          },
+          {
+            "id": "b",
+            "label": "3 - √5"
+          },
+          {
+            "id": "c",
+            "label": "√5 - 2"
+          },
+          {
+            "id": "d",
+            "label": "5 - 2√5"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify √(9 - 4√5).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Need m+n=9 and 2√(mn)=4√5.",
+            "m and n are 5 and 4."
+          ],
+          "prompt": "Simplify √(9 - 4√5).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√5 + 2"
+            },
+            {
+              "id": "b",
+              "label": "3 - √5"
+            },
+            {
+              "id": "c",
+              "label": "√5 - 2"
+            },
+            {
+              "id": "d",
+              "label": "5 - 2√5"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Correct. 9-4√5=(√5-2)^2, so the root is √5-2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nSimplify √(8 - 2√15).\n\nStart from this clue:\nFind two numbers with sum 8 and product 15.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\n9-4√5=(√5-2)^2, so the root is √5-2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Paired nested roots can cancel their surd parts.\n\n√(6+4√2)=2+√2.\n√(6-4√2)=2-√2.\n\nTheir sum is 4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2√2"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √(6+4√2) + √(6-4√2)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Rewrite the two roots as 2+√2 and 2-√2.",
+            "The √2 terms cancel."
+          ],
+          "prompt": "What is √(6+4√2) + √(6-4√2)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2√2"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. (2+√2)+(2-√2)=4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "2√3"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √(7+4√3) + √(7-4√3)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The roots are 2+√3 and 2-√3.",
+            "Add them."
+          ],
+          "prompt": "What is √(7+4√3) + √(7-4√3)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "2√3"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. The surd parts cancel, leaving 4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is √(6+4√2) + √(6-4√2)?\n\nStart from this clue:\nRewrite the two roots as 2+√2 and 2-√2.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\nThe surd parts cancel, leaving 4.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A difference of the paired roots leaves only the surd part.\n\n√(5+2√6) - √(5-2√6)\n= (√3+√2) - (√3-√2)\n= 2√2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2√3"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "2√2"
+          },
+          {
+            "id": "d",
+            "label": "√6"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √(5+2√6) - √(5-2√6)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use √3±√2 for the two roots.",
+            "Subtract carefully; the √3 terms cancel."
+          ],
+          "prompt": "What is √(5+2√6) - √(5-2√6)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2√3"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "2√2"
+            },
+            {
+              "id": "d",
+              "label": "√6"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. The difference is 2√2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2√2"
+          },
+          {
+            "id": "b",
+            "label": "2√3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "√6"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √(5+2√6) + √(5-2√6)?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use √3+√2 and √3-√2.",
+            "Now the √2 terms cancel."
+          ],
+          "prompt": "What is √(5+2√6) + √(5-2√6)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2√2"
+            },
+            {
+              "id": "b",
+              "label": "2√3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "√6"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Correct. The sum is 2√3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is √(5+2√6) - √(5-2√6)?\n\nStart from this clue:\nUse √3±√2 for the two roots.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the retry with its actual values.\n\nThe sum is 2√3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a hidden square, compare with:\n\n(√m ± √n)^2 = m+n ± 2√(mn).\n\nMatch the ordinary part m+n and the surd part mn.\nChoose the sign from the middle term.\nRemember that the principal square root is non-negative.\n\nExplain how you would recognize √(8 - 2√15) without using a decimal approximation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "Great. Nested square roots become much friendlier when you look for a hidden perfect square. Match the sum and product of the two component radicands, then check by squaring your simplified answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Perfect-Square Surds and Nested Square Roots",
+    "description": "Reveal hidden squares inside expressions containing square roots and simplify nested radicals.",
+    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Perfect-Square Surds and Nested Square Roots. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
+    "targetDurationMinutes": 22
+  },
+  "scriptId": "script-si-08-perfect-square-surds-nested-roots",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

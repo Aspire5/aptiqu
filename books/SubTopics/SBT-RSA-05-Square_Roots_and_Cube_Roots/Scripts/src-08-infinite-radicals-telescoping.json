@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn infinite radicals and telescoping root patterns with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A repeating radical contains a copy of itself.\n\nLet x = √(6+√(6+√(6+...))).\nThe tail after the first 6 is again x.\nSo x=√(6+x).\nSquare: x²=6+x, or x²−x−6=0.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "x=2+x"
+          },
+          {
+            "id": "b",
+            "label": "x²=2x"
+          },
+          {
+            "id": "c",
+            "label": "x=2²+x"
+          },
+          {
+            "id": "d",
+            "label": "x² = 2 + x"
+          }
+        ]
+      },
+      "content": {
+        "text": "If x=√(2+√(2+√(2+...))), which equation is correct?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Replace the repeating tail by x.",
+            "Then x=√(2+x); square both sides."
+          ],
+          "prompt": "If x=√(2+√(2+√(2+...))), which equation is correct?",
+          "options": [
+            {
+              "id": "a",
+              "label": "x=2+x"
+            },
+            {
+              "id": "b",
+              "label": "x²=2x"
+            },
+            {
+              "id": "c",
+              "label": "x=2²+x"
+            },
+            {
+              "id": "d",
+              "label": "x² = 2 + x"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The correct equation is x²=2+x.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The repeated tail is the whole radical x, not x².",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "x²−x−3=0"
+          },
+          {
+            "id": "b",
+            "label": "x²+x−3=0"
+          },
+          {
+            "id": "c",
+            "label": "x²−3x−1=0"
+          },
+          {
+            "id": "d",
+            "label": "x−3=0"
+          }
+        ]
+      },
+      "content": {
+        "text": "If x=√(3+√(3+...)), which equation is correct?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Write x²=3+x.",
+            "Move all terms to one side."
+          ],
+          "prompt": "If x=√(3+√(3+...)), which equation is correct?",
+          "options": [
+            {
+              "id": "a",
+              "label": "x²−x−3=0"
+            },
+            {
+              "id": "b",
+              "label": "x²+x−3=0"
+            },
+            {
+              "id": "c",
+              "label": "x²−3x−1=0"
+            },
+            {
+              "id": "d",
+              "label": "x−3=0"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "x²−x−3=0.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "From x=√(3+x), squaring gives x²=3+x, hence x²−x−3=0.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "After solving the quadratic, keep the value that matches the radical.\n\nA square root is non-negative, so a negative algebraic root cannot be the value of the repeated radical.\n\nFor √(6+√(6+...)), the equation factors to (x−3)(x+2)=0. The radical equals 3, not −2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "-1"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "1"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √(2+√(2+√(2+...)))?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Solve x²−x−2=0.",
+            "The roots are 2 and −1; keep the non-negative one."
+          ],
+          "prompt": "What is √(2+√(2+√(2+...)))?",
+          "options": [
+            {
+              "id": "a",
+              "label": "-1"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "1"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The repeated radical equals 2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not keep a negative algebraic root for a positive square-root expression.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "-3"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √(12+√(12+√(12+...)))?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Solve x²−x−12=0.",
+            "(x−4)(x+3)=0."
+          ],
+          "prompt": "What is √(12+√(12+√(12+...)))?",
+          "options": [
+            {
+              "id": "a",
+              "label": "-3"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The positive root is 4.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The algebraic roots are 4 and −3. The radical is non-negative, so its value is 4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A denominator like √(n+1)+√n has a very useful reciprocal.\n\n1/(√(n+1)+√n)\n= √(n+1)−√n,\n\nbecause the conjugate product is (n+1)−n=1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√5−2"
+          },
+          {
+            "id": "b",
+            "label": "√5+2"
+          },
+          {
+            "id": "c",
+            "label": "1/√5−2"
+          },
+          {
+            "id": "d",
+            "label": "√5/2"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify 1/(√5+2).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "2=√4.",
+            "Multiply by the conjugate √5−2; denominator becomes 1."
+          ],
+          "prompt": "Simplify 1/(√5+2).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√5−2"
+            },
+            {
+              "id": "b",
+              "label": "√5+2"
+            },
+            {
+              "id": "c",
+              "label": "1/√5−2"
+            },
+            {
+              "id": "d",
+              "label": "√5/2"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "1/(√5+2)=√5−2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "The denominator is √5+√4. Its conjugate makes a difference of squares equal to 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√10+3"
+          },
+          {
+            "id": "b",
+            "label": "1/(√10−3)"
+          },
+          {
+            "id": "c",
+            "label": "√7"
+          },
+          {
+            "id": "d",
+            "label": "√10−3"
+          }
+        ]
+      },
+      "content": {
+        "text": "Simplify 1/(√10+3).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "3=√9.",
+            "10−9=1."
+          ],
+          "prompt": "Simplify 1/(√10+3).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√10+3"
+            },
+            {
+              "id": "b",
+              "label": "1/(√10−3)"
+            },
+            {
+              "id": "c",
+              "label": "√7"
+            },
+            {
+              "id": "d",
+              "label": "√10−3"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The reciprocal equals √10−3.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply by √10−3. The denominator becomes 10−9=1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "That identity creates telescoping sums.\n\n1/(√2+1) + 1/(√3+√2) + 1/(2+√3)\nbecomes\n(√2−1)+(√3−√2)+(2−√3).\n\nEverything in the middle cancels, leaving 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√3+1"
+          },
+          {
+            "id": "b",
+            "label": "2√3−1"
+          },
+          {
+            "id": "c",
+            "label": "√3−1"
+          },
+          {
+            "id": "d",
+            "label": "1"
+          }
+        ]
+      },
+      "content": {
+        "text": "Evaluate 1/(√2+1) + 1/(√3+√2).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Rationalise each term.",
+            "They become √2−1 and √3−√2."
+          ],
+          "prompt": "Evaluate 1/(√2+1) + 1/(√3+√2).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√3+1"
+            },
+            {
+              "id": "b",
+              "label": "2√3−1"
+            },
+            {
+              "id": "c",
+              "label": "√3−1"
+            },
+            {
+              "id": "d",
+              "label": "1"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The √2 terms cancel, leaving √3−1.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "Write both rationalised terms before combining; the cancellation becomes obvious.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2+√2"
+          },
+          {
+            "id": "b",
+            "label": "2−√2"
+          },
+          {
+            "id": "c",
+            "label": "√3−√2"
+          },
+          {
+            "id": "d",
+            "label": "1"
+          }
+        ]
+      },
+      "content": {
+        "text": "Evaluate 1/(√3+√2) + 1/(2+√3).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "The terms become √3−√2 and 2−√3.",
+            "Cancel +√3 and −√3."
+          ],
+          "prompt": "Evaluate 1/(√3+√2) + 1/(2+√3).",
+          "options": [
+            {
+              "id": "a",
+              "label": "2+√2"
+            },
+            {
+              "id": "b",
+              "label": "2−√2"
+            },
+            {
+              "id": "c",
+              "label": "√3−√2"
+            },
+            {
+              "id": "d",
+              "label": "1"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The sum is 2−√2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "After rationalising, the middle √3 cancels exactly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Alternating expressions with differences of roots can also collapse.\n\nThe chapter's worked pattern rewrites 1/√(a−b) by rationalising the difference, turning each term into a sum of adjacent roots.\n\nWhen signs alternate, many adjacent pieces cancel.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "19"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "181"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √100−√81?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "√100=10 and √81=9.",
+            "Subtract the roots after evaluating them."
+          ],
+          "prompt": "What is √100−√81?",
+          "options": [
+            {
+              "id": "a",
+              "label": "19"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "181"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "10−9=1.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A difference of roots is not the root of the difference. √100−√81=10−9, not √19.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "content": {
+        "text": "What is √49+√36−√25?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Evaluate each root first.",
+            "7+6−5=8."
+          ],
+          "prompt": "What is √49+√36−√25?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The value is 8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Each radicand is a perfect square, so reduce them before doing the addition and subtraction.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pattern questions are safest when you expose the algebra.\n\nDo not guess an infinite radical from the first few numbers, and do not announce telescoping before you have rewritten the terms into a cancelling form.\n\nSelf-similarity gives an equation; conjugates give cancellation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "√2"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "(1+√5)/2"
+          }
+        ]
+      },
+      "content": {
+        "text": "For x=√(1+√(1+√(1+...))), which positive value fits?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "x²=x+1.",
+            "Solve x²−x−1=0 and keep the positive root."
+          ],
+          "prompt": "For x=√(1+√(1+√(1+...))), which positive value fits?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "√2"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "(1+√5)/2"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "The positive solution is (1+√5)/2.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "This one does not simplify to an integer. Keep the exact positive quadratic root.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "-2"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "content": {
+        "text": "For x=√(6+√(6+...)), which value fits the original radical?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "x²=x+6.",
+            "Check 3: √(6+3)=3."
+          ],
+          "prompt": "For x=√(6+√(6+...)), which value fits the original radical?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "-2"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "x=3 fits; −2 does not fit a square-root expression.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "Substitution is a strong check: √(9)=3, so the repeating value 3 is consistent.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Infinite radicals are solved by self-similarity: call the whole expression x, replace the repeated tail by x, and solve.\n\nKeep the non-negative value that fits the radical.\n\nTelescoping root sums come from rationalising adjacent terms so the middle pieces cancel.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Infinite Radicals and Telescoping Root Patterns.\n\nTry to explain one method in your own words: what do you look for first, what operation comes next, and how do you know the final answer is reasonable?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Infinite Radicals and Telescoping Root Patterns",
+    "description": "Turn repeating radicals into equations and simplify root series whose middle terms cancel.",
+    "sourceScope": "Based strictly on the Square Roots and Cube Roots chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Infinite Radicals and Telescoping Root Patterns. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 18
+  },
+  "scriptId": "script-src-08-infinite-radicals-telescoping",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

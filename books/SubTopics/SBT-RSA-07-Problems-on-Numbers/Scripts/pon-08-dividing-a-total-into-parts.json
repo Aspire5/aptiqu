@@ -1,0 +1,1243 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's split a total into parts without guessing.\n\nA known total can reduce the number of unknowns immediately: if one part is x, the other is Total−x.\n\nFor three or more parts, ratios often make the structure clearer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_1"
+        }
+      ]
+    },
+    "concept_1": {
+      "id": "concept_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When a total T is split into two parts, one clean model is x and T−x.\n\nThen a weighted condition becomes one equation.\n\nThis avoids carrying two unknowns when the total is already known.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "content": {
+        "text": "70 is split into two parts. Four times the first plus ten times the second is 520. What is the larger part?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Let the second part be x and the first 70−x.",
+            "4(70−x)+10x=520."
+          ],
+          "prompt": "70 is split into two parts. Four times the first plus ten times the second is 520. What is the larger part?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "280−4x+10x=520 gives 6x=240, so x=40. The parts are 30 and 40.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_1_retry": {
+      "id": "q_1_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "content": {
+        "text": "60 is split into two parts. Three times the first plus seven times the second is 320. What is the larger part?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_2"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_1_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Let second=x, first=60−x.",
+            "3(60−x)+7x=320."
+          ],
+          "prompt": "60 is split into two parts. Three times the first plus seven times the second is 320. What is the larger part?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "180+4x=320 gives x=35, so the parts are 25 and 35. The larger part is 35.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_1_remedy": {
+      "id": "q_1_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\n70 is split into two parts. Four times the first plus ten times the second is 520. What is the larger part?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1_retry"
+        }
+      ]
+    },
+    "q_1_retry_fix": {
+      "id": "q_1_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "180+4x=320 gives x=35, so the parts are 25 and 35. The larger part is 35.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_2"
+        }
+      ]
+    },
+    "concept_2": {
+      "id": "concept_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If equal fractions of several parts are the same, turn that into a ratio.\n\nIf A/2=B/3=C/4, write\nA=2k, B=3k, C=4k.\n\nNow the total fixes k.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "70"
+          },
+          {
+            "id": "c",
+            "label": "80"
+          },
+          {
+            "id": "d",
+            "label": "90"
+          }
+        ]
+      },
+      "content": {
+        "text": "A total of 180 is split into A,B,C with A/2=B/3=C/4. What is the largest part?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "A:B:C=2:3:4.",
+            "There are 9 ratio parts in 180."
+          ],
+          "prompt": "A total of 180 is split into A,B,C with A/2=B/3=C/4. What is the largest part?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "70"
+            },
+            {
+              "id": "c",
+              "label": "80"
+            },
+            {
+              "id": "d",
+              "label": "90"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "One ratio part is 20, so the parts are 40,60,80. Largest=80.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_2_retry": {
+      "id": "q_2_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "75"
+          },
+          {
+            "id": "d",
+            "label": "100"
+          }
+        ]
+      },
+      "content": {
+        "text": "A total of 150 is split into A,B,C with A/1=B/2=C/3. What is B?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_3"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_2_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "A:B:C=1:2:3.",
+            "Six ratio parts equal 150."
+          ],
+          "prompt": "A total of 150 is split into A,B,C with A/1=B/2=C/3. What is B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "75"
+            },
+            {
+              "id": "d",
+              "label": "100"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "One part is 25; B=2×25=50.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_2_remedy": {
+      "id": "q_2_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA total of 180 is split into A,B,C with A/2=B/3=C/4. What is the largest part?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2_retry"
+        }
+      ]
+    },
+    "q_2_retry_fix": {
+      "id": "q_2_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "One part is 25; B=2×25=50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_3"
+        }
+      ]
+    },
+    "concept_3": {
+      "id": "concept_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Chained ratios must share the middle term.\n\nIf A:B=2:3 and B:C=4:5, make B the same in both ratios.\n2:3 becomes 8:12, and 4:5 becomes 12:15.\nSo A:B:C=8:12:15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "48"
+          },
+          {
+            "id": "d",
+            "label": "56"
+          }
+        ]
+      },
+      "content": {
+        "text": "A:B=2:3 and B:C=4:5. If A+B+C=140, what is C?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Combine ratios as 8:12:15.",
+            "Total ratio parts=35."
+          ],
+          "prompt": "A:B=2:3 and B:C=4:5. If A+B+C=140, what is C?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "48"
+            },
+            {
+              "id": "d",
+              "label": "56"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "One ratio part is 4, so C=15×4=60.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_3_retry": {
+      "id": "q_3_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "28"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "content": {
+        "text": "P:Q=3:5 and Q:R=10:7. If P+Q+R=92, what is Q?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_4"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_3_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Make Q common: 3:5 = 6:10.",
+            "P:Q:R=6:10:7, total 23 parts."
+          ],
+          "prompt": "P:Q=3:5 and Q:R=10:7. If P+Q+R=92, what is Q?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "28"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "One part is 4, so Q=40.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_3_remedy": {
+      "id": "q_3_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA:B=2:3 and B:C=4:5. If A+B+C=140, what is C?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3_retry"
+        }
+      ]
+    },
+    "q_3_retry_fix": {
+      "id": "q_3_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "One part is 4, so Q=40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_4"
+        }
+      ]
+    },
+    "concept_4": {
+      "id": "concept_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some parts become equal only after different operations.\n\nIf A+4=B−4=2C=D/2=k, rewrite every original part in terms of k before using the total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "content": {
+        "text": "Four numbers total 90 and satisfy A+4=B−4=2C=D/2. What is the difference between the largest and smallest original numbers?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Let the common value be k.",
+            "A=k−4, B=k+4, C=k/2, D=2k."
+          ],
+          "prompt": "Four numbers total 90 and satisfy A+4=B−4=2C=D/2. What is the difference between the largest and smallest original numbers?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "Their sum is 4.5k=90, so k=20. The numbers are 16,24,10,40; difference=30.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_4_retry": {
+      "id": "q_4_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "36"
+          },
+          {
+            "id": "d",
+            "label": "48"
+          }
+        ]
+      },
+      "content": {
+        "text": "Four numbers total 64 and satisfy A+3=B−3=3C=D/3. What is the largest number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_5"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_4_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Let the common value be k.",
+            "A=k−3,B=k+3,C=k/3,D=3k."
+          ],
+          "prompt": "Four numbers total 64 and satisfy A+3=B−3=3C=D/3. What is the largest number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "36"
+            },
+            {
+              "id": "d",
+              "label": "48"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "The sum is (16/3)k=64, so k=12. The numbers are 9,15,4,36; largest=36.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_4_remedy": {
+      "id": "q_4_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nFour numbers total 90 and satisfy A+4=B−4=2C=D/2. What is the difference between the largest and smallest original numbers?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4_retry"
+        }
+      ]
+    },
+    "q_4_retry_fix": {
+      "id": "q_4_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sum is (16/3)k=64, so k=12. The numbers are 9,15,4,36; largest=36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_5"
+        }
+      ]
+    },
+    "concept_5": {
+      "id": "concept_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A split can also be described by reciprocal sums.\n\nIf x and T−x are the two parts, then\n1/x + 1/(T−x)\nturns into one quadratic equation.\n\nUse the known total before expanding.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "content": {
+        "text": "25 is split into two positive parts whose reciprocal sum is 1/6. What is the larger part?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "Use 1/x+1/(25−x)=1/6.",
+            "25/[x(25−x)]=1/6, so the product is 150."
+          ],
+          "prompt": "25 is split into two positive parts whose reciprocal sum is 1/6. What is the larger part?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "The parts have sum 25 and product 150, so they are 10 and 15. Larger=15.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "c"
+        }
+      }
+    },
+    "q_5_retry": {
+      "id": "q_5_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "7"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "content": {
+        "text": "14 is split into two positive parts whose reciprocal sum is 7/24. What is the larger part?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "concept_6"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_5_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "14/product=7/24.",
+            "Product=48."
+          ],
+          "prompt": "14 is split into two positive parts whose reciprocal sum is 7/24. What is the larger part?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "7"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "difficulty": "HARD",
+          "explanation": "The parts sum to 14 and multiply to 48, so they are 6 and 8. Larger=8.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "a"
+        }
+      }
+    },
+    "q_5_remedy": {
+      "id": "q_5_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\n25 is split into two positive parts whose reciprocal sum is 1/6. What is the larger part?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5_retry"
+        }
+      ]
+    },
+    "q_5_retry_fix": {
+      "id": "q_5_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "The parts sum to 14 and multiply to 48, so they are 6 and 8. Larger=8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "concept_6"
+        }
+      ]
+    },
+    "concept_6": {
+      "id": "concept_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Percentage-removal questions work by tracking the fraction that remains.\n\nIf 10% are removed, 90% remain.\nIf 80% of that remainder is then removed, 20% of 90% remains.\n\nMultiply the remaining percentages, not the removed percentages.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "200"
+          },
+          {
+            "id": "b",
+            "label": "225"
+          },
+          {
+            "id": "c",
+            "label": "300"
+          },
+          {
+            "id": "d",
+            "label": "250"
+          }
+        ]
+      },
+      "content": {
+        "text": "10% of some eggs are rotten. Then 80% of the remaining good eggs are given away. If 45 eggs remain, how many were bought originally?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_remedy"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "After both steps, 20% of 90% remains.",
+            "0.18×original=45."
+          ],
+          "prompt": "10% of some eggs are rotten. Then 80% of the remaining good eggs are given away. If 45 eggs remain, how many were bought originally?",
+          "options": [
+            {
+              "id": "a",
+              "label": "200"
+            },
+            {
+              "id": "b",
+              "label": "225"
+            },
+            {
+              "id": "c",
+              "label": "300"
+            },
+            {
+              "id": "d",
+              "label": "250"
+            }
+          ],
+          "difficulty": "MEDIUM",
+          "explanation": "Original=45/0.18=250.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "d"
+        }
+      }
+    },
+    "q_6_retry": {
+      "id": "q_6_retry",
+      "type": "CHOICE",
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "160"
+          },
+          {
+            "id": "b",
+            "label": "200"
+          },
+          {
+            "id": "c",
+            "label": "180"
+          },
+          {
+            "id": "d",
+            "label": "250"
+          }
+        ]
+      },
+      "content": {
+        "text": "20% of some items are discarded. Then 75% of the remainder are sold. If 40 items remain, how many were there originally?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": true,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "recap"
+        },
+        {
+          "condition": {
+            "field": "isCorrect",
+            "value": false,
+            "operator": "EQUALS"
+          },
+          "targetNodeId": "q_6_retry_fix"
+        }
+      ],
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "xp": 10,
+          "hints": [
+            "80% remain after discarding; then 25% of those remain.",
+            "0.8×0.25=0.20 of the original remains."
+          ],
+          "prompt": "20% of some items are discarded. Then 75% of the remainder are sold. If 40 items remain, how many were there originally?",
+          "options": [
+            {
+              "id": "a",
+              "label": "160"
+            },
+            {
+              "id": "b",
+              "label": "200"
+            },
+            {
+              "id": "c",
+              "label": "180"
+            },
+            {
+              "id": "d",
+              "label": "250"
+            }
+          ],
+          "difficulty": "EASY",
+          "explanation": "20% of the original is 40, so the original total is 200.",
+          "questionType": "PRACTICE",
+          "correctOptionId": "b"
+        }
+      }
+    },
+    "q_6_remedy": {
+      "id": "q_6_remedy",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\n10% of some eggs are rotten. Then 80% of the remaining good eggs are given away. If 45 eggs remain, how many were bought originally?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6_retry"
+        }
+      ]
+    },
+    "q_6_retry_fix": {
+      "id": "q_6_retry_fix",
+      "type": "CONTENT",
+      "content": {
+        "text": "20% of the original is 40, so the original total is 200.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "recap"
+        }
+      ]
+    },
+    "recap": {
+      "id": "recap",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use x and Total−x for two parts, ratios for proportional parts, and a common value when different transformations become equal. For percentage removals, multiply the fractions that remain. Always verify that the parts add back to the total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "finish"
+        }
+      ]
+    },
+    "finish": {
+      "id": "finish",
+      "type": "COMPLETION",
+      "content": {
+        "text": "You finished Dividing a Total into Parts.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Dividing a Total into Parts",
+    "description": "Split a known or unknown total into parts under weighted, ratio or percentage conditions.",
+    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Dividing a Total into Parts. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
+    "targetDurationMinutes": 20
+  },
+  "scriptId": "script-pon-08-dividing-a-total-into-parts",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}
