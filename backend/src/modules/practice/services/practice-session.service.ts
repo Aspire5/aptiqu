@@ -380,7 +380,11 @@ export class PracticeSessionService {
       if (!session.isReplay) {
         // Different sessions for the same user may answer the same question.
         // Serialize their progress updates to avoid lost counts/create races.
-        await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${userId}))`;
+        // Keep PostgreSQL's `void` lock return value out of Prisma's result set.
+        await tx.$queryRaw<Array<{ locked: number }>>`
+          SELECT 1::int AS locked
+          FROM (SELECT pg_advisory_xact_lock(hashtext(${userId}))) AS practice_user_lock
+        `;
         const existingProg = await tx.userQuestionProgress.findUnique({
           where: {
             userId_questionId: {

@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "pl-05-combined-lots-partial-sales",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Combined Lots and Partial Sales",
+    "description": "Find overall profit or loss when different parts of the same stock are sold at different rates or percentages.",
+    "teachingApproach": "Replace percentage averaging with rupee contributions. Begin with two unequal-cost items, then cost fractions, unknown cost splits, remaining-stock targets and multi-part capstones. The learner repeatedly totals cost, totals sales and only then forms the overall percentage.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 12, Profit and Loss. Approved scope: Teach that overall profit is based on total cost, not the average of percentage labels unless the cost bases are equal. Cover two goods with different cost prices and gain/loss rates, a fraction of a consignment sold at one rate and the rest at another, finding an unknown cost split from overall profit, and finding what rate the remaining stock must fetch to reach a target overall profit. Include same-total-cost and unequal-cost cases, plus damaged or leftover stock where appropriate. Use contribution tables mentally: cost part → selling multiplier → sale amount → total."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn combined lots and partial sales.\n\nOne product earns 25% profit while another loses 10%. Can we simply average those percentages? Only if the money invested in both is the same.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When two items have different costs, do not average their profit percentages. Convert each percentage into rupees, then combine.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Item A: C.P. ₹1000, gain 20% → S.P. ₹1200.\nItem B: C.P. ₹2000, loss 10% → S.P. ₹1800.\nTotal C.P. ₹3000, total S.P. ₹3000 → no gain, no loss.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A costs ₹800 and is sold at 25% profit. B costs ₹1200 and is sold at 10% loss. Overall result?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.5% profit"
+          },
+          {
+            "id": "b",
+            "label": "15% profit"
+          },
+          {
+            "id": "c",
+            "label": "No gain, no loss"
+          },
+          {
+            "id": "d",
+            "label": "4% profit"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A costs ₹800 and is sold at 25% profit. B costs ₹1200 and is sold at 10% loss. Overall result?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.5% profit"
+            },
+            {
+              "id": "b",
+              "label": "15% profit"
+            },
+            {
+              "id": "c",
+              "label": "No gain, no loss"
+            },
+            {
+              "id": "d",
+              "label": "4% profit"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find each S.P. first.",
+            "A sells for 1000; B for 1080; total profit 80 on cost 2000."
+          ],
+          "explanation": "Total S.P. = 1000 + 1080 = ₹2080. Profit = ₹80 on ₹2000 = 4%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nAveraging 25% and −10% gives 7.5%, but the two percentage bases are ₹800 and ₹1200, so a simple average is wrong.\n\nTotal S.P. = 1000 + 1080 = ₹2080. Profit = ₹80 on ₹2000 = 4%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A costs ₹600 at 20% profit; B costs ₹900 at 10% loss. Overall result?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2% profit"
+          },
+          {
+            "id": "b",
+            "label": "5% profit"
+          },
+          {
+            "id": "c",
+            "label": "10% profit"
+          },
+          {
+            "id": "d",
+            "label": "2% loss"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A costs ₹600 at 20% profit; B costs ₹900 at 10% loss. Overall result?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2% profit"
+            },
+            {
+              "id": "b",
+              "label": "5% profit"
+            },
+            {
+              "id": "c",
+              "label": "10% profit"
+            },
+            {
+              "id": "d",
+              "label": "2% loss"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "S.P.s are 720 and 810.",
+            "Total profit = 30 on total cost 1500."
+          ],
+          "explanation": "Overall profit = 30/1500 × 100 = 2%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: S.P.s are 720 and 810.\n\nOverall profit = 30/1500 × 100 = 2%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If equal amounts of money are invested in two lots, then averaging percentage gains and losses does work — because the cost bases are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "₹1000 is spent on each lot. One gains 20% = +₹200; the other loses 8% = −₹80.\nNet gain = ₹120 on ₹2000 = 6%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Equal ₹2000 amounts are invested in two goods. One gains 15%, the other loses 5%. Overall profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5%"
+          },
+          {
+            "id": "b",
+            "label": "10%"
+          },
+          {
+            "id": "c",
+            "label": "4%"
+          },
+          {
+            "id": "d",
+            "label": "20%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Equal ₹2000 amounts are invested in two goods. One gains 15%, the other loses 5%. Overall profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5%"
+            },
+            {
+              "id": "b",
+              "label": "10%"
+            },
+            {
+              "id": "c",
+              "label": "4%"
+            },
+            {
+              "id": "d",
+              "label": "20%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The cost bases are equal.",
+            "Net rupee change = +300 −100 = +200 on total 4000."
+          ],
+          "explanation": "Overall profit = 200/4000 × 100 = 5%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nThe average works here only because both cost bases are the same. Keep that condition in mind.\n\nOverall profit = 200/4000 × 100 = 5%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Equal amounts are invested; one gains 24%, the other loses 10%. Overall profit?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14%"
+          },
+          {
+            "id": "b",
+            "label": "12%"
+          },
+          {
+            "id": "c",
+            "label": "7%"
+          },
+          {
+            "id": "d",
+            "label": "17%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Equal amounts are invested; one gains 24%, the other loses 10%. Overall profit?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14%"
+            },
+            {
+              "id": "b",
+              "label": "12%"
+            },
+            {
+              "id": "c",
+              "label": "7%"
+            },
+            {
+              "id": "d",
+              "label": "17%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Average the signed percentages because costs are equal.",
+            "(24 − 10)/2."
+          ],
+          "explanation": "Overall profit = 7%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Average the signed percentages because costs are equal.\n\nOverall profit = 7%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fraction of one consignment may be sold at one rate and the rest at another. Split the cost in the same fractions first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total cost ₹9000.\n2/3 costs ₹6000, sold at 10% gain → ₹6600.\n1/3 costs ₹3000, sold at 5% loss → ₹2850.\nTotal S.P. ₹9450 → 5% overall profit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three-fourths of a stock is sold at 20% profit and the rest at 10% loss. What is overall profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10%"
+          },
+          {
+            "id": "b",
+            "label": "15%"
+          },
+          {
+            "id": "c",
+            "label": "12.5%"
+          },
+          {
+            "id": "d",
+            "label": "7.5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three-fourths of a stock is sold at 20% profit and the rest at 10% loss. What is overall profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10%"
+            },
+            {
+              "id": "b",
+              "label": "15%"
+            },
+            {
+              "id": "c",
+              "label": "12.5%"
+            },
+            {
+              "id": "d",
+              "label": "7.5%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Imagine total cost ₹400.",
+            "₹300 gains 20%; ₹100 loses 10%."
+          ],
+          "explanation": "Profit = 60 − 10 = ₹50 on ₹400 = 12.5%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common slip is averaging 20% and −10%. The first percentage applies to three times as much cost.\n\nProfit = 60 − 10 = ₹50 on ₹400 = 12.5%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two-fifths of a stock gains 25%, the rest loses 5%. Overall result?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10% profit"
+          },
+          {
+            "id": "b",
+            "label": "7% profit"
+          },
+          {
+            "id": "c",
+            "label": "5% profit"
+          },
+          {
+            "id": "d",
+            "label": "7% loss"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two-fifths of a stock gains 25%, the rest loses 5%. Overall result?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10% profit"
+            },
+            {
+              "id": "b",
+              "label": "7% profit"
+            },
+            {
+              "id": "c",
+              "label": "5% profit"
+            },
+            {
+              "id": "d",
+              "label": "7% loss"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Use total cost ₹500.",
+            "₹200 gains 50; ₹300 loses 15."
+          ],
+          "explanation": "Net profit ₹35 on ₹500 = 7%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Use total cost ₹500.\n\nNet profit ₹35 on ₹500 = 7%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can also recover the total consignment value from the total rupee profit. First find the net profit rate created by the two parts.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "2/3 sold at 5% profit and 1/3 at 2% loss.\nOn ₹300 cost: profit = 10 − 2 = ₹8.\nNet rate = 8/300 = 2⅔%.\nIf rupee profit were ₹400, total cost = 400 ÷ (2/75) = ₹15,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Half a consignment is sold at 20% profit and half at 10% loss. Total profit is ₹500. What is total C.P.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5000"
+          },
+          {
+            "id": "b",
+            "label": "10000"
+          },
+          {
+            "id": "c",
+            "label": "7500"
+          },
+          {
+            "id": "d",
+            "label": "12500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Half a consignment is sold at 20% profit and half at 10% loss. Total profit is ₹500. What is total C.P.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5000"
+            },
+            {
+              "id": "b",
+              "label": "10000"
+            },
+            {
+              "id": "c",
+              "label": "7500"
+            },
+            {
+              "id": "d",
+              "label": "12500"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Equal halves give net rate (20 −10)/2 = 5%.",
+            "₹500 is 5% of total cost."
+          ],
+          "explanation": "Overall profit rate = 5%. Therefore total C.P. = 500/0.05 = ₹10,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nThe ₹500 is the net profit on the whole consignment. Find the net percentage before reversing it.\n\nOverall profit rate = 5%. Therefore total C.P. = 500/0.05 = ₹10,000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "One-fourth gains 20%, three-fourths gain 4%. Total profit ₹800. Total C.P.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8000"
+          },
+          {
+            "id": "b",
+            "label": "12000"
+          },
+          {
+            "id": "c",
+            "label": "16000"
+          },
+          {
+            "id": "d",
+            "label": "10000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One-fourth gains 20%, three-fourths gain 4%. Total profit ₹800. Total C.P.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8000"
+            },
+            {
+              "id": "b",
+              "label": "12000"
+            },
+            {
+              "id": "c",
+              "label": "16000"
+            },
+            {
+              "id": "d",
+              "label": "10000"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Weighted profit rate = 1/4×20% + 3/4×4%.",
+            "That is 8%."
+          ],
+          "explanation": "Overall gain = 8%, so C.P. = 800/0.08 = ₹10,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Weighted profit rate = 1/4×20% + 3/4×4%.\n\nOverall gain = 8%, so C.P. = 800/0.08 = ₹10,000.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the total cost is known but the split is not. Let one part cost x and the other cost total − x; then let their separate gains and losses create the stated overall result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Horse + carriage cost ₹3000. Horse gains 20%, carriage loses 10%, whole deal gains 2%.\n20% of x − 10% of (3000 − x) = 2% of 3000.\nSolving gives x = ₹1200.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two goods cost ₹5000 total. One is sold at 25% profit, the other at 10% loss. Overall profit is 4%. What was the C.P. of the first good?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1500"
+          },
+          {
+            "id": "b",
+            "label": "2000"
+          },
+          {
+            "id": "c",
+            "label": "2500"
+          },
+          {
+            "id": "d",
+            "label": "3000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two goods cost ₹5000 total. One is sold at 25% profit, the other at 10% loss. Overall profit is 4%. What was the C.P. of the first good?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1500"
+            },
+            {
+              "id": "b",
+              "label": "2000"
+            },
+            {
+              "id": "c",
+              "label": "2500"
+            },
+            {
+              "id": "d",
+              "label": "3000"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Let first cost = x, second = 5000 − x.",
+            "0.25x − 0.10(5000 − x) = 0.04×5000."
+          ],
+          "explanation": "0.25x −500 +0.10x =200 → 0.35x =700 → x = ₹2000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common mistake is assigning the overall 4% to each item. The 4% belongs to the total ₹5000 only.\n\n0.25x −500 +0.10x =200 → 0.35x =700 → x = ₹2000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two goods cost ₹4000. First gains 20%, second loses 5%, overall gain 5%. First C.P.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1200"
+          },
+          {
+            "id": "b",
+            "label": "1800"
+          },
+          {
+            "id": "c",
+            "label": "1600"
+          },
+          {
+            "id": "d",
+            "label": "2400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two goods cost ₹4000. First gains 20%, second loses 5%, overall gain 5%. First C.P.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1200"
+            },
+            {
+              "id": "b",
+              "label": "1800"
+            },
+            {
+              "id": "c",
+              "label": "1600"
+            },
+            {
+              "id": "d",
+              "label": "2400"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Use 0.20x −0.05(4000−x)=0.05×4000.",
+            "Solve for x."
+          ],
+          "explanation": "0.25x −200 =200 → x = ₹1600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Use 0.20x −0.05(4000−x)=0.05×4000.\n\n0.25x −200 =200 → x = ₹1600.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A remaining-stock question works backward from the total target revenue. Revenue already earned is fixed; the rest must fill the gap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total C.P. ₹6000. Target 15% profit → total S.P. ₹6900.\nIf part already sold for ₹2700, remaining stock must bring ₹4200.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Total stock cost ₹8000. Some stock has already sold for ₹3500. What total selling amount must the rest bring to finish with 25% profit?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4500"
+          },
+          {
+            "id": "b",
+            "label": "6000"
+          },
+          {
+            "id": "c",
+            "label": "7500"
+          },
+          {
+            "id": "d",
+            "label": "6500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Total stock cost ₹8000. Some stock has already sold for ₹3500. What total selling amount must the rest bring to finish with 25% profit?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4500"
+            },
+            {
+              "id": "b",
+              "label": "6000"
+            },
+            {
+              "id": "c",
+              "label": "7500"
+            },
+            {
+              "id": "d",
+              "label": "6500"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Target total revenue = 125% of 8000.",
+            "Subtract the ₹3500 already received."
+          ],
+          "explanation": "Target revenue = ₹10,000. Remaining revenue = 10,000 − 3500 = ₹6500."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not take 25% of the unsold stock unless its cost is stated. The whole-deal target is based on total cost.\n\nTarget revenue = ₹10,000. Remaining revenue = 10,000 − 3500 = ₹6500.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Stock cost ₹12000. ₹7000 revenue is already earned. What additional revenue is needed for 20% overall profit?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7400"
+          },
+          {
+            "id": "b",
+            "label": "5000"
+          },
+          {
+            "id": "c",
+            "label": "5400"
+          },
+          {
+            "id": "d",
+            "label": "14400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Stock cost ₹12000. ₹7000 revenue is already earned. What additional revenue is needed for 20% overall profit?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7400"
+            },
+            {
+              "id": "b",
+              "label": "5000"
+            },
+            {
+              "id": "c",
+              "label": "5400"
+            },
+            {
+              "id": "d",
+              "label": "14400"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Target revenue = 14400.",
+            "Subtract 7000."
+          ],
+          "explanation": "Needed = ₹7400."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Target revenue = 14400.\n\nNeeded = ₹7400.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "If equal selling prices are given but the cost bases differ, reconstruct each cost separately before combining. Equal sale amounts do not mean equal investments.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two items sell for ₹600 each. One gains 20% → C.P. ₹500. The other loses 25% → C.P. ₹800.\nTotal cost ₹1300, total sale ₹1200 → loss ₹100 = 7.69%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two items sell for ₹700 each. One gains 40%, the other loses 30%. What is the overall result?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6⅔% loss"
+          },
+          {
+            "id": "b",
+            "label": "5% loss"
+          },
+          {
+            "id": "c",
+            "label": "10% loss"
+          },
+          {
+            "id": "d",
+            "label": "No gain, no loss"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two items sell for ₹700 each. One gains 40%, the other loses 30%. What is the overall result?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6⅔% loss"
+            },
+            {
+              "id": "b",
+              "label": "5% loss"
+            },
+            {
+              "id": "c",
+              "label": "10% loss"
+            },
+            {
+              "id": "d",
+              "label": "No gain, no loss"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Recover both costs separately.",
+            "C.P.s are 700/1.40 and 700/0.70."
+          ],
+          "explanation": "C.P.s are ₹500 and ₹1000. Total C.P. = ₹1500, total S.P. = ₹1400. Loss = ₹100, so loss % = 100/1500 × 100 = 6⅔%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nEqual selling prices can hide very unequal costs. Reconstruct both costs before judging the total.\n\nC.P.s are ₹500 and ₹1000. Total C.P. = ₹1500, total S.P. = ₹1400. Loss = ₹100, so loss % = 100/1500 × 100 = 6⅔%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two items sell for ₹720 each. One gains 20%, the other loses 20%. Overall loss percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "No gain, no loss"
+          },
+          {
+            "id": "b",
+            "label": "2%"
+          },
+          {
+            "id": "c",
+            "label": "8%"
+          },
+          {
+            "id": "d",
+            "label": "4%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two items sell for ₹720 each. One gains 20%, the other loses 20%. Overall loss percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "No gain, no loss"
+            },
+            {
+              "id": "b",
+              "label": "2%"
+            },
+            {
+              "id": "c",
+              "label": "8%"
+            },
+            {
+              "id": "d",
+              "label": "4%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Costs are 600 and 900.",
+            "Loss = 60 on total cost 1500."
+          ],
+          "explanation": "Total S.P. = ₹1440, total C.P. = ₹1500, loss = 4%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Costs are 600 and 900.\n\nTotal S.P. = ₹1440, total C.P. = ₹1500, loss = 4%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: the safest whole-deal method is always the same — total every cost contribution, total every sale contribution, then compare the two totals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A ₹4000 stock: 40% is sold at 25% profit, 35% at 10% loss, rest at cost.\nSale = 1600×1.25 + 1400×0.90 + 1000 = 4260.\nProfit = 260 → 6.5%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A stock costs ₹10000. Half is sold at 20% profit, 30% at 10% loss, and the rest at cost. Overall profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5%"
+          },
+          {
+            "id": "b",
+            "label": "10%"
+          },
+          {
+            "id": "c",
+            "label": "7%"
+          },
+          {
+            "id": "d",
+            "label": "3%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A stock costs ₹10000. Half is sold at 20% profit, 30% at 10% loss, and the rest at cost. Overall profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5%"
+            },
+            {
+              "id": "b",
+              "label": "10%"
+            },
+            {
+              "id": "c",
+              "label": "7%"
+            },
+            {
+              "id": "d",
+              "label": "3%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Split cost into 5000, 3000 and 2000.",
+            "Profit = 1000 −300 +0."
+          ],
+          "explanation": "Net profit = ₹700 on ₹10,000 = 7%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not average the three percentage labels. Their cost shares are 50%, 30% and 20% of the total.\n\nNet profit = ₹700 on ₹10,000 = 7%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A ₹8000 stock: 25% gains 40%, 50% gains 10%, rest loses 20%. Overall result?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.5% profit"
+          },
+          {
+            "id": "b",
+            "label": "10% profit"
+          },
+          {
+            "id": "c",
+            "label": "12.5% profit"
+          },
+          {
+            "id": "d",
+            "label": "10% loss"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A ₹8000 stock: 25% gains 40%, 50% gains 10%, rest loses 20%. Overall result?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.5% profit"
+            },
+            {
+              "id": "b",
+              "label": "10% profit"
+            },
+            {
+              "id": "c",
+              "label": "12.5% profit"
+            },
+            {
+              "id": "d",
+              "label": "10% loss"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Use cost shares 2000, 4000, 2000.",
+            "Changes are +800, +400, −400."
+          ],
+          "explanation": "Net profit ₹800 on ₹8000 = 10%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Use cost shares 2000, 4000, 2000.\n\nNet profit ₹800 on ₹8000 = 10%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now combine unequal lots without averaging percentages blindly, split a consignment by cost share, and recover missing cost or remaining revenue from the overall result.\n\nNext: Mixtures and Weighted Cost in Profit Problems.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

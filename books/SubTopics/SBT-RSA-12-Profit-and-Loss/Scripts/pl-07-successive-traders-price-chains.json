@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "pl-07-successive-traders-price-chains",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Successive Traders and Price Chains",
+    "description": "Track an article through manufacturer, wholesaler, retailer and later buyers as each stage adds a profit or loss multiplier.",
+    "teachingApproach": "Present each trade as a multiplier in a visible chain. Move forward, reverse the chain, mix profit and loss, solve a missing stage, include expenses before the first trade, and finish with buy-back and three-stage capstones.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 12, Profit and Loss. Approved scope: Teach a price chain as successive multipliers: each trader’s selling price becomes the next trader’s cost price. Cover two- and three-hand transactions, recovering the first cost from the final price, finding a missing trader profit when overall rise is known, chains containing a loss at one stage, and reverse-working through the chain. Distinguish percentage profit on each trader’s own cost from percentage change relative to the original cost. Use compact multiplier chains such as ×1.20 ×1.25 ×1.10."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn successive traders and price chains.\n\nA table leaves a manufacturer, then a wholesaler, then a retailer. Every seller starts from the price paid to the previous seller, so each percentage changes the base for the next one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "When an item passes from one trader to the next, each selling price becomes the next person's cost price. So the percentages multiply in a chain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Manufacturer cost ₹1000.\nSells at 20% profit → ₹1200.\nWholesaler sells at 25% profit → 1200×1.25 = ₹1500.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A buys for ₹800 and sells to B at 25% profit. B sells at 20% profit. Final price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1000"
+          },
+          {
+            "id": "b",
+            "label": "1160"
+          },
+          {
+            "id": "c",
+            "label": "1200"
+          },
+          {
+            "id": "d",
+            "label": "1250"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A buys for ₹800 and sells to B at 25% profit. B sells at 20% profit. Final price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1000"
+            },
+            {
+              "id": "b",
+              "label": "1160"
+            },
+            {
+              "id": "c",
+              "label": "1200"
+            },
+            {
+              "id": "d",
+              "label": "1250"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First stage: 800×1.25.",
+            "Second stage multiplies that result by 1.20."
+          ],
+          "explanation": "₹800×1.25×1.20 = ₹1200."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common slip is adding 25% + 20% and applying 45% once. The second 20% is on B's higher cost.\n\n₹800×1.25×1.20 = ₹1200.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "An item costs ₹1000. Two traders add 10% then 20%. Final price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1300"
+          },
+          {
+            "id": "b",
+            "label": "1320"
+          },
+          {
+            "id": "c",
+            "label": "1200"
+          },
+          {
+            "id": "d",
+            "label": "1420"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An item costs ₹1000. Two traders add 10% then 20%. Final price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1300"
+            },
+            {
+              "id": "b",
+              "label": "1320"
+            },
+            {
+              "id": "c",
+              "label": "1200"
+            },
+            {
+              "id": "d",
+              "label": "1420"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use ×1.10 ×1.20.",
+            "1100 then 1320."
+          ],
+          "explanation": "Final price = ₹1320."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Use ×1.10 ×1.20.\n\nFinal price = ₹1320.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Reverse-working through a chain means divide by each multiplier in reverse order.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final price ₹1650 after 20% then 25% gains.\nOriginal cost = 1650 ÷1.25 ÷1.20\n= ₹1100.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Final price is ₹1890 after gains of 20% and 25%. Original cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1400"
+          },
+          {
+            "id": "b",
+            "label": "1260"
+          },
+          {
+            "id": "c",
+            "label": "1512"
+          },
+          {
+            "id": "d",
+            "label": "1575"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Final price is ₹1890 after gains of 20% and 25%. Original cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1400"
+            },
+            {
+              "id": "b",
+              "label": "1260"
+            },
+            {
+              "id": "c",
+              "label": "1512"
+            },
+            {
+              "id": "d",
+              "label": "1575"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Undo 25% first, then 20%.",
+            "1890/(1.25×1.20)."
+          ],
+          "explanation": "Combined multiplier = 1.50. Original cost = 1890/1.50 = ₹1260."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not subtract 45% from the final price. Successive profit multipliers must be divided out.\n\nCombined multiplier = 1.50. Original cost = 1890/1.50 = ₹1260.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Final price ₹1452 after 10% and 20% gains. Original cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1100"
+          },
+          {
+            "id": "b",
+            "label": "1050"
+          },
+          {
+            "id": "c",
+            "label": "1200"
+          },
+          {
+            "id": "d",
+            "label": "1320"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Final price ₹1452 after 10% and 20% gains. Original cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1100"
+            },
+            {
+              "id": "b",
+              "label": "1050"
+            },
+            {
+              "id": "c",
+              "label": "1200"
+            },
+            {
+              "id": "d",
+              "label": "1320"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Combined multiplier = 1.32.",
+            "1452/1.32."
+          ],
+          "explanation": "Original cost = ₹1100."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Combined multiplier = 1.32.\n\nOriginal cost = ₹1100.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A loss at one stage is just a multiplier below 1. Keep it in the same chain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Original ₹1000 → +20% gives ₹1200 → −10% gives ₹1080.\nOverall gain = 8%, not 10%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "An item rises 25% with the first trader, then falls 20% with the second. Net change from original?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5% gain"
+          },
+          {
+            "id": "b",
+            "label": "5% loss"
+          },
+          {
+            "id": "c",
+            "label": "10% gain"
+          },
+          {
+            "id": "d",
+            "label": "No change"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An item rises 25% with the first trader, then falls 20% with the second. Net change from original?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5% gain"
+            },
+            {
+              "id": "b",
+              "label": "5% loss"
+            },
+            {
+              "id": "c",
+              "label": "10% gain"
+            },
+            {
+              "id": "d",
+              "label": "No change"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply 1.25×0.80.",
+            "The product is 1.00."
+          ],
+          "explanation": "1.25×0.80 = 1, so final price equals original price."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not cancel 25 and 20 by subtraction alone; here they happen to multiply to 100%, but that must be shown by the multipliers.\n\n1.25×0.80 = 1, so final price equals original price.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "An item rises 20% then falls 20%. Net change?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "No change"
+          },
+          {
+            "id": "b",
+            "label": "4% gain"
+          },
+          {
+            "id": "c",
+            "label": "8% loss"
+          },
+          {
+            "id": "d",
+            "label": "4% loss"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An item rises 20% then falls 20%. Net change?",
+          "options": [
+            {
+              "id": "a",
+              "label": "No change"
+            },
+            {
+              "id": "b",
+              "label": "4% gain"
+            },
+            {
+              "id": "c",
+              "label": "8% loss"
+            },
+            {
+              "id": "d",
+              "label": "4% loss"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "1.20×0.80 = 0.96.",
+            "Final is 96% of original."
+          ],
+          "explanation": "Net loss = 4%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 1.20×0.80 = 0.96.\n\nNet loss = 4%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the overall rise and earlier trader profits are known, the missing trader's multiplier is what remains after division.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Overall price becomes 165% of original. First two traders add 20% and 25%: multiplier 1.20×1.25 = 1.50.\nThird multiplier = 1.65/1.50 = 1.10 → 10% profit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Overall price rises 44%. First trader gains 20%. Second trader's profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "24%"
+          },
+          {
+            "id": "c",
+            "label": "12%"
+          },
+          {
+            "id": "d",
+            "label": "30%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Overall price rises 44%. First trader gains 20%. Second trader's profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "24%"
+            },
+            {
+              "id": "c",
+              "label": "12%"
+            },
+            {
+              "id": "d",
+              "label": "30%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Overall multiplier = 1.44.",
+            "Missing multiplier = 1.44/1.20."
+          ],
+          "explanation": "1.44/1.20 = 1.20, so the second trader gains 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common trap is 44 −20 = 24. The percentages are successive, so their multipliers divide.\n\n1.44/1.20 = 1.20, so the second trader gains 20%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Overall rise is 32%. First trader gains 10%. Second gain?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22%"
+          },
+          {
+            "id": "b",
+            "label": "12%"
+          },
+          {
+            "id": "c",
+            "label": "20%"
+          },
+          {
+            "id": "d",
+            "label": "18%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Overall rise is 32%. First trader gains 10%. Second gain?",
+          "options": [
+            {
+              "id": "a",
+              "label": "22%"
+            },
+            {
+              "id": "b",
+              "label": "12%"
+            },
+            {
+              "id": "c",
+              "label": "20%"
+            },
+            {
+              "id": "d",
+              "label": "18%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "1.32/1.10.",
+            "The result is 1.20."
+          ],
+          "explanation": "Second gain = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 1.32/1.10.\n\nSecond gain = 20%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three equal profit stages grow quickly because every stage works on the price created by the previous one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three traders each gain 25%. Final multiplier = 1.25³ = 1.953125.\nIf final price is ₹250, original cost is 250/1.953125 = ₹128.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three traders each gain 20%. Final price is ₹1728. What was the first cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1200"
+          },
+          {
+            "id": "b",
+            "label": "1440"
+          },
+          {
+            "id": "c",
+            "label": "800"
+          },
+          {
+            "id": "d",
+            "label": "1000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three traders each gain 20%. Final price is ₹1728. What was the first cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1200"
+            },
+            {
+              "id": "b",
+              "label": "1440"
+            },
+            {
+              "id": "c",
+              "label": "800"
+            },
+            {
+              "id": "d",
+              "label": "1000"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Combined multiplier = 1.2³ = 1.728.",
+            "1728/1.728."
+          ],
+          "explanation": "Original cost = ₹1000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not use a 60% combined gain. Three successive 20% gains produce 72.8% overall because the base keeps growing.\n\nOriginal cost = ₹1000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two traders each gain 25%. Final price ₹1250. Original cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "800"
+          },
+          {
+            "id": "b",
+            "label": "750"
+          },
+          {
+            "id": "c",
+            "label": "900"
+          },
+          {
+            "id": "d",
+            "label": "1000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two traders each gain 25%. Final price ₹1250. Original cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "800"
+            },
+            {
+              "id": "b",
+              "label": "750"
+            },
+            {
+              "id": "c",
+              "label": "900"
+            },
+            {
+              "id": "d",
+              "label": "1000"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Multiplier = 1.25² = 1.5625.",
+            "1250/1.5625."
+          ],
+          "explanation": "Original cost = ₹800."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Multiplier = 1.25² = 1.5625.\n\nOriginal cost = ₹800.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A chain may include an expense before the first sale. Add that expense to the owner's cost before the percentage chain begins.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A buys a radio for ₹800 and spends ₹100 repairing it → effective cost ₹900.\nHe gains 20% → ₹1080.\nNext trader loses 10% → ₹972.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A buys an item for ₹1500, spends ₹300 repairs, gains 25%, then B gains 20%. Final price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2250"
+          },
+          {
+            "id": "b",
+            "label": "2700"
+          },
+          {
+            "id": "c",
+            "label": "2520"
+          },
+          {
+            "id": "d",
+            "label": "2880"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A buys an item for ₹1500, spends ₹300 repairs, gains 25%, then B gains 20%. Final price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2250"
+            },
+            {
+              "id": "b",
+              "label": "2700"
+            },
+            {
+              "id": "c",
+              "label": "2520"
+            },
+            {
+              "id": "d",
+              "label": "2880"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Effective first cost = ₹1800.",
+            "1800×1.25×1.20."
+          ],
+          "explanation": "Final price = ₹2700."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nRepairs belong before the first profit multiplier because they are part of A's investment.\n\nFinal price = ₹2700.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A buys for ₹1000, spends ₹200, gains 10%; B gains 25%. Final price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1500"
+          },
+          {
+            "id": "b",
+            "label": "1600"
+          },
+          {
+            "id": "c",
+            "label": "1650"
+          },
+          {
+            "id": "d",
+            "label": "1700"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A buys for ₹1000, spends ₹200, gains 10%; B gains 25%. Final price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1500"
+            },
+            {
+              "id": "b",
+              "label": "1600"
+            },
+            {
+              "id": "c",
+              "label": "1650"
+            },
+            {
+              "id": "d",
+              "label": "1700"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Start from 1200.",
+            "1200×1.10×1.25."
+          ],
+          "explanation": "Final price = ₹1650."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Start from 1200.\n\nFinal price = ₹1650.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A buy-back transaction is still two separate trades. Follow who pays and who receives at each step instead of calling the second percentage an undo button.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "X owns a ₹1000 car. Sells to Y at 10% gain → receives ₹1100.\nY sells back at 10% loss on Y's cost → X pays ₹990.\nX ends with the car and net cash +₹110.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "X sells an item originally worth ₹2000 to Y at 20% profit. Y sells it back to X at 25% loss. What is X's net cash gain?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹0"
+          },
+          {
+            "id": "b",
+            "label": "₹400"
+          },
+          {
+            "id": "c",
+            "label": "₹600"
+          },
+          {
+            "id": "d",
+            "label": "₹120"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "X sells an item originally worth ₹2000 to Y at 20% profit. Y sells it back to X at 25% loss. What is X's net cash gain?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹0"
+            },
+            {
+              "id": "b",
+              "label": "₹400"
+            },
+            {
+              "id": "c",
+              "label": "₹600"
+            },
+            {
+              "id": "d",
+              "label": "₹120"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "First receipt = 2400.",
+            "Buy-back payment = 75% of 2400 = 1800."
+          ],
+          "explanation": "X receives ₹2400 and later pays ₹1800, so net cash gain = ₹600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common mistake is to cancel +20% and −25%. They belong to different people and different bases.\n\nX receives ₹2400 and later pays ₹1800, so net cash gain = ₹600.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "X sells a ₹1500 item at 10% gain; buyer sells it back at 20% loss. X's net cash gain?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹150"
+          },
+          {
+            "id": "b",
+            "label": "₹300"
+          },
+          {
+            "id": "c",
+            "label": "₹0"
+          },
+          {
+            "id": "d",
+            "label": "₹330"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "X sells a ₹1500 item at 10% gain; buyer sells it back at 20% loss. X's net cash gain?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹150"
+            },
+            {
+              "id": "b",
+              "label": "₹300"
+            },
+            {
+              "id": "c",
+              "label": "₹0"
+            },
+            {
+              "id": "d",
+              "label": "₹330"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "X receives 1650.",
+            "Pays back 80% of 1650 = 1320."
+          ],
+          "explanation": "Net cash gain = 1650 −1320 = ₹330."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: X receives 1650.\n\nNet cash gain = 1650 −1320 = ₹330.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: a price chain can mix profit, loss and reverse-working. Write one multiplier per hand and let the chain show the structure.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final buyer pays ₹1386 after +10%, +20%, then −5%.\nCombined multiplier = 1.10×1.20×0.95 = 1.254.\nOriginal = 1386/1.254 ≈ ₹1105.26.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Final price is ₹1710 after gains of 25%, 20%, then a 5% loss. What was original cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1200"
+          },
+          {
+            "id": "b",
+            "label": "1140"
+          },
+          {
+            "id": "c",
+            "label": "1250"
+          },
+          {
+            "id": "d",
+            "label": "1350"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Final price is ₹1710 after gains of 25%, 20%, then a 5% loss. What was original cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1200"
+            },
+            {
+              "id": "b",
+              "label": "1140"
+            },
+            {
+              "id": "c",
+              "label": "1250"
+            },
+            {
+              "id": "d",
+              "label": "1350"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Combined multiplier = 1.25×1.20×0.95.",
+            "That is 1.425."
+          ],
+          "explanation": "Original cost = 1710/1.425 = ₹1200."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not combine the rates by +25 +20 −5. Successive stages multiply because each trader starts from a new base.\n\nOriginal cost = 1710/1.425 = ₹1200.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Final price ₹1188 after +20%, −10%, +10%. Original cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "900"
+          },
+          {
+            "id": "b",
+            "label": "1000"
+          },
+          {
+            "id": "c",
+            "label": "990"
+          },
+          {
+            "id": "d",
+            "label": "1100"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Final price ₹1188 after +20%, −10%, +10%. Original cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "900"
+            },
+            {
+              "id": "b",
+              "label": "1000"
+            },
+            {
+              "id": "c",
+              "label": "990"
+            },
+            {
+              "id": "d",
+              "label": "1100"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Multiplier = 1.20×0.90×1.10 = 1.188.",
+            "1188/1.188."
+          ],
+          "explanation": "Original cost = ₹1000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Multiplier = 1.20×0.90×1.10 = 1.188.\n\nOriginal cost = ₹1000.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now move forward and backward through successive traders with multipliers, including losses, expenses and missing stages.\n\nNext: Two Articles, Equal Gain and Loss, and Overall Result.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "pl-04-quantity-rates-item-equivalences",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Quantity Rates and Item Equivalences",
+    "description": "Handle ‘x for ₹y’, dozens, C.P. of one quantity equals S.P. of another, and profit equal to the price of some units.",
+    "teachingApproach": "Use common batches instead of awkward unit decimals. Move from 'x for ₹y' rates to C.P./S.P. quantity equivalences, gain/loss equal to some units, items-per-rupee targets and free-item discounts, always preserving what each count means.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 12, Profit and Loss. Approved scope: Teach quantity-price forms without converting every item separately. Use a common batch or L.C.M. for statements such as bought 6 for ₹10 and sold 4 for ₹6. Cover C.P. of m articles = S.P. of n articles, gain/loss equal to S.P. or C.P. of some units, how many items per rupee must be bought or sold for a target gain, and free-item offers as an effective discount. Keep the unit meaning visible so learners do not invert buying and selling rates. End with a capstone combining a quantity equivalence with a target percentage."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn quantity rates and item equivalences.\n\nA vendor buys 6 bananas for ₹10 and sells 4 for ₹6. The item counts are different, so comparing ₹10 and ₹6 directly tells us nothing. A common batch makes the deal visible.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rates such as ‘6 bananas for ₹10’ are easiest when you compare a common batch. You do not need awkward per-banana decimals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bought 6 for ₹10 and sold 4 for ₹6.\nUse 12 bananas.\nC.P. = 2 × 10 = ₹20.\nS.P. = 3 × 6 = ₹18.\nLoss = 10%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vendor buys 5 oranges for ₹12 and sells 4 for ₹12. What is the profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "25%"
+          },
+          {
+            "id": "c",
+            "label": "16.67%"
+          },
+          {
+            "id": "d",
+            "label": "50%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vendor buys 5 oranges for ₹12 and sells 4 for ₹12. What is the profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "25%"
+            },
+            {
+              "id": "c",
+              "label": "16.67%"
+            },
+            {
+              "id": "d",
+              "label": "50%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use 20 oranges as a common batch.",
+            "C.P. = 4×12; S.P. = 5×12."
+          ],
+          "explanation": "For 20 oranges, C.P. = ₹48 and S.P. = ₹60. Profit = ₹12 = 25% of ₹48."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common slip is comparing the item counts directly. Convert both rates to the same number of items first.\n\nFor 20 oranges, C.P. = ₹48 and S.P. = ₹60. Profit = ₹12 = 25% of ₹48.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A trader buys 6 lemons for ₹15 and sells 5 for ₹15. Profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16.67%"
+          },
+          {
+            "id": "b",
+            "label": "25%"
+          },
+          {
+            "id": "c",
+            "label": "20%"
+          },
+          {
+            "id": "d",
+            "label": "30%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A trader buys 6 lemons for ₹15 and sells 5 for ₹15. Profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16.67%"
+            },
+            {
+              "id": "b",
+              "label": "25%"
+            },
+            {
+              "id": "c",
+              "label": "20%"
+            },
+            {
+              "id": "d",
+              "label": "30%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use 30 lemons.",
+            "C.P. = 5×15; S.P. = 6×15."
+          ],
+          "explanation": "C.P. ₹75, S.P. ₹90, profit ₹15 = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Use 30 lemons.\n\nC.P. ₹75, S.P. ₹90, profit ₹15 = 20%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If C.P. of one quantity equals S.P. of another, pretend each cost unit is ₹1. Then the item counts themselves create the ratio.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "C.P. of 20 articles = S.P. of 16 articles.\nLet C.P. each = ₹1.\nC.P. of 20 = ₹20, so S.P. each = 20/16 = ₹1.25.\nProfit = 25%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "C.P. of 15 books equals S.P. of 12 books. What is the profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "12.5%"
+          },
+          {
+            "id": "c",
+            "label": "33.33%"
+          },
+          {
+            "id": "d",
+            "label": "25%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "C.P. of 15 books equals S.P. of 12 books. What is the profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "12.5%"
+            },
+            {
+              "id": "c",
+              "label": "33.33%"
+            },
+            {
+              "id": "d",
+              "label": "25%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let C.P. per book be ₹1.",
+            "S.P. per book = 15/12."
+          ],
+          "explanation": "S.P./C.P. = 15/12 = 1.25, so profit is 25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nIf the same money recovers fewer sold items than cost items, each sold item is priced higher. Use the ratio before subtracting percentages.\n\nS.P./C.P. = 15/12 = 1.25, so profit is 25%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "C.P. of 18 items equals S.P. of 15 items. Profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16.67%"
+          },
+          {
+            "id": "b",
+            "label": "15%"
+          },
+          {
+            "id": "c",
+            "label": "25%"
+          },
+          {
+            "id": "d",
+            "label": "20%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "C.P. of 18 items equals S.P. of 15 items. Profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16.67%"
+            },
+            {
+              "id": "b",
+              "label": "15%"
+            },
+            {
+              "id": "c",
+              "label": "25%"
+            },
+            {
+              "id": "d",
+              "label": "20%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "S.P./C.P. = 18/15.",
+            "1.20 means 20% profit."
+          ],
+          "explanation": "Profit = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: S.P./C.P. = 18/15.\n\nProfit = 20%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The direction can also mean a loss. If S.P. of more articles equals C.P. of fewer articles, each sold unit is cheaper than its cost.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "S.P. of 20 books = C.P. of 15 books.\nLet C.P. each = ₹1.\nS.P. each = 15/20 = ₹0.75.\nLoss = 25%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "S.P. of 25 pens equals C.P. of 20 pens. What is the loss percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "25%"
+          },
+          {
+            "id": "c",
+            "label": "16%"
+          },
+          {
+            "id": "d",
+            "label": "5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "S.P. of 25 pens equals C.P. of 20 pens. What is the loss percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "25%"
+            },
+            {
+              "id": "c",
+              "label": "16%"
+            },
+            {
+              "id": "d",
+              "label": "5%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "S.P./C.P. = 20/25.",
+            "That is 80% of cost."
+          ],
+          "explanation": "S.P. is 80% of C.P., so loss = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not use 25 − 20 = 5 as the percent. First convert the quantity relation into the S.P.:C.P. ratio.\n\nS.P. is 80% of C.P., so loss = 20%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "S.P. of 12 toys equals C.P. of 9 toys. Loss percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25%"
+          },
+          {
+            "id": "b",
+            "label": "20%"
+          },
+          {
+            "id": "c",
+            "label": "33.33%"
+          },
+          {
+            "id": "d",
+            "label": "3%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "S.P. of 12 toys equals C.P. of 9 toys. Loss percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25%"
+            },
+            {
+              "id": "b",
+              "label": "20%"
+            },
+            {
+              "id": "c",
+              "label": "33.33%"
+            },
+            {
+              "id": "d",
+              "label": "3%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "S.P./C.P. = 9/12.",
+            "75% of cost means 25% loss."
+          ],
+          "explanation": "Loss = 25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: S.P./C.P. = 9/12.\n\nLoss = 25%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some questions say the profit on many items equals the selling price of a few items. Move that ‘profit part’ away from total S.P. to uncover total C.P.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "S.P. of 30 m − C.P. of 30 m = S.P. of 10 m.\nSo C.P. of 30 m = S.P. of 20 m.\nThus S.P.:C.P. per metre = 30:20 = 3:2 → 50% profit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "By selling 40 pens, the profit equals the S.P. of 8 pens. What is the profit percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "16.67%"
+          },
+          {
+            "id": "c",
+            "label": "25%"
+          },
+          {
+            "id": "d",
+            "label": "32%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "By selling 40 pens, the profit equals the S.P. of 8 pens. What is the profit percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "16.67%"
+            },
+            {
+              "id": "c",
+              "label": "25%"
+            },
+            {
+              "id": "d",
+              "label": "32%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "S.P. of 40 − profit S.P. of 8 = C.P. of 40.",
+            "So C.P. of 40 = S.P. of 32."
+          ],
+          "explanation": "S.P./C.P. per pen = 40/32 = 1.25, so profit = 25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nThe 8 pens represent the profit, not the cost. Subtract their selling value from total selling value first.\n\nS.P./C.P. per pen = 40/32 = 1.25, so profit = 25%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "By selling 30 items, gain equals S.P. of 5 items. Gain percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16.67%"
+          },
+          {
+            "id": "b",
+            "label": "20%"
+          },
+          {
+            "id": "c",
+            "label": "25%"
+          },
+          {
+            "id": "d",
+            "label": "5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "By selling 30 items, gain equals S.P. of 5 items. Gain percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16.67%"
+            },
+            {
+              "id": "b",
+              "label": "20%"
+            },
+            {
+              "id": "c",
+              "label": "25%"
+            },
+            {
+              "id": "d",
+              "label": "5%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "C.P. of 30 = S.P. of 25.",
+            "S.P./C.P. = 30/25."
+          ],
+          "explanation": "30/25 = 1.20, so gain = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: C.P. of 30 = S.P. of 25.\n\n30/25 = 1.20, so gain = 20%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "The mirror form uses loss. If the loss equals the selling price of some units, total cost is total S.P. plus that lost value.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Selling 36 oranges gives a loss equal to S.P. of 4 oranges.\nC.P. of 36 = S.P. of 40.\nS.P./C.P. = 36/40 = 90%.\nLoss = 10%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Selling 24 items gives a loss equal to S.P. of 6 items. What is the loss percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "25%"
+          },
+          {
+            "id": "c",
+            "label": "15%"
+          },
+          {
+            "id": "d",
+            "label": "6%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Selling 24 items gives a loss equal to S.P. of 6 items. What is the loss percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "25%"
+            },
+            {
+              "id": "c",
+              "label": "15%"
+            },
+            {
+              "id": "d",
+              "label": "6%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "C.P. of 24 = S.P. of 30.",
+            "S.P./C.P. = 24/30."
+          ],
+          "explanation": "S.P. is 80% of C.P., so loss = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common mistake is subtracting 6 from 24. In a loss, the cost value is larger: S.P. of 24 plus lost S.P. of 6.\n\nS.P. is 80% of C.P., so loss = 20%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Selling 40 units gives loss equal to S.P. of 10 units. Loss percent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25%"
+          },
+          {
+            "id": "b",
+            "label": "10%"
+          },
+          {
+            "id": "c",
+            "label": "33.33%"
+          },
+          {
+            "id": "d",
+            "label": "20%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Selling 40 units gives loss equal to S.P. of 10 units. Loss percent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25%"
+            },
+            {
+              "id": "b",
+              "label": "10%"
+            },
+            {
+              "id": "c",
+              "label": "33.33%"
+            },
+            {
+              "id": "d",
+              "label": "20%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "C.P. of 40 = S.P. of 50.",
+            "40/50 = 80%."
+          ],
+          "explanation": "Loss = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: C.P. of 40 = S.P. of 50.\n\nLoss = 20%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "‘How many for a rupee?’ questions are still just rate conversion. Fix the total money first, then use the target profit multiplier.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bought 6 buttons for ₹1. To gain 20%, S.P. of 6 buttons must be ₹1.20.\nSo for ₹1, number sold = 6/1.20 = 5 buttons.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vendor buys 10 clips for ₹1. How many clips per ₹1 should he sell to gain 25%?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "12.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vendor buys 10 clips for ₹1. How many clips per ₹1 should he sell to gain 25%?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "12.5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "At 25% profit, S.P. of 10 clips must be ₹1.25.",
+            "For ₹1, scale 10 by 1/1.25."
+          ],
+          "explanation": "10/1.25 = 8 clips per ₹1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not add 25% to the number of clips. Profit changes money per item, so the number sold for the same rupee moves in the opposite direction.\n\n10/1.25 = 8 clips per ₹1.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vendor buys 12 items for ₹3. At 20% profit, how many items should ₹3 buy?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14.4"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "9.6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vendor buys 12 items for ₹3. At 20% profit, how many items should ₹3 buy?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14.4"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "9.6"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "S.P. of 12 should be ₹3.60.",
+            "Scale back to a ₹3 bundle."
+          ],
+          "explanation": "At ₹3, items = 12 × 3/3.6 = 10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: S.P. of 12 should be ₹3.60.\n\nAt ₹3, items = 12 × 3/3.6 = 10.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A free-item offer is an invisible discount. ‘Buy 5 dozen, get 1 dozen free’ means you pay for 5 but receive 6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose each dozen is marked ₹100.\nYou receive ₹600 worth for ₹500.\nDiscount = ₹100 on ₹600 marked value.\nDiscount % = 100/600 × 100 = 16⅔%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A retailer pays for 8 boxes and receives 10 boxes. What effective discount is this?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25%"
+          },
+          {
+            "id": "b",
+            "label": "20%"
+          },
+          {
+            "id": "c",
+            "label": "12.5%"
+          },
+          {
+            "id": "d",
+            "label": "80%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A retailer pays for 8 boxes and receives 10 boxes. What effective discount is this?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25%"
+            },
+            {
+              "id": "b",
+              "label": "20%"
+            },
+            {
+              "id": "c",
+              "label": "12.5%"
+            },
+            {
+              "id": "d",
+              "label": "80%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Think marked value of all 10 boxes.",
+            "He pays for 8, so 2 of 10 are free."
+          ],
+          "explanation": "Free value = 2/10 of total marked value = 20% discount."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common trap is 2/8 = 25%. Discount is measured against the marked value received — all 10 boxes.\n\nFree value = 2/10 of total marked value = 20% discount.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pay for 9 units and receive 12. Effective discount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "33.33%"
+          },
+          {
+            "id": "b",
+            "label": "20%"
+          },
+          {
+            "id": "c",
+            "label": "25%"
+          },
+          {
+            "id": "d",
+            "label": "75%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pay for 9 units and receive 12. Effective discount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "33.33%"
+            },
+            {
+              "id": "b",
+              "label": "20%"
+            },
+            {
+              "id": "c",
+              "label": "25%"
+            },
+            {
+              "id": "d",
+              "label": "75%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "3 of 12 received units are free.",
+            "3/12 × 100."
+          ],
+          "explanation": "Effective discount = 25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 3 of 12 received units are free.\n\nEffective discount = 25%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: batch methods let you combine a strange buying rate with a target profit without decimals.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bought 5 for ₹8. For 20 items, C.P. = 4×8 = ₹32.\nFor 25% profit, target S.P. = ₹40.\nIf selling 4 for ₹x, five groups make ₹40, so x = ₹8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vendor buys 6 items for ₹10. At what rate per 5 items should he sell to make 20% profit?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹8"
+          },
+          {
+            "id": "b",
+            "label": "₹12"
+          },
+          {
+            "id": "c",
+            "label": "₹9"
+          },
+          {
+            "id": "d",
+            "label": "₹10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vendor buys 6 items for ₹10. At what rate per 5 items should he sell to make 20% profit?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹8"
+            },
+            {
+              "id": "b",
+              "label": "₹12"
+            },
+            {
+              "id": "c",
+              "label": "₹9"
+            },
+            {
+              "id": "d",
+              "label": "₹10"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Use 30 items.",
+            "C.P. of 30 = ₹50; target S.P. = ₹60; there are six groups of 5."
+          ],
+          "explanation": "For 30 items, target revenue ₹60. Each 5-item group must sell for ₹10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nKeep the item count common across buying and selling before applying the profit multiplier. That avoids inverting the rates.\n\nFor 30 items, target revenue ₹60. Each 5-item group must sell for ₹10.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A trader buys 8 items for ₹12. At what rate per 6 items should he sell for 25% profit?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹11.25"
+          },
+          {
+            "id": "b",
+            "label": "₹9"
+          },
+          {
+            "id": "c",
+            "label": "₹12"
+          },
+          {
+            "id": "d",
+            "label": "₹14.06"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A trader buys 8 items for ₹12. At what rate per 6 items should he sell for 25% profit?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹11.25"
+            },
+            {
+              "id": "b",
+              "label": "₹9"
+            },
+            {
+              "id": "c",
+              "label": "₹12"
+            },
+            {
+              "id": "d",
+              "label": "₹14.06"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Use 24 items.",
+            "C.P. = ₹36; target S.P. = ₹45; four groups of 6."
+          ],
+          "explanation": "₹45/4 = ₹11.25 per 6 items."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Use 24 items.\n\n₹45/4 = ₹11.25 per 6 items.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now use common batches for x-for-₹y rates, translate quantity equalities into C.P.:S.P. ratios, and handle profit/loss equal to the price of some units.\n\nNext: Combined Lots and Partial Sales.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

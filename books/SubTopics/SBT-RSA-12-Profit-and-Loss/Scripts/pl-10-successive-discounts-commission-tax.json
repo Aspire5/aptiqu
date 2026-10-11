@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "pl-10-successive-discounts-commission-tax",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Successive Discounts, Commission, Tax and Net Price",
+    "description": "Handle several price layers such as two discounts, commission, sales tax/VAT and extra charges without mixing their bases.",
+    "teachingApproach": "Extend the price ladder to several layers without mixing their bases. Build successive discounts, missing discounts, commission and tax/VAT, then combine the multipliers in capstones while keeping commercial profit separate from tax.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 12, Profit and Loss. Approved scope: Teach successive discounts as multipliers rather than addition, find the single equivalent discount, recover one missing discount, and combine markup with trade/cash discount. Add commission as a deduction from retail price when the source uses it, and sales tax/VAT as a layer on the selling price where applicable. Cover final bill versus pre-tax S.P., and questions asking what profit would have been without a discount. Keep each percentage attached to its own base and use a price ladder to prevent base confusion."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn successive discounts, commission, tax and net price.\n\nA shop offers 20% off and then another 25% off. The total discount is not 45%, because the second cut is taken from an already smaller price.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two discounts are taken one after the other. The second discount acts on the already reduced price, so percentages multiply rather than add.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "M.P. ₹1000.\n10% off → ₹900.\nThen 20% off → ₹720.\nEquivalent discount = 28%, not 30%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Successive discounts of 20% and 25% are equivalent to what single discount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40%"
+          },
+          {
+            "id": "b",
+            "label": "45%"
+          },
+          {
+            "id": "c",
+            "label": "35%"
+          },
+          {
+            "id": "d",
+            "label": "50%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Successive discounts of 20% and 25% are equivalent to what single discount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40%"
+            },
+            {
+              "id": "b",
+              "label": "45%"
+            },
+            {
+              "id": "c",
+              "label": "35%"
+            },
+            {
+              "id": "d",
+              "label": "50%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Keep fraction left: 0.80×0.75.",
+            "Final price is 60% of M.P."
+          ],
+          "explanation": "Final price is 60% of M.P., so single discount = 40%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common slip is adding 20 + 25. The second 25% is taken from only 80% of the original price.\n\nFinal price is 60% of M.P., so single discount = 40%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Discounts 10% then 30% are equivalent to?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40%"
+          },
+          {
+            "id": "b",
+            "label": "33%"
+          },
+          {
+            "id": "c",
+            "label": "43%"
+          },
+          {
+            "id": "d",
+            "label": "37%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Discounts 10% then 30% are equivalent to?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40%"
+            },
+            {
+              "id": "b",
+              "label": "33%"
+            },
+            {
+              "id": "c",
+              "label": "43%"
+            },
+            {
+              "id": "d",
+              "label": "37%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Remaining multiplier = 0.90×0.70.",
+            "That leaves 63%."
+          ],
+          "explanation": "Equivalent discount = 37%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Remaining multiplier = 0.90×0.70.\n\nEquivalent discount = 37%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If final S.P. and one discount are known, reverse the known discount to discover the price after the first discount, then recover the missing rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "M.P. ₹1000. Final ₹700 after x% then 12.5%.\nBefore second discount: 700/0.875 = ₹800.\nFirst discount took 1000 to 800 → 20%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "M.P. ₹2000. After x% discount and then 20%, customer pays ₹1280. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15%"
+          },
+          {
+            "id": "b",
+            "label": "25%"
+          },
+          {
+            "id": "c",
+            "label": "20%"
+          },
+          {
+            "id": "d",
+            "label": "30%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "M.P. ₹2000. After x% discount and then 20%, customer pays ₹1280. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "15%"
+            },
+            {
+              "id": "b",
+              "label": "25%"
+            },
+            {
+              "id": "c",
+              "label": "20%"
+            },
+            {
+              "id": "d",
+              "label": "30%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Undo the second 20%: 1280/0.8 = 1600.",
+            "First discount took 2000 to 1600."
+          ],
+          "explanation": "First discount = ₹400/₹2000 = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not split the ₹720 total reduction equally. The two discounts act at different stages.\n\nFirst discount = ₹400/₹2000 = 20%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "M.P. ₹1500; after x% then 10%, price ₹1080. x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10%"
+          },
+          {
+            "id": "b",
+            "label": "20%"
+          },
+          {
+            "id": "c",
+            "label": "18%"
+          },
+          {
+            "id": "d",
+            "label": "25%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "M.P. ₹1500; after x% then 10%, price ₹1080. x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10%"
+            },
+            {
+              "id": "b",
+              "label": "20%"
+            },
+            {
+              "id": "c",
+              "label": "18%"
+            },
+            {
+              "id": "d",
+              "label": "25%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Undo 10%: 1080/0.9 = 1200.",
+            "1500→1200 is 20% off."
+          ],
+          "explanation": "x = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Undo 10%: 1080/0.9 = 1200.\n\nx = 20%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Trade discount and cash discount are just successive discounts if both are percentages of the current price.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "20% trade discount then 6.25% cash discount leaves 0.80×0.9375 = 75% of M.P.\nEquivalent discount = 25%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "An item gets 25% trade discount and then 20% cash discount. Equivalent discount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45%"
+          },
+          {
+            "id": "b",
+            "label": "40%"
+          },
+          {
+            "id": "c",
+            "label": "35%"
+          },
+          {
+            "id": "d",
+            "label": "50%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An item gets 25% trade discount and then 20% cash discount. Equivalent discount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45%"
+            },
+            {
+              "id": "b",
+              "label": "40%"
+            },
+            {
+              "id": "c",
+              "label": "35%"
+            },
+            {
+              "id": "d",
+              "label": "50%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply the remaining parts: 0.75×0.80.",
+            "60% remains."
+          ],
+          "explanation": "60% remains, so 40% total discount."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nThe labels ‘trade’ and ‘cash’ do not change the arithmetic: both reduce the current price one after the other.\n\n60% remains, so 40% total discount.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "10% then 10% discounts. Equivalent discount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "18%"
+          },
+          {
+            "id": "c",
+            "label": "19%"
+          },
+          {
+            "id": "d",
+            "label": "21%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "10% then 10% discounts. Equivalent discount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "18%"
+            },
+            {
+              "id": "c",
+              "label": "19%"
+            },
+            {
+              "id": "d",
+              "label": "21%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "0.9×0.9 = 0.81.",
+            "19% is removed."
+          ],
+          "explanation": "Equivalent discount = 19%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 0.9×0.9 = 0.81.\n\nEquivalent discount = 19%.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Commission can be viewed as money removed from the listed retail price before the producer receives the sale proceeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Retail price ₹100, commission 36% → producer receives ₹64.\nIf ₹64 is 108.8% of C.P., then C.P. = 64/1.088.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A producer's retail price is ₹500. A 20% commission is allowed. How much does the producer receive before any other costs?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹100"
+          },
+          {
+            "id": "b",
+            "label": "₹480"
+          },
+          {
+            "id": "c",
+            "label": "₹600"
+          },
+          {
+            "id": "d",
+            "label": "₹400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A producer's retail price is ₹500. A 20% commission is allowed. How much does the producer receive before any other costs?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹100"
+            },
+            {
+              "id": "b",
+              "label": "₹480"
+            },
+            {
+              "id": "c",
+              "label": "₹600"
+            },
+            {
+              "id": "d",
+              "label": "₹400"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Commission is 20% of retail price.",
+            "Keep 80% of ₹500."
+          ],
+          "explanation": "Producer receives 80% of ₹500 = ₹400."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common mistake is treating commission as an extra charge to the customer. In these source-style questions it is deducted from the retail price received by the producer.\n\nProducer receives 80% of ₹500 = ₹400.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Retail price ₹800 with 12.5% commission. Net receipt?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹700"
+          },
+          {
+            "id": "b",
+            "label": "₹100"
+          },
+          {
+            "id": "c",
+            "label": "₹687.50"
+          },
+          {
+            "id": "d",
+            "label": "₹900"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Retail price ₹800 with 12.5% commission. Net receipt?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹700"
+            },
+            {
+              "id": "b",
+              "label": "₹100"
+            },
+            {
+              "id": "c",
+              "label": "₹687.50"
+            },
+            {
+              "id": "d",
+              "label": "₹900"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Keep 87.5%.",
+            "0.875×800."
+          ],
+          "explanation": "Net receipt = ₹700."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Keep 87.5%.\n\nNet receipt = ₹700.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sales tax or VAT is a later layer on the selling price. If a bill includes tax, remove the tax before comparing the seller's S.P. with C.P.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bill ₹1100 includes 10% tax.\nPre-tax S.P. = 1100/1.10 = ₹1000.\nIf seller made 25% profit, C.P. = 1000/1.25 = ₹800.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bill of ₹1320 includes 10% sales tax. Seller made 20% profit. What is C.P.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1100"
+          },
+          {
+            "id": "b",
+            "label": "1200"
+          },
+          {
+            "id": "c",
+            "label": "1000"
+          },
+          {
+            "id": "d",
+            "label": "1250"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bill of ₹1320 includes 10% sales tax. Seller made 20% profit. What is C.P.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1100"
+            },
+            {
+              "id": "b",
+              "label": "1200"
+            },
+            {
+              "id": "c",
+              "label": "1000"
+            },
+            {
+              "id": "d",
+              "label": "1250"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Remove tax first: pre-tax S.P. = 1200.",
+            "Then reverse 20% profit."
+          ],
+          "explanation": "Pre-tax S.P. = 1320/1.10 = ₹1200. C.P. = 1200/1.20 = ₹1000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not calculate profit on the tax collected. Remove the tax layer before finding the seller's commercial profit.\n\nPre-tax S.P. = 1320/1.10 = ₹1200. C.P. = 1200/1.20 = ₹1000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Bill ₹1770 includes 18% tax. Pre-tax S.P.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1450"
+          },
+          {
+            "id": "b",
+            "label": "1500"
+          },
+          {
+            "id": "c",
+            "label": "1593"
+          },
+          {
+            "id": "d",
+            "label": "2088.6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Bill ₹1770 includes 18% tax. Pre-tax S.P.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1450"
+            },
+            {
+              "id": "b",
+              "label": "1500"
+            },
+            {
+              "id": "c",
+              "label": "1593"
+            },
+            {
+              "id": "d",
+              "label": "2088.6"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "1770 is 118% of pre-tax price.",
+            "1770/1.18."
+          ],
+          "explanation": "Pre-tax S.P. = ₹1500."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 1770 is 118% of pre-tax price.\n\nPre-tax S.P. = ₹1500.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Markup, discount and tax can all appear together. Keep a price ladder and attach every percentage to its own step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "C.P. ₹1000 → markup 25% gives M.P. ₹1250 → discount 20% gives pre-tax S.P. ₹1000 → tax 10% gives bill ₹1100.\nCommercial profit is 0%; tax does not create profit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "C.P. ₹800. Marked 50% above cost, discounted 20%, then 10% tax added. Customer's final bill?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1056"
+          },
+          {
+            "id": "b",
+            "label": "960"
+          },
+          {
+            "id": "c",
+            "label": "1040"
+          },
+          {
+            "id": "d",
+            "label": "1200"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "C.P. ₹800. Marked 50% above cost, discounted 20%, then 10% tax added. Customer's final bill?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1056"
+            },
+            {
+              "id": "b",
+              "label": "960"
+            },
+            {
+              "id": "c",
+              "label": "1040"
+            },
+            {
+              "id": "d",
+              "label": "1200"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "M.P. = 1200.",
+            "After discount S.P. = 960; tax makes 1056."
+          ],
+          "explanation": "Final bill = 800×1.50×0.80×1.10 = ₹1056."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nA common slip is to apply all percentages directly to C.P. Each stage changes the base for the next stage.\n\nFinal bill = 800×1.50×0.80×1.10 = ₹1056.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "C.P. ₹1000, markup 20%, discount 10%, tax 5%. Final bill?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1080"
+          },
+          {
+            "id": "b",
+            "label": "1130"
+          },
+          {
+            "id": "c",
+            "label": "1260"
+          },
+          {
+            "id": "d",
+            "label": "1134"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "C.P. ₹1000, markup 20%, discount 10%, tax 5%. Final bill?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1080"
+            },
+            {
+              "id": "b",
+              "label": "1130"
+            },
+            {
+              "id": "c",
+              "label": "1260"
+            },
+            {
+              "id": "d",
+              "label": "1134"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "1000→1200→1080→1134.",
+            "Multiply 1.2×0.9×1.05."
+          ],
+          "explanation": "Final bill = ₹1134."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 1000→1200→1080→1134.\n\nFinal bill = ₹1134.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A missing-profit-without-discount question can be solved by comparing actual S.P. with full M.P. after recovering C.P.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "M.P. ₹1200, discount 20% → actual S.P. ₹960. If actual profit is 20%, C.P. ₹800. Without discount profit = 1200−800 = ₹400 = 50%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "M.P. ₹1800, discount 10%, actual profit 8%. What profit percent without discount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18%"
+          },
+          {
+            "id": "b",
+            "label": "12%"
+          },
+          {
+            "id": "c",
+            "label": "25%"
+          },
+          {
+            "id": "d",
+            "label": "20%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "M.P. ₹1800, discount 10%, actual profit 8%. What profit percent without discount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18%"
+            },
+            {
+              "id": "b",
+              "label": "12%"
+            },
+            {
+              "id": "c",
+              "label": "25%"
+            },
+            {
+              "id": "d",
+              "label": "20%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Actual S.P. = 1620.",
+            "C.P. = 1620/1.08 = 1500; compare 1800 with 1500."
+          ],
+          "explanation": "No-discount profit = 300/1500 = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nDo not add the 10% discount back to the 8% profit. The bases differ; recover C.P. first.\n\nNo-discount profit = 300/1500 = 20%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "M.P. ₹1440, discount 20%, actual profit 15.2%. What is C.P.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1000"
+          },
+          {
+            "id": "b",
+            "label": "960"
+          },
+          {
+            "id": "c",
+            "label": "1152"
+          },
+          {
+            "id": "d",
+            "label": "1200"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "M.P. ₹1440, discount 20%, actual profit 15.2%. What is C.P.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1000"
+            },
+            {
+              "id": "b",
+              "label": "960"
+            },
+            {
+              "id": "c",
+              "label": "1152"
+            },
+            {
+              "id": "d",
+              "label": "1200"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Actual S.P. = 1152.",
+            "1152 is 115.2% of C.P."
+          ],
+          "explanation": "C.P. = 1152/1.152 = ₹1000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: Actual S.P. = 1152.\n\nC.P. = 1152/1.152 = ₹1000.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: when several layers appear, multipliers make the structure visible and reversible.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose final bill = C.P. ×1.40 markup ×0.80 discount ×1.05 tax.\nCommercial S.P. before tax = C.P.×1.12, so seller's profit is 12%; customer's bill is 17.6% above C.P. because tax comes later.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "An article is marked 25% above C.P., discounted 10%, then 12% tax is added. If C.P. is ₹1600, what is the customer's bill?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1800"
+          },
+          {
+            "id": "b",
+            "label": "2016"
+          },
+          {
+            "id": "c",
+            "label": "1960"
+          },
+          {
+            "id": "d",
+            "label": "2240"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An article is marked 25% above C.P., discounted 10%, then 12% tax is added. If C.P. is ₹1600, what is the customer's bill?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1800"
+            },
+            {
+              "id": "b",
+              "label": "2016"
+            },
+            {
+              "id": "c",
+              "label": "1960"
+            },
+            {
+              "id": "d",
+              "label": "2240"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Use ×1.25×0.90×1.12.",
+            "Pre-tax S.P. is 1800."
+          ],
+          "explanation": "₹1600×1.25 = 2000; after discount = 1800; after tax = ₹2016."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair this one.\n\nKeep commercial profit and tax separate. The tax increases the bill but is not part of the seller's profit calculation in these questions.\n\n₹1600×1.25 = 2000; after discount = 1800; after tax = ₹2016.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "C.P. ₹2000, markup 30%, discount 20%, tax 10%. Final bill?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2080"
+          },
+          {
+            "id": "b",
+            "label": "2240"
+          },
+          {
+            "id": "c",
+            "label": "2288"
+          },
+          {
+            "id": "d",
+            "label": "2860"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "C.P. ₹2000, markup 30%, discount 20%, tax 10%. Final bill?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2080"
+            },
+            {
+              "id": "b",
+              "label": "2240"
+            },
+            {
+              "id": "c",
+              "label": "2288"
+            },
+            {
+              "id": "d",
+              "label": "2860"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "2000×1.30 = 2600.",
+            "2600×0.80×1.10."
+          ],
+          "explanation": "Final bill = ₹2288."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this version.\n\nStart here: 2000×1.30 = 2600.\n\nFinal bill = ₹2288.\n\nTry it once more.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now combine successive discounts, commission and tax layers without mixing bases, and separate the seller's commercial S.P. from the customer's final bill.\n\nNext: False Weights, Measures and Adulteration.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

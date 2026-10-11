@@ -187,13 +187,19 @@ class PracticeSessionController extends GetxController {
         _stopwatch.start();
         if (session.value.timerEnabled) _runCountdown();
       }
-      Get.snackbar(
-        'Submission Failed',
-        err.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
+      final context = AppRouter.navigatorKey.currentContext;
+      final message = err.toString().replaceAll('Exception: ', '');
+      if (context != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Submission failed: $message'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        debugPrint('[Practice] Answer submission failed: $message');
+      }
     } finally {
       isSubmitting.value = false;
     }
