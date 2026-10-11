@@ -36,7 +36,8 @@ class LiveTopicModel {
   });
 
   factory LiveTopicModel.fromJson(Map<String, dynamic> json) {
-    final subList = (json['subtopics'] as List<dynamic>?)
+    final subList =
+        (json['subtopics'] as List<dynamic>?)
             ?.map((s) => LiveSubtopicModel.fromJson(s as Map<String, dynamic>))
             .toList() ??
         [];
@@ -126,7 +127,8 @@ class PracticeQuestionModel {
       prompt: json['prompt']?.toString() ?? '',
       options: opts,
       difficulty: json['difficulty']?.toString() ?? 'EASY',
-      estimatedTimeSeconds: (json['estimatedTimeSeconds'] as num?)?.toInt() ?? 60,
+      estimatedTimeSeconds:
+          (json['estimatedTimeSeconds'] as num?)?.toInt() ?? 60,
       calculationMode: json['calculationMode']?.toString() ?? 'MENTAL',
       hints: hintsList,
       pattern: json['pattern']?.toString(),
@@ -167,7 +169,9 @@ class PracticeSessionQuestionModel {
 
   factory PracticeSessionQuestionModel.fromJson(Map<String, dynamic> json) {
     final rawQ = json['question'];
-    final qMap = rawQ is Map ? Map<String, dynamic>.from(rawQ) : <String, dynamic>{};
+    final qMap = rawQ is Map
+        ? Map<String, dynamic>.from(rawQ)
+        : <String, dynamic>{};
 
     return PracticeSessionQuestionModel(
       id: json['id']?.toString() ?? '',
@@ -194,6 +198,7 @@ class PracticeSessionModel {
   final int correctCount;
   final int totalTimeMs;
   final int xpAwarded;
+  final bool timerEnabled;
   final bool isReplay;
   final String? replaySourceType;
   final String? replaySourceId;
@@ -211,6 +216,7 @@ class PracticeSessionModel {
     required this.correctCount,
     required this.totalTimeMs,
     required this.xpAwarded,
+    this.timerEnabled = false,
     this.isReplay = false,
     this.replaySourceType,
     this.replaySourceId,
@@ -222,7 +228,11 @@ class PracticeSessionModel {
     if (json['questions'] is List) {
       qList = (json['questions'] as List)
           .whereType<Map>()
-          .map((q) => PracticeSessionQuestionModel.fromJson(Map<String, dynamic>.from(q)))
+          .map(
+            (q) => PracticeSessionQuestionModel.fromJson(
+              Map<String, dynamic>.from(q),
+            ),
+          )
           .toList();
     }
 
@@ -243,6 +253,7 @@ class PracticeSessionModel {
       correctCount: (json['correctCount'] as num?)?.toInt() ?? 0,
       totalTimeMs: (json['totalTimeMs'] as num?)?.toInt() ?? 0,
       xpAwarded: (json['xpAwarded'] as num?)?.toInt() ?? 0,
+      timerEnabled: json['timerEnabled'] == true,
       isReplay: json['isReplay'] as bool? ?? false,
       replaySourceType: json['replaySourceType']?.toString(),
       replaySourceId: json['replaySourceId']?.toString(),
@@ -319,8 +330,13 @@ class PracticeHistoryResponseModel {
   });
 
   factory PracticeHistoryResponseModel.fromJson(Map<String, dynamic> json) {
-    final list = (json['history'] as List<dynamic>?)
-            ?.map((h) => PracticeHistoryItemModel.fromJson(Map<String, dynamic>.from(h as Map)))
+    final list =
+        (json['history'] as List<dynamic>?)
+            ?.map(
+              (h) => PracticeHistoryItemModel.fromJson(
+                Map<String, dynamic>.from(h as Map),
+              ),
+            )
             .toList() ??
         [];
 
@@ -329,7 +345,8 @@ class PracticeHistoryResponseModel {
 
     return PracticeHistoryResponseModel(
       history: list,
-      completedDrillsCount: (stats['completedDrillsCount'] as num?)?.toInt() ?? 0,
+      completedDrillsCount:
+          (stats['completedDrillsCount'] as num?)?.toInt() ?? 0,
       overallAccuracy: (stats['overallAccuracy'] as num?)?.toInt() ?? 0,
       avgResponseTimeMs: (stats['avgResponseTimeMs'] as num?)?.toInt() ?? 0,
       page: (pagination['page'] as num?)?.toInt() ?? 1,
@@ -381,7 +398,9 @@ class PracticeAnswerResultModel {
       correctCount: json['correctCount'] as int? ?? 0,
       xpAwarded: json['xpAwarded'] as int? ?? 0,
       xpResult: json['xpResult'] != null
-          ? AwardXpResultModel.fromJson(json['xpResult'] as Map<String, dynamic>)
+          ? AwardXpResultModel.fromJson(
+              json['xpResult'] as Map<String, dynamic>,
+            )
           : null,
     );
   }

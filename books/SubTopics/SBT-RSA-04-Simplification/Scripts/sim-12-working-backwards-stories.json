@@ -1,0 +1,1837 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-12-working-backwards-stories",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Working Backwards and Multi-Step Stories",
+    "description": "Solve reverse-motion problems — passengers, flowers, mints, thieves — by undoing each step from the end, and balance two changing quantities over time.",
+    "teachingApproach": "Open with a simple number puzzle to establish undo-in-reverse, then scale up to the two-station train, fraction-plus-return mint chains, the repeated half-plus-two thief, doubling flowers tracked forwards with a symbol, and two-quantity meeting problems (populations, readers). Every backwards answer is proved by replaying forwards; each pattern gets a fresh question and a parallel retry.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4, Simplification. Approved scope: Teach the reverse-operation method: when a story gives the final state, undo each step in reverse order with the opposite operation — add what was subtracted, halve what was doubled. Apply it to a number puzzle (doubled, plus 6, halved gives 25), the train that drops one-third then takes 280, then drops one-half then takes 12 and arrives with 248, the mints bowl where each person takes a fraction and returns a few, the thief who gives each watchman half his diamonds plus 2 and escapes with 1, and the flowers that double at the river with an equal offering at each temple. Then cover two quantities changing at constant rates until they meet, such as village populations of 68000 falling by 1200 and 42000 rising by 800 per year, and two readers starting the same book at different times and speeds. Learners should verify a backwards answer by replaying the story forwards from the found start."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn to solve a story from its ending.\n\nSome questions hand you the final state and ask for the beginning. The method: walk backwards, undoing each step with its opposite — then replay forwards to prove it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn to solve a story from its ending.\n\nA number is doubled, then 6 is added, then the result is halved. The final answer is 25.\n\nWhat was the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Undo each step in reverse order, with the opposite operation:\n\nUndo halving: 25 × 2 = 50\nUndo adding 6: 50 − 6 = 44\nUndo doubling: 44 ÷ 2 = 22",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step2"
+        }
+      ]
+    },
+    "teach_1_step2": {
+      "id": "teach_1_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Always verify forwards:\n\n22 doubled = 44\n44 + 6 = 50\n50 halved = 25 ✓\n\nBackwards to find it, forwards to prove it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A number is multiplied by 3, then 9 is added, then the result is divided by 3, giving 20. What was the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "23"
+          },
+          {
+            "id": "b",
+            "label": "51"
+          },
+          {
+            "id": "c",
+            "label": "11"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A number is multiplied by 3, then 9 is added, then the result is divided by 3, giving 20. What was the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "23"
+            },
+            {
+              "id": "b",
+              "label": "51"
+            },
+            {
+              "id": "c",
+              "label": "11"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Undo the ÷ 3 first: 20 × 3 = 60.",
+            "Then 60 − 9 = 51, and 51 ÷ 3."
+          ],
+          "explanation": "20 × 3 = 60; 60 − 9 = 51; 51 ÷ 3 = 17. Check forwards: 17 × 3 = 51, +9 = 60, ÷3 = 20 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUndo the ÷ 3 first: 20 × 3 = 60.\n\n20 × 3 = 60; 60 − 9 = 51; 51 ÷ 3 = 17. Check forwards: 17 × 3 = 51, +9 = 60, ÷3 = 20 ✓.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A number is multiplied by 4, then 8 is subtracted, then the result is halved, giving 30. What was the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15.5"
+          },
+          {
+            "id": "b",
+            "label": "17"
+          },
+          {
+            "id": "c",
+            "label": "68"
+          },
+          {
+            "id": "d",
+            "label": "13"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A number is multiplied by 4, then 8 is subtracted, then the result is halved, giving 30. What was the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15.5"
+            },
+            {
+              "id": "b",
+              "label": "17"
+            },
+            {
+              "id": "c",
+              "label": "68"
+            },
+            {
+              "id": "d",
+              "label": "13"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Undo halving: 30 × 2 = 60.",
+            "60 + 8 = 68, then 68 ÷ 4."
+          ],
+          "explanation": "30 × 2 = 60; 60 + 8 = 68; 68 ÷ 4 = 17. Check: 17 × 4 = 68, −8 = 60, ÷2 = 30 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n30 × 2 = 60; 60 + 8 = 68; 68 ÷ 4 = 17. Check: 17 × 4 = 68, −8 = 60, ÷2 = 30 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A train drops 1/3 of its passengers at station 1 and takes 280.\nAt station 2 it drops 1/2 of the new total and takes 12.\nIt arrives at station 3 with 248.\n\nHow many started?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work backwards from 248.\n\nUndo station 2's addition: 248 − 12 = 236\nThat 236 was half the pre-station-2 count:\n236 × 2 = 472",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step2"
+        }
+      ]
+    },
+    "teach_2_step2": {
+      "id": "teach_2_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Undo station 1's addition: 472 − 280 = 192\nThat 192 was two-thirds of the start (one-third had left):\n192 × 3/2 = 288\n\nCheck forwards: 288 → 192 + 280 = 472 → 236 + 12 = 248 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train drops 1/3 of its passengers and takes 280, then drops 1/2 of the new total and takes 12, arriving with 248. How many passengers were there in the beginning?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "192"
+          },
+          {
+            "id": "b",
+            "label": "472"
+          },
+          {
+            "id": "c",
+            "label": "288"
+          },
+          {
+            "id": "d",
+            "label": "236"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train drops 1/3 of its passengers and takes 280, then drops 1/2 of the new total and takes 12, arriving with 248. How many passengers were there in the beginning?",
+          "options": [
+            {
+              "id": "a",
+              "label": "192"
+            },
+            {
+              "id": "b",
+              "label": "472"
+            },
+            {
+              "id": "c",
+              "label": "288"
+            },
+            {
+              "id": "d",
+              "label": "236"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Undo the last step first: 248 − 12, then × 2.",
+            "Then 472 − 280 = 192, and 192 × 3/2."
+          ],
+          "explanation": "248 − 12 = 236; 236 × 2 = 472; 472 − 280 = 192; 192 × 3/2 = 288. The values 472 and 192 are middle stations, not the start."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUndo the last step first: 248 − 12, then × 2.\n\n248 − 12 = 236; 236 × 2 = 472; 472 − 280 = 192; 192 × 3/2 = 288. The values 472 and 192 are middle stations, not the start.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bus drops 1/4 of its passengers and takes 150, then drops 1/3 of the new total and takes 20, arriving with 240. How many began the journey?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "240"
+          },
+          {
+            "id": "b",
+            "label": "330"
+          },
+          {
+            "id": "c",
+            "label": "180"
+          },
+          {
+            "id": "d",
+            "label": "220"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bus drops 1/4 of its passengers and takes 150, then drops 1/3 of the new total and takes 20, arriving with 240. How many began the journey?",
+          "options": [
+            {
+              "id": "a",
+              "label": "240"
+            },
+            {
+              "id": "b",
+              "label": "330"
+            },
+            {
+              "id": "c",
+              "label": "180"
+            },
+            {
+              "id": "d",
+              "label": "220"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "240 − 20 = 220, then × 3/2 = 330.",
+            "330 − 150 = 180, then × 4/3."
+          ],
+          "explanation": "220 × 3/2 = 330; 330 − 150 = 180; 180 × 4/3 = 240. Check: 240 → 180 + 150 = 330 → 220 + 20 = 240 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n220 × 3/2 = 330; 330 − 150 = 180; 180 × 4/3 = 240. Check: 240 → 180 + 150 = 330 → 220 + 20 = 240 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A bowl of mints. Maya takes 1/3 of them, then puts 2 back. Ravi then takes 1/2 of what's left, then puts 1 back.\n\n10 mints remain. How many were there at first?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Undo Ravi first (he acted last).\n\nHe put 1 back: 10 − 1 = 9\nHe had taken half, so 9 was the other half:\n9 × 2 = 18",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step2"
+        }
+      ]
+    },
+    "teach_3_step2": {
+      "id": "teach_3_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now undo Maya.\n\nShe put 2 back: 18 − 2 = 16\nShe had taken 1/3, so 16 was the remaining 2/3:\n16 × 3/2 = 24\n\nCheck forwards: 24 → 16 + 2 = 18 → 9 + 1 = 10 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Maya takes 1/3 of the mints and puts 2 back; Ravi takes 1/2 of what is left and puts 1 back; 10 mints remain. How many mints were there originally?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "24"
+          },
+          {
+            "id": "d",
+            "label": "27"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Maya takes 1/3 of the mints and puts 2 back; Ravi takes 1/2 of what is left and puts 1 back; 10 mints remain. How many mints were there originally?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "24"
+            },
+            {
+              "id": "d",
+              "label": "27"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Undo Ravi: (10 − 1) × 2 = 18.",
+            "Undo Maya: (18 − 2) × 3/2."
+          ],
+          "explanation": "(10 − 1) × 2 = 18, then (18 − 2) × 3/2 = 24. Forgetting to remove the 'put back' before scaling gives 27-style traps."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUndo Ravi: (10 − 1) × 2 = 18.\n\n(10 − 1) × 2 = 18, then (18 − 2) × 3/2 = 24. Forgetting to remove the 'put back' before scaling gives 27-style traps.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A girl takes 1/2 of the chocolates and puts 3 back; her brother takes 1/3 of what is left and puts 1 back; 15 remain. How many chocolates were there at first?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "42"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "28"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A girl takes 1/2 of the chocolates and puts 3 back; her brother takes 1/3 of what is left and puts 1 back; 15 remain. How many chocolates were there at first?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "42"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "28"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Undo the brother: (15 − 1) × 3/2 = 21.",
+            "Undo the sister: (21 − 3) × 2."
+          ],
+          "explanation": "(15 − 1) × 3/2 = 21, then (21 − 3) × 2 = 36. Check: 36 → 18 + 3 = 21 → 14 + 1 = 15 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n(15 − 1) × 3/2 = 21, then (21 − 3) × 2 = 36. Check: 36 → 18 + 3 = 21 → 14 + 1 = 15 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A thief steals diamonds. On the way out he meets 3 watchmen, one at a time.\n\nTo each he gives HALF of what he has, plus 2 more.\nHe escapes with 1 diamond.\n\nHow many did he steal?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Undo the last watchman.\n\nBefore giving the extra 2: 1 + 2 = 3\nThat 3 was the half he kept: 3 × 2 = 6",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step2"
+        }
+      ]
+    },
+    "teach_4_step2": {
+      "id": "teach_4_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Undo the second watchman:\n\n(6 + 2) × 2 = 16\n\nUndo the first:\n\n(16 + 2) × 2 = 36\n\nHe stole 36 diamonds.\n\nCheck: 36 → 18 − 2 = 16 → 8 − 2 = 6 → 3 − 2 = 1 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A thief gives each of 3 watchmen half his diamonds plus 2 more, and escapes with 1 diamond. How many did he steal?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A thief gives each of 3 watchmen half his diamonds plus 2 more, and escapes with 1 diamond. How many did he steal?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Each undo is: add 2, then double.",
+            "Start: (1 + 2) × 2 = 6, and repeat twice more."
+          ],
+          "explanation": "(1+2)×2 = 6; (6+2)×2 = 16; (16+2)×2 = 36. The undo must happen once per watchman — 3 times."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nEach undo is: add 2, then double.\n\n(1+2)×2 = 6; (6+2)×2 = 16; (16+2)×2 = 36. The undo must happen once per watchman — 3 times.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A thief gives each of 4 guards half his coins plus 1 more, and escapes with 3 coins. How many did he steal?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "38"
+          },
+          {
+            "id": "b",
+            "label": "78"
+          },
+          {
+            "id": "c",
+            "label": "46"
+          },
+          {
+            "id": "d",
+            "label": "64"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A thief gives each of 4 guards half his coins plus 1 more, and escapes with 3 coins. How many did he steal?",
+          "options": [
+            {
+              "id": "a",
+              "label": "38"
+            },
+            {
+              "id": "b",
+              "label": "78"
+            },
+            {
+              "id": "c",
+              "label": "46"
+            },
+            {
+              "id": "d",
+              "label": "64"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Each undo: add 1, then double.",
+            "(3+1)×2 = 8; (8+1)×2 = 18; keep going for 4 guards."
+          ],
+          "explanation": "(3+1)×2 = 8; (8+1)×2 = 18; (18+1)×2 = 38; (38+1)×2 = 78. Stopping at 38 undoes only 3 guards."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n(3+1)×2 = 8; (8+1)×2 = 18; (18+1)×2 = 38; (38+1)×2 = 78. Stopping at 38 undoes only 3 guards.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A girl carries 15 flowers. She dips them in a river and they DOUBLE. She offers y flowers at the first temple, dips the rest (they double again), and offers y at the second temple. Nothing is left.\n\nFind y.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Follow the count forwards, with y as a symbol:\n\nStart: 15\nAfter dip: 30\nAfter offering: 30 − y\nAfter second dip: 2(30 − y) = 60 − 2y",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step2"
+        }
+      ]
+    },
+    "teach_5_step2": {
+      "id": "teach_5_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "After the second offering, nothing remains:\n\n60 − 2y − y = 0\n60 − 3y = 0\ny = 20\n\nCheck: 30 − 20 = 10, doubles to 20, offer 20 → 0 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A girl starts with 15 flowers; they double at the river, she offers y at a temple, the rest double again, she offers y at the next temple, and nothing is left. What is y?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A girl starts with 15 flowers; they double at the river, she offers y at a temple, the rest double again, she offers y at the next temple, and nothing is left. What is y?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Track the count: 30 − y, then 60 − 2y.",
+            "60 − 3y = 0."
+          ],
+          "explanation": "y = 20. The trap is offering y before doubling at the second stage or counting only two offerings of y in a line that has the doubling between them."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTrack the count: 30 − y, then 60 − 2y.\n\ny = 20. The trap is offering y before doubling at the second stage or counting only two offerings of y in a line that has the doubling between them.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Same game with 12 flowers at the start: double, offer y, double, offer y, nothing left. What is y?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "16"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Same game with 12 flowers at the start: double, offer y, double, offer y, nothing left. What is y?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "24 − y, then 48 − 2y.",
+            "48 − 3y = 0."
+          ],
+          "explanation": "y = 16. Check: 24 − 16 = 8, doubles to 16, offer 16 → 0 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\ny = 16. Check: 24 − 16 = 8, doubles to 16, offer 16 → 0 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Village X has 68000 people, shrinking by 1200 a year.\nVillage Y has 42000, growing by 800 a year.\n\nWhen will they be equal?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "After p years:\n\nX: 68000 − 1200p\nY: 42000 + 800p\n\nSet them equal:\n\n68000 − 1200p = 42000 + 800p",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step2"
+        }
+      ]
+    },
+    "teach_6_step2": {
+      "id": "teach_6_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Collect:\n\n26000 = 2000p\np = 13\n\nCheck: X = 68000 − 15600 = 52400; Y = 42000 + 10400 = 52400 ✓\n\nTwo moving quantities, one meeting point — one equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Town A has 52000 people shrinking by 900 a year; Town B has 34000 growing by 600 a year. In how many years will they be equal?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Town A has 52000 people shrinking by 900 a year; Town B has 34000 growing by 600 a year. In how many years will they be equal?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "52000 − 900p = 34000 + 600p.",
+            "18000 = 1500p."
+          ],
+          "explanation": "p = 18000 ÷ 1500 = 12 years. Check: 52000 − 10800 = 41200 and 34000 + 7200 = 41200 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n52000 − 900p = 34000 + 600p.\n\np = 18000 ÷ 1500 = 12 years. Check: 52000 − 10800 = 41200 and 34000 + 7200 = 41200 ✓.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Town A has 45000 people shrinking by 700 a year; Town B has 27000 growing by 500 a year. When will they be equal?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Town A has 45000 people shrinking by 700 a year; Town B has 27000 growing by 500 a year. When will they be equal?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "45000 − 700p = 27000 + 500p.",
+            "18000 = 1200p."
+          ],
+          "explanation": "p = 15 years. Check: 45000 − 10500 = 34500 and 27000 + 7500 = 34500 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\np = 15 years. Check: 45000 − 10500 = 34500 and 27000 + 7500 = 34500 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Asha reads 20 pages an hour, starting at 3:00.\nBina reads 30 pages an hour, starting at 4:00.\n\nWhen are they on the same page?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "At 4:00, Asha has a head start of 20 pages.\n\nEvery hour after 4:00, Bina closes the gap by:\n\n30 − 20 = 10 pages",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step2"
+        }
+      ]
+    },
+    "teach_7_step2": {
+      "id": "teach_7_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Gap of 20 pages, closing at 10 pages per hour:\n\n20 ÷ 10 = 2 hours after 4:00\n\nThey meet at 6:00.\n\nCheck: Asha 20 × 3 = 60 pages; Bina 30 × 2 = 60 pages ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asha reads at 20 pages/hour from 3:00; Bina reads the same book at 30 pages/hour from 4:00. At what time are they on the same page?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6:00"
+          },
+          {
+            "id": "b",
+            "label": "5:00"
+          },
+          {
+            "id": "c",
+            "label": "7:00"
+          },
+          {
+            "id": "d",
+            "label": "4:30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asha reads at 20 pages/hour from 3:00; Bina reads the same book at 30 pages/hour from 4:00. At what time are they on the same page?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6:00"
+            },
+            {
+              "id": "b",
+              "label": "5:00"
+            },
+            {
+              "id": "c",
+              "label": "7:00"
+            },
+            {
+              "id": "d",
+              "label": "4:30"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Head start: 20 pages. Closing speed: 10 pages/hour.",
+            "2 hours after 4:00."
+          ],
+          "explanation": "They meet at 6:00, both on page 60. The trap 5:00 forgets that the gap closes at the DIFFERENCE of speeds, not at Bina's full speed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nHead start: 20 pages. Closing speed: 10 pages/hour.\n\nThey meet at 6:00, both on page 60. The trap 5:00 forgets that the gap closes at the DIFFERENCE of speeds, not at Bina's full speed.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boy reads at 15 pages/hour from 2:00; his sister reads the same book at 30 pages/hour from 3:00. When do they reach the same page?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3:30"
+          },
+          {
+            "id": "b",
+            "label": "5:00"
+          },
+          {
+            "id": "c",
+            "label": "4:00"
+          },
+          {
+            "id": "d",
+            "label": "3:00"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boy reads at 15 pages/hour from 2:00; his sister reads the same book at 30 pages/hour from 3:00. When do they reach the same page?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3:30"
+            },
+            {
+              "id": "b",
+              "label": "5:00"
+            },
+            {
+              "id": "c",
+              "label": "4:00"
+            },
+            {
+              "id": "d",
+              "label": "3:00"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Head start: 15 pages. Closing speed: 15 pages/hour.",
+            "1 hour after 3:00."
+          ],
+          "explanation": "They meet at 4:00, both on page 30. Check: 15 × 2 = 30 and 30 × 1 = 30 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThey meet at 4:00, both on page 30. Check: 15 × 2 = 30 and 30 × 1 = 30 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone — feet versus heads.\n\nA caravan has 50 hens, 45 goats, 8 camels, and some keepers.\nThe total number of FEET is 224 more than the number of HEADS.\n\nHow many keepers?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Count both with x keepers:\n\nHeads: 50 + 45 + 8 + x = 103 + x\nFeet: 50 × 2 + (45 + 8) × 4 + 2x = 100 + 212 + 2x = 312 + 2x",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step2"
+        }
+      ]
+    },
+    "teach_8_step2": {
+      "id": "teach_8_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The difference is 224:\n\n(312 + 2x) − (103 + x) = 224\n209 + x = 224\nx = 15\n\nCheck: heads 118, feet 342; 342 − 118 = 224 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A caravan has 50 hens, 45 goats, 8 camels, and some keepers. Total feet are 224 more than total heads. How many keepers are there?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "103"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "209"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A caravan has 50 hens, 45 goats, 8 camels, and some keepers. Total feet are 224 more than total heads. How many keepers are there?",
+          "options": [
+            {
+              "id": "a",
+              "label": "103"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "209"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Feet = 312 + 2x; heads = 103 + x.",
+            "(312 + 2x) − (103 + x) = 224."
+          ],
+          "explanation": "209 + x = 224, so x = 15 keepers. Hens have 2 feet like humans — it's the goats and camels that create the surplus."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFeet = 312 + 2x; heads = 103 + x.\n\n209 + x = 224, so x = 15 keepers. Hens have 2 feet like humans — it's the goats and camels that create the surplus.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A farm has 30 ducks, 20 goats, 5 horses, and some workers. Total feet are 150 more than total heads. How many workers?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55"
+          },
+          {
+            "id": "b",
+            "label": "105"
+          },
+          {
+            "id": "c",
+            "label": "35"
+          },
+          {
+            "id": "d",
+            "label": "45"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A farm has 30 ducks, 20 goats, 5 horses, and some workers. Total feet are 150 more than total heads. How many workers?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55"
+            },
+            {
+              "id": "b",
+              "label": "105"
+            },
+            {
+              "id": "c",
+              "label": "35"
+            },
+            {
+              "id": "d",
+              "label": "45"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Feet = 60 + 80 + 20 + 2x = 160 + 2x; heads = 55 + x.",
+            "(160 + 2x) − (55 + x) = 150."
+          ],
+          "explanation": "105 + x = 150, so x = 45 workers. Check: heads 100, feet 250; 250 − 100 = 150 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n105 + x = 150, so x = 45 workers. Check: heads 100, feet 250; 250 − 100 = 150 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "Backwards solving mastered.\n\nUndo steps in reverse order with opposite operations.\nRemove the 'put back' before undoing a fraction.\nFor doubling-and-offering stories, track the count forwards with a symbol.\nFor two changing quantities, set the two expressions equal.\n\nAlways replay forwards to check.\n\nNext, counting people who belong to two groups at once — the Venn formula.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

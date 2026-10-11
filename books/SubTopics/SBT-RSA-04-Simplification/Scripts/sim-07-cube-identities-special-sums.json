@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-07-cube-identities-special-sums",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Cube Identities and Special Sums",
+    "description": "Use (a ± b)^3, a^3 ± b^3 factorisations, and the a^3 + b^3 + c^3 = 3abc condition to crack heavy-looking expressions.",
+    "teachingApproach": "Mirror the square-identity lesson one level up: cubing near 100, the two cancellation fractions (with the sign-flip warning), the 3abc condition that solves equations in one line, decimal expansions that collapse to 1, and running cube identities backwards from a ± b and ab. Fresh question and parallel retry after every idea.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4, Simplification. Approved scope: Teach the cube identities the same way as the square ones: (a + b)^3 = a^3 + b^3 + 3ab(a + b) for cubing numbers near 100, and (a − b)^3 likewise. Show a^3 + b^3 = (a + b)(a^2 − ab + b^2) and a^3 − b^3 = (a − b)(a^2 + ab + b^2) as the tool for fraction expressions such as (343^3 − 113^3)/(343^2 + 343 × 113 + 113^2) = 230 where the whole denominator cancels. Teach the special condition a^3 + b^3 + c^3 = 3abc ⇒ a + b + c = 0 and use it on items such as (x − 4)^3 + (x − 9)^3 + (x − 8)^3 = 3(x − 4)(x − 9)(x − 8). Include decimal items such as (0.98)^3 + (0.02)^3 + 3 × 0.98 × 0.02 = 1 where the learner spots that the parts sum to 1, and finding a^3 ± b^3 from a ± b and ab. Learners should identify which identity shape an expression matches before computing anything."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's conquer the cube family.\n\nThe formulas look heavy, but each one exists to cancel something ugly. By the end you'll solve lines like (x − 4)^3 + (x − 9)^3 + (x − 8)^3 = 3(x − 4)(x − 9)(x − 8) in your head.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Cubes look scary. 101^3 means 101 × 101 × 101.\n\nBut cubes have the same shortcut family as squares:\n\n(a + b)^3 = a^3 + b^3 + 3ab(a + b)",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Watch it tame 101^3:\n\n= 100^3 + 1^3 + 3 × 100 × 1 × (100 + 1)\n= 1000000 + 1 + 30300\n= 1030301\n\nThe new player is 3ab(a + b) — three times the product times the total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Using (a + b)^3 = a^3 + b^3 + 3ab(a + b), find 102^3.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1061200"
+          },
+          {
+            "id": "b",
+            "label": "1061208"
+          },
+          {
+            "id": "c",
+            "label": "1030301"
+          },
+          {
+            "id": "d",
+            "label": "1062108"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Using (a + b)^3 = a^3 + b^3 + 3ab(a + b), find 102^3.",
+          "options": [
+            {
+              "id": "a",
+              "label": "1061200"
+            },
+            {
+              "id": "b",
+              "label": "1061208"
+            },
+            {
+              "id": "c",
+              "label": "1030301"
+            },
+            {
+              "id": "d",
+              "label": "1062108"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "a = 100, b = 2.",
+            "1000000 + 8 + 600 × 102."
+          ],
+          "explanation": "102^3 = 1000000 + 8 + 3 × 100 × 2 × 102 = 1000000 + 8 + 61200 = 1061208. Forgetting the (a + b) factor in 3ab(a + b) is the usual slip."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\na = 100, b = 2.\n\n102^3 = 1000000 + 8 + 3 × 100 × 2 × 102 = 1000000 + 8 + 61200 = 1061208. Forgetting the (a + b) factor in 3ab(a + b) is the usual slip.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find 99^3 using (a − b)^3 = a^3 − b^3 − 3ab(a − b).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "970200"
+          },
+          {
+            "id": "b",
+            "label": "970299"
+          },
+          {
+            "id": "c",
+            "label": "972999"
+          },
+          {
+            "id": "d",
+            "label": "970100"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find 99^3 using (a − b)^3 = a^3 − b^3 − 3ab(a − b).",
+          "options": [
+            {
+              "id": "a",
+              "label": "970200"
+            },
+            {
+              "id": "b",
+              "label": "970299"
+            },
+            {
+              "id": "c",
+              "label": "972999"
+            },
+            {
+              "id": "d",
+              "label": "970100"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "a = 100, b = 1.",
+            "1000000 − 1 − 300 × 99."
+          ],
+          "explanation": "99^3 = 1000000 − 1 − 3 × 100 × 1 × 99 = 1000000 − 1 − 29700 = 970299. Both later terms are subtracted in the minus version."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n99^3 = 1000000 − 1 − 3 × 100 × 1 × 99 = 1000000 − 1 − 29700 = 970299. Both later terms are subtracted in the minus version.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The minus version, once more with feeling:\n\n(a − b)^3 = a^3 − b^3 − 3ab(a − b)\n\n48^3 = (50 − 2)^3\n= 125000 − 8 − 3 × 50 × 2 × 48\n= 125000 − 8 − 14400\n= 110592",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Compare the twins:\n\n(a + b)^3: add b^3, add 3ab(a + b)\n(a − b)^3: subtract b^3, subtract 3ab(a − b)\n\nThe a^3 never changes sign. The other two pieces follow the minus.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find 98^3 using a cube identity.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "941200"
+          },
+          {
+            "id": "b",
+            "label": "941912"
+          },
+          {
+            "id": "c",
+            "label": "1000008"
+          },
+          {
+            "id": "d",
+            "label": "941192"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find 98^3 using a cube identity.",
+          "options": [
+            {
+              "id": "a",
+              "label": "941200"
+            },
+            {
+              "id": "b",
+              "label": "941912"
+            },
+            {
+              "id": "c",
+              "label": "1000008"
+            },
+            {
+              "id": "d",
+              "label": "941192"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "98 = 100 − 2.",
+            "1000000 − 8 − 600 × 98."
+          ],
+          "explanation": "98^3 = 1000000 − 8 − 3 × 100 × 2 × 98 = 1000000 − 8 − 58800 = 941192. Adding the 3ab(a − b) term instead of subtracting overshoots past a million."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n98 = 100 − 2.\n\n98^3 = 1000000 − 8 − 3 × 100 × 2 × 98 = 1000000 − 8 − 58800 = 941192. Adding the 3ab(a − b) term instead of subtracting overshoots past a million.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find 47^3 using (50 − 3)^3.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "103823"
+          },
+          {
+            "id": "b",
+            "label": "103832"
+          },
+          {
+            "id": "c",
+            "label": "103800"
+          },
+          {
+            "id": "d",
+            "label": "104123"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find 47^3 using (50 − 3)^3.",
+          "options": [
+            {
+              "id": "a",
+              "label": "103823"
+            },
+            {
+              "id": "b",
+              "label": "103832"
+            },
+            {
+              "id": "c",
+              "label": "103800"
+            },
+            {
+              "id": "d",
+              "label": "104123"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "a = 50, b = 3.",
+            "125000 − 27 − 450 × 47."
+          ],
+          "explanation": "47^3 = 125000 − 27 − 450 × 47 = 125000 − 27 − 21150 = 103823."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n47^3 = 125000 − 27 − 450 × 47 = 125000 − 27 − 21150 = 103823.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here is where cube identities shine brightest.\n\na^3 + b^3 = (a + b)(a^2 − ab + b^2)\n\nSo a fraction like:\n\n(25^3 + 15^3)/(25^2 − 25 × 15 + 15^2)\n\nhas the whole bottom hiding inside the top.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Cancel the common bracket:\n\n= (a + b)(a^2 − ab + b^2)/(a^2 − ab + b^2)\n= a + b\n= 25 + 15 = 40\n\nNever cube the numbers. Recognise the shape and cancel.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "(25^3 + 15^3)/(25^2 − 25 × 15 + 15^2) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "400"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "1000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(25^3 + 15^3)/(25^2 − 25 × 15 + 15^2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "400"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "1000"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The denominator is exactly a^2 − ab + b^2.",
+            "Cancel it with the top's factor; a + b remains."
+          ],
+          "explanation": "a^3 + b^3 = (a + b)(a^2 − ab + b^2), so the fraction collapses to a + b = 40. Cubing the numbers first makes a one-line question into a ten-line mess."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe denominator is exactly a^2 − ab + b^2.\n\na^3 + b^3 = (a + b)(a^2 − ab + b^2), so the fraction collapses to a + b = 40. Cubing the numbers first makes a one-line question into a ten-line mess.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "(72^3 + 28^3)/(72^2 − 72 × 28 + 28^2) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "100"
+          },
+          {
+            "id": "b",
+            "label": "44"
+          },
+          {
+            "id": "c",
+            "label": "2016"
+          },
+          {
+            "id": "d",
+            "label": "50"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(72^3 + 28^3)/(72^2 − 72 × 28 + 28^2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "100"
+            },
+            {
+              "id": "b",
+              "label": "44"
+            },
+            {
+              "id": "c",
+              "label": "2016"
+            },
+            {
+              "id": "d",
+              "label": "50"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Same shape: a^3 + b^3 over a^2 − ab + b^2.",
+            "The answer is just 72 + 28."
+          ],
+          "explanation": "The denominator cancels the second factor of the top, leaving a + b = 72 + 28 = 100."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe denominator cancels the second factor of the top, leaving a + b = 72 + 28 = 100.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "The minus version, straight from the book:\n\na^3 − b^3 = (a − b)(a^2 + ab + b^2)\n\nNotice the bottom changes: minus in the cube, PLUS ab in the bracket.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So:\n\n(343^3 − 113^3)/(343^2 + 343 × 113 + 113^2)\n= a − b\n= 343 − 113\n= 230\n\nRead the denominator carefully: a^2 + ab + b^2 pairs with a^3 − b^3. The sign flip is the exam's favourite confusion.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "(343^3 − 113^3)/(343^2 + 343 × 113 + 113^2) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "456"
+          },
+          {
+            "id": "b",
+            "label": "343"
+          },
+          {
+            "id": "c",
+            "label": "230"
+          },
+          {
+            "id": "d",
+            "label": "113"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(343^3 − 113^3)/(343^2 + 343 × 113 + 113^2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "456"
+            },
+            {
+              "id": "b",
+              "label": "343"
+            },
+            {
+              "id": "c",
+              "label": "230"
+            },
+            {
+              "id": "d",
+              "label": "113"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "a^3 − b^3 = (a − b)(a^2 + ab + b^2).",
+            "Cancel the bracket; a − b remains."
+          ],
+          "explanation": "The denominator cancels the bracket, leaving a − b = 343 − 113 = 230. The answer 456 comes from wrongly using a + b, the plus-twin trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\na^3 − b^3 = (a − b)(a^2 + ab + b^2).\n\nThe denominator cancels the bracket, leaving a − b = 343 − 113 = 230. The answer 456 comes from wrongly using a + b, the plus-twin trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "(217^3 − 183^3)/(217^2 + 217 × 183 + 183^2) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "400"
+          },
+          {
+            "id": "b",
+            "label": "34"
+          },
+          {
+            "id": "c",
+            "label": "217"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(217^3 − 183^3)/(217^2 + 217 × 183 + 183^2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "400"
+            },
+            {
+              "id": "b",
+              "label": "34"
+            },
+            {
+              "id": "c",
+              "label": "217"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Same minus shape.",
+            "217 − 183."
+          ],
+          "explanation": "The fraction collapses to a − b = 217 − 183 = 34. Using a + b would give 400, the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe fraction collapses to a − b = 217 − 183 = 34. Using a + b would give 400, the trap.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the most famous special condition in the chapter.\n\nIf a^3 + b^3 + c^3 = 3abc,\nthen a + b + c = 0.\n\nWatch it solve a scary line instantly:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "(x − 4)^3 + (x − 9)^3 + (x − 8)^3 = 3(x − 4)(x − 9)(x − 8)\n\nMatch the shape: a = x − 4, b = x − 9, c = x − 8.\n\nSo a + b + c = 0:\n\n(x − 4) + (x − 9) + (x − 8) = 0\n3x − 21 = 0\nx = 7",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "If (x − 4)^3 + (x − 9)^3 + (x − 8)^3 = 3(x − 4)(x − 9)(x − 8), then x = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If (x − 4)^3 + (x − 9)^3 + (x − 8)^3 = 3(x − 4)(x − 9)(x − 8), then x = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "7"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Match a^3 + b^3 + c^3 = 3abc, so a + b + c = 0.",
+            "3x − 21 = 0."
+          ],
+          "explanation": "(x − 4) + (x − 9) + (x − 8) = 0 gives 3x = 21, so x = 7. Reporting 21 forgets to divide by 3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nMatch a^3 + b^3 + c^3 = 3abc, so a + b + c = 0.\n\n(x − 4) + (x − 9) + (x − 8) = 0 gives 3x = 21, so x = 7. Reporting 21 forgets to divide by 3.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "If (x − 2)^3 + (x − 5)^3 + (x − 11)^3 = 3(x − 2)(x − 5)(x − 11), then x = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If (x − 2)^3 + (x − 5)^3 + (x − 11)^3 = 3(x − 2)(x − 5)(x − 11), then x = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Add the three brackets and set to zero.",
+            "3x − 18 = 0."
+          ],
+          "explanation": "(x − 2) + (x − 5) + (x − 11) = 0 gives 3x = 18, so x = 6."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n(x − 2) + (x − 5) + (x − 11) = 0 gives 3x = 18, so x = 6.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Spot this shape in the book's exercise:\n\n(0.98)^3 + (0.02)^3 + 3 × 0.98 × 0.02 × (0.98 + 0.02)\n\nThat's the full (a + b)^3 expansion, with a + b = 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the whole expression equals:\n\n(0.98 + 0.02)^3 = 1^3 = 1\n\nThree ugly cubes, one elegant answer.\n\nThe exam is testing whether you see the shape, not whether you can cube 0.98.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "(0.75)^3 + (0.25)^3 + 3 × 0.75 × 0.25 × (0.75 + 0.25) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.5625"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "1.75"
+          },
+          {
+            "id": "d",
+            "label": "0.4375"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(0.75)^3 + (0.25)^3 + 3 × 0.75 × 0.25 × (0.75 + 0.25) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.5625"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "1.75"
+            },
+            {
+              "id": "d",
+              "label": "0.4375"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "This is (a + b)^3 expanded, with a + b = 1.",
+            "So the value is 1^3."
+          ],
+          "explanation": "The expression is (0.75 + 0.25)^3 = 1^3 = 1. Cubing the parts separately (0.421875 + 0.015625 = 0.4375) ignores the third term, the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThis is (a + b)^3 expanded, with a + b = 1.\n\nThe expression is (0.75 + 0.25)^3 = 1^3 = 1. Cubing the parts separately (0.421875 + 0.015625 = 0.4375) ignores the third term, the trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "(0.6)^3 + (0.4)^3 + 3 × 0.6 × 0.4 × (0.6 + 0.4) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.28"
+          },
+          {
+            "id": "b",
+            "label": "1.72"
+          },
+          {
+            "id": "c",
+            "label": "1"
+          },
+          {
+            "id": "d",
+            "label": "0.216"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(0.6)^3 + (0.4)^3 + 3 × 0.6 × 0.4 × (0.6 + 0.4) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.28"
+            },
+            {
+              "id": "b",
+              "label": "1.72"
+            },
+            {
+              "id": "c",
+              "label": "1"
+            },
+            {
+              "id": "d",
+              "label": "0.216"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "a + b = 1 again.",
+            "(0.6 + 0.4)^3."
+          ],
+          "explanation": "The whole line is (0.6 + 0.4)^3 = 1. The partial sum 0.216 + 0.064 = 0.28 forgets the 3ab(a + b) term."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe whole line is (0.6 + 0.4)^3 = 1. The partial sum 0.216 + 0.064 = 0.28 forgets the 3ab(a + b) term.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Cubes also run backwards.\n\nGiven a + b = 10 and ab = 21, find a^3 + b^3.\n\nCube the sum:\n\n(a + b)^3 = 1000\na^3 + b^3 + 3ab(a + b) = 1000",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Substitute what you know:\n\na^3 + b^3 + 3 × 21 × 10 = 1000\na^3 + b^3 = 1000 − 630 = 370\n\nSame philosophy as the squares: use the given, never find a and b.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "If a + b = 10 and ab = 21, then a^3 + b^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "370"
+          },
+          {
+            "id": "b",
+            "label": "1000"
+          },
+          {
+            "id": "c",
+            "label": "630"
+          },
+          {
+            "id": "d",
+            "label": "310"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If a + b = 10 and ab = 21, then a^3 + b^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "370"
+            },
+            {
+              "id": "b",
+              "label": "1000"
+            },
+            {
+              "id": "c",
+              "label": "630"
+            },
+            {
+              "id": "d",
+              "label": "310"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "(a + b)^3 = 1000, then subtract 3ab(a + b).",
+            "1000 − 630."
+          ],
+          "explanation": "a^3 + b^3 = (a + b)^3 − 3ab(a + b) = 1000 − 630 = 370. Using 3ab alone (subtracting 63) gives the wrong reduction."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n(a + b)^3 = 1000, then subtract 3ab(a + b).\n\na^3 + b^3 = (a + b)^3 − 3ab(a + b) = 1000 − 630 = 370. Using 3ab alone (subtracting 63) gives the wrong reduction.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "If a + b = 7 and ab = 12, then a^3 + b^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "343"
+          },
+          {
+            "id": "b",
+            "label": "259"
+          },
+          {
+            "id": "c",
+            "label": "91"
+          },
+          {
+            "id": "d",
+            "label": "252"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If a + b = 7 and ab = 12, then a^3 + b^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "343"
+            },
+            {
+              "id": "b",
+              "label": "259"
+            },
+            {
+              "id": "c",
+              "label": "91"
+            },
+            {
+              "id": "d",
+              "label": "252"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "7^3 = 343, then subtract 3 × 12 × 7.",
+            "343 − 252."
+          ],
+          "explanation": "a^3 + b^3 = 343 − 252 = 91. Check with a = 4, b = 3: 64 + 27 = 91 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\na^3 + b^3 = 343 − 252 = 91. Check with a = 4, b = 3: 64 + 27 = 91 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone — the minus twin, backwards:\n\nGiven a − b = 4 and ab = 45, find a^3 − b^3.\n\nCube the difference:\n\n(a − b)^3 = 64\na^3 − b^3 − 3ab(a − b) = 64",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Substitute:\n\na^3 − b^3 − 3 × 45 × 4 = 64\na^3 − b^3 = 64 + 540 = 604\n\nCareful: the term moves across with a sign change. In the minus identity, 3ab(a − b) is added back.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "If a − b = 4 and ab = 45, then a^3 − b^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "604"
+          },
+          {
+            "id": "b",
+            "label": "64"
+          },
+          {
+            "id": "c",
+            "label": "540"
+          },
+          {
+            "id": "d",
+            "label": "476"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If a − b = 4 and ab = 45, then a^3 − b^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "604"
+            },
+            {
+              "id": "b",
+              "label": "64"
+            },
+            {
+              "id": "c",
+              "label": "540"
+            },
+            {
+              "id": "d",
+              "label": "476"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "(a − b)^3 = a^3 − b^3 − 3ab(a − b).",
+            "a^3 − b^3 = 64 + 540."
+          ],
+          "explanation": "a^3 − b^3 = (a − b)^3 + 3ab(a − b) = 64 + 540 = 604. Check with a = 9, b = 5: 729 − 125 = 604 ✓. Subtracting 540 instead gives −476, the sign trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n(a − b)^3 = a^3 − b^3 − 3ab(a − b).\n\na^3 − b^3 = (a − b)^3 + 3ab(a − b) = 64 + 540 = 604. Check with a = 9, b = 5: 729 − 125 = 604 ✓. Subtracting 540 instead gives −476, the sign trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "If a − b = 3 and ab = 40, then a^3 − b^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "27"
+          },
+          {
+            "id": "b",
+            "label": "360"
+          },
+          {
+            "id": "c",
+            "label": "333"
+          },
+          {
+            "id": "d",
+            "label": "387"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If a − b = 3 and ab = 40, then a^3 − b^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "27"
+            },
+            {
+              "id": "b",
+              "label": "360"
+            },
+            {
+              "id": "c",
+              "label": "333"
+            },
+            {
+              "id": "d",
+              "label": "387"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "27 + 3 × 40 × 3.",
+            "27 + 360."
+          ],
+          "explanation": "a^3 − b^3 = 27 + 360 = 387. Check with a = 8, b = 5: 512 − 125 = 387 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\na^3 − b^3 = 27 + 360 = 387. Check with a = 8, b = 5: 512 − 125 = 387 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "Cube toolkit complete.\n\n(a + b)^3 = a^3 + b^3 + 3ab(a + b)\n(a − b)^3 = a^3 − b^3 − 3ab(a − b)\na^3 + b^3 cancels a^2 − ab + b^2, leaving a + b.\na^3 − b^3 cancels a^2 + ab + b^2, leaving a − b.\nAnd a^3 + b^3 + c^3 = 3abc means a + b + c = 0.\n\nNext, fractions where the variable lives downstairs: x + 1/x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

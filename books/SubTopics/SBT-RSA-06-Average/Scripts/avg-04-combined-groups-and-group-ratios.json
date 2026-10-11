@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "avg-04-combined-groups-and-group-ratios",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Combined Groups and Group Ratios",
+    "description": "Combine group means and work backward to find an unknown group mean, size, ratio or percentage.",
+    "teachingApproach": "Start by physically rebuilding two group totals, then reverse the process to find an unknown group mean or size. From that equation derive the opposite-gap/alligation ratio, convert ratios to counts and percentages, apply it to passed/failed groups, and finish with a three-group capstone that requires finding an intermediate ratio first.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "Teach combined averages by converting each subgroup mean to a subgroup total. Work backward to find an unknown subgroup mean or subgroup size. Then derive the two-group balance/alligation idea: the combined mean lies between the two group means, and the group-size ratio is obtained from the opposite gaps. Use this to find ratios, percentages and passed/failed or boys/girls counts. Finish with a three-group capstone where one combined mean first reveals an internal ratio."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn combined groups and group ratios with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's learn how two different group averages combine.\n\nThe key question is never 'What is the average of the two averages?' It is 'How much total does each group contribute, and how many people contributed it?'",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "A combined average is built from group totals.\n\nGroup 1: 12 people, average 50 → total 600.\nGroup 2: 8 people, average 65 → total 520.\n\nCombined average = (600+520)/(12+8)=56.",
+        "text": "Two groups can be merged only after we rebuild their totals.\n\nTwenty people average 50, so their total is 1000. Thirty people average 70, so their total is 2100.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Combined total = 3100\nCombined count = 50\nCombined average = 3100 ÷ 50 = 62\n\nNotice how the larger 70-group pulls the answer above 60.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Twelve students average 40 and eight students average 55. What is their combined average?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "50"
-          },
-          {
-            "id": "b",
-            "label": "55"
-          },
-          {
-            "id": "c",
-            "label": "100"
-          },
-          {
-            "id": "d",
             "label": "45"
+          },
+          {
+            "id": "b",
+            "label": "46"
+          },
+          {
+            "id": "c",
+            "label": "47.5"
+          },
+          {
+            "id": "d",
+            "label": "95"
           }
         ]
       },
-      "content": {
-        "text": "15 students average 40 and 5 students average 60. What is the combined average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Totals are 600 and 300.",
-            "900÷20=45."
-          ],
-          "prompt": "15 students average 40 and 5 students average 60. What is the combined average?",
+          "questionType": "PRACTICE",
+          "prompt": "Twelve students average 40 and eight students average 55. What is their combined average?",
           "options": [
             {
               "id": "a",
-              "label": "50"
+              "label": "45"
             },
             {
               "id": "b",
-              "label": "55"
+              "label": "46"
             },
             {
               "id": "c",
-              "label": "100"
+              "label": "47.5"
             },
             {
               "id": "d",
-              "label": "45"
+              "label": "95"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "The combined average is 45.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Convert both group means to totals.",
+            "12×40 + 8×55 = 920 across 20 students."
+          ],
+          "explanation": "920 ÷ 20 = 46. The simple average 47.5 treats both groups as if they had the same size."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Do not take (40+60)/2 because the groups are not the same size.",
+        "text": "Let’s check this clue.\n\nConvert both group means to totals.\n\n920 ÷ 20 = 46. The simple average 47.5 treats both groups as if they had the same size.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Twenty-five workers average 64 and fifteen workers average 76. What is the combined average?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "560"
+            "label": "68"
           },
           {
             "id": "b",
-            "label": "550"
+            "label": "70"
           },
           {
             "id": "c",
-            "label": "575"
+            "label": "68.5"
           },
           {
             "id": "d",
-            "label": "1100"
+            "label": "140"
           }
         ]
       },
-      "content": {
-        "text": "8 workers average ₹500 and 12 workers average ₹600. What is the combined average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Total wages=8×500+12×600=11200.",
-            "Divide by 20."
-          ],
-          "prompt": "8 workers average ₹500 and 12 workers average ₹600. What is the combined average?",
+          "questionType": "PRACTICE",
+          "prompt": "Twenty-five workers average 64 and fifteen workers average 76. What is the combined average?",
           "options": [
             {
               "id": "a",
-              "label": "560"
+              "label": "68"
             },
             {
               "id": "b",
-              "label": "550"
+              "label": "70"
             },
             {
               "id": "c",
-              "label": "575"
+              "label": "68.5"
             },
             {
               "id": "d",
-              "label": "1100"
+              "label": "140"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "₹11200÷20=₹560.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "Use 25×64 and 15×76.",
+            "Combined total = 2740 across 40 workers."
+          ],
+          "explanation": "2740 ÷ 40 = 68.5. The answer lies between the two group means and closer to 64 because that group is larger."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Use each group's actual count as its weight.",
+        "text": "Let’s work through this one.\n\n2740 ÷ 40 = 68.5. The answer lies between the two group means and closer to 64 because that group is larger.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "If the whole average and one subgroup are known, the other subgroup can be found by subtraction of totals.\n\nWhole total = whole average × whole count.\nKnown group total = group average × group count.\nThe difference belongs to the remaining group.",
+        "text": "Now hide one subgroup average.\n\nThirty people average 60, so together they total 1800. Eighteen of them average 55, contributing 990.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The remaining 12 people contribute:\n1800 − 990 = 810\n\nTheir average = 810 ÷ 12 = 67.5",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,6 +265,103 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Fifty students average 72. Thirty of them average 68. What is the average of the remaining twenty?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72"
+          },
+          {
+            "id": "b",
+            "label": "74"
+          },
+          {
+            "id": "c",
+            "label": "1560"
+          },
+          {
+            "id": "d",
+            "label": "78"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Fifty students average 72. Thirty of them average 68. What is the average of the remaining twenty?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72"
+            },
+            {
+              "id": "b",
+              "label": "74"
+            },
+            {
+              "id": "c",
+              "label": "1560"
+            },
+            {
+              "id": "d",
+              "label": "78"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Overall total = 50×72.",
+            "Subtract 30×68, then divide the remainder by 20."
+          ],
+          "explanation": "Overall total is 3600. The first 30 contribute 2040, leaving 1560 for 20 students. Their average is 78."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOverall total = 50×72.\n\nOverall total is 3600. The first 30 contribute 2040, leaving 1560 for 20 students. Their average is 78.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Forty workers average 65. Ten of them average 80. What is the average of the remaining thirty?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -237,49 +371,23 @@
           },
           {
             "id": "b",
-            "label": "65"
+            "label": "55"
           },
           {
             "id": "c",
-            "label": "70"
+            "label": "65"
           },
           {
             "id": "d",
-            "label": "75"
+            "label": "1800"
           }
         ]
       },
-      "content": {
-        "text": "A class of 30 averages 70. Ten students average 80. What is the average of the other 20?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Whole total=30×70=2100.",
-            "Known total=10×80=800; remainder=1300."
-          ],
-          "prompt": "A class of 30 averages 70. Ten students average 80. What is the average of the other 20?",
+          "questionType": "PRACTICE",
+          "prompt": "Forty workers average 65. Ten of them average 80. What is the average of the remaining thirty?",
           "options": [
             {
               "id": "a",
@@ -287,135 +395,77 @@
             },
             {
               "id": "b",
+              "label": "55"
+            },
+            {
+              "id": "c",
               "label": "65"
             },
             {
-              "id": "c",
-              "label": "70"
-            },
-            {
               "id": "d",
-              "label": "75"
+              "label": "1800"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "1300÷20=65.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Total for all 40 is 2600.",
+            "Subtract 800, then divide 1800 by 30."
+          ],
+          "explanation": "The remaining total is 1800, so the remaining 30 average 60."
         }
-      }
-    },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Do not subtract averages: 70−80 is not the remaining average. Subtract totals.",
-        "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
-        }
-      ]
-    },
-    "q_2_retry": {
-      "id": "q_2_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "850"
-          },
-          {
-            "id": "b",
-            "label": "875"
-          },
-          {
-            "id": "c",
-            "label": "840"
-          },
-          {
-            "id": "d",
-            "label": "950"
-          }
-        ]
-      },
-      "content": {
-        "text": "40 workers average ₹900. Fifteen average ₹1000. What is the average of the other 25?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
+          "targetNodeId": "teach_3",
           "condition": {
             "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
+            "operator": "EQUALS",
+            "value": true
+          }
         },
         {
+          "targetNodeId": "retry_remedy_2",
           "condition": {
             "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
+            "operator": "EQUALS",
+            "value": false
+          }
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Whole total=36000.",
-            "Known total=15000; remainder=21000."
-          ],
-          "prompt": "40 workers average ₹900. Fifteen average ₹1000. What is the average of the other 25?",
-          "options": [
-            {
-              "id": "a",
-              "label": "850"
-            },
-            {
-              "id": "b",
-              "label": "875"
-            },
-            {
-              "id": "c",
-              "label": "840"
-            },
-            {
-              "id": "d",
-              "label": "950"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "₹21000÷25=₹840.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Whole total minus known group total gives the remaining group's total. Divide by its count.",
+        "text": "Let’s work through this one.\n\nThe remaining total is 1800, so the remaining 30 average 60.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Sometimes the subgroup count is unknown.\n\nLet x be that count, write one total equation, and solve.\n\nExample: overall average 60; 10 people average 80; the rest average 50.\n60x = 10×80 + 50(x−10), where x is total people.",
+        "text": "Sometimes the unknown is the group size.\n\nTen technicians average 90. The rest average 60. The whole staff averages 70.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let the number in the 60-group be n.\n\n10×90 + 60n = 70(10+n)\n900 + 60n = 700 + 70n\n200 = 10n\nn = 20",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Fifteen people average 80. Another group averages 50. Together they average 65. How many people are in the second group?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "80"
+            "label": "15"
           },
           {
             "id": "b",
-            "label": "40"
+            "label": "10"
           },
           {
             "id": "c",
-            "label": "60"
+            "label": "20"
           },
           {
             "id": "d",
-            "label": "100"
-          }
-        ]
-      },
-      "content": {
-        "text": "The overall average salary is ₹6000. There are 20 technicians averaging ₹9000; everyone else averages ₹5000. How many workers are there?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let total workers be x.",
-            "6000x=9000×20+5000(x−20)."
-          ],
-          "prompt": "The overall average salary is ₹6000. There are 20 technicians averaging ₹9000; everyone else averages ₹5000. How many workers are there?",
-          "options": [
-            {
-              "id": "a",
-              "label": "80"
-            },
-            {
-              "id": "b",
-              "label": "40"
-            },
-            {
-              "id": "c",
-              "label": "60"
-            },
-            {
-              "id": "d",
-              "label": "100"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "6000x=180000+5000x−100000, so x=80.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Keep the 'rest' count as x−20. Using x again for the rest would count the technicians twice.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_3_retry"
-        }
-      ]
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
             "label": "30"
-          },
-          {
-            "id": "b",
-            "label": "40"
-          },
-          {
-            "id": "c",
-            "label": "60"
-          },
-          {
-            "id": "d",
-            "label": "50"
           }
         ]
       },
-      "content": {
-        "text": "A class average is 50. Ten students average 70 and the rest average 45. What is the class size?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let total be x: 50x=700+45(x−10).",
-            "5x=250."
-          ],
-          "prompt": "A class average is 50. Ten students average 70 and the rest average 45. What is the class size?",
+          "questionType": "PRACTICE",
+          "prompt": "Fifteen people average 80. Another group averages 50. Together they average 65. How many people are in the second group?",
           "options": [
             {
               "id": "a",
-              "label": "30"
+              "label": "15"
             },
             {
               "id": "b",
-              "label": "40"
+              "label": "10"
             },
             {
               "id": "c",
-              "label": "60"
+              "label": "20"
             },
             {
               "id": "d",
-              "label": "50"
+              "label": "30"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "x=50 students.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Let the unknown group size be n and equate totals.",
+            "15×80 + 50n = 65(15+n)."
+          ],
+          "explanation": "1200 + 50n = 975 + 65n, so 225 = 15n and n = 15. Equal group sizes make 65 exactly halfway between 80 and 50."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "The rest has x−10 students. Expanding carefully gives 50x=45x+250, so x=50.",
+        "text": "Let’s check this clue.\n\nLet the unknown group size be n and equate totals.\n\n1200 + 50n = 975 + 65n, so 225 = 15n and n = 15. Equal group sizes make 65 exactly halfway between 80 and 50.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twelve people average 75. Another group averages 55. Together they average 63. How many are in the second group?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twelve people average 75. Another group averages 55. Together they average 63. How many are in the second group?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 12×75 + 55n = 63(12+n).",
+            "Solve 900 + 55n = 756 + 63n."
+          ],
+          "explanation": "144 = 8n, so n = 18. The lower-average group must be larger because the combined mean 63 is closer to 55."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A combined mean between two group means can reveal the ratio of group sizes.\n\nHigh mean H, low mean L, combined mean M.\n\nHigh-group : low-group\n= (M−L) : (H−M).\n\nThe differences are crossed because more weight on the high group pulls the combined mean upward.",
+        "text": "Let’s work through this one.\n\n144 = 8n, so n = 18. The lower-average group must be larger because the combined mean 63 is closer to 55.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "That last pattern has a shortcut.\n\nSuppose one group averages 80, another 50, and together they average 62.\n\nThe combined mean is 12 above 50 and 18 below 80.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Group-size ratio is the opposite gaps:\n\n80-group : 50-group\n= (62−50) : (80−62)\n= 12 : 18\n= 2 : 3\n\nThe group closer to the combined mean must be larger.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,99 +689,10 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "2:1"
-          },
-          {
-            "id": "b",
-            "label": "1:3"
-          },
-          {
-            "id": "c",
-            "label": "1:2"
-          },
-          {
-            "id": "d",
-            "label": "2:3"
-          }
-        ]
-      },
       "content": {
-        "text": "Boys average 18 years, girls average 15 years, and the whole class averages 16 years. What is boys:girls?",
+        "text": "One group averages 90, another 60, and the combined average is 72. What is the ratio of the 90-group to the 60-group?",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (16−15):(18−16).",
-            "That is 1:2."
-          ],
-          "prompt": "Boys average 18 years, girls average 15 years, and the whole class averages 16 years. What is boys:girls?",
-          "options": [
-            {
-              "id": "a",
-              "label": "2:1"
-            },
-            {
-              "id": "b",
-              "label": "1:3"
-            },
-            {
-              "id": "c",
-              "label": "1:2"
-            },
-            {
-              "id": "d",
-              "label": "2:3"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Boys:girls=1:2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Do not attach each difference to the same side. The high group gets the distance from combined mean to the low mean.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4_retry"
-        }
-      ]
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
@@ -728,49 +702,23 @@
           },
           {
             "id": "b",
-            "label": "2:3"
-          },
-          {
-            "id": "c",
             "label": "1:2"
           },
           {
+            "id": "c",
+            "label": "2:3"
+          },
+          {
             "id": "d",
-            "label": "3:5"
+            "label": "1:1"
           }
         ]
       },
-      "content": {
-        "text": "Group A averages 80, group B averages 60, combined average is 68. What is A:B?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (68−60):(80−68).",
-            "8:12=2:3."
-          ],
-          "prompt": "Group A averages 80, group B averages 60, combined average is 68. What is A:B?",
+          "questionType": "PRACTICE",
+          "prompt": "One group averages 90, another 60, and the combined average is 72. What is the ratio of the 90-group to the 60-group?",
           "options": [
             {
               "id": "a",
@@ -778,42 +726,170 @@
             },
             {
               "id": "b",
-              "label": "2:3"
-            },
-            {
-              "id": "c",
               "label": "1:2"
             },
             {
+              "id": "c",
+              "label": "2:3"
+            },
+            {
               "id": "d",
-              "label": "3:5"
+              "label": "1:1"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "A:B=2:3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use opposite gaps around 72.",
+            "72−60 = 12 and 90−72 = 18."
+          ],
+          "explanation": "The ratio is 12:18 = 2:3. The combined mean is closer to 60, so the 60-group is the larger group."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "The combined mean 68 is closer to 60, so the lower-mean group should be larger. Ratio 2:3 passes that sense-check.",
+        "text": "Let’s check this clue.\n\nUse opposite gaps around 72.\n\nThe ratio is 12:18 = 2:3. The combined mean is closer to 60, so the 60-group is the larger group.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "One group averages 70, another 40, and the combined average is 58. What is the ratio of the 70-group to the 40-group?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2:3"
+          },
+          {
+            "id": "b",
+            "label": "3:2"
+          },
+          {
+            "id": "c",
+            "label": "1:3"
+          },
+          {
+            "id": "d",
+            "label": "1:1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One group averages 70, another 40, and the combined average is 58. What is the ratio of the 70-group to the 40-group?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2:3"
+            },
+            {
+              "id": "b",
+              "label": "3:2"
+            },
+            {
+              "id": "c",
+              "label": "1:3"
+            },
+            {
+              "id": "d",
+              "label": "1:1"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use (58−40):(70−58).",
+            "18:12 simplifies to 3:2."
+          ],
+          "explanation": "The ratio is 18:12 = 3:2. Because 58 is closer to 70, the 70-group is larger."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Once you know a ratio, convert it to percentages by using total parts.\n\nIf boys:girls = 3:2, there are 5 equal parts.\nBoys = 3/5 = 60%.\nGirls = 2/5 = 40%.",
+        "text": "Let’s work through this one.\n\nThe ratio is 18:12 = 3:2. Because 58 is closer to 70, the 70-group is larger.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once you have a ratio, percentages are just parts of the same whole.\n\nIf boys:girls = 3:2, there are 5 total parts.\n\nBoys = 3/5 = 60%\nGirls = 2/5 = 40%",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The average itself can reveal that ratio. For boy average 78, girl average 68 and class average 74:\n\nBoys:girls = (74−68):(78−74) = 6:4 = 3:2.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Men average 50, women average 40 and the whole group averages 46. If there are 18 women, how many men are there?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "20%"
+            "label": "12"
           },
           {
             "id": "b",
-            "label": "40%"
+            "label": "27"
           },
           {
             "id": "c",
-            "label": "50%"
+            "label": "18"
           },
           {
             "id": "d",
-            "label": "60%"
+            "label": "36"
           }
         ]
       },
-      "content": {
-        "text": "A group ratio is 2:3. What percentage belongs to the first group?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Total parts=2+3=5.",
-            "2/5×100=40%."
-          ],
-          "prompt": "A group ratio is 2:3. What percentage belongs to the first group?",
+          "questionType": "PRACTICE",
+          "prompt": "Men average 50, women average 40 and the whole group averages 46. If there are 18 women, how many men are there?",
           "options": [
             {
               "id": "a",
-              "label": "20%"
+              "label": "12"
             },
             {
               "id": "b",
-              "label": "40%"
+              "label": "27"
             },
             {
               "id": "c",
-              "label": "50%"
+              "label": "18"
             },
             {
               "id": "d",
-              "label": "60%"
+              "label": "36"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The first group is 40%.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "First find the group-size ratio from opposite gaps.",
+            "Men:women = (46−40):(50−46) = 6:4 = 3:2."
+          ],
+          "explanation": "Men:women = 3:2. If 2 parts = 18 women, one part is 9 and men = 3×9 = 27."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "remedy_5": {
+      "id": "remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A ratio part is not already a percentage. Divide by the total number of parts first.",
+        "text": "Let’s check this clue.\n\nFirst find the group-size ratio from opposite gaps.\n\nMen:women = 3:2. If 2 parts = 18 women, one part is 9 and men = 3×9 = 27.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Group A averages 90, group B averages 60 and together they average 72. If group B has 24 people, how many are in group A?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3%"
+            "label": "12"
           },
           {
             "id": "b",
-            "label": "21%"
+            "label": "18"
           },
           {
             "id": "c",
-            "label": "30%"
+            "label": "16"
           },
           {
             "id": "d",
-            "label": "70%"
+            "label": "36"
           }
         ]
       },
-      "content": {
-        "text": "Men:women = 7:3. What percentage are women?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Women are 3 of 10 parts.",
-            "3/10×100=30%."
-          ],
-          "prompt": "Men:women = 7:3. What percentage are women?",
+          "questionType": "PRACTICE",
+          "prompt": "Group A averages 90, group B averages 60 and together they average 72. If group B has 24 people, how many are in group A?",
           "options": [
             {
               "id": "a",
-              "label": "3%"
+              "label": "12"
             },
             {
               "id": "b",
-              "label": "21%"
+              "label": "18"
             },
             {
               "id": "c",
-              "label": "30%"
+              "label": "16"
             },
             {
               "id": "d",
-              "label": "70%"
+              "label": "36"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Women are 30% of the group.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "A:B = (72−60):(90−72).",
+            "12:18 = 2:3; match 3 parts to 24."
+          ],
+          "explanation": "A:B = 2:3. Three parts are 24, so one part is 8 and group A has 16 people."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "Add the ratio parts: 7+3=10. Women have 3 of those 10 equal parts.",
+        "text": "Let’s work through this one.\n\nA:B = 2:3. Three parts are 24, so one part is 8 and group A has 16 people.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "The chapter also solves passed/failed and similar questions by alligation.\n\nIf passed average 52, failed average 16, overall 43:\nPassed:Failed = (43−16):(52−43)=27:9=3:1.\n\nSo one-fourth of the class failed.",
+        "text": "Passed and failed students are just two groups.\n\nSuppose 50 students average 68. Passed students average 75 and failed students average 40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let f be the number who failed.\n\n75(50−f) + 40f = 50×68\n3750 − 35f = 3400\n35f = 350\nf = 10",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Eighty students average 61. Passed students average 70 and failed students average 34. How many students failed?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1:4"
+            "label": "20"
           },
           {
             "id": "b",
-            "label": "3:2"
+            "label": "15"
           },
           {
             "id": "c",
-            "label": "5:1"
+            "label": "25"
           },
           {
             "id": "d",
-            "label": "4:1"
+            "label": "36"
           }
         ]
       },
-      "content": {
-        "text": "Passed students average 70, failed students average 40, whole class average 64. What is passed:failed?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (64−40):(70−64).",
-            "24:6=4:1."
-          ],
-          "prompt": "Passed students average 70, failed students average 40, whole class average 64. What is passed:failed?",
+          "questionType": "PRACTICE",
+          "prompt": "Eighty students average 61. Passed students average 70 and failed students average 34. How many students failed?",
           "options": [
             {
               "id": "a",
-              "label": "1:4"
+              "label": "20"
             },
             {
               "id": "b",
-              "label": "3:2"
+              "label": "15"
             },
             {
               "id": "c",
-              "label": "5:1"
+              "label": "25"
             },
             {
               "id": "d",
-              "label": "4:1"
+              "label": "36"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Passed:failed=4:1.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let f be the failed count.",
+            "70(80−f) + 34f = 80×61."
+          ],
+          "explanation": "5600 − 36f = 4880, so 36f = 720 and f = 20. The lower-average group pulls the class mean down from 70 to 61."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_6": {
+      "id": "remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "Check direction: overall 64 is much closer to 70, so the passed group should be larger.",
+        "text": "Let’s check this clue.\n\nLet f be the failed count.\n\n5600 − 36f = 4880, so 36f = 720 and f = 20. The lower-average group pulls the class mean down from 70 to 61.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Sixty students average 54. Passed students average 60 and failed students average 30. How many failed?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2:1"
+            "label": "10"
           },
           {
             "id": "b",
-            "label": "1:2"
+            "label": "15"
           },
           {
             "id": "c",
-            "label": "3:1"
+            "label": "18"
           },
           {
             "id": "d",
-            "label": "2:3"
+            "label": "12"
           }
         ]
       },
-      "content": {
-        "text": "Experienced workers average ₹30k, inexperienced average ₹18k, overall average ₹26k. What is experienced:inexperienced?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (26−18):(30−26).",
-            "8:4=2:1."
-          ],
-          "prompt": "Experienced workers average ₹30k, inexperienced average ₹18k, overall average ₹26k. What is experienced:inexperienced?",
+          "questionType": "PRACTICE",
+          "prompt": "Sixty students average 54. Passed students average 60 and failed students average 30. How many failed?",
           "options": [
             {
               "id": "a",
-              "label": "2:1"
+              "label": "10"
             },
             {
               "id": "b",
-              "label": "1:2"
+              "label": "15"
             },
             {
               "id": "c",
-              "label": "3:1"
+              "label": "18"
             },
             {
               "id": "d",
-              "label": "2:3"
+              "label": "12"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The ratio is 2:1.",
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use 60(60−f) + 30f = 60×54.",
+            "The total gap from an all-pass group is 360 points."
+          ],
+          "explanation": "3600 − 30f = 3240, so 30f = 360 and f = 12."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n3600 − 30f = 3240, so 30f = 360 and f = 12.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A known group count can be recovered from the same balance.\n\nIf boys average 20, girls 15 and the whole class 18, then:\n\nBoys:girls = (18−15):(20−18) = 3:2",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So if there are 20 girls, two parts = 20 and three parts = 30 boys.\n\nThis is faster than solving a full equation, but it is the same mathematics underneath.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "One group averages 85, another 65 and together they average 70. What percentage of the whole belongs to the 65-average group?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "80"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "One group averages 85, another 65 and together they average 70. What percentage of the whole belongs to the 65-average group?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "80"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find high-group:low-group using opposite gaps.",
+            "(70−65):(85−70) = 5:15 = 1:3."
+          ],
+          "explanation": "High:low = 1:3, so the low group is 3 out of 4 parts = 75% of the whole."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "The combined mean is closer to ₹30k, so the higher-mean group must carry more weight; 2:1 fits.",
+        "text": "Let’s check this clue.\n\nFind high-group:low-group using opposite gaps.\n\nHigh:low = 1:3, so the low group is 3 out of 4 parts = 75% of the whole.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Boys average 74, girls average 64 and the whole class averages 68. What percentage of the class are boys?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Boys average 74, girls average 64 and the whole class averages 68. What percentage of the class are boys?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Boys:girls = (68−64):(74−68).",
+            "4:6 = 2:3."
+          ],
+          "explanation": "Boys:girls = 2:3, so boys are 2/5 = 40% of the class."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "For combined groups, work with totals: group average × group size.\n\nTo recover a ratio from two group means H and L and combined mean M:\nhigh group : low group = (M−L):(H−M).\n\nUse that ratio to find counts or percentages when needed.",
+        "text": "Let’s work through this one.\n\nBoys:girls = 2:3, so boys are 2/5 = 40% of the class.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Combined Groups and Group Ratios.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "text": "Capstone: three groups can be handled one ratio at a time.\n\nGroup X averages 80, Y averages 50, and X+Y together average 70.\n\nSo X:Y = (70−50):(80−70) = 20:10 = 2:1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose Y:Z = 1:1 and Z averages 60.\nTake counts X:Y:Z = 2:1:1.\n\nOverall mean = (2×80 + 1×50 + 1×60) ÷ 4\n= 270 ÷ 4\n= 67.5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "X averages 90, Y averages 60, and X+Y together average 80. If Y:Z = 1:2 and Z averages 45, what is the average of all three groups?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "64"
+          },
+          {
+            "id": "b",
+            "label": "68"
+          },
+          {
+            "id": "c",
+            "label": "66"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "X averages 90, Y averages 60, and X+Y together average 80. If Y:Z = 1:2 and Z averages 45, what is the average of all three groups?",
+          "options": [
+            {
+              "id": "a",
+              "label": "64"
+            },
+            {
+              "id": "b",
+              "label": "68"
+            },
+            {
+              "id": "c",
+              "label": "66"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "First find X:Y from the combined mean 80.",
+            "X:Y = (80−60):(90−80)=2:1. With Y:Z=1:2, use counts 2:1:2."
+          ],
+          "explanation": "Using counts 2:1:2 gives total contribution 180 + 60 + 90 = 330 across 5 parts. Overall average = 330 ÷ 5 = 66."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFirst find X:Y from the combined mean 80.\n\nUsing counts 2:1:2 gives total contribution 180 + 60 + 90 = 330 across 5 parts. Overall average = 330 ÷ 5 = 66.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "X averages 70, Y averages 40, and X+Y together average 60. If Y:Z = 1:1 and Z averages 50, what is the average of all three groups?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55"
+          },
+          {
+            "id": "b",
+            "label": "57.5"
+          },
+          {
+            "id": "c",
+            "label": "60"
+          },
+          {
+            "id": "d",
+            "label": "62.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "X averages 70, Y averages 40, and X+Y together average 60. If Y:Z = 1:1 and Z averages 50, what is the average of all three groups?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55"
+            },
+            {
+              "id": "b",
+              "label": "57.5"
+            },
+            {
+              "id": "c",
+              "label": "60"
+            },
+            {
+              "id": "d",
+              "label": "62.5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "X:Y = (60−40):(70−60) = 2:1.",
+            "Use counts 2:1:1 and total their contributions."
+          ],
+          "explanation": "Total contribution = 2×70 + 1×40 + 1×50 = 230 across 4 parts, so the overall average is 57.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nTotal contribution = 2×70 + 1×40 + 1×50 = 230 across 4 parts, so the overall average is 57.5.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now combine group means and also run the process backwards.\n\nTotals handle unknown means and counts. Opposite gaps around the combined mean reveal group ratios.\n\nNext, we use the same sum idea when different partial groups overlap and some observations get counted twice.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Combined Groups and Group Ratios",
-    "description": "Combine group averages and work backward to find group sizes, ratios or percentages.",
-    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Combined Groups and Group Ratios. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-avg-04-combined-groups-and-group-ratios",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

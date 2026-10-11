@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "avg-02-consecutive-and-patterned-averages",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Consecutive and Patterned Averages",
+    "description": "Use symmetry to average consecutive numbers, odd/even runs, natural numbers, multiples and filtered sequences without long addition.",
+    "teachingApproach": "Start with a visually balanced five-number run, then generalise the centre/midpoint idea to even counts, larger equal gaps, odd/even sequences, first-n natural numbers, first-n multiples and filtered intervals. Finish by extending a consecutive run so the learner sees the mean move with the centre. Use symmetry before formulas, then connect the shortcut back to the chapter's sum method.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "Teach the centre-of-a-balanced-list idea first: an odd equally spaced list averages to its middle term, while an even list averages to the midpoint of its two middle terms or endpoints. Extend this to consecutive integers, consecutive odd/even numbers, the first n natural numbers and the first n multiples of a number. Then handle numbers in an interval that satisfy a condition by identifying the correct list before averaging. End by showing how the average moves when the next terms of a consecutive sequence are appended."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn consecutive and patterned averages with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's make long-looking averages collapse to one glance.\n\nWhen numbers are evenly spaced, values below the centre pair with values above it. That balance is the shortcut we will use throughout this lesson.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "For the first n natural numbers, the chapter uses:\n\n1+2+...+n = n(n+1)/2.\n\nSo their average is:\n[n(n+1)/2] ÷ n = (n+1)/2.\n\nFor the first 40 natural numbers, this gives 20.5, exactly as in the chapter example.",
+        "text": "Look at five consecutive numbers:\n\n17, 18, 19, 20, 21\n\nThey balance perfectly around 19.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pair the ends:\n17 and 21 average 19.\n18 and 20 average 19.\nThe middle is already 19.\n\nSo the average of an odd number of consecutive values is the middle value.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 31, 32, 33, 34 and 35?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "10"
+            "label": "31"
           },
           {
             "id": "b",
-            "label": "10.5"
+            "label": "33"
           },
           {
             "id": "c",
-            "label": "20"
+            "label": "34"
           },
           {
             "id": "d",
-            "label": "21"
+            "label": "165"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of the first 20 natural numbers?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (n+1)/2.",
-            "(20+1)/2=10.5."
-          ],
-          "prompt": "What is the average of the first 20 natural numbers?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 31, 32, 33, 34 and 35?",
           "options": [
             {
               "id": "a",
-              "label": "10"
+              "label": "31"
             },
             {
               "id": "b",
-              "label": "10.5"
+              "label": "33"
             },
             {
               "id": "c",
-              "label": "20"
+              "label": "34"
             },
             {
               "id": "d",
-              "label": "21"
+              "label": "165"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "The average is 10.5.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "This is an odd run of consecutive numbers.",
+            "The middle value is 33."
+          ],
+          "explanation": "The list is balanced around 33, so its average is 33. Adding all five is possible, but symmetry gets there immediately."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Do not use n/2. The list starts at 1, so the midpoint of 1 and n is (n+1)/2.",
+        "text": "Let’s check this clue.\n\nThis is an odd run of consecutive numbers.\n\nThe list is balanced around 33, so its average is 33. Adding all five is possible, but symmetry gets there immediately.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 42, 43, 44, 45 and 46?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5.5"
+            "label": "42"
           },
           {
             "id": "b",
-            "label": "11"
+            "label": "45"
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "44"
           },
           {
             "id": "d",
-            "label": "12"
+            "label": "220"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of the first 11 natural numbers?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (11+1)/2.",
-            "12/2=6."
-          ],
-          "prompt": "What is the average of the first 11 natural numbers?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 42, 43, 44, 45 and 46?",
           "options": [
             {
               "id": "a",
-              "label": "5.5"
+              "label": "42"
             },
             {
               "id": "b",
-              "label": "11"
+              "label": "45"
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "44"
             },
             {
               "id": "d",
-              "label": "12"
+              "label": "220"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "The average is 6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Find the centre of the five-number run.",
+            "Two values lie below 44 and two above it."
+          ],
+          "explanation": "The centre value is 44, and the list is equally spaced around it. Therefore the average is 44."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "The numbers 1 through 11 balance around the middle value 6, so the average is 6.",
+        "text": "Let’s work through this one.\n\nThe centre value is 44, and the list is equally spaced around it. Therefore the average is 44.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "The first n multiples of k are:\nk, 2k, 3k, ..., nk.\n\nTheir total is k(1+2+...+n), so their average is:\n\nk(n+1)/2.\n\nThe chapter uses this for the first 20 multiples of 7.",
+        "text": "With an even number of consecutive values there is no single middle term.\n\n12, 13, 14, 15\n\nThe two middle terms are 13 and 14.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Their midpoint is:\n\n(13 + 14) ÷ 2 = 13.5\n\nThe same answer comes from averaging the endpoints: (12 + 15) ÷ 2 = 13.5.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,16 +265,20 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 20, 21, 22, 23, 24 and 25?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "20"
+            "label": "22"
           },
           {
             "id": "b",
-            "label": "25"
+            "label": "23"
           },
           {
             "id": "c",
@@ -249,45 +290,19 @@
           }
         ]
       },
-      "content": {
-        "text": "What is the average of the first 8 multiples of 5?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use 5(8+1)/2.",
-            "5×9/2=22.5."
-          ],
-          "prompt": "What is the average of the first 8 multiples of 5?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 20, 21, 22, 23, 24 and 25?",
           "options": [
             {
               "id": "a",
-              "label": "20"
+              "label": "22"
             },
             {
               "id": "b",
-              "label": "25"
+              "label": "23"
             },
             {
               "id": "c",
@@ -298,124 +313,159 @@
               "label": "22.5"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "The average is 22.5.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "For an even run, average the two middle values.",
+            "The middle pair is 22 and 23."
+          ],
+          "explanation": "(22 + 23) ÷ 2 = 22.5. Equivalently, (20 + 25) ÷ 2 = 22.5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "remedy_2": {
+      "id": "remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Do not average 5 and 40 by counting the wrong number of terms. There are 8 multiples: 5 through 40. Their midpoint is 22.5.",
+        "text": "Let’s check this clue.\n\nFor an even run, average the two middle values.\n\n(22 + 23) ÷ 2 = 22.5. Equivalently, (20 + 25) ÷ 2 = 22.5.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 51, 52, 53 and 54?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "14"
+            "label": "52.5"
           },
           {
             "id": "b",
-            "label": "12"
+            "label": "52"
           },
           {
             "id": "c",
-            "label": "16"
+            "label": "53"
           },
           {
             "id": "d",
-            "label": "28"
+            "label": "210"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of the first 6 multiples of 4?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use 4(6+1)/2.",
-            "4×7/2=14."
-          ],
-          "prompt": "What is the average of the first 6 multiples of 4?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 51, 52, 53 and 54?",
           "options": [
             {
               "id": "a",
-              "label": "14"
+              "label": "52.5"
             },
             {
               "id": "b",
-              "label": "12"
+              "label": "52"
             },
             {
               "id": "c",
-              "label": "16"
+              "label": "53"
             },
             {
               "id": "d",
-              "label": "28"
+              "label": "210"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "The average is 14.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "Use the midpoint of the endpoints.",
+            "(51 + 54) ÷ 2."
+          ],
+          "explanation": "The midpoint is 105 ÷ 2 = 52.5. The average must sit halfway between the balanced endpoints."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "The six values are 4,8,12,16,20,24. Their endpoints also confirm the mean: (4+24)/2=14.",
+        "text": "Let’s work through this one.\n\nThe midpoint is 105 ÷ 2 = 52.5. The average must sit halfway between the balanced endpoints.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "For an odd number of consecutive integers, the average is the middle number.\n\nExample: 46,47,48,49,50.\nPairs around 48 have equal sums:\n46+50 = 47+49 = 96.\n\nSo the average is 48.",
+        "text": "The numbers do not need to differ by 1. They only need equal spacing.\n\n9, 12, 15, 18, 21\n\nEach jump is 3, and the list balances around 15.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For any equally spaced list, the average is the midpoint of the first and last terms:\n\n(9 + 21) ÷ 2 = 15.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 14, 18, 22, 26 and 30?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "35"
+            "label": "22"
           },
           {
             "id": "b",
-            "label": "37"
+            "label": "18"
           },
           {
             "id": "c",
-            "label": "38"
+            "label": "24"
           },
           {
             "id": "d",
-            "label": "41"
+            "label": "110"
           }
         ]
       },
-      "content": {
-        "text": "The average of 7 consecutive integers is 35. What is the largest integer?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "With 7 numbers, the average is the 4th number.",
-            "Three numbers lie above 35: 36,37,38."
-          ],
-          "prompt": "The average of 7 consecutive integers is 35. What is the largest integer?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 14, 18, 22, 26 and 30?",
           "options": [
             {
               "id": "a",
-              "label": "35"
+              "label": "22"
             },
             {
               "id": "b",
-              "label": "37"
+              "label": "18"
             },
             {
               "id": "c",
-              "label": "38"
+              "label": "24"
             },
             {
               "id": "d",
-              "label": "41"
+              "label": "110"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "The numbers are 32 to 38, so the largest is 38.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "The gaps are equal, so use the midpoint of the ends.",
+            "(14 + 30) ÷ 2."
+          ],
+          "explanation": "The average is 44 ÷ 2 = 22. The equal gap of 4 makes the list symmetric around 22."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Do not make 35 the first number. For an odd count of consecutive integers, the average sits in the middle.",
+        "text": "Let’s check this clue.\n\nThe gaps are equal, so use the midpoint of the ends.\n\nThe average is 44 ÷ 2 = 22. The equal gap of 4 makes the list symmetric around 22.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 5, 11, 17, 23 and 29?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "68"
+            "label": "14"
           },
           {
             "id": "b",
-            "label": "70"
+            "label": "23"
           },
           {
             "id": "c",
-            "label": "71"
+            "label": "85"
           },
           {
             "id": "d",
-            "label": "72"
+            "label": "17"
           }
         ]
       },
-      "content": {
-        "text": "Five consecutive integers have average 72. What is the smallest?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "72 is the middle of five numbers.",
-            "Move two steps down."
-          ],
-          "prompt": "Five consecutive integers have average 72. What is the smallest?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 5, 11, 17, 23 and 29?",
           "options": [
             {
               "id": "a",
-              "label": "68"
+              "label": "14"
             },
             {
               "id": "b",
-              "label": "70"
+              "label": "23"
             },
             {
               "id": "c",
-              "label": "71"
+              "label": "85"
             },
             {
               "id": "d",
-              "label": "72"
+              "label": "17"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "The numbers are 70,71,72,73,74. The smallest is 70.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "The common gap is 6.",
+            "Average the first and last terms: (5 + 29) ÷ 2."
+          ],
+          "explanation": "(5 + 29) ÷ 2 = 17. The centre term is also 17, confirming the result."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Five numbers have two values below the middle and two above it. So 72−2=70.",
+        "text": "Let’s work through this one.\n\n(5 + 29) ÷ 2 = 17. The centre term is also 17, confirming the result.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "The same symmetry works for equally spaced odd or even numbers.\n\n91,93,95,97,99 are consecutive odd numbers.\nTheir average is the middle value, 95.\n\nFor an even number of equally spaced terms, average the two middle terms or simply average the first and last terms.",
+        "text": "Consecutive odd or even numbers are just equally spaced lists with a gap of 2.\n\n41, 43, 45, 47, 49\n\nAverage = 45.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Even if the count is even, use the same midpoint idea.\n\n22, 24, 26, 28, 30, 32\nAverage = (22 + 32) ÷ 2 = 27.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 13, 15, 17, 19, 21, 23 and 25?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "23"
+            "label": "17"
           },
           {
             "id": "b",
-            "label": "22"
+            "label": "21"
           },
           {
             "id": "c",
-            "label": "24"
+            "label": "19"
           },
           {
             "id": "d",
-            "label": "46"
+            "label": "133"
           }
         ]
       },
-      "content": {
-        "text": "Four consecutive even numbers are 20,22,24,26. What is their average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Average the first and last: (20+26)/2.",
-            "46/2=23."
-          ],
-          "prompt": "Four consecutive even numbers are 20,22,24,26. What is their average?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 13, 15, 17, 19, 21, 23 and 25?",
           "options": [
             {
               "id": "a",
-              "label": "23"
+              "label": "17"
             },
             {
               "id": "b",
-              "label": "22"
+              "label": "21"
             },
             {
               "id": "c",
-              "label": "24"
+              "label": "19"
             },
             {
               "id": "d",
-              "label": "46"
+              "label": "133"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "The average is 23.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "Seven equally spaced odd numbers have a single middle value.",
+            "The middle value is 19."
+          ],
+          "explanation": "The list balances around 19, so the average is 19."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "An even number of terms has no single middle observation, but the midpoint of the endpoints is still the mean.",
+        "text": "Let’s check this clue.\n\nSeven equally spaced odd numbers have a single middle value.\n\nThe list balances around 19, so the average is 19.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 22, 24, 26, 28, 30 and 32?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "63"
+            "label": "26"
           },
           {
             "id": "b",
-            "label": "65"
+            "label": "27"
           },
           {
             "id": "c",
-            "label": "69"
+            "label": "28"
           },
           {
             "id": "d",
-            "label": "67"
+            "label": "162"
           }
         ]
       },
-      "content": {
-        "text": "The average of five consecutive odd numbers is 63. What is the largest number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "63 is the middle odd number.",
-            "Move two odd-number steps: +2,+2."
-          ],
-          "prompt": "The average of five consecutive odd numbers is 63. What is the largest number?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 22, 24, 26, 28, 30 and 32?",
           "options": [
             {
               "id": "a",
-              "label": "63"
+              "label": "26"
             },
             {
               "id": "b",
-              "label": "65"
+              "label": "27"
             },
             {
               "id": "c",
-              "label": "69"
+              "label": "28"
             },
             {
               "id": "d",
-              "label": "67"
+              "label": "162"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "The numbers are 59,61,63,65,67. The largest is 67.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "There are six terms, so use the midpoint of the ends.",
+            "(22 + 32) ÷ 2."
+          ],
+          "explanation": "The average is 54 ÷ 2 = 27. A mean can lie between two values even when it is not itself in the list."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Consecutive odd numbers differ by 2, not 1. From the middle 63, two steps upward gives 67.",
+        "text": "Let’s work through this one.\n\nThe average is 54 ÷ 2 = 27. A mean can lie between two values even when it is not itself in the list.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "Sometimes you must first identify the correct observations.\n\nTo average numbers between 6 and 34 that are divisible by 5, list only:\n10,15,20,25,30.\n\nThey are equally spaced, so their average is the middle value 20.",
+        "text": "The first n natural numbers are 1, 2, 3, ... , n. Their endpoints are 1 and n, so their average is simply:\n\n(1 + n) ÷ 2",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For the first 40 natural numbers:\n\nAverage = (1 + 40) ÷ 2 = 20.5\n\nThis is the same result the book gets by using the sum n(n+1)/2 and dividing by n.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of the first 50 natural numbers?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "21"
-          },
-          {
-            "id": "b",
             "label": "25"
           },
           {
+            "id": "b",
+            "label": "25.5"
+          },
+          {
             "id": "c",
-            "label": "30"
+            "label": "50"
           },
           {
             "id": "d",
-            "label": "24"
+            "label": "1275"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of all multiples of 6 between 10 and 40?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The numbers are 12,18,24,30,36.",
-            "The middle value is 24."
-          ],
-          "prompt": "What is the average of all multiples of 6 between 10 and 40?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of the first 50 natural numbers?",
           "options": [
             {
               "id": "a",
-              "label": "21"
-            },
-            {
-              "id": "b",
               "label": "25"
             },
             {
+              "id": "b",
+              "label": "25.5"
+            },
+            {
               "id": "c",
-              "label": "30"
+              "label": "50"
             },
             {
               "id": "d",
-              "label": "24"
+              "label": "1275"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The average is 24.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use the midpoint of 1 and 50.",
+            "(1 + 50) ÷ 2."
+          ],
+          "explanation": "The average is 51 ÷ 2 = 25.5. The value 1275 is the sum of the first 50 numbers, not their average."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "remedy_5": {
+      "id": "remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "Do not include 10 or 40 just because they are endpoints. Only numbers satisfying the divisibility condition belong in the list.",
+        "text": "Let’s check this clue.\n\nUse the midpoint of 1 and 50.\n\nThe average is 51 ÷ 2 = 25.5. The value 1275 is the sum of the first 50 numbers, not their average.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of the first 37 natural numbers?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "28"
+            "label": "18"
           },
           {
             "id": "b",
-            "label": "21"
+            "label": "18.5"
           },
           {
             "id": "c",
-            "label": "35"
+            "label": "19"
           },
           {
             "id": "d",
-            "label": "56"
+            "label": "703"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of multiples of 7 from 14 through 42?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The list is 14,21,28,35,42.",
-            "It is symmetric around 28."
-          ],
-          "prompt": "What is the average of multiples of 7 from 14 through 42?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of the first 37 natural numbers?",
           "options": [
             {
               "id": "a",
-              "label": "28"
+              "label": "18"
             },
             {
               "id": "b",
-              "label": "21"
+              "label": "18.5"
             },
             {
               "id": "c",
-              "label": "35"
+              "label": "19"
             },
             {
               "id": "d",
-              "label": "56"
+              "label": "703"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The average is 28.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Average the endpoints 1 and 37.",
+            "(1 + 37) ÷ 2."
+          ],
+          "explanation": "The average is 38 ÷ 2 = 19. Symmetry avoids adding all 37 terms."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "First build the correct list. Then use its equal spacing: first and last average to (14+42)/2=28.",
+        "text": "Let’s work through this one.\n\nThe average is 38 ÷ 2 = 19. Symmetry avoids adding all 37 terms.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "For a list that is not a simple arithmetic pattern, use the ordinary average rule.\n\nThe chapter asks for the average of primes in an interval.\nFirst identify the primes correctly, then add and divide by how many primes you found.",
+        "text": "Now scale the whole pattern. The first 6 multiples of 7 are:\n\n7, 14, 21, 28, 35, 42",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "They are 7 times the numbers 1 to 6. The average is therefore 7 times the average of 1 to 6:\n\n7 × (1 + 6) ÷ 2 = 24.5\n\nFor the first n multiples of k: average = k(n + 1)/2.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of the first 16 multiples of 5?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "14"
+            "label": "42.5"
           },
           {
             "id": "b",
-            "label": "15"
+            "label": "40"
           },
           {
             "id": "c",
-            "label": "16"
+            "label": "45"
           },
           {
             "id": "d",
-            "label": "60"
+            "label": "680"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of the prime numbers between 10 and 20?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The primes are 11,13,17,19.",
-            "Their sum is 60; divide by 4."
-          ],
-          "prompt": "What is the average of the prime numbers between 10 and 20?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of the first 16 multiples of 5?",
           "options": [
             {
               "id": "a",
-              "label": "14"
+              "label": "42.5"
             },
             {
               "id": "b",
-              "label": "15"
+              "label": "40"
             },
             {
               "id": "c",
-              "label": "16"
+              "label": "45"
             },
             {
               "id": "d",
-              "label": "60"
+              "label": "680"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "(11+13+17+19)/4=60/4=15.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 5(n+1)/2 with n = 16.",
+            "5 × 17 ÷ 2."
+          ],
+          "explanation": "5 × 17 ÷ 2 = 42.5. The first and last terms are 5 and 80, whose midpoint is also 42.5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_6": {
+      "id": "remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "Do not treat all odd numbers as prime. For example, 15 is odd but not prime.",
+        "text": "Let’s check this clue.\n\nUse 5(n+1)/2 with n = 16.\n\n5 × 17 ÷ 2 = 42.5. The first and last terms are 5 and 80, whose midpoint is also 42.5.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of the first 11 multiples of 8?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "24"
+            "label": "44"
           },
           {
             "id": "b",
-            "label": "25"
+            "label": "52"
           },
           {
             "id": "c",
-            "label": "26"
+            "label": "528"
           },
           {
             "id": "d",
-            "label": "50"
+            "label": "48"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of primes between 20 and 30?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The primes are 23 and 29.",
-            "Average two numbers by adding and dividing by 2."
-          ],
-          "prompt": "What is the average of primes between 20 and 30?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of the first 11 multiples of 8?",
           "options": [
             {
               "id": "a",
-              "label": "24"
+              "label": "44"
             },
             {
               "id": "b",
-              "label": "25"
+              "label": "52"
             },
             {
               "id": "c",
-              "label": "26"
+              "label": "528"
             },
             {
               "id": "d",
-              "label": "50"
+              "label": "48"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The primes are 23 and 29, so the average is (23+29)/2=26.",
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The first term is 8 and the last is 88.",
+            "Midpoint = (8 + 88) ÷ 2."
+          ],
+          "explanation": "The average is 96 ÷ 2 = 48. Equivalently, 8 × (11 + 1) ÷ 2 = 48."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe average is 96 ÷ 2 = 48. Equivalently, 8 × (11 + 1) ÷ 2 = 48.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A condition can hide the real list.\n\nFind the average of numbers between 20 and 50 that are divisible by 6.\n\nThe qualifying numbers are 24, 30, 36, 42, 48.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Only those five values count. They are equally spaced, so:\n\nAverage = (24 + 48) ÷ 2 = 36\n\nThe trap is averaging every number in the interval instead of the numbers that satisfy the condition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the average of the numbers between 10 and 40 that are divisible by 5?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "125"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "What is the average of the numbers between 10 and 40 that are divisible by 5?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "125"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "List only the multiples of 5 strictly between 10 and 40.",
+            "15, 20, 25, 30, 35 form an equally spaced list."
+          ],
+          "explanation": "The qualifying list is 15, 20, 25, 30, 35, so its average is the middle value 25."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Only 23 and 29 qualify. Their sum is 52, and 52÷2=26.",
+        "text": "Let’s check this clue.\n\nList only the multiples of 5 strictly between 10 and 40.\n\nThe qualifying list is 15, 20, 25, 30, 35, so its average is the middle value 25.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the average of the numbers between 30 and 70 that are divisible by 8?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48"
+          },
+          {
+            "id": "b",
+            "label": "44"
+          },
+          {
+            "id": "c",
+            "label": "52"
+          },
+          {
+            "id": "d",
+            "label": "240"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of the numbers between 30 and 70 that are divisible by 8?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48"
+            },
+            {
+              "id": "b",
+              "label": "44"
+            },
+            {
+              "id": "c",
+              "label": "52"
+            },
+            {
+              "id": "d",
+              "label": "240"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The qualifying values are 32, 40, 48, 56 and 64.",
+            "Use the centre or midpoint of 32 and 64."
+          ],
+          "explanation": "The five values balance around 48, so the average is 48."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Patterned lists can save work.\n\nFirst n natural numbers: average = (n+1)/2.\nFirst n multiples of k: average = k(n+1)/2.\nFor equally spaced lists, the mean is the midpoint of the first and last terms.\nBut always identify the correct observations before using a shortcut.",
+        "text": "Let’s work through this one.\n\nThe five values balance around 48, so the average is 48.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Consecutive and Patterned Averages.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "text": "A consecutive list can grow while keeping its symmetry visible.\n\nFive consecutive numbers have average 30, so they are 28, 29, 30, 31, 32.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add the next two numbers, 33 and 34. The new seven-number list runs from 28 to 34.\n\nNew average = (28 + 34) ÷ 2 = 31\n\nThe average rises by 1 because the centre of the longer run moves by 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive numbers have average 44. If the next two consecutive numbers are included, what is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "44"
+          },
+          {
+            "id": "b",
+            "label": "46"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "90"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive numbers have average 44. If the next two consecutive numbers are included, what is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "44"
+            },
+            {
+              "id": "b",
+              "label": "46"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "90"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The five numbers are centred at 44.",
+            "They run 42 to 46; adding 47 and 48 makes the new midpoint 45."
+          ],
+          "explanation": "The seven numbers run from 42 to 48, so the new average is (42 + 48) ÷ 2 = 45."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe five numbers are centred at 44.\n\nThe seven numbers run from 42 to 48, so the new average is (42 + 48) ÷ 2 = 45.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Seven consecutive odd numbers have average 31. If the next two odd numbers are included, what is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31"
+          },
+          {
+            "id": "b",
+            "label": "33"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Seven consecutive odd numbers have average 31. If the next two odd numbers are included, what is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "31"
+            },
+            {
+              "id": "b",
+              "label": "33"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Seven odd numbers centred at 31 run from 25 to 37.",
+            "The next two are 39 and 41; use the new endpoints."
+          ],
+          "explanation": "The nine-number list runs from 25 to 41, so its average is (25 + 41) ÷ 2 = 33."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe nine-number list runs from 25 to 41, so its average is (25 + 41) ÷ 2 = 33.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now spot the centre of an equally spaced list instead of adding every term.\n\nOdd count → middle value.\nEven count → midpoint of the middle pair or endpoints.\n\nYou can also handle first-n natural numbers, multiples and filtered intervals.\n\nNext, we leave equal spacing and learn what to do when some values count more than others.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Consecutive and Patterned Averages",
-    "description": "Find averages of natural numbers, multiples, consecutive numbers, odd/even sequences and selected values in an interval.",
-    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Consecutive and Patterned Averages. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-avg-02-consecutive-and-patterned-averages",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

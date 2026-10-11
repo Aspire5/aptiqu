@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "pct-12-percentage-chains-remaining-effective-rates",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Percentage Chains, Remaining Quantities, and Effective Rates",
+    "description": "Handle multi-stage percentage stories where each stage acts on what remains, and work backward from a final remainder when needed.",
+    "teachingApproach": "Treat each stage as a survival factor. The amount after one stage becomes the base for the next. Work forward by multiplying remaining factors and backward by dividing them in reverse order. Finish by converting the survival factor into an effective total loss or rejection rate.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 11, Percentage. Approved scope: Teach percentage chains as successive multipliers, especially when wording says “of the remaining.” Cover spending/distribution chains, successive rejection or selection stages, effective rejection across multiple quality checks, repeated sell/leave problems, reverse-working from a final remainder, and chains combining a percentage with a fixed amount. Distinguish percentages of the original from percentages of the current remainder. Include capstones where learners must multiply survival factors first and only then convert back to an effective loss or rejection percentage."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's handle stories where percentages happen one after another.\n\nThe key phrase is often “of the remaining.” That means the base changes after every stage.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose you start with ₹100. Spend 30%, so ₹70 remains.\nThen spend 20% of the remaining ₹70, which is ₹14.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final amount=₹56.\n\nThe two spends are not 50% of the original. The second 20% acts on a smaller base.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A person spends 25% of money, then 20% of the remainder. What percent of the original money remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55%"
+          },
+          {
+            "id": "b",
+            "label": "65%"
+          },
+          {
+            "id": "c",
+            "label": "80%"
+          },
+          {
+            "id": "d",
+            "label": "60%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A person spends 25% of money, then 20% of the remainder. What percent of the original money remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55%"
+            },
+            {
+              "id": "b",
+              "label": "65%"
+            },
+            {
+              "id": "c",
+              "label": "80%"
+            },
+            {
+              "id": "d",
+              "label": "60%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Keep 75%, then keep 80% of that.",
+            "0.75×0.80."
+          ],
+          "explanation": "60% remains."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nDo not add 25% and 20% as if both were of the original amount.\n\n60% remains.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A person spends 40% and then 30% of the remainder. What percent remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30%"
+          },
+          {
+            "id": "b",
+            "label": "42%"
+          },
+          {
+            "id": "c",
+            "label": "48%"
+          },
+          {
+            "id": "d",
+            "label": "58%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A person spends 40% and then 30% of the remainder. What percent remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30%"
+            },
+            {
+              "id": "b",
+              "label": "42%"
+            },
+            {
+              "id": "c",
+              "label": "48%"
+            },
+            {
+              "id": "d",
+              "label": "58%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Keep 60%, then 70%.",
+            "0.6×0.7=0.42."
+          ],
+          "explanation": "42% remains."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n42% remains.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can work backward from a final remainder.\n\nAfter keeping 60% and then 80%, you have 48% of the original.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 48% equals ₹9,600, original=9,600/0.48=₹20,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "After spending 20% and then 25% of the remainder, ₹12,000 is left. What was the original amount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹20,000"
+          },
+          {
+            "id": "b",
+            "label": "₹18,000"
+          },
+          {
+            "id": "c",
+            "label": "₹22,500"
+          },
+          {
+            "id": "d",
+            "label": "₹25,000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After spending 20% and then 25% of the remainder, ₹12,000 is left. What was the original amount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹20,000"
+            },
+            {
+              "id": "b",
+              "label": "₹18,000"
+            },
+            {
+              "id": "c",
+              "label": "₹22,500"
+            },
+            {
+              "id": "d",
+              "label": "₹25,000"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Remaining factor=0.80×0.75=0.60.",
+            "12,000 is 60% of original."
+          ],
+          "explanation": "Original=₹20,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nCombine the survival factors before reversing.\n\nOriginal=₹20,000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "After giving away 30% and then 20% of the remainder, ₹11,200 remains. Original amount?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹16,000"
+          },
+          {
+            "id": "b",
+            "label": "₹18,000"
+          },
+          {
+            "id": "c",
+            "label": "₹20,000"
+          },
+          {
+            "id": "d",
+            "label": "₹24,000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After giving away 30% and then 20% of the remainder, ₹11,200 remains. Original amount?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹16,000"
+            },
+            {
+              "id": "b",
+              "label": "₹18,000"
+            },
+            {
+              "id": "c",
+              "label": "₹20,000"
+            },
+            {
+              "id": "d",
+              "label": "₹24,000"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Remaining factor=0.70×0.80=0.56.",
+            "11,200/0.56."
+          ],
+          "explanation": "Original=₹20,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nOriginal=₹20,000.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A rejection chain works the same way.\n\nIf 10% are rejected at stage 1, 90% survive. Then 5% of survivors are rejected, so 95% of them survive.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Overall survival=0.90×0.95=85.5%.\nEffective rejection=14.5%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A process rejects 20% at stage 1 and 10% of survivors at stage 2. What is the effective rejection rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30%"
+          },
+          {
+            "id": "b",
+            "label": "28%"
+          },
+          {
+            "id": "c",
+            "label": "26%"
+          },
+          {
+            "id": "d",
+            "label": "18%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A process rejects 20% at stage 1 and 10% of survivors at stage 2. What is the effective rejection rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30%"
+            },
+            {
+              "id": "b",
+              "label": "28%"
+            },
+            {
+              "id": "c",
+              "label": "26%"
+            },
+            {
+              "id": "d",
+              "label": "18%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Survival=0.80×0.90=0.72.",
+            "Rejection=100%−72%."
+          ],
+          "explanation": "Effective rejection=28%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe second 10% is only of the survivors.\n\nEffective rejection=28%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A quality process rejects 10% then 20% of survivors. Effective rejection?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30%"
+          },
+          {
+            "id": "b",
+            "label": "18%"
+          },
+          {
+            "id": "c",
+            "label": "32%"
+          },
+          {
+            "id": "d",
+            "label": "28%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A quality process rejects 10% then 20% of survivors. Effective rejection?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30%"
+            },
+            {
+              "id": "b",
+              "label": "18%"
+            },
+            {
+              "id": "c",
+              "label": "32%"
+            },
+            {
+              "id": "d",
+              "label": "28%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Survival=0.90×0.80=0.72.",
+            "Take the complement."
+          ],
+          "explanation": "Effective rejection=28%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nEffective rejection=28%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "With three stages, multiply all survival factors.\n\nReject 10%, then 5%, then 2% means survive 0.90×0.95×0.98.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That equals 0.8379, so effective rejection is 16.21%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three checks reject 5%, 10%, and 20% of survivors respectively. What percent survives all three?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "65%"
+          },
+          {
+            "id": "b",
+            "label": "70%"
+          },
+          {
+            "id": "c",
+            "label": "68.4%"
+          },
+          {
+            "id": "d",
+            "label": "76%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three checks reject 5%, 10%, and 20% of survivors respectively. What percent survives all three?",
+          "options": [
+            {
+              "id": "a",
+              "label": "65%"
+            },
+            {
+              "id": "b",
+              "label": "70%"
+            },
+            {
+              "id": "c",
+              "label": "68.4%"
+            },
+            {
+              "id": "d",
+              "label": "76%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Multiply 0.95×0.90×0.80.",
+            "Do not add the rejection rates."
+          ],
+          "explanation": "Survival=0.684=68.4%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nEach rejection rate acts on the survivors from the previous stage.\n\nSurvival=0.684=68.4%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three stages keep 90%, 80%, and 75% of what reaches them. What percent of the original survives?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54%"
+          },
+          {
+            "id": "b",
+            "label": "45%"
+          },
+          {
+            "id": "c",
+            "label": "60%"
+          },
+          {
+            "id": "d",
+            "label": "65%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three stages keep 90%, 80%, and 75% of what reaches them. What percent of the original survives?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54%"
+            },
+            {
+              "id": "b",
+              "label": "45%"
+            },
+            {
+              "id": "c",
+              "label": "60%"
+            },
+            {
+              "id": "d",
+              "label": "65%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "0.90×0.80×0.75.",
+            "Multiply the survival factors."
+          ],
+          "explanation": "54% survives."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n54% survives.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some chains mix a percentage with a fixed amount.\n\nGive away 40% of money, then one quarter of what was received by someone else, then pay a fixed ₹200.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Handle the percentage chain first, then the fixed amount.\n\nFixed amounts do not become percentages unless you know the base.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A gives 50% of his money to B. B gives 20% of that to C. C spends ₹300 and has ₹700 left. How much did A start with?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹5,000"
+          },
+          {
+            "id": "b",
+            "label": "₹8,000"
+          },
+          {
+            "id": "c",
+            "label": "₹12,500"
+          },
+          {
+            "id": "d",
+            "label": "₹10,000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A gives 50% of his money to B. B gives 20% of that to C. C spends ₹300 and has ₹700 left. How much did A start with?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹5,000"
+            },
+            {
+              "id": "b",
+              "label": "₹8,000"
+            },
+            {
+              "id": "c",
+              "label": "₹12,500"
+            },
+            {
+              "id": "d",
+              "label": "₹10,000"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "C received ₹1,000 before spending.",
+            "That ₹1,000 is 20% of B’s receipt, which was 50% of A’s money."
+          ],
+          "explanation": "C received 10% of A’s money, so A had ₹10,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nWork backward through the percentage chain before handling the original total.\n\nC received 10% of A’s money, so A had ₹10,000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A gives 40% of his money to B. B gives 25% of that to C. C spends ₹200 and has ₹600 left. A started with?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹4,000"
+          },
+          {
+            "id": "b",
+            "label": "₹8,000"
+          },
+          {
+            "id": "c",
+            "label": "₹6,000"
+          },
+          {
+            "id": "d",
+            "label": "₹10,000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A gives 40% of his money to B. B gives 25% of that to C. C spends ₹200 and has ₹600 left. A started with?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹4,000"
+            },
+            {
+              "id": "b",
+              "label": "₹8,000"
+            },
+            {
+              "id": "c",
+              "label": "₹6,000"
+            },
+            {
+              "id": "d",
+              "label": "₹10,000"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "C had ₹800 before spending.",
+            "C received 25% of 40%=10% of A’s money."
+          ],
+          "explanation": "10% of A=₹800, so A=₹8,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n10% of A=₹800, so A=₹8,000.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Selling part of what remains is also a survival chain.\n\nIf 5% of eggs are broken, 95% remain. If 90% of those are sold, 10% of 95%=9.5% of the original remain unsold.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If that final 9.5% is 190 eggs, original=2,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "8% of items are defective. Then 75% of the good items are sold. If 230 good items remain unsold, how many items were there originally?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1,000"
+          },
+          {
+            "id": "b",
+            "label": "920"
+          },
+          {
+            "id": "c",
+            "label": "1,150"
+          },
+          {
+            "id": "d",
+            "label": "1,250"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "8% of items are defective. Then 75% of the good items are sold. If 230 good items remain unsold, how many items were there originally?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1,000"
+            },
+            {
+              "id": "b",
+              "label": "920"
+            },
+            {
+              "id": "c",
+              "label": "1,150"
+            },
+            {
+              "id": "d",
+              "label": "1,250"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Good fraction=92%.",
+            "Unsold good fraction=25% of 92%=23%."
+          ],
+          "explanation": "23% of total=230, so total=1,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe 25% unsold applies only to the good items.\n\n23% of total=230, so total=1,000.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "10% of fruit is spoiled. Then 80% of the good fruit is sold. If 180 good fruit remain, original count?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "900"
+          },
+          {
+            "id": "b",
+            "label": "1,100"
+          },
+          {
+            "id": "c",
+            "label": "1,000"
+          },
+          {
+            "id": "d",
+            "label": "1,250"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "10% of fruit is spoiled. Then 80% of the good fruit is sold. If 180 good fruit remain, original count?",
+          "options": [
+            {
+              "id": "a",
+              "label": "900"
+            },
+            {
+              "id": "b",
+              "label": "1,100"
+            },
+            {
+              "id": "c",
+              "label": "1,000"
+            },
+            {
+              "id": "d",
+              "label": "1,250"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Good=90%.",
+            "Unsold good=20% of 90%=18%."
+          ],
+          "explanation": "18% of total=180, so total=1,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n18% of total=180, so total=1,000.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Nested percentages can sometimes collapse into one effective rate.\n\n40% of 60% of a quantity =24% of the original.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That means if the final nested part is known, you can reverse using 24% directly.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "30% of 40% of a number is 72. Find the number.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "540"
+          },
+          {
+            "id": "b",
+            "label": "600"
+          },
+          {
+            "id": "c",
+            "label": "720"
+          },
+          {
+            "id": "d",
+            "label": "900"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "30% of 40% of a number is 72. Find the number.",
+          "options": [
+            {
+              "id": "a",
+              "label": "540"
+            },
+            {
+              "id": "b",
+              "label": "600"
+            },
+            {
+              "id": "c",
+              "label": "720"
+            },
+            {
+              "id": "d",
+              "label": "900"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "30%×40%=12%.",
+            "12% of x=72."
+          ],
+          "explanation": "x=72/0.12=600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nMultiply the rates before solving for the whole.\n\nx=72/0.12=600.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "25% of 80% of a number is 90. Find the number.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "360"
+          },
+          {
+            "id": "b",
+            "label": "500"
+          },
+          {
+            "id": "c",
+            "label": "720"
+          },
+          {
+            "id": "d",
+            "label": "450"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "25% of 80% of a number is 90. Find the number.",
+          "options": [
+            {
+              "id": "a",
+              "label": "360"
+            },
+            {
+              "id": "b",
+              "label": "500"
+            },
+            {
+              "id": "c",
+              "label": "720"
+            },
+            {
+              "id": "d",
+              "label": "450"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "25%×80%=20%.",
+            "20% of x=90."
+          ],
+          "explanation": "x=450."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nx=450.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: effective loss is one minus the total survival factor.\n\nIf stages keep 80%, 90%, and 95%, final survival=0.684.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Effective loss=1−0.684=0.316=31.6%.\n\nThis single percentage describes the whole chain from start to finish.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A process keeps 90%, then 85%, then 80% of what reaches each stage. What is the effective loss rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35%"
+          },
+          {
+            "id": "b",
+            "label": "61.2%"
+          },
+          {
+            "id": "c",
+            "label": "38.8%"
+          },
+          {
+            "id": "d",
+            "label": "25%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A process keeps 90%, then 85%, then 80% of what reaches each stage. What is the effective loss rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35%"
+            },
+            {
+              "id": "b",
+              "label": "61.2%"
+            },
+            {
+              "id": "c",
+              "label": "38.8%"
+            },
+            {
+              "id": "d",
+              "label": "25%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Survival=0.90×0.85×0.80=0.612.",
+            "Loss=1−0.612."
+          ],
+          "explanation": "Effective loss=38.8%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nDo not add 10%+15%+20%; later losses use smaller bases.\n\nEffective loss=38.8%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A process keeps 80%, then 75%, then 90%. What percent is lost overall?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "46%"
+          },
+          {
+            "id": "b",
+            "label": "54%"
+          },
+          {
+            "id": "c",
+            "label": "45%"
+          },
+          {
+            "id": "d",
+            "label": "35%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A process keeps 80%, then 75%, then 90%. What percent is lost overall?",
+          "options": [
+            {
+              "id": "a",
+              "label": "46%"
+            },
+            {
+              "id": "b",
+              "label": "54%"
+            },
+            {
+              "id": "c",
+              "label": "45%"
+            },
+            {
+              "id": "d",
+              "label": "35%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Survival=0.80×0.75×0.90=0.54.",
+            "Loss=46%."
+          ],
+          "explanation": "Overall loss=46%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nOverall loss=46%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now read multi-stage percentage stories as chains of remaining factors. Multiply forward, divide backward, and use one minus the survival factor when the question asks for an effective total loss or rejection rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

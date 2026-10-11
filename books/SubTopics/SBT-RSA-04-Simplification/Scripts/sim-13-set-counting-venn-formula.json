@@ -1,0 +1,1599 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-13-set-counting-venn-formula",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Counting with Sets: The Venn Formula",
+    "description": "Use n(A ∪ B) = n(A) + n(B) − n(A ∩ B) and simple region arithmetic for two- and three-set counting questions.",
+    "teachingApproach": "Build from the double-counting insight: overlap first, then 'neither' groups, then only-one regions, then three-set peel-off to find the centre, receipt-based reasoning that converts money into ride counts, a full seven-region solve, and a two-step capstone. Every region total is checked against the grand total; each pattern gets a fresh question and a parallel retry.",
+    "targetDurationMinutes": 26,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4, Simplification. Approved scope: Teach the inclusion–exclusion idea through the language of the chapter's questions: in a group of 70, 37 like coffee and 52 like tea with everyone liking at least one, so both = 37 + 52 − 70 = 19. Cover all two-set phrasings: finding both, finding neither when some like none, finding only-one counts, and converting between them. Introduce three-set problems with labelled regions (only A, A and B only, all three, and so on), solving for the all-three region from set totals, and receipt-style reasoning such as 85 children, 20 on all three rides, 55 on at least two, total receipt ₹145. Finish with a full small three-set region computation ending in a 'none' count. Learners should tabulate the regions, keep 'both' separate from 'only A', and check that every region count is non-negative and the regions sum to the total."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn to count people who belong to two groups at once.\n\nThe whole lesson is one insight: when you add two groups, the people in both get counted twice. Everything else is bookkeeping.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's count people who belong to two groups at once.\n\nIn a group of 70 people, 37 like coffee, 52 like tea, and each person likes at least one of the two.\n\nHow many like BOTH?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add the two groups:\n\n37 + 52 = 89\n\nBut there are only 70 people. The extra 19 were counted twice — once in each group.\n\nBoth = 37 + 52 − 70 = 19",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step2"
+        }
+      ]
+    },
+    "teach_1_step2": {
+      "id": "teach_1_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the Venn formula:\n\nn(A ∪ B) = n(A) + n(B) − n(A ∩ B)\n\n∪ means 'in at least one group'.\n∩ means 'in both'.\n\nAdding both groups double-counts the overlap, so subtract it once.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a class of 60 students, 35 play cricket, 30 play football, and everyone plays at least one. How many play both?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a class of 60 students, 35 play cricket, 30 play football, and everyone plays at least one. How many play both?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Add the groups, subtract the total.",
+            "35 + 30 − 60."
+          ],
+          "explanation": "Both = 35 + 30 − 60 = 5. The overlap is the amount by which the group counts overshoot the class size."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nAdd the groups, subtract the total.\n\nBoth = 35 + 30 − 60 = 5. The overlap is the amount by which the group counts overshoot the class size.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a group of 40 people, 22 like tea, 25 like coffee, and each likes at least one. How many like both?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a group of 40 people, 22 like tea, 25 like coffee, and each likes at least one. How many like both?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "7"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "22 + 25 − 40.",
+            "The double-counted people."
+          ],
+          "explanation": "Both = 22 + 25 − 40 = 7. Check: only tea 15, only coffee 18, both 7 → 15 + 18 + 7 = 40 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nBoth = 22 + 25 − 40 = 7. Check: only tea 15, only coffee 18, both 7 → 15 + 18 + 7 = 40 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now suppose some people like NEITHER.\n\n50 students: 25 take Bengali, 16 take Hindi, 12 take no language.\n\nHow many take both?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "First find how many take at least one language:\n\n50 − 12 = 38",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step2"
+        }
+      ]
+    },
+    "teach_2_step2": {
+      "id": "teach_2_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the same overlap logic:\n\nBoth = 25 + 16 − 38 = 3\n\nWith a 'neither' group, subtract it from the total FIRST, then find the overlap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Of 45 students, 20 take Hindi, 18 take English, and 8 take neither. How many take both?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "45"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Of 45 students, 20 take Hindi, 18 take English, and 8 take neither. How many take both?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "45"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "At least one language: 45 − 8 = 37.",
+            "Both = 20 + 18 − 37."
+          ],
+          "explanation": "Both = 20 + 18 − 37 = 1. Forgetting to remove the 8 'neither' students first gives 20 + 18 − 45 = −7, which is impossible — a good self-check."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nAt least one language: 45 − 8 = 37.\n\nBoth = 20 + 18 − 37 = 1. Forgetting to remove the 8 'neither' students first gives 20 + 18 − 45 = −7, which is impossible — a good self-check.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Out of 100 students, 60 take tea, 40 take coffee, and 25 take both. How many take neither?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "35"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Out of 100 students, 60 take tea, 40 take coffee, and 25 take both. How many take neither?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "35"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "At least one: 60 + 40 − 25.",
+            "Neither = 100 − 75."
+          ],
+          "explanation": "Union = 75, so neither = 100 − 75 = 25. Here the overlap is given and the 'neither' is asked — the same formula, read the other way."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nUnion = 75, so neither = 100 − 75 = 25. Here the overlap is given and the 'neither' is asked — the same formula, read the other way.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "'Only' is the word to watch.\n\n70 people: 37 like coffee, 52 like tea, 19 like both.\n\nHow many like ONLY coffee?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Only coffee means: coffee lovers minus the overlap.\n\n37 − 19 = 18\n\nOnly tea: 52 − 19 = 33",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step2"
+        }
+      ]
+    },
+    "teach_3_step2": {
+      "id": "teach_3_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check the full picture:\n\n18 + 33 + 19 = 70 ✓\n\n'Only A' = A − both.\n'A or B or both' = only A + only B + both.\n\nKeep the three regions separate in your working.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Of 80 people, 50 like brand A, 45 like brand B, and 25 like both. How many like exactly one brand?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "70"
+          },
+          {
+            "id": "d",
+            "label": "45"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Of 80 people, 50 like brand A, 45 like brand B, and 25 like both. How many like exactly one brand?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "70"
+            },
+            {
+              "id": "d",
+              "label": "45"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Only A = 50 − 25; only B = 45 − 25.",
+            "Add the two 'only' regions."
+          ],
+          "explanation": "Only A = 25 and only B = 20, so exactly one brand = 45. Answering 25 or 20 gives just one region."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOnly A = 50 − 25; only B = 45 − 25.\n\nOnly A = 25 and only B = 20, so exactly one brand = 45. Answering 25 or 20 gives just one region.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Of 80 players, 50 play chess, 40 play carrom, and 20 play both. How many play exactly one of the two games?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "70"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Of 80 players, 50 play chess, 40 play carrom, and 20 play both. How many play exactly one of the two games?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "70"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Only chess = 50 − 20 = 30.",
+            "Only carrom = 40 − 20 = 20; add them."
+          ],
+          "explanation": "Exactly one = 30 + 20 = 50. Check: 30 + 20 + 20 = 70 in the union, and 80 − 70 = 10 play neither ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nExactly one = 30 + 20 = 50. Check: 30 + 20 + 20 = 70 in the union, and 80 − 70 = 10 play neither ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three groups need a picture in words.\n\nLabel the regions:\na = only A\nd = A and B only\ne = A and C only\ng = all three",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A survey of cars: A's total (a + d + e + g) = 20.\nGiven d = 4, e = 5, a = 8.\n\nFind g — the cars with all three features.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step2"
+        }
+      ]
+    },
+    "teach_4_step2": {
+      "id": "teach_4_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract the known regions from A's total:\n\ng = 20 − (a + d + e)\n= 20 − (8 + 4 + 5)\n= 3\n\nEach set total is the sum of its regions. Peel off the known ones.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "For set A, the total a + d + e + g = 20. If a = 8, d = 4, and e = 5, what is g (members in all three sets)?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17"
+          },
+          {
+            "id": "b",
+            "label": "7"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "For set A, the total a + d + e + g = 20. If a = 8, d = 4, and e = 5, what is g (members in all three sets)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17"
+            },
+            {
+              "id": "b",
+              "label": "7"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "g = total of A − (a + d + e).",
+            "20 − 17."
+          ],
+          "explanation": "g = 20 − 17 = 3. The total of a set includes its centre region, so the centre is what remains after the outer regions are removed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\ng = total of A − (a + d + e).\n\ng = 20 − 17 = 3. The total of a set includes its centre region, so the centre is what remains after the outer regions are removed.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "For set B, the total b + d + f + g = 17. If b = 7, d = 2, and f = 6, what is g?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "For set B, the total b + d + f + g = 17. If b = 7, d = 2, and f = 6, what is g?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "g = 17 − (7 + 2 + 6).",
+            "17 − 15."
+          ],
+          "explanation": "g = 17 − 15 = 2. Same peel-off recipe, different set."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\ng = 17 − 15 = 2. Same peel-off recipe, different set.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "85 children at a park. 20 took all three rides. 55 took at least two rides. Each ride costs ₹1, and the total receipt was ₹145.\n\nHow many took exactly one ride?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "'At least two' = exactly two + all three.\n\nExactly two rides: 55 − 20 = 35 children",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step2"
+        }
+      ]
+    },
+    "teach_5_step2": {
+      "id": "teach_5_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now count the money:\n\nReceipt = 1 × (one-ride kids) + 2 × 35 + 3 × 20\n145 = one-ride + 70 + 60\n\nOne-ride kids = 145 − 130 = 15",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "85 children: 20 took all three rides, 55 took at least two rides, total receipt ₹145 at ₹1 per ride. How many took exactly one ride?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "85 children: 20 took all three rides, 55 took at least two rides, total receipt ₹145 at ₹1 per ride. How many took exactly one ride?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Exactly two = 55 − 20 = 35.",
+            "Receipt: one-ride + 70 + 60 = 145."
+          ],
+          "explanation": "One-ride children = 145 − 70 − 60 = 15. The answer 35 is the exactly-two count, a different region."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nExactly two = 55 − 20 = 35.\n\nOne-ride children = 145 − 70 − 60 = 15. The answer 35 is the exactly-two count, a different region.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "100 children: 15 took all three rides, 60 took at least two rides, total receipt ₹170 at ₹1 per ride. How many took no ride at all?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "100 children: 15 took all three rides, 60 took at least two rides, total receipt ₹170 at ₹1 per ride. How many took no ride at all?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Exactly two = 60 − 15 = 45; receipt gives one-ride = 170 − 90 − 45.",
+            "None = 100 − (one + two + three)."
+          ],
+          "explanation": "One-ride = 170 − 90 − 45 = 35. Then none = 100 − 35 − 45 − 15 = 5. The receipt counts rides, not children — that conversion is the key."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nOne-ride = 170 − 90 − 45 = 35. Then none = 100 − 35 − 45 − 15 = 5. The receipt counts rides, not children — that conversion is the key.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now a full three-set solve, small numbers.\n\n20 cars surveyed. Features A, B, C with totals:\nA = 10, B = 9, C = 8\n\nA∩B only = 3, A∩C only = 1, B∩C only = 1, all three = 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Peel each set:\n\nOnly A = 10 − 3 − 1 − 2 = 4\nOnly B = 9 − 3 − 1 − 2 = 3\nOnly C = 8 − 1 − 1 − 2 = 4",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step2"
+        }
+      ]
+    },
+    "teach_6_step2": {
+      "id": "teach_6_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Cars with at least one feature:\n\n4 + 3 + 4 + 3 + 1 + 1 + 2 = 18\n\nSo cars with NONE:\n\n20 − 18 = 2\n\nTabulate regions, peel, sum, subtract from the total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Of 20 cars, set totals are A = 10, B = 9, C = 8; pairwise-only regions are 3, 1, 1; all three = 2. How many cars have none of the three features?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "0"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Of 20 cars, set totals are A = 10, B = 9, C = 8; pairwise-only regions are 3, 1, 1; all three = 2. How many cars have none of the three features?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "0"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Only regions: 4, 3, 4. Sum all seven regions.",
+            "None = 20 − 18."
+          ],
+          "explanation": "Regions sum to 4 + 3 + 4 + 3 + 1 + 1 + 2 = 18, so none = 2. Answering 18 counts the cars WITH features — the opposite region."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOnly regions: 4, 3, 4. Sum all seven regions.\n\nRegions sum to 4 + 3 + 4 + 3 + 1 + 1 + 2 = 18, so none = 2. Answering 18 counts the cars WITH features — the opposite region.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Same survey: 20 cars, regions only-A = 4, only-B = 3, only-C = 4, pairwise-only 3, 1, 1, all-three 2. How many cars have exactly one feature?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Same survey: 20 cars, regions only-A = 4, only-B = 3, only-C = 4, pairwise-only 3, 1, 1, all-three 2. How many cars have exactly one feature?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Exactly one = only A + only B + only C.",
+            "4 + 3 + 4."
+          ],
+          "explanation": "Exactly one = 4 + 3 + 4 = 11. 'Exactly one' excludes both the pairwise regions and the centre."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nExactly one = 4 + 3 + 4 = 11. 'Exactly one' excludes both the pairwise regions and the centre.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone — chain two ideas.\n\n100 students: 60 take tea, 40 take coffee, 25 take both.\n\nQuestion 1: how many take neither?\nUnion: 60 + 40 − 25 = 75\nNeither: 100 − 75 = 25",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Question 2: how many take exactly one drink?\n\nOnly tea: 60 − 25 = 35\nOnly coffee: 40 − 25 = 15\nExactly one: 50\n\nCheck all regions: 35 + 15 + 25 + 25 = 100 ✓\n\nOne survey, four regions — you can now answer anything about it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Of 100 students, 60 take tea, 40 take coffee, and 25 take both. How many take exactly one of the two drinks?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "75"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Of 100 students, 60 take tea, 40 take coffee, and 25 take both. How many take exactly one of the two drinks?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "75"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Only tea = 35, only coffee = 15.",
+            "Add the two 'only' regions."
+          ],
+          "explanation": "Exactly one = 35 + 15 = 50. The answer 75 counts everyone who takes at least one drink — that includes the both group."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOnly tea = 35, only coffee = 15.\n\nExactly one = 35 + 15 = 50. The answer 75 counts everyone who takes at least one drink — that includes the both group.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Of 80 people, 45 play cricket, 50 play football, and 20 play both. How many play neither game?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "75"
+          },
+          {
+            "id": "b",
+            "label": "55"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "15"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Of 80 people, 45 play cricket, 50 play football, and 20 play both. How many play neither game?",
+          "options": [
+            {
+              "id": "a",
+              "label": "75"
+            },
+            {
+              "id": "b",
+              "label": "55"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "15"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Union = 45 + 50 − 20.",
+            "Neither = 80 − union."
+          ],
+          "explanation": "Union = 75, so neither = 80 − 75 = 5. The answer 75 is the union, not the neither group."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nUnion = 75, so neither = 80 − 75 = 5. The answer 75 is the union, not the neither group.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "Set counting unlocked.\n\nBoth = A + B − total (when everyone is in at least one).\nRemove the 'neither' group first when it exists.\n'Only A' = A − both.\nThree sets: peel known regions off each set total.\nAnd always check that every region sums back to the grand total.\n\nNext, the pattern-spotting finale: cancelling chains, telescoping sums, and invented operations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -5,313 +5,475 @@ import '../../../core/theme/aptiqu_typography.dart';
 import '../models/practice_models.dart';
 import '../controllers/practice_session_controller.dart';
 
-class PracticeSessionScreen extends StatelessWidget {
+class PracticeSessionScreen extends StatefulWidget {
   final PracticeSessionModel initialSession;
 
   const PracticeSessionScreen({super.key, required this.initialSession});
 
   @override
+  State<PracticeSessionScreen> createState() => _PracticeSessionScreenState();
+}
+
+class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
+  late final PracticeSessionController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(PracticeSessionController(widget.initialSession));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    controller.begin(reduceMotion: MediaQuery.disableAnimationsOf(context));
+  }
+
+  @override
+  void dispose() {
+    if (Get.isRegistered<PracticeSessionController>() &&
+        identical(Get.find<PracticeSessionController>(), controller)) {
+      Get.delete<PracticeSessionController>();
+    }
+    super.dispose();
+  }
+
+  Widget _entrance(Widget child, String key) => TweenAnimationBuilder<double>(
+    key: ValueKey(key),
+    tween: Tween(begin: 0, end: 1),
+    duration: Duration(
+      milliseconds: MediaQuery.disableAnimationsOf(context) ? 0 : 180,
+    ),
+    builder: (_, value, child) => Opacity(
+      opacity: value,
+      child: Transform.translate(
+        offset: Offset(0, 8 * (1 - value)),
+        child: child,
+      ),
+    ),
+    child: child,
+  );
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(PracticeSessionController(initialSession));
-
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _showExitConfirmation(context, controller);
-      },
-      child: Scaffold(
-        backgroundColor: AptiquColors.surfaceDim,
-        appBar: AppBar(
+    return Obx(
+      () => PopScope(
+        canPop: controller.isCompleted.value || controller.isLeaving.value,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          _showExitConfirmation(context, controller);
+        },
+        child: Scaffold(
           backgroundColor: AptiquColors.surfaceDim,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.close_rounded, color: AptiquColors.onSurface),
-            onPressed: () => _showExitConfirmation(context, controller),
-          ),
-          title: Obx(() {
-            final cur = controller.currentQuestionIndex.value + 1;
-            final total = controller.session.value.totalQuestions;
-            return Text(
-              'Question $cur of $total',
-              style: AptiquTypography.titleMedium.copyWith(color: AptiquColors.onSurface),
-            );
-          }),
-          centerTitle: true,
-          actions: [
-            Obx(() {
-              final curQ = controller.currentSessionQuestion;
-              final hints = curQ?.question.hints ?? [];
-              final revealed = controller.hintsRevealed.value;
-
-              return TextButton.icon(
-                onPressed: hints.isEmpty
-                    ? null
-                    : () => _showHintsSheet(context, controller, hints),
-                icon: Icon(
-                  Icons.lightbulb_outline_rounded,
-                  color: revealed > 0 ? const Color(0xFFF59E0B) : AptiquColors.onSurfaceVariant,
-                  size: 20,
-                ),
-                label: Text(
-                  revealed > 0 ? 'Hint ($revealed/2)' : 'Hints',
-                  style: AptiquTypography.labelMedium.copyWith(
-                    color: revealed > 0 ? const Color(0xFFF59E0B) : AptiquColors.onSurfaceVariant,
-                  ),
-                ),
-              );
-            }),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4),
-            child: Obx(() {
+          appBar: AppBar(
+            backgroundColor: AptiquColors.surfaceDim,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.close_rounded,
+                color: AptiquColors.onSurface,
+              ),
+              onPressed: () => _showExitConfirmation(context, controller),
+            ),
+            title: Obx(() {
               final cur = controller.currentQuestionIndex.value + 1;
               final total = controller.session.value.totalQuestions;
-              final progress = cur / total;
-
-              return LinearProgressIndicator(
-                value: progress,
-                backgroundColor: AptiquColors.surfaceContainerHigh,
-                valueColor: const AlwaysStoppedAnimation<Color>(AptiquColors.primary),
-                minHeight: 4,
+              return Text(
+                'Question $cur of $total',
+                style: AptiquTypography.titleMedium.copyWith(
+                  color: AptiquColors.onSurface,
+                ),
               );
             }),
+            centerTitle: true,
+            actions: [
+              Obx(() {
+                final curQ = controller.currentSessionQuestion;
+                final hints = curQ?.question.hints ?? [];
+                final revealed = controller.hintsRevealed.value;
+
+                return TextButton.icon(
+                  onPressed: hints.isEmpty
+                      ? null
+                      : () => _showHintsSheet(context, controller, hints),
+                  icon: Icon(
+                    Icons.lightbulb_outline_rounded,
+                    color: revealed > 0
+                        ? const Color(0xFFF59E0B)
+                        : AptiquColors.onSurfaceVariant,
+                    size: 20,
+                  ),
+                  label: Text(
+                    revealed > 0 ? 'Hint ($revealed/2)' : 'Hints',
+                    style: AptiquTypography.labelMedium.copyWith(
+                      color: revealed > 0
+                          ? const Color(0xFFF59E0B)
+                          : AptiquColors.onSurfaceVariant,
+                    ),
+                  ),
+                );
+              }),
+            ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(4),
+              child: Obx(() {
+                final cur = controller.currentQuestionIndex.value + 1;
+                final total = controller.session.value.totalQuestions;
+                final progress = cur / total;
+
+                return LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: AptiquColors.surfaceContainerHigh,
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    AptiquColors.primary,
+                  ),
+                  minHeight: 4,
+                );
+              }),
+            ),
           ),
-        ),
-        body: Obx(() {
-          if (controller.isCompleted.value) {
-            return _buildCompletionView(context, controller);
-          }
+          body: Obx(() {
+            if (controller.isCompleted.value) {
+              return _entrance(
+                _buildCompletionView(context, controller),
+                'completed',
+              );
+            }
 
-          final curQ = controller.currentSessionQuestion;
-          if (curQ == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
+            if (!controller.isReady.value) {
+              return const Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.bolt_rounded,
+                      color: AptiquColors.primary,
+                      size: 48,
+                    ),
+                    SizedBox(height: 12),
+                    Text('Ready for 10?'),
+                    SizedBox(height: 16),
+                    SizedBox(width: 100, child: LinearProgressIndicator()),
+                  ],
+                ),
+              );
+            }
+            final curQ = controller.currentSessionQuestion;
+            if (curQ == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final question = curQ.question;
-          final lastRes = controller.lastResult.value;
+            final question = curQ.question;
+            final lastRes = controller.lastResult.value;
 
-          return SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Difficulty & Mode Badges
-                        Row(
+            return _entrance(
+              SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: _getDifficultyColor(question.difficulty).withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                question.difficulty,
-                                style: AptiquTypography.labelSmall.copyWith(
-                                  color: _getDifficultyColor(question.difficulty),
-                                  fontWeight: FontWeight.bold,
+                            // Difficulty & Mode Badges
+                            if (controller.session.value.timerEnabled)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: Obx(
+                                  () => Text(
+                                    '${controller.remainingSeconds.value}s remaining',
+                                    style: AptiquTypography.labelMedium
+                                        .copyWith(color: AptiquColors.primary),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: AptiquColors.surfaceContainerHigh,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                question.calculationMode.toHumanCalculationMode(),
-                                style: AptiquTypography.labelSmall.copyWith(
-                                  color: AptiquColors.onSurfaceVariant,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (question.pattern != null && question.pattern!.trim().isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            question.pattern!,
-                            style: AptiquTypography.labelSmall.copyWith(
-                              color: AptiquColors.onSurfaceVariant,
-                              fontStyle: FontStyle.italic,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-
-                        // Question Prompt Box
-                        Container(
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: AptiquColors.surfaceContainerLowest,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AptiquColors.outlineVariant),
-                          ),
-                          child: Text(
-                            question.prompt,
-                            style: AptiquTypography.headlineSmall.copyWith(
-                              color: AptiquColors.onSurface,
-                              height: 1.4,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        if (question.pyq != null && question.pyq!.trim().isNotEmpty) ...[
-                          const SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFEF3C7),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: const Color(0xFFFDE68A)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
                               children: [
-                                const Text('🏛️ ', style: TextStyle(fontSize: 12)),
-                                Flexible(
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _getDifficultyColor(
+                                      question.difficulty,
+                                    ).withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                   child: Text(
-                                    question.pyq!,
+                                    question.difficulty,
                                     style: AptiquTypography.labelSmall.copyWith(
-                                      color: const Color(0xFF92400E),
+                                      color: _getDifficultyColor(
+                                        question.difficulty,
+                                      ),
                                       fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AptiquColors.surfaceContainerHigh,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    question.calculationMode
+                                        .toHumanCalculationMode(),
+                                    style: AptiquTypography.labelSmall.copyWith(
+                                      color: AptiquColors.onSurfaceVariant,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                        const SizedBox(height: 20),
+                            if (question.pattern != null &&
+                                question.pattern!.trim().isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                question.pattern!,
+                                style: AptiquTypography.labelSmall.copyWith(
+                                  color: AptiquColors.onSurfaceVariant,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 16),
 
-                        // 4 Multiple Choice Options
-                        ...question.options.map((opt) {
-                          final isSelected = controller.selectedOptionId.value == opt.id;
-                          Color cardColor = AptiquColors.surfaceContainerHigh;
-                          Color borderColor = AptiquColors.outlineVariant;
-                          Color textColor = AptiquColors.onSurface;
-
-                          if (lastRes != null) {
-                            if (opt.id == lastRes.correctAnswer) {
-                              cardColor = const Color(0xFF10B981).withValues(alpha: 0.2);
-                              borderColor = const Color(0xFF10B981);
-                              textColor = const Color(0xFF10B981);
-                            } else if (isSelected && !lastRes.isCorrect) {
-                              cardColor = const Color(0xFFEF4444).withValues(alpha: 0.2);
-                              borderColor = const Color(0xFFEF4444);
-                              textColor = const Color(0xFFEF4444);
-                            }
-                          } else if (isSelected) {
-                            cardColor = AptiquColors.primary.withValues(alpha: 0.2);
-                            borderColor = AptiquColors.primary;
-                            textColor = AptiquColors.primary;
-                          }
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: InkWell(
-                              onTap: lastRes != null ? null : () => controller.selectOption(opt.id),
-                              borderRadius: BorderRadius.circular(14),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            // Question Prompt Box
+                            Container(
+                              padding: const EdgeInsets.all(18),
+                              decoration: BoxDecoration(
+                                color: AptiquColors.surfaceContainerLowest,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: AptiquColors.outlineVariant,
+                                ),
+                              ),
+                              child: Text(
+                                question.prompt,
+                                style: AptiquTypography.headlineSmall.copyWith(
+                                  color: AptiquColors.onSurface,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            if (question.pyq != null &&
+                                question.pyq!.trim().isNotEmpty) ...[
+                              const SizedBox(height: 10),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: cardColor,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: borderColor, width: 1.5),
+                                  color: const Color(0xFFFEF3C7),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: const Color(0xFFFDE68A),
+                                  ),
                                 ),
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Container(
-                                      width: 32,
-                                      height: 32,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: isSelected ? borderColor : Colors.transparent,
-                                        border: Border.all(color: borderColor, width: 1.5),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        opt.id,
-                                        style: AptiquTypography.labelMedium.copyWith(
-                                          color: isSelected ? Colors.white : textColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                    const Text(
+                                      '🏛️ ',
+                                      style: TextStyle(fontSize: 12),
                                     ),
-                                    const SizedBox(width: 14),
-                                    Expanded(
+                                    Flexible(
                                       child: Text(
-                                        opt.text,
-                                        style: AptiquTypography.bodyLarge.copyWith(
-                                          color: textColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                        question.pyq!,
+                                        style: AptiquTypography.labelSmall
+                                            .copyWith(
+                                              color: const Color(0xFF92400E),
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
-                          );
-                        }),
+                            ],
+                            const SizedBox(height: 20),
 
-                        // Dual Solution Banner after answer
-                        if (lastRes != null) ...[
-                          const SizedBox(height: 16),
-                          _buildDualSolutionCard(context, question, lastRes),
-                        ],
-                      ],
+                            // 4 Multiple Choice Options
+                            ...question.options.map((opt) {
+                              final isSelected =
+                                  controller.selectedOptionId.value == opt.id;
+                              Color cardColor =
+                                  AptiquColors.surfaceContainerHigh;
+                              Color borderColor = AptiquColors.outlineVariant;
+                              Color textColor = AptiquColors.onSurface;
+
+                              if (lastRes != null) {
+                                if (opt.id == lastRes.correctAnswer) {
+                                  cardColor = const Color(
+                                    0xFF10B981,
+                                  ).withValues(alpha: 0.2);
+                                  borderColor = const Color(0xFF10B981);
+                                  textColor = const Color(0xFF10B981);
+                                } else if (isSelected && !lastRes.isCorrect) {
+                                  cardColor = const Color(
+                                    0xFFEF4444,
+                                  ).withValues(alpha: 0.2);
+                                  borderColor = const Color(0xFFEF4444);
+                                  textColor = const Color(0xFFEF4444);
+                                }
+                              } else if (isSelected) {
+                                cardColor = AptiquColors.primary.withValues(
+                                  alpha: 0.2,
+                                );
+                                borderColor = AptiquColors.primary;
+                                textColor = AptiquColors.primary;
+                              }
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: InkWell(
+                                  onTap: lastRes != null
+                                      ? null
+                                      : () => controller.selectOption(opt.id),
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 16,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: cardColor,
+                                      borderRadius: BorderRadius.circular(14),
+                                      border: Border.all(
+                                        color: borderColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 32,
+                                          height: 32,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: isSelected
+                                                ? borderColor
+                                                : Colors.transparent,
+                                            border: Border.all(
+                                              color: borderColor,
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            opt.id,
+                                            style: AptiquTypography.labelMedium
+                                                .copyWith(
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : textColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 14),
+                                        Expanded(
+                                          child: Text(
+                                            opt.text,
+                                            style: AptiquTypography.bodyLarge
+                                                .copyWith(
+                                                  color: textColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+
+                            // Dual Solution Banner after answer
+                            if (lastRes != null) ...[
+                              const SizedBox(height: 16),
+                              _buildDualSolutionCard(
+                                context,
+                                question,
+                                lastRes,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
 
-                // Bottom Action Button
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: AptiquColors.surfaceDim,
-                    border: Border(top: BorderSide(color: AptiquColors.outlineVariant, width: 0.5)),
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: lastRes != null
-                          ? controller.nextQuestion
-                          : controller.selectedOptionId.value.isEmpty || controller.isSubmitting.value
+                    // Bottom Action Button
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: const BoxDecoration(
+                        color: AptiquColors.surfaceDim,
+                        border: Border(
+                          top: BorderSide(
+                            color: AptiquColors.outlineVariant,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: lastRes != null
+                              ? controller.nextQuestion
+                              : controller.selectedOptionId.value.isEmpty ||
+                                    controller.isSubmitting.value
                               ? null
                               : controller.submitAnswer,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: lastRes != null ? const Color(0xFF10B981) : AptiquColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      ),
-                      child: controller.isSubmitting.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              lastRes != null
-                                  ? (controller.currentQuestionIndex.value < controller.session.value.totalQuestions - 1
-                                      ? 'Next Question'
-                                      : 'Continue to Summary')
-                                  : 'Submit Answer',
-                              style: AptiquTypography.labelLarge.copyWith(fontWeight: FontWeight.bold),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: lastRes != null
+                                ? const Color(0xFF10B981)
+                                : AptiquColors.primary,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
                             ),
+                          ),
+                          child: controller.isSubmitting.value
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  lastRes != null
+                                      ? (controller.currentQuestionIndex.value <
+                                                controller
+                                                        .session
+                                                        .value
+                                                        .totalQuestions -
+                                                    1
+                                            ? 'Next Question'
+                                            : 'Continue to Summary')
+                                      : 'Submit Answer',
+                                  style: AptiquTypography.labelLarge.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }),
+              ),
+              question.id,
+            );
+          }),
+        ),
       ),
     );
   }
@@ -327,7 +489,11 @@ class PracticeSessionScreen extends StatelessWidget {
     }
   }
 
-  void _showHintsSheet(BuildContext context, PracticeSessionController controller, List<String> hints) {
+  void _showHintsSheet(
+    BuildContext context,
+    PracticeSessionController controller,
+    List<String> hints,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AptiquColors.surfaceContainerLowest,
@@ -346,7 +512,11 @@ class PracticeSessionScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.lightbulb_rounded, color: Color(0xFFF59E0B), size: 24),
+                    const Icon(
+                      Icons.lightbulb_rounded,
+                      color: Color(0xFFF59E0B),
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Strategy Hints',
@@ -372,7 +542,9 @@ class PracticeSessionScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AptiquColors.primary,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     child: Text('Reveal Hint ${count + 1}'),
                   ),
@@ -391,7 +563,9 @@ class PracticeSessionScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AptiquColors.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+        border: Border.all(
+          color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -406,18 +580,24 @@ class PracticeSessionScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             text,
-            style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurface),
+            style: AptiquTypography.bodyMedium.copyWith(
+              color: AptiquColors.onSurface,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCompletionView(BuildContext context, PracticeSessionController controller) {
-    final res = controller.completionResult.value ?? controller.lastResult.value;
+  Widget _buildCompletionView(
+    BuildContext context,
+    PracticeSessionController controller,
+  ) {
+    final res =
+        controller.completionResult.value ?? controller.lastResult.value;
     final correct = res?.correctCount ?? controller.session.value.correctCount;
     final total = controller.session.value.totalQuestions;
-    final xpEarned = res?.xpAwarded ?? 0;
+    final xpEarned = res?.xpAwarded ?? controller.session.value.xpAwarded;
 
     return Center(
       child: Padding(
@@ -432,11 +612,17 @@ class PracticeSessionScreen extends StatelessWidget {
                 color: const Color(0xFF10B981).withValues(alpha: 0.15),
                 border: Border.all(color: const Color(0xFF10B981), width: 2),
               ),
-              child: const Icon(Icons.emoji_events_rounded, color: Color(0xFF10B981), size: 56),
+              child: const Icon(
+                Icons.emoji_events_rounded,
+                color: Color(0xFF10B981),
+                size: 56,
+              ),
             ),
             const SizedBox(height: 24),
             Text(
-              'Session Completed!',
+              controller.session.value.isReplay
+                  ? 'Replay Complete!'
+                  : 'Session Complete!',
               style: AptiquTypography.headlineMedium.copyWith(
                 color: AptiquColors.onSurface,
                 fontWeight: FontWeight.bold,
@@ -445,12 +631,17 @@ class PracticeSessionScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'You scored $correct out of $total questions correct',
-              style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurfaceVariant),
+              style: AptiquTypography.bodyMedium.copyWith(
+                color: AptiquColors.onSurfaceVariant,
+              ),
             ),
             if (xpEarned > 0) ...[
               const SizedBox(height: 20),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: AptiquColors.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
@@ -459,7 +650,11 @@ class PracticeSessionScreen extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.bolt_rounded, color: AptiquColors.primary, size: 28),
+                    const Icon(
+                      Icons.bolt_rounded,
+                      color: AptiquColors.primary,
+                      size: 28,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       '+$xpEarned XP Earned',
@@ -481,9 +676,11 @@ class PracticeSessionScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AptiquColors.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                child: const Text('Return to Practice Arena'),
+                child: const Text('Return to Practice'),
               ),
             ),
           ],
@@ -492,16 +689,31 @@ class PracticeSessionScreen extends StatelessWidget {
     );
   }
 
-  void _showExitConfirmation(BuildContext context, PracticeSessionController controller) {
+  void _showExitConfirmation(
+    BuildContext context,
+    PracticeSessionController controller,
+  ) {
+    if (controller.isLeaving.value) return;
+    if (controller.isCompleted.value) {
+      Navigator.of(context).pop();
+      return;
+    }
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AptiquColors.surfaceContainerLowest,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: Text('Exit Practice?', style: AptiquTypography.titleMedium.copyWith(color: AptiquColors.onSurface)),
+        title: Text(
+          'Exit Practice?',
+          style: AptiquTypography.titleMedium.copyWith(
+            color: AptiquColors.onSurface,
+          ),
+        ),
         content: Text(
           'If you exit now, your session will be marked as abandoned and zero completion XP will be awarded.',
-          style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurfaceVariant),
+          style: AptiquTypography.bodyMedium.copyWith(
+            color: AptiquColors.onSurfaceVariant,
+          ),
         ),
         actions: [
           TextButton(
@@ -513,7 +725,10 @@ class PracticeSessionScreen extends StatelessWidget {
               Navigator.of(ctx).pop();
               controller.abandon();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AptiquColors.error, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AptiquColors.error,
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Exit (0 XP)'),
           ),
         ],
@@ -521,14 +736,25 @@ class PracticeSessionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDualSolutionCard(BuildContext context, PracticeQuestionModel question, PracticeAnswerResultModel lastRes) {
-    final bookExplanation = lastRes.explanation.isNotEmpty ? lastRes.explanation : (question.explanation ?? '');
-    final bookMethod = lastRes.method.isNotEmpty ? lastRes.method : (question.method ?? '');
-    final altExplanation = lastRes.alternativeExplanation ?? question.alternativeExplanation;
-    final preferredSol = lastRes.preferredSolution ?? question.preferredSolution;
+  Widget _buildDualSolutionCard(
+    BuildContext context,
+    PracticeQuestionModel question,
+    PracticeAnswerResultModel lastRes,
+  ) {
+    final bookExplanation = lastRes.explanation.isNotEmpty
+        ? lastRes.explanation
+        : (question.explanation ?? '');
+    final bookMethod = lastRes.method.isNotEmpty
+        ? lastRes.method
+        : (question.method ?? '');
+    final altExplanation =
+        lastRes.alternativeExplanation ?? question.alternativeExplanation;
+    final preferredSol =
+        lastRes.preferredSolution ?? question.preferredSolution;
     final preferredReason = lastRes.preferredReason ?? question.preferredReason;
 
-    final hasDualSolutions = altExplanation != null && altExplanation.trim().isNotEmpty;
+    final hasDualSolutions =
+        altExplanation != null && altExplanation.trim().isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -536,7 +762,9 @@ class PracticeSessionScreen extends StatelessWidget {
         color: AptiquColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+          color: lastRes.isCorrect
+              ? const Color(0xFF10B981)
+              : const Color(0xFFEF4444),
           width: 1.5,
         ),
       ),
@@ -546,16 +774,24 @@ class PracticeSessionScreen extends StatelessWidget {
           Row(
             children: [
               Icon(
-                lastRes.isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                lastRes.isCorrect
+                    ? Icons.check_circle_rounded
+                    : Icons.cancel_rounded,
+                color: lastRes.isCorrect
+                    ? const Color(0xFF10B981)
+                    : const Color(0xFFEF4444),
                 size: 22,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  lastRes.isCorrect ? 'Correct!' : 'Incorrect (Answer: Option ${lastRes.correctAnswer})',
+                  lastRes.isCorrect
+                      ? 'Correct!'
+                      : 'Incorrect (Answer: Option ${lastRes.correctAnswer})',
                   style: AptiquTypography.titleSmall.copyWith(
-                    color: lastRes.isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                    color: lastRes.isCorrect
+                        ? const Color(0xFF10B981)
+                        : const Color(0xFFEF4444),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -571,7 +807,9 @@ class PracticeSessionScreen extends StatelessWidget {
               color: AptiquColors.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: preferredSol == 'BOOK' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
+                color: preferredSol == 'BOOK'
+                    ? const Color(0xFF10B981)
+                    : AptiquColors.outlineVariant,
                 width: preferredSol == 'BOOK' ? 1.5 : 1,
               ),
             ),
@@ -590,18 +828,31 @@ class PracticeSessionScreen extends StatelessWidget {
                     ),
                     if (preferredSol == 'BOOK')
                       InkWell(
-                        onTap: () => _showPreferredReasonBottomSheet(context, 'Book Method', preferredReason),
+                        onTap: () => _showPreferredReasonBottomSheet(
+                          context,
+                          'Book Method',
+                          preferredReason,
+                        ),
                         borderRadius: BorderRadius.circular(6),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                            color: const Color(
+                              0xFF10B981,
+                            ).withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
+                              const Icon(
+                                Icons.auto_awesome,
+                                color: Color(0xFF10B981),
+                                size: 12,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 'AI Preferred',
@@ -612,7 +863,11 @@ class PracticeSessionScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 2),
-                              const Icon(Icons.info_outline, color: Color(0xFF10B981), size: 12),
+                              const Icon(
+                                Icons.info_outline,
+                                color: Color(0xFF10B981),
+                                size: 12,
+                              ),
                             ],
                           ),
                         ),
@@ -631,7 +886,9 @@ class PracticeSessionScreen extends StatelessWidget {
                 ],
                 const SizedBox(height: 6),
                 Text(
-                  bookExplanation.isNotEmpty ? bookExplanation : 'Standard textbook derivation.',
+                  bookExplanation.isNotEmpty
+                      ? bookExplanation
+                      : 'Standard textbook derivation.',
                   style: AptiquTypography.bodyMedium.copyWith(
                     color: AptiquColors.onSurfaceVariant,
                     height: 1.4,
@@ -650,7 +907,9 @@ class PracticeSessionScreen extends StatelessWidget {
                 color: AptiquColors.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: preferredSol == 'ALTERNATIVE' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
+                  color: preferredSol == 'ALTERNATIVE'
+                      ? const Color(0xFF10B981)
+                      : AptiquColors.outlineVariant,
                   width: preferredSol == 'ALTERNATIVE' ? 1.5 : 1,
                 ),
               ),
@@ -669,18 +928,31 @@ class PracticeSessionScreen extends StatelessWidget {
                       ),
                       if (preferredSol == 'ALTERNATIVE')
                         InkWell(
-                          onTap: () => _showPreferredReasonBottomSheet(context, 'Alternative Speed Shortcut', preferredReason),
+                          onTap: () => _showPreferredReasonBottomSheet(
+                            context,
+                            'Alternative Speed Shortcut',
+                            preferredReason,
+                          ),
                           borderRadius: BorderRadius.circular(6),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                              color: const Color(
+                                0xFF10B981,
+                              ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
+                                const Icon(
+                                  Icons.auto_awesome,
+                                  color: Color(0xFF10B981),
+                                  size: 12,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   'AI Preferred',
@@ -691,7 +963,11 @@ class PracticeSessionScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 2),
-                                const Icon(Icons.info_outline, color: Color(0xFF10B981), size: 12),
+                                const Icon(
+                                  Icons.info_outline,
+                                  color: Color(0xFF10B981),
+                                  size: 12,
+                                ),
                               ],
                             ),
                           ),
@@ -715,7 +991,11 @@ class PracticeSessionScreen extends StatelessWidget {
     );
   }
 
-  void _showPreferredReasonBottomSheet(BuildContext context, String preferredTitle, String? reason) {
+  void _showPreferredReasonBottomSheet(
+    BuildContext context,
+    String preferredTitle,
+    String? reason,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AptiquColors.surfaceContainerLowest,
@@ -742,7 +1022,11 @@ class PracticeSessionScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 22),
+                  const Icon(
+                    Icons.auto_awesome,
+                    color: Color(0xFF10B981),
+                    size: 22,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'AI Preferred: $preferredTitle',
@@ -771,7 +1055,9 @@ class PracticeSessionScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AptiquColors.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: const Text('Got it'),
                 ),

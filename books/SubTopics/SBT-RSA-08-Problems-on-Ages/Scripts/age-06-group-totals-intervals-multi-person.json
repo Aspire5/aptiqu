@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "age-06-group-totals-intervals-multi-person",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Group Totals, Age Intervals, and Multi-Person Problems",
+    "description": "Track several ages together using total-age shifts, equal birth intervals, past ratios, and staged group changes.",
+    "teachingApproach": "Use short, connected phone-sized teaching screens with a concrete age situation before the equation, label every past/present/future date clearly, show the reason for each age shift, and check the result in the original clue. After each worked example, give a fresh near-transfer question. Wrong answers receive a misconception-specific correction and a parallel retry.",
+    "targetDurationMinutes": 31,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 8, Problems on Ages. Approved scope: Teach multi-person age models by tracking total age. Show that for the same n people, a t-year shift changes the total by n×t. Use this to connect past totals with present ratios, solve ages spaced at equal birth intervals, interpret ratios stated at a past date, use midpoint language such as 'as much younger as older', and convert an average age into a total when a person joins. For multi-stage stories, update the original group first, then add or remove people at the correct date. Keep group membership and dates explicit throughout."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "With three or more people, the easiest object to track is often the total age. Every birthday adds one year per person, so a group total moves in a predictable way.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three people are 12, 18, and 25. Their total age is 55.\n\nFour years later, each is 4 years older. The total rises by 3×4=12, becoming 67.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Group rule:\n\nNew total = old total + (number of people × years)\n\nFor a past date, subtract that group increase instead.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four people have a total age of 92 today. What will their total age be 3 years later?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "95"
+          },
+          {
+            "id": "b",
+            "label": "104"
+          },
+          {
+            "id": "c",
+            "label": "100"
+          },
+          {
+            "id": "d",
+            "label": "108"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four people have a total age of 92 today. What will their total age be 3 years later?",
+          "options": [
+            {
+              "id": "a",
+              "label": "95"
+            },
+            {
+              "id": "b",
+              "label": "104"
+            },
+            {
+              "id": "c",
+              "label": "100"
+            },
+            {
+              "id": "d",
+              "label": "108"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Each of four people gains 3 years.",
+            "Total increase is 4×3."
+          ],
+          "explanation": "Increase=12, so new total=92+12=104."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThree years pass for all four people, so the total rises by 12, not by 3. 92+12=104.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five people total 140 years today. What was their total 2 years ago?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "130"
+          },
+          {
+            "id": "b",
+            "label": "138"
+          },
+          {
+            "id": "c",
+            "label": "150"
+          },
+          {
+            "id": "d",
+            "label": "120"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five people total 140 years today. What was their total 2 years ago?",
+          "options": [
+            {
+              "id": "a",
+              "label": "130"
+            },
+            {
+              "id": "b",
+              "label": "138"
+            },
+            {
+              "id": "c",
+              "label": "150"
+            },
+            {
+              "id": "d",
+              "label": "120"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Move all five people back 2 years.",
+            "Subtract 5×2 from the total."
+          ],
+          "explanation": "140−10=130."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nTwo years earlier, each of five people was two years younger, so subtract 10: total=130.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A past group total can be moved to today.\n\nFour people totaled 80 years six years ago.\nToday those same four people total:\n80 + 4×6 = 104.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The phrase 'same four people' matters. If someone joins, leaves, is born, or dies, the group count changes and must be handled in separate stages.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three people totaled 66 years 5 years ago. What is their total today?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "75"
+          },
+          {
+            "id": "b",
+            "label": "71"
+          },
+          {
+            "id": "c",
+            "label": "86"
+          },
+          {
+            "id": "d",
+            "label": "81"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three people totaled 66 years 5 years ago. What is their total today?",
+          "options": [
+            {
+              "id": "a",
+              "label": "75"
+            },
+            {
+              "id": "b",
+              "label": "71"
+            },
+            {
+              "id": "c",
+              "label": "86"
+            },
+            {
+              "id": "d",
+              "label": "81"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The same three people each gain 5 years.",
+            "Add 3×5."
+          ],
+          "explanation": "66+15=81."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFive years add 5 to each of three ages, so the total gains 15. Today’s total is 81.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Six people totaled 150 years 4 years ago. What is their total today?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "154"
+          },
+          {
+            "id": "b",
+            "label": "174"
+          },
+          {
+            "id": "c",
+            "label": "166"
+          },
+          {
+            "id": "d",
+            "label": "180"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Six people totaled 150 years 4 years ago. What is their total today?",
+          "options": [
+            {
+              "id": "a",
+              "label": "154"
+            },
+            {
+              "id": "b",
+              "label": "174"
+            },
+            {
+              "id": "c",
+              "label": "166"
+            },
+            {
+              "id": "d",
+              "label": "180"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Six people each gain 4 years.",
+            "Add 24 to the old total."
+          ],
+          "explanation": "150+24=174."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n6×4=24 years are added across the group. Total=174.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A ratio of three present ages plus a past total is a two-step problem.\n\nSuppose A:B:C=2:3:5. Eight years ago their total was 56.\nToday’s total is 56 + 3×8 = 80.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Ratio parts total 10, so one part=8. Present ages are 16,24,40.\n\nTime clue fixes the present total; ratio splits that total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Present ages are in ratio 3:4:5. Six years ago their total was 78. What is the oldest present age?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "45"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Present ages are in ratio 3:4:5. Six years ago their total was 78. What is the oldest present age?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "45"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Move the total to today first.",
+            "Three people add 18 years in six years."
+          ],
+          "explanation": "Present total=78+18=96. Ratio parts=12, one part=8. Oldest=5×8=40."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nDo not split the old total using the present ratio. First move the total to today: 96. Then 12 parts=96, so oldest=40.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A:B:C=4:7:9 today. Five years ago their total was 85. Find C’s present age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "50"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A:B:C=4:7:9 today. Five years ago their total was 85. Find C’s present age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "50"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Add 3×5 to get today’s total.",
+            "20 ratio parts represent today’s total."
+          ],
+          "explanation": "Today’s total=100. One part=5. C=9×5=45."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n85+15=100 today; 20 parts=100; C=45.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Children born at equal intervals form an arithmetic age pattern.\n\nFive children are born 3 years apart. If the youngest is x, their ages are:\nx, x+3, x+6, x+9, x+12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If their total is 50:\n5x + 30 = 50\n5x = 20\nx = 4\n\nThe youngest is 4. The fixed interval appears four times across the five ages.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four siblings are born 2 years apart. Their ages total 52. How old is the youngest?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "11"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "13"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four siblings are born 2 years apart. Their ages total 52. How old is the youngest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "11"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "13"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use x, x+2, x+4, x+6.",
+            "Their sum is 4x+12."
+          ],
+          "explanation": "4x+12=52 ⇒ 4x=40 ⇒ x=10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe age list is x,x+2,x+4,x+6. Add them: 4x+12=52, so youngest=10.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five children are born 4 years apart and their ages total 70. Find the youngest age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five children are born 4 years apart and their ages total 70. Find the youngest age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use x,x+4,x+8,x+12,x+16.",
+            "Sum is 5x+40."
+          ],
+          "explanation": "5x+40=70 ⇒ x=6."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe intervals add 0+4+8+12+16=40. So 5x+40=70 and x=6.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A ratio from the past can describe several people.\n\nTen years ago A:B:C = 2:3:4. Let those old ages be 2x,3x,4x.\nToday they are 2x+10, 3x+10, 4x+10.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If today’s total is 93:\n9x + 30 = 93\nx=7\n\nToday C is 4×7+10=38.\n\nBuild the ratio at the date where it is stated, then move forward.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Eight years ago P:Q:R = 1:2:3. Their present total is 72. What is R’s present age?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Eight years ago P:Q:R = 1:2:3. Their present total is 72. What is R’s present age?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old ages are x,2x,3x.",
+            "Today’s total is 6x+24."
+          ],
+          "explanation": "6x+24=72 ⇒ x=8. R today=3x+8=32."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOld ratio ages are x,2x,3x. Present total 6x+24=72 gives x=8. R=24+8=32.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five years ago A:B:C=2:4:5. Their present total is 70. Find B’s present age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five years ago A:B:C=2:4:5. Their present total is 70. Find B’s present age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "35"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old total is 11x; present total adds 15.",
+            "11x+15=70."
+          ],
+          "explanation": "x=5. B was 20, so B is 25 now."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n11x+15=70 gives x=5. B today=4×5+5=25.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "'As much younger as older' makes one age the midpoint.\n\nRahul is as much younger than Sagar as he is older than Purav.\nThat means:\nSagar − Rahul = Rahul − Purav.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rearrange:\n2×Rahul = Sagar + Purav.\n\nSo Rahul is the average of their ages. If Sagar+Purav=66, Rahul=33.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Karan is as much younger than Neeraj as he is older than Mohit. Neeraj and Mohit total 74. How old is Karan?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "37"
+          },
+          {
+            "id": "b",
+            "label": "35"
+          },
+          {
+            "id": "c",
+            "label": "36"
+          },
+          {
+            "id": "d",
+            "label": "38"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Karan is as much younger than Neeraj as he is older than Mohit. Neeraj and Mohit total 74. How old is Karan?",
+          "options": [
+            {
+              "id": "a",
+              "label": "37"
+            },
+            {
+              "id": "b",
+              "label": "35"
+            },
+            {
+              "id": "c",
+              "label": "36"
+            },
+            {
+              "id": "d",
+              "label": "38"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Karan is the midpoint age.",
+            "Take half of the other two ages’ total."
+          ],
+          "explanation": "Karan=(74)/2=37."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nEqual gaps put Karan exactly in the middle. His age is half of 74, which is 37.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Riya is as much younger than Asha as she is older than Meena. Asha and Meena total 80. Find Riya’s age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "38"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "39"
+          },
+          {
+            "id": "d",
+            "label": "41"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Riya is as much younger than Asha as she is older than Meena. Asha and Meena total 80. Find Riya’s age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "38"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "39"
+            },
+            {
+              "id": "d",
+              "label": "41"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Equal age gaps mean the middle age is the average.",
+            "80÷2."
+          ],
+          "explanation": "Riya=40."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nRiya is the midpoint, so 80÷2=40.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average age is just another way to state a group total.\n\nThree years ago the average age of A and B was 18. Their total then was 36. Today the same two people total 42.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If C joins them today and the new average is 22, the new three-person total is 66.\nSo C=66−42=24.\n\nConvert average to total before mixing groups.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two years ago, the average age of A and B was 20. Today C joins them and the average of all three is 24. Find C’s age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "28"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two years ago, the average age of A and B was 20. Today C joins them and the average of all three is 24. Find C’s age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "28"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old A+B total was 40.",
+            "Move A+B forward two years, then compare with the new three-person total."
+          ],
+          "explanation": "A+B today=40+4=44. A+B+C today=72. C=28."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nConvert averages to totals. A+B were 40 two years ago and are 44 today. The three-person total is 72, so C=28.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Four years ago, the average age of two people was 16. Today a third person joins and the average becomes 20. Find the third person’s age.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "28"
+          },
+          {
+            "id": "c",
+            "label": "20"
+          },
+          {
+            "id": "d",
+            "label": "32"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four years ago, the average age of two people was 16. Today a third person joins and the average becomes 20. Find the third person’s age.",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "28"
+            },
+            {
+              "id": "c",
+              "label": "20"
+            },
+            {
+              "id": "d",
+              "label": "32"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old pair total=32.",
+            "Present pair total=40; new group total=60."
+          ],
+          "explanation": "Third age=60−40=20 — option A."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe pair is 40 today. The three-person total is 60, so the newcomer is 20.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: separate a group timeline into stages.\n\nA group total changes smoothly only while the same people remain. If someone joins later, finish the first stage before adding the new person.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: three people total 75 today. In 4 years they total 87. Then a 20-year-old joins, making 107.\n\nDo not let the new person receive four years that they were not part of the original group.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three people totaled 66 years 4 years ago. Today a 24-year-old joins them. What is the new four-person total?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "90"
+          },
+          {
+            "id": "b",
+            "label": "114"
+          },
+          {
+            "id": "c",
+            "label": "120"
+          },
+          {
+            "id": "d",
+            "label": "102"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three people totaled 66 years 4 years ago. Today a 24-year-old joins them. What is the new four-person total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "90"
+            },
+            {
+              "id": "b",
+              "label": "114"
+            },
+            {
+              "id": "c",
+              "label": "120"
+            },
+            {
+              "id": "d",
+              "label": "102"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Move the original three people to today first.",
+            "Then add the newcomer’s current age."
+          ],
+          "explanation": "Original three today=66+3×4=78. Add 24: total=102."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe original group gains 12 years, becoming 78. Only then add the 24-year-old: 102.\n\nNow use that same idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five years ago two people totaled 50. Today a 30-year-old joins them. What is the new three-person total?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "80"
+          },
+          {
+            "id": "b",
+            "label": "95"
+          },
+          {
+            "id": "c",
+            "label": "100"
+          },
+          {
+            "id": "d",
+            "label": "90"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five years ago two people totaled 50. Today a 30-year-old joins them. What is the new three-person total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "80"
+            },
+            {
+              "id": "b",
+              "label": "95"
+            },
+            {
+              "id": "c",
+              "label": "100"
+            },
+            {
+              "id": "d",
+              "label": "90"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The original pair gains 10 years.",
+            "Then add 30."
+          ],
+          "explanation": "Pair today=60; with newcomer=90."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n50+2×5=60 for the original pair. Add 30 to get 90.\n\nTry the question once more and check the original clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now manage age problems with several people.\n\nFor the same group, total age changes by people × years. Ratios must be used at their stated date, equal birth gaps create a pattern, and a new member starts a new stage.\n\nKeep the date and the group membership together.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

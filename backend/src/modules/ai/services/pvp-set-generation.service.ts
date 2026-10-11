@@ -34,6 +34,7 @@ export class PvpSetGenerationService {
         const count = await prisma.pvpQuestionSet.count({
           where: {
             status: 'PUBLISHED',
+            questionCount: 10,
             setQuestions: {
               none: {
                 question: {
@@ -53,6 +54,7 @@ export class PvpSetGenerationService {
       const existing = await prisma.pvpQuestionSet.findFirst({
         where: {
           status: 'PUBLISHED',
+          questionCount: 10,
           setQuestions: {
             none: {
               question: {
@@ -73,7 +75,7 @@ export class PvpSetGenerationService {
         },
         orderBy: { createdAt: 'desc' },
       });
-      if (existing) return existing;
+      if (existing && existing.setQuestions.length === 10 && new Set(existing.setQuestions.map(q => q.questionId)).size === 10) return existing;
     }
 
     try {
@@ -162,15 +164,20 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
 
       // 5. Structural Validation (PvP time <= 60s)
       const validQuestions: any[] = [];
+      const fingerprints = new Set<string>();
       for (const rawQ of rawGeneration.questions) {
         const val = validateQuestionStructure(rawQ, true);
         if (val.valid) {
-          validQuestions.push(val.data);
+          const fingerprint = FingerprintService.computeFingerprint(val.data.prompt, val.data.options);
+          if (!fingerprints.has(fingerprint)) {
+            fingerprints.add(fingerprint);
+            validQuestions.push(val.data);
+          }
         }
       }
 
-      if (validQuestions.length === 0) {
-        throw new Error('None of the generated PvP questions passed initial structural validation.');
+      if (validQuestions.length < 10) {
+        throw new Error('A PvP set requires 10 distinct valid questions.');
       }
 
       const candidates = validQuestions;
@@ -184,7 +191,7 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
             code: setCode,
             sourceType: 'AI_GENERATED',
             status: 'PUBLISHED',
-            questionCount: Math.min(10, candidates.length),
+            questionCount: 10,
             generationModel: 'gemini-3.5-flash-lite',
             generationPromptVersion: 'v1.0.0',
           },

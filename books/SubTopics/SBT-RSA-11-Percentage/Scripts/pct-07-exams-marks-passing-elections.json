@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "pct-07-exams-marks-passing-elections",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Examinations, Marks, Passing, and Elections",
+    "description": "Use percentages to solve marks, pass/fail, valid-vote, election-margin, and target-score problems.",
+    "teachingApproach": "Use the denominator as the organising idea: maximum marks, total questions, enrolled voters, votes cast, or valid votes. Build each stage in order and never let a later percentage silently switch the base.",
+    "targetDurationMinutes": 33,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 11, Percentage. Approved scope: Cover examination and election patterns from the chapter: convert marks to percentages, combine subjects with different maximum marks, recover maximum marks or pass marks from “failed by” and “passed by” clues, determine the extra marks needed to reach a target percentage, and solve group pass/fail counts. For elections, distinguish enrolled voters, votes cast, valid votes and candidate shares; solve two-candidate margin questions and invalid-vote chains. Include target questions where a student or team must improve a current percentage over the remaining questions/games. Learners should identify the correct denominator at each stage."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's solve exam and election percentages by tracking the denominator.\n\nA score can be 60% of maximum marks, while a candidate can get 60% of valid votes. The number after “of” changes the whole calculation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Marks percentage = marks obtained / maximum marks ×100.\n\n360 out of 500 =72%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the percentage is known, reverse it the same way.\n\n72% of 500=360.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A student scores 468 out of 600. What is the percentage?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72%"
+          },
+          {
+            "id": "b",
+            "label": "76%"
+          },
+          {
+            "id": "c",
+            "label": "78%"
+          },
+          {
+            "id": "d",
+            "label": "82%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A student scores 468 out of 600. What is the percentage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72%"
+            },
+            {
+              "id": "b",
+              "label": "76%"
+            },
+            {
+              "id": "c",
+              "label": "78%"
+            },
+            {
+              "id": "d",
+              "label": "82%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "468/600×100.",
+            "Divide both by 6: 78/100."
+          ],
+          "explanation": "The score is 78%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nUse maximum marks as the whole.\n\nThe score is 78%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A student scores 315 out of 450. What percentage is that?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70%"
+          },
+          {
+            "id": "b",
+            "label": "65%"
+          },
+          {
+            "id": "c",
+            "label": "72%"
+          },
+          {
+            "id": "d",
+            "label": "75%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A student scores 315 out of 450. What percentage is that?",
+          "options": [
+            {
+              "id": "a",
+              "label": "70%"
+            },
+            {
+              "id": "b",
+              "label": "65%"
+            },
+            {
+              "id": "c",
+              "label": "72%"
+            },
+            {
+              "id": "d",
+              "label": "75%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "315/450=7/10.",
+            "Convert to percent."
+          ],
+          "explanation": "The percentage is 70%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nThe percentage is 70%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "With different subject maxima, add marks and maxima before finding the aggregate percentage.\n\nDo not average the subject percentages unless the maxima are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 80/100 and 120/200.\nAggregate=200/300=66 2/3%, not the simple average of 80% and 60%=70%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A student gets 72/100 and 126/200. What is the aggregate percentage?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "67.5%"
+          },
+          {
+            "id": "b",
+            "label": "63%"
+          },
+          {
+            "id": "c",
+            "label": "72%"
+          },
+          {
+            "id": "d",
+            "label": "66%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A student gets 72/100 and 126/200. What is the aggregate percentage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "67.5%"
+            },
+            {
+              "id": "b",
+              "label": "63%"
+            },
+            {
+              "id": "c",
+              "label": "72%"
+            },
+            {
+              "id": "d",
+              "label": "66%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Total marks=198.",
+            "Maximum total=300."
+          ],
+          "explanation": "198/300×100=66%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nUnequal subject maxima require weighted aggregation.\n\n198/300×100=66%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Scores are 45/50 and 120/150. What is the aggregate percentage?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "85%"
+          },
+          {
+            "id": "b",
+            "label": "82.5%"
+          },
+          {
+            "id": "c",
+            "label": "80%"
+          },
+          {
+            "id": "d",
+            "label": "87.5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Scores are 45/50 and 120/150. What is the aggregate percentage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "85%"
+            },
+            {
+              "id": "b",
+              "label": "82.5%"
+            },
+            {
+              "id": "c",
+              "label": "80%"
+            },
+            {
+              "id": "d",
+              "label": "87.5%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Total=165 out of 200.",
+            "165/200×100."
+          ],
+          "explanation": "Aggregate=82.5%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nAggregate=82.5%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "“Failed by” and “passed by” can reveal the maximum marks.\n\nSuppose 30% fails by 12 marks, while 40% is 18 marks above pass.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The two scores differ by 10% of maximum, and the mark gap is 12+18=30.\nSo 10%=30, maximum=300.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A scores 35% and fails by 15 marks. B scores 45% and is 25 marks above pass. What are the maximum marks?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "400"
+          },
+          {
+            "id": "b",
+            "label": "300"
+          },
+          {
+            "id": "c",
+            "label": "350"
+          },
+          {
+            "id": "d",
+            "label": "500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A scores 35% and fails by 15 marks. B scores 45% and is 25 marks above pass. What are the maximum marks?",
+          "options": [
+            {
+              "id": "a",
+              "label": "400"
+            },
+            {
+              "id": "b",
+              "label": "300"
+            },
+            {
+              "id": "c",
+              "label": "350"
+            },
+            {
+              "id": "d",
+              "label": "500"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The score gap is 10% of maximum.",
+            "The actual gap is 15+25=40 marks."
+          ],
+          "explanation": "10% corresponds to 40, so maximum=400."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nCombine the two pass-margin clues before finding the pass mark.\n\n10% corresponds to 40, so maximum=400.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A gets 28% and fails by 18. B gets 38% and is 22 above pass. Maximum marks?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "360"
+          },
+          {
+            "id": "b",
+            "label": "440"
+          },
+          {
+            "id": "c",
+            "label": "400"
+          },
+          {
+            "id": "d",
+            "label": "500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A gets 28% and fails by 18. B gets 38% and is 22 above pass. Maximum marks?",
+          "options": [
+            {
+              "id": "a",
+              "label": "360"
+            },
+            {
+              "id": "b",
+              "label": "440"
+            },
+            {
+              "id": "c",
+              "label": "400"
+            },
+            {
+              "id": "d",
+              "label": "500"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The two scores differ by 10%.",
+            "Their mark gap is 18+22=40."
+          ],
+          "explanation": "Maximum=400."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nMaximum=400.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A target percentage tells you the target number of correct answers.\n\nOn 100 questions, 60% means 60 correct.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 45 are already correct, 15 more are needed.\n\nAlways convert the target percent to a target count first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A test has 80 questions. A student has 38 correct. How many more correct answers are needed to reach 65%?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A test has 80 questions. A student has 38 correct. How many more correct answers are needed to reach 65%?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "65% of 80=52.",
+            "52−38."
+          ],
+          "explanation": "The student needs 14 more correct answers."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nCompare current correct count with the target count, not with 65 itself.\n\nThe student needs 14 more correct answers.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A test has 120 questions. A student has 66 correct. How many more are needed for 60%?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A test has 120 questions. A student has 66 correct. How many more are needed for 60%?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "60% of 120=72.",
+            "72−66."
+          ],
+          "explanation": "6 more correct answers are needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n6 more correct answers are needed.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Election margin questions can use a 100-vote model.\n\nIf two candidates get 56% and 44%, the winning margin is 12% of valid votes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If that 12% equals 480 votes, valid votes=480/0.12=4,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a two-candidate election, the winner gets 62% of valid votes and wins by 720 votes. How many valid votes were cast?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2,400"
+          },
+          {
+            "id": "b",
+            "label": "3,600"
+          },
+          {
+            "id": "c",
+            "label": "3,000"
+          },
+          {
+            "id": "d",
+            "label": "4,500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a two-candidate election, the winner gets 62% of valid votes and wins by 720 votes. How many valid votes were cast?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2,400"
+            },
+            {
+              "id": "b",
+              "label": "3,600"
+            },
+            {
+              "id": "c",
+              "label": "3,000"
+            },
+            {
+              "id": "d",
+              "label": "4,500"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The loser gets 38%.",
+            "Margin=24% of valid votes."
+          ],
+          "explanation": "720/0.24=3,000 valid votes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe margin percentage is winner share minus loser share.\n\n720/0.24=3,000 valid votes.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Winner gets 58% and wins by 640 votes. Total valid votes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4,000"
+          },
+          {
+            "id": "b",
+            "label": "3,200"
+          },
+          {
+            "id": "c",
+            "label": "5,000"
+          },
+          {
+            "id": "d",
+            "label": "6,400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Winner gets 58% and wins by 640 votes. Total valid votes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4,000"
+            },
+            {
+              "id": "b",
+              "label": "3,200"
+            },
+            {
+              "id": "c",
+              "label": "5,000"
+            },
+            {
+              "id": "d",
+              "label": "6,400"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Loser gets 42%.",
+            "Margin=16%."
+          ],
+          "explanation": "640/0.16=4,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n640/0.16=4,000.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Votes can pass through several stages:\nregistered → cast → valid → candidate share.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 80% vote, 5% of cast votes are invalid, and a candidate gets 60% of valid votes, the final share is 0.80×0.95×0.60 of registered voters.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "10,000 voters are enrolled. 75% vote, 4% of cast votes are invalid, and a candidate gets 60% of valid votes. How many votes does the candidate get?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4,500"
+          },
+          {
+            "id": "b",
+            "label": "4,275"
+          },
+          {
+            "id": "c",
+            "label": "5,760"
+          },
+          {
+            "id": "d",
+            "label": "4,320"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "10,000 voters are enrolled. 75% vote, 4% of cast votes are invalid, and a candidate gets 60% of valid votes. How many votes does the candidate get?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4,500"
+            },
+            {
+              "id": "b",
+              "label": "4,275"
+            },
+            {
+              "id": "c",
+              "label": "5,760"
+            },
+            {
+              "id": "d",
+              "label": "4,320"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Cast=7,500.",
+            "Valid=96% of 7,500, then take 60%."
+          ],
+          "explanation": "Valid votes=7,200; candidate gets 4,320."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nEach percentage uses the result of the previous stage.\n\nValid votes=7,200; candidate gets 4,320.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "8,000 enrolled; 80% vote; 5% invalid; a candidate gets 50% of valid votes. Votes received?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3,200"
+          },
+          {
+            "id": "b",
+            "label": "3,040"
+          },
+          {
+            "id": "c",
+            "label": "3,000"
+          },
+          {
+            "id": "d",
+            "label": "3,800"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "8,000 enrolled; 80% vote; 5% invalid; a candidate gets 50% of valid votes. Votes received?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3,200"
+            },
+            {
+              "id": "b",
+              "label": "3,040"
+            },
+            {
+              "id": "c",
+              "label": "3,000"
+            },
+            {
+              "id": "d",
+              "label": "3,800"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Cast=6,400.",
+            "Valid=6,080; take half."
+          ],
+          "explanation": "Candidate gets 3,040 votes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nCandidate gets 3,040 votes.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes pass/fail percentages recover the total group.\n\nIf 70% pass, then 30% fail.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 30% corresponds to 360 failures, total=360/0.30=1,200.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "84% of examinees pass. If 240 fail, how many examinees were there?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1,500"
+          },
+          {
+            "id": "b",
+            "label": "1,200"
+          },
+          {
+            "id": "c",
+            "label": "1,440"
+          },
+          {
+            "id": "d",
+            "label": "2,000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "84% of examinees pass. If 240 fail, how many examinees were there?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1,500"
+            },
+            {
+              "id": "b",
+              "label": "1,200"
+            },
+            {
+              "id": "c",
+              "label": "1,440"
+            },
+            {
+              "id": "d",
+              "label": "2,000"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Failure rate=16%.",
+            "240 is 16% of total."
+          ],
+          "explanation": "Total=240/0.16=1,500."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nUse the complementary fail percentage.\n\nTotal=240/0.16=1,500.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "92% pass and 160 fail. Total examinees?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1,600"
+          },
+          {
+            "id": "b",
+            "label": "1,840"
+          },
+          {
+            "id": "c",
+            "label": "2,000"
+          },
+          {
+            "id": "d",
+            "label": "2,400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "92% pass and 160 fail. Total examinees?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1,600"
+            },
+            {
+              "id": "b",
+              "label": "1,840"
+            },
+            {
+              "id": "c",
+              "label": "2,000"
+            },
+            {
+              "id": "d",
+              "label": "2,400"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "8% fail.",
+            "160/0.08."
+          ],
+          "explanation": "Total=2,000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nTotal=2,000.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A remaining-games question mixes current and final percentages.\n\nSuppose a team has won 30% of 60 games: 18 wins.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If it wins x games in a row, final win rate 50% means (18+x)/(60+x)=1/2.\nSolve to find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A team has won 40% of 50 games. How many straight wins are needed to reach a 50% overall win rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A team has won 40% of 50 games. How many straight wins are needed to reach a 50% overall win rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Current wins=20.",
+            "Solve (20+x)/(50+x)=1/2."
+          ],
+          "explanation": "40+2x=50+x, so x=10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe denominator grows when extra games are played.\n\n40+2x=50+x, so x=10.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A player has won 25% of 40 games. How many straight wins are needed to reach 40%?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A player has won 25% of 40 games. How many straight wins are needed to reach 40%?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Current wins=10.",
+            "Solve (10+x)/(40+x)=0.40."
+          ],
+          "explanation": "10+x=16+0.4x, so 0.6x=6 and x=10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n10+x=16+0.4x, so 0.6x=6 and x=10.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now keep exam and election stages separate: maximum marks, target marks, pass margins, enrolled voters, cast votes and valid votes. The denominator is the map—once it is right, the percentage arithmetic follows.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

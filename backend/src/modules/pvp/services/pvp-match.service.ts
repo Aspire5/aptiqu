@@ -44,7 +44,7 @@ export class PvpMatchService {
         data: {
           questionSetId: questionSet.id,
           status: 'STARTING',
-          totalQuestions: questionSet.questionCount || 10,
+          totalQuestions: 10,
           currentQuestionIndex: 0,
         },
       });
@@ -95,7 +95,7 @@ export class PvpMatchService {
     // 1. Prefer set unseen by both players (all questions active)
     const unseenBoth = await prisma.$queryRaw<Array<{ id: string }>>`
       SELECT qs.id FROM learning.pvp_question_sets qs
-      WHERE qs.status = 'PUBLISHED'
+      WHERE qs.status = 'PUBLISHED' AND qs.question_count = 10 AND (SELECT count(*) FROM learning.pvp_question_set_questions psq WHERE psq.set_id = qs.id) = 10
         AND NOT EXISTS (
           SELECT 1 FROM learning.pvp_player_set_history h
           WHERE h.question_set_id = qs.id AND h.user_id IN (${player1Id}::uuid, ${player2Id}::uuid)
@@ -185,7 +185,7 @@ export class PvpMatchService {
       },
     });
 
-    if (!questionSet || questionSet.setQuestions.length < (questionSet.questionCount || 10)) {
+    if (!questionSet || questionSet.questionCount !== 10 || questionSet.setQuestions.length !== 10) {
       return null;
     }
 
@@ -197,7 +197,7 @@ export class PvpMatchService {
         !sq.question?.topic?.subject?.isActive
     );
 
-    if (hasInactive) {
+    if (hasInactive || new Set(questionSet.setQuestions.map(q => q.questionId)).size !== 10) {
       return null;
     }
 

@@ -34,7 +34,13 @@ export class PracticeController {
       return;
     }
 
-    const { topicId, subtopicIds } = req.body;
+    const { topicId, subtopicIds, smartPicks = false } = req.body;
+    if ((topicId !== undefined && typeof topicId !== 'string') ||
+        (subtopicIds !== undefined && (!Array.isArray(subtopicIds) || !subtopicIds.length || subtopicIds.length > 500 || subtopicIds.some((id: unknown) => typeof id !== 'string'))) ||
+        typeof smartPicks !== 'boolean') {
+      res.status(400).json({ success: false, message: 'Invalid practice selection.' });
+      return;
+    }
     // Both specific selection and random drill modes are supported
     const resolvedSubtopics = Array.isArray(subtopicIds) ? subtopicIds : undefined;
 
@@ -43,7 +49,7 @@ export class PracticeController {
     );
 
     try {
-      const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics);
+      const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics, smartPicks);
       console.log(
         `[PracticeController] Practice session created successfully (sessionId="${session.id}", totalQuestions=${session.totalQuestions})`
       );
@@ -104,7 +110,7 @@ export class PracticeController {
       return;
     }
 
-    if (!questionId || !selectedOptionId) {
+    if (typeof questionId !== 'string' || typeof selectedOptionId !== 'string' || !questionId || !selectedOptionId) {
       res.status(400).json({
         success: false,
         message: 'Payload must contain "questionId" and "selectedOptionId".',
@@ -171,8 +177,8 @@ export class PracticeController {
       return;
     }
 
-    const page = parseInt(req.query.page as string, 10) || 1;
-    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string, 10) || 10));
 
     try {
       const history = await practiceSessionService.getHistory(userId, page, limit);

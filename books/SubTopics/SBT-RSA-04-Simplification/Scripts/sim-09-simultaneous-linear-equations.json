@@ -1,0 +1,1746 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-09-simultaneous-linear-equations",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Simultaneous Linear Equations",
+    "description": "Solve two- and three-equation systems that appear inside simplification questions, including cost puzzles and one simple quadratic.",
+    "teachingApproach": "Start with a cost story whose equations add up kindly, then build: scaling before subtracting, ratio-plus-linear systems, three-equation reduction, the pure scaling shortcut, a factor-pair quadratic, a fractional word system, and the half-ticket capstone. Every system ends with a substitution check, and every idea gets a fresh question plus a parallel retry.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4, Simplification. Approved scope: Teach elimination for two equations: adding or subtracting to remove a variable, as in 4 bags + 3 boxes = ₹555 with 3 bags + 4 boxes = ₹460 where adding gives x + y directly. Cover systems needing one equation scaled first, ratio forms such as 3x/2y = 21/22 converted to x/y before combining with 4x + 5y = 83, and three-equation systems solved by pairwise subtraction. Include the scaling pattern where 4 rings + 2 bangles = ₹57200 gives 6 rings + 3 bangles without finding single prices, and the book's simple quadratic x^2 − 7x = −12 solved by spotting factor pairs, reporting both roots. Include a two-statement word system (marks in two subjects) and the half-ticket reservation problem. Learners should check solutions by substituting into both original equations and report exactly the quantity asked."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn to solve two puzzles at once.\n\nExams hand you two sentences about the same unknowns — bags and boxes, tickets and reservations. By the end you'll translate both, eliminate cleanly, and check your answer in the original story.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's solve two puzzles at once.\n\n4 bags + 3 boxes cost ₹555.\n3 bags + 4 boxes cost ₹460.\n\nCall a bag x and a box y:\n\n4x + 3y = 555\n3x + 4y = 460",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Here's the gift: add the two equations.\n\n7x + 7y = 1015\nx + y = 145\n\nNow subtract them:\n\nx − y = 95\n\nAdd these two results: 2x = 240, so x = 120.\n\nOne bag costs ₹120.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "5 pens + 2 books cost ₹340; 2 pens + 5 books cost ₹304. What does one pen cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹40"
+          },
+          {
+            "id": "b",
+            "label": "₹52"
+          },
+          {
+            "id": "c",
+            "label": "₹92"
+          },
+          {
+            "id": "d",
+            "label": "₹48"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "5 pens + 2 books cost ₹340; 2 pens + 5 books cost ₹304. What does one pen cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹40"
+            },
+            {
+              "id": "b",
+              "label": "₹52"
+            },
+            {
+              "id": "c",
+              "label": "₹92"
+            },
+            {
+              "id": "d",
+              "label": "₹48"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Add the equations for x + y, subtract for x − y.",
+            "7(x + y) = 644 → 92, and 3(x − y) = 36 → 12."
+          ],
+          "explanation": "x + y = 92 and x − y = 12 give 2x = 104, so x = 52. Check: 5 × 52 + 2 × 40 = 340 ✓. Reporting 92 stops at x + y."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nAdd the equations for x + y, subtract for x − y.\n\nx + y = 92 and x − y = 12 give 2x = 104, so x = 52. Check: 5 × 52 + 2 × 40 = 340 ✓. Reporting 92 stops at x + y.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "3 chairs + 4 tables cost ₹2500; 4 chairs + 3 tables cost ₹2400. What does one chair cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹400"
+          },
+          {
+            "id": "b",
+            "label": "₹700"
+          },
+          {
+            "id": "c",
+            "label": "₹300"
+          },
+          {
+            "id": "d",
+            "label": "₹350"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3 chairs + 4 tables cost ₹2500; 4 chairs + 3 tables cost ₹2400. What does one chair cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹400"
+            },
+            {
+              "id": "b",
+              "label": "₹700"
+            },
+            {
+              "id": "c",
+              "label": "₹300"
+            },
+            {
+              "id": "d",
+              "label": "₹350"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Add: 7(x + y) = 4900. Subtract: y − x = 100.",
+            "x + y = 700 with y − x = 100."
+          ],
+          "explanation": "x + y = 700 and y − x = 100 give 2x = 600, so a chair is ₹300. Check: 900 + 1600 = 2500 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nx + y = 700 and y − x = 100 give 2x = 600, so a chair is ₹300. Check: 900 + 1600 = 2500 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Not every pair adds up so kindly:\n\n2x + 3y = 34\nx + y = 13\n\nMake the x's match first. Multiply the second equation by 2:\n\n2x + 2y = 26",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now subtract:\n\n(2x + 3y) − (2x + 2y) = 34 − 26\ny = 8\n\nThen x = 13 − 8 = 5.\n\nAnd if the question asks 5y + 7x: 40 + 35 = 75.\n\nAlways re-read what the question actually wants — often it's not x or y alone.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "If 3x + 4y = 50 and x + y = 14, find 2x + 5y.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "52"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "48"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If 3x + 4y = 50 and x + y = 14, find 2x + 5y.",
+          "options": [
+            {
+              "id": "a",
+              "label": "52"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "48"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Multiply x + y = 14 by 3, then subtract.",
+            "y = 8, x = 6 — now build 2x + 5y."
+          ],
+          "explanation": "3x + 3y = 42 subtracted from 3x + 4y = 50 gives y = 8, x = 6. So 2x + 5y = 12 + 40 = 52. Answering 6 or 8 reports x or y instead of the requested expression."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nMultiply x + y = 14 by 3, then subtract.\n\n3x + 3y = 42 subtracted from 3x + 4y = 50 gives y = 8, x = 6. So 2x + 5y = 12 + 40 = 52. Answering 6 or 8 reports x or y instead of the requested expression.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "If 4x + 3y = 58 and x + y = 17, find x + 2y.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If 4x + 3y = 58 and x + y = 17, find x + 2y.",
+          "options": [
+            {
+              "id": "a",
+              "label": "7"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Multiply x + y = 17 by 3 and subtract from the first.",
+            "x = 7, y = 10."
+          ],
+          "explanation": "4x + 3y = 58 minus 3x + 3y = 51 gives x = 7, so y = 10. Then x + 2y = 7 + 20 = 27."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n4x + 3y = 58 minus 3x + 3y = 51 gives x = 7, so y = 10. Then x + 2y = 7 + 20 = 27.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book mixes ratios with equations:\n\n3x/2y = 21/22 and 4x + 5y = 83\n\nClean the ratio first:\n\nx/y = 21/22 × 2/3 = 42/66 = 7/11",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So x = 7k and y = 11k for some k.\n\nSubstitute:\n\n28k + 55k = 83\n83k = 83 → k = 1\n\nx = 7, y = 11, and y − x = 4.\n\nA ratio fixes the shape; the equation fixes the size.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "If 5x/3y = 10/9 and 2x + 3y = 65, find y − x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "15"
+          },
+          {
+            "id": "d",
+            "label": "25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If 5x/3y = 10/9 and 2x + 3y = 65, find y − x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "25"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Clean the ratio: x/y = 10/9 × 3/5 = 2/3.",
+            "x = 2k, y = 3k; then 13k = 65."
+          ],
+          "explanation": "x = 2k, y = 3k, so 4k + 9k = 65 gives k = 5: x = 10, y = 15, and y − x = 5. Reporting 15 confuses y with the requested difference."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nClean the ratio: x/y = 10/9 × 3/5 = 2/3.\n\nx = 2k, y = 3k, so 4k + 9k = 65 gives k = 5: x = 10, y = 15, and y − x = 5. Reporting 15 confuses y with the requested difference.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "If 7x/4y = 21/8 and x + 2y = 56, find x − y.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "56"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If 7x/4y = 21/8 and x + 2y = 56, find x − y.",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "56"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "x/y = 21/8 × 4/7 = 3/2.",
+            "x = 3k, y = 2k; then 7k = 56."
+          ],
+          "explanation": "k = 8, so x = 24 and y = 16, and x − y = 8. Check: 24 + 32 = 56 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nk = 8, so x = 24 and y = 16, and x − y = 8. Check: 24 + 32 = 56 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three unknowns need three equations:\n\n2x + 3y + z = 55\nx + z − y = 4\ny − x + z = 12",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Subtract pairs to shrink the system:\n\nFirst minus second: x + 4y = 51\nFirst minus third: 3x + 2y = 43\n\nNow it's a two-equation problem. Double the second:\n6x + 4y = 86\nminus the first: 5x = 35 → x = 7",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step2"
+        }
+      ]
+    },
+    "teach_4_step2": {
+      "id": "teach_4_step2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Back-substitute:\n\n7 + 4y = 51 → y = 11\n2(7) + 3(11) + z = 55 → z = 8\n\nCheck in an unused equation: 7 + 8 − 11 = 4 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "x + y + z = 12, x + y = 7, y + z = 8. What is z?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "x + y + z = 12, x + y = 7, y + z = 8. What is z?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "7"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "z is the gap between the total and x + y.",
+            "z = 12 − 7."
+          ],
+          "explanation": "z = 12 − 7 = 5. Also x = 12 − 8 = 4 and y = 3. Check: 4 + 3 + 5 = 12 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nz is the gap between the total and x + y.\n\nz = 12 − 7 = 5. Also x = 12 − 8 = 4 and y = 3. Check: 4 + 3 + 5 = 12 ✓.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "a + b + c = 20, a + b = 13, b + c = 11. What is c?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "7"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "13"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "a + b + c = 20, a + b = 13, b + c = 11. What is c?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "7"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "13"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "c = total − (a + b).",
+            "20 − 13."
+          ],
+          "explanation": "c = 20 − 13 = 7. Then a = 20 − 11 = 9 and b = 4. Check: 9 + 4 + 7 = 20 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nc = 20 − 13 = 7. Then a = 20 − 11 = 9 and b = 4. Check: 9 + 4 + 7 = 20 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Some questions never want the single price.\n\n4 rings + 2 bangles = ₹57200.\nFind 6 rings + 3 bangles.\n\nNotice: 6R + 3B = 3/2 × (4R + 2B).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So multiply the total by 3/2:\n\n57200 × 3/2 = 85800\n\nNo ring price, no bangle price — pure scaling.\n\nBefore solving, check: is the ask a multiple of the given?",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "3 pens + 5 pencils cost ₹145. What do 6 pens + 10 pencils cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹145"
+          },
+          {
+            "id": "b",
+            "label": "₹435"
+          },
+          {
+            "id": "c",
+            "label": "₹72.50"
+          },
+          {
+            "id": "d",
+            "label": "₹290"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3 pens + 5 pencils cost ₹145. What do 6 pens + 10 pencils cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹145"
+            },
+            {
+              "id": "b",
+              "label": "₹435"
+            },
+            {
+              "id": "c",
+              "label": "₹72.50"
+            },
+            {
+              "id": "d",
+              "label": "₹290"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The ask is exactly double the given.",
+            "145 × 2."
+          ],
+          "explanation": "6 pens + 10 pencils = 2 × (3 pens + 5 pencils) = 2 × 145 = ₹290. Solving for one pen is unnecessary work here."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe ask is exactly double the given.\n\n6 pens + 10 pencils = 2 × (3 pens + 5 pencils) = 2 × 145 = ₹290. Solving for one pen is unnecessary work here.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "8 cups + 6 plates cost ₹1060. What do 4 cups + 3 plates cost?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹530"
+          },
+          {
+            "id": "b",
+            "label": "₹265"
+          },
+          {
+            "id": "c",
+            "label": "₹1060"
+          },
+          {
+            "id": "d",
+            "label": "₹2120"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "8 cups + 6 plates cost ₹1060. What do 4 cups + 3 plates cost?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹530"
+            },
+            {
+              "id": "b",
+              "label": "₹265"
+            },
+            {
+              "id": "c",
+              "label": "₹1060"
+            },
+            {
+              "id": "d",
+              "label": "₹2120"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The ask is exactly half.",
+            "1060 ÷ 2."
+          ],
+          "explanation": "4 cups + 3 plates = 1/2 × (8 cups + 6 plates) = ₹530. Scaling beats solving whenever the ask is a clean multiple."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n4 cups + 3 plates = 1/2 × (8 cups + 6 plates) = ₹530. Scaling beats solving whenever the ask is a clean multiple.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A square term sneaks into this chapter too:\n\nx^2 − 7x = −12\n\nMove everything to one side:\n\nx^2 − 7x + 12 = 0",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Hunt the factor pair: multiply to 12, add to 7.\n\n3 and 4 fit.\n\n(x − 3)(x − 4) = 0\nx = 3 or x = 4\n\nBoth values are genuine answers. Exams list them as '3 or 4'.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x^2 − 9x = −20, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 or 10"
+          },
+          {
+            "id": "b",
+            "label": "4 only"
+          },
+          {
+            "id": "c",
+            "label": "4 or 5"
+          },
+          {
+            "id": "d",
+            "label": "9 or 20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x^2 − 9x = −20, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 or 10"
+            },
+            {
+              "id": "b",
+              "label": "4 only"
+            },
+            {
+              "id": "c",
+              "label": "4 or 5"
+            },
+            {
+              "id": "d",
+              "label": "9 or 20"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Rewrite as x^2 − 9x + 20 = 0.",
+            "Multiply to 20, add to 9."
+          ],
+          "explanation": "(x − 4)(x − 5) = 0 gives x = 4 or 5. Answering '4 only' loses the second valid root."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRewrite as x^2 − 9x + 20 = 0.\n\n(x − 4)(x − 5) = 0 gives x = 4 or 5. Answering '4 only' loses the second valid root.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x^2 − 6x = −8, what is x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 or 4"
+          },
+          {
+            "id": "b",
+            "label": "2 or 6"
+          },
+          {
+            "id": "c",
+            "label": "1 or 8"
+          },
+          {
+            "id": "d",
+            "label": "4 only"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x^2 − 6x = −8, what is x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 or 4"
+            },
+            {
+              "id": "b",
+              "label": "2 or 6"
+            },
+            {
+              "id": "c",
+              "label": "1 or 8"
+            },
+            {
+              "id": "d",
+              "label": "4 only"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "x^2 − 6x + 8 = 0.",
+            "Multiply to 8, add to 6."
+          ],
+          "explanation": "(x − 2)(x − 4) = 0 gives x = 2 or 4. The pair 1 and 8 multiplies to 8 but adds to 9."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n(x − 2)(x − 4) = 0 gives x = 2 or 4. The pair 1 and 8 multiplies to 8 but adds to 9.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Same maths, wearing a story:\n\nA third of Arun's Maths marks exceeds half his English marks by 30. Together the subjects total 240.\n\nTranslate:\n\nx/3 − y/2 = 30\nx + y = 240",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Clear the fractions — multiply the first equation by 6:\n\n2x − 3y = 180\n\nAnd double the second... rather, match y's: 2x + 2y = 480.\n\nSubtract: 5y = 300 → y = 60\nThen x = 180.\n\nCheck: 180/3 − 60/2 = 60 − 30 = 30 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Half of Raj's Maths marks exceeds a third of his Science marks by 20. The two subjects total 300. Find his Science marks.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "144"
+          },
+          {
+            "id": "b",
+            "label": "150"
+          },
+          {
+            "id": "c",
+            "label": "156"
+          },
+          {
+            "id": "d",
+            "label": "120"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Half of Raj's Maths marks exceeds a third of his Science marks by 20. The two subjects total 300. Find his Science marks.",
+          "options": [
+            {
+              "id": "a",
+              "label": "144"
+            },
+            {
+              "id": "b",
+              "label": "150"
+            },
+            {
+              "id": "c",
+              "label": "156"
+            },
+            {
+              "id": "d",
+              "label": "120"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Translate: m/2 − s/3 = 20 and m + s = 300.",
+            "Multiply the first by 6: 3m − 2s = 120, then use m = 300 − s."
+          ],
+          "explanation": "3(300 − s) − 2s = 120 gives 900 − 5s = 120, so s = 156. Check: 144/2 − 156/3 = 72 − 52 = 20 ✓. Answering 144 reports Maths, not Science."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTranslate: m/2 − s/3 = 20 and m + s = 300.\n\n3(300 − s) − 2s = 120 gives 900 − 5s = 120, so s = 156. Check: 144/2 − 156/3 = 72 − 52 = 20 ✓. Answering 144 reports Maths, not Science.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Half of a number exceeds a fifth of another by 9. The two numbers total 60. Find the first number.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Half of a number exceeds a fifth of another by 9. The two numbers total 60. Find the first number.",
+          "options": [
+            {
+              "id": "a",
+              "label": "40"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "x/2 − y/5 = 9 and x + y = 60.",
+            "Multiply by 10: 5x − 2y = 90, then substitute y = 60 − x."
+          ],
+          "explanation": "5x − 2(60 − x) = 90 gives 7x = 210, so x = 30. Check: 15 − 6 = 9 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n5x − 2(60 − x) = 90 gives 7x = 210, so x = 30. Check: 15 − 6 = 9 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone — the railway half-ticket classic.\n\nFull fare x, reservation charge y (same for both tickets).\n\nFull ticket: x + y = 525\nFull + half reserved: x + x/2 + 2y = 850",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Double the second to clear the fraction:\n\n3x + 4y = 1700\n\nTriple the first: 3x + 3y = 1575\n\nSubtract: y = 125\n\nThe reservation charge is ₹125.\n\nCheck: fare = 400; 400 + 200 + 250 = 850 ✓",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A full reserved ticket costs ₹410; one full plus one half reserved ticket cost ₹680 together. Reservation is the same on both. What is the reservation charge?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹280"
+          },
+          {
+            "id": "b",
+            "label": "₹270"
+          },
+          {
+            "id": "c",
+            "label": "₹150"
+          },
+          {
+            "id": "d",
+            "label": "₹130"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A full reserved ticket costs ₹410; one full plus one half reserved ticket cost ₹680 together. Reservation is the same on both. What is the reservation charge?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹280"
+            },
+            {
+              "id": "b",
+              "label": "₹270"
+            },
+            {
+              "id": "c",
+              "label": "₹150"
+            },
+            {
+              "id": "d",
+              "label": "₹130"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "x + y = 410 and 3x/2 + 2y = 680.",
+            "Double the second: 3x + 4y = 1360; triple the first: 3x + 3y = 1230."
+          ],
+          "explanation": "Subtracting gives y = 130. Check: fare 280, so 280 + 140 + 260 = 680 ✓. Answering 280 reports the fare, not the reservation."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nx + y = 410 and 3x/2 + 2y = 680.\n\nSubtracting gives y = 130. Check: fare 280, so 280 + 140 + 260 = 680 ✓. Answering 280 reports the fare, not the reservation.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A full reserved ticket costs ₹260; one full plus one half reserved cost ₹430 together. What is the reservation charge?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹180"
+          },
+          {
+            "id": "b",
+            "label": "₹170"
+          },
+          {
+            "id": "c",
+            "label": "₹90"
+          },
+          {
+            "id": "d",
+            "label": "₹80"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A full reserved ticket costs ₹260; one full plus one half reserved cost ₹430 together. What is the reservation charge?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹180"
+            },
+            {
+              "id": "b",
+              "label": "₹170"
+            },
+            {
+              "id": "c",
+              "label": "₹90"
+            },
+            {
+              "id": "d",
+              "label": "₹80"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "x + y = 260 and 3x/2 + 2y = 430.",
+            "3x + 4y = 860 minus 3x + 3y = 780."
+          ],
+          "explanation": "y = 80. Check: fare 180, so 180 + 90 + 160 = 430 ✓."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\ny = 80. Check: fare 180, so 180 + 90 + 160 = 430 ✓.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "Simultaneous equations are now routine.\n\nTranslate each sentence into one equation.\nMatch a coefficient, then add or subtract to eliminate.\nA ratio fixes shape; an equation fixes size.\nIf the ask is a multiple of the given, just scale.\n\nAnd always substitute back into both originals.\n\nNext, stories built entirely from fractions of one whole.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -20,8 +20,10 @@ class PracticeRepository {
   Future<PracticeSessionModel> createSession({
     String? topicId,
     List<String>? subtopicIds,
+    bool smartPicks = false,
+    bool timerEnabled = false,
   }) async {
-    final Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = {'smartPicks': smartPicks};
     if (topicId != null && topicId.isNotEmpty) {
       data['topicId'] = topicId;
     }
@@ -32,21 +34,41 @@ class PracticeRepository {
     final response = await _client.dio.post(
       '/practice/sessions',
       data: data,
-      options: Options(
-        receiveTimeout: const Duration(seconds: 60),
-      ),
+      options: Options(receiveTimeout: const Duration(seconds: 150)),
     );
 
     if (response.statusCode == 201 && response.data['success'] == true) {
-      return PracticeSessionModel.fromJson(response.data['data'] as Map<String, dynamic>);
+      final json = response.data['data'] as Map<String, dynamic>;
+      await _client.secureStorage.write(
+        key: 'practice_timer_${json['id']}',
+        value: timerEnabled.toString(),
+      );
+      return PracticeSessionModel.fromJson({
+        ...json,
+        'timerEnabled': timerEnabled,
+      });
     }
-    throw Exception(response.data['message'] ?? 'Failed to create practice session');
+    throw Exception(
+      response.data['message'] ?? 'Failed to create practice session',
+    );
   }
 
-  Future<PracticeSessionModel> getSession(String sessionId) async {
-    final response = await _client.dio.get('/practice/sessions/$sessionId');
+  Future<PracticeSessionModel> getSession(
+    String sessionId, {
+    CancelToken? cancelToken,
+  }) async {
+    final timerEnabled =
+        await _client.secureStorage.read(key: 'practice_timer_$sessionId') ==
+        'true';
+    final response = await _client.dio.get(
+      '/practice/sessions/$sessionId',
+      cancelToken: cancelToken,
+    );
     if (response.statusCode == 200 && response.data['success'] == true) {
-      return PracticeSessionModel.fromJson(response.data['data'] as Map<String, dynamic>);
+      return PracticeSessionModel.fromJson({
+        ...response.data['data'] as Map<String, dynamic>,
+        'timerEnabled': timerEnabled,
+      });
     }
     throw Exception(response.data['message'] ?? 'Failed to retrieve session');
   }
@@ -56,9 +78,11 @@ class PracticeRepository {
     required String questionId,
     required String selectedOptionId,
     required int responseTimeMs,
+    CancelToken? cancelToken,
   }) async {
     final response = await _client.dio.post(
       '/practice/sessions/$sessionId/answer',
+      cancelToken: cancelToken,
       data: {
         'questionId': questionId,
         'selectedOptionId': selectedOptionId,
@@ -67,7 +91,9 @@ class PracticeRepository {
     );
 
     if (response.statusCode == 200 && response.data['success'] == true) {
-      return PracticeAnswerResultModel.fromJson(response.data['data'] as Map<String, dynamic>);
+      return PracticeAnswerResultModel.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
     }
     throw Exception(response.data['message'] ?? 'Failed to submit answer');
   }
@@ -76,27 +102,41 @@ class PracticeRepository {
     await _client.dio.post('/practice/sessions/$sessionId/abandon');
   }
 
-  Future<PracticeHistoryResponseModel> getHistory({int page = 1, int limit = 10}) async {
+  Future<PracticeHistoryResponseModel> getHistory({
+    int page = 1,
+    int limit = 10,
+  }) async {
     final response = await _client.dio.get(
       '/practice/history',
       queryParameters: {'page': page, 'limit': limit},
     );
 
     if (response.statusCode == 200 && response.data['success'] == true) {
-      return PracticeHistoryResponseModel.fromJson(response.data['data'] as Map<String, dynamic>);
+      return PracticeHistoryResponseModel.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
     }
-    throw Exception(response.data['message'] ?? 'Failed to retrieve practice history');
+    throw Exception(
+      response.data['message'] ?? 'Failed to retrieve practice history',
+    );
   }
 
-  Future<PracticeSessionModel> replaySession(String sessionId) async {
+  Future<PracticeSessionModel> replaySession(
+    String sessionId, {
+    bool timerEnabled = false,
+  }) async {
     final response = await _client.dio.post(
       '/practice/replay/$sessionId',
       options: Options(receiveTimeout: const Duration(seconds: 45)),
     );
 
     if (response.statusCode == 201 && response.data['success'] == true) {
-      return PracticeSessionModel.fromJson(response.data['data'] as Map<String, dynamic>);
+      return PracticeSessionModel.fromJson(
+        response.data['data'] as Map<String, dynamic>,
+      );
     }
-    throw Exception(response.data['message'] ?? 'Failed to replay practice session');
+    throw Exception(
+      response.data['message'] ?? 'Failed to replay practice session',
+    );
   }
 }

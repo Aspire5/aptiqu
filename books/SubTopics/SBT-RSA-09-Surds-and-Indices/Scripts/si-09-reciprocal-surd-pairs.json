@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "si-09-reciprocal-surd-pairs",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Reciprocal Surd Pairs and Conjugates",
+    "description": "Use conjugates to rationalize denominators and turn reciprocal surd expressions into short mental calculations.",
+    "teachingApproach": "Earn the conjugate rule through difference of squares, then exploit norm-1 pairs where the conjugate is automatically the reciprocal. Progress from simple rationalisation to x±1/x and a capstone linking conjugates with hidden perfect squares.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 9, Surds and Indices. Approved scope: Teach conjugates as a difference-of-squares tool: (a+b√c)(a−b√c)=a²−b²c. Use norm-1 pairs such as 3±2√2, 4±√15 and 5±2√6 to identify reciprocals instantly, then evaluate x+1/x and x−1/x without long division. Extend to general rationalisation of 1/(√a−√b) and 1/(a+√b), where the conjugate leaves a rational denominator. Finish by linking a norm-1 surd to its hidden perfect-square form, as in 5+2√6=(√3+√2)^2."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's use a useful pairing from the chapter.\n\n(3 + 2√2)(3 - 2√2)\n= 9 - 8\n= 1.\n\nSo 3 - 2√2 is the reciprocal of 3 + 2√2. This turns difficult-looking 1/x expressions into simple surd arithmetic.",
+        "text": "Some surds come in pairs that almost look like mirror images: 3+2√2 and 3−2√2.\n\nMultiply them and something special happens — the surd disappears. That one observation makes many reciprocal questions almost instant.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Use the difference of squares:\n\n(a+b√c)(a-b√c)=a^2-b^2c.\n\nFor 2±√3, the product is 4-3=1.\nTherefore 1/(2+√3)=2-√3.",
+        "text": "Multiply 3+2√2 by its conjugate 3−2√2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "(3+2√2)(3−2√2)=3^2−(2√2)^2=9−8=1.\n\nThe middle surd terms cancel because this is (a+b)(a−b)=a^2−b^2.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "(4+√15)(4−√15) = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2 - √3"
+            "label": "1"
           },
           {
             "id": "b",
-            "label": "2 + √3"
+            "label": "2"
           },
           {
             "id": "c",
-            "label": "√3 - 2"
+            "label": "15"
           },
           {
             "id": "d",
-            "label": "1/2 - √3"
+            "label": "16"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(4+√15)(4−√15) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "15"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use difference of squares.",
+            "4^2−(√15)^2."
+          ],
+          "explanation": "16−15=1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
       "content": {
-        "text": "What is 1/(2 + √3)?",
+        "text": "Let’s check the pattern.\n\nUse difference of squares.\n\n16−15=1.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
+          "targetNodeId": "retry_1"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply (2+√3)(2-√3).",
-            "The product is 1."
-          ],
-          "prompt": "What is 1/(2 + √3)?",
-          "options": [
-            {
-              "id": "a",
-              "label": "2 - √3"
-            },
-            {
-              "id": "b",
-              "label": "2 + √3"
-            },
-            {
-              "id": "c",
-              "label": "√3 - 2"
-            },
-            {
-              "id": "d",
-              "label": "1/2 - √3"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Correct. Because (2+√3)(2-√3)=1, the reciprocal is 2-√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "(5+2√6)(5−2√6) = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3 + 2√2"
+            "label": "5"
           },
           {
             "id": "b",
-            "label": "2√2 - 3"
+            "label": "1"
           },
           {
             "id": "c",
-            "label": "3 - 2√2"
+            "label": "24"
           },
           {
             "id": "d",
-            "label": "1/3 - 2√2"
+            "label": "25"
           }
         ]
       },
-      "content": {
-        "text": "What is 1/(3 + 2√2)?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use the opposite-sign partner.",
-            "9-(2√2)^2=9-8=1."
-          ],
-          "prompt": "What is 1/(3 + 2√2)?",
+          "questionType": "PRACTICE",
+          "prompt": "(5+2√6)(5−2√6) = ?",
           "options": [
             {
               "id": "a",
-              "label": "3 + 2√2"
+              "label": "5"
             },
             {
               "id": "b",
-              "label": "2√2 - 3"
+              "label": "1"
             },
             {
               "id": "c",
-              "label": "3 - 2√2"
+              "label": "24"
             },
             {
               "id": "d",
-              "label": "1/3 - 2√2"
+              "label": "25"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Correct. The product of 3+2√2 and 3-2√2 is 1, so the reciprocal is 3-2√2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "5^2−(2√6)^2.",
+            "25−24."
+          ],
+          "explanation": "The product is 1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 1/(2 + √3)?\n\nStart from this clue:\nMultiply (2+√3)(2-√3).\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe product is 1.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe product of 3+2√2 and 3-2√2 is 1, so the reciprocal is 3-2√2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "If two numbers multiply to 1, they are reciprocals.\n\nSo from the previous result:\n1/(3+2√2)=3−2√2.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "Once the reciprocal is known, x+1/x is just addition.\n\nIf x=2+√3, then 1/x=2-√3.\n\nx+1/x = 4.",
+        "text": "No long division is needed. The conjugate already gives the reciprocal because their product is exactly 1.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "1/(4+√15) = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2√3"
+            "label": "4+√15"
           },
           {
             "id": "b",
-            "label": "4"
+            "label": "4−√15"
           },
           {
             "id": "c",
-            "label": "1"
+            "label": "(4−√15)/2"
           },
           {
             "id": "d",
-            "label": "4√3"
+            "label": "1/(4−√15)"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1/(4+√15) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4+√15"
+            },
+            {
+              "id": "b",
+              "label": "4−√15"
+            },
+            {
+              "id": "c",
+              "label": "(4−√15)/2"
+            },
+            {
+              "id": "d",
+              "label": "1/(4−√15)"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The conjugate product is 1.",
+            "So the conjugate itself is the reciprocal."
+          ],
+          "explanation": "1/(4+√15)=4−√15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
       "content": {
-        "text": "If x = 2 + √3, what is x + 1/x?",
+        "text": "Let’s check the pattern.\n\nThe conjugate product is 1.\n\n1/(4+√15)=4−√15.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
+          "targetNodeId": "retry_2"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "1/x = 2-√3.",
-            "Add the two expressions."
-          ],
-          "prompt": "If x = 2 + √3, what is x + 1/x?",
-          "options": [
-            {
-              "id": "a",
-              "label": "2√3"
-            },
-            {
-              "id": "b",
-              "label": "4"
-            },
-            {
-              "id": "c",
-              "label": "1"
-            },
-            {
-              "id": "d",
-              "label": "4√3"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Correct. (2+√3)+(2-√3)=4.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "1/(5+2√6) = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4√2"
+            "label": "5+2√6"
           },
           {
             "id": "b",
-            "label": "1"
+            "label": "(5−2√6)/2"
           },
           {
             "id": "c",
-            "label": "12"
+            "label": "5−2√6"
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "1/(5−2√6)"
           }
         ]
       },
-      "content": {
-        "text": "If x = 3 + 2√2, what is x + 1/x?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "1/x=3-2√2.",
-            "Add and cancel the surd parts."
-          ],
-          "prompt": "If x = 3 + 2√2, what is x + 1/x?",
+          "questionType": "PRACTICE",
+          "prompt": "1/(5+2√6) = ?",
           "options": [
             {
               "id": "a",
-              "label": "4√2"
+              "label": "5+2√6"
             },
             {
               "id": "b",
-              "label": "1"
+              "label": "(5−2√6)/2"
             },
             {
               "id": "c",
-              "label": "12"
+              "label": "5−2√6"
             },
             {
               "id": "d",
-              "label": "6"
+              "label": "1/(5−2√6)"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Correct. x+1/x=6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use the norm-1 conjugate pair.",
+            "The conjugate is the reciprocal."
+          ],
+          "explanation": "The reciprocal is 5−2√6."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf x = 2 + √3, what is x + 1/x?\n\nStart from this clue:\n1/x = 2-√3.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe reciprocal is 5−2√6.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nx+1/x=6.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Now let x=4+√15. Its reciprocal is 4−√15.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "For x-1/x, the rational parts cancel instead.\n\nIf x=3+2√2, then:\n\nx-1/x = (3+2√2)-(3-2√2)=4√2.",
+        "text": "Then:\n\nx+1/x=(4+√15)+(4−√15)=8\n\nThe irrational parts cancel immediately.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "6"
-          },
-          {
-            "id": "b",
-            "label": "2√2"
-          },
-          {
-            "id": "c",
-            "label": "4√2"
-          },
-          {
-            "id": "d",
-            "label": "8"
-          }
-        ]
-      },
       "content": {
-        "text": "If x = 3 + 2√2, what is x - 1/x?",
+        "text": "If x=4+√15, find x+1/x.",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use 1/x=3-2√2.",
-            "Subtract with brackets."
-          ],
-          "prompt": "If x = 3 + 2√2, what is x - 1/x?",
-          "options": [
-            {
-              "id": "a",
-              "label": "6"
-            },
-            {
-              "id": "b",
-              "label": "2√2"
-            },
-            {
-              "id": "c",
-              "label": "4√2"
-            },
-            {
-              "id": "d",
-              "label": "8"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. The 3s cancel and the surd parts add, giving 4√2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2√3"
-          },
-          {
-            "id": "b",
             "label": "4"
           },
           {
+            "id": "b",
+            "label": "2√15"
+          },
+          {
             "id": "c",
-            "label": "√3"
+            "label": "8"
           },
           {
             "id": "d",
-            "label": "3"
+            "label": "8+2√15"
           }
         ]
       },
-      "content": {
-        "text": "If x = 2 + √3, what is x - 1/x?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use 1/x=2-√3.",
-            "Subtract."
-          ],
-          "prompt": "If x = 2 + √3, what is x - 1/x?",
+          "questionType": "PRACTICE",
+          "prompt": "If x=4+√15, find x+1/x.",
           "options": [
             {
               "id": "a",
-              "label": "2√3"
-            },
-            {
-              "id": "b",
               "label": "4"
             },
             {
+              "id": "b",
+              "label": "2√15"
+            },
+            {
               "id": "c",
-              "label": "√3"
+              "label": "8"
             },
             {
               "id": "d",
-              "label": "3"
+              "label": "8+2√15"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "MEDIUM",
-          "explanation": "Correct. (2+√3)-(2-√3)=2√3.",
+          "xp": 15,
+          "hints": [
+            "1/x is the conjugate.",
+            "Add the pair."
+          ],
+          "explanation": "x+1/x=8."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\n1/x is the conjugate.\n\nx+1/x=8.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=5+2√6, find x+1/x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "4√6"
+          },
+          {
+            "id": "c",
+            "label": "10+4√6"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "If x=5+2√6, find x+1/x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "4√6"
+            },
+            {
+              "id": "c",
+              "label": "10+4√6"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "1/x=5−2√6.",
+            "Add."
+          ],
+          "explanation": "The sum is 10."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf x = 3 + 2√2, what is x - 1/x?\n\nStart from this clue:\nUse 1/x=3-2√2.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe sum is 10.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n(2+√3)-(2-√3)=2√3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "The difference keeps the surd instead of cancelling it.\n\nFor x=4+√15:\nx−1/x=2√15.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "A known sum gives a squared relation.\n\n(x+1/x)^2 = x^2 + 1/x^2 + 2.\n\nSo if x+1/x=6, then x^2+1/x^2 = 36-2 = 34.",
+        "text": "The rational 4s cancel while the surd parts add.\n\nThis is the mirror image of the previous x+1/x pattern.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "If x=4+√15, find x−1/x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "36"
+            "label": "8"
           },
           {
             "id": "b",
-            "label": "32"
+            "label": "√15"
           },
           {
             "id": "c",
-            "label": "38"
+            "label": "4√15"
           },
           {
             "id": "d",
-            "label": "34"
+            "label": "2√15"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x=4+√15, find x−1/x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "√15"
+            },
+            {
+              "id": "c",
+              "label": "4√15"
+            },
+            {
+              "id": "d",
+              "label": "2√15"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Subtract the conjugate.",
+            "(4+√15)−(4−√15)."
+          ],
+          "explanation": "The difference is 2√15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
       "content": {
-        "text": "If x + 1/x = 6, what is x^2 + 1/x^2?",
+        "text": "Let’s check the pattern.\n\nSubtract the conjugate.\n\nThe difference is 2√15.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
+          "targetNodeId": "retry_4"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Square the given sum.",
-            "Subtract 2 from 6^2."
-          ],
-          "prompt": "If x + 1/x = 6, what is x^2 + 1/x^2?",
-          "options": [
-            {
-              "id": "a",
-              "label": "36"
-            },
-            {
-              "id": "b",
-              "label": "32"
-            },
-            {
-              "id": "c",
-              "label": "38"
-            },
-            {
-              "id": "d",
-              "label": "34"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. x^2+1/x^2 = 6^2-2 = 34.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "If x=5+2√6, find x−1/x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "25"
+            "label": "4√6"
           },
           {
             "id": "b",
-            "label": "23"
+            "label": "10"
           },
           {
             "id": "c",
-            "label": "27"
+            "label": "2√6"
           },
           {
             "id": "d",
-            "label": "21"
+            "label": "8√6"
           }
         ]
       },
-      "content": {
-        "text": "If x + 1/x = 5, what is x^2 + 1/x^2?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (x+1/x)^2=x^2+1/x^2+2.",
-            "25-2=23."
-          ],
-          "prompt": "If x + 1/x = 5, what is x^2 + 1/x^2?",
+          "questionType": "PRACTICE",
+          "prompt": "If x=5+2√6, find x−1/x.",
           "options": [
             {
               "id": "a",
-              "label": "25"
+              "label": "4√6"
             },
             {
               "id": "b",
-              "label": "23"
+              "label": "10"
             },
             {
               "id": "c",
-              "label": "27"
+              "label": "2√6"
             },
             {
               "id": "d",
-              "label": "21"
+              "label": "8√6"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "MEDIUM",
-          "explanation": "Correct. The value is 23.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 15,
+          "hints": [
+            "Subtract 5−2√6 from 5+2√6.",
+            "The 5s cancel."
+          ],
+          "explanation": "The result is 4√6."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf x + 1/x = 6, what is x^2 + 1/x^2?\n\nStart from this clue:\nSquare the given sum.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe result is 4√6.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe value is 23.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Sometimes x itself is unknown, but x+1/x is given.\n\nSquare the difference relation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "A known difference also gives a squared relation.\n\n(x-1/x)^2 = x^2 + 1/x^2 - 2.\n\nSo if x-1/x=4, then x^2+1/x^2=16+2=18.",
+        "text": "(x−1/x)^2 = x^2+1/x^2−2\nwhile (x+1/x)^2 = x^2+1/x^2+2.\n\nSo (x−1/x)^2=(x+1/x)^2−4.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "If x+1/x=6 and x>1, find x−1/x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "18"
+            "label": "4√2"
           },
           {
             "id": "b",
-            "label": "14"
+            "label": "2√2"
           },
           {
             "id": "c",
-            "label": "16"
+            "label": "√32"
           },
           {
             "id": "d",
-            "label": "20"
+            "label": "6√2"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x+1/x=6 and x>1, find x−1/x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "4√2"
+            },
+            {
+              "id": "b",
+              "label": "2√2"
+            },
+            {
+              "id": "c",
+              "label": "√32"
+            },
+            {
+              "id": "d",
+              "label": "6√2"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Square 6 and subtract 4.",
+            "√32=4√2."
+          ],
+          "explanation": "(x−1/x)^2=36−4=32, so the positive difference is 4√2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
       "content": {
-        "text": "If x - 1/x = 4, what is x^2 + 1/x^2?",
+        "text": "Let’s check the pattern.\n\nSquare 6 and subtract 4.\n\n(x−1/x)^2=36−4=32, so the positive difference is 4√2.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
+          "targetNodeId": "retry_5"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Square the difference.",
-            "Add 2 after squaring."
-          ],
-          "prompt": "If x - 1/x = 4, what is x^2 + 1/x^2?",
-          "options": [
-            {
-              "id": "a",
-              "label": "18"
-            },
-            {
-              "id": "b",
-              "label": "14"
-            },
-            {
-              "id": "c",
-              "label": "16"
-            },
-            {
-              "id": "d",
-              "label": "20"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. x^2+1/x^2=4^2+2=18.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "If x+1/x=14 and x>1, find x−1/x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "34"
+            "label": "4√3"
           },
           {
             "id": "b",
-            "label": "36"
+            "label": "8√3"
           },
           {
             "id": "c",
-            "label": "40"
+            "label": "√48"
           },
           {
             "id": "d",
-            "label": "38"
+            "label": "12√3"
           }
         ]
       },
-      "content": {
-        "text": "If x - 1/x = 6, what is x^2 + 1/x^2?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use x^2+1/x^2 = (x-1/x)^2 + 2.",
-            "36+2=38."
-          ],
-          "prompt": "If x - 1/x = 6, what is x^2 + 1/x^2?",
+          "questionType": "PRACTICE",
+          "prompt": "If x+1/x=14 and x>1, find x−1/x.",
           "options": [
             {
               "id": "a",
-              "label": "34"
+              "label": "4√3"
             },
             {
               "id": "b",
-              "label": "36"
+              "label": "8√3"
             },
             {
               "id": "c",
-              "label": "40"
+              "label": "√48"
             },
             {
               "id": "d",
-              "label": "38"
+              "label": "12√3"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "HARD",
-          "explanation": "Correct. The value is 38.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 20,
+          "hints": [
+            "14^2−4=192.",
+            "√192=8√3."
+          ],
+          "explanation": "The positive difference is 8√3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf x - 1/x = 4, what is x^2 + 1/x^2?\n\nStart from this clue:\nSquare the difference.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe positive difference is 8√3.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe value is 38.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "When the conjugate product is not 1, divide by that product.\n\n1/(√7−√5)",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "The same pairing can appear after taking a square root.\n\nIf x=3+2√2, then x=(√2+1)^2.\nSo √x=√2+1 and 1/√x=√2-1.\n\nTheir difference is 2.",
+        "text": "Multiply top and bottom by √7+√5:\n\n(√7+√5)/(7−5)=(√7+√5)/2\n\nThe denominator becomes rational.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "1/(√5−√3) = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2√2"
+            "label": "√5+√3"
           },
           {
             "id": "b",
-            "label": "2"
+            "label": "(√5+√3)/2"
           },
           {
             "id": "c",
-            "label": "4"
+            "label": "(√5−√3)/2"
           },
           {
             "id": "d",
-            "label": "1"
+            "label": "2/(√5+√3)"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1/(√5−√3) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "√5+√3"
+            },
+            {
+              "id": "b",
+              "label": "(√5+√3)/2"
+            },
+            {
+              "id": "c",
+              "label": "(√5−√3)/2"
+            },
+            {
+              "id": "d",
+              "label": "2/(√5+√3)"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use the conjugate √5+√3.",
+            "The denominator becomes 5−3=2."
+          ],
+          "explanation": "The rationalized form is (√5+√3)/2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
       "content": {
-        "text": "If x = 3 + 2√2, what is √x - 1/√x?",
+        "text": "Let’s check the pattern.\n\nUse the conjugate √5+√3.\n\nThe rationalized form is (√5+√3)/2.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_6"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√x=√2+1.",
-            "Its reciprocal is √2-1."
-          ],
-          "prompt": "If x = 3 + 2√2, what is √x - 1/√x?",
-          "options": [
-            {
-              "id": "a",
-              "label": "2√2"
-            },
-            {
-              "id": "b",
-              "label": "2"
-            },
-            {
-              "id": "c",
-              "label": "4"
-            },
-            {
-              "id": "d",
-              "label": "1"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. (√2+1)-(√2-1)=2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "1/(√6−√2) = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4"
+            "label": "(√6+√2)/2"
           },
           {
             "id": "b",
+            "label": "√6+√2"
+          },
+          {
+            "id": "c",
+            "label": "(√6+√2)/4"
+          },
+          {
+            "id": "d",
+            "label": "4/(√6+√2)"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1/(√6−√2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "(√6+√2)/2"
+            },
+            {
+              "id": "b",
+              "label": "√6+√2"
+            },
+            {
+              "id": "c",
+              "label": "(√6+√2)/4"
+            },
+            {
+              "id": "d",
+              "label": "4/(√6+√2)"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Multiply by the conjugate.",
+            "6−2=4."
+          ],
+          "explanation": "The rationalized form is (√6+√2)/4."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nThe rationalized form is (√6+√2)/4.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same method works when a rational number and a surd share the denominator.\n\n1/(2+√3)",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply by 2−√3:\n\n(2−√3)/(4−3)=2−√3\n\nThis is another norm-1 pair.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "1/(3+√5) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3−√5"
+          },
+          {
+            "id": "b",
+            "label": "(3+√5)/4"
+          },
+          {
+            "id": "c",
+            "label": "(3−√5)/4"
+          },
+          {
+            "id": "d",
+            "label": "(3−√5)/2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1/(3+√5) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3−√5"
+            },
+            {
+              "id": "b",
+              "label": "(3+√5)/4"
+            },
+            {
+              "id": "c",
+              "label": "(3−√5)/4"
+            },
+            {
+              "id": "d",
+              "label": "(3−√5)/2"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use the conjugate 3−√5.",
+            "The denominator is 9−5=4."
+          ],
+          "explanation": "1/(3+√5)=(3−√5)/4."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nUse the conjugate 3−√5.\n\n1/(3+√5)=(3−√5)/4.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "1/(4+√7) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4−√7"
+          },
+          {
+            "id": "b",
+            "label": "(4−√7)/7"
+          },
+          {
+            "id": "c",
+            "label": "(4+√7)/9"
+          },
+          {
+            "id": "d",
+            "label": "(4−√7)/9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1/(4+√7) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4−√7"
+            },
+            {
+              "id": "b",
+              "label": "(4−√7)/7"
+            },
+            {
+              "id": "c",
+              "label": "(4+√7)/9"
+            },
+            {
+              "id": "d",
+              "label": "(4−√7)/9"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Conjugate: 4−√7.",
+            "16−7=9."
+          ],
+          "explanation": "The rationalized form is (4−√7)/9."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nThe rationalized form is (4−√7)/9.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: a norm-1 surd may also be a hidden perfect square.\n\n5+2√6=(√3+√2)^2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let x=5+2√6. Then √x=√3+√2.\n\nx−1=4+2√6=2√2(√3+√2).\n\nSo (x−1)/√x=2√2. One structure unlocks another.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=7+4√3, find (x−1)/√x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
             "label": "√3"
           },
           {
+            "id": "b",
+            "label": "4√3"
+          },
+          {
             "id": "c",
-            "label": "2√3"
+            "label": "6"
           },
           {
             "id": "d",
-            "label": "2"
+            "label": "2√3"
           }
         ]
       },
-      "content": {
-        "text": "If x = 7 + 4√3, what is √x - 1/√x?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√x=2+√3.",
-            "Its reciprocal is 2-√3."
-          ],
-          "prompt": "If x = 7 + 4√3, what is √x - 1/√x?",
+          "questionType": "PRACTICE",
+          "prompt": "If x=7+4√3, find (x−1)/√x.",
           "options": [
             {
               "id": "a",
-              "label": "4"
-            },
-            {
-              "id": "b",
               "label": "√3"
             },
             {
+              "id": "b",
+              "label": "4√3"
+            },
+            {
               "id": "c",
-              "label": "2√3"
+              "label": "6"
             },
             {
               "id": "d",
-              "label": "2"
+              "label": "2√3"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "HARD",
-          "explanation": "Correct. (2+√3)-(2-√3)=2√3.",
+          "xp": 20,
+          "hints": [
+            "x=(2+√3)^2.",
+            "Factor x−1 by the same √x term."
+          ],
+          "explanation": "√x=2+√3 and x−1=6+4√3=2√3(2+√3), so the quotient is 2√3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nx=(2+√3)^2.\n\n√x=2+√3 and x−1=6+4√3=2√3(2+√3), so the quotient is 2√3.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=3+2√2, find (x−1)/√x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "√2"
+          },
+          {
+            "id": "c",
+            "label": "2√2"
+          },
+          {
+            "id": "d",
+            "label": "4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "If x=3+2√2, find (x−1)/√x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "√2"
+            },
+            {
+              "id": "c",
+              "label": "2√2"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "x=(1+√2)^2.",
+            "x−1=2+2√2=2(1+√2)."
+          ],
+          "explanation": "Dividing by √x=1+√2 leaves 2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf x = 3 + 2√2, what is √x - 1/√x?\n\nStart from this clue:\n√x=√2+1.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nDividing by √x=1+√2 leaves 2.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "complete": {
+      "id": "complete",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n(2+√3)-(2-√3)=2√3.\n\nThe key is to identify the structure first, then apply the matching law.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "recap"
-        }
-      ]
-    },
-    "recap": {
-      "id": "recap",
-      "type": "CONTENT",
-      "content": {
-        "text": "Opposite-sign surd pairs multiply by a difference of squares.\n\nIf their product is 1, each is the reciprocal of the other.\nThen x+1/x often cancels the surd parts, while x-1/x often cancels the rational parts.\nSquaring those relations gives x^2+1/x^2.\n\nShow how you would verify that 2-√3 is really the reciprocal of 2+√3.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "finish"
-        }
-      ]
-    },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
-      "content": {
-        "text": "Nice work. Do not memorize a reciprocal blindly. Multiply the two opposite-sign expressions and check whether the product is 1. That verification makes the later x ± 1/x steps trustworthy.",
+        "text": "Conjugate strategy:\n\nChange + to −, or − to +.\nMultiply using difference of squares.\nIf the product is 1, the conjugate is the reciprocal.\nOtherwise divide the conjugate by the rational product.\n\nThat shortcut powers rationalisation and x±1/x questions alike.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Reciprocal Surd Pairs and x ± 1/x",
-    "description": "Use opposite-sign surd pairs to simplify reciprocals and expressions involving a number and its reciprocal.",
-    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Reciprocal Surd Pairs and x ± 1/x. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
-    "targetDurationMinutes": 21
-  },
-  "scriptId": "script-si-09-reciprocal-surd-pairs",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "pon-07-fractions-numerator-denominator",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Fractions: Numerator and Denominator Equations",
+    "description": "Treat numerator and denominator as separate unknowns and translate every change to them before simplifying.",
+    "teachingApproach": "Make numerator and denominator visible as separate quantities from the first screen. Progress through equal changes, two independent transformed-fraction clues, fixed numerator-denominator gaps, one-sided changes, percentage changes, reciprocal quadratics, product/quotient relations and a ratio-based capstone. Each block emphasizes exactly what changed before any simplification.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "Teach an unknown fraction as x/y and distinguish changing the fraction from changing its numerator or denominator. Cover adding or subtracting values from both parts, a fixed difference or ratio between numerator and denominator, two changed-fraction clues, percentage increases to numerator and denominator, reciprocal-minus-fraction conditions, and product/quotient information for a pair of fractions. Build equations before simplification and check the final fraction in every stated transformation. Use positive proper-fraction conditions where needed to choose the valid root."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's solve fraction puzzles by naming the numerator and denominator.\n\nIf the fraction is x/y, every change in the question must be applied to x or y exactly where it is stated.\n\nThen we solve the resulting equations.",
+        "text": "Let's solve fraction puzzles without mixing up the fraction with its numerator and denominator.\n\nA small wording change—'add 1 to the fraction' versus 'add 1 to numerator and denominator'—creates completely different math. We'll keep those parts separate from the start.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Write an unknown fraction as x/y.\n\nx is the numerator.\ny is the denominator.\n\nA statement about their sum or difference becomes one equation. A changed fraction gives another equation.",
+        "text": "For an unknown fraction, keep numerator and denominator separate.\n\nCall the fraction x/y.\n\nIf 1 is added to both parts, the new fraction is (x+1)/(y+1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That is very different from adding 1 to the value x/y.\n\nExample: 3/5 becomes 4/6 when 1 is added to numerator and denominator. It does not become 8/5.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "A fraction is x/y. If 2 is added to both numerator and denominator, which expression is correct?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4/9"
+            "label": "x/y + 2"
           },
           {
             "id": "b",
-            "label": "6/7"
+            "label": "(x+2)/(y+2)"
           },
           {
             "id": "c",
-            "label": "5/8"
+            "label": "(x+2)/y"
           },
           {
             "id": "d",
-            "label": "7/6"
+            "label": "x/(y+2)"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fraction is x/y. If 2 is added to both numerator and denominator, which expression is correct?",
+          "options": [
+            {
+              "id": "a",
+              "label": "x/y + 2"
+            },
+            {
+              "id": "b",
+              "label": "(x+2)/(y+2)"
+            },
+            {
+              "id": "c",
+              "label": "(x+2)/y"
+            },
+            {
+              "id": "d",
+              "label": "x/(y+2)"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Change the numerator and denominator separately.",
+            "Both parts receive +2 before forming the new fraction."
+          ],
+          "explanation": "The changed fraction is (x+2)/(y+2). Adding 2 to the fraction's value would be a different operation."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
       "content": {
-        "text": "A fraction has numerator plus denominator equal to 13. If 1 is added to the numerator and 2 is subtracted from the denominator, the fraction becomes 1. What is the original fraction?",
+        "text": "Let's check this one.\n\nChange the numerator and denominator separately.\n\nThe changed fraction is (x+2)/(y+2). Adding 2 to the fraction's value would be a different operation.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
+          "targetNodeId": "retry_1"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use x+y=13.",
-            "(x+1)/(y−2)=1 means x+1=y−2."
-          ],
-          "prompt": "A fraction has numerator plus denominator equal to 13. If 1 is added to the numerator and 2 is subtracted from the denominator, the fraction becomes 1. What is the original fraction?",
-          "options": [
-            {
-              "id": "a",
-              "label": "4/9"
-            },
-            {
-              "id": "b",
-              "label": "6/7"
-            },
-            {
-              "id": "c",
-              "label": "5/8"
-            },
-            {
-              "id": "d",
-              "label": "7/6"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "x+y=13 and y−x=3 give x=5,y=8. The fraction is 5/8.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "A fraction is a/b. If 3 is subtracted from both numerator and denominator, what does it become?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6/9"
+            "label": "a/b−3"
           },
           {
             "id": "b",
-            "label": "5/10"
+            "label": "(a−3)/b"
           },
           {
             "id": "c",
-            "label": "7/8"
+            "label": "(a−3)/(b−3)"
           },
           {
             "id": "d",
-            "label": "8/7"
+            "label": "a/(b−3)"
           }
         ]
       },
-      "content": {
-        "text": "A fraction has numerator plus denominator equal to 15. If 2 is added to the numerator and 1 is subtracted from the denominator, the fraction becomes 1. What is the fraction?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x+y=15.",
-            "x+2=y−1, so y−x=3."
-          ],
-          "prompt": "A fraction has numerator plus denominator equal to 15. If 2 is added to the numerator and 1 is subtracted from the denominator, the fraction becomes 1. What is the fraction?",
+          "questionType": "PRACTICE",
+          "prompt": "A fraction is a/b. If 3 is subtracted from both numerator and denominator, what does it become?",
           "options": [
             {
               "id": "a",
-              "label": "6/9"
+              "label": "a/b−3"
             },
             {
               "id": "b",
-              "label": "5/10"
+              "label": "(a−3)/b"
             },
             {
               "id": "c",
-              "label": "7/8"
+              "label": "(a−3)/(b−3)"
             },
             {
               "id": "d",
-              "label": "8/7"
+              "label": "a/(b−3)"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "x=6,y=9, so the fraction is 6/9 (which simplifies to 2/3).",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "Apply −3 to both parts.",
+            "Keep the fraction bar between the changed numerator and denominator."
+          ],
+          "explanation": "The new fraction is (a−3)/(b−3)."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA fraction has numerator plus denominator equal to 13. If 1 is added to the numerator and 2 is subtracted from the denominator, the fraction becomes 1. What is the original fraction?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nThe new fraction is (a−3)/(b−3).\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "x=6,y=9, so the fraction is 6/9 (which simplifies to 2/3).",
+        "text": "Two changed-fraction clues can determine x and y.\n\nSuppose (x+1)/(y+1)=2/3 and (x−1)/(y−1)=1/2.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "If the denominator is a fixed amount larger, use one variable.\n\nFor example, if denominator = numerator+4, let the numerator be x.\nThe fraction is x/(x+4).\n\nNow a change to both parts creates one equation in x.",
+        "text": "Cross-multiply each clue:\n3x+3 = 2y+2 → 3x−2y = −1\n2x−2 = y−1 → 2x−y = 1\n\nSolve the two linear equations to get x=3,y=5. Original fraction=3/5.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "A fraction becomes 3/4 when 1 is added to numerator and denominator, and 1/2 when 1 is subtracted from both. What is the original fraction?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3/7"
+            "label": "3/5"
           },
           {
             "id": "b",
-            "label": "7/9"
+            "label": "4/5"
           },
           {
             "id": "c",
-            "label": "5/9"
+            "label": "1/3"
           },
           {
             "id": "d",
-            "label": "5/7"
+            "label": "2/3"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fraction becomes 3/4 when 1 is added to numerator and denominator, and 1/2 when 1 is subtracted from both. What is the original fraction?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3/5"
+            },
+            {
+              "id": "b",
+              "label": "4/5"
+            },
+            {
+              "id": "c",
+              "label": "1/3"
+            },
+            {
+              "id": "d",
+              "label": "2/3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Translate to (x+1)/(y+1)=3/4 and (x−1)/(y−1)=1/2.",
+            "Cross-multiply both equations."
+          ],
+          "explanation": "4x−3y=−1 and 2x−y=1. Solving gives x=2,y=3, so the fraction is 2/3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
       "content": {
-        "text": "The denominator of a fraction is 4 more than the numerator. If 2 is added to both, the fraction becomes 3/4. What is the original fraction?",
+        "text": "Let's check this one.\n\nTranslate to (x+1)/(y+1)=3/4 and (x−1)/(y−1)=1/2.\n\n4x−3y=−1 and 2x−y=1. Solving gives x=2,y=3, so the fraction is 2/3.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
+          "targetNodeId": "retry_2"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let numerator=x and denominator=x+4.",
-            "(x+2)/(x+6)=3/4."
-          ],
-          "prompt": "The denominator of a fraction is 4 more than the numerator. If 2 is added to both, the fraction becomes 3/4. What is the original fraction?",
-          "options": [
-            {
-              "id": "a",
-              "label": "3/7"
-            },
-            {
-              "id": "b",
-              "label": "7/9"
-            },
-            {
-              "id": "c",
-              "label": "5/9"
-            },
-            {
-              "id": "d",
-              "label": "5/7"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "4x+8=3x+18 gives x=10, so the fraction is 10/14=5/7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "A fraction becomes 4/5 when 1 is added to both parts, and 2/3 when 1 is subtracted from both. What is the original fraction?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6/9"
+            "label": "3/4"
           },
           {
             "id": "b",
-            "label": "9/12"
+            "label": "2/5"
           },
           {
             "id": "c",
-            "label": "8/11"
+            "label": "4/5"
           },
           {
             "id": "d",
-            "label": "12/15"
+            "label": "5/6"
           }
         ]
       },
-      "content": {
-        "text": "The denominator is 3 more than the numerator. If 3 is added to both, the fraction becomes 4/5. What is the original fraction?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use x/(x+3).",
-            "(x+3)/(x+6)=4/5."
-          ],
-          "prompt": "The denominator is 3 more than the numerator. If 3 is added to both, the fraction becomes 4/5. What is the original fraction?",
+          "questionType": "PRACTICE",
+          "prompt": "A fraction becomes 4/5 when 1 is added to both parts, and 2/3 when 1 is subtracted from both. What is the original fraction?",
           "options": [
             {
               "id": "a",
-              "label": "6/9"
+              "label": "3/4"
             },
             {
               "id": "b",
-              "label": "9/12"
+              "label": "2/5"
             },
             {
               "id": "c",
-              "label": "8/11"
+              "label": "4/5"
             },
             {
               "id": "d",
-              "label": "12/15"
+              "label": "5/6"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "5x+15=4x+24, so x=9. Original fraction=9/12.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use (x+1)/(y+1)=4/5 and (x−1)/(y−1)=2/3.",
+            "Cross-multiply."
+          ],
+          "explanation": "5x−4y=−1 and 3x−2y=1. Solving gives x=3,y=4, so the original fraction is 3/4."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThe denominator of a fraction is 4 more than the numerator. If 2 is added to both, the fraction becomes 3/4. What is the original fraction?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n5x−4y=−1 and 3x−2y=1. Solving gives x=3,y=4, so the original fraction is 3/4.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "5x+15=4x+24, so x=9. Original fraction=9/12.",
+        "text": "A fixed gap between denominator and numerator reduces the problem to one variable.\n\nSuppose denominator is 3 more than numerator. Let numerator=x, denominator=x+3.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "Be precise about where the change happens.\n\n'Add 1 to the denominator' means x/(y+1).\n'Add 1 to the numerator' means (x+1)/y.\n\nThese are not the same as adding 1 to the value of the whole fraction.",
+        "text": "If adding 4 to both gives 4/5:\n(x+4)/(x+7)=4/5\n5x+20=4x+28\nx=8\n\nOriginal fraction=8/11.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "1/2"
-          },
-          {
-            "id": "b",
-            "label": "2/3"
-          },
-          {
-            "id": "c",
-            "label": "3/4"
-          },
-          {
-            "id": "d",
-            "label": "3/2"
-          }
-        ]
-      },
       "content": {
-        "text": "If adding 1 to a fraction's denominator makes it 1/2, and adding 1 to its numerator makes it 1, what is the fraction?",
+        "text": "The denominator is 2 more than the numerator. Adding 3 to both makes the fraction 4/5. What is the original fraction?",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x/(y+1)=1/2 and (x+1)/y=1.",
-            "The second equation gives y=x+1."
-          ],
-          "prompt": "If adding 1 to a fraction's denominator makes it 1/2, and adding 1 to its numerator makes it 1, what is the fraction?",
-          "options": [
-            {
-              "id": "a",
-              "label": "1/2"
-            },
-            {
-              "id": "b",
-              "label": "2/3"
-            },
-            {
-              "id": "c",
-              "label": "3/4"
-            },
-            {
-              "id": "d",
-              "label": "3/2"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Substitute y=x+1 into 2x=y+1 to get x=2,y=3. Fraction=2/3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2/4"
+            "label": "5/7"
           },
           {
             "id": "b",
-            "label": "3/5"
-          },
-          {
-            "id": "c",
             "label": "4/6"
           },
           {
+            "id": "c",
+            "label": "7/9"
+          },
+          {
             "id": "d",
-            "label": "6/4"
+            "label": "3/5"
           }
         ]
       },
-      "content": {
-        "text": "If adding 2 to the denominator makes a fraction 1/2, and adding 2 to the numerator makes it 1, what is the fraction?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x/(y+2)=1/2; (x+2)/y=1.",
-            "y=x+2."
-          ],
-          "prompt": "If adding 2 to the denominator makes a fraction 1/2, and adding 2 to the numerator makes it 1, what is the fraction?",
+          "questionType": "PRACTICE",
+          "prompt": "The denominator is 2 more than the numerator. Adding 3 to both makes the fraction 4/5. What is the original fraction?",
           "options": [
             {
               "id": "a",
-              "label": "2/4"
+              "label": "5/7"
             },
             {
               "id": "b",
-              "label": "3/5"
-            },
-            {
-              "id": "c",
               "label": "4/6"
             },
             {
+              "id": "c",
+              "label": "7/9"
+            },
+            {
               "id": "d",
-              "label": "6/4"
+              "label": "3/5"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "2x=y+2=x+4, so x=4,y=6. Fraction=4/6.",
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Let numerator=x and denominator=x+2.",
+            "(x+3)/(x+5)=4/5."
+          ],
+          "explanation": "5x+15=4x+20 gives x=5, so the original fraction is 5/7."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nLet numerator=x and denominator=x+2.\n\n5x+15=4x+20 gives x=5, so the original fraction is 5/7.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "The denominator is 4 more than the numerator. Adding 2 to both makes the fraction 3/5. What is the original fraction?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3/7"
+          },
+          {
+            "id": "b",
+            "label": "5/9"
+          },
+          {
+            "id": "c",
+            "label": "6/10"
+          },
+          {
+            "id": "d",
+            "label": "4/8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "The denominator is 4 more than the numerator. Adding 2 to both makes the fraction 3/5. What is the original fraction?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3/7"
+            },
+            {
+              "id": "b",
+              "label": "5/9"
+            },
+            {
+              "id": "c",
+              "label": "6/10"
+            },
+            {
+              "id": "d",
+              "label": "4/8"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Let numerator=x and denominator=x+4.",
+            "(x+2)/(x+6)=3/5."
+          ],
+          "explanation": "5x+10=3x+18 gives 2x=8, so x=4. The fraction is 4/8, equal to 1/2; the question asks for the original numerator and denominator form."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nIf adding 1 to a fraction's denominator makes it 1/2, and adding 1 to its numerator makes it 1, what is the fraction?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n5x+10=3x+18 gives 2x=8, so x=4. The fraction is 4/8, equal to 1/2; the question asks for the original numerator and denominator form.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "2x=y+2=x+4, so x=4,y=6. Fraction=4/6.",
+        "text": "Sometimes one clue changes only the denominator and another changes only the numerator.\n\nSuppose x/(y+1)=1/2 and (x+1)/y=1.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "A reciprocal condition can also lead to a quadratic.\n\nFor a proper fraction a, if 1/a − a is given, multiply through by a and factor.\n\nThen keep the positive proper-fraction root.",
+        "text": "First clue: 2x=y+1\nSecond clue: x+1=y\n\nSubstitute y=x+1 into the first:\n2x=x+2\nx=2,y=3\nFraction=2/3.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,6 +689,10 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "If 1 is added to the denominator, a fraction becomes 2/3. If 1 is added to the numerator, it becomes 1. What is the fraction?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -635,11 +702,11 @@
           },
           {
             "id": "b",
-            "label": "1/3"
+            "label": "3/4"
           },
           {
             "id": "c",
-            "label": "3/2"
+            "label": "4/5"
           },
           {
             "id": "d",
@@ -647,37 +714,11 @@
           }
         ]
       },
-      "content": {
-        "text": "A positive proper fraction a satisfies 1/a − a = 5/6. What is a?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply by 6a: 6−6a²=5a.",
-            "6a²+5a−6=(3a−2)(2a+3)."
-          ],
-          "prompt": "A positive proper fraction a satisfies 1/a − a = 5/6. What is a?",
+          "questionType": "PRACTICE",
+          "prompt": "If 1 is added to the denominator, a fraction becomes 2/3. If 1 is added to the numerator, it becomes 1. What is the fraction?",
           "options": [
             {
               "id": "a",
@@ -685,135 +726,170 @@
             },
             {
               "id": "b",
-              "label": "1/3"
+              "label": "3/4"
             },
             {
               "id": "c",
-              "label": "3/2"
+              "label": "4/5"
             },
             {
               "id": "d",
               "label": "5/6"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "The positive root is a=2/3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use x/(y+1)=2/3 and (x+1)/y=1.",
+            "The second clue gives y=x+1."
+          ],
+          "explanation": "3x=2(y+1) and y=x+1. So 3x=2x+4, x=4,y=5. The fraction is 4/5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nUse x/(y+1)=2/3 and (x+1)/y=1.\n\n3x=2(y+1) and y=x+1. So 3x=2x+4, x=4,y=5. The fraction is 4/5.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "If 1 is added to the denominator, a fraction becomes 3/4. If 1 is added to the numerator, it becomes 1. What is the fraction?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1/3"
+            "label": "3/4"
           },
           {
             "id": "b",
-            "label": "2/3"
+            "label": "6/7"
           },
           {
             "id": "c",
-            "label": "3/2"
+            "label": "5/6"
           },
           {
             "id": "d",
-            "label": "1/2"
+            "label": "7/8"
           }
         ]
       },
-      "content": {
-        "text": "A positive proper fraction a satisfies 1/a − a = 3/2. What is a?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply by 2a: 2−2a²=3a.",
-            "2a²+3a−2=(2a−1)(a+2)."
-          ],
-          "prompt": "A positive proper fraction a satisfies 1/a − a = 3/2. What is a?",
+          "questionType": "PRACTICE",
+          "prompt": "If 1 is added to the denominator, a fraction becomes 3/4. If 1 is added to the numerator, it becomes 1. What is the fraction?",
           "options": [
             {
               "id": "a",
-              "label": "1/3"
+              "label": "3/4"
             },
             {
               "id": "b",
-              "label": "2/3"
+              "label": "6/7"
             },
             {
               "id": "c",
-              "label": "3/2"
+              "label": "5/6"
             },
             {
               "id": "d",
-              "label": "1/2"
+              "label": "7/8"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "The positive proper-fraction root is a=1/2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use x/(y+1)=3/4 and y=x+1.",
+            "4x=3(y+1)."
+          ],
+          "explanation": "4x=3(x+2), so x=6 and y=7. The fraction is 6/7."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA positive proper fraction a satisfies 1/a − a = 5/6. What is a?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n4x=3(x+2), so x=6 and y=7. The fraction is 6/7.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "The positive proper-fraction root is a=1/2.",
+        "text": "Percentage changes act on the numerator and denominator separately.\n\nIf the numerator increases by 200%, it becomes 3x—not 2x.\nIf the denominator increases by 300%, it becomes 4y.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "For two fractions, product and quotient can identify each one.\n\nIf ab=P and a/b=Q, then dividing the product by the quotient gives b²=P/Q.\nOr multiplying them gives a²=PQ.",
+        "text": "So a new fraction after those changes is 3x/4y = 3/4 of the original fraction x/y.\n\nPercent increase means original plus the stated percent of original.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "A fraction's numerator is increased by 100% and denominator by 300%. The new fraction is 3/10. What was the original fraction?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1/2"
+            "label": "3/20"
           },
           {
             "id": "b",
-            "label": "2/3"
+            "label": "3/5"
           },
           {
             "id": "c",
-            "label": "4/3"
+            "label": "6/5"
           },
           {
             "id": "d",
-            "label": "3/4"
+            "label": "5/3"
           }
         ]
       },
-      "content": {
-        "text": "Two positive fractions have product 3/8 and quotient a/b=3/2. What is the greater fraction a?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "a²=(ab)(a/b).",
-            "a²=(3/8)(3/2)=9/16."
-          ],
-          "prompt": "Two positive fractions have product 3/8 and quotient a/b=3/2. What is the greater fraction a?",
+          "questionType": "PRACTICE",
+          "prompt": "A fraction's numerator is increased by 100% and denominator by 300%. The new fraction is 3/10. What was the original fraction?",
           "options": [
             {
               "id": "a",
-              "label": "1/2"
+              "label": "3/20"
             },
             {
               "id": "b",
-              "label": "2/3"
+              "label": "3/5"
             },
             {
               "id": "c",
-              "label": "4/3"
+              "label": "6/5"
             },
             {
               "id": "d",
-              "label": "3/4"
+              "label": "5/3"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "MEDIUM",
-          "explanation": "a=3/4 and b=1/2, so the greater fraction is 3/4.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 15,
+          "hints": [
+            "The numerator doubles; the denominator becomes four times.",
+            "New fraction = (2/4)×original = original/2."
+          ],
+          "explanation": "If the new fraction is 3/10 and equals half the original, the original fraction is 3/5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nThe numerator doubles; the denominator becomes four times.\n\nIf the new fraction is 3/10 and equals half the original, the original fraction is 3/5.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "A fraction's numerator increases by 200% and denominator by 50%. The new fraction is 4/5. What was the original fraction?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1/3"
+            "label": "4/15"
           },
           {
             "id": "b",
-            "label": "2/3"
+            "label": "3/5"
           },
           {
             "id": "c",
-            "label": "4/9"
+            "label": "2/5"
           },
           {
             "id": "d",
-            "label": "3/2"
+            "label": "5/2"
           }
         ]
       },
-      "content": {
-        "text": "Two positive fractions have product 2/9 and quotient a/b=2. What is a?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "a²=(2/9)×2=4/9.",
-            "Take the positive square root."
-          ],
-          "prompt": "Two positive fractions have product 2/9 and quotient a/b=2. What is a?",
+          "questionType": "PRACTICE",
+          "prompt": "A fraction's numerator increases by 200% and denominator by 50%. The new fraction is 4/5. What was the original fraction?",
           "options": [
             {
               "id": "a",
-              "label": "1/3"
+              "label": "4/15"
             },
             {
               "id": "b",
-              "label": "2/3"
+              "label": "3/5"
             },
             {
               "id": "c",
-              "label": "4/9"
+              "label": "2/5"
             },
             {
               "id": "d",
-              "label": "3/2"
+              "label": "5/2"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "a=2/3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Numerator becomes 3x; denominator becomes 1.5y.",
+            "The new fraction is 2 times the original."
+          ],
+          "explanation": "3/1.5=2, so new = 2×original. Original = (4/5)÷2 = 2/5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTwo positive fractions have product 3/8 and quotient a/b=3/2. What is the greater fraction a?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n3/1.5=2, so new = 2×original. Original = (4/5)÷2 = 2/5.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "a=2/3.",
+        "text": "Reciprocal-minus-fraction clues create a quadratic.\n\nFor a positive proper fraction r, suppose 1/r − r = 3/4.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "Percentage changes to numerator and denominator are multipliers.\n\nIncrease numerator by 100% → 2x.\nIncrease denominator by 200% → 3y.\n\nWrite the changed fraction first, then solve for x/y.",
+        "text": "Multiply by 4r:\n4 − 4r² = 3r\n4r² + 3r − 4 = 0\n\nThen keep the positive root between 0 and 1, because the question says proper fraction.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,16 +1113,20 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "A positive proper fraction r satisfies 1/r − r = 3/2. What is r?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4/9"
+            "label": "1/2"
           },
           {
             "id": "b",
-            "label": "3/2"
+            "label": "2"
           },
           {
             "id": "c",
@@ -1041,49 +1134,23 @@
           },
           {
             "id": "d",
-            "label": "8/27"
+            "label": "1/3"
           }
         ]
       },
-      "content": {
-        "text": "A fraction's numerator is increased by 100% and its denominator by 200%. The new fraction is 4/9. What was the original fraction?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "New fraction is 2x/(3y).",
-            "2x/(3y)=4/9."
-          ],
-          "prompt": "A fraction's numerator is increased by 100% and its denominator by 200%. The new fraction is 4/9. What was the original fraction?",
+          "questionType": "PRACTICE",
+          "prompt": "A positive proper fraction r satisfies 1/r − r = 3/2. What is r?",
           "options": [
             {
               "id": "a",
-              "label": "4/9"
+              "label": "1/2"
             },
             {
               "id": "b",
-              "label": "3/2"
+              "label": "2"
             },
             {
               "id": "c",
@@ -1091,153 +1158,576 @@
             },
             {
               "id": "d",
-              "label": "8/27"
+              "label": "1/3"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "18x=12y, so x/y=2/3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Test simple proper fractions or form 2−2r²=3r.",
+            "2r²+3r−2=0."
+          ],
+          "explanation": "(2r−1)(r+2)=0, so the positive proper fraction is r=1/2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nTest simple proper fractions or form 2−2r²=3r.\n\n(2r−1)(r+2)=0, so the positive proper fraction is r=1/2.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "A positive proper fraction r satisfies 1/r − r = 15/4. What is r?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3/5"
+            "label": "4"
           },
           {
             "id": "b",
-            "label": "9/10"
+            "label": "3/4"
           },
           {
             "id": "c",
-            "label": "5/3"
+            "label": "1/5"
           },
           {
             "id": "d",
-            "label": "3/10"
+            "label": "1/4"
           }
         ]
       },
-      "content": {
-        "text": "A fraction's numerator is increased by 200% and its denominator by 100%. The new fraction is 9/10. What was the original fraction?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "New fraction is 3x/(2y).",
-            "3x/(2y)=9/10."
-          ],
-          "prompt": "A fraction's numerator is increased by 200% and its denominator by 100%. The new fraction is 9/10. What was the original fraction?",
+          "questionType": "PRACTICE",
+          "prompt": "A positive proper fraction r satisfies 1/r − r = 15/4. What is r?",
           "options": [
             {
               "id": "a",
-              "label": "3/5"
+              "label": "4"
             },
             {
               "id": "b",
-              "label": "9/10"
+              "label": "3/4"
             },
             {
               "id": "c",
-              "label": "5/3"
+              "label": "1/5"
             },
             {
               "id": "d",
-              "label": "3/10"
+              "label": "1/4"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "30x=18y, so x/y=3/5.",
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Form 4−4r²=15r.",
+            "4r²+15r−4=0."
+          ],
+          "explanation": "(4r−1)(r+4)=0, so r=1/4 is the valid proper fraction."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n(4r−1)(r+4)=0, so r=1/4 is the valid proper fraction.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two fractions can be recovered from product and quotient.\n\nIf A/B = 9/4, then A = (9/4)B.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If AB = 1, then:\n(9/4)B² = 1\nB² = 4/9\nB=2/3 for positive fractions\nA=3/2\n\nThe quotient gives their ratio; the product gives their scale.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two positive fractions A and B have A/B=4 and AB=1/4. What is A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/4"
+          },
+          {
+            "id": "b",
+            "label": "1/2"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "Two positive fractions A and B have A/B=4 and AB=1/4. What is A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/4"
+            },
+            {
+              "id": "b",
+              "label": "1/2"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "1"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use A=4B.",
+            "4B²=1/4."
+          ],
+          "explanation": "B²=1/16, so B=1/4 and A=1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA fraction's numerator is increased by 100% and its denominator by 200%. The new fraction is 4/9. What was the original fraction?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's check this one.\n\nUse A=4B.\n\nB²=1/16, so B=1/4 and A=1.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two positive fractions A and B satisfy A=2B and AB=2/25. What is A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2/5"
+          },
+          {
+            "id": "b",
+            "label": "1/5"
+          },
+          {
+            "id": "c",
+            "label": "4/5"
+          },
+          {
+            "id": "d",
+            "label": "2/25"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two positive fractions A and B satisfy A=2B and AB=2/25. What is A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2/5"
+            },
+            {
+              "id": "b",
+              "label": "1/5"
+            },
+            {
+              "id": "c",
+              "label": "4/5"
+            },
+            {
+              "id": "d",
+              "label": "2/25"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Substitute A=2B into the product.",
+            "2B²=2/25."
+          ],
+          "explanation": "B=1/5, so A=2/5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "30x=18y, so x/y=3/5.",
+        "text": "Let's work through this one.\n\nB=1/5, so A=2/5.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "teach_8": {
+      "id": "teach_8",
       "type": "CONTENT",
       "content": {
-        "text": "Write the fraction x/y and apply every change to the correct part. Two changed-fraction statements give equations; reciprocal conditions may give quadratics; product/quotient conditions can reveal squares; percentage changes are multipliers.",
+        "text": "Capstone: the cleanest setup often uses a ratio before any equation.\n\nIf numerator:denominator = 2:3, let them be 2k and 3k.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "teach_8_step"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Fractions: Numerator and Denominator Equations.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "text": "Suppose subtracting 4 from the numerator makes the fraction half its original value:\n(2k−4)/(3k) = (1/2)(2/3)=1/3\n\n3(2k−4)=3k\n6k−12=3k\nk=4\nOriginal fraction=8/12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fraction has numerator:denominator = 3:5. If 6 is subtracted from the numerator, the new fraction is half the original value. What were the original numerator and denominator?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9 and 15"
+          },
+          {
+            "id": "b",
+            "label": "18 and 30"
+          },
+          {
+            "id": "c",
+            "label": "12 and 20"
+          },
+          {
+            "id": "d",
+            "label": "6 and 10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fraction has numerator:denominator = 3:5. If 6 is subtracted from the numerator, the new fraction is half the original value. What were the original numerator and denominator?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9 and 15"
+            },
+            {
+              "id": "b",
+              "label": "18 and 30"
+            },
+            {
+              "id": "c",
+              "label": "12 and 20"
+            },
+            {
+              "id": "d",
+              "label": "6 and 10"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let numerator=3k and denominator=5k.",
+            "(3k−6)/(5k) = 3/10."
+          ],
+          "explanation": "10(3k−6)=15k gives 30k−60=15k, so k=4. The original numerator and denominator were 12 and 20."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nLet numerator=3k and denominator=5k.\n\n10(3k−6)=15k gives 30k−60=15k, so k=4. The original numerator and denominator were 12 and 20.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fraction has numerator:denominator = 4:7. If 8 is subtracted from the numerator, the new fraction is half the original value. What were the original numerator and denominator?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 and 21"
+          },
+          {
+            "id": "b",
+            "label": "16 and 28"
+          },
+          {
+            "id": "c",
+            "label": "20 and 35"
+          },
+          {
+            "id": "d",
+            "label": "8 and 14"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fraction has numerator:denominator = 4:7. If 8 is subtracted from the numerator, the new fraction is half the original value. What were the original numerator and denominator?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 and 21"
+            },
+            {
+              "id": "b",
+              "label": "16 and 28"
+            },
+            {
+              "id": "c",
+              "label": "20 and 35"
+            },
+            {
+              "id": "d",
+              "label": "8 and 14"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let numerator=4k and denominator=7k.",
+            "(4k−8)/(7k) = 2/7."
+          ],
+          "explanation": "7(4k−8)=14k gives 28k−56=14k, so k=4. The original numerator and denominator were 16 and 28."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n7(4k−8)=14k gives 28k−56=14k, so k=4. The original numerator and denominator were 16 and 28.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now translate fraction changes into equations and choose the valid fraction using the original conditions.\n\nKeep the numerator and denominator separate until the transformation is clear.\n\nNext, we'll split whole totals into parts using ratios, weights and remainder clues.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Fractions: Numerator and Denominator Equations",
-    "description": "Solve fraction puzzles by translating changes to the numerator and denominator into equations.",
-    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Fractions: Numerator and Denominator Equations. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 21
-  },
-  "scriptId": "script-pon-07-fractions-numerator-denominator",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

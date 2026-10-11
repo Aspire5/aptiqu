@@ -1,209 +1,96 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../../config/prisma';
-import { INVENTORY_CONFIG } from '../../../config/inventory.config';
 import { questionGenerationService } from '../../ai/services/question-generation.service';
 import { LiveCurriculumService } from '../../curriculum/services/live-curriculum.service';
-import { contentGenQueue } from '../../../queues/content-generation.queue';
 
-export class PracticeSelectionService {
-  private static instance: PracticeSelectionService;
-
-  public static getInstance(): PracticeSelectionService {
-    if (!PracticeSelectionService.instance) {
-      PracticeSelectionService.instance = new PracticeSelectionService();
-    }
-    return PracticeSelectionService.instance;
+export function shuffle<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
   }
-
-  /**
-   * Selects candidate questions for a user across selected subtopics.
-   * INVARIANT: No AI question may appear while an eligible unsolved MANUAL question exists.
-   */
-  public async selectQuestionsForPractice(
-    userId: string,
-    subtopicIds: string[],
-    count = INVENTORY_CONFIG.PRACTICE_SESSION_QUESTIONS_COUNT
-  ): Promise<any[]> {
-    if (subtopicIds.length === 0) {
-      throw new Error('At least one subtopic must be selected for Practice.');
-    }
-
-    // 1. Verify all subtopics are live
-    for (const subId of subtopicIds) {
-      const isLive = await LiveCurriculumService.isSubtopicLive(subId);
-      if (!isLive) {
-        throw new Error(`Subtopic "${subId}" is locked or not live.`);
-      }
-    }
-
-    // 2. QUERY SCALABLE DATABASE-LEVEL: Eligible unsolved MANUAL questions
-    // Inactive subjects/topics/subtopics are strictly excluded.
-    // Unsolved = user has never answered correctly (userProgress.none with timesCorrect > 0)
-    const unsolvedManual = await prisma.question.findMany({
-      where: {
-        subtopicId: { in: subtopicIds },
-        sourceType: 'MANUAL',
-        status: 'PUBLISHED',
-        subtopic: {
-          isActive: true,
-          topic: {
-            isActive: true,
-            subject: { isActive: true },
-          },
-        },
-        userProgress: {
-          none: {
-            userId,
-            timesCorrect: { gt: 0 },
-          },
-        },
-      },
-      take: count,
-      include: {
-        userProgress: {
-          where: { userId },
-          select: { timesSeen: true, timesCorrect: true, lastIsCorrect: true },
-        },
-      },
-      orderBy: [
-        // Prioritize previously failed questions over completely unseen
-        { attempts: { _count: 'desc' } },
-        { createdAt: 'asc' },
-      ],
-    });
-
-    // 3. STRICT INVARIANT: If at least one unsolved manual question exists, serve ONLY manual questions!
-    if (unsolvedManual.length > 0) {
-      console.log(
-        `[PracticeSelection] Found ${unsolvedManual.length} unsolved MANUAL questions for user ${userId}. Strictly serving MANUAL questions.`
-      );
-
-      if (unsolvedManual.length >= count) {
-        return unsolvedManual.sort(() => 0.5 - Math.random());
-      }
-
-      // Reinforcement fill: If unsolved manual count < session count, fill remaining slots
-      // with previously solved MANUAL questions from the same subtopics (ZERO AI questions)
-      const needed = count - unsolvedManual.length;
-      const reinforcementManual = await prisma.question.findMany({
-        where: {
-          subtopicId: { in: subtopicIds },
-          sourceType: 'MANUAL',
-          status: 'PUBLISHED',
-          subtopic: {
-            isActive: true,
-            topic: {
-              isActive: true,
-              subject: { isActive: true },
-            },
-          },
-          id: { notIn: unsolvedManual.map((q) => q.id) },
-        },
-        take: needed,
-        orderBy: { updatedAt: 'asc' },
-      });
-
-      const manualCombined = [...unsolvedManual, ...reinforcementManual];
-      return manualCombined.sort(() => 0.5 - Math.random());
-    }
-
-    // 4. If zero unsolved manual questions exist, check if user has solved all existing manual questions
-    console.log(
-      `[PracticeSelection] Zero unsolved MANUAL questions remaining for user ${userId} in selected subtopics. AI_GENERATED questions are now eligible.`
-    );
-
-    // 5. Query published AI questions that user hasn't solved correctly
-    let aiCandidates = await prisma.question.findMany({
-      where: {
-        subtopicId: { in: subtopicIds },
-        sourceType: 'AI_GENERATED',
-        status: 'PUBLISHED',
-        subtopic: {
-          isActive: true,
-          topic: {
-            isActive: true,
-            subject: { isActive: true },
-          },
-        },
-        userProgress: {
-          none: {
-            userId,
-            timesCorrect: { gt: 0 },
-          },
-        },
-      },
-      take: count,
-      orderBy: { createdAt: 'desc' },
-    });
-
-    // 6. If fresh candidate inventory is low, dispatch background BullMQ job (non-blocking)
-    if (aiCandidates.length < count) {
-      console.log(
-        `[PracticeSelection] Shortage of questions detected (${aiCandidates.length} < ${count}). Dispatching background BullMQ generation...`
-      );
-
-      // Trigger background replenishment for requested subtopics
-      for (const targetId of subtopicIds) {
-        contentGenQueue.add('generate-subtopic-questions', { subtopicId: targetId }, {
-          jobId: `subtopic-${targetId}`,
-          removeOnComplete: true,
-        }).catch((err) => {
-          console.warn(`[PracticeSelection] Failed to enqueue background generation for subtopic ${targetId}:`, err);
-        });
-      }
-    }
-
-    // 7. Safety fallback: If still less than count, reuse least recently updated published questions for the SAME subtopics
-    if (aiCandidates.length < count) {
-      const fallbackQuestions = await prisma.question.findMany({
-        where: {
-          subtopicId: { in: subtopicIds },
-          status: 'PUBLISHED',
-          id: { notIn: aiCandidates.map((q) => q.id) },
-        },
-        take: count - aiCandidates.length,
-        orderBy: { updatedAt: 'asc' },
-      });
-      aiCandidates.push(...fallbackQuestions);
-    }
-
-    // 8. Topic fallback: If still less than count, find published questions under the same topic
-    if (aiCandidates.length < count && subtopicIds.length > 0) {
-      const subtopicsWithTopic = await prisma.subtopic.findMany({
-        where: {
-          OR: [
-            { id: { in: subtopicIds } },
-            { slug: { in: subtopicIds } },
-          ],
-        },
-        select: { topicId: true },
-      });
-      const topicIds = Array.from(new Set(subtopicsWithTopic.map((s) => s.topicId).filter(Boolean)));
-      if (topicIds.length > 0) {
-        const topicFallback = await prisma.question.findMany({
-          where: {
-            topicId: { in: topicIds },
-            status: 'PUBLISHED',
-            id: { notIn: aiCandidates.map((q) => q.id) },
-          },
-          take: count - aiCandidates.length,
-          orderBy: { updatedAt: 'asc' },
-        });
-        aiCandidates.push(...topicFallback);
-      }
-    }
-
-    // 9. If zero valid questions exist, return clean preparation state
-    if (aiCandidates.length === 0) {
-      const err: any = new Error(
-        'Practice questions for this subtopic are currently being prepared. Please check back shortly.'
-      );
-      err.statusCode = 422;
-      err.code = 'QUESTIONS_BEING_PREPARED';
-      throw err;
-    }
-
-    return aiCandidates.slice(0, count).sort(() => 0.5 - Math.random());
-  }
+  return result;
 }
 
-export const practiceSelectionService = PracticeSelectionService.getInstance();
+export class PracticeSelectionService {
+  public async selectQuestionsForPractice(userId: string, subtopicIds: string[], count = 10, smartPicks = false): Promise<any[]> {
+    if (count !== 10) throw new Error('Practice sessions require exactly 10 questions.');
+    const universe = await LiveCurriculumService.getAllLiveCurriculumUniverse();
+    const liveIds = new Set(universe.flatMap(t => t.subtopics.map(s => s.id)));
+    if (!subtopicIds.length || subtopicIds.some(id => !liveIds.has(id))) {
+      throw new Error('Choose available subtopics for this session.');
+    }
+    const selected: any[] = [];
+    const choose = async (ids: string[], limit: number, unseen: boolean, pattern?: string) => {
+      if (limit <= 0) return [];
+      // Randomize in the database before LIMIT: every eligible question can be drawn.
+      // Allocated practice questions count as seen even if a session was abandoned.
+      const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+        SELECT q.id FROM learning.questions q
+        JOIN learning.subtopics st ON st.id = q.subtopic_id
+        JOIN learning.topics t ON t.id = q.topic_id
+        JOIN learning.subjects s ON s.id = q.subject_id
+        WHERE q.status = 'PUBLISHED' AND st.is_active AND t.is_active AND s.is_active
+          AND q.subtopic_id IN (${Prisma.join(ids)})
+          ${pattern ? Prisma.sql`AND q.pattern = ${pattern}` : Prisma.empty}
+          ${selected.length ? Prisma.sql`AND q.id NOT IN (${Prisma.join(selected.map(q => q.id))})` : Prisma.empty}
+          ${unseen ? Prisma.sql`AND NOT EXISTS (SELECT 1 FROM learning.user_question_progress p WHERE p.question_id = q.id AND p.user_id = ${userId}::uuid)
+            AND NOT EXISTS (SELECT 1 FROM learning.question_attempts a WHERE a.question_id = q.id AND a.user_id = ${userId}::uuid)
+            AND NOT EXISTS (SELECT 1 FROM learning.practice_session_questions pq JOIN learning.practice_sessions ps ON ps.id = pq.session_id WHERE pq.question_id = q.id AND ps.user_id = ${userId}::uuid)
+            AND NOT EXISTS (SELECT 1 FROM learning.pvp_match_answers pa WHERE pa.question_id = q.id AND pa.user_id = ${userId}::uuid)` : Prisma.empty}
+        ORDER BY random() LIMIT ${limit}
+      `);
+      return prisma.question.findMany({ where: { id: { in: rows.map(r => r.id) } } });
+    };
+    if (smartPicks) {
+      // Include lesson and PvP evidence as well as practice; replays never
+      // write user progress and therefore cannot bias weakness estimates.
+      const progress = await prisma.$queryRaw<Array<{subtopicId: string; pattern: string | null; timesSeen: number; timesCorrect: number}>>(Prisma.sql`
+        WITH performance AS (
+          SELECT question_id, times_seen AS seen, times_correct AS correct FROM learning.user_question_progress WHERE user_id = ${userId}::uuid
+          UNION ALL
+          SELECT question_id, 1, CASE WHEN is_correct THEN 1 ELSE 0 END FROM learning.question_attempts WHERE user_id = ${userId}::uuid
+          UNION ALL
+          SELECT question_id, 1, CASE WHEN is_correct THEN 1 ELSE 0 END FROM learning.pvp_match_answers WHERE user_id = ${userId}::uuid
+        )
+        SELECT q.subtopic_id AS "subtopicId", q.pattern, SUM(p.seen)::int AS "timesSeen", SUM(p.correct)::int AS "timesCorrect"
+        FROM performance p JOIN learning.questions q ON q.id = p.question_id
+        WHERE q.subtopic_id IN (${Prisma.join(subtopicIds)})
+        GROUP BY q.subtopic_id, q.pattern
+      `);
+      const groups = new Map<string, { subtopicId: string; pattern: string | null; seen: number; missed: number }>();
+      for (const p of progress) {
+        const key = JSON.stringify([p.subtopicId, p.pattern]);
+        const g = groups.get(key) || { subtopicId: p.subtopicId, pattern: p.pattern, seen: 0, missed: 0 };
+        g.seen += p.timesSeen;
+        g.missed += Math.max(0, p.timesSeen - p.timesCorrect);
+        groups.set(key, g);
+      }
+      const weak = [...groups.values()].filter(g => g.missed > 0).sort((a, b) => b.missed / b.seen - a.missed / a.seen);
+      // Bound generation latency to one focused batch. Never invent an untaught pattern.
+      let generated = false;
+      for (const g of weak) {
+        if (selected.length >= 6) break;
+        const needed = Math.min(3, 6 - selected.length);
+        let matches = await choose([g.subtopicId], needed, true, g.pattern || undefined);
+        if (!matches.length && g.pattern && !generated) {
+          generated = true;
+          try {
+            matches = await questionGenerationService.generateQuestionsForSubtopic(g.subtopicId, needed, g.pattern);
+          } catch (error) {
+            console.warn('[Practice] Focused generation unavailable; using existing in-scope inventory.', error);
+          }
+        }
+        if (!matches.length) matches = await choose([g.subtopicId], needed, false, g.pattern || undefined);
+        selected.push(...matches.filter(q => !selected.some(s => s.id === q.id)).slice(0, needed));
+      }
+    }
+    selected.push(...await choose(subtopicIds, count - selected.length, true));
+    selected.push(...await choose(subtopicIds, count - selected.length, false));
+    if (selected.length !== count) {
+      throw new Error('This selection needs at least 10 available questions. Choose more subtopics and try again.');
+    }
+    return shuffle(selected);
+  }
+}
+export const practiceSelectionService = new PracticeSelectionService();

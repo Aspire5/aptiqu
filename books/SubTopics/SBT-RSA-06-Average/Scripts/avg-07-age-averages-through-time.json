@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "avg-07-age-averages-through-time",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Age Averages Through Time",
+    "description": "Treat age averages as changing age totals while carefully updating both elapsed time and family or class membership.",
+    "teachingApproach": "Start with the unchanged-group rule that a mean age shifts by exactly the elapsed time, then prove it through total ages. Add membership changes one at a time: teacher joins, person leaves, replacement, birth and month-based changes. End with a marriage-and-birth timeline that requires separating the parents' pre-birth ageing from the child's present age.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "Teach that when the same people remain together, every age and therefore the average rises by the same number of years. Convert past averages to present totals, then handle a teacher joining, one person leaving, replacement, a birth, and average changes stated in months. Use short timelines and update the count whenever membership changes. Finish with a marriage-and-child timeline where the learner must separate years before the child was born from the child's present age."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn age averages through time with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's learn why age averages are really total-age stories with a clock running in the background.\n\nWhen the same people stay together, average age moves with time. When someone joins or leaves, the headcount changes too — and that is where the interesting questions begin.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Ages have one special feature: if the same people stay in the group, everyone gets older by the same amount.\n\nSo after 4 years, the group's average age also rises by 4 years.\n\nBut if someone joins, leaves, is born or dies, the group size changes and you must rebuild the total.",
+        "text": "Ages have one special feature: if the same people stay in the group, everyone grows older by the same amount.\n\nIf five people average 20 today, then four years later each is four years older.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So their average also rises by 4:\n\n20 + 4 = 24\n\nNo new total calculation is needed when the membership stays exactly the same.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Eight people average 31 years today. What was their average age 6 years ago, assuming the same eight people?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "20"
+            "label": "24 years"
           },
           {
             "id": "b",
-            "label": "30"
+            "label": "25 years"
           },
           {
             "id": "c",
-            "label": "25"
+            "label": "31 years"
           },
           {
             "id": "d",
-            "label": "150"
+            "label": "37 years"
           }
         ]
       },
-      "content": {
-        "text": "A group of 6 people has average age 20 today. If the same 6 people are together 5 years later, what is their average age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Every person gains 5 years.",
-            "The mean also gains 5."
-          ],
-          "prompt": "A group of 6 people has average age 20 today. If the same 6 people are together 5 years later, what is their average age?",
+          "questionType": "PRACTICE",
+          "prompt": "Eight people average 31 years today. What was their average age 6 years ago, assuming the same eight people?",
           "options": [
             {
               "id": "a",
-              "label": "20"
+              "label": "24 years"
             },
             {
               "id": "b",
-              "label": "30"
+              "label": "25 years"
             },
             {
               "id": "c",
-              "label": "25"
+              "label": "31 years"
             },
             {
               "id": "d",
-              "label": "150"
+              "label": "37 years"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "The future average is 25 years.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Every person's age was 6 less.",
+            "The average shifts by the same 6 years."
+          ],
+          "explanation": "The past average was 31 − 6 = 25 years. Because all eight ages move together, their equal-share value moves by the same amount."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Do not multiply the average itself by 5. Time adds the same 5 years to every person's age.",
+        "text": "Let’s check this clue.\n\nEvery person's age was 6 less.\n\nThe past average was 31 − 6 = 25 years. Because all eight ages move together, their equal-share value moves by the same amount.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Twelve people average 18 years today. What will their average be 5 years from now, if the group is unchanged?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "7"
+            "label": "18 years"
           },
           {
             "id": "b",
-            "label": "32"
+            "label": "22 years"
           },
           {
             "id": "c",
-            "label": "39"
+            "label": "23 years"
           },
           {
             "id": "d",
-            "label": "25"
+            "label": "28 years"
           }
         ]
       },
-      "content": {
-        "text": "Eight people average 32 years today. What was their average 7 years ago, if the group was unchanged?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Every person was 7 years younger.",
-            "32−7=25."
-          ],
-          "prompt": "Eight people average 32 years today. What was their average 7 years ago, if the group was unchanged?",
+          "questionType": "PRACTICE",
+          "prompt": "Twelve people average 18 years today. What will their average be 5 years from now, if the group is unchanged?",
           "options": [
             {
               "id": "a",
-              "label": "7"
+              "label": "18 years"
             },
             {
               "id": "b",
-              "label": "32"
+              "label": "22 years"
             },
             {
               "id": "c",
-              "label": "39"
+              "label": "23 years"
             },
             {
               "id": "d",
-              "label": "25"
+              "label": "28 years"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "Their average was 25 years.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Everyone gains five years.",
+            "Add 5 to the current average."
+          ],
+          "explanation": "The future average is 18 + 5 = 23 years."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "For an unchanged group, moving backward 7 years subtracts 7 from each age and therefore from the average.",
+        "text": "Let’s work through this one.\n\nThe future average is 18 + 5 = 23 years.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "When a teacher or instructor joins, turn both averages into totals.\n\nStudents: 10 people × 32 = 320 years.\nWith instructor: 11 people × 34 = 374 years.\nInstructor age = 374−320 = 54 years.",
+        "text": "The total-age method explains the same shortcut.\n\nFour family members averaged 24 ten years ago. Their total age then was 4×24 = 96.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Today those same four people have each gained 10 years, so the total gains 4×10 = 40.\n\nPresent total = 136\nPresent average = 136 ÷ 4 = 34\n\nAgain, the average rose by 10.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Six people averaged 30 years five years ago. What is their average today if the group is unchanged?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "46"
+            "label": "30 years"
           },
           {
             "id": "b",
-            "label": "16"
+            "label": "33 years"
           },
           {
             "id": "c",
-            "label": "30"
+            "label": "40 years"
           },
           {
             "id": "d",
-            "label": "44"
+            "label": "35 years"
           }
         ]
       },
-      "content": {
-        "text": "15 students average 14 years. A teacher joins and the new average for 16 people is 16. What is the teacher's age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old total=210; new total=256.",
-            "Difference=46."
-          ],
-          "prompt": "15 students average 14 years. A teacher joins and the new average for 16 people is 16. What is the teacher's age?",
+          "questionType": "PRACTICE",
+          "prompt": "Six people averaged 30 years five years ago. What is their average today if the group is unchanged?",
           "options": [
             {
               "id": "a",
-              "label": "46"
+              "label": "30 years"
             },
             {
               "id": "b",
-              "label": "16"
+              "label": "33 years"
             },
             {
               "id": "c",
-              "label": "30"
+              "label": "40 years"
             },
             {
               "id": "d",
-              "label": "44"
+              "label": "35 years"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "The teacher is 46 years old.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "The same six people each gained five years.",
+            "The group average rises by five too."
+          ],
+          "explanation": "Today's average is 35 years. Total-age view: old total 180 gains 30 to become 210; 210 ÷ 6 = 35."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "remedy_2": {
+      "id": "remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "The teacher's age is not simply the difference between averages. The 2-year rise affects all 16 people in the new average.",
+        "text": "Let’s check this clue.\n\nThe same six people each gained five years.\n\nToday's average is 35 years. Total-age view: old total 180 gains 30 to become 210; 210 ÷ 6 = 35.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Three people averaged 18 years seven years ago. What is their average today?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "13"
+            "label": "25 years"
           },
           {
             "id": "b",
-            "label": "33"
+            "label": "21 years"
           },
           {
             "id": "c",
-            "label": "20"
+            "label": "24 years"
           },
           {
             "id": "d",
-            "label": "32"
+            "label": "27 years"
           }
         ]
       },
-      "content": {
-        "text": "20 students average 12 years. One teacher joins and the average becomes 13. What is the teacher's age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old total=240; new total=21×13=273.",
-            "Teacher=33."
-          ],
-          "prompt": "20 students average 12 years. One teacher joins and the average becomes 13. What is the teacher's age?",
+          "questionType": "PRACTICE",
+          "prompt": "Three people averaged 18 years seven years ago. What is their average today?",
           "options": [
             {
               "id": "a",
-              "label": "13"
+              "label": "25 years"
             },
             {
               "id": "b",
-              "label": "33"
+              "label": "21 years"
             },
             {
               "id": "c",
-              "label": "20"
+              "label": "24 years"
             },
             {
               "id": "d",
-              "label": "32"
+              "label": "27 years"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "The teacher is 33 years old.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "Each of the same three people gained seven years.",
+            "18 + 7."
+          ],
+          "explanation": "The present average is 25 years."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Use the new count 21 when rebuilding the new total.",
+        "text": "Let’s work through this one.\n\nThe present average is 25 years.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Past-family questions need a timeline.\n\nExample: 4 family members averaged 24 ten years ago.\nOld total = 96.\nToday those same four have gained 4×10=40 years, so their present total is 136.\n\nOnly after updating the old members do we bring in any children born later.",
+        "text": "Membership changes break the simple time-shift shortcut.\n\nTwenty-four students average 35 years—imagine an adult class. A teacher joins and the 25-person average becomes 35.4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Student total = 24×35 = 840\nNew total = 25×35.4 = 885\nTeacher's age = 885 − 840 = 45\n\nWhen someone joins, compare the two totals.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Twenty students average 16 years. When their teacher is included, the average of 21 people becomes 17. What is the teacher's age?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "120"
+            "label": "37 years"
           },
           {
             "id": "b",
-            "label": "136"
+            "label": "21 years"
           },
           {
             "id": "c",
-            "label": "180"
+            "label": "33 years"
           },
           {
             "id": "d",
-            "label": "144"
+            "label": "36 years"
           }
         ]
       },
-      "content": {
-        "text": "Four family members averaged 30 six years ago. What is the present total age of those same four?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old total=4×30=120.",
-            "Add 4×6=24 years."
-          ],
-          "prompt": "Four family members averaged 30 six years ago. What is the present total age of those same four?",
+          "questionType": "PRACTICE",
+          "prompt": "Twenty students average 16 years. When their teacher is included, the average of 21 people becomes 17. What is the teacher's age?",
           "options": [
             {
               "id": "a",
-              "label": "120"
+              "label": "37 years"
             },
             {
               "id": "b",
-              "label": "136"
+              "label": "21 years"
             },
             {
               "id": "c",
-              "label": "180"
+              "label": "33 years"
             },
             {
               "id": "d",
-              "label": "144"
+              "label": "36 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Present total=144 years.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Student total = 20×16.",
+            "Teacher age = 21×17 − 20×16."
+          ],
+          "explanation": "The new total is 357 and the students total 320, so the teacher is 37 years old."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Do not add only 6 to the total. Each of the four people gains 6 years, so the total gains 24.",
+        "text": "Let’s check this clue.\n\nStudent total = 20×16.\n\nThe new total is 357 and the students total 320, so the teacher is 37 years old.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Thirty students average 14 years. A coach joins and the average of 31 people becomes 15. What is the coach's age?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "75"
+            "label": "31 years"
           },
           {
             "id": "b",
-            "label": "79"
+            "label": "44 years"
           },
           {
             "id": "c",
-            "label": "87"
+            "label": "46 years"
           },
           {
             "id": "d",
-            "label": "100"
+            "label": "45 years"
           }
         ]
       },
-      "content": {
-        "text": "Three people averaged 25 four years ago. What is their present total age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old total=75.",
-            "Add 3×4=12."
-          ],
-          "prompt": "Three people averaged 25 four years ago. What is their present total age?",
+          "questionType": "PRACTICE",
+          "prompt": "Thirty students average 14 years. A coach joins and the average of 31 people becomes 15. What is the coach's age?",
           "options": [
             {
               "id": "a",
-              "label": "75"
+              "label": "31 years"
             },
             {
               "id": "b",
-              "label": "79"
+              "label": "44 years"
             },
             {
               "id": "c",
-              "label": "87"
+              "label": "46 years"
             },
             {
               "id": "d",
-              "label": "100"
+              "label": "45 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Present total=87 years.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compare the 31-person total with the 30-student total.",
+            "31×15 − 30×14."
+          ],
+          "explanation": "465 − 420 = 45, so the coach is 45 years old."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Time changes the total by number of unchanged members × years elapsed.",
+        "text": "Let’s work through this one.\n\n465 − 420 = 45, so the coach is 45 years old.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "A birth changes the group size.\n\nSuppose the old members' present total is known. If the present family average includes a child, compute the new family total using the new count.\nChild's age = new family total − old members' present total.",
+        "text": "Leaving is the reverse.\n\nTwelve people average 30, total 360. One person leaves and the remaining eleven average 29, total 319.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The person who left had age:\n\n360 − 319 = 41\n\nA person older than the old average left, so the average fell.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Twelve people average 30 years. One person leaves and the remaining eleven average 29 years. How old was the person who left?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6"
+            "label": "29 years"
           },
           {
             "id": "b",
-            "label": "10"
+            "label": "30 years"
           },
           {
             "id": "c",
-            "label": "26"
+            "label": "41 years"
           },
           {
             "id": "d",
-            "label": "130"
+            "label": "40 years"
           }
         ]
       },
-      "content": {
-        "text": "Four people had total age 120 today. A fifth family member is a child, and the family average is 26. What is the child's age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Five-person total=5×26=130.",
-            "Child=130−120."
-          ],
-          "prompt": "Four people had total age 120 today. A fifth family member is a child, and the family average is 26. What is the child's age?",
+          "questionType": "PRACTICE",
+          "prompt": "Twelve people average 30 years. One person leaves and the remaining eleven average 29 years. How old was the person who left?",
           "options": [
             {
               "id": "a",
-              "label": "6"
+              "label": "29 years"
             },
             {
               "id": "b",
-              "label": "10"
+              "label": "30 years"
             },
             {
               "id": "c",
-              "label": "26"
+              "label": "41 years"
             },
             {
               "id": "d",
-              "label": "130"
+              "label": "40 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The child is 10 years old.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old total = 360; new total = 319.",
+            "Subtract the new total from the old."
+          ],
+          "explanation": "The leaving person was 360 − 319 = 41 years old."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Use the count after the child is included. The family total is based on 5 people, not 4.",
+        "text": "Let’s check this clue.\n\nOld total = 360; new total = 319.\n\nThe leaving person was 360 − 319 = 41 years old.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Twenty people average 25 years. One leaves and the remaining nineteen average 24.5 years. How old was the person who left?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5"
+            "label": "24.5 years"
           },
           {
             "id": "b",
-            "label": "10"
+            "label": "34.5 years"
           },
           {
             "id": "c",
-            "label": "25"
+            "label": "25.5 years"
           },
           {
             "id": "d",
-            "label": "75"
+            "label": "44.5 years"
           }
         ]
       },
-      "content": {
-        "text": "Two parents total 70 years. With their child, the average age is 25. What is the child's age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Three-person total=75.",
-            "75−70=5."
-          ],
-          "prompt": "Two parents total 70 years. With their child, the average age is 25. What is the child's age?",
+          "questionType": "PRACTICE",
+          "prompt": "Twenty people average 25 years. One leaves and the remaining nineteen average 24.5 years. How old was the person who left?",
           "options": [
             {
               "id": "a",
-              "label": "5"
+              "label": "24.5 years"
             },
             {
               "id": "b",
-              "label": "10"
+              "label": "34.5 years"
             },
             {
               "id": "c",
-              "label": "25"
+              "label": "25.5 years"
             },
             {
               "id": "d",
-              "label": "75"
+              "label": "44.5 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The child is 5 years old.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old total = 500.",
+            "New total = 19×24.5 = 465.5."
+          ],
+          "explanation": "The leaving person's age was 500 − 465.5 = 34.5 years."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "The average 25 belongs to all three people, so total age is 75.",
+        "text": "Let’s work through this one.\n\nThe leaving person's age was 500 − 465.5 = 34.5 years.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "Replacement age questions can use the same-count shortcut.\n\nIf 5 club members now have the same average age they had 3 years ago, the current total would normally be 5×3=15 years larger.\nIf an old member was replaced, the new member must be 15 years younger than the one replaced to cancel that growth.",
+        "text": "Replacement keeps the count fixed, so average change converts directly to total-age change.\n\nTen people replace a 50-year-old with someone new and the average falls by 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total age falls by 10×2 = 20 years.\n\nNew person's age = 50 − 20 = 30 years.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "A group of 10 people replaces a 50-year-old member. The average age falls by 2 years. How old is the new member?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "16"
+            "label": "20 years"
           },
           {
             "id": "b",
-            "label": "2"
+            "label": "30 years"
           },
           {
             "id": "c",
-            "label": "8"
+            "label": "48 years"
           },
           {
             "id": "d",
-            "label": "10"
+            "label": "52 years"
           }
         ]
       },
-      "content": {
-        "text": "A group of 8 has the same average age today as it had 2 years ago after one old member was replaced by a new member. What is the age difference between old and new members?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Without replacement, total age would rise by 8×2.",
-            "The replacement must offset 16 years."
-          ],
-          "prompt": "A group of 8 has the same average age today as it had 2 years ago after one old member was replaced by a new member. What is the age difference between old and new members?",
+          "questionType": "PRACTICE",
+          "prompt": "A group of 10 people replaces a 50-year-old member. The average age falls by 2 years. How old is the new member?",
           "options": [
             {
               "id": "a",
-              "label": "16"
+              "label": "20 years"
             },
             {
               "id": "b",
-              "label": "2"
+              "label": "30 years"
             },
             {
               "id": "c",
-              "label": "8"
+              "label": "48 years"
             },
             {
               "id": "d",
-              "label": "10"
+              "label": "52 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The old member is 16 years older than the new member.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The total falls by 10×2 = 20 years.",
+            "Subtract that 20 from the outgoing age 50."
+          ],
+          "explanation": "The new member is 30 years old. A 20-year total decrease spread across 10 people creates the 2-year average decrease."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "remedy_5": {
+      "id": "remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "The 2-year passage affects all 8 people, so the total natural increase is 16 years.",
+        "text": "Let’s check this clue.\n\nThe total falls by 10×2 = 20 years.\n\nThe new member is 30 years old. A 20-year total decrease spread across 10 people creates the 2-year average decrease.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Eight people replace a 65-year-old member and the average rises by 1.5 years. How old is the new member?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4"
+            "label": "66.5 years"
           },
           {
             "id": "b",
-            "label": "24"
+            "label": "73 years"
           },
           {
             "id": "c",
-            "label": "10"
+            "label": "77 years"
           },
           {
             "id": "d",
-            "label": "18"
+            "label": "80 years"
           }
         ]
       },
-      "content": {
-        "text": "A group of 6 has the same average after 4 years because one member was replaced. What is the old-new age difference?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Natural total increase=6×4.",
-            "Replacement must reduce total by 24."
-          ],
-          "prompt": "A group of 6 has the same average after 4 years because one member was replaced. What is the old-new age difference?",
+          "questionType": "PRACTICE",
+          "prompt": "Eight people replace a 65-year-old member and the average rises by 1.5 years. How old is the new member?",
           "options": [
             {
               "id": "a",
-              "label": "4"
+              "label": "66.5 years"
             },
             {
               "id": "b",
-              "label": "24"
+              "label": "73 years"
             },
             {
               "id": "c",
-              "label": "10"
+              "label": "77 years"
             },
             {
               "id": "d",
-              "label": "18"
+              "label": "80 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The difference is 24 years.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Total age rises by 8×1.5 = 12 years.",
+            "Add 12 to the old member's age."
+          ],
+          "explanation": "The new member is 65 + 12 = 77 years old."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "Same average with same group size means the replacement exactly cancels the passage-of-time increase.",
+        "text": "Let’s work through this one.\n\nThe new member is 65 + 12 = 77 years old.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "Month changes must be converted consistently.\n\nIf an 11-player team's average age rises by 2 months, total age rises by 22 months.\nThat is 1 year 10 months.\n\nWhen two players are replaced, add that total change to the old pair's combined age to get the new pair's combined age.",
+        "text": "A birth changes both time and membership.\n\nFour family members averaged 18 four years ago, so their total was 72. Those same four now total 72 + 4×4 = 88.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A baby has joined, and today all five family members still average 18.\n\nToday's five-person total = 90\nBaby's age = 90 − 88 = 2 years\n\nDo the time update on the old members first, then account for the new member.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Three family members averaged 30 five years ago. A child was born during this period. Today there are four members and the family average is 27. How old is the child?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3 months"
+            "label": "3 years"
           },
           {
             "id": "b",
-            "label": "12 months"
+            "label": "2 years"
           },
           {
             "id": "c",
-            "label": "36 months"
+            "label": "5 years"
           },
           {
             "id": "d",
-            "label": "15 months"
+            "label": "27 years"
           }
         ]
       },
-      "content": {
-        "text": "A 12-person group's average age rises by 3 months after one replacement. By how much did the replacement increase total age?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Average rise × number of people.",
-            "12×3=36 months."
-          ],
-          "prompt": "A 12-person group's average age rises by 3 months after one replacement. By how much did the replacement increase total age?",
+          "questionType": "PRACTICE",
+          "prompt": "Three family members averaged 30 five years ago. A child was born during this period. Today there are four members and the family average is 27. How old is the child?",
           "options": [
             {
               "id": "a",
-              "label": "3 months"
+              "label": "3 years"
             },
             {
               "id": "b",
-              "label": "12 months"
+              "label": "2 years"
             },
             {
               "id": "c",
-              "label": "36 months"
+              "label": "5 years"
             },
             {
               "id": "d",
-              "label": "15 months"
+              "label": "27 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The total age increased by 36 months.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Move the original three people's total forward five years.",
+            "Old total 90 becomes 105; current four-person total is 108."
+          ],
+          "explanation": "The child's age is 108 − 105 = 3 years. The count changed, so simply adding five to the old average would be wrong for the new family."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_6": {
+      "id": "remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "Average change is per person. Multiply by the group size before comparing the old and new member.",
+        "text": "Let’s check this clue.\n\nMove the original three people's total forward five years.\n\nThe child's age is 108 − 105 = 3 years. The count changed, so simply adding five to the old average would be wrong for the new family.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Two parents averaged 25 six years ago. A child was born during this period. Today the three-person family averages 22. How old is the child?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6 months"
+            "label": "2 years"
           },
           {
             "id": "b",
-            "label": "16 months"
+            "label": "6 years"
           },
           {
             "id": "c",
-            "label": "100 months"
+            "label": "10 years"
           },
           {
             "id": "d",
-            "label": "60 months"
+            "label": "4 years"
           }
         ]
       },
-      "content": {
-        "text": "A 10-person group's average age falls by 6 months after one replacement. How much lower is the new member than the old member?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Total age falls by 10×6 months.",
-            "That is 60 months = 5 years."
-          ],
-          "prompt": "A 10-person group's average age falls by 6 months after one replacement. How much lower is the new member than the old member?",
+          "questionType": "PRACTICE",
+          "prompt": "Two parents averaged 25 six years ago. A child was born during this period. Today the three-person family averages 22. How old is the child?",
           "options": [
             {
               "id": "a",
-              "label": "6 months"
+              "label": "2 years"
             },
             {
               "id": "b",
-              "label": "16 months"
+              "label": "6 years"
             },
             {
               "id": "c",
-              "label": "100 months"
+              "label": "10 years"
             },
             {
               "id": "d",
-              "label": "60 months"
+              "label": "4 years"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The new member is 60 months, or 5 years, younger.",
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Parents' old total was 50; today their total is 62.",
+            "Current family total = 3×22 = 66."
+          ],
+          "explanation": "The parents now total 50 + 2×6 = 62. The family total is 66, so the child is 4 years old."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe parents now total 50 + 2×6 = 62. The family total is 66, so the child is 4 years old.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average changes are sometimes given in months. Convert before mixing units.\n\nThirty-nine students average 15 years. Include the teacher and the average rises by 3 months.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "3 months = 1/4 year, so new average = 15.25.\n\nTeacher age = 40×15.25 − 39×15\n= 610 − 585\n= 25 years.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Nineteen students average 14 years. An instructor joins and the 20-person average is 6 months higher. How old is the instructor?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14.5 years"
+          },
+          {
+            "id": "b",
+            "label": "20 years"
+          },
+          {
+            "id": "c",
+            "label": "28 years"
+          },
+          {
+            "id": "d",
+            "label": "24 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "prompt": "Nineteen students average 14 years. An instructor joins and the 20-person average is 6 months higher. How old is the instructor?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14.5 years"
+            },
+            {
+              "id": "b",
+              "label": "20 years"
+            },
+            {
+              "id": "c",
+              "label": "28 years"
+            },
+            {
+              "id": "d",
+              "label": "24 years"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Six months = 0.5 year.",
+            "Instructor age = 20×14.5 − 19×14."
+          ],
+          "explanation": "The new total is 290; the students total 266. Difference = 24 years."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Replacement keeps the count fixed, so total change equals the age difference between the two members.",
+        "text": "Let’s check this clue.\n\nSix months = 0.5 year.\n\nThe new total is 290; the students total 266. Difference = 24 years.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Nine players average 20 years. A coach joins and the 10-person average rises by 3 months. How old is the coach?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "22.5 years"
+          },
+          {
+            "id": "b",
+            "label": "20.25 years"
+          },
+          {
+            "id": "c",
+            "label": "22 years"
+          },
+          {
+            "id": "d",
+            "label": "25 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Nine players average 20 years. A coach joins and the 10-person average rises by 3 months. How old is the coach?",
+          "options": [
+            {
+              "id": "a",
+              "label": "22.5 years"
+            },
+            {
+              "id": "b",
+              "label": "20.25 years"
+            },
+            {
+              "id": "c",
+              "label": "22 years"
+            },
+            {
+              "id": "d",
+              "label": "25 years"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Three months = 0.25 year.",
+            "Coach age = 10×20.25 − 9×20."
+          ],
+          "explanation": "New total = 202.5; player total = 180. The coach is 22.5 years old."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Age averages are total ages divided by people.\n\nIf membership is unchanged, the average rises by exactly the years that pass.\nWhen someone joins, leaves, is born or is replaced, update the count and total at that event.\nFor month changes, keep all time units consistent before calculating.",
+        "text": "Let’s work through this one.\n\nNew total = 202.5; player total = 180. The coach is 22.5 years old.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Age Averages Through Time.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "text": "Capstone: split the timeline around a birth.\n\nAt marriage, a couple's average age is 27, so together they are 54. Their child is born 3 years later, when the parents' total age is 54 + 2×3 = 60.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Today the three-person family average is 30, so total age = 90.\n\nLet the child's present age be t. Since the birth, both parents and the child have each gained t years:\n60 + 3t = 90\nt = 10\n\nThe marriage was 3 + 10 = 13 years ago.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "At marriage, a couple's average age was 27 years. Their child was born 3 years later. Today the average age of all three is 30 years. How many years ago did the couple marry?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 years"
+          },
+          {
+            "id": "b",
+            "label": "12 years"
+          },
+          {
+            "id": "c",
+            "label": "13 years"
+          },
+          {
+            "id": "d",
+            "label": "15 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "At marriage, a couple's average age was 27 years. Their child was born 3 years later. Today the average age of all three is 30 years. How many years ago did the couple marry?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 years"
+            },
+            {
+              "id": "b",
+              "label": "12 years"
+            },
+            {
+              "id": "c",
+              "label": "13 years"
+            },
+            {
+              "id": "d",
+              "label": "15 years"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The parents totalled 54 at marriage and 60 when the child was born.",
+            "Let child age=t: 60 + 3t = 90."
+          ],
+          "explanation": "t = 10, so the child is 10. The marriage happened 3 years before the birth, so it was 13 years ago."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe parents totalled 54 at marriage and 60 when the child was born.\n\nt = 10, so the child is 10. The marriage happened 3 years before the birth, so it was 13 years ago.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "At marriage, a couple's average age was 24 years. Their child was born 3 years later. Today the average age of all three is 28 years. How many years ago did they marry?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 years"
+          },
+          {
+            "id": "b",
+            "label": "13 years"
+          },
+          {
+            "id": "c",
+            "label": "11 years"
+          },
+          {
+            "id": "d",
+            "label": "14 years"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "At marriage, a couple's average age was 24 years. Their child was born 3 years later. Today the average age of all three is 28 years. How many years ago did they marry?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 years"
+            },
+            {
+              "id": "b",
+              "label": "13 years"
+            },
+            {
+              "id": "c",
+              "label": "11 years"
+            },
+            {
+              "id": "d",
+              "label": "14 years"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Parents totalled 48 at marriage and 54 at the child's birth.",
+            "Current family total is 84, so 54 + 3t = 84."
+          ],
+          "explanation": "The child is t=10 years old. The marriage was 3 years earlier, so it was 13 years ago."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe child is t=10 years old. The marriage was 3 years earlier, so it was 13 years ago.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now move age totals through time and through changes in membership.\n\nSame people → the average shifts by the elapsed years.\nChanged group → update both total age and count.\n\nNext, we handle averages of rates, where the denominator itself can change and a simple mean is often the wrong tool.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Age Averages Through Time",
-    "description": "Solve average-age problems involving years passing, family changes, births, teachers and replacements.",
-    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Age Averages Through Time. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-avg-07-age-averages-through-time",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

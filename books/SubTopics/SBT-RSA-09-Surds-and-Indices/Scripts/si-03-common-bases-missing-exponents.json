@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "si-03-common-bases-missing-exponents",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Common Bases and Missing Exponents",
+    "description": "Make bases match first, then let equal powers reveal the missing exponent.",
+    "teachingApproach": "Train the eye to replace 81, 27, 9, 8, 4, decimal bases and powers of 10 by one common base. Only after that conversion are exponents compared or combined. Every worked example explicitly checks that the bases really match.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 9, Surds and Indices. Approved scope: Teach the common-base habit behind many objective questions: convert 81 and 9 to powers of 3, 64 and 8 to powers of 2, and decimal bases such as 0.4 or 0.2 to matching powers before comparing exponents. Cover missing exponents in products, quotients and powers of powers, reciprocal-base forms such as (5/2)^x = (2/5)^−3, and linear exponent equations after a base conversion. Include powers of 10 in scientific-notation style quotients because the chapter tests the same law there. Learners should never equate exponents until both sides genuinely have the same positive base."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn the most useful simplification habit in this chapter: make the bases match.\n\nA problem may show 64, 8 and 2 as if they are different. But:\n\n64 = 2^6\n8 = 2^3.\n\nOnce the base is the same, the exponent laws become easy to use.",
+        "text": "Many missing-exponent questions are not really about solving a mysterious equation.\n\nThey are about noticing that 81 and 9 are both powers of 3, or that 8 and 4 are both powers of 2. Once the bases match, the exponents usually tell the story.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Start with a direct rewrite.\n\n64^2 ÷ 8^3\n= (2^6)^2 ÷ (2^3)^3\n= 2^12 ÷ 2^9\n= 2^3\n= 8.\n\nThe arithmetic became an exponent subtraction.",
+        "text": "Take 81^2 × 9^3.\n\n81=3^4 and 9=3^2, so the whole expression can speak base 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "81^2×9^3=(3^4)^2×(3^2)^3\n=3^8×3^6\n=3^14\n\nThe hard-looking bases disappeared once we chose a common base.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "27^2 × 3^4 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2"
+            "label": "3^10"
           },
           {
             "id": "b",
-            "label": "16"
+            "label": "3^8"
           },
           {
             "id": "c",
-            "label": "8"
+            "label": "3^12"
           },
           {
             "id": "d",
-            "label": "64"
+            "label": "3^24"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "27^2 × 3^4 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3^10"
+            },
+            {
+              "id": "b",
+              "label": "3^8"
+            },
+            {
+              "id": "c",
+              "label": "3^12"
+            },
+            {
+              "id": "d",
+              "label": "3^24"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "27=3^3.",
+            "(3^3)^2×3^4=3^(6+4)."
+          ],
+          "explanation": "27^2×3^4=3^6×3^4=3^10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
       "content": {
-        "text": "What is 64^2 ÷ 8^3?",
+        "text": "Let’s check the pattern.\n\n27=3^3.\n\n27^2×3^4=3^6×3^4=3^10.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
+          "targetNodeId": "retry_1"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write 64 as 2^6 and 8 as 2^3.",
-            "The combined exponent is 12 - 9."
-          ],
-          "prompt": "What is 64^2 ÷ 8^3?",
-          "options": [
-            {
-              "id": "a",
-              "label": "2"
-            },
-            {
-              "id": "b",
-              "label": "16"
-            },
-            {
-              "id": "c",
-              "label": "8"
-            },
-            {
-              "id": "d",
-              "label": "64"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Correct. 64^2 ÷ 8^3 = 2^12 ÷ 2^9 = 2^3 = 8.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "16^3 × 2^2 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "9"
+            "label": "2^8"
           },
           {
             "id": "b",
-            "label": "3"
+            "label": "2^14"
           },
           {
             "id": "c",
-            "label": "27"
+            "label": "2^12"
           },
           {
             "id": "d",
-            "label": "81"
+            "label": "2^16"
           }
         ]
       },
-      "content": {
-        "text": "What is 81^2 ÷ 3^6?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "81 = 3^4.",
-            "(3^4)^2 ÷ 3^6 = 3^(8-6)."
-          ],
-          "prompt": "What is 81^2 ÷ 3^6?",
+          "questionType": "PRACTICE",
+          "prompt": "16^3 × 2^2 = ?",
           "options": [
             {
               "id": "a",
-              "label": "9"
+              "label": "2^8"
             },
             {
               "id": "b",
-              "label": "3"
+              "label": "2^14"
             },
             {
               "id": "c",
-              "label": "27"
+              "label": "2^12"
             },
             {
               "id": "d",
-              "label": "81"
+              "label": "2^16"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Correct. 81^2 ÷ 3^6 = 3^8 ÷ 3^6 = 3^2 = 9.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "16=2^4.",
+            "(2^4)^3×2^2=2^(12+2)."
+          ],
+          "explanation": "16^3×2^2=2^14."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 64^2 ÷ 8^3?\n\nStart from this clue:\nWrite 64 as 2^6 and 8 as 2^3.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n16^3×2^2=2^14.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n81^2 ÷ 3^6 = 3^8 ÷ 3^6 = 3^2 = 9.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "If the bases already match, a missing exponent is just missing arithmetic.\n\n5^x × 5^3 = 5^11.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "Several different-looking powers can collapse to one base.\n\n9^3 × 27^2\n= (3^2)^3 × (3^3)^2\n= 3^6 × 3^6\n= 3^12.",
+        "text": "Same base means exponents add:\n\nx+3=11\nx=8\n\nCheck: 5^8×5^3=5^11.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,6 +265,10 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "2^x × 2^5 = 2^12. Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -237,49 +278,23 @@
           },
           {
             "id": "b",
-            "label": "18"
+            "label": "7"
           },
           {
             "id": "c",
-            "label": "36"
+            "label": "12"
           },
           {
             "id": "d",
-            "label": "12"
+            "label": "17"
           }
         ]
       },
-      "content": {
-        "text": "9^3 × 27^2 = 3^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "9 = 3^2 and 27 = 3^3.",
-            "Multiply the inner exponents, then add."
-          ],
-          "prompt": "9^3 × 27^2 = 3^?",
+          "questionType": "PRACTICE",
+          "prompt": "2^x × 2^5 = 2^12. Find x.",
           "options": [
             {
               "id": "a",
@@ -287,135 +302,170 @@
             },
             {
               "id": "b",
-              "label": "18"
+              "label": "7"
             },
             {
               "id": "c",
-              "label": "36"
+              "label": "12"
             },
             {
               "id": "d",
-              "label": "12"
+              "label": "17"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "Correct. 9^3=3^6 and 27^2=3^6, so the product is 3^12.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Set x+5=12.",
+            "Subtract 5."
+          ],
+          "explanation": "x+5=12, so x=7."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nSet x+5=12.\n\nx+5=12, so x=7.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "3^4 × 3^x = 3^10. Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "7"
+            "label": "4"
           },
           {
             "id": "b",
-            "label": "16"
+            "label": "10"
           },
           {
             "id": "c",
-            "label": "14"
+            "label": "6"
           },
           {
             "id": "d",
-            "label": "20"
+            "label": "14"
           }
         ]
       },
-      "content": {
-        "text": "4^5 × 8^2 = 2^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "4=2^2 and 8=2^3.",
-            "2×5 + 3×2 = 16."
-          ],
-          "prompt": "4^5 × 8^2 = 2^?",
+          "questionType": "PRACTICE",
+          "prompt": "3^4 × 3^x = 3^10. Find x.",
           "options": [
             {
               "id": "a",
-              "label": "7"
+              "label": "4"
             },
             {
               "id": "b",
-              "label": "16"
+              "label": "10"
             },
             {
               "id": "c",
-              "label": "14"
+              "label": "6"
             },
             {
               "id": "d",
-              "label": "20"
+              "label": "14"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "Correct. 4^5=2^10 and 8^2=2^6, so the product is 2^16.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "4+x=10.",
+            "x=6."
+          ],
+          "explanation": "3^4×3^6=3^10, so x=6."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\n9^3 × 27^2 = 3^?\n\nStart from this clue:\n9 = 3^2 and 27 = 3^3.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n3^4×3^6=3^10, so x=6.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n4^5=2^10 and 8^2=2^6, so the product is 2^16.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Division makes the missing exponent a difference.\n\n7^x ÷ 7^2 = 7^5.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "The same trick works with decimals when one is a power of another.\n\n0.04 = (0.2)^2.\n\nSo (0.04)^2 × (0.2)^3 = (0.2)^4 × (0.2)^3 = (0.2)^7.",
+        "text": "x−2=5\nx=7\n\nThe exponent on the denominator is removed from the numerator exponent.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,12 +477,16 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "3^x ÷ 3^4 = 3^5. Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "7"
+            "label": "1"
           },
           {
             "id": "b",
@@ -440,49 +494,23 @@
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "9"
           },
           {
             "id": "d",
-            "label": "12"
+            "label": "20"
           }
         ]
       },
-      "content": {
-        "text": "(0.04)^2 × (0.2)^3 = (0.2)^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "0.04 = (0.2)^2.",
-            "Squaring it gives (0.2)^4, then add 3."
-          ],
-          "prompt": "(0.04)^2 × (0.2)^3 = (0.2)^?",
+          "questionType": "PRACTICE",
+          "prompt": "3^x ÷ 3^4 = 3^5. Find x.",
           "options": [
             {
               "id": "a",
-              "label": "7"
+              "label": "1"
             },
             {
               "id": "b",
@@ -490,37 +518,76 @@
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "9"
             },
             {
               "id": "d",
-              "label": "12"
+              "label": "20"
             }
           ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. (0.04)^2 = (0.2)^4, so the final exponent is 4+3=7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "x−4=5.",
+            "Add 4."
+          ],
+          "explanation": "x=9 because 3^(9−4)=3^5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nx−4=5.\n\nx=9 because 3^(9−4)=3^5.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "10^x ÷ 10^3 = 10^6. Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "2"
           },
           {
             "id": "b",
-            "label": "5"
+            "label": "3"
           },
           {
             "id": "c",
-            "label": "7"
+            "label": "18"
           },
           {
             "id": "d",
@@ -528,93 +595,89 @@
           }
         ]
       },
-      "content": {
-        "text": "(0.008)^2 × (0.2)^1 = (0.2)^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "0.008 = (0.2)^3.",
-            "Squaring gives exponent 6, then add 1."
-          ],
-          "prompt": "(0.008)^2 × (0.2)^1 = (0.2)^?",
+          "questionType": "PRACTICE",
+          "prompt": "10^x ÷ 10^3 = 10^6. Find x.",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "2"
             },
             {
               "id": "b",
-              "label": "5"
+              "label": "3"
             },
             {
               "id": "c",
-              "label": "7"
+              "label": "18"
             },
             {
               "id": "d",
               "label": "9"
             }
           ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. (0.008)^2=(0.2)^6, so multiplying by (0.2)^1 gives (0.2)^7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "x−3=6.",
+            "x=9."
+          ],
+          "explanation": "10^9÷10^3=10^6."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\n(0.04)^2 × (0.2)^3 = (0.2)^?\n\nStart from this clue:\n0.04 = (0.2)^2.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n10^9÷10^3=10^6.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n(0.008)^2=(0.2)^6, so multiplying by (0.2)^1 gives (0.2)^7.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "A missing exponent can sit outside a power.\n\n(2^x)^3=2^15.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "If the bases are already the same, equal powers have equal exponents.\n\n5^(x+2) = 5^9\nmeans x+2 = 9.\n\nSo x = 7.",
+        "text": "Power of a power multiplies exponents:\n\n3x=15\nx=5\n\nDo not use x+3 here — the entire x-power is repeated three times.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,86 +689,10 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "11"
-          },
-          {
-            "id": "b",
-            "label": "7"
-          },
-          {
-            "id": "c",
-            "label": "4"
-          },
-          {
-            "id": "d",
-            "label": "18"
-          }
-        ]
-      },
       "content": {
-        "text": "If 5^(x+2) = 5^9, what is x?",
+        "text": "(5^x)^2 = 5^12. Find x.",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The bases are equal.",
-            "Set x+2 = 9."
-          ],
-          "prompt": "If 5^(x+2) = 5^9, what is x?",
-          "options": [
-            {
-              "id": "a",
-              "label": "11"
-            },
-            {
-              "id": "b",
-              "label": "7"
-            },
-            {
-              "id": "c",
-              "label": "4"
-            },
-            {
-              "id": "d",
-              "label": "18"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. x+2=9, so x=7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
@@ -719,7 +706,7 @@
           },
           {
             "id": "c",
-            "label": "12"
+            "label": "24"
           },
           {
             "id": "d",
@@ -727,37 +714,11 @@
           }
         ]
       },
-      "content": {
-        "text": "If 3^(2x-1) = 3^11, what is x?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Set the exponents equal.",
-            "2x-1=11."
-          ],
-          "prompt": "If 3^(2x-1) = 3^11, what is x?",
+          "questionType": "PRACTICE",
+          "prompt": "(5^x)^2 = 5^12. Find x.",
           "options": [
             {
               "id": "a",
@@ -769,51 +730,166 @@
             },
             {
               "id": "c",
-              "label": "12"
+              "label": "24"
             },
             {
               "id": "d",
               "label": "6"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "MEDIUM",
-          "explanation": "Correct. 2x=12, so x=6.",
+          "xp": 15,
+          "hints": [
+            "2x=12.",
+            "x=6."
+          ],
+          "explanation": "(5^x)^2=5^(2x), so 2x=12 and x=6."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\n2x=12.\n\n(5^x)^2=5^(2x), so 2x=12 and x=6.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "(3^2)^x = 3^10. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "prompt": "(3^2)^x = 3^10. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "(3^2)^x=3^(2x).",
+            "2x=10."
+          ],
+          "explanation": "2x=10, so x=5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 5^(x+2) = 5^9, what is x?\n\nStart from this clue:\nThe bases are equal.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n2x=10, so x=5.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n2x=12, so x=6.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Decimal bases can share a base too.\n\n0.064=(0.4)^3 and 0.0256=(0.4)^4.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "Sometimes the bases must be rewritten before exponents can be compared.\n\n4^x = 8^2\nbecomes 2^(2x) = 2^6.\n\nTherefore 2x=6 and x=3.",
+        "text": "So an equation involving those decimals can often be rewritten entirely in powers of 0.4. The decimal point stops being the difficult part.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,12 +901,16 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "(0.5)^x × (0.5)^4 = (0.5)^9. Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2"
+            "label": "5"
           },
           {
             "id": "b",
@@ -838,49 +918,23 @@
           },
           {
             "id": "c",
-            "label": "3"
+            "label": "9"
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "13"
           }
         ]
       },
-      "content": {
-        "text": "If 4^x = 8^2, what is x?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write 4=2^2 and 8=2^3.",
-            "Then 2x = 6."
-          ],
-          "prompt": "If 4^x = 8^2, what is x?",
+          "questionType": "PRACTICE",
+          "prompt": "(0.5)^x × (0.5)^4 = (0.5)^9. Find x.",
           "options": [
             {
               "id": "a",
-              "label": "2"
+              "label": "5"
             },
             {
               "id": "b",
@@ -888,131 +942,166 @@
             },
             {
               "id": "c",
-              "label": "3"
+              "label": "9"
             },
             {
               "id": "d",
-              "label": "6"
+              "label": "13"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "Correct. 4^x=2^(2x) and 8^2=2^6, so x=3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The base is already common.",
+            "x+4=9."
+          ],
+          "explanation": "x=5 because exponents add on multiplication."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nThe base is already common.\n\nx=5 because exponents add on multiplication.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "(0.2)^3 × (0.2)^x = (0.2)^7. Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2"
-          },
-          {
-            "id": "b",
             "label": "3"
           },
           {
-            "id": "c",
+            "id": "b",
             "label": "4"
           },
           {
+            "id": "c",
+            "label": "7"
+          },
+          {
             "id": "d",
-            "label": "6"
+            "label": "10"
           }
         ]
       },
-      "content": {
-        "text": "If 9^x = 27^2, what is x?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write 9=3^2 and 27=3^3.",
-            "2x=6."
-          ],
-          "prompt": "If 9^x = 27^2, what is x?",
+          "questionType": "PRACTICE",
+          "prompt": "(0.2)^3 × (0.2)^x = (0.2)^7. Find x.",
           "options": [
             {
               "id": "a",
-              "label": "2"
-            },
-            {
-              "id": "b",
               "label": "3"
             },
             {
-              "id": "c",
+              "id": "b",
               "label": "4"
             },
             {
+              "id": "c",
+              "label": "7"
+            },
+            {
               "id": "d",
-              "label": "6"
+              "label": "10"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "Correct. 3^(2x)=3^6, so x=3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "3+x=7.",
+            "x=4."
+          ],
+          "explanation": "(0.2)^3×(0.2)^4=(0.2)^7."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf 4^x = 8^2, what is x?\n\nStart from this clue:\nWrite 4=2^2 and 8=2^3.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n(0.2)^3×(0.2)^4=(0.2)^7.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n3^(2x)=3^6, so x=3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "A reciprocal base may look different but can be flipped by a negative exponent.\n\n(3/2)^x = (2/3)^(−4).",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "Powers of 10 follow the same index laws.\n\n(2.4 × 10^4) ÷ (8 × 10^-2)\n= (2.4/8) × 10^(4-(-2))\n= 0.3 × 10^6\n= 3 × 10^5.\n\nKeep the coefficient and power-of-10 work separate until the end.",
+        "text": "Since (2/3)^(−4)=(3/2)^4, the bases now match.\n\nTherefore x=4.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "(5/2)^x = (2/5)^(−3). Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3 × 10^2"
+            "label": "-3"
           },
           {
             "id": "b",
-            "label": "3 × 10^6"
+            "label": "3"
           },
           {
             "id": "c",
-            "label": "0.3 × 10^2"
+            "label": "3/2"
           },
           {
             "id": "d",
-            "label": "3 × 10^5"
+            "label": "5"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(5/2)^x = (2/5)^(−3). Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "-3"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "3/2"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Flip the right-hand base because its exponent is negative.",
+            "(2/5)^−3=(5/2)^3."
+          ],
+          "explanation": "Both sides become powers of 5/2, so x=3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
       "content": {
-        "text": "What is (2.4 × 10^4) ÷ (8 × 10^-2)?",
+        "text": "Let’s check the pattern.\n\nFlip the right-hand base because its exponent is negative.\n\nBoth sides become powers of 5/2, so x=3.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_6"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Divide 2.4 by 8 and subtract the 10-exponents.",
-            "4 - (-2) = 6, so 0.3 × 10^6 = 3 × 10^5."
-          ],
-          "prompt": "What is (2.4 × 10^4) ÷ (8 × 10^-2)?",
-          "options": [
-            {
-              "id": "a",
-              "label": "3 × 10^2"
-            },
-            {
-              "id": "b",
-              "label": "3 × 10^6"
-            },
-            {
-              "id": "c",
-              "label": "0.3 × 10^2"
-            },
-            {
-              "id": "d",
-              "label": "3 × 10^5"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. The coefficient is 0.3 and the power is 10^6, giving 3 × 10^5.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "(7/4)^x = (4/7)^(−5). Find x.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2 × 10^5"
+            "label": "-5"
           },
           {
             "id": "b",
-            "label": "2 × 10^1"
+            "label": "5/2"
           },
           {
             "id": "c",
-            "label": "2 × 10^6"
+            "label": "5"
           },
           {
             "id": "d",
-            "label": "18 × 10^1"
+            "label": "9"
           }
         ]
       },
-      "content": {
-        "text": "What is (6 × 10^3) ÷ (3 × 10^-2)?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "6/3 = 2.",
-            "3 - (-2) = 5."
-          ],
-          "prompt": "What is (6 × 10^3) ÷ (3 × 10^-2)?",
+          "questionType": "PRACTICE",
+          "prompt": "(7/4)^x = (4/7)^(−5). Find x.",
           "options": [
             {
               "id": "a",
-              "label": "2 × 10^5"
+              "label": "-5"
             },
             {
               "id": "b",
-              "label": "2 × 10^1"
+              "label": "5/2"
             },
             {
               "id": "c",
-              "label": "2 × 10^6"
+              "label": "5"
             },
             {
               "id": "d",
-              "label": "18 × 10^1"
+              "label": "9"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "Correct. (6/3)×10^(3-(-2)) = 2×10^5.",
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Invert 4/7.",
+            "The right side becomes (7/4)^5."
+          ],
+          "explanation": "x=5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nx=5.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the common-base step creates a small linear equation.\n\n4^(x+1)=2^(3x−2).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rewrite 4 as 2^2:\n\n2^(2x+2)=2^(3x−2)\n2x+2=3x−2\nx=4\n\nMatching bases turns an exponential equation into ordinary algebra.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "8^(x−1) = 2^(x+5). Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "8^(x−1) = 2^(x+5). Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "8=2^3.",
+            "3x−3=x+5."
+          ],
+          "explanation": "3x−3=x+5, so 2x=8 and x=4."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is (2.4 × 10^4) ÷ (8 × 10^-2)?\n\nStart from this clue:\nDivide 2.4 by 8 and subtract the 10-exponents.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s check the pattern.\n\n8=2^3.\n\n3x−3=x+5, so 2x=8 and x=4.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "9^(x+1) = 3^(4x−2). Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "9^(x+1) = 3^(4x−2). Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "2"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "9=3^2.",
+            "2x+2=4x−2."
+          ],
+          "explanation": "2x+2=4x−2, so x=2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n(6/3)×10^(3-(-2)) = 2×10^5.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Let’s work through the retry.\n\n2x+2=4x−2, so x=2.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "teach_8": {
+      "id": "teach_8",
       "type": "CONTENT",
       "content": {
-        "text": "Look for a common base before doing arithmetic.\n\nRewrite every factor.\nCombine indices.\nIf equal positive powers have the same base, compare their exponents.\nFor powers of 10, handle the number part and the 10-exponent separately.\n\nExplain why rewriting 81 as 3^4 is often more useful than calculating 81^2 directly.",
+        "text": "Powers of ten use the same laws.\n\n(2.4×10^3) ÷ (8×10^−2) separates into number part and power-of-ten part.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "teach_8_step"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
       "content": {
-        "text": "Well done. On the next index question you see, spend a few seconds asking, 'Can these bases be written as powers of one smaller number?' That inspection often saves most of the calculation.",
+        "text": "2.4÷8=0.3 and 10^(3−(−2))=10^5.\n\n0.3×10^5 = 3×10^4.\n\nSubtracting a negative exponent increases the power.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "(6×10^5) ÷ (3×10^2) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2×10^2"
+          },
+          {
+            "id": "b",
+            "label": "3×10^3"
+          },
+          {
+            "id": "c",
+            "label": "2×10^7"
+          },
+          {
+            "id": "d",
+            "label": "2×10^3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(6×10^5) ÷ (3×10^2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2×10^2"
+            },
+            {
+              "id": "b",
+              "label": "3×10^3"
+            },
+            {
+              "id": "c",
+              "label": "2×10^7"
+            },
+            {
+              "id": "d",
+              "label": "2×10^3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Divide 6 by 3.",
+            "Subtract exponents: 5−2=3."
+          ],
+          "explanation": "(6×10^5)/(3×10^2)=2×10^3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nDivide 6 by 3.\n\n(6×10^5)/(3×10^2)=2×10^3.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "(4.5×10^−3) ÷ (1.5×10^−5) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3×10^2"
+          },
+          {
+            "id": "b",
+            "label": "3×10^−8"
+          },
+          {
+            "id": "c",
+            "label": "3×10^−2"
+          },
+          {
+            "id": "d",
+            "label": "3×10^8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(4.5×10^−3) ÷ (1.5×10^−5) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3×10^2"
+            },
+            {
+              "id": "b",
+              "label": "3×10^−8"
+            },
+            {
+              "id": "c",
+              "label": "3×10^−2"
+            },
+            {
+              "id": "d",
+              "label": "3×10^8"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "4.5÷1.5=3.",
+            "−3−(−5)=2."
+          ],
+          "explanation": "The quotient is 3×10^2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nThe quotient is 3×10^2.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "Your common-base checklist:\n\n1. Rewrite every base as a power of one smaller base.\n2. Apply the index laws.\n3. Compare exponents only after the bases match.\n4. Check the found exponent in the original expression.\n\nDifferent-looking numbers often hide the same base.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Common Bases and Missing Exponents",
-    "description": "Rewrite powers to one base, combine their exponents, and solve for missing indices.",
-    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Common Bases and Missing Exponents. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
-    "targetDurationMinutes": 20
-  },
-  "scriptId": "script-si-03-common-bases-missing-exponents",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

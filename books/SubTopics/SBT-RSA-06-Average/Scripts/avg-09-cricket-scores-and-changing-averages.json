@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "avg-09-cricket-scores-and-changing-averages",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Cricket, Scores and Changing Performance Averages",
+    "description": "Turn innings, run rates, bowling figures and exam averages back into totals before making the next change.",
+    "teachingApproach": "Use cricket as a repeated demonstration that an average hides a total. Build from adding a new innings to finding the score needed for a desired average, removing extremes, target run rates, captain-vs-teammate comparisons and bowling averages. Then transfer the same logic to exam-average changes and finish with a hypothetical team-score adjustment.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "Teach performance averages through the same total-first habit. Cover a new innings changing a batting average, finding the required next score, removing highest and lowest scores, target run rate after completed overs, a captain scoring above the average of teammates, bowling average after new wickets, examination-paper averages changed by bonus marks, and a team-score capstone where one score is hypothetically changed. Always distinguish old count from new count."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn cricket, scores and changing performance averages with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's learn the average questions where one new performance changes everything.\n\nRuns per innings, runs per over and runs per wicket all look different, but each one becomes manageable when we rebuild the old total before making the change.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "A player's average after n innings represents a total score of n×average.\n\nIf the next innings changes the average, write old total + new score = new count × new average.\n\nThe chapter uses this pattern repeatedly.",
+        "text": "A batting average is total runs ÷ innings.\n\nAfter 10 innings, a batsman averages 40, so he has 400 runs. He then scores 62 in the 11th innings.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "New total = 462\nNew innings = 11\nNew average = 462 ÷ 11 = 42\n\nThe new score does not simply get averaged with the old average; the old average represents ten innings.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,99 +53,10 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "32"
-          },
-          {
-            "id": "b",
-            "label": "30"
-          },
-          {
-            "id": "c",
-            "label": "31"
-          },
-          {
-            "id": "d",
-            "label": "34"
-          }
-        ]
-      },
       "content": {
-        "text": "A batsman averages 30 after 20 innings. He scores 72 in the 21st. What is his new average?",
+        "text": "After 10 innings a batsman averages 40. He scores 62 in the 11th. What is his new average?",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old total=20×30=600.",
-            "New total=672; divide by 21."
-          ],
-          "prompt": "A batsman averages 30 after 20 innings. He scores 72 in the 21st. What is his new average?",
-          "options": [
-            {
-              "id": "a",
-              "label": "32"
-            },
-            {
-              "id": "b",
-              "label": "30"
-            },
-            {
-              "id": "c",
-              "label": "31"
-            },
-            {
-              "id": "d",
-              "label": "34"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "672÷21=32.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Do not add the score 72 directly to the average 30. Add it to the total runs.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_1_retry"
-        }
-      ]
-    },
-    "q_1_retry": {
-      "id": "q_1_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
@@ -135,45 +70,19 @@
           },
           {
             "id": "c",
-            "label": "41"
+            "label": "51"
           },
           {
             "id": "d",
-            "label": "46"
+            "label": "102"
           }
         ]
       },
-      "content": {
-        "text": "A batsman averages 40 after 10 innings. He scores 62 in the 11th. What is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old total=400; new total=462.",
-            "462÷11=42."
-          ],
-          "prompt": "A batsman averages 40 after 10 innings. He scores 62 in the 11th. What is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "After 10 innings a batsman averages 40. He scores 62 in the 11th. What is his new average?",
           "options": [
             {
               "id": "a",
@@ -185,38 +94,166 @@
             },
             {
               "id": "c",
-              "label": "41"
+              "label": "51"
             },
             {
               "id": "d",
-              "label": "46"
+              "label": "102"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "The new average is 42.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "Old total = 10×40.",
+            "Add 62 and divide by 11."
+          ],
+          "explanation": "(400 + 62) ÷ 11 = 42. The old average 40 carries the weight of ten innings."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "The denominator changes from 10 innings to 11 innings after the new score.",
+        "text": "Let’s check this clue.\n\nOld total = 10×40.\n\n(400 + 62) ÷ 11 = 42. The old average 40 carries the weight of ten innings.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "After 8 innings a batsman averages 25. He scores 43 in the 9th. What is his new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25"
+          },
+          {
+            "id": "b",
+            "label": "34"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "68"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After 8 innings a batsman averages 25. He scores 43 in the 9th. What is his new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25"
+            },
+            {
+              "id": "b",
+              "label": "34"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "68"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Old total = 200.",
+            "243 ÷ 9."
+          ],
+          "explanation": "The new total is 243 runs, so the average is 27."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Sometimes the new average is given and the score must be found.\n\nIf the average after the 17th inning is x and it rose by 3, then the first 16 innings averaged x−3.\nWrite:\n16(x−3)+new score = 17x.",
+        "text": "Let’s work through this one.\n\nThe new total is 243 runs, so the average is 27.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the question tells you how much the average rises and asks for the new score.\n\nAfter 20 innings, average = 30. After the 21st, average = 32.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Old total = 20×30 = 600\nNew total = 21×32 = 672\n21st score = 672 − 600 = 72\n\nA 2-run rise in average across 21 innings needs far more than a 2-run innings.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "After 15 innings a batsman averages 28. His average becomes 29.5 after the 16th innings. What did he score in the 16th?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "48"
+            "label": "29.5"
           },
           {
             "id": "b",
+            "label": "43"
+          },
+          {
+            "id": "c",
+            "label": "57.5"
+          },
+          {
+            "id": "d",
             "label": "52"
-          },
-          {
-            "id": "c",
-            "label": "50"
-          },
-          {
-            "id": "d",
-            "label": "80"
           }
         ]
       },
-      "content": {
-        "text": "A batsman scores 80 in the 16th inning and his average rises by 2. What is his average after 16 innings?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let new average be x; old average is x−2.",
-            "15(x−2)+80=16x."
-          ],
-          "prompt": "A batsman scores 80 in the 16th inning and his average rises by 2. What is his average after 16 innings?",
+          "questionType": "PRACTICE",
+          "prompt": "After 15 innings a batsman averages 28. His average becomes 29.5 after the 16th innings. What did he score in the 16th?",
           "options": [
             {
               "id": "a",
-              "label": "48"
+              "label": "29.5"
             },
             {
               "id": "b",
-              "label": "52"
+              "label": "43"
             },
             {
               "id": "c",
-              "label": "50"
+              "label": "57.5"
             },
             {
               "id": "d",
-              "label": "80"
+              "label": "52"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "15x−30+80=16x, so x=50.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Compare the old and new totals.",
+            "16×29.5 − 15×28."
+          ],
+          "explanation": "New total = 472 and old total = 420, so the innings score is 52."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "remedy_2": {
+      "id": "remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "The average rise of 2 applies to the whole record, not just the latest score.",
+        "text": "Let’s check this clue.\n\nCompare the old and new totals.\n\nNew total = 472 and old total = 420, so the innings score is 52.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "After 12 innings a batsman averages 35. After the 13th, his average is 37. What did he score?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "27"
+            "label": "61"
           },
           {
             "id": "b",
-            "label": "33"
+            "label": "37"
           },
           {
             "id": "c",
-            "label": "90"
+            "label": "59"
           },
           {
             "id": "d",
-            "label": "30"
+            "label": "72"
           }
         ]
       },
-      "content": {
-        "text": "A batsman scores 90 in the 21st inning and raises his average by 3. What is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "20(x−3)+90=21x.",
-            "20x−60+90=21x."
-          ],
-          "prompt": "A batsman scores 90 in the 21st inning and raises his average by 3. What is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "After 12 innings a batsman averages 35. After the 13th, his average is 37. What did he score?",
           "options": [
             {
               "id": "a",
-              "label": "27"
+              "label": "61"
             },
             {
               "id": "b",
-              "label": "33"
+              "label": "37"
             },
             {
               "id": "c",
-              "label": "90"
+              "label": "59"
             },
             {
               "id": "d",
-              "label": "30"
+              "label": "72"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "x=30.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Old total 420; new total 481.",
+            "Subtract the totals."
+          ],
+          "explanation": "The 13th score is 481 − 420 = 61."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Use 20 old innings and 21 new innings. The count changes by one.",
+        "text": "Let’s work through this one.\n\nThe 13th score is 481 − 420 = 61.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "If the highest and lowest scores are removed, compare totals.\n\nWhole total = all innings × whole average.\nMiddle total = remaining innings × remaining average.\n\nHighest + lowest = whole total − middle total.\nIf their difference is also known, solve the two equations.",
+        "text": "Removing highest and lowest scores is also a total difference.\n\nTwenty innings average 50 → total 1000. Remove the highest and lowest, and the remaining 18 average 45 → total 810.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Highest + lowest = 1000 − 810 = 190.\nIf highest exceeds lowest by 50:\nH + L = 190\nH − L = 50\n2H = 240\nH = 120.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,404 +477,103 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Twelve games average 40. After removing the highest and lowest scores, the remaining ten average 35. If the highest exceeds the lowest by 30, what is the highest score?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "82"
+            "label": "80"
           },
           {
             "id": "b",
-            "label": "118"
+            "label": "65"
           },
           {
             "id": "c",
-            "label": "100"
+            "label": "75"
           },
           {
             "id": "d",
-            "label": "136"
+            "label": "130"
           }
         ]
       },
-      "content": {
-        "text": "A player averages 50 over 20 innings. Removing highest and lowest leaves 18 innings averaging 48. If highest−lowest=100, what is the highest?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Highest+lowest=1000−864=136.",
-            "Solve H+L=136 and H−L=100."
-          ],
-          "prompt": "A player averages 50 over 20 innings. Removing highest and lowest leaves 18 innings averaging 48. If highest−lowest=100, what is the highest?",
+          "questionType": "PRACTICE",
+          "prompt": "Twelve games average 40. After removing the highest and lowest scores, the remaining ten average 35. If the highest exceeds the lowest by 30, what is the highest score?",
           "options": [
             {
               "id": "a",
-              "label": "82"
+              "label": "80"
             },
             {
               "id": "b",
-              "label": "118"
+              "label": "65"
             },
             {
               "id": "c",
-              "label": "100"
+              "label": "75"
             },
             {
               "id": "d",
-              "label": "136"
+              "label": "130"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "2H=236, so H=118.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Find H+L from the two totals.",
+            "480 − 350 = 130; combine with H−L=30."
+          ],
+          "explanation": "H+L=130 and H−L=30. Adding gives 2H=160, so H=80."
         }
-      }
-    },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Do not treat 50−48 as the score difference. The 2-run average change is spread across many innings.",
-        "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
-        }
-      ]
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "90"
-          },
-          {
-            "id": "b",
-            "label": "50"
-          },
-          {
-            "id": "c",
-            "label": "60"
-          },
-          {
-            "id": "d",
-            "label": "120"
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
           }
-        ]
-      },
-      "content": {
-        "text": "A player averages 40 over 10 innings. Removing high and low leaves 8 innings averaging 35. If high−low=60, find high.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
         },
         {
+          "targetNodeId": "remedy_3",
           "condition": {
             "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "H+L=400−280=120.",
-            "H=(120+60)/2."
-          ],
-          "prompt": "A player averages 40 over 10 innings. Removing high and low leaves 8 innings averaging 35. If high−low=60, find high.",
-          "options": [
-            {
-              "id": "a",
-              "label": "90"
-            },
-            {
-              "id": "b",
-              "label": "50"
-            },
-            {
-              "id": "c",
-              "label": "60"
-            },
-            {
-              "id": "d",
-              "label": "120"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Highest score=90.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
-      "type": "CONTENT",
-      "content": {
-        "text": "First find the sum of the two removed scores, then combine it with their difference.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "concept_4"
-        }
-      ]
-    },
-    "concept_4": {
-      "id": "concept_4",
-      "type": "CONTENT",
-      "content": {
-        "text": "Run rate is also an average: runs per over.\n\nIf a team has completed some overs, convert the old run rate to runs already scored.\nThen subtract from the target and divide by the remaining overs.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4"
-        }
-      ]
-    },
-    "q_4": {
-      "id": "q_4",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "6"
-          },
-          {
-            "id": "b",
-            "label": "10"
-          },
-          {
-            "id": "c",
-            "label": "12"
-          },
-          {
-            "id": "d",
-            "label": "8"
+            "operator": "EQUALS",
+            "value": false
           }
-        ]
-      },
-      "content": {
-        "text": "A team scores at 4 runs/over for 15 overs. It needs 180 runs in 30 overs total. What run rate is needed for the last 15 overs?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Runs already=15×4=60.",
-            "Need 120 more in 15 overs."
-          ],
-          "prompt": "A team scores at 4 runs/over for 15 overs. It needs 180 runs in 30 overs total. What run rate is needed for the last 15 overs?",
-          "options": [
-            {
-              "id": "a",
-              "label": "6"
-            },
-            {
-              "id": "b",
-              "label": "10"
-            },
-            {
-              "id": "c",
-              "label": "12"
-            },
-            {
-              "id": "d",
-              "label": "8"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Required rate=120÷15=8 runs/over.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
-    },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Do not average 4 with the required rate. Work from actual runs and overs.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4_retry"
         }
       ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFind H+L from the two totals.\n\nH+L=130 and H−L=30. Adding gives 2H=160, so H=80.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "5.5"
-          },
-          {
-            "id": "b",
-            "label": "7"
-          },
-          {
-            "id": "c",
-            "label": "6"
-          },
-          {
-            "id": "d",
-            "label": "8.5"
-          }
-        ]
-      },
       "content": {
-        "text": "After 10 overs at 5 runs/over, a team wants 170 runs after 30 overs. Required rate for remaining 20 overs?",
+        "text": "Ten games average 30. Remove highest and lowest; the remaining eight average 25. If the highest exceeds the lowest by 20, what is the highest?",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Runs so far=50.",
-            "Need 120 in 20 overs."
-          ],
-          "prompt": "After 10 overs at 5 runs/over, a team wants 170 runs after 30 overs. Required rate for remaining 20 overs?",
-          "options": [
-            {
-              "id": "a",
-              "label": "5.5"
-            },
-            {
-              "id": "b",
-              "label": "7"
-            },
-            {
-              "id": "c",
-              "label": "6"
-            },
-            {
-              "id": "d",
-              "label": "8.5"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Required run rate=6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
-      "type": "CONTENT",
-      "content": {
-        "text": "Target minus runs already gives the exact runs still needed.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "concept_5"
-        }
-      ]
-    },
-    "concept_5": {
-      "id": "concept_5",
-      "type": "CONTENT",
-      "content": {
-        "text": "A captain-score problem may compare one score with the average of the others.\n\nLet the other 6 batsmen average x, so their total is 6x.\nIf captain scores x+30 and team total is known, write 6x+(x+30)=team total.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_5"
-        }
-      ]
-    },
-    "q_5": {
-      "id": "q_5",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
@@ -838,45 +587,19 @@
           },
           {
             "id": "c",
-            "label": "60"
+            "label": "100"
           },
           {
             "id": "d",
-            "label": "70"
+            "label": "60"
           }
         ]
       },
-      "content": {
-        "text": "Six batsmen average x runs and the captain scores x+20. All 7 score 300. What did the captain score?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "6x+x+20=300.",
-            "7x=280, so x=40."
-          ],
-          "prompt": "Six batsmen average x runs and the captain scores x+20. All 7 score 300. What did the captain score?",
+          "questionType": "PRACTICE",
+          "prompt": "Ten games average 30. Remove highest and lowest; the remaining eight average 25. If the highest exceeds the lowest by 20, what is the highest?",
           "options": [
             {
               "id": "a",
@@ -888,131 +611,497 @@
             },
             {
               "id": "c",
-              "label": "60"
+              "label": "100"
             },
             {
               "id": "d",
-              "label": "70"
+              "label": "60"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Captain=40+20=60.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "H+L = 300 − 200 = 100.",
+            "Use H−L=20."
+          ],
+          "explanation": "Adding H+L=100 and H−L=20 gives 2H=120, so H=60."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "The captain is compared with the average of the six others, not with their total.",
+        "text": "Let’s work through this one.\n\nAdding H+L=100 and H−L=20 gives 2H=120, so H=60.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Run rate is another average: runs ÷ overs.\n\nSuppose the first 10 overs run at 4.2 runs per over. Runs already scored = 10×4.2 = 42.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the target total is 242 in 50 overs, the remaining 40 overs need 200 runs.\n\nRequired run rate = 200 ÷ 40 = 5.\n\nAlways subtract runs already scored before dividing by overs left.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "A team scores at 3.6 runs per over for the first 15 overs. It wants 264 runs in 50 overs. What run rate is needed in the remaining 35 overs?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "30"
+            "label": "5.4"
           },
           {
             "id": "b",
-            "label": "35"
+            "label": "6.4"
           },
           {
             "id": "c",
-            "label": "60"
+            "label": "6"
           },
           {
             "id": "d",
-            "label": "45"
+            "label": "7.2"
           }
         ]
       },
-      "content": {
-        "text": "Five players average x and their captain scores x+15. Team total for 6 players is 195. Captain's score?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "5x+x+15=195.",
-            "6x=180; x=30."
-          ],
-          "prompt": "Five players average x and their captain scores x+15. Team total for 6 players is 195. Captain's score?",
+          "questionType": "PRACTICE",
+          "prompt": "A team scores at 3.6 runs per over for the first 15 overs. It wants 264 runs in 50 overs. What run rate is needed in the remaining 35 overs?",
           "options": [
             {
               "id": "a",
-              "label": "30"
+              "label": "5.4"
             },
             {
               "id": "b",
-              "label": "35"
+              "label": "6.4"
             },
             {
               "id": "c",
-              "label": "60"
+              "label": "6"
             },
             {
               "id": "d",
-              "label": "45"
+              "label": "7.2"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Captain=45.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Runs scored = 15×3.6 = 54.",
+            "Runs needed = 264−54 = 210 across 35 overs."
+          ],
+          "explanation": "210 ÷ 35 = 6 runs per over. Dividing the full target by remaining overs would ignore the runs already scored."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Translate 'average of the others' into x, then multiply by how many others there are.",
+        "text": "Let’s check this clue.\n\nRuns scored = 15×3.6 = 54.\n\n210 ÷ 35 = 6 runs per over. Dividing the full target by remaining overs would ignore the runs already scored.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A team scores at 4.5 runs per over for 20 overs. It wants 240 runs in 50 overs. What run rate is needed in the final 30 overs?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.5"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "7.5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A team scores at 4.5 runs per over for 20 overs. It wants 240 runs in 50 overs. What run rate is needed in the final 30 overs?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.5"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "7.5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First 20 overs produced 90 runs.",
+            "150 runs remain over 30 overs."
+          ],
+          "explanation": "150 ÷ 30 = 5 runs per over."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Bowling average means runs conceded per wicket.\n\nIf old bowling average is A over w wickets, old runs = Aw.\nAfter taking more wickets for some runs, form the new runs total and new wicket count before using the new average.",
+        "text": "Let’s work through this one.\n\n150 ÷ 30 = 5 runs per over.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A comparison with teammates can be turned into one variable.\n\nSix other batsmen average 40, so together they score 240. The captain scores 30 more than their average: 70.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Team total = 240 + 70 = 310.\n\nBe careful with the wording: '30 more than the average of the others' compares the captain with 40, not with the others' total 240.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five batsmen average 32 runs. Their captain scores 20 more than their average. How many runs does the captain score?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "52"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "180"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five batsmen average 32 runs. Their captain scores 20 more than their average. How many runs does the captain score?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "52"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "180"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Compare the captain with the others' average, not their total.",
+            "32 + 20."
+          ],
+          "explanation": "The captain scores 52. The five-player total is 160, but the phrase '20 more than the average' starts from 32."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nCompare the captain with the others' average, not their total.\n\nThe captain scores 52. The five-player total is 160, but the phrase '20 more than the average' starts from 32.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Eight players average 25 runs. Their captain scores 15 more than that average. What does the captain score?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "40"
+          },
+          {
+            "id": "d",
+            "label": "215"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Eight players average 25 runs. Their captain scores 15 more than that average. What does the captain score?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "40"
+            },
+            {
+              "id": "d",
+              "label": "215"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Start from the average 25.",
+            "25 + 15."
+          ],
+          "explanation": "The captain scores 40 runs."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe captain scores 40 runs.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Bowling average means runs conceded per wicket.\n\nSuppose a bowler's average is 15 after x wickets. He then takes 4 wickets for 20 runs, and the average becomes 14.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Old runs = 15x\nNew runs = 15x + 20\nNew wickets = x + 4\n\n(15x+20)/(x+4)=14\n15x+20=14x+56\nx=36 wickets.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,12 +1113,228 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "A bowler averages 12 runs per wicket. He takes 5 more wickets for 30 runs and his average becomes 11.5. How many wickets had he taken before this spell?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "18.571428571428573"
+            "label": "55"
+          },
+          {
+            "id": "b",
+            "label": "25"
+          },
+          {
+            "id": "c",
+            "label": "50"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bowler averages 12 runs per wicket. He takes 5 more wickets for 30 runs and his average becomes 11.5. How many wickets had he taken before this spell?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55"
+            },
+            {
+              "id": "b",
+              "label": "25"
+            },
+            {
+              "id": "c",
+              "label": "50"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let old wickets be x and old runs 12x.",
+            "12x+30 = 11.5(x+5)."
+          ],
+          "explanation": "12x+30 = 11.5x+57.5, so 0.5x=27.5 and x=55."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nLet old wickets be x and old runs 12x.\n\n12x+30 = 11.5x+57.5, so 0.5x=27.5 and x=55.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bowler averages 20 runs per wicket. He takes 2 wickets for 10 runs and the average becomes 19. How many wickets had he taken before?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "38"
+          },
+          {
+            "id": "d",
+            "label": "28"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bowler averages 20 runs per wicket. He takes 2 wickets for 10 runs and the average becomes 19. How many wickets had he taken before?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "38"
+            },
+            {
+              "id": "d",
+              "label": "28"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use (20x+10)/(x+2)=19.",
+            "20x+10 = 19x+38."
+          ],
+          "explanation": "x=28 wickets."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nx=28 wickets.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Exam averages can change because marks are corrected or added to existing papers.\n\nA student averages 63 over x papers. If 22 extra marks in total would raise the average to 65:",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "63x + 22 = 65x\n22 = 2x\nx = 11 papers\n\nThe extra marks spread across every paper in the average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A student averages 70 over some papers. Eighteen extra marks in total would raise the average to 72. How many papers are there?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
           },
           {
             "id": "b",
@@ -1037,49 +1342,23 @@
           },
           {
             "id": "c",
-            "label": "20"
+            "label": "36"
           },
           {
             "id": "d",
-            "label": "22"
+            "label": "9"
           }
         ]
       },
-      "content": {
-        "text": "A bowler averages 20 runs/wicket over 30 wickets. Then takes 5 wickets for 50 runs. What is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old runs=600; new runs=650.",
-            "Wickets=35."
-          ],
-          "prompt": "A bowler averages 20 runs/wicket over 30 wickets. Then takes 5 wickets for 50 runs. What is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "A student averages 70 over some papers. Eighteen extra marks in total would raise the average to 72. How many papers are there?",
           "options": [
             {
               "id": "a",
-              "label": "18.571428571428573"
+              "label": "6"
             },
             {
               "id": "b",
@@ -1087,157 +1366,368 @@
             },
             {
               "id": "c",
-              "label": "20"
+              "label": "36"
             },
             {
               "id": "d",
-              "label": "22"
+              "label": "9"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "New average=650/35≈18.57 runs/wicket.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The mean rises by 2 marks per paper.",
+            "2×number of papers = 18."
+          ],
+          "explanation": "There are 9 papers. Algebraically, 70n + 18 = 72n, so 2n=18."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "A good spell can lower the average because the new run-per-wicket rate is below the old average.",
+        "text": "Let’s check this clue.\n\nThe mean rises by 2 marks per paper.\n\nThere are 9 papers. Algebraically, 70n + 18 = 72n, so 2n=18.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_7": {
+      "id": "retry_7",
       "type": "CHOICE",
+      "content": {
+        "text": "A student averages 55 over some papers. Twenty-four extra marks would raise the average to 58. How many papers are there?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "13"
+            "label": "8"
           },
           {
             "id": "b",
-            "label": "14"
+            "label": "3"
           },
           {
             "id": "c",
-            "label": "15"
+            "label": "6"
           },
           {
             "id": "d",
-            "label": "16"
+            "label": "12"
           }
         ]
       },
-      "content": {
-        "text": "A bowler averages 15 over 20 wickets, then takes 4 wickets for 36 runs. New average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Old runs=300; new total=336.",
-            "Total wickets=24."
-          ],
-          "prompt": "A bowler averages 15 over 20 wickets, then takes 4 wickets for 36 runs. New average?",
+          "questionType": "PRACTICE",
+          "prompt": "A student averages 55 over some papers. Twenty-four extra marks would raise the average to 58. How many papers are there?",
           "options": [
             {
               "id": "a",
-              "label": "13"
+              "label": "8"
             },
             {
               "id": "b",
-              "label": "14"
+              "label": "3"
             },
             {
               "id": "c",
-              "label": "15"
+              "label": "6"
             },
             {
               "id": "d",
-              "label": "16"
+              "label": "12"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "336÷24=14.",
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The average rise is 3 marks.",
+            "3×number of papers = 24."
+          ],
+          "explanation": "There are 8 papers."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThere are 8 papers.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: a hypothetical score changes the team average by changing only the total.\n\nA team has 8 scores and its best scorer actually made 85. If that score had been 92, the team average would have been 84.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Hypothetical total = 8×84 = 672.\nThe hypothetical score is 7 higher than reality.\n\nActual total = 672 − 7 = 665.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A team has 10 scores. Its best score is 76. If that score had been 86, the team average would have been 55. What was the team's actual total score?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "530"
+          },
+          {
+            "id": "b",
+            "label": "550"
+          },
+          {
+            "id": "c",
+            "label": "540"
+          },
+          {
+            "id": "d",
+            "label": "560"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "prompt": "A team has 10 scores. Its best score is 76. If that score had been 86, the team average would have been 55. What was the team's actual total score?",
+          "options": [
+            {
+              "id": "a",
+              "label": "530"
+            },
+            {
+              "id": "b",
+              "label": "550"
+            },
+            {
+              "id": "c",
+              "label": "540"
+            },
+            {
+              "id": "d",
+              "label": "560"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The hypothetical total is 10×55.",
+            "The hypothetical best score is 10 higher than the actual one."
+          ],
+          "explanation": "Hypothetical total = 550. Replace 86 by the actual 76, reducing total by 10. Actual total = 540."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "remedy_8": {
+      "id": "remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "Always update both runs and wickets. Bowling average is a ratio of those totals.",
+        "text": "Let’s check this clue.\n\nThe hypothetical total is 10×55.\n\nHypothetical total = 550. Replace 86 by the actual 76, reducing total by 10. Actual total = 540.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A team has 6 scores. Its best score is 50. If that score had been 60, the team average would have been 48. What was the actual team total?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "268"
+          },
+          {
+            "id": "b",
+            "label": "278"
+          },
+          {
+            "id": "c",
+            "label": "288"
+          },
+          {
+            "id": "d",
+            "label": "298"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A team has 6 scores. Its best score is 50. If that score had been 60, the team average would have been 48. What was the actual team total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "268"
+            },
+            {
+              "id": "b",
+              "label": "278"
+            },
+            {
+              "id": "c",
+              "label": "288"
+            },
+            {
+              "id": "d",
+              "label": "298"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Hypothetical total = 6×48 = 288.",
+            "Actual best score is 10 lower."
+          ],
+          "explanation": "Actual total = 288 − 10 = 278."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "Performance averages are still total ÷ count.\n\nInnings: total runs ÷ innings.\nRun rate: runs ÷ overs.\nBowling average: runs conceded ÷ wickets.\n\nWhen a new performance is added or old performances are removed, update the relevant total and count before dividing.",
+        "text": "Let’s work through this one.\n\nActual total = 288 − 10 = 278.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Cricket, Scores and Changing Performance Averages.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "text": "You can now turn batting, run-rate, bowling and exam averages back into totals before changing them.\n\nOld total first. Make the change. Use the new count.\n\nNext, we finish the chapter with the special case where two speeds cover equal distances.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Cricket, Scores and Changing Performance Averages",
-    "description": "Use averages in innings, run rates, bowling figures and examination-score changes.",
-    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Cricket, Scores and Changing Performance Averages. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-avg-09-cricket-scores-and-changing-averages",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

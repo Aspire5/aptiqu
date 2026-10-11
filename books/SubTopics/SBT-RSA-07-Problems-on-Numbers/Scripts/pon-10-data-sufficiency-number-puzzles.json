@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "pon-10-data-sufficiency-number-puzzles",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Data Sufficiency for Number Puzzles",
+    "description": "Judge whether each statement gives enough information for the exact target before doing unnecessary calculation.",
+    "teachingApproach": "Teach data sufficiency as a decision process rather than a calculation race. First establish the five two-statement outcomes, then give one clean example of I alone, II alone, either alone, both needed and even both insufficient. Add target-sensitive sufficiency, redundant digit clues, consecutive-number structure, and finish with a three-statement case where one statement plus either of two equivalent clues is enough.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "Teach the chapter's data-sufficiency format. For two statements use the five outcomes: I alone, II alone, either alone, both together, or even both insufficient. Test each statement separately before combining them. Cover two-digit numbers, one-number equations, two-number ratios, and consecutive-number targets. Show that sufficiency depends on the requested target: one equation may be enough for a ratio even when it cannot identify both numbers. Include redundant statements and dependent clues. Finish with the chapter's three-statement style, where the task is to identify which statement or pair of statements is enough rather than to solve every unknown."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn data sufficiency for number puzzles.\n\nHere the first question is not always 'What is the number?'\nIt is often 'Do I have enough information to determine what is asked?'\n\nWe will test each statement before combining them.",
+        "text": "Let's change the goal of the puzzle.\n\nIn data sufficiency, you are not rewarded for solving everything. You are rewarded for knowing exactly when the information is enough—and when it is not.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "In data sufficiency, the target comes first.\n\nDo not immediately combine every statement.\n\nAsk: what exactly must be known? A whole number? A ratio? A difference?\nThen test Statement I alone and Statement II alone before using them together.",
+        "text": "Data sufficiency asks a different question: not 'What is the answer?' but 'Do I have enough information to get one unique answer?'\n\nTest Statement I by itself. Then reset and test Statement II by itself. Only then combine them if needed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For two statements, the five outcomes are:\nI alone\nII alone\nEither alone\nEven both not enough\nBoth together needed\n\nThe target matters more than how much algebra you can do.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find a number x.\nI. x−7=12.\nII. x is positive.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "I alone is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "b",
-            "label": "Both statements together are needed"
+            "label": "I alone is sufficient"
           },
           {
             "id": "c",
-            "label": "II alone is enough"
+            "label": "Either I or II alone is sufficient"
           },
           {
             "id": "d",
-            "label": "Even together they are not enough"
+            "label": "Both I and II together are necessary"
           }
         ]
       },
-      "content": {
-        "text": "Target: find a two-digit number. I: its digit sum is 9. II: its tens digit is twice its units digit. Which is correct?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "I gives many pairs; II also gives many pairs.",
-            "Together x+y=9 and x=2y."
-          ],
-          "prompt": "Target: find a two-digit number. I: its digit sum is 9. II: its tens digit is twice its units digit. Which is correct?",
-          "options": [
-            {
-              "id": "a",
-              "label": "I alone is enough"
-            },
-            {
-              "id": "b",
-              "label": "Both statements together are needed"
-            },
-            {
-              "id": "c",
-              "label": "II alone is enough"
-            },
-            {
-              "id": "d",
-              "label": "Even together they are not enough"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Together, 3y=9 so y=3,x=6 and the number is 63. Neither statement alone is enough.",
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
-    },
-    "q_1_retry": {
-      "id": "q_1_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "I alone is enough"
-          },
-          {
-            "id": "b",
-            "label": "II alone is enough"
-          },
-          {
-            "id": "c",
-            "label": "Even together they are not enough"
-          },
-          {
-            "id": "d",
-            "label": "Both statements together are needed"
-          }
-        ]
-      },
-      "content": {
-        "text": "Target: find a two-digit number. I: its digit sum is 6. II: its tens digit is twice its units digit. Which is correct?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Test each statement separately first.",
-            "Together x+y=6 and x=2y."
-          ],
-          "prompt": "Target: find a two-digit number. I: its digit sum is 6. II: its tens digit is twice its units digit. Which is correct?",
+          "prompt": "Target: Find a number x.\nI. x−7=12.\nII. x is positive.",
           "options": [
             {
               "id": "a",
-              "label": "I alone is enough"
+              "label": "II alone is sufficient"
             },
             {
               "id": "b",
-              "label": "II alone is enough"
+              "label": "I alone is sufficient"
             },
             {
               "id": "c",
-              "label": "Even together they are not enough"
+              "label": "Either I or II alone is sufficient"
             },
             {
               "id": "d",
-              "label": "Both statements together are needed"
+              "label": "Both I and II together are necessary"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "Together y=2,x=4, so the number is 42.",
+          "xp": 10,
+          "hints": [
+            "Test I without using II.",
+            "I gives one exact value for x."
+          ],
+          "explanation": "Statement I gives x=19 uniquely. Statement II only says x>0 and allows infinitely many values. So I alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nTest I without using II.\n\nStatement I gives x=19 uniquely. Statement II only says x>0 and allows infinitely many values. So I alone is sufficient.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Target: Find x.\nI. x is a positive multiple of 6.\nII. x/4=6.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone is sufficient"
+          },
+          {
+            "id": "b",
+            "label": "Either I or II alone is sufficient"
+          },
+          {
+            "id": "c",
+            "label": "II alone is sufficient"
+          },
+          {
+            "id": "d",
+            "label": "Both I and II together are necessary"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "prompt": "Target: Find x.\nI. x is a positive multiple of 6.\nII. x/4=6.",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "Either I or II alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Both I and II together are necessary"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Statement II gives an exact value.",
+            "Statement I allows 6,12,18,24,..."
+          ],
+          "explanation": "II gives x=24 uniquely. I does not. So II alone is sufficient."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find a two-digit number. I: its digit sum is 9. II: its tens digit is twice its units digit. Which is correct?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nII gives x=24 uniquely. I does not. So II alone is sufficient.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "Together y=2,x=4, so the number is 42.",
+        "text": "Sometimes either statement can solve the target alone.\n\nTarget: Find x.\nI. x/5=7.\nII. x−8=27.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "A statement can be sufficient by itself.\n\nIf the target is four-fifths of a number and a statement uniquely gives the number, you are done.\n\nDo not demand extra information once the requested target is fixed.",
+        "text": "I gives x=35.\nII also gives x=35.\n\nEach statement independently reaches the unique target, so the result is 'Either I or II alone is sufficient.'",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find x.\nI. 4x=52.\nII. x+9=22.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "Either statement alone is enough"
+            "label": "I alone is sufficient"
           },
           {
             "id": "b",
-            "label": "Only I is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "c",
-            "label": "Only II is enough"
+            "label": "Both I and II together are necessary"
           },
           {
             "id": "d",
-            "label": "Both are needed"
+            "label": "Either I or II alone is sufficient"
           }
         ]
       },
-      "content": {
-        "text": "Target: find 4/5 of x. I: (4/5)x−(3/4)x=2.5. II: x+x/2=75. What is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Solve I alone, then II alone.",
-            "Each gives x=50, so each gives 4/5 of x=40."
-          ],
-          "prompt": "Target: find 4/5 of x. I: (4/5)x−(3/4)x=2.5. II: x+x/2=75. What is true?",
-          "options": [
-            {
-              "id": "a",
-              "label": "Either statement alone is enough"
-            },
-            {
-              "id": "b",
-              "label": "Only I is enough"
-            },
-            {
-              "id": "c",
-              "label": "Only II is enough"
-            },
-            {
-              "id": "d",
-              "label": "Both are needed"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "I gives x/20=2.5→x=50. II gives 3x/2=75→x=50. Either statement alone is sufficient.",
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_2_retry": {
-      "id": "q_2_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "Only I is enough"
-          },
-          {
-            "id": "b",
-            "label": "Only II is enough"
-          },
-          {
-            "id": "c",
-            "label": "Either statement alone is enough"
-          },
-          {
-            "id": "d",
-            "label": "Both are needed"
-          }
-        ]
-      },
-      "content": {
-        "text": "Target: find x. I: x/3=12. II: 2x=72. What is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Each statement is a complete equation in x.",
-            "Both give x=36."
-          ],
-          "prompt": "Target: find x. I: x/3=12. II: 2x=72. What is true?",
+          "prompt": "Target: Find x.\nI. 4x=52.\nII. x+9=22.",
           "options": [
             {
               "id": "a",
-              "label": "Only I is enough"
+              "label": "I alone is sufficient"
             },
             {
               "id": "b",
-              "label": "Only II is enough"
+              "label": "II alone is sufficient"
             },
             {
               "id": "c",
-              "label": "Either statement alone is enough"
+              "label": "Both I and II together are necessary"
             },
             {
               "id": "d",
-              "label": "Both are needed"
+              "label": "Either I or II alone is sufficient"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "I alone gives 36, and II alone also gives 36.",
+          "xp": 10,
+          "hints": [
+            "Solve I and II separately.",
+            "Each produces one exact x."
+          ],
+          "explanation": "I gives x=13. II also gives x=13. Either statement alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nSolve I and II separately.\n\nI gives x=13. II also gives x=13. Either statement alone is sufficient.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Target: Find n.\nI. n−15=20.\nII. 5n=175.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Either I or II alone is sufficient"
+          },
+          {
+            "id": "b",
+            "label": "I alone is sufficient"
+          },
+          {
+            "id": "c",
+            "label": "II alone is sufficient"
+          },
+          {
+            "id": "d",
+            "label": "Even I and II together are not sufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "Target: Find n.\nI. n−15=20.\nII. 5n=175.",
+          "options": [
+            {
+              "id": "a",
+              "label": "Either I or II alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Even I and II together are not sufficient"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Test each equation alone.",
+            "Both have the same unique solution."
+          ],
+          "explanation": "I gives n=35, and II gives n=35. Either alone is enough."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find 4/5 of x. I: (4/5)x−(3/4)x=2.5. II: x+x/2=75. What is true?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nI gives n=35, and II gives n=35. Either alone is enough.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "I alone gives 36, and II alone also gives 36.",
+        "text": "Two statements may be weak alone but strong together.\n\nTarget: Find a two-digit number.\nI. Its digits sum to 9.\nII. Tens digit is 3 more than units digit.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "Sometimes only one of the statements is sufficient.\n\nA digit-sum statement may leave several numbers, while an equation for the whole number may determine it directly.\n\nThe sufficient statement need not look more detailed; it only needs to fix the target.",
+        "text": "I alone allows 18,27,36,45,...\nII alone allows many pairs too.\nTogether:\nx+y=9\nx−y=3\nSo x=6,y=3 and the number is 63.\n\nBoth together are necessary.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find a two-digit number.\nI. Its digits sum to 11.\nII. Tens digit is 5 more than units digit.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "Statement I alone is enough"
+            "label": "Both I and II together are necessary"
           },
           {
             "id": "b",
-            "label": "Both are needed"
+            "label": "I alone is sufficient"
           },
           {
             "id": "c",
-            "label": "Statement II alone is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "d",
-            "label": "Even together they are not enough"
+            "label": "Either I or II alone is sufficient"
           }
         ]
       },
-      "content": {
-        "text": "Target: find a two-digit number N. I: the sum of its digits is 8. II: N/5=7. Which is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "I allows many two-digit numbers.",
-            "II gives N directly."
-          ],
-          "prompt": "Target: find a two-digit number N. I: the sum of its digits is 8. II: N/5=7. Which is true?",
-          "options": [
-            {
-              "id": "a",
-              "label": "Statement I alone is enough"
-            },
-            {
-              "id": "b",
-              "label": "Both are needed"
-            },
-            {
-              "id": "c",
-              "label": "Statement II alone is enough"
-            },
-            {
-              "id": "d",
-              "label": "Even together they are not enough"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "N=35 from Statement II. Statement I alone is not sufficient.",
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "Statement I alone is enough"
-          },
-          {
-            "id": "b",
-            "label": "Statement II alone is enough"
-          },
-          {
-            "id": "c",
-            "label": "Both are needed"
-          },
-          {
-            "id": "d",
-            "label": "Even together they are not enough"
-          }
-        ]
-      },
-      "content": {
-        "text": "Target: find the ratio x:y. I: x+y=40. II: x+y=2(x−y). Which is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The target is a ratio, not the actual values.",
-            "II rearranges to x=3y."
-          ],
-          "prompt": "Target: find the ratio x:y. I: x+y=40. II: x+y=2(x−y). Which is true?",
+          "prompt": "Target: Find a two-digit number.\nI. Its digits sum to 11.\nII. Tens digit is 5 more than units digit.",
           "options": [
             {
               "id": "a",
-              "label": "Statement I alone is enough"
+              "label": "Both I and II together are necessary"
             },
             {
               "id": "b",
-              "label": "Statement II alone is enough"
+              "label": "I alone is sufficient"
             },
             {
               "id": "c",
-              "label": "Both are needed"
+              "label": "II alone is sufficient"
             },
             {
               "id": "d",
-              "label": "Even together they are not enough"
+              "label": "Either I or II alone is sufficient"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "MEDIUM",
-          "explanation": "Statement II alone gives x:y=3:1. Statement I only gives a total.",
+          "xp": 15,
+          "hints": [
+            "Each statement alone allows several numbers.",
+            "Together solve x+y=11 and x−y=5."
+          ],
+          "explanation": "Together x=8,y=3, so the number is 83. Neither statement alone is unique. Both are necessary."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nEach statement alone allows several numbers.\n\nTogether x=8,y=3, so the number is 83. Neither statement alone is unique. Both are necessary.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Target: Find two positive numbers.\nI. Their sum is 30.\nII. Their difference is 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone is sufficient"
+          },
+          {
+            "id": "b",
+            "label": "II alone is sufficient"
+          },
+          {
+            "id": "c",
+            "label": "Even I and II together are not sufficient"
+          },
+          {
+            "id": "d",
+            "label": "Both I and II together are necessary"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "prompt": "Target: Find two positive numbers.\nI. Their sum is 30.\nII. Their difference is 8.",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "Even I and II together are not sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Both I and II together are necessary"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "A sum alone or a gap alone leaves many pairs.",
+            "Together, half-sum/half-difference gives one pair."
+          ],
+          "explanation": "The two statements together give 19 and 11 uniquely. Each alone permits many pairs, so both are necessary."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find a two-digit number N. I: the sum of its digits is 8. II: N/5=7. Which is true?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nThe two statements together give 19 and 11 uniquely. Each alone permits many pairs, so both are necessary.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Statement II alone gives x:y=3:1. Statement I only gives a total.",
+        "text": "Even both statements can fail if they repeat the same information.\n\nTarget: Find a two-digit number.\nI. Original−reverse=27.\nII. Tens digit−units digit=3.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "Two statements may be required together.\n\nOne can give a sum and the other a difference. Neither fixes both numbers alone, but together they do.\n\nThis is the standard 'both together' case.",
+        "text": "But I already means 9(x−y)=27, so x−y=3.\n\nStatement II adds nothing new. Numbers like 41,52,63,74,85,96 all still work.\n\nEven together, the exact number is not determined.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find a two-digit number.\nI. Original−reverse=36.\nII. Tens digit is 4 more than units digit.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "I alone is enough"
+            "label": "I alone is sufficient"
           },
           {
             "id": "b",
-            "label": "II alone is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "c",
-            "label": "Even together they are not enough"
+            "label": "Even I and II together are not sufficient"
           },
           {
             "id": "d",
-            "label": "Both statements together are needed"
+            "label": "Both I and II together are necessary"
           }
         ]
       },
-      "content": {
-        "text": "Target: find the smaller of two numbers. I: their sum is 30. II: their difference is 6. Which is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "A sum alone has many pairs; a difference alone also has many pairs.",
-            "Together solve x+y=30 and x−y=6."
-          ],
-          "prompt": "Target: find the smaller of two numbers. I: their sum is 30. II: their difference is 6. Which is true?",
-          "options": [
-            {
-              "id": "a",
-              "label": "I alone is enough"
-            },
-            {
-              "id": "b",
-              "label": "II alone is enough"
-            },
-            {
-              "id": "c",
-              "label": "Even together they are not enough"
-            },
-            {
-              "id": "d",
-              "label": "Both statements together are needed"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The numbers are 18 and 12, so both statements are needed.",
           "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "Both statements together are needed"
-          },
-          {
-            "id": "b",
-            "label": "I alone is enough"
-          },
-          {
-            "id": "c",
-            "label": "II alone is enough"
-          },
-          {
-            "id": "d",
-            "label": "Even together they are not enough"
-          }
-        ]
-      },
-      "content": {
-        "text": "Target: find the two-digit number. I: the digits add to 13. II: original minus reverse is 45. Which is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "II gives x−y=5; I gives x+y=13.",
-            "Together the digits are 9 and 4."
-          ],
-          "prompt": "Target: find the two-digit number. I: the digits add to 13. II: original minus reverse is 45. Which is true?",
+          "prompt": "Target: Find a two-digit number.\nI. Original−reverse=36.\nII. Tens digit is 4 more than units digit.",
           "options": [
             {
               "id": "a",
-              "label": "Both statements together are needed"
+              "label": "I alone is sufficient"
             },
             {
               "id": "b",
-              "label": "I alone is enough"
+              "label": "II alone is sufficient"
             },
             {
               "id": "c",
-              "label": "II alone is enough"
+              "label": "Even I and II together are not sufficient"
             },
             {
               "id": "d",
-              "label": "Even together they are not enough"
+              "label": "Both I and II together are necessary"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "MEDIUM",
-          "explanation": "The number is 94; neither statement alone identifies it.",
+          "xp": 15,
+          "hints": [
+            "Translate I into a digit difference.",
+            "I and II are the same relation."
+          ],
+          "explanation": "I gives x−y=4, exactly the same as II. Several numbers fit, such as 51,62,73,84,95. Even both are insufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nTranslate I into a digit difference.\n\nI gives x−y=4, exactly the same as II. Several numbers fit, such as 51,62,73,84,95. Even both are insufficient.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Target: Find two positive numbers.\nI. Their ratio is 3:2.\nII. The larger is 1.5 times the smaller.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone is sufficient"
+          },
+          {
+            "id": "b",
+            "label": "Even I and II together are not sufficient"
+          },
+          {
+            "id": "c",
+            "label": "II alone is sufficient"
+          },
+          {
+            "id": "d",
+            "label": "Either I or II alone is sufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "Target: Find two positive numbers.\nI. Their ratio is 3:2.\nII. The larger is 1.5 times the smaller.",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "Even I and II together are not sufficient"
+            },
+            {
+              "id": "c",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Either I or II alone is sufficient"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Both statements express the same ratio.",
+            "No total, product or exact value fixes the scale."
+          ],
+          "explanation": "Both say larger:smaller=3:2. Pairs 3,2; 6,4; 9,6 all work. Exact numbers cannot be found."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find the smaller of two numbers. I: their sum is 30. II: their difference is 6. Which is true?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nBoth say larger:smaller=3:2. Pairs 3,2; 6,4; 9,6 all work. Exact numbers cannot be found.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "The number is 94; neither statement alone identifies it.",
+        "text": "Sufficiency depends on the target.\n\nIf the target is only a ratio, one equation can be enough.\n\nTarget: Find x:y.\nI. x+y=30.\nII. x=2y.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "Even two statements can be insufficient.\n\nExample: digit difference 2 plus digit sum 4 gives digits 3 and 1, but if the question does not say which is the tens digit, both 31 and 13 remain possible.\n\nUnique digits are not always a unique number.",
+        "text": "Statement II alone gives x:y=2:1.\nThe total in I is unnecessary for this target.\n\nDo not solve more than the question asks.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find the ratio a:b.\nI. a+b=48.\nII. 3a=5b.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "Even together they are not enough"
+            "label": "I alone is sufficient"
           },
           {
             "id": "b",
-            "label": "I alone is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "c",
-            "label": "II alone is enough"
+            "label": "Either I or II alone is sufficient"
           },
           {
             "id": "d",
-            "label": "Both together determine one number"
+            "label": "Both I and II together are necessary"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find the ratio a:b.\nI. a+b=48.\nII. 3a=5b.",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "Either I or II alone is sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Both I and II together are necessary"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The target is a ratio, not the exact numbers.",
+            "3a=5b directly fixes a:b."
+          ],
+          "explanation": "II gives a:b=5:3. I alone gives only a total and no ratio. So II alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
       "content": {
-        "text": "Target: find a two-digit number. I: the digit difference is 2. II: the digit sum is 4. Which is true?",
+        "text": "Let's check this one.\n\nThe target is a ratio, not the exact numbers.\n\nII gives a:b=5:3. I alone gives only a total and no ratio. So II alone is sufficient.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
+          "targetNodeId": "retry_5"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Together the digits are 3 and 1.",
-            "But their order is not fixed."
-          ],
-          "prompt": "Target: find a two-digit number. I: the digit difference is 2. II: the digit sum is 4. Which is true?",
-          "options": [
-            {
-              "id": "a",
-              "label": "Even together they are not enough"
-            },
-            {
-              "id": "b",
-              "label": "I alone is enough"
-            },
-            {
-              "id": "c",
-              "label": "II alone is enough"
-            },
-            {
-              "id": "d",
-              "label": "Both together determine one number"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Both 31 and 13 fit, so the number is still not unique.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find x−y.\nI. x+y=40.\nII. x−y=12.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "I alone is enough"
+            "label": "I alone is sufficient"
           },
           {
             "id": "b",
-            "label": "II alone is enough"
+            "label": "Either I or II alone is sufficient"
           },
           {
             "id": "c",
-            "label": "Even together they are not enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "d",
-            "label": "Both together determine one number"
+            "label": "Both I and II together are necessary"
           }
         ]
       },
-      "content": {
-        "text": "Target: find a two-digit number. I: its digits multiply to 12. II: its digits add to 7. Which is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The digits are 3 and 4.",
-            "But the order could be 34 or 43."
-          ],
-          "prompt": "Target: find a two-digit number. I: its digits multiply to 12. II: its digits add to 7. Which is true?",
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find x−y.\nI. x+y=40.\nII. x−y=12.",
           "options": [
             {
               "id": "a",
-              "label": "I alone is enough"
+              "label": "I alone is sufficient"
             },
             {
               "id": "b",
-              "label": "II alone is enough"
+              "label": "Either I or II alone is sufficient"
             },
             {
               "id": "c",
-              "label": "Even together they are not enough"
+              "label": "II alone is sufficient"
             },
             {
               "id": "d",
-              "label": "Both together determine one number"
+              "label": "Both I and II together are necessary"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "MEDIUM",
-          "explanation": "The two statements identify the digit pair, not their positions.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 15,
+          "hints": [
+            "Statement II is already the target quantity.",
+            "No exact x and y are required."
+          ],
+          "explanation": "II directly gives x−y=12. I alone does not. So II alone is sufficient."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find a two-digit number. I: the digit difference is 2. II: the digit sum is 4. Which is true?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nII directly gives x−y=12. I alone does not. So II alone is sufficient.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "The two statements identify the digit pair, not their positions.",
+        "text": "A statement can look complicated yet still be insufficient if it leaves more than one possibility.\n\nTarget: Find a two-digit number.\nI. Product of digits is 24.\n\nPossible digit pairs include 3 and 8 or 4 and 6, in either order.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "A later statement may repeat information already contained in another.\n\nFor two digits x and y, 'original−reverse=18' means x−y=2. A separate statement 'the tens digit exceeds the units digit by 2' says the same thing.\n\nRepeated information does not create a new equation.",
+        "text": "Now add II: the units digit is 2 more than the tens digit.\nOnly 46 fits both.\n\nThe useful question is always: after this statement, how many valid answers remain?",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,194 +1113,207 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find a two-digit number.\nI. Product of its digits is 18.\nII. Units digit is 3 more than tens digit.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "I alone is enough"
+            "label": "Both I and II together are necessary"
           },
           {
             "id": "b",
-            "label": "The statements are equivalent and still insufficient"
+            "label": "I alone is sufficient"
           },
           {
             "id": "c",
-            "label": "II alone is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "d",
-            "label": "Together they determine the number"
+            "label": "Either I or II alone is sufficient"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find a two-digit number.\nI. Product of its digits is 18.\nII. Units digit is 3 more than tens digit.",
+          "options": [
+            {
+              "id": "a",
+              "label": "Both I and II together are necessary"
+            },
+            {
+              "id": "b",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Either I or II alone is sufficient"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "I allows more than one digit pair.",
+            "Together, look for factors of 18 differing by 3."
+          ],
+          "explanation": "Digits 3 and 6 satisfy both, giving 36. I alone allows 29,36,63,92; II alone allows several numbers. Both are necessary."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
       "content": {
-        "text": "Target: find a two-digit number. I: original−reverse=18. II: tens digit is 2 more than units digit. What is true?",
+        "text": "Let's check this one.\n\nI allows more than one digit pair.\n\nDigits 3 and 6 satisfy both, giving 36. I alone allows 29,36,63,92; II alone allows several numbers. Both are necessary.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_7"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_6"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Original−reverse=9(x−y).",
-            "18 means x−y=2, exactly Statement II."
-          ],
-          "prompt": "Target: find a two-digit number. I: original−reverse=18. II: tens digit is 2 more than units digit. What is true?",
-          "options": [
-            {
-              "id": "a",
-              "label": "I alone is enough"
-            },
-            {
-              "id": "b",
-              "label": "The statements are equivalent and still insufficient"
-            },
-            {
-              "id": "c",
-              "label": "II alone is enough"
-            },
-            {
-              "id": "d",
-              "label": "Together they determine the number"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Both statements give the same relation, so infinitely many digit pairs can still fit.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find a two-digit number.\nI. Digit sum is 10.\nII. Reverse is 18 greater than original.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "I alone is enough"
+            "label": "I alone is sufficient"
           },
           {
             "id": "b",
-            "label": "II alone is enough"
+            "label": "II alone is sufficient"
           },
           {
             "id": "c",
-            "label": "Together they determine x and y"
+            "label": "Even I and II together are not sufficient"
           },
           {
             "id": "d",
-            "label": "The statements are equivalent and still insufficient"
+            "label": "Both I and II together are necessary"
           }
         ]
       },
-      "content": {
-        "text": "Target: find x and y. I: 2x=3y. II: x/y=3/2. What is true?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_7"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Both statements describe the same ratio.",
-            "No total, difference or product sets the scale."
-          ],
-          "prompt": "Target: find x and y. I: 2x=3y. II: x/y=3/2. What is true?",
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find a two-digit number.\nI. Digit sum is 10.\nII. Reverse is 18 greater than original.",
           "options": [
             {
               "id": "a",
-              "label": "I alone is enough"
+              "label": "I alone is sufficient"
             },
             {
               "id": "b",
-              "label": "II alone is enough"
+              "label": "II alone is sufficient"
             },
             {
               "id": "c",
-              "label": "Together they determine x and y"
+              "label": "Even I and II together are not sufficient"
             },
             {
               "id": "d",
-              "label": "The statements are equivalent and still insufficient"
+              "label": "Both I and II together are necessary"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "MEDIUM",
-          "explanation": "Both only give x:y=3:2, so actual values are not unique.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 15,
+          "hints": [
+            "II gives units−tens=2.",
+            "Combine x+y=10 and y−x=2."
+          ],
+          "explanation": "Together x=4,y=6, so the number is 46. Each statement alone allows several numbers."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find a two-digit number. I: original−reverse=18. II: tens digit is 2 more than units digit. What is true?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nTogether x=4,y=6, so the number is 46. Each statement alone allows several numbers.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "teach_7": {
+      "id": "teach_7",
       "type": "CONTENT",
       "content": {
-        "text": "Both only give x:y=3:2, so actual values are not unique.",
+        "text": "Consecutive-number targets can make one statement surprisingly strong.\n\nTarget: Find the third of eight consecutive real numbers.\nI. Their sum is 84.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_7"
+          "targetNodeId": "teach_7_step"
         }
       ]
     },
-    "concept_7": {
-      "id": "concept_7",
+    "teach_7_step": {
+      "id": "teach_7_step",
       "type": "CONTENT",
       "content": {
-        "text": "With three statements, test the smallest useful combination.\n\nSometimes one statement plus either of two equivalent statements is enough.\n\nThe aim is to identify which information is necessary, not to use every fact automatically.",
+        "text": "Let the first be x.\nSum = 8x+28 = 84\nx=7\nThird number=9\n\nOne total is enough because 'consecutive' already supplies the spacing and count.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1223,86 +1325,315 @@
     "q_7": {
       "id": "q_7",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find the middle of five consecutive integers.\nI. Their sum is 125.\nII. Their largest is 27.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "I alone"
+            "label": "I alone is sufficient"
           },
           {
             "id": "b",
-            "label": "I with either II or III"
+            "label": "II alone is sufficient"
           },
           {
             "id": "c",
-            "label": "II and III only"
+            "label": "Both I and II together are necessary"
           },
           {
             "id": "d",
-            "label": "All three are required"
+            "label": "Either I or II alone is sufficient"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find the middle of five consecutive integers.\nI. Their sum is 125.\nII. Their largest is 27.",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "Both I and II together are necessary"
+            },
+            {
+              "id": "d",
+              "label": "Either I or II alone is sufficient"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Test each using the consecutive pattern.",
+            "From I, middle=125÷5. From II, step back two."
+          ],
+          "explanation": "I gives middle 25. II gives sequence 23,24,25,26,27, also middle 25. Either alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
       "content": {
-        "text": "Target: find two numbers x>y. I: x−y=6. II: 40% of y equals 30% of x. III: x/y=4/3. Which set is enough?",
+        "text": "Let's check this one.\n\nTest each using the consecutive pattern.\n\nI gives middle 25. II gives sequence 23,24,25,26,27, also middle 25. Either alone is sufficient.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_7_remedy"
+          "targetNodeId": "retry_7"
         }
-      ],
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Target: Find the smallest of three consecutive even integers.\nI. Their sum is 54.\nII. Their largest is 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Either I or II alone is sufficient"
+          },
+          {
+            "id": "b",
+            "label": "I alone is sufficient"
+          },
+          {
+            "id": "c",
+            "label": "II alone is sufficient"
+          },
+          {
+            "id": "d",
+            "label": "Even I and II together are not sufficient"
+          }
+        ]
+      },
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "II and III both express x:y=4:3.",
-            "A ratio plus the difference fixes the scale."
-          ],
-          "prompt": "Target: find two numbers x>y. I: x−y=6. II: 40% of y equals 30% of x. III: x/y=4/3. Which set is enough?",
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find the smallest of three consecutive even integers.\nI. Their sum is 54.\nII. Their largest is 20.",
           "options": [
             {
               "id": "a",
-              "label": "I alone"
+              "label": "Either I or II alone is sufficient"
             },
             {
               "id": "b",
-              "label": "I with either II or III"
+              "label": "I alone is sufficient"
             },
             {
               "id": "c",
-              "label": "II and III only"
+              "label": "II alone is sufficient"
             },
             {
               "id": "d",
-              "label": "All three are required"
+              "label": "Even I and II together are not sufficient"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "I+II or I+III gives x:y=4:3 and x−y=6, so x=24,y=18. II+III alone only repeat the ratio.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Three consecutive evens are centred at their average.",
+            "I gives middle 18; II gives smallest two steps below 20."
+          ],
+          "explanation": "I gives 16,18,20. II also forces 16,18,20. Either alone is sufficient."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_7_retry": {
-      "id": "q_7_retry",
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nI gives 16,18,20. II also forces 16,18,20. Either alone is sufficient.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter also uses three-statement sufficiency. The habit stays the same: test the smallest statement set that can determine the target.\n\nDo not automatically use all three.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example target: Find two-digit number.\nI. digit sum=7\nII. original−reverse=9\nIII. tens digit is 1 more than units digit\n\nII and III say the same thing. I plus either II or III is enough; no need for all three.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
       "type": "CHOICE",
+      "content": {
+        "text": "Target: Find a two-digit number.\nI. Digit sum is 9.\nII. Original−reverse=27.\nIII. Tens digit is 3 more than units digit.\nWhich information is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "II and III only"
+          },
+          {
+            "id": "b",
+            "label": "All I, II and III are necessary"
+          },
+          {
+            "id": "c",
+            "label": "I and either II or III"
+          },
+          {
+            "id": "d",
+            "label": "I alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find a two-digit number.\nI. Digit sum is 9.\nII. Original−reverse=27.\nIII. Tens digit is 3 more than units digit.\nWhich information is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "II and III only"
+            },
+            {
+              "id": "b",
+              "label": "All I, II and III are necessary"
+            },
+            {
+              "id": "c",
+              "label": "I and either II or III"
+            },
+            {
+              "id": "d",
+              "label": "I alone"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "II and III are equivalent because a reversal gap of 27 means digit gap 3.",
+            "Combine the digit sum with either form of the gap."
+          ],
+          "explanation": "I gives x+y=9. II gives x−y=3, and III gives the same x−y=3. So I with either II or III is enough; the number is 63."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nII and III are equivalent because a reversal gap of 27 means digit gap 3.\n\nI gives x+y=9. II gives x−y=3, and III gives the same x−y=3. So I with either II or III is enough; the number is 63.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Target: Find three consecutive even positive integers.\nI. Their sum is 42.\nII. Difference between largest and smallest is 4.\nIII. Their product is greater than 1000.\nWhich statement alone is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -1312,49 +1643,23 @@
           },
           {
             "id": "b",
-            "label": "III alone"
+            "label": "I alone"
           },
           {
             "id": "c",
-            "label": "None alone"
+            "label": "III alone"
           },
           {
             "id": "d",
-            "label": "I alone"
+            "label": "Either II or III alone"
           }
         ]
       },
-      "content": {
-        "text": "Target: find three positive consecutive even numbers. I: their sum is 42. II: largest−smallest=4. III: the middle number is even. Which statement alone is enough?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_7_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write the numbers as x,x+2,x+4.",
-            "I gives 3x+6=42; II and III are true for many possible triples."
-          ],
-          "prompt": "Target: find three positive consecutive even numbers. I: their sum is 42. II: largest−smallest=4. III: the middle number is even. Which statement alone is enough?",
+          "questionType": "PRACTICE",
+          "prompt": "Target: Find three consecutive even positive integers.\nI. Their sum is 42.\nII. Difference between largest and smallest is 4.\nIII. Their product is greater than 1000.\nWhich statement alone is sufficient?",
           "options": [
             {
               "id": "a",
@@ -1362,81 +1667,67 @@
             },
             {
               "id": "b",
-              "label": "III alone"
+              "label": "I alone"
             },
             {
               "id": "c",
-              "label": "None alone"
+              "label": "III alone"
             },
             {
               "id": "d",
-              "label": "I alone"
+              "label": "Either II or III alone"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "HARD",
-          "explanation": "I alone gives x=12 and the numbers 12,14,16. II only states the fixed gap, and III is true for every such positive even triple.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 20,
+          "hints": [
+            "I fixes the middle at 14.",
+            "II is true for every such triple; III only gives a broad range."
+          ],
+          "explanation": "I gives 12,14,16 uniquely. II is automatic for any three consecutive evens, and III allows many triples such as 10,12,14 or 12,14,16. So I alone is sufficient."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_7_remedy": {
-      "id": "q_7_remedy",
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTarget: find two numbers x>y. I: x−y=6. II: 40% of y equals 30% of x. III: x/y=4/3. Which set is enough?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nI gives 12,14,16 uniquely. II is automatic for any three consecutive evens, and III allows many triples such as 10,12,14 or 12,14,16. So I alone is sufficient.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_7_retry"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "q_7_retry_fix": {
-      "id": "q_7_retry_fix",
+    "complete": {
+      "id": "complete",
       "type": "CONTENT",
       "content": {
-        "text": "I alone gives x=12 and the numbers 12,14,16. II only states the fixed gap, and III is true for every such positive even triple.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "recap"
-        }
-      ]
-    },
-    "recap": {
-      "id": "recap",
-      "type": "CONTENT",
-      "content": {
-        "text": "Test the target, then Statement I alone, then Statement II alone, and only then combine them. A statement can be sufficient for a ratio even when actual values are unknown. Equivalent statements add no new information, and unique digits do not always fix their order.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "finish"
-        }
-      ]
-    },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
-      "content": {
-        "text": "You finished Data Sufficiency for Number Puzzles.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "text": "You can now test statements independently, spot repeated information, and judge sufficiency from the exact target instead of from the number of equations on screen.\n\nThat completes the chapter's number-puzzle toolkit: translate, model, solve, check—and sometimes stop early when the data already answers the target.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Data Sufficiency for Number Puzzles",
-    "description": "Decide whether given statements contain enough information to determine the requested number or relation.",
-    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Data Sufficiency for Number Puzzles. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 22
-  },
-  "scriptId": "script-pon-10-data-sufficiency-number-puzzles",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

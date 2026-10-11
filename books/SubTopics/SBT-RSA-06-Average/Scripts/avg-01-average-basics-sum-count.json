@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "avg-01-average-basics-sum-count",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Average Basics: Equal Share, Total and Missing Values",
+    "description": "See an average as an equal share, move quickly between mean and total, and recover missing values or counts.",
+    "teachingApproach": "Open with an equal-share story so the formula has meaning. Move through the three interchangeable forms Average, Total and Count; then use them for a missing observation, two-number and ratio problems, common transformations of every value, and finally a partial-change capstone where the total must be updated carefully. Each skill gets a worked example, fresh practice and a parallel retry.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "Teach Average = Sum ÷ Number through an equal-share picture, then reverse it to Sum = Average × Number and Number = Sum ÷ Average. Use direct lists, missing observations, two-number and ratio-based averages, and simple unknown-count questions. Show that changing every observation by the same addition, subtraction or multiplication changes the mean in the same way. Finish with a capstone where only part of a data set changes, so the learner must update the total rather than blindly shift the mean. Every answer should be checked by rebuilding the total."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn average as an equal share.\n\nIf 3 children have 6, 9 and 12 sweets, there are 27 sweets in total.\n\nIf we share 27 equally, each gets 9.\n\nThat equal share, 9, is the average.",
+        "text": "Let's make average feel like one simple idea instead of a formula to memorise.\n\nAn average is the value everyone would have if the total were shared equally. Once that picture is clear, missing-number questions become much easier.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "An average is an equal share of a total.\n\nSuppose 4 friends have 8, 12, 10 and 14 marbles.\nTotal = 44 marbles.\n\nShare 44 equally among 4 people:\n44 ÷ 4 = 11.\n\nSo the average is 11.",
+        "text": "Suppose four friends have 8, 10, 12 and 14 marbles. Together they have 44.\n\nIf the 44 marbles were shared equally, each friend would get 11.\n\nThat equal-share value is the average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average = total ÷ number of observations.\n\nHere:\n44 ÷ 4 = 11\n\nThe average does not have to be one of the original values. It is the level everyone would have after an equal share.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 12, 16, 20 and 24?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "22"
+            "label": "16"
           },
           {
             "id": "b",
-            "label": "20"
-          },
-          {
-            "id": "c",
-            "label": "24"
-          },
-          {
-            "id": "d",
-            "label": "88"
-          }
-        ]
-      },
-      "content": {
-        "text": "What is the average of 16, 20, 24 and 28?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Add the four numbers first.",
-            "The sum is 88; divide by 4."
-          ],
-          "prompt": "What is the average of 16, 20, 24 and 28?",
-          "options": [
-            {
-              "id": "a",
-              "label": "22"
-            },
-            {
-              "id": "b",
-              "label": "20"
-            },
-            {
-              "id": "c",
-              "label": "24"
-            },
-            {
-              "id": "d",
-              "label": "88"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "16+20+24+28=88, and 88÷4=22.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "A common mistake is to stop at the sum.\n\nAverage needs two pieces:\n1. the total,\n2. the number of observations.\n\nHere the count is 4, so divide the sum by 4.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_1_retry"
-        }
-      ]
-    },
-    "q_1_retry": {
-      "id": "q_1_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "12"
-          },
-          {
-            "id": "b",
-            "label": "15"
-          },
-          {
-            "id": "c",
             "label": "18"
           },
           {
+            "id": "c",
+            "label": "20"
+          },
+          {
             "id": "d",
-            "label": "45"
+            "label": "72"
           }
         ]
       },
-      "content": {
-        "text": "What is the average of 9, 15 and 21?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The sum is 45.",
-            "There are 3 observations."
-          ],
-          "prompt": "What is the average of 9, 15 and 21?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 12, 16, 20 and 24?",
           "options": [
             {
               "id": "a",
-              "label": "12"
+              "label": "16"
             },
             {
               "id": "b",
-              "label": "15"
-            },
-            {
-              "id": "c",
               "label": "18"
             },
             {
+              "id": "c",
+              "label": "20"
+            },
+            {
               "id": "d",
-              "label": "45"
+              "label": "72"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "45÷3=15.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "Add the four values first.",
+            "Their total is 72; divide by 4."
+          ],
+          "explanation": "12 + 16 + 20 + 24 = 72, and 72 ÷ 4 = 18. Choosing 72 stops at the total instead of finding the equal share."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Add first: 9+15+21=45. Then use the count 3: 45÷3=15.",
+        "text": "Let’s check this clue.\n\nAdd the four values first.\n\n12 + 16 + 20 + 24 = 72, and 72 ÷ 4 = 18. Choosing 72 stops at the total instead of finding the equal share.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the average of 7, 9, 11 and 13?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "11"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "40"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the average of 7, 9, 11 and 13?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "11"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "40"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find the total, then divide by four.",
+            "7 + 9 + 11 + 13 = 40."
+          ],
+          "explanation": "The total is 40, so the average is 40 ÷ 4 = 10. The middle values 9 and 11 surround the mean but neither is the average of all four."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "The same rule works backward.\n\nAverage = Sum ÷ Count\n\nSo:\nSum = Average × Count.\n\nIf 7 scores have average 18, their total is 18×7=126.",
+        "text": "Let’s work through this one.\n\nThe total is 40, so the average is 40 ÷ 4 = 10. The middle values 9 and 11 surround the mean but neither is the average of all four.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same rule can run backwards.\n\nIf 6 tests have an average score of 72, the total score must be:\n\n6 × 72 = 432",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So keep the three forms together:\n\nAverage = Total ÷ Count\nTotal = Average × Count\nCount = Total ÷ Average\n\nMost average questions are just one of these three views.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Eight boxes have an average weight of 35 kg. What is their total weight?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "23"
+            "label": "43"
           },
           {
             "id": "b",
-            "label": "112"
+            "label": "210"
           },
           {
             "id": "c",
-            "label": "126"
+            "label": "320"
           },
           {
             "id": "d",
-            "label": "196"
+            "label": "280"
           }
         ]
       },
-      "content": {
-        "text": "The average of 9 observations is 14. What is their sum?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use Sum = Average × Count.",
-            "14×9=126."
-          ],
-          "prompt": "The average of 9 observations is 14. What is their sum?",
+          "questionType": "PRACTICE",
+          "prompt": "Eight boxes have an average weight of 35 kg. What is their total weight?",
           "options": [
             {
               "id": "a",
-              "label": "23"
+              "label": "43"
             },
             {
               "id": "b",
-              "label": "112"
+              "label": "210"
             },
             {
               "id": "c",
-              "label": "126"
+              "label": "320"
             },
             {
               "id": "d",
-              "label": "196"
+              "label": "280"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "The total is 14×9=126.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Average × count gives the total.",
+            "35 × 8."
+          ],
+          "explanation": "Total weight = 35 × 8 = 280 kg. Adding 8 to 35 gives 43, but the count tells us how many equal shares make the total."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "remedy_2": {
+      "id": "remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Do not divide again. If an average is already given and you need the total, multiply by the number of observations.",
+        "text": "Let’s check this clue.\n\nAverage × count gives the total.\n\nTotal weight = 35 × 8 = 280 kg. Adding 8 to 35 gives 43, but the count tells us how many equal shares make the total.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "A machine produces an average of 18 units per hour for 12 hours. What total number of units is that?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "37"
+            "label": "216"
           },
           {
             "id": "b",
-            "label": "150"
+            "label": "30"
           },
           {
             "id": "c",
-            "label": "625"
+            "label": "180"
           },
           {
             "id": "d",
-            "label": "300"
+            "label": "228"
           }
         ]
       },
-      "content": {
-        "text": "The average of 12 numbers is 25. What is their sum?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply 25 by 12.",
-            "Average × Count = Sum."
-          ],
-          "prompt": "The average of 12 numbers is 25. What is their sum?",
+          "questionType": "PRACTICE",
+          "prompt": "A machine produces an average of 18 units per hour for 12 hours. What total number of units is that?",
           "options": [
             {
               "id": "a",
-              "label": "37"
+              "label": "216"
             },
             {
               "id": "b",
-              "label": "150"
+              "label": "30"
             },
             {
               "id": "c",
-              "label": "625"
+              "label": "180"
             },
             {
               "id": "d",
-              "label": "300"
+              "label": "228"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "25×12=300.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Multiply the average by the number of hours.",
+            "18 × 12."
+          ],
+          "explanation": "Total production = 18 × 12 = 216 units. The average is one-hour's equal share; twelve such shares make the total."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "The average is the equal share. To rebuild the original total, give that share to all 12 observations: 25×12=300.",
+        "text": "Let’s work through this one.\n\nTotal production = 18 × 12 = 216 units. The average is one-hour's equal share; twelve such shares make the total.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "A missing value is easiest after you rebuild the required total.\n\nExample: 5 numbers average 20.\nRequired total = 5×20 = 100.\n\nIf four known numbers total 73, the missing number is 100−73=27.",
+        "text": "Now hide one value.\n\nFive numbers have average 24, so their total is:\n5 × 24 = 120\n\nFour known numbers are 18, 22, 25 and 27. Their sum is 92.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The missing number is the gap between the required total and the known total:\n\n120 − 92 = 28\n\nCheck: 18 + 22 + 25 + 27 + 28 = 120, and 120 ÷ 5 = 24.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Six numbers have average 31. Five of them are 24, 28, 30, 35 and 37. Find the sixth number.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "18"
+            "label": "32"
           },
           {
             "id": "b",
-            "label": "20"
+            "label": "31"
           },
           {
             "id": "c",
-            "label": "22"
+            "label": "154"
           },
           {
             "id": "d",
-            "label": "90"
+            "label": "186"
           }
         ]
       },
-      "content": {
-        "text": "Five numbers have average 18. Four of them are 12, 17, 20 and 21. What is the fifth?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The total of all five must be 18×5=90.",
-            "The four known numbers sum to 70."
-          ],
-          "prompt": "Five numbers have average 18. Four of them are 12, 17, 20 and 21. What is the fifth?",
+          "questionType": "PRACTICE",
+          "prompt": "Six numbers have average 31. Five of them are 24, 28, 30, 35 and 37. Find the sixth number.",
           "options": [
             {
               "id": "a",
-              "label": "18"
+              "label": "32"
             },
             {
               "id": "b",
-              "label": "20"
+              "label": "31"
             },
             {
               "id": "c",
-              "label": "22"
+              "label": "154"
             },
             {
               "id": "d",
-              "label": "90"
+              "label": "186"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Required total=90. Known total=70. Missing value=20.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First turn the average into the total for six numbers.",
+            "6 × 31 = 186; subtract the five-number total 154."
+          ],
+          "explanation": "The six-number total is 186. The five known values total 154, so the missing number is 186 − 154 = 32. Answering 154 or 186 confuses a subtotal or total with the missing value."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Do not average the four known values and compare averages. Work with totals: required whole total minus known subtotal.",
+        "text": "Let’s check this clue.\n\nFirst turn the average into the total for six numbers.\n\nThe six-number total is 186. The five known values total 154, so the missing number is 186 − 154 = 32. Answering 154 or 186 confuses a subtotal or total with the missing value.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Five numbers have average 42. Four are 38, 41, 45 and 47. Find the fifth number.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "30"
+            "label": "42"
           },
           {
             "id": "b",
-            "label": "20"
+            "label": "171"
           },
           {
             "id": "c",
-            "label": "28"
+            "label": "210"
           },
           {
             "id": "d",
-            "label": "180"
+            "label": "39"
           }
         ]
       },
-      "content": {
-        "text": "Six numbers have average 30. Five are 22, 25, 31, 34 and 38. Find the sixth.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "All six total 30×6=180.",
-            "The five known values total 150."
-          ],
-          "prompt": "Six numbers have average 30. Five are 22, 25, 31, 34 and 38. Find the sixth.",
+          "questionType": "PRACTICE",
+          "prompt": "Five numbers have average 42. Four are 38, 41, 45 and 47. Find the fifth number.",
           "options": [
             {
               "id": "a",
-              "label": "30"
+              "label": "42"
             },
             {
               "id": "b",
-              "label": "20"
+              "label": "171"
             },
             {
               "id": "c",
-              "label": "28"
+              "label": "210"
             },
             {
               "id": "d",
-              "label": "180"
+              "label": "39"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "180−150=30.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Required total = 5 × 42.",
+            "The four known numbers total 171."
+          ],
+          "explanation": "The required total is 210. The known total is 171, so the fifth number is 210 − 171 = 39. Check: 210 ÷ 5 = 42."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Turn the average into the full total first: 180. Then subtract the five known values, 150, leaving 30.",
+        "text": "Let’s work through this one.\n\nThe required total is 210. The known total is 171, so the fifth number is 210 − 171 = 39. Check: 210 ÷ 5 = 42.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Average questions can use letters too.\n\nIf two numbers have average M, then their sum is 2M.\n\nSo if one number is x, the other is 2M−x.\nThe same idea works for any count.",
+        "text": "Sometimes the missing thing is the count.\n\nA set has total 540 and average 45.\n\nCount = Total ÷ Average = 540 ÷ 45 = 12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A quick check is multiplication:\n\n12 equal shares of 45 make 540.\n\nIf the count you find does not rebuild the total, something went wrong.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "A group has total score 672 and average score 56. How many scores are in the group?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6"
+            "label": "10"
           },
           {
             "id": "b",
-            "label": "17"
+            "label": "56"
           },
           {
             "id": "c",
-            "label": "34"
-          },
-          {
-            "id": "d",
-            "label": "23"
-          }
-        ]
-      },
-      "content": {
-        "text": "Two numbers have average 17. One number is 11. What is the other?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Their total is 2×17=34.",
-            "Subtract the known number 11."
-          ],
-          "prompt": "Two numbers have average 17. One number is 11. What is the other?",
-          "options": [
-            {
-              "id": "a",
-              "label": "6"
-            },
-            {
-              "id": "b",
-              "label": "17"
-            },
-            {
-              "id": "c",
-              "label": "34"
-            },
-            {
-              "id": "d",
-              "label": "23"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The other number is 34−11=23.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
-    },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Average 17 does not mean both numbers are 17. It only fixes their total at 34.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4_retry"
-        }
-      ]
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "5"
-          },
-          {
-            "id": "b",
             "label": "12"
           },
           {
-            "id": "c",
-            "label": "17"
-          },
-          {
             "id": "d",
-            "label": "24"
+            "label": "616"
           }
         ]
       },
-      "content": {
-        "text": "The average of a and b is 12. If a=7, what is b?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "a+b=24.",
-            "b=24−7."
-          ],
-          "prompt": "The average of a and b is 12. If a=7, what is b?",
+          "questionType": "PRACTICE",
+          "prompt": "A group has total score 672 and average score 56. How many scores are in the group?",
           "options": [
             {
               "id": "a",
-              "label": "5"
+              "label": "10"
             },
             {
               "id": "b",
-              "label": "12"
+              "label": "56"
             },
             {
               "id": "c",
-              "label": "17"
+              "label": "12"
             },
             {
               "id": "d",
-              "label": "24"
+              "label": "616"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "b=17.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Count = total ÷ average.",
+            "672 ÷ 56."
+          ],
+          "explanation": "672 ÷ 56 = 12, so there are 12 scores. Check: 12 × 56 = 672."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Two observations with average 12 have total 24. After accounting for a=7, the remaining value is 17.",
+        "text": "Let’s check this clue.\n\nCount = total ÷ average.\n\n672 ÷ 56 = 12, so there are 12 scores. Check: 12 × 56 = 672.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A set of observations has total 924 and average 66. How many observations are there?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "66"
+          },
+          {
+            "id": "d",
+            "label": "858"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A set of observations has total 924 and average 66. How many observations are there?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "66"
+            },
+            {
+              "id": "d",
+              "label": "858"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Divide the total by the average.",
+            "924 ÷ 66."
+          ],
+          "explanation": "924 ÷ 66 = 14. Check: 14 × 66 = 924. The average itself is not the number of observations."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "If the same amount is added to every observation, the average changes by that same amount.\n\nFor 10, 20, 30 the average is 20.\nAdd 5 to each: 15, 25, 35.\nThe new average is 25.\n\nEvery value moved up by 5, so the equal share also moved up by 5.",
+        "text": "Let’s work through this one.\n\n924 ÷ 66 = 14. Check: 14 × 66 = 924. The average itself is not the number of observations.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "For two numbers, the average gives their sum immediately.\n\nIf their average is 27:\n\nSum = 2 × 27 = 54",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If one number is 31, the other must be:\n\n54 − 31 = 23\n\nThis is often faster than setting up a longer equation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Two numbers have average 42. One number is 55. What is the other?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
+            "label": "13"
+          },
+          {
+            "id": "b",
+            "label": "29"
+          },
+          {
+            "id": "c",
             "label": "42"
           },
           {
-            "id": "b",
-            "label": "46"
-          },
-          {
-            "id": "c",
-            "label": "50"
-          },
-          {
             "id": "d",
-            "label": "336"
+            "label": "97"
           }
         ]
       },
-      "content": {
-        "text": "A set has average 42. If 8 is added to every value, what is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Every observation rises by 8.",
-            "The average also rises by 8."
-          ],
-          "prompt": "A set has average 42. If 8 is added to every value, what is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "Two numbers have average 42. One number is 55. What is the other?",
           "options": [
             {
               "id": "a",
-              "label": "42"
+              "label": "13"
             },
             {
               "id": "b",
-              "label": "46"
+              "label": "29"
             },
             {
               "id": "c",
-              "label": "50"
+              "label": "42"
             },
             {
               "id": "d",
-              "label": "336"
+              "label": "97"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "42+8=50.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Two numbers with average 42 have total 84.",
+            "84 − 55."
+          ],
+          "explanation": "Their total is 2 × 42 = 84. The other number is 84 − 55 = 29. Adding 42 and 55 gives 97, but 42 is an average, not a second observation."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "remedy_5": {
+      "id": "remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "You do not need to know how many observations there are. The same +8 affects every one of them, so the mean gains 8.",
+        "text": "Let’s check this clue.\n\nTwo numbers with average 42 have total 84.\n\nTheir total is 2 × 42 = 84. The other number is 84 − 55 = 29. Adding 42 and 55 gives 97, but 42 is an average, not a second observation.\n\nNow use that idea on a new question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Two numbers have average 18.5. One is 21. What is the other?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6"
+            "label": "15.5"
           },
           {
             "id": "b",
-            "label": "31"
+            "label": "18.5"
           },
           {
             "id": "c",
-            "label": "37"
+            "label": "16"
           },
           {
             "id": "d",
-            "label": "25"
+            "label": "39.5"
           }
         ]
       },
-      "content": {
-        "text": "A set has average 31. If 6 is subtracted from every value, what is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Every value falls by 6.",
-            "31−6=25."
-          ],
-          "prompt": "A set has average 31. If 6 is subtracted from every value, what is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "Two numbers have average 18.5. One is 21. What is the other?",
           "options": [
             {
               "id": "a",
-              "label": "6"
+              "label": "15.5"
             },
             {
               "id": "b",
-              "label": "31"
+              "label": "18.5"
             },
             {
               "id": "c",
-              "label": "37"
+              "label": "16"
             },
             {
               "id": "d",
-              "label": "25"
+              "label": "39.5"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "The new average is 25.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "The two-number total is 37.",
+            "37 − 21."
+          ],
+          "explanation": "Total = 2 × 18.5 = 37, so the other number is 37 − 21 = 16."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to subtract 6 only once from the total without knowing the count. Think value-by-value: every observation is 6 lower, so the average is 6 lower.",
+        "text": "Let’s work through this one.\n\nTotal = 2 × 18.5 = 37, so the other number is 37 − 21 = 16.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "If every observation is multiplied by the same number, the average is multiplied by that number too.\n\nIf the old average is 7 and every value is multiplied by 4, the new average is 28.\n\nThis follows because both the total and each contribution scale by 4.",
+        "text": "An average can also unlock a ratio.\n\nTwo numbers average 28, so together they make 56. If their ratio is 3:1, there are 4 equal parts.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "One part = 56 ÷ 4 = 14.\n\nThe numbers are 42 and 14.\n\nThe average gives the total; the ratio tells us how that total is split.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Two numbers are in the ratio 2:3 and their average is 30. What is the larger number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two numbers are in the ratio 2:3 and their average is 30. What is the larger number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Their total is 2 × 30 = 60.",
+            "Five ratio parts make 60, so one part is 12."
+          ],
+          "explanation": "The numbers are 2 × 12 = 24 and 3 × 12 = 36. The larger number is 36. The value 60 is their total, not either number."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTheir total is 2 × 30 = 60.\n\nThe numbers are 2 × 12 = 24 and 3 × 12 = 36. The larger number is 36. The value 60 is their total, not either number.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two numbers are in the ratio 5:3 and their average is 36. What is the smaller number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "36"
+          },
+          {
+            "id": "c",
             "label": "45"
           },
           {
-            "id": "b",
-            "label": "14"
-          },
-          {
-            "id": "c",
-            "label": "50"
-          },
-          {
             "id": "d",
-            "label": "90"
+            "label": "27"
           }
         ]
       },
-      "content": {
-        "text": "The average of 10 numbers is 9. Each number is multiplied by 5. What is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Scale the old average by the same factor.",
-            "9×5=45."
-          ],
-          "prompt": "The average of 10 numbers is 9. Each number is multiplied by 5. What is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "Two numbers are in the ratio 5:3 and their average is 36. What is the smaller number?",
           "options": [
             {
               "id": "a",
-              "label": "45"
+              "label": "9"
             },
             {
               "id": "b",
-              "label": "14"
+              "label": "36"
             },
             {
               "id": "c",
-              "label": "50"
+              "label": "45"
             },
             {
               "id": "d",
-              "label": "90"
+              "label": "27"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The new average is 45.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The two numbers total 72.",
+            "Eight ratio parts make 72, so one part is 9."
+          ],
+          "explanation": "The numbers are 45 and 27. The smaller is 27. The average lies between the two numbers, which is a useful check."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "Do not multiply by the number of observations. The transformation is 'each value ×5', so the mean also becomes 'old mean ×5'.",
+        "text": "Let’s work through this one.\n\nThe numbers are 45 and 27. The smaller is 27. The average lies between the two numbers, which is a useful check.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "What happens if every observation changes in the same way?\n\nIf a set has average 18 and every value rises by 5, the total rises by 5 for each observation. So the equal-share level also rises by 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "New average = 18 + 5 = 23.\n\nLikewise, if every value is multiplied by 3, the total and the average are both multiplied by 3. This shortcut works only when every observation gets the same change.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
       "type": "CHOICE",
+      "content": {
+        "text": "A set has average 42. Every observation is reduced by 7. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "7"
           },
           {
             "id": "b",
-            "label": "6"
+            "label": "42"
           },
           {
             "id": "c",
-            "label": "15"
+            "label": "49"
           },
           {
             "id": "d",
-            "label": "54"
+            "label": "35"
           }
         ]
       },
-      "content": {
-        "text": "A set has average 18. Every value is divided by 3. What is the new average?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Dividing every value by 3 divides the mean by 3.",
-            "18÷3=6."
-          ],
-          "prompt": "A set has average 18. Every value is divided by 3. What is the new average?",
+          "questionType": "PRACTICE",
+          "prompt": "A set has average 42. Every observation is reduced by 7. What is the new average?",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "7"
             },
             {
               "id": "b",
-              "label": "6"
+              "label": "42"
             },
             {
               "id": "c",
-              "label": "15"
+              "label": "49"
             },
             {
               "id": "d",
-              "label": "54"
+              "label": "35"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "The new average is 6.",
+          "xp": 10,
+          "hints": [
+            "The same subtraction happens to every value.",
+            "New average = 42 − 7."
+          ],
+          "explanation": "The new average is 35. Subtracting 7 from every observation subtracts 7 from their equal-share value too."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe same subtraction happens to every value.\n\nThe new average is 35. Subtracting 7 from every observation subtracts 7 from their equal-share value too.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A set has average 16. Every observation is multiplied by 3. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48"
+          },
+          {
+            "id": "b",
+            "label": "19"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "64"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "prompt": "A set has average 16. Every observation is multiplied by 3. What is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48"
+            },
+            {
+              "id": "b",
+              "label": "19"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "64"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A common multiplication scales the mean by the same factor.",
+            "16 × 3."
+          ],
+          "explanation": "The new average is 48. Multiplying every value by 3 multiplies the total by 3 while the count stays unchanged."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "The whole data set is scaled to one-third, so its equal share is also one-third: 18÷3=6.",
+        "text": "Let’s work through this one.\n\nThe new average is 48. Multiplying every value by 3 multiplies the total by 3 while the count stays unchanged.\n\nTry the question once more and check each clue.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "teach_8": {
+      "id": "teach_8",
       "type": "CONTENT",
       "content": {
-        "text": "Average = Sum ÷ Count.\n\nTurn that around whenever useful:\nSum = Average × Count.\n\nFor a missing value, rebuild the required total and subtract the known subtotal.\nIf every observation gets the same +k, −k, ×c or ÷c change, the average gets the same transformation.",
+        "text": "The shortcut above breaks if only some values change.\n\nSuppose five numbers average 24. Their total is 120. If four of the five numbers rise by 3, the total rises by 4 × 3 = 12, not by 5 × 3.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "teach_8_step"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Average Basics: Sum, Count and Missing Values.\n\nExplain one example in your own words. Start with the average statement, turn it into a total, and say why your final division uses that count.",
+        "text": "New total = 120 + 12 = 132\nNew average = 132 ÷ 5 = 26.4\n\nWhen only part of the set changes, update the total first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Six numbers have average 30. Exactly three of them are increased by 4. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31"
+          },
+          {
+            "id": "b",
+            "label": "34"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "42"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Six numbers have average 30. Exactly three of them are increased by 4. What is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "31"
+            },
+            {
+              "id": "b",
+              "label": "34"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "42"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Find the total increase across the whole set.",
+            "Three numbers rise by 4, so the total rises by 12; divide that rise by 6."
+          ],
+          "explanation": "The old total is 180. The change is 3 × 4 = 12, so the new total is 192 and the new average is 192 ÷ 6 = 32. Adding 4 directly to the mean would wrongly assume all six values changed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFind the total increase across the whole set.\n\nThe old total is 180. The change is 3 × 4 = 12, so the new total is 192 and the new average is 192 ÷ 6 = 32. Adding 4 directly to the mean would wrongly assume all six values changed.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five numbers have average 20. Only two numbers are increased by 5. What is the new average?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "25"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five numbers have average 20. Only two numbers are increased by 5. What is the new average?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "25"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The total rises by 2 × 5, not 5 × 5.",
+            "Old total 100; new total 110."
+          ],
+          "explanation": "The old total is 5 × 20 = 100. Two increases of 5 add 10, so the new average is 110 ÷ 5 = 22."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe old total is 5 × 20 = 100. Two increases of 5 add 10, so the new average is 110 ÷ 5 = 22.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now move freely between average, total and count.\n\nAverage = total ÷ count.\nTotal = average × count.\n\nYou can recover missing values, split a total by a ratio, and update a mean when values change.\n\nNext, we use symmetry so long runs of consecutive numbers can be averaged almost instantly.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Average Basics: Sum, Count and Missing Values",
-    "description": "Understand average as an equal share, move between average and total, and solve simple missing-value questions.",
-    "sourceScope": "Based strictly on the Average chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Average Basics: Sum, Count and Missing Values. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-avg-01-average-basics-sum-count",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

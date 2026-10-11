@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "pon-05-two-digit-numbers-reversed-digits",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Two-Digit Numbers and Reversed Digits",
+    "description": "Use place value to turn digit clues and reversal statements into simple equations, while detecting when the number is not unique.",
+    "teachingApproach": "Start from place value, not memorised reversal formulas. Derive the 9-times digit-gap and 11-times digit-sum patterns, then use them in multiple-of-digit-sum, reversal-plus-sum, digit-product and insufficiency questions. The final block combines place value with a nonlinear digit relation. Every solution checks digit limits and the actual reversed number.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "Teach a two-digit number with tens digit x and units digit y as 10x+y, with reverse 10y+x and digit sum x+y. Derive original−reverse = 9(x−y) and original+reverse = 11(x+y) from place value rather than memorising them. Cover a number being a multiple of its digit sum, fixed reversal changes, digit-sum/digit-difference clues, digit products, and nonlinear digit conditions such as the unit digit being the square of the tens digit. Include cases where reversal information determines only the digit difference and therefore the exact number is data inadequate. Respect digit limits throughout."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's turn digit puzzles into place-value equations.\n\nA two-digit number is not x+y. If x is the tens digit and y is the units digit, the number is 10x+y.\n\nThat one idea explains most reversal questions in this chapter.",
+        "text": "Let's make digit puzzles stop feeling mysterious.\n\nA two-digit number is just tens and units with different place values. Once we model those places correctly, reversals become ordinary algebra.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Let the tens digit be x and the units digit be y.\n\nThe number is 10x+y.\nThe reversed number is 10y+x.\nThe digit sum is x+y.\n\nThese three expressions are the foundation of almost every two-digit puzzle in the chapter.",
+        "text": "A two-digit number is not 'x plus y'. Place value matters.\n\nIf the tens digit is x and the units digit is y:\n\nNumber = 10x + y",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For 47:\n4 tens = 40\n7 units = 7\n40+7 = 47\n\nReverse the digits and the value becomes 10y+x. For 47, that is 74.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number has tens digit 6 and units digit 3. Which expression gives the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "74"
+            "label": "6+3"
           },
           {
             "id": "b",
-            "label": "47"
+            "label": "10×6 + 3"
           },
           {
             "id": "c",
-            "label": "65"
+            "label": "10×3 + 6"
           },
           {
             "id": "d",
-            "label": "83"
+            "label": "6×3"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A two-digit number has tens digit 6 and units digit 3. Which expression gives the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6+3"
+            },
+            {
+              "id": "b",
+              "label": "10×6 + 3"
+            },
+            {
+              "id": "c",
+              "label": "10×3 + 6"
+            },
+            {
+              "id": "d",
+              "label": "6×3"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A tens digit counts groups of ten.",
+            "Use 10x+y."
+          ],
+          "explanation": "10×6+3=63. Reversing the expression to 10×3+6 would describe 36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
       "content": {
-        "text": "A two-digit number has digit sum 11. Its tens digit is 3 more than its units digit. What is the number?",
+        "text": "Let's check this one.\n\nA tens digit counts groups of ten.\n\n10×6+3=63. Reversing the expression to 10×3+6 would describe 36.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
+          "targetNodeId": "retry_1"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use x+y=11 and x−y=3.",
-            "Solve to get x=7, y=4."
-          ],
-          "prompt": "A two-digit number has digit sum 11. Its tens digit is 3 more than its units digit. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "74"
-            },
-            {
-              "id": "b",
-              "label": "47"
-            },
-            {
-              "id": "c",
-              "label": "65"
-            },
-            {
-              "id": "d",
-              "label": "83"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The number is 10×7+4=74.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number has tens digit 4 and units digit 8. What is the reversed number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "49"
+            "label": "48"
           },
           {
             "id": "b",
-            "label": "85"
+            "label": "12"
           },
           {
             "id": "c",
-            "label": "94"
+            "label": "84"
           },
           {
             "id": "d",
-            "label": "76"
+            "label": "44"
           }
         ]
       },
-      "content": {
-        "text": "A two-digit number has digit sum 13. Its tens digit is 5 more than its units digit. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x+y=13 and x−y=5.",
-            "x=9, y=4."
-          ],
-          "prompt": "A two-digit number has digit sum 13. Its tens digit is 5 more than its units digit. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "A two-digit number has tens digit 4 and units digit 8. What is the reversed number?",
           "options": [
             {
               "id": "a",
-              "label": "49"
+              "label": "48"
             },
             {
               "id": "b",
-              "label": "85"
+              "label": "12"
             },
             {
               "id": "c",
-              "label": "94"
+              "label": "84"
             },
             {
               "id": "d",
-              "label": "76"
+              "label": "44"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "The number is 94.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Reverse means the 8 moves to the tens place.",
+            "10×8+4."
+          ],
+          "explanation": "The reversed number is 84."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA two-digit number has digit sum 11. Its tens digit is 3 more than its units digit. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nThe reversed number is 84.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "The number is 94.",
+        "text": "Now subtract a number from its reverse.\n\nOriginal: 10x+y\nReverse: 10y+x",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "Subtracting a reversed number gives a useful shortcut:\n\n(10x+y)−(10y+x)=9(x−y).\n\nSo a reversal difference is always a multiple of 9. It tells you the digit difference directly.",
+        "text": "Original − reverse\n= 10x+y−10y−x\n= 9x−9y\n= 9(x−y)\n\nSo a reversal difference is always a multiple of 9. It tells you the digit difference, not automatically the exact digits.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number is 36 greater than its reverse. What is tens digit minus units digit?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "36"
+            "label": "3"
           },
           {
             "id": "b",
-            "label": "63"
+            "label": "6"
           },
           {
             "id": "c",
-            "label": "72"
+            "label": "9"
           },
           {
             "id": "d",
-            "label": "81"
+            "label": "4"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A two-digit number is 36 greater than its reverse. What is tens digit minus units digit?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use original−reverse = 9(x−y).",
+            "9(x−y)=36."
+          ],
+          "explanation": "x−y=4. Many digit pairs can have this gap, so the exact number is not yet known."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
       "content": {
-        "text": "A two-digit number exceeds its reversed number by 27. The digit sum is 9. What is the original number?",
+        "text": "Let's check this one.\n\nUse original−reverse = 9(x−y).\n\nx−y=4. Many digit pairs can have this gap, so the exact number is not yet known.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
+          "targetNodeId": "retry_2"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "27=9(x−y), so x−y=3.",
-            "Combine x−y=3 with x+y=9."
-          ],
-          "prompt": "A two-digit number exceeds its reversed number by 27. The digit sum is 9. What is the original number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "36"
-            },
-            {
-              "id": "b",
-              "label": "63"
-            },
-            {
-              "id": "c",
-              "label": "72"
-            },
-            {
-              "id": "d",
-              "label": "81"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "x=6,y=3, so the original number is 63.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number is 45 less than its reverse. What is units digit minus tens digit?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "38"
+            "label": "5"
           },
           {
             "id": "b",
-            "label": "74"
+            "label": "4"
           },
           {
             "id": "c",
-            "label": "92"
+            "label": "9"
           },
           {
             "id": "d",
-            "label": "83"
+            "label": "45"
           }
         ]
       },
-      "content": {
-        "text": "A two-digit number is 45 more than its reversed number. The digit sum is 11. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "45=9(x−y), so x−y=5.",
-            "Solve with x+y=11."
-          ],
-          "prompt": "A two-digit number is 45 more than its reversed number. The digit sum is 11. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "A two-digit number is 45 less than its reverse. What is units digit minus tens digit?",
           "options": [
             {
               "id": "a",
-              "label": "38"
+              "label": "5"
             },
             {
               "id": "b",
-              "label": "74"
+              "label": "4"
             },
             {
               "id": "c",
-              "label": "92"
+              "label": "9"
             },
             {
               "id": "d",
-              "label": "83"
+              "label": "45"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "x=8,y=3, so the number is 83.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Reverse−original = 9(y−x).",
+            "9(y−x)=45."
+          ],
+          "explanation": "y−x=5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA two-digit number exceeds its reversed number by 27. The digit sum is 9. What is the original number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\ny−x=5.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "x=8,y=3, so the number is 83.",
+        "text": "Adding a number and its reverse gives another useful pattern.\n\n(10x+y)+(10y+x)=11x+11y=11(x+y)",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "Adding a number and its reverse is also simple:\n\n(10x+y)+(10y+x)=11(x+y).\n\nSo the sum is always divisible by 11. This can answer some questions without knowing the digits separately.",
+        "text": "So if the digit sum is 10, the number plus its reverse is 110—no matter whether the number is 19, 28, 37, 46 or 64.\n\nThis identity is about the sum of digits, not their order.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "The digits of a two-digit number sum to 12. What is the number plus its reverse?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "132"
           },
           {
             "id": "b",
-            "label": "7"
+            "label": "120"
           },
           {
             "id": "c",
-            "label": "9"
+            "label": "121"
           },
           {
             "id": "d",
-            "label": "11"
+            "label": "144"
           }
         ]
       },
-      "content": {
-        "text": "A two-digit number is added to its reverse. Which number must divide the result?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The sum is 11(x+y).",
-            "The factor 11 is always present."
-          ],
-          "prompt": "A two-digit number is added to its reverse. Which number must divide the result?",
+          "questionType": "PRACTICE",
+          "prompt": "The digits of a two-digit number sum to 12. What is the number plus its reverse?",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "132"
             },
             {
               "id": "b",
-              "label": "7"
+              "label": "120"
             },
             {
               "id": "c",
-              "label": "9"
+              "label": "121"
             },
             {
               "id": "d",
-              "label": "11"
+              "label": "144"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "The result is always divisible by 11.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Use 11×(digit sum).",
+            "11×12."
+          ],
+          "explanation": "The sum is 132 for every two-digit number whose digits add to 12."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nUse 11×(digit sum).\n\nThe sum is 132 for every two-digit number whose digits add to 12.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number and its reverse add to 99. What is the sum of the digits?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "12"
+            "label": "8"
           },
           {
             "id": "b",
-            "label": "9"
-          },
-          {
-            "id": "c",
             "label": "11"
           },
           {
+            "id": "c",
+            "label": "18"
+          },
+          {
             "id": "d",
-            "label": "13"
+            "label": "9"
           }
         ]
       },
-      "content": {
-        "text": "A two-digit number and its reverse add to 132. What is the sum of the digits?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A two-digit number and its reverse add to 99. What is the sum of the digits?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "11"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "9"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
           "xp": 10,
           "hints": [
-            "132=11(x+y).",
+            "99 = 11(x+y).",
             "Divide by 11."
           ],
-          "prompt": "A two-digit number and its reverse add to 132. What is the sum of the digits?",
-          "options": [
-            {
-              "id": "a",
-              "label": "12"
-            },
-            {
-              "id": "b",
-              "label": "9"
-            },
-            {
-              "id": "c",
-              "label": "11"
-            },
-            {
-              "id": "d",
-              "label": "13"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "x+y=12.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "explanation": "x+y=9."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA two-digit number is added to its reverse. Which number must divide the result?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nx+y=9.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "x+y=12.",
+        "text": "The chapter often says a number is a multiple of its digit sum.\n\nSuppose the units digit is 2 more than the tens digit. Let tens=x, units=x+2.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "If the number is a multiple of its digit sum, use\n\n10x+y = k(x+y).\n\nAdd any other digit relation, such as y=x+2, to find the digits.",
+        "text": "Number = 10x+(x+2)=11x+2\nDigit sum = 2x+2\n\nIf the number is 4 times its digit sum:\n11x+2 = 4(2x+2)\n3x=6\nx=2\n\nThe number is 24. Check: 2+4=6 and 4×6=24.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "The units digit is 3 more than the tens digit. The number is 4 times its digit sum. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "42"
-          },
-          {
-            "id": "b",
-            "label": "36"
-          },
-          {
-            "id": "c",
             "label": "24"
           },
           {
+            "id": "b",
+            "label": "63"
+          },
+          {
+            "id": "c",
+            "label": "36"
+          },
+          {
             "id": "d",
-            "label": "48"
+            "label": "84"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The units digit is 3 more than the tens digit. The number is 4 times its digit sum. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "63"
+            },
+            {
+              "id": "c",
+              "label": "36"
+            },
+            {
+              "id": "d",
+              "label": "84"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Let tens=x, units=x+3.",
+            "11x+3 = 4(2x+3)."
+          ],
+          "explanation": "11x+3=8x+12 gives x=3. The digits are 3 and 6, so the number is 36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
       "content": {
-        "text": "A two-digit number is 4 times the sum of its digits. Its units digit is 2 more than its tens digit. What is the number?",
+        "text": "Let's check this one.\n\nLet tens=x, units=x+3.\n\n11x+3=8x+12 gives x=3. The digits are 3 and 6, so the number is 36.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
+          "targetNodeId": "retry_4"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let y=x+2.",
-            "10x+y=4(x+y)."
-          ],
-          "prompt": "A two-digit number is 4 times the sum of its digits. Its units digit is 2 more than its tens digit. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "42"
-            },
-            {
-              "id": "b",
-              "label": "36"
-            },
-            {
-              "id": "c",
-              "label": "24"
-            },
-            {
-              "id": "d",
-              "label": "48"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Substitute y=x+2: 11x+2=8x+8, so x=2,y=4. Number=24.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
+      ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "The units digit is 2 less than the tens digit. The number is 7 times its digit sum. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "45"
+            "label": "24"
           },
           {
             "id": "b",
-            "label": "54"
+            "label": "42"
           },
           {
             "id": "c",
-            "label": "65"
+            "label": "35"
           },
           {
             "id": "d",
-            "label": "76"
+            "label": "63"
           }
         ]
       },
-      "content": {
-        "text": "A two-digit number is 6 times the sum of its digits. Its tens digit is 1 more than its units digit. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let x=y+1.",
-            "10x+y=6(x+y)."
-          ],
-          "prompt": "A two-digit number is 6 times the sum of its digits. Its tens digit is 1 more than its units digit. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "The units digit is 2 less than the tens digit. The number is 7 times its digit sum. What is the number?",
           "options": [
             {
               "id": "a",
-              "label": "45"
+              "label": "24"
             },
             {
               "id": "b",
-              "label": "54"
+              "label": "42"
             },
             {
               "id": "c",
-              "label": "65"
+              "label": "35"
             },
             {
               "id": "d",
-              "label": "76"
+              "label": "63"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "MEDIUM",
-          "explanation": "With x=y+1: 11y+10=12y+6, so y=4,x=5. Number=54.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 15,
+          "hints": [
+            "Let tens=x, units=x−2.",
+            "11x−2 = 7(2x−2)."
+          ],
+          "explanation": "11x−2=14x−14 gives 3x=12, so x=4. The units digit is 2 and the number is 42."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA two-digit number is 4 times the sum of its digits. Its units digit is 2 more than its tens digit. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n11x−2=14x−14 gives 3x=12, so x=4. The units digit is 2 and the number is 42.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "With x=y+1: 11y+10=12y+6, so y=4,x=5. Number=54.",
+        "text": "A fixed reversal change plus a digit sum usually pins down the exact number.\n\nSuppose the digits sum to 11 and the original number is 27 greater than its reverse.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "Digit products can create a quadratic.\n\nSuppose xy=8 and adding 18 reverses the digits.\nThe reversal condition gives y−x=2.\nTogether with xy=8, the digits are 2 and 4.",
+        "text": "x+y=11\n9(x−y)=27, so x−y=3\n\nAdd the two equations:\n2x=14\nx=7, y=4\nNumber=74\n\nDigit sum and digit gap work like sum-and-difference of two numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,86 +901,103 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "The digits sum to 13. The original number is 45 greater than its reverse. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "42"
+            "label": "49"
           },
           {
             "id": "b",
-            "label": "24"
+            "label": "94"
           },
           {
             "id": "c",
-            "label": "18"
+            "label": "85"
           },
           {
             "id": "d",
-            "label": "81"
+            "label": "103"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The digits sum to 13. The original number is 45 greater than its reverse. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "49"
+            },
+            {
+              "id": "b",
+              "label": "94"
+            },
+            {
+              "id": "c",
+              "label": "85"
+            },
+            {
+              "id": "d",
+              "label": "103"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The digit difference is 45÷9=5.",
+            "Solve x+y=13 and x−y=5."
+          ],
+          "explanation": "x=9 and y=4, so the number is 94. Reverse 49 is 45 less."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
       "content": {
-        "text": "The product of the digits of a two-digit number is 8. Adding 18 reverses the digits. What is the number?",
+        "text": "Let's check this one.\n\nThe digit difference is 45÷9=5.\n\nx=9 and y=4, so the number is 94. Reverse 49 is 45 less.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
+          "targetNodeId": "retry_5"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Adding 18 means reverse−original=18, so y−x=2.",
-            "xy=8 and y=x+2."
-          ],
-          "prompt": "The product of the digits of a two-digit number is 8. Adding 18 reverses the digits. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "42"
-            },
-            {
-              "id": "b",
-              "label": "24"
-            },
-            {
-              "id": "c",
-              "label": "18"
-            },
-            {
-              "id": "d",
-              "label": "81"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "x(x+2)=8 gives x=2,y=4. The number is 24.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "The digits sum to 9. The reverse is 27 greater than the original. What is the original number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -914,49 +1007,23 @@
           },
           {
             "id": "b",
-            "label": "29"
+            "label": "45"
           },
           {
             "id": "c",
-            "label": "92"
+            "label": "36"
           },
           {
             "id": "d",
-            "label": "36"
+            "label": "72"
           }
         ]
       },
-      "content": {
-        "text": "The product of the digits of a two-digit number is 18. Adding 27 reverses the digits. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "27=9(y−x), so y−x=3.",
-            "xy=18."
-          ],
-          "prompt": "The product of the digits of a two-digit number is 18. Adding 27 reverses the digits. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "The digits sum to 9. The reverse is 27 greater than the original. What is the original number?",
           "options": [
             {
               "id": "a",
@@ -964,55 +1031,77 @@
             },
             {
               "id": "b",
-              "label": "29"
+              "label": "45"
             },
             {
               "id": "c",
-              "label": "92"
+              "label": "36"
             },
             {
               "id": "d",
-              "label": "36"
+              "label": "72"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "MEDIUM",
-          "explanation": "The digits are 3 and 6, so the original number is 36.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 15,
+          "hints": [
+            "y−x=27÷9=3.",
+            "Solve x+y=9 and y−x=3."
+          ],
+          "explanation": "x=3 and y=6, so the original number is 36. Its reverse 63 is 27 greater."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThe product of the digits of a two-digit number is 8. Adding 18 reverses the digits. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nx=3 and y=6, so the original number is 36. Its reverse 63 is 27 greater.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "The digits are 3 and 6, so the original number is 36.",
+        "text": "Sometimes the digit product supplies the second clue.\n\nSuppose the digits multiply to 18 and the reverse is 27 greater than the original.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "Not every digit condition gives one answer.\n\nDigit sum 15 and digit difference 3 allows both 96 and 69 unless the question tells which digit is larger.\n\nA valid answer can therefore be 'cannot be determined'. Uniqueness is part of solving.",
+        "text": "Reverse−original = 27 gives y−x=3.\n\nDigit pairs with product 18 are 2 and 9, 3 and 6. Only 3 and 6 differ by 3.\n\nSo original=36, reverse=63.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "The product of the digits is 24 and the reverse is 18 greater than the original. What is the original number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "It could be 69 or 96"
+            "label": "46"
           },
           {
             "id": "b",
-            "label": "It must be 69"
+            "label": "64"
           },
           {
             "id": "c",
-            "label": "It must be 96"
+            "label": "38"
           },
           {
             "id": "d",
-            "label": "No two-digit number fits"
+            "label": "83"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The product of the digits is 24 and the reverse is 18 greater than the original. What is the original number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "46"
+            },
+            {
+              "id": "b",
+              "label": "64"
+            },
+            {
+              "id": "c",
+              "label": "38"
+            },
+            {
+              "id": "d",
+              "label": "83"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Reverse−original=18 means units−tens=2.",
+            "Look for digit factors of 24 differing by 2."
+          ],
+          "explanation": "The digits are 4 and 6. Original 46 reverses to 64, which is 18 greater."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
       "content": {
-        "text": "A two-digit number has digit sum 15 and the absolute difference between its digits is 3. What can you conclude?",
+        "text": "Let's check this one.\n\nReverse−original=18 means units−tens=2.\n\nThe digits are 4 and 6. Original 46 reverses to 64, which is 18 greater.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_6"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Solve x+y=15 and |x−y|=3.",
-            "Both digit orders are possible."
-          ],
-          "prompt": "A two-digit number has digit sum 15 and the absolute difference between its digits is 3. What can you conclude?",
-          "options": [
-            {
-              "id": "a",
-              "label": "It could be 69 or 96"
-            },
-            {
-              "id": "b",
-              "label": "It must be 69"
-            },
-            {
-              "id": "c",
-              "label": "It must be 96"
-            },
-            {
-              "id": "d",
-              "label": "No two-digit number fits"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "The digits are 6 and 9, but their order is unknown. Both 69 and 96 satisfy the data.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "The product of the digits is 21 and the original is 36 greater than its reverse. What is the original number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "It must be 37"
+            "label": "37"
           },
           {
             "id": "b",
-            "label": "It must be 73"
+            "label": "64"
           },
           {
             "id": "c",
-            "label": "It could be 37 or 73"
+            "label": "84"
           },
           {
             "id": "d",
-            "label": "No such number exists"
+            "label": "73"
           }
         ]
       },
-      "content": {
-        "text": "A two-digit number has digit sum 10 and digit product 21. What can you conclude?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The digits must multiply to 21 and add to 10.",
-            "The digits are 3 and 7, but order is not given."
-          ],
-          "prompt": "A two-digit number has digit sum 10 and digit product 21. What can you conclude?",
+          "questionType": "PRACTICE",
+          "prompt": "The product of the digits is 21 and the original is 36 greater than its reverse. What is the original number?",
           "options": [
             {
               "id": "a",
-              "label": "It must be 37"
+              "label": "37"
             },
             {
               "id": "b",
-              "label": "It must be 73"
+              "label": "64"
             },
             {
               "id": "c",
-              "label": "It could be 37 or 73"
+              "label": "84"
             },
             {
               "id": "d",
-              "label": "No such number exists"
+              "label": "73"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "MEDIUM",
-          "explanation": "Both 37 and 73 fit, so the number is not unique.",
+          "xp": 15,
+          "hints": [
+            "Original−reverse=36 gives tens−units=4.",
+            "The digit factors of 21 are 3 and 7."
+          ],
+          "explanation": "The digits are 7 and 3, so the original number is 73. Its reverse is 37; the difference is 36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe digits are 7 and 3, so the original number is 73. Its reverse is 37; the difference is 36.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A reversal difference alone may not identify a unique number.\n\nIf original−reverse=27, then x−y=3.\n\nPossible numbers include 41, 52, 63, 74, 85 and 96.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So if the question asks for the exact number, one more independent clue is needed.\n\nBut if the target is only 'difference between the digits', the same information is sufficient.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number is 18 greater than its reverse. No other clue is given. Can the exact number be determined?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Yes, it is 42"
+          },
+          {
+            "id": "b",
+            "label": "Yes, it is 31"
+          },
+          {
+            "id": "c",
+            "label": "Yes, it is 53"
+          },
+          {
+            "id": "d",
+            "label": "No"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "A two-digit number is 18 greater than its reverse. No other clue is given. Can the exact number be determined?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Yes, it is 42"
+            },
+            {
+              "id": "b",
+              "label": "Yes, it is 31"
+            },
+            {
+              "id": "c",
+              "label": "Yes, it is 53"
+            },
+            {
+              "id": "d",
+              "label": "No"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "18 only fixes the digit difference: x−y=2.",
+            "Several digit pairs differ by 2."
+          ],
+          "explanation": "No. 31, 42, 53, 64, 75, 86 and 97 all differ from their reverses by 18."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA two-digit number has digit sum 15 and the absolute difference between its digits is 3. What can you conclude?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's check this one.\n\n18 only fixes the digit difference: x−y=2.\n\nNo. 31, 42, 53, 64, 75, 86 and 97 all differ from their reverses by 18.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A two-digit number is 54 less than its reverse. No other clue is given. Can the exact number be determined?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "No"
+          },
+          {
+            "id": "b",
+            "label": "Yes, it is 17"
+          },
+          {
+            "id": "c",
+            "label": "Yes, it is 28"
+          },
+          {
+            "id": "d",
+            "label": "Yes, it is 39"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A two-digit number is 54 less than its reverse. No other clue is given. Can the exact number be determined?",
+          "options": [
+            {
+              "id": "a",
+              "label": "No"
+            },
+            {
+              "id": "b",
+              "label": "Yes, it is 17"
+            },
+            {
+              "id": "c",
+              "label": "Yes, it is 28"
+            },
+            {
+              "id": "d",
+              "label": "Yes, it is 39"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "54 fixes y−x=6.",
+            "More than one digit pair can differ by 6."
+          ],
+          "explanation": "No. Examples include 17, 28 and 39; each reverse is 54 larger."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Both 37 and 73 fit, so the number is not unique.",
+        "text": "Let's work through this one.\n\nNo. Examples include 17, 28 and 39; each reverse is 54 larger.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "teach_8": {
+      "id": "teach_8",
       "type": "CONTENT",
       "content": {
-        "text": "For tens x and units y: number=10x+y, reverse=10y+x. Difference=9(x−y); sum=11(x+y). Add any digit-sum, product or ratio condition, then check digit ranges and whether the order is uniquely determined.",
+        "text": "Capstone: nonlinear digit clues still use the same place-value model.\n\nSuppose the units digit is the square of the tens digit, and the reverse exceeds the original by 54.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "teach_8_step"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Two-Digit Numbers and Reversed Digits.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "text": "Let tens=x, units=x².\n\nReverse−original = 9(x²−x)=54\nx²−x=6\n(x−3)(x+2)=0\n\nDigit x=3, so units=9 and original=39.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a two-digit positive number, the units digit is the square of the tens digit. The reverse is 54 greater than the original. What is 40% of the original number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "31.2"
+          },
+          {
+            "id": "c",
+            "label": "15.6"
+          },
+          {
+            "id": "d",
+            "label": "39"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a two-digit positive number, the units digit is the square of the tens digit. The reverse is 54 greater than the original. What is 40% of the original number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "31.2"
+            },
+            {
+              "id": "c",
+              "label": "15.6"
+            },
+            {
+              "id": "d",
+              "label": "39"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "First find the original number from 9(x²−x)=54.",
+            "The number is 39; then take 40%."
+          ],
+          "explanation": "x²−x=6 gives x=3, so the number is 39. 40% of 39 is 15.6."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nFirst find the original number from 9(x²−x)=54.\n\nx²−x=6 gives x=3, so the number is 39. 40% of 39 is 15.6.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "In a two-digit number, the units digit is twice the tens digit and the digits sum to 9. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "63"
+          },
+          {
+            "id": "b",
+            "label": "36"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "45"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In a two-digit number, the units digit is twice the tens digit and the digits sum to 9. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "63"
+            },
+            {
+              "id": "b",
+              "label": "36"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "45"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let tens=x and units=2x.",
+            "x+2x=9."
+          ],
+          "explanation": "3x=9 gives x=3. The units digit is 6, so the number is 36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n3x=9 gives x=3. The units digit is 6, so the number is 36.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now translate a two-digit number, its reverse and its digit clues into equations—and you know when a reversal gap is not enough for a unique answer.\n\nNext, we'll extend the same place-value idea to three-digit numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Two-Digit Numbers and Reversed Digits",
-    "description": "Turn digit conditions into equations using place value and solve reversal puzzles.",
-    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Two-Digit Numbers and Reversed Digits. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 21
-  },
-  "scriptId": "script-pon-05-two-digit-numbers-reversed-digits",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

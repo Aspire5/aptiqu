@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "src-06-rationalisation-conjugates",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Rationalisation and Conjugate Radical Forms",
+    "description": "Remove irrational denominators with a matching conjugate and use conjugate pairs to make difficult surd expressions collapse.",
+    "teachingApproach": "Begin with a single-root denominator, earn the conjugate idea from difference of squares, then handle root-root denominators, conjugate ratios, reciprocal pairs, unit-product conjugates, symmetric x/y pairs and a multi-term capstone. Every step asks what denominator we want after multiplication and uses that to choose the conjugate.",
+    "targetDurationMinutes": "Teach rationalisation from the reason it works: conjugates multiply to a difference of squares. Begin with 1/√a, then denominators such as 2+√2 and √5−√3, followed by ratios such as (√5+√3)/(√5−√3). Cover reciprocal conjugate pairs, denominators whose conjugate product is 1, and the chapter pattern where two conjugate-defined quantities make x+y, x²+y² or a reciprocal expression simple. End with a short multi-term rationalisation capstone in the same style as the objective questions. Learners should choose the conjugate from the exact denominator and check that the new denominator is rational.",
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 5, Square Roots and Cube Roots. Approved scope: 31"
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn rationalisation and conjugate radical forms with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's learn the one move that removes a square root from a denominator.\n\nThe trick is not magic: choose a partner that makes a difference of squares, so the denominator becomes an ordinary number.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Rationalising means removing a radical from the denominator.\n\nFor 1/√5, multiply top and bottom by √5:\n\n1/√5 = √5/5.\n\nWe multiply by √5/√5, which is 1, so the value does not change.",
+        "text": "A denominator like √5 can be removed by multiplying by the same root.\n\n1/√5 × √5/√5\n= √5/5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The value has not changed because we multiplied by 1.\n\nThe denominator is now rational: 5.\n\nThis is the simplest form of rationalisation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Rationalise 1/√3.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3/2"
+            "label": "3/√3"
           },
           {
             "id": "b",
-            "label": "3√2/2"
+            "label": "1/3"
           },
           {
             "id": "c",
-            "label": "√6/2"
+            "label": "√3/3"
           },
           {
             "id": "d",
-            "label": "3√2"
+            "label": "√3"
           }
         ]
       },
-      "content": {
-        "text": "Rationalise 3/√2.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply numerator and denominator by √2.",
-            "√2×√2=2."
-          ],
-          "prompt": "Rationalise 3/√2.",
+          "questionType": "PRACTICE",
+          "prompt": "Rationalise 1/√3.",
           "options": [
             {
               "id": "a",
-              "label": "3/2"
+              "label": "3/√3"
             },
             {
               "id": "b",
-              "label": "3√2/2"
+              "label": "1/3"
             },
             {
               "id": "c",
-              "label": "√6/2"
+              "label": "√3/3"
             },
             {
               "id": "d",
-              "label": "3√2"
+              "label": "√3"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "3/√2 = 3√2/2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "Multiply top and bottom by √3.",
+            "√3×√3 = 3."
+          ],
+          "explanation": "1/√3 = √3/3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "The denominator becomes 2 because √2×√2=2. Keep the same multiplier in numerator and denominator.",
+        "text": "Multiply by √3/√3, which is just 1.\n\nThe denominator becomes 3, so the result is √3/3.\n\nTry another single-root denominator.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Rationalise 1/√7.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5/3"
+            "label": "7/√7"
           },
           {
             "id": "b",
-            "label": "√15/3"
+            "label": "√7/7"
           },
           {
             "id": "c",
-            "label": "5√3/3"
+            "label": "1/7"
           },
           {
             "id": "d",
-            "label": "15√3"
+            "label": "√7"
           }
         ]
       },
-      "content": {
-        "text": "Rationalise 5/√3.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply by √3/√3.",
-            "The denominator becomes 3."
-          ],
-          "prompt": "Rationalise 5/√3.",
+          "questionType": "PRACTICE",
+          "prompt": "Rationalise 1/√7.",
           "options": [
             {
               "id": "a",
-              "label": "5/3"
+              "label": "7/√7"
             },
             {
               "id": "b",
-              "label": "√15/3"
+              "label": "√7/7"
             },
             {
               "id": "c",
-              "label": "5√3/3"
+              "label": "1/7"
             },
             {
               "id": "d",
-              "label": "15√3"
+              "label": "√7"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "5/√3=5√3/3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Multiply by √7/√7.",
+            "The denominator becomes 7."
+          ],
+          "explanation": "1/√7 = √7/7."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Use the same factor top and bottom: 5√3/(√3×√3)=5√3/3.",
+        "text": "Use the same root above and below.\n\n√7/7 is equivalent and has no surd in the denominator.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "For a denominator with two surd terms, use the conjugate.\n\nThe conjugate of √5+√3 is √5−√3.\n\nTheir product is 5−3=2, a rational number.",
+        "text": "For two terms, use the conjugate: same terms, opposite sign.\n\n2/(2+√2) uses 2−√2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply:\n\n2(2−√2) / [(2+√2)(2−√2)]\n= 2(2−√2)/(4−2)\n= 2−√2\n\nThe conjugate turns the denominator into a difference of squares.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Rationalise 3/(3+√3).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "√7+√2"
+            "label": "(3−√3)/2"
           },
           {
             "id": "b",
-            "label": "7−2"
+            "label": "(3+√3)/2"
           },
           {
             "id": "c",
-            "label": "√14"
+            "label": "3−√3"
           },
           {
             "id": "d",
-            "label": "√7−√2"
+            "label": "(9−3√3)/6"
           }
         ]
       },
-      "content": {
-        "text": "Which factor rationalises the denominator √7+√2?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use the same two terms with the middle sign changed.",
-            "(a+b)(a−b)=a²−b²."
-          ],
-          "prompt": "Which factor rationalises the denominator √7+√2?",
+          "questionType": "PRACTICE",
+          "prompt": "Rationalise 3/(3+√3).",
           "options": [
             {
               "id": "a",
-              "label": "√7+√2"
+              "label": "(3−√3)/2"
             },
             {
               "id": "b",
-              "label": "7−2"
+              "label": "(3+√3)/2"
             },
             {
               "id": "c",
-              "label": "√14"
+              "label": "3−√3"
             },
             {
               "id": "d",
-              "label": "√7−√2"
+              "label": "(9−3√3)/6"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Multiply by the conjugate √7−√2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use the conjugate 3−√3.",
+            "Denominator becomes 9−3=6; simplify the numerator 3(3−√3)."
+          ],
+          "explanation": "3/(3+√3) = 3(3−√3)/6 = (3−√3)/2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "remedy_2": {
+      "id": "remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Changing the sign is what makes the cross terms cancel.",
+        "text": "Choose the denominator’s conjugate, not the same sign.\n\nThe product 9−3=6 makes the denominator rational, giving (3−√3)/2.\n\nTry a parallel denominator.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Rationalise 2/(2+√3).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "√11+√3"
+            "label": "2−√3"
           },
           {
             "id": "b",
-            "label": "√11−√3"
+            "label": "4−2√3"
           },
           {
             "id": "c",
-            "label": "√8"
+            "label": "2+√3"
           },
           {
             "id": "d",
-            "label": "11+3"
+            "label": "1−√3"
           }
         ]
       },
-      "content": {
-        "text": "Which factor rationalises √11−√3?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use the conjugate.",
-            "Change only the sign between the terms."
-          ],
-          "prompt": "Which factor rationalises √11−√3?",
+          "questionType": "PRACTICE",
+          "prompt": "Rationalise 2/(2+√3).",
           "options": [
             {
               "id": "a",
-              "label": "√11+√3"
+              "label": "2−√3"
             },
             {
               "id": "b",
-              "label": "√11−√3"
+              "label": "4−2√3"
             },
             {
               "id": "c",
-              "label": "√8"
+              "label": "2+√3"
             },
             {
               "id": "d",
-              "label": "11+3"
+              "label": "1−√3"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The conjugate is √11+√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 2−√3.",
+            "Denominator 4−3 = 1."
+          ],
+          "explanation": "2/(2+√3) = 2(2−√3)/(1) = 4−2√3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "For a minus denominator, the conjugate uses plus.",
+        "text": "The conjugate product becomes 1 here.\n\nSo the numerator 2(2−√3) is the final result.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Now rationalise an actual fraction:\n\n1/(√5+√3) × (√5−√3)/(√5−√3)\n= (√5−√3)/(5−3)\n= (√5−√3)/2.",
+        "text": "The conjugate works just as well when both terms are roots.\n\n1/(√5−√3)\n\nUse √5+√3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The denominator becomes:\n(√5)² − (√3)² = 5−3 = 2\n\nSo:\n1/(√5−√3) = (√5+√3)/2",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Rationalise 1/(√7−√5).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "√3−1"
+            "label": "(√7−√5)/2"
           },
           {
             "id": "b",
-            "label": "(√3+1)/2"
+            "label": "√7+√5"
           },
           {
             "id": "c",
-            "label": "(√3−1)/2"
+            "label": "(√7+√5)/12"
           },
           {
             "id": "d",
-            "label": "1/(2√3)"
+            "label": "(√7+√5)/2"
           }
         ]
       },
-      "content": {
-        "text": "Rationalise 1/(√3+1).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply by the conjugate √3−1.",
-            "Denominator: 3−1=2."
-          ],
-          "prompt": "Rationalise 1/(√3+1).",
+          "questionType": "PRACTICE",
+          "prompt": "Rationalise 1/(√7−√5).",
           "options": [
             {
               "id": "a",
-              "label": "√3−1"
+              "label": "(√7−√5)/2"
             },
             {
               "id": "b",
-              "label": "(√3+1)/2"
+              "label": "√7+√5"
             },
             {
               "id": "c",
-              "label": "(√3−1)/2"
+              "label": "(√7+√5)/12"
             },
             {
               "id": "d",
-              "label": "1/(2√3)"
+              "label": "(√7+√5)/2"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The result is (√3−1)/2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Multiply by √7+√5.",
+            "Denominator becomes 7−5 = 2."
+          ],
+          "explanation": "1/(√7−√5) = (√7+√5)/2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Keep the conjugate in the numerator after the denominator collapses.",
+        "text": "Use the opposite sign so the middle terms cancel.\n\nThe denominator becomes 2, leaving (√7+√5)/2.\n\nTry another pair.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Rationalise 1/(√6−√2).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "√5+1"
+            "label": "(√6+√2)/2"
           },
           {
             "id": "b",
-            "label": "(√5+1)/2"
+            "label": "(√6+√2)/4"
           },
           {
             "id": "c",
-            "label": "2(√5−1)"
+            "label": "√6−√2"
           },
           {
             "id": "d",
-            "label": "(√5−1)/2"
+            "label": "(√6−√2)/4"
           }
         ]
       },
-      "content": {
-        "text": "Rationalise 2/(√5−1).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply by √5+1.",
-            "Denominator becomes 5−1=4, then simplify 2/4."
-          ],
-          "prompt": "Rationalise 2/(√5−1).",
+          "questionType": "PRACTICE",
+          "prompt": "Rationalise 1/(√6−√2).",
           "options": [
             {
               "id": "a",
-              "label": "√5+1"
+              "label": "(√6+√2)/2"
             },
             {
               "id": "b",
-              "label": "(√5+1)/2"
+              "label": "(√6+√2)/4"
             },
             {
               "id": "c",
-              "label": "2(√5−1)"
+              "label": "√6−√2"
             },
             {
               "id": "d",
-              "label": "(√5−1)/2"
+              "label": "(√6−√2)/4"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "2(√5+1)/4=(√5+1)/2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use √6+√2.",
+            "6−2 = 4."
+          ],
+          "explanation": "1/(√6−√2) = (√6+√2)/4."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "After rationalising, reduce the rational factor 2/4 to 1/2.",
+        "text": "The denominator is a difference of squares: 6−2=4.\n\nSo the result is (√6+√2)/4.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Conjugate fractions often simplify to a whole number plus a surd.\n\n(√5+√3)/(√5−√3)\nMultiply by (√5+√3)/(√5+√3).\nThe denominator is 2, while the numerator is (√5+√3)².",
+        "text": "A ratio of conjugate surds can look harder than it is.\n\n(√5+√3)/(√5−√3)\n\nMultiply by the denominator’s conjugate √5+√3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The denominator becomes 2.\nThe numerator becomes (√5+√3)² = 8+2√15.\n\nDivide by 2:\n= 4+√15",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,113 +689,24 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify (√3+√2)/(√3−√2).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2+√3"
+            "label": "5−2√6"
           },
           {
             "id": "b",
-            "label": "2−√3"
+            "label": "5+2√6"
           },
           {
             "id": "c",
-            "label": "1+√3"
-          },
-          {
-            "id": "d",
-            "label": "3+√3"
-          }
-        ]
-      },
-      "content": {
-        "text": "Simplify (√3+1)/(√3−1).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply by √3+1.",
-            "Numerator=(√3+1)²=4+2√3; denominator=2."
-          ],
-          "prompt": "Simplify (√3+1)/(√3−1).",
-          "options": [
-            {
-              "id": "a",
-              "label": "2+√3"
-            },
-            {
-              "id": "b",
-              "label": "2−√3"
-            },
-            {
-              "id": "c",
-              "label": "1+√3"
-            },
-            {
-              "id": "d",
-              "label": "3+√3"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "(4+2√3)/2=2+√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Use the conjugate of the denominator, which happens to equal the numerator here.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4_retry"
-        }
-      ]
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "3−2√2"
-          },
-          {
-            "id": "b",
-            "label": "2+√2"
-          },
-          {
-            "id": "c",
-            "label": "1+2√2"
+            "label": "1+√6"
           },
           {
             "id": "d",
@@ -740,80 +714,182 @@
           }
         ]
       },
-      "content": {
-        "text": "Simplify (√2+1)/(√2−1).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply top and bottom by √2+1.",
-            "Denominator=1; numerator=(√2+1)²."
-          ],
-          "prompt": "Simplify (√2+1)/(√2−1).",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify (√3+√2)/(√3−√2).",
           "options": [
             {
               "id": "a",
-              "label": "3−2√2"
+              "label": "5−2√6"
             },
             {
               "id": "b",
-              "label": "2+√2"
+              "label": "5+2√6"
             },
             {
               "id": "c",
-              "label": "1+2√2"
+              "label": "1+√6"
             },
             {
               "id": "d",
               "label": "3+2√2"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "(√2+1)²=3+2√2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Multiply top and bottom by √3+√2.",
+            "Denominator 3−2 = 1; square the numerator."
+          ],
+          "explanation": "(√3+√2)² = 5+2√6 and the denominator is 1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "The denominator becomes 2−1=1, so the squared numerator is already the final answer.",
+        "text": "Because the denominator’s conjugate is the numerator itself, rationalising squares the top.\n\nThe result is 5+2√6.\n\nTry a parallel ratio.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify (√7+√5)/(√7−√5).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6+√35"
+          },
+          {
+            "id": "b",
+            "label": "6+2√35"
+          },
+          {
+            "id": "c",
+            "label": "12+2√35"
+          },
+          {
+            "id": "d",
+            "label": "12+√35"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify (√7+√5)/(√7−√5).",
+          "options": [
+            {
+              "id": "a",
+              "label": "6+√35"
+            },
+            {
+              "id": "b",
+              "label": "6+2√35"
+            },
+            {
+              "id": "c",
+              "label": "12+2√35"
+            },
+            {
+              "id": "d",
+              "label": "12+√35"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Square the numerator and divide by 7−5=2.",
+            "(√7+√5)² = 12+2√35."
+          ],
+          "explanation": "(12+2√35)/2 = 6+√35."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Paired conjugate values are powerful.\n\nIf x=4+√15 and y=4−√15, then x+y=8 and xy=1.\n\nSo x²+y²=(x+y)²−2xy=64−2=62.\n\nThe surds cancel in the sum and product.",
+        "text": "Rationalise with the numerator conjugate.\n\nThe denominator becomes 2; divide the squared numerator by 2 to get 6+√35.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Conjugates can make two reciprocals collapse.\n\n1/(√3+√2) = √3−√2\n1/(√3−√2) = √3+√2",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add them:\n\n(√3−√2)+(√3+√2) = 2√3\n\nThe awkward denominators vanish, and the opposite surd terms cancel.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Find 1/(√5+2) + 1/(√5−2).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
+            "label": "2√5"
           },
           {
             "id": "b",
-            "label": "3"
+            "label": "√5"
           },
           {
             "id": "c",
-            "label": "12"
+            "label": "4√5"
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "10√5"
           }
         ]
       },
-      "content": {
-        "text": "If x=3+2√2 and y=3−2√2, what is x+y?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Add the two expressions.",
-            "+2√2 and −2√2 cancel."
-          ],
-          "prompt": "If x=3+2√2 and y=3−2√2, what is x+y?",
+          "questionType": "PRACTICE",
+          "prompt": "Find 1/(√5+2) + 1/(√5−2).",
           "options": [
             {
               "id": "a",
-              "label": "1"
+              "label": "2√5"
             },
             {
               "id": "b",
-              "label": "3"
+              "label": "√5"
             },
             {
               "id": "c",
-              "label": "12"
+              "label": "4√5"
             },
             {
               "id": "d",
-              "label": "6"
+              "label": "10√5"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "x+y=6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Each denominator has conjugate product 1.",
+            "The reciprocals become √5−2 and √5+2."
+          ],
+          "explanation": "The sum is (√5−2)+(√5+2)=2√5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "remedy_5": {
+      "id": "remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "When adding conjugates, the radical parts cancel exactly.",
+        "text": "Rationalise each reciprocal before adding.\n\nThe ±2 terms cancel, leaving 2√5.\n\nTry another conjugate pair.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "Find 1/(√2+1) + 1/(√2−1).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
+            "label": "√2"
           },
           {
             "id": "b",
-            "label": "9"
+            "label": "2√2"
           },
           {
             "id": "c",
-            "label": "17"
+            "label": "2"
           },
           {
             "id": "d",
-            "label": "36"
+            "label": "4√2"
           }
         ]
       },
-      "content": {
-        "text": "For the same x and y, what is xy?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (a+b)(a−b)=a²−b².",
-            "9−(2√2)²=9−8."
-          ],
-          "prompt": "For the same x and y, what is xy?",
+          "questionType": "PRACTICE",
+          "prompt": "Find 1/(√2+1) + 1/(√2−1).",
           "options": [
             {
               "id": "a",
-              "label": "1"
+              "label": "√2"
             },
             {
               "id": "b",
-              "label": "9"
+              "label": "2√2"
             },
             {
               "id": "c",
-              "label": "17"
+              "label": "2"
             },
             {
               "id": "d",
-              "label": "36"
+              "label": "4√2"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "xy=1.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Each denominator product with its conjugate is 1.",
+            "The terms become √2−1 and √2+1."
+          ],
+          "explanation": "Their sum is 2√2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "The product is 3²−(2√2)²=9−8=1.",
+        "text": "The conjugates are especially friendly because 2−1=1.\n\nAdd the rationalised forms to get 2√2.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "Some multi-term surd fractions become easy after rationalising each denominator.\n\nThe safe habit is one fraction at a time: choose a conjugate, simplify, then combine like radicals.\n\nDo not try to rationalise an entire long expression in one jump.",
+        "text": "Sometimes the denominator’s conjugate product is exactly 1.\n\n1/(3+2√2)\n\nUse 3−2√2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "(3+2√2)(3−2√2)\n= 9−8 = 1\n\nSo the reciprocal is simply:\n3−2√2",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify 1/(2+√3).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2√2"
+            "label": "2+√3"
           },
           {
             "id": "b",
-            "label": "2√3"
+            "label": "(2−√3)/2"
           },
           {
             "id": "c",
-            "label": "√6"
+            "label": "√3−1"
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "2−√3"
           }
         ]
       },
-      "content": {
-        "text": "Simplify 1/(√3+√2) + 1/(√3−√2).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Rationalise each denominator; both products give 1.",
-            "The numerators become √3−√2 and √3+√2."
-          ],
-          "prompt": "Simplify 1/(√3+√2) + 1/(√3−√2).",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify 1/(2+√3).",
           "options": [
             {
               "id": "a",
-              "label": "2√2"
+              "label": "2+√3"
             },
             {
               "id": "b",
-              "label": "2√3"
+              "label": "(2−√3)/2"
             },
             {
               "id": "c",
-              "label": "√6"
+              "label": "√3−1"
             },
             {
               "id": "d",
-              "label": "6"
+              "label": "2−√3"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Adding gives 2√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "(2+√3)(2−√3)=1.",
+            "The conjugate is the reciprocal."
+          ],
+          "explanation": "1/(2+√3) = 2−√3 because their product is 1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_6": {
+      "id": "remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "Rationalise first. The ±√2 parts then cancel in the sum.",
+        "text": "Check whether the conjugate product is 1.\n\n4−3=1, so the conjugate itself is the reciprocal.\n\nTry another unit-product pair.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify 1/(√5+2).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4"
+            "label": "√5−2"
           },
           {
             "id": "b",
-            "label": "2√5"
+            "label": "√5+2"
           },
           {
             "id": "c",
-            "label": "-4"
+            "label": "(√5−2)/2"
           },
           {
             "id": "d",
-            "label": "-2"
+            "label": "2−√5"
           }
         ]
       },
-      "content": {
-        "text": "Simplify 1/(√5+2) − 1/(√5−2).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Each denominator product is 1.",
-            "The rationalised numerators are √5−2 and √5+2."
-          ],
-          "prompt": "Simplify 1/(√5+2) − 1/(√5−2).",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify 1/(√5+2).",
           "options": [
             {
               "id": "a",
-              "label": "4"
+              "label": "√5−2"
             },
             {
               "id": "b",
-              "label": "2√5"
+              "label": "√5+2"
             },
             {
               "id": "c",
-              "label": "-4"
+              "label": "(√5−2)/2"
             },
             {
               "id": "d",
-              "label": "-2"
+              "label": "2−√5"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "(√5−2)−(√5+2)=-4.",
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "(√5+2)(√5−2)=1.",
+            "Use the conjugate."
+          ],
+          "explanation": "1/(√5+2) = √5−2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "The product of the conjugates is 5−4=1.\n\nSo √5−2 is the exact reciprocal.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The book often defines two conjugate ratios together.\n\nLet\nx = (√5+√3)/(√5−√3)\ny = (√5−√3)/(√5+√3)",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "From rationalisation:\nx = 4+√15\ny = 4−√15\n\nSo x+y = 8, and:\nx²+y² = 2(4² + (√15)²) = 62\n\nConjugate pairs make the irrational parts cancel.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=3+2√2 and y=3−2√2, what is x+y?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "If x=3+2√2 and y=3−2√2, what is x+y?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Add the expressions term by term.",
+            "+2√2 and −2√2 cancel."
+          ],
+          "explanation": "x+y = 3+3 = 6."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Distribute the minus sign across the second numerator: √5−2−√5−2=-4.",
+        "text": "Conjugates carry opposite surd parts.\n\nThey cancel on addition, leaving 6.\n\nTry the squared version next.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x=3+2√2 and y=3−2√2, what is x²+y²?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "34"
+          },
+          {
+            "id": "c",
+            "label": "36"
+          },
+          {
+            "id": "d",
+            "label": "68"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x=3+2√2 and y=3−2√2, what is x²+y²?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "34"
+            },
+            {
+              "id": "c",
+              "label": "36"
+            },
+            {
+              "id": "d",
+              "label": "68"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use (a+b)²+(a−b)²=2(a²+b²).",
+            "a=3 and b=2√2."
+          ],
+          "explanation": "x²+y² = 2(9+8) = 34."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Rationalisation changes the form, not the value.\n\nFor one surd in the denominator, multiply by that surd.\nFor two terms, use the conjugate.\n\nThe conjugate works because the denominator becomes a difference of squares.\n\nAfter that, simplify coefficients and combine like surds carefully.",
+        "text": "Do not square both terms longhand.\n\nThe symmetric identity gives 2(3²+(2√2)²)=34.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Rationalisation and Conjugate Radical Forms.\n\nTry to explain one method in your own words: what do you look for first, what operation comes next, and how do you know the final answer is reasonable?",
+        "text": "Capstone: rationalise each denominator, then let the pattern simplify.\n\n1 − 1/(1+√3) + 1/(1−√3)",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rationalise the two fractions. Their denominators both become −2 or 2, and the expression simplifies to:\n\n1 − √3\n\nThe lesson is not to fear the three terms; remove the irrational denominators first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify 1 − 1/(1+√3) + 1/(1−√3).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1+√3"
+          },
+          {
+            "id": "b",
+            "label": "√3"
+          },
+          {
+            "id": "c",
+            "label": "1−√3"
+          },
+          {
+            "id": "d",
+            "label": "−√3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify 1 − 1/(1+√3) + 1/(1−√3).",
+          "options": [
+            {
+              "id": "a",
+              "label": "1+√3"
+            },
+            {
+              "id": "b",
+              "label": "√3"
+            },
+            {
+              "id": "c",
+              "label": "1−√3"
+            },
+            {
+              "id": "d",
+              "label": "−√3"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Rationalise both reciprocal terms.",
+            "Use the conjugates 1−√3 and 1+√3."
+          ],
+          "explanation": "After rationalising and combining, the expression equals 1−√3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Handle the two denominators separately with conjugates, then combine.\n\nThe rationalised terms collapse to 1−√3.\n\nTry the parallel capstone.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify 1 − 1/(1+√2) + 1/(1−√2).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1−√2"
+          },
+          {
+            "id": "b",
+            "label": "1−2√2"
+          },
+          {
+            "id": "c",
+            "label": "1+2√2"
+          },
+          {
+            "id": "d",
+            "label": "2−√2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify 1 − 1/(1+√2) + 1/(1−√2).",
+          "options": [
+            {
+              "id": "a",
+              "label": "1−√2"
+            },
+            {
+              "id": "b",
+              "label": "1−2√2"
+            },
+            {
+              "id": "c",
+              "label": "1+2√2"
+            },
+            {
+              "id": "d",
+              "label": "2−√2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Rationalise 1/(1+√2) and 1/(1−√2).",
+            "Their simplified forms make the √2 terms add with a negative sign."
+          ],
+          "explanation": "The expression simplifies to 1−2√2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rationalise before combining.\n\nThe two reciprocal terms together contribute −2√2, so the total is 1−2√2.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now rationalise single roots, two-term denominators and conjugate ratios, and you can use conjugate pairs to make larger surd expressions collapse.\n\nNext, we use the same root sense inside equations and missing-value questions.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Rationalisation and Conjugate Radical Forms",
-    "description": "Remove radical denominators using conjugates and simplify paired surd expressions.",
-    "sourceScope": "Based strictly on the Square Roots and Cube Roots chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Rationalisation and Conjugate Radical Forms. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-src-06-rationalisation-conjugates",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

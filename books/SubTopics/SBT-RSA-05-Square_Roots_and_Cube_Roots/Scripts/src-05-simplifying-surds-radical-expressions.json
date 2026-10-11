@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "src-05-simplifying-surds-radical-expressions",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Simplifying Surds and Radical Expressions",
+    "description": "Pull square factors out of radicals, combine like surds, and spot radical expressions that collapse by identity.",
+    "teachingApproach": "Start with hidden square factors, then combine like surds, keep outside coefficients straight, simplify radical products and quotients, use conjugate products, convert supplied approximations only after simplification, recognise two-term radical squares, and finish with the chapter’s three-surd square pattern.",
+    "targetDurationMinutes": "Teach surd simplification through hidden perfect-square factors: √(ab)=√a√b, then combine only like surds after simplification. Cover coefficients, addition and subtraction of like surds, products and quotients under roots, conjugate products that become a difference of squares, and expressions built from a supplied approximation such as √2 or √3. Teach recognition of a radical that is itself a perfect square, for example a form matching (√a+√b)^2. End with the chapter-style three-surd square pattern behind √(a+b+c+2√ab+2√bc+2√ca). Explicitly warn that √(a+b) is not generally √a+√b.",
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 5, Square Roots and Cube Roots. Approved scope: 31"
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn simplifying surds and radical expressions with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's learn to make ugly square roots smaller before doing any arithmetic.\n\nMost surd questions become easy when you spot a perfect-square factor or a familiar square hiding inside the radical.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "A surd like √72 becomes easier when you pull out a perfect-square factor.\n\n72 = 36×2.\nSo √72 = √36×√2 = 6√2.\n\nLook for 4, 9, 16, 25, 36, 49, ... inside the radicand.",
+        "text": "A surd often hides a perfect square.\n\n√72 looks awkward, but 72 = 36 × 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So:\n\n√72 = √36 × √2 = 6√2\n\nPull the perfect-square part out; leave the non-square part under the root.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify √98.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4√3"
+            "label": "7√2"
           },
           {
             "id": "b",
-            "label": "2√12"
+            "label": "14√2"
           },
           {
             "id": "c",
-            "label": "8√3"
+            "label": "49√2"
           },
           {
             "id": "d",
-            "label": "24√2"
+            "label": "2√7"
           }
         ]
       },
-      "content": {
-        "text": "Simplify √48.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "48=16×3.",
-            "√16=4."
-          ],
-          "prompt": "Simplify √48.",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √98.",
           "options": [
             {
               "id": "a",
-              "label": "4√3"
+              "label": "7√2"
             },
             {
               "id": "b",
-              "label": "2√12"
+              "label": "14√2"
             },
             {
               "id": "c",
-              "label": "8√3"
+              "label": "49√2"
             },
             {
               "id": "d",
-              "label": "24√2"
+              "label": "2√7"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "√48=√(16×3)=4√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "98 = 49 × 2.",
+            "√49 = 7."
+          ],
+          "explanation": "√98 = √49×√2 = 7√2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "The goal is to pull out the largest convenient square factor so the radical left inside is as simple as possible.",
+        "text": "Look for the largest square factor.\n\n98 = 49×2, so √98 = 7√2.\n\nTry another hidden square.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify √108.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3√5"
+            "label": "3√12"
           },
           {
             "id": "b",
-            "label": "5√3"
+            "label": "6√3"
           },
           {
             "id": "c",
-            "label": "15√3"
+            "label": "9√2"
           },
           {
             "id": "d",
-            "label": "25√3"
+            "label": "18√3"
           }
         ]
       },
-      "content": {
-        "text": "Simplify √75.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "75=25×3.",
-            "√25=5."
-          ],
-          "prompt": "Simplify √75.",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √108.",
           "options": [
             {
               "id": "a",
-              "label": "3√5"
+              "label": "3√12"
             },
             {
               "id": "b",
-              "label": "5√3"
+              "label": "6√3"
             },
             {
               "id": "c",
-              "label": "15√3"
+              "label": "9√2"
             },
             {
               "id": "d",
-              "label": "25√3"
+              "label": "18√3"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "√75=5√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "108 = 36 × 3.",
+            "√36 = 6."
+          ],
+          "explanation": "√108 = 6√3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "25 is the square factor: √(25×3)=5√3.",
+        "text": "Pull out the square factor 36.\n\n√108 = 6√3.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "Like surds can be added or subtracted after simplification.\n\n3√2 + 5√2 = 8√2.\n\nBut √2 and √3 are unlike terms, so they do not combine into √5.",
+        "text": "Once surds are simplified, like surds combine just like like terms.\n\n√12 + √27\n= 2√3 + 3√3",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the root parts match, so add the coefficients:\n\n2√3 + 3√3 = 5√3\n\nIf the root parts are different, do not combine them yet.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify √20 + √45.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5√3"
+            "label": "3√5"
           },
           {
             "id": "b",
-            "label": "3√39"
+            "label": "5√10"
           },
           {
             "id": "c",
+            "label": "5√5"
+          },
+          {
+            "id": "d",
+            "label": "√65"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √20 + √45.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3√5"
+            },
+            {
+              "id": "b",
+              "label": "5√10"
+            },
+            {
+              "id": "c",
+              "label": "5√5"
+            },
+            {
+              "id": "d",
+              "label": "√65"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "√20 = 2√5 and √45 = 3√5.",
+            "Add the coefficients 2 and 3."
+          ],
+          "explanation": "√20+√45 = 2√5+3√5 = 5√5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Simplify each radical before deciding whether they are like terms.\n\nBoth become multiples of √5, so the total is 5√5.\n\nTry another pair.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify √48 + √75.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
             "label": "7√3"
           },
           {
-            "id": "d",
-            "label": "7√39"
-          }
-        ]
-      },
-      "content": {
-        "text": "Simplify 2√12 + √27.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√12=2√3 and √27=3√3.",
-            "2√12=4√3."
-          ],
-          "prompt": "Simplify 2√12 + √27.",
-          "options": [
-            {
-              "id": "a",
-              "label": "5√3"
-            },
-            {
-              "id": "b",
-              "label": "3√39"
-            },
-            {
-              "id": "c",
-              "label": "7√3"
-            },
-            {
-              "id": "d",
-              "label": "7√39"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "2√12+√27=4√3+3√3=7√3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "First reduce each surd. Only then decide whether the radical parts match.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_2_retry"
-        }
-      ]
-    },
-    "q_2_retry": {
-      "id": "q_2_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "√42"
-          },
-          {
             "id": "b",
-            "label": "2√2"
+            "label": "9√3"
           },
           {
             "id": "c",
-            "label": "7√2"
+            "label": "5√3"
           },
           {
             "id": "d",
-            "label": "3√2"
+            "label": "√123"
           }
         ]
       },
-      "content": {
-        "text": "Simplify √50 − √8.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√50=5√2 and √8=2√2.",
-            "Subtract the coefficients."
-          ],
-          "prompt": "Simplify √50 − √8.",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √48 + √75.",
           "options": [
             {
               "id": "a",
-              "label": "√42"
+              "label": "7√3"
             },
             {
               "id": "b",
-              "label": "2√2"
+              "label": "9√3"
             },
             {
               "id": "c",
-              "label": "7√2"
+              "label": "5√3"
             },
             {
               "id": "d",
-              "label": "3√2"
+              "label": "√123"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "5√2−2√2=3√2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "√48=4√3 and √75=5√3.",
+            "4√3+5√3."
+          ],
+          "explanation": "√48+√75 = 9√3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Both radicals reduce to √2 terms, so subtract 5−2=3.",
+        "text": "Both roots reduce to √3 terms.\n\n4√3+5√3 = 9√3.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Nested radicals must be simplified from the deepest part outward.\n\nExample: √(17 + √64).\nStart inside: √64=8.\nThen √(17+8)=√25=5.",
+        "text": "Coefficients outside the root join the same way.\n\n2√27 − √12\n= 2(3√3) − 2√3",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "= 6√3 − 2√3\n= 4√3\n\nKeep the outside coefficient attached while you simplify the inside root.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify 3√20 − √45.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5"
+            "label": "6√5"
           },
           {
             "id": "b",
-            "label": "√37"
+            "label": "9√5"
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "12√5"
           },
           {
             "id": "d",
-            "label": "37"
+            "label": "3√5"
           }
         ]
       },
-      "content": {
-        "text": "Evaluate √(28 + √81).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Start with √81=9.",
-            "Then the outside radicand is 28+9."
-          ],
-          "prompt": "Evaluate √(28 + √81).",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify 3√20 − √45.",
           "options": [
             {
               "id": "a",
-              "label": "5"
+              "label": "6√5"
             },
             {
               "id": "b",
-              "label": "√37"
+              "label": "9√5"
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "12√5"
             },
             {
               "id": "d",
-              "label": "37"
+              "label": "3√5"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "√(28+√81)=√37.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "√20=2√5 and √45=3√5.",
+            "3×2√5 − 3√5."
+          ],
+          "explanation": "3√20−√45 = 6√5−3√5 = 3√5."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Do not try to split √(28+9) into √28+√9. Root does not distribute over addition.",
+        "text": "First simplify each radical; then include the outside coefficient.\n\n6√5−3√5 = 3√5.\n\nTry a parallel subtraction.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify 2√75 − 3√12.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6"
+            "label": "√3"
           },
           {
             "id": "b",
-            "label": "4"
+            "label": "2√3"
           },
           {
             "id": "c",
-            "label": "16"
+            "label": "4√3"
           },
           {
             "id": "d",
-            "label": "36"
+            "label": "6√3"
           }
         ]
       },
-      "content": {
-        "text": "Evaluate √(41 − √25).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√25=5.",
-            "41−5=36."
-          ],
-          "prompt": "Evaluate √(41 − √25).",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify 2√75 − 3√12.",
           "options": [
             {
               "id": "a",
-              "label": "6"
+              "label": "√3"
             },
             {
               "id": "b",
-              "label": "4"
+              "label": "2√3"
             },
             {
               "id": "c",
-              "label": "16"
+              "label": "4√3"
             },
             {
               "id": "d",
-              "label": "36"
+              "label": "6√3"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "√(41−√25)=√36=6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "√75=5√3 and √12=2√3.",
+            "10√3−6√3."
+          ],
+          "explanation": "2√75−3√12 = 10√3−6√3 = 4√3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Work inside first: 41−5=36, then take √36.",
+        "text": "Keep both outside coefficients.\n\n2×5√3 − 3×2√3 = 4√3.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Known root values can make related expressions quick.\n\nIf √3≈1.732, then √192 = √(64×3)=8√3≈13.856.\n\nFactor out the perfect square before using the approximation.",
+        "text": "Products and quotients can simplify before any decimal work.\n\n√(24×6) = √144 = 12\n\nOr split first: √24×√6 = 2√6×√6 = 12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same rule works for a quotient.\n\n√(72/2) = √36 = 6\n\nLook for a perfect-square result before expanding anything.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify √(50 × 8).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5.59"
+            "label": "10"
           },
           {
             "id": "b",
-            "label": "22.36"
+            "label": "20"
           },
           {
             "id": "c",
-            "label": "27.95"
+            "label": "40"
           },
           {
             "id": "d",
-            "label": "11.18"
+            "label": "400"
           }
         ]
       },
-      "content": {
-        "text": "Given √5≈2.236, estimate √125.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "125=25×5.",
-            "√125=5√5."
-          ],
-          "prompt": "Given √5≈2.236, estimate √125.",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √(50 × 8).",
           "options": [
             {
               "id": "a",
-              "label": "5.59"
+              "label": "10"
             },
             {
               "id": "b",
-              "label": "22.36"
+              "label": "20"
             },
             {
               "id": "c",
-              "label": "27.95"
+              "label": "40"
             },
             {
               "id": "d",
-              "label": "11.18"
+              "label": "400"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "5×2.236=11.18.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "50×8 = 400.",
+            "√400 = 20."
+          ],
+          "explanation": "√(50×8) = √400 = 20."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "remedy_4": {
+      "id": "remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "Do not multiply the radicand by the given root. First simplify √125 to 5√5.",
+        "text": "The product under the root becomes a perfect square.\n\n50×8 = 400, so the root is 20.\n\nTry another product.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Simplify √(98/2).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4.242"
+            "label": "5"
           },
           {
             "id": "b",
-            "label": "5.656"
+            "label": "6"
           },
           {
             "id": "c",
-            "label": "8.484"
+            "label": "7"
           },
           {
             "id": "d",
-            "label": "12.726"
+            "label": "14"
           }
         ]
       },
-      "content": {
-        "text": "Given √2≈1.414, estimate 3√8.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√8=2√2.",
-            "3√8=6√2."
-          ],
-          "prompt": "Given √2≈1.414, estimate 3√8.",
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √(98/2).",
           "options": [
             {
               "id": "a",
-              "label": "4.242"
+              "label": "5"
             },
             {
               "id": "b",
-              "label": "5.656"
+              "label": "6"
             },
             {
               "id": "c",
-              "label": "8.484"
+              "label": "7"
             },
             {
               "id": "d",
-              "label": "12.726"
+              "label": "14"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "6×1.414=8.484.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "98÷2 = 49.",
+            "√49."
+          ],
+          "explanation": "√(98/2) = √49 = 7."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "3√8 = 3×2√2 = 6√2. Then use the supplied √2 value.",
+        "text": "Simplify the quotient inside the radical first.\n\n98÷2=49 and √49=7.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "A product inside a root can collapse before you calculate.\n\n√50×√98 = √(50×98).\nOr simplify separately: 5√2 × 7√2 = 35×2 = 70.\n\nChoose the route with fewer steps.",
+        "text": "A conjugate product can remove a surd before the square root even starts.\n\n(7 + 3√5)(7 − 3√5)\n= 7² − (3√5)²",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "= 49 − 45 = 4\n\nSo:\n√[(7+3√5)(7−3√5)] = √4 = 2\n\nThe middle terms cancel because the signs are opposite.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "What is √[(5 + 2√6)(5 − 2√6)]?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "1"
+          },
+          {
+            "id": "d",
+            "label": "√6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is √[(5 + 2√6)(5 − 2√6)]?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "1"
+            },
+            {
+              "id": "d",
+              "label": "√6"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use (a+b)(a−b)=a²−b².",
+            "25 − 4×6 = 1."
+          ],
+          "explanation": "The product is 25−24=1, so the square root is 1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply the conjugates as a difference of squares.\n\n25−24=1, then √1=1.\n\nTry another conjugate pair.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is √[(9 + 4√5)(9 − 4√5)]?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
             "label": "9"
           },
           {
-            "id": "b",
-            "label": "27"
-          },
-          {
-            "id": "c",
-            "label": "18"
-          },
-          {
             "id": "d",
-            "label": "324"
+            "label": "√5"
           }
         ]
       },
-      "content": {
-        "text": "Evaluate √12 × √27.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Combine: √(12×27)=√324.",
-            "Or use 2√3×3√3."
-          ],
-          "prompt": "Evaluate √12 × √27.",
+          "questionType": "PRACTICE",
+          "prompt": "What is √[(9 + 4√5)(9 − 4√5)]?",
           "options": [
             {
               "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
               "label": "9"
             },
             {
-              "id": "b",
-              "label": "27"
-            },
-            {
-              "id": "c",
-              "label": "18"
-            },
-            {
               "id": "d",
-              "label": "324"
+              "label": "√5"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "√12×√27=√324=18.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "81 − 16×5.",
+            "81−80=1."
+          ],
+          "explanation": "The conjugate product is 1, so its square root is 1."
         }
-      }
-    },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "Do not multiply the outside coefficients and forget that √3×√3=3.",
-        "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
-        }
-      ]
-    },
-    "q_5_retry": {
-      "id": "q_5_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "6"
-          },
-          {
-            "id": "b",
-            "label": "24"
-          },
-          {
-            "id": "c",
-            "label": "144"
-          },
-          {
-            "id": "d",
-            "label": "12"
-          }
-        ]
-      },
-      "content": {
-        "text": "Evaluate √18 × √8.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
+          "targetNodeId": "teach_6",
           "condition": {
             "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
+            "operator": "EQUALS",
+            "value": true
+          }
         },
         {
+          "targetNodeId": "retry_remedy_5",
           "condition": {
             "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
+            "operator": "EQUALS",
+            "value": false
+          }
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "√(18×8)=√144.",
-            "√144=12."
-          ],
-          "prompt": "Evaluate √18 × √8.",
-          "options": [
-            {
-              "id": "a",
-              "label": "6"
-            },
-            {
-              "id": "b",
-              "label": "24"
-            },
-            {
-              "id": "c",
-              "label": "144"
-            },
-            {
-              "id": "d",
-              "label": "12"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The product under the roots is 144, so the answer is 12.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "18×8=144 and √144=12.",
+        "text": "The opposite middle terms cancel.\n\n9²−(4√5)² = 81−80 = 1.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "A useful identity inside radicals is (a+b)(a−b)=a²−b².\n\nExample: √[(7+3√5)(7−3√5)]\n= √(49−45)\n= √4\n= 2.\n\nConjugate factors can turn a messy radical into a simple square.",
+        "text": "Given an approximate root, first rewrite every radical as a multiple of that same root.\n\n√192 = 8√3\n√48 = 4√3\n√75 = 5√3",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the chapter expression\n√192 − ½√48 − √75\nbecomes:\n\n8√3 − 2√3 − 5√3 = √3\n\nIf √3 ≈ 1.732, the whole expression is ≈ 1.732.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "If √2 ≈ 1.414, what is √72 − √32 approximately?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "√19"
+            "label": "2.828"
           },
           {
             "id": "b",
-            "label": "19"
+            "label": "1.414"
           },
           {
             "id": "c",
-            "label": "5"
+            "label": "4.242"
           },
           {
             "id": "d",
-            "label": "√31"
+            "label": "5.656"
           }
         ]
       },
-      "content": {
-        "text": "Evaluate √[(5+√6)(5−√6)].",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (a+b)(a−b)=a²−b².",
-            "25−6=19."
-          ],
-          "prompt": "Evaluate √[(5+√6)(5−√6)].",
+          "questionType": "PRACTICE",
+          "prompt": "If √2 ≈ 1.414, what is √72 − √32 approximately?",
           "options": [
             {
               "id": "a",
-              "label": "√19"
+              "label": "2.828"
             },
             {
               "id": "b",
-              "label": "19"
+              "label": "1.414"
             },
             {
               "id": "c",
-              "label": "5"
+              "label": "4.242"
             },
             {
               "id": "d",
-              "label": "√31"
+              "label": "5.656"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The product is 25−6=19, so the root is √19.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "√72=6√2 and √32=4√2.",
+            "Difference = 2√2."
+          ],
+          "explanation": "√72−√32 = 2√2 ≈ 2×1.414 = 2.828."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_6": {
+      "id": "remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "The square root applies after multiplying the conjugate pair. Do not cancel the surd terms across addition.",
+        "text": "Reduce both radicals to the same surd before using the decimal.\n\n6√2−4√2 = 2√2 ≈ 2.828.\n\nTry another supplied-root calculation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "If √5 ≈ 2.236, what is √125 − √45 approximately?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "√7"
+            "label": "2.236"
           },
           {
             "id": "b",
-            "label": "3"
+            "label": "4.472"
           },
           {
             "id": "c",
-            "label": "9"
+            "label": "6.708"
           },
           {
             "id": "d",
-            "label": "√23"
+            "label": "8.944"
           }
         ]
       },
-      "content": {
-        "text": "Evaluate √[(4+√7)(4−√7)].",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "4²−(√7)²=16−7.",
-            "√9=3."
-          ],
-          "prompt": "Evaluate √[(4+√7)(4−√7)].",
+          "questionType": "PRACTICE",
+          "prompt": "If √5 ≈ 2.236, what is √125 − √45 approximately?",
           "options": [
             {
               "id": "a",
-              "label": "√7"
+              "label": "2.236"
             },
             {
               "id": "b",
-              "label": "3"
+              "label": "4.472"
             },
             {
               "id": "c",
-              "label": "9"
+              "label": "6.708"
             },
             {
               "id": "d",
-              "label": "√23"
+              "label": "8.944"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The conjugate product is 9, so the square root is 3.",
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "√125=5√5 and √45=3√5.",
+            "Difference = 2√5."
+          ],
+          "explanation": "2√5 ≈ 2×2.236 = 4.472."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Simplify before approximating.\n\n5√5−3√5 = 2√5 ≈ 4.472.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the whole radical is a square in disguise.\n\n11 + 6√2 looks unusual, but compare it with:\n(3 + √2)²",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "(3 + √2)²\n= 9 + 2 + 6√2\n= 11 + 6√2\n\nSo √(11+6√2) = 3+√2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify √(7 + 4√3).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3+√2"
+          },
+          {
+            "id": "b",
+            "label": "2+√3"
+          },
+          {
+            "id": "c",
+            "label": "1+2√3"
+          },
+          {
+            "id": "d",
+            "label": "√3+√4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "prompt": "Simplify √(7 + 4√3).",
+          "options": [
+            {
+              "id": "a",
+              "label": "3+√2"
+            },
+            {
+              "id": "b",
+              "label": "2+√3"
+            },
+            {
+              "id": "c",
+              "label": "1+2√3"
+            },
+            {
+              "id": "d",
+              "label": "√3+√4"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Try (2+√3)².",
+            "4+3+4√3."
+          ],
+          "explanation": "(2+√3)² = 7+4√3, so the positive square root is 2+√3."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Multiply as a difference of squares: 16−7=9, then √9=3.",
+        "text": "Match the inside to a square of two terms.\n\n(2+√3)² reproduces 7+4√3 exactly.\n\nTry a parallel perfect-square surd.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify √(9 + 4√5).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2+√5"
+          },
+          {
+            "id": "b",
+            "label": "√5+1"
+          },
+          {
+            "id": "c",
+            "label": "3+√5"
+          },
+          {
+            "id": "d",
+            "label": "4+√5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √(9 + 4√5).",
+          "options": [
+            {
+              "id": "a",
+              "label": "2+√5"
+            },
+            {
+              "id": "b",
+              "label": "√5+1"
+            },
+            {
+              "id": "c",
+              "label": "3+√5"
+            },
+            {
+              "id": "d",
+              "label": "4+√5"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Try (2+√5)².",
+            "4+5+4√5."
+          ],
+          "explanation": "(2+√5)² = 9+4√5, so the root is 2+√5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "Simplify a radical before doing anything complicated.\n\nPull out perfect-square factors, combine only like surds, and work from the deepest root outward.\n\nFor products, use √a√b=√(ab).\n\nFor conjugate factors, use the difference-of-squares identity.",
+        "text": "Look for two square terms plus the middle term.\n\n4+5+4√5 is exactly (2+√5)².\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Simplifying Surds and Radical Expressions.\n\nTry to explain one method in your own words: what do you look for first, what operation comes next, and how do you know the final answer is reasonable?",
+        "text": "Capstone: three surds can also form one square.\n\n(√2 + √3 + √5)² contains:\n2 + 3 + 5\nand the three cross terms.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Expand only the structure:\n\n= 10 + 2√6 + 2√10 + 2√15\n\nTherefore:\n√(10 + 2√6 + 2√10 + 2√15)\n= √2 + √3 + √5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify √(6 + 2√2 + 2√3 + 2√6).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "√2+√3"
+          },
+          {
+            "id": "b",
+            "label": "2+√2"
+          },
+          {
+            "id": "c",
+            "label": "1+√6"
+          },
+          {
+            "id": "d",
+            "label": "1+√2+√3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √(6 + 2√2 + 2√3 + 2√6).",
+          "options": [
+            {
+              "id": "a",
+              "label": "√2+√3"
+            },
+            {
+              "id": "b",
+              "label": "2+√2"
+            },
+            {
+              "id": "c",
+              "label": "1+√6"
+            },
+            {
+              "id": "d",
+              "label": "1+√2+√3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Try squaring 1+√2+√3.",
+            "The squares give 1+2+3=6; cross terms give 2√2+2√3+2√6."
+          ],
+          "explanation": "The inside is (1+√2+√3)², so the positive square root is 1+√2+√3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not attack the four surd terms separately.\n\nRecognise the full square of three terms: 1+√2+√3.\n\nTry the capstone with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify √(15 + 2√2 + 4√3 + 4√6).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1+√2+2√3"
+          },
+          {
+            "id": "b",
+            "label": "2+√2+√3"
+          },
+          {
+            "id": "c",
+            "label": "3+√2"
+          },
+          {
+            "id": "d",
+            "label": "1+2√2+√3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify √(15 + 2√2 + 4√3 + 4√6).",
+          "options": [
+            {
+              "id": "a",
+              "label": "1+√2+2√3"
+            },
+            {
+              "id": "b",
+              "label": "2+√2+√3"
+            },
+            {
+              "id": "c",
+              "label": "3+√2"
+            },
+            {
+              "id": "d",
+              "label": "1+2√2+√3"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Try squaring 1+√2+2√3.",
+            "Squares give 1+2+12=15; cross terms match 2√2+4√3+4√6."
+          ],
+          "explanation": "The radicand is (1+√2+2√3)², so the positive root is 1+√2+2√3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Match the square terms and all three cross terms.\n\nThey fit (1+√2+2√3)² exactly.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now pull square factors out, combine only like surds, simplify products and quotients, use supplied root approximations sensibly, and recognise radicals that are perfect squares in disguise.\n\nNext, we attack surds in denominators using conjugates.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Simplifying Surds and Radical Expressions",
-    "description": "Pull perfect-square factors out of roots, combine like surds and simplify nested radical arithmetic.",
-    "sourceScope": "Based strictly on the Square Roots and Cube Roots chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Simplifying Surds and Radical Expressions. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-src-05-simplifying-surds-radical-expressions",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

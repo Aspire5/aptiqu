@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "pon-04-consecutive-patterned-numbers",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Consecutive and Patterned Numbers",
+    "description": "Model consecutive integers, odd/even runs and consecutive multiples with the correct step size, then exploit their symmetry.",
+    "teachingApproach": "Build the lesson around symmetry: odd-sized equally spaced lists balance around one middle value, while even-sized lists balance around a midpoint. Then vary the step size—1, 2 or a fixed multiple—before moving to sums, prime follow-ups, consecutive products, square sums and difference-of-squares capstones. The learner always identifies the spacing before using a shortcut.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "Teach consecutive integers as x,x+1,...; consecutive odd/even integers as x,x+2,...; and consecutive multiples of k using step k. Start with the middle-number shortcut for odd-sized equally spaced lists, then handle even-sized lists, known sums, products, sums of squares and differences of squares. Include follow-up requests such as the largest term, the next block of consecutive odd numbers, or the count of primes after the sequence is found. Emphasize that the shortcut comes from symmetry and only works after the spacing pattern is identified correctly."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn how consecutive-number puzzles work.\n\nThe spacing tells us how to write the numbers: +1 for consecutive integers, +2 for consecutive odd/even numbers, and +k for consecutive multiples of k.\n\nOnce the pattern is written correctly, the equation becomes much easier.",
+        "text": "Let's make consecutive-number questions visual in your head.\n\nInstead of treating every term separately, look for the centre and the fixed step. Most of the chapter's 'long' sequences then collapse to one or two numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Consecutive natural numbers differ by 1.\n\nSeven consecutive numbers can be written\nx, x+1, ..., x+6.\n\nWith an odd count, the middle number is also the average of the list.",
+        "text": "Consecutive numbers are equally spaced. That symmetry makes the middle number special.\n\nFor 21, 22, 23, 24, 25, pairs around 23 balance:\n21+25 = 46\n22+24 = 46",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the average is the middle number, 23.\n\nFor any odd count of consecutive integers, once the spacing is equal, the average is the centre term.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Seven consecutive integers have average 42. What is the largest integer?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "50"
+            "label": "42"
           },
           {
             "id": "b",
-            "label": "53"
+            "label": "45"
           },
           {
             "id": "c",
-            "label": "57"
+            "label": "44"
           },
           {
             "id": "d",
-            "label": "56"
+            "label": "48"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Seven consecutive integers have average 42. What is the largest integer?",
+          "options": [
+            {
+              "id": "a",
+              "label": "42"
+            },
+            {
+              "id": "b",
+              "label": "45"
+            },
+            {
+              "id": "c",
+              "label": "44"
+            },
+            {
+              "id": "d",
+              "label": "48"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "With seven consecutive integers, 42 is the middle term.",
+            "There are three terms above the middle."
+          ],
+          "explanation": "The sequence is 39,40,41,42,43,44,45. The largest is 45."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
       "content": {
-        "text": "Seven consecutive natural numbers have sum 371. What is the largest number?",
+        "text": "Let's check this one.\n\nWith seven consecutive integers, 42 is the middle term.\n\nThe sequence is 39,40,41,42,43,44,45. The largest is 45.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
+          "targetNodeId": "retry_1"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The average is 371÷7=53.",
-            "For seven consecutive numbers, the largest is 3 above the middle."
-          ],
-          "prompt": "Seven consecutive natural numbers have sum 371. What is the largest number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "50"
-            },
-            {
-              "id": "b",
-              "label": "53"
-            },
-            {
-              "id": "c",
-              "label": "57"
-            },
-            {
-              "id": "d",
-              "label": "56"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The middle is 53, so the list is 50 to 56. Largest=56.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive integers have average 31. What is the smallest integer?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
+            "label": "27"
+          },
+          {
+            "id": "b",
             "label": "30"
           },
           {
-            "id": "b",
-            "label": "31"
-          },
-          {
             "id": "c",
-            "label": "33"
+            "label": "29"
           },
           {
             "id": "d",
-            "label": "35"
+            "label": "33"
           }
         ]
       },
-      "content": {
-        "text": "Five consecutive natural numbers have sum 165. What is the smallest number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Average=33.",
-            "Five consecutive numbers run two below to two above the middle."
-          ],
-          "prompt": "Five consecutive natural numbers have sum 165. What is the smallest number?",
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive integers have average 31. What is the smallest integer?",
           "options": [
             {
               "id": "a",
-              "label": "30"
+              "label": "27"
             },
             {
               "id": "b",
-              "label": "31"
+              "label": "30"
             },
             {
               "id": "c",
-              "label": "33"
+              "label": "29"
             },
             {
               "id": "d",
-              "label": "35"
+              "label": "33"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "The numbers are 31,32,33,34,35. Smallest=31.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "31 is the middle of five consecutive integers.",
+            "Move two steps down."
+          ],
+          "explanation": "The numbers are 29,30,31,32,33, so the smallest is 29."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nSeven consecutive natural numbers have sum 371. What is the largest number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nThe numbers are 29,30,31,32,33, so the smallest is 29.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "The numbers are 31,32,33,34,35. Smallest=31.",
+        "text": "An even count has no single middle term. The average sits halfway between the two centre values.\n\nFor 18,19,20,21:\ncentre values are 19 and 20\naverage = 19.5",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "Consecutive even or consecutive odd numbers differ by 2.\n\nWrite four consecutive even numbers as\nx, x+2, x+4, x+6.\n\nUsing +1 would mix odd and even values.",
+        "text": "The same is true using the endpoints:\n(18+21)/2 = 19.5\n\nThis midpoint idea works for any equally spaced list, not just step 1.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Four consecutive integers have average 26.5. What is the largest?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "34"
+            "label": "26"
           },
           {
             "id": "b",
-            "label": "38"
+            "label": "27"
           },
           {
             "id": "c",
-            "label": "36"
+            "label": "29"
           },
           {
             "id": "d",
-            "label": "40"
+            "label": "28"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Four consecutive integers have average 26.5. What is the largest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "26"
+            },
+            {
+              "id": "b",
+              "label": "27"
+            },
+            {
+              "id": "c",
+              "label": "29"
+            },
+            {
+              "id": "d",
+              "label": "28"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The four numbers are centred around 26.5.",
+            "The middle pair is 26 and 27."
+          ],
+          "explanation": "The sequence is 25,26,27,28, so the largest is 28."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
       "content": {
-        "text": "The average of four consecutive even numbers is 33. What is the largest number?",
+        "text": "Let's check this one.\n\nThe four numbers are centred around 26.5.\n\nThe sequence is 25,26,27,28, so the largest is 28.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
+          "targetNodeId": "retry_2"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The four even numbers are centered around 33.",
-            "They are 30,32,34,36."
-          ],
-          "prompt": "The average of four consecutive even numbers is 33. What is the largest number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "34"
-            },
-            {
-              "id": "b",
-              "label": "38"
-            },
-            {
-              "id": "c",
-              "label": "36"
-            },
-            {
-              "id": "d",
-              "label": "40"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The largest is 36.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Six consecutive integers have average 13.5. What is the smallest?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "49"
+            "label": "11"
           },
           {
             "id": "b",
-            "label": "45"
+            "label": "10"
           },
           {
             "id": "c",
-            "label": "47"
+            "label": "12"
           },
           {
             "id": "d",
-            "label": "51"
+            "label": "16"
           }
         ]
       },
-      "content": {
-        "text": "Five consecutive odd numbers have sum 225. What is the largest number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The middle is 225÷5=45.",
-            "Move two odd-number steps above 45."
-          ],
-          "prompt": "Five consecutive odd numbers have sum 225. What is the largest number?",
+          "questionType": "PRACTICE",
+          "prompt": "Six consecutive integers have average 13.5. What is the smallest?",
           "options": [
             {
               "id": "a",
-              "label": "49"
+              "label": "11"
             },
             {
               "id": "b",
-              "label": "45"
+              "label": "10"
             },
             {
               "id": "c",
-              "label": "47"
+              "label": "12"
             },
             {
               "id": "d",
-              "label": "51"
+              "label": "16"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "The numbers are 41,43,45,47,49. Largest=49.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "The middle pair must be 13 and 14.",
+            "Extend two more terms below 13."
+          ],
+          "explanation": "The six numbers are 11,12,13,14,15,16. The smallest is 11."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThe average of four consecutive even numbers is 33. What is the largest number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nThe six numbers are 11,12,13,14,15,16. The smallest is 11.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "The numbers are 41,43,45,47,49. Largest=49.",
+        "text": "Consecutive odd or even numbers move by 2, not by 1.\n\nFive consecutive odd numbers centred at 35 are:\n31, 33, 35, 37, 39",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "A product condition can identify consecutive numbers too.\n\nFor x and x+1, the product gives a quadratic.\nFor a short sequence, sometimes factorising the product is faster if you can spot consecutive factors.",
+        "text": "The average is still the centre because the spacing is balanced.\n\nThe shortcut is about equal spacing; the step size can be 1, 2, 3 or anything fixed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,410 +477,109 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive odd numbers have average 47. What is the largest?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "21"
+            "label": "51"
           },
           {
             "id": "b",
-            "label": "18"
+            "label": "49"
           },
           {
             "id": "c",
-            "label": "24"
+            "label": "53"
           },
           {
             "id": "d",
-            "label": "28"
+            "label": "55"
           }
         ]
       },
-      "content": {
-        "text": "Three consecutive positive integers have product 336. What is their sum?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Look for three consecutive factors of 336.",
-            "6×7×8=336."
-          ],
-          "prompt": "Three consecutive positive integers have product 336. What is their sum?",
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive odd numbers have average 47. What is the largest?",
           "options": [
             {
               "id": "a",
-              "label": "21"
+              "label": "51"
             },
             {
               "id": "b",
-              "label": "18"
+              "label": "49"
             },
             {
               "id": "c",
-              "label": "24"
+              "label": "53"
             },
             {
               "id": "d",
-              "label": "28"
+              "label": "55"
             }
           ],
-          "difficulty": "MEDIUM",
-          "explanation": "The integers are 6,7,8, so their sum is 21.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use step 2 around the middle 47.",
+            "Move two odd-number steps upward."
+          ],
+          "explanation": "The numbers are 43,45,47,49,51. The largest is 51."
         }
-      }
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "22"
-          },
-          {
-            "id": "b",
-            "label": "23"
-          },
-          {
-            "id": "c",
-            "label": "25"
-          },
-          {
-            "id": "d",
-            "label": "24"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
           }
-        ]
-      },
-      "content": {
-        "text": "Two consecutive positive integers have product 552. What is the larger integer?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
         },
         {
+          "targetNodeId": "remedy_3",
           "condition": {
             "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
+            "operator": "EQUALS",
+            "value": false
+          }
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "23×24=552.",
-            "Or solve x(x+1)=552."
-          ],
-          "prompt": "Two consecutive positive integers have product 552. What is the larger integer?",
-          "options": [
-            {
-              "id": "a",
-              "label": "22"
-            },
-            {
-              "id": "b",
-              "label": "23"
-            },
-            {
-              "id": "c",
-              "label": "25"
-            },
-            {
-              "id": "d",
-              "label": "24"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "The consecutive integers are 23 and 24, so the larger is 24.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThree consecutive positive integers have product 336. What is their sum?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's check this one.\n\nUse step 2 around the middle 47.\n\nThe numbers are 43,45,47,49,51. The largest is 51.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
-      "type": "CONTENT",
-      "content": {
-        "text": "The consecutive integers are 23 and 24, so the larger is 24.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "concept_4"
-        }
-      ]
-    },
-    "concept_4": {
-      "id": "concept_4",
-      "type": "CONTENT",
-      "content": {
-        "text": "Consecutive multiples of k differ by k.\n\nThree consecutive multiples of 4 can be written\n4n, 4n+4, 4n+8.\n\nThis is the same pattern idea with step size 4.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4"
-        }
-      ]
-    },
-    "q_4": {
-      "id": "q_4",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "Four consecutive even numbers have average 35. What is the largest?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "24"
-          },
-          {
-            "id": "b",
-            "label": "32"
-          },
-          {
-            "id": "c",
-            "label": "28"
-          },
-          {
-            "id": "d",
             "label": "36"
-          }
-        ]
-      },
-      "content": {
-        "text": "Three consecutive multiples of 4 have sum 84. What is the largest?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The middle is 84÷3=28.",
-            "The next multiple of 4 is 32."
-          ],
-          "prompt": "Three consecutive multiples of 4 have sum 84. What is the largest?",
-          "options": [
-            {
-              "id": "a",
-              "label": "24"
-            },
-            {
-              "id": "b",
-              "label": "32"
-            },
-            {
-              "id": "c",
-              "label": "28"
-            },
-            {
-              "id": "d",
-              "label": "36"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The numbers are 24,28,32. Largest=32.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "25"
-          },
-          {
-            "id": "b",
-            "label": "35"
-          },
-          {
-            "id": "c",
-            "label": "30"
-          },
-          {
-            "id": "d",
-            "label": "40"
-          }
-        ]
-      },
-      "content": {
-        "text": "Three consecutive multiples of 5 have sum 105. What is the smallest?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The middle is 35.",
-            "One step of 5 below 35 is 30."
-          ],
-          "prompt": "Three consecutive multiples of 5 have sum 105. What is the smallest?",
-          "options": [
-            {
-              "id": "a",
-              "label": "25"
-            },
-            {
-              "id": "b",
-              "label": "35"
-            },
-            {
-              "id": "c",
-              "label": "30"
-            },
-            {
-              "id": "d",
-              "label": "40"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "The numbers are 30,35,40. Smallest=30.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
-      "type": "CONTENT",
-      "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThree consecutive multiples of 4 have sum 84. What is the largest?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_4_retry"
-        }
-      ]
-    },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
-      "type": "CONTENT",
-      "content": {
-        "text": "The numbers are 30,35,40. Smallest=30.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "concept_5"
-        }
-      ]
-    },
-    "concept_5": {
-      "id": "concept_5",
-      "type": "CONTENT",
-      "content": {
-        "text": "A difference of squares can avoid expanding.\n\nFor consecutive even numbers x and x+2:\n(x+2)²−x² = [(x+2)−x][(x+2)+x].\n\nThat becomes 2(2x+2).",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_5"
-        }
-      ]
-    },
-    "q_5": {
-      "id": "q_5",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "38"
           },
           {
             "id": "b",
@@ -842,45 +591,19 @@
           },
           {
             "id": "d",
-            "label": "44"
+            "label": "38"
           }
         ]
       },
-      "content": {
-        "text": "Two consecutive even positive numbers have squares differing by 84. What is their sum?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Let them be x and x+2.",
-            "Their square difference is 2 times their sum."
-          ],
-          "prompt": "Two consecutive even positive numbers have squares differing by 84. What is their sum?",
+          "questionType": "PRACTICE",
+          "prompt": "Four consecutive even numbers have average 35. What is the largest?",
           "options": [
             {
               "id": "a",
-              "label": "38"
+              "label": "36"
             },
             {
               "id": "b",
@@ -892,127 +615,493 @@
             },
             {
               "id": "d",
-              "label": "44"
+              "label": "38"
             }
           ],
-          "difficulty": "MEDIUM",
-          "explanation": "(x+2)²−x²=2[(x+2)+x]=84, so the sum is 42.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Four even numbers around 35 are equally spaced by 2.",
+            "The middle pair is 34 and 36."
+          ],
+          "explanation": "The numbers are 32,34,36,38, so the largest is 38."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe numbers are 32,34,36,38, so the largest is 38.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Consecutive multiples use their own step.\n\nThree consecutive multiples of 5 around average 40 are:\n35, 40, 45",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the sum is given instead, divide by the count first to get the average.\n\nFor three equally spaced terms, the average is the middle term.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "Three consecutive multiples of 4 have sum 72. What is the largest?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "52"
+            "label": "20"
           },
           {
             "id": "b",
-            "label": "48"
+            "label": "24"
           },
           {
             "id": "c",
-            "label": "50"
+            "label": "28"
           },
           {
             "id": "d",
-            "label": "104"
+            "label": "32"
           }
         ]
       },
-      "content": {
-        "text": "Two consecutive odd positive numbers have squares differing by 104. What is their sum?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "They differ by 2.",
-            "Difference of squares = 2×sum."
-          ],
-          "prompt": "Two consecutive odd positive numbers have squares differing by 104. What is their sum?",
+          "questionType": "PRACTICE",
+          "prompt": "Three consecutive multiples of 4 have sum 72. What is the largest?",
           "options": [
             {
               "id": "a",
-              "label": "52"
+              "label": "20"
             },
             {
               "id": "b",
-              "label": "48"
+              "label": "24"
             },
             {
               "id": "c",
-              "label": "50"
+              "label": "28"
             },
             {
               "id": "d",
-              "label": "104"
+              "label": "32"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "MEDIUM",
-          "explanation": "2×sum=104, so the sum is 52. The numbers are 25 and 27.",
+          "xp": 15,
+          "hints": [
+            "Average = 72÷3 = 24.",
+            "Use step 4 around 24."
+          ],
+          "explanation": "The multiples are 20,24,28. The largest is 28."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nAverage = 72÷3 = 24.\n\nThe multiples are 20,24,28. The largest is 28.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive multiples of 3 have sum 180. What is the smallest?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "27"
+          },
+          {
+            "id": "b",
+            "label": "30"
+          },
+          {
+            "id": "c",
+            "label": "33"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "Five consecutive multiples of 3 have sum 180. What is the smallest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "27"
+            },
+            {
+              "id": "b",
+              "label": "30"
+            },
+            {
+              "id": "c",
+              "label": "33"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Average = 180÷5 = 36.",
+            "Use step 3 and move two terms below 36."
+          ],
+          "explanation": "The sequence is 30,33,36,39,42. The smallest is 30."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nTwo consecutive even positive numbers have squares differing by 84. What is their sum?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nThe sequence is 30,33,36,39,42. The smallest is 30.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "2×sum=104, so the sum is 52. The numbers are 25 and 27.",
+        "text": "A known sum can reveal a full block of consecutive numbers.\n\nSeven consecutive natural numbers sum to 357.\n\nAverage = 357÷7 = 51, so 51 is the middle.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "After finding the sequence, the question may ask about another property.\n\nExample: among 10,11,12,13,14, only 11 and 13 are prime.\n\nFirst solve the sequence. Then answer the exact follow-up question.",
+        "text": "The numbers are 48,49,50,51,52,53,54.\n\nOnce the block is known, a follow-up such as 'how many are prime?' becomes a separate check of those values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Seven consecutive natural numbers sum to 441. How many of them are prime?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0"
+          },
+          {
+            "id": "b",
+            "label": "1"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Seven consecutive natural numbers sum to 441. How many of them are prime?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find the middle first: 441÷7=63.",
+            "The numbers run from 60 to 66."
+          ],
+          "explanation": "The numbers are 60,61,62,63,64,65,66. Only 61 is prime, so the answer is 1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nFind the middle first: 441÷7=63.\n\nThe numbers are 60,61,62,63,64,65,66. Only 61 is prime, so the answer is 1.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five consecutive natural numbers sum to 305. How many are prime?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five consecutive natural numbers sum to 305. How many are prime?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The middle is 305÷5=61.",
+            "Check 59,60,61,62,63."
+          ],
+          "explanation": "The numbers are 59,60,61,62,63. The primes are 59 and 61, so there are 2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe numbers are 59,60,61,62,63. The primes are 59 and 61, so there are 2.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Products of consecutive numbers create a simple quadratic.\n\nIf two consecutive positive integers multiply to 870, let them be x and x+1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "x(x+1)=870\nx²+x−870=0\n\n29×30=870, so the numbers are 29 and 30.\n\nFor exam speed, nearby factor pairs are often easier to spot than expanding mechanically.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Two consecutive positive integers have product 1560. What is their sum?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
+            "label": "79"
           },
           {
             "id": "b",
-            "label": "3"
+            "label": "39"
           },
           {
             "id": "c",
-            "label": "5"
+            "label": "80"
           },
           {
             "id": "d",
-            "label": "2"
+            "label": "81"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two consecutive positive integers have product 1560. What is their sum?",
+          "options": [
+            {
+              "id": "a",
+              "label": "79"
+            },
+            {
+              "id": "b",
+              "label": "39"
+            },
+            {
+              "id": "c",
+              "label": "80"
+            },
+            {
+              "id": "d",
+              "label": "81"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Look for consecutive factors of 1560.",
+            "39×40=1560."
+          ],
+          "explanation": "The numbers are 39 and 40, so their sum is 79."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
       "content": {
-        "text": "Five consecutive natural numbers have sum 60. How many of them are prime?",
+        "text": "Let's check this one.\n\nLook for consecutive factors of 1560.\n\nThe numbers are 39 and 40, so their sum is 79.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_6"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The middle is 12, so list the five numbers.",
-            "They are 10,11,12,13,14."
-          ],
-          "prompt": "Five consecutive natural numbers have sum 60. How many of them are prime?",
-          "options": [
-            {
-              "id": "a",
-              "label": "1"
-            },
-            {
-              "id": "b",
-              "label": "3"
-            },
-            {
-              "id": "c",
-              "label": "5"
-            },
-            {
-              "id": "d",
-              "label": "2"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Only 11 and 13 are prime, so the answer is 2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "Two consecutive positive integers have product 2550. What is the larger?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
+            "label": "49"
           },
           {
             "id": "b",
-            "label": "3"
+            "label": "50"
           },
           {
             "id": "c",
-            "label": "2"
+            "label": "52"
           },
           {
             "id": "d",
-            "label": "4"
+            "label": "51"
           }
         ]
       },
-      "content": {
-        "text": "Seven consecutive natural numbers have sum 112. How many are prime?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The middle is 16, so the numbers are 13 through 19.",
-            "Check 13,14,15,16,17,18,19."
-          ],
-          "prompt": "Seven consecutive natural numbers have sum 112. How many are prime?",
+          "questionType": "PRACTICE",
+          "prompt": "Two consecutive positive integers have product 2550. What is the larger?",
           "options": [
             {
               "id": "a",
-              "label": "1"
+              "label": "49"
             },
             {
               "id": "b",
-              "label": "3"
+              "label": "50"
             },
             {
               "id": "c",
-              "label": "2"
+              "label": "52"
             },
             {
               "id": "d",
-              "label": "4"
+              "label": "51"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "MEDIUM",
-          "explanation": "13,17 and 19 are prime—there are 3.",
+          "xp": 15,
+          "hints": [
+            "Find consecutive factors near √2550.",
+            "50×51=2550."
+          ],
+          "explanation": "The consecutive integers are 50 and 51. The larger is 51."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe consecutive integers are 50 and 51. The larger is 51.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Squares can identify a consecutive pattern too.\n\nFor three consecutive odd numbers x, x+2, x+4, a sum-of-squares clue becomes a quadratic in x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 11²+13²+15² = 121+169+225 = 515.\n\nThe middle term is often the fastest thing to test because the three numbers are symmetric around it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The sum of squares of three consecutive odd positive integers is 875. What is the middle integer?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "19"
+          },
+          {
+            "id": "c",
+            "label": "21"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "prompt": "The sum of squares of three consecutive odd positive integers is 875. What is the middle integer?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "19"
+            },
+            {
+              "id": "c",
+              "label": "21"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Test a middle m with neighbours m−2 and m+2.",
+            "15²+17²+19² = 225+289+361."
+          ],
+          "explanation": "225+289+361=875, so the middle integer is 17."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nFive consecutive natural numbers have sum 60. How many of them are prime?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's check this one.\n\nTest a middle m with neighbours m−2 and m+2.\n\n225+289+361=875, so the middle integer is 17.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The sum of squares of three consecutive positive integers is 302. What is the middle integer?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The sum of squares of three consecutive positive integers is 302. What is the middle integer?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use m−1, m, m+1.",
+            "9²+10²+11² = 81+100+121."
+          ],
+          "explanation": "The sum is 302, so the middle integer is 10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "13,17 and 19 are prime—there are 3.",
+        "text": "Let's work through this one.\n\nThe sum is 302, so the middle integer is 10.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "teach_8": {
+      "id": "teach_8",
       "type": "CONTENT",
       "content": {
-        "text": "Write the correct spacing first: +1 for consecutive integers, +2 for odd/even, +k for multiples of k. Sums and averages locate the middle; products or square relations may create equations. After finding the list, answer the exact follow-up property asked.",
+        "text": "Capstone: a difference of squares can collapse a consecutive-number problem.\n\nFor consecutive even numbers a and a+2:\n(a+2)²−a² = 4a+4 = 4(a+1)",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "teach_8_step"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
       "content": {
-        "text": "You finished Consecutive and Patterned Numbers.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "text": "If the difference of their squares is 100:\n4(a+1)=100\na+1=25\na=24\n\nThe numbers are 24 and 26, sum 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two consecutive even positive integers have squares differing by 116. What is their sum?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54"
+          },
+          {
+            "id": "b",
+            "label": "60"
+          },
+          {
+            "id": "c",
+            "label": "58"
+          },
+          {
+            "id": "d",
+            "label": "116"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two consecutive even positive integers have squares differing by 116. What is their sum?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54"
+            },
+            {
+              "id": "b",
+              "label": "60"
+            },
+            {
+              "id": "c",
+              "label": "58"
+            },
+            {
+              "id": "d",
+              "label": "116"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let them be a and a+2.",
+            "(a+2)²−a² = 4(a+1)=116."
+          ],
+          "explanation": "a+1=29, so a=28 and the next even number is 30. Their sum is 58."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nLet them be a and a+2.\n\na+1=29, so a=28 and the next even number is 30. Their sum is 58.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two consecutive odd positive integers have squares differing by 104. What is their sum?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48"
+          },
+          {
+            "id": "b",
+            "label": "52"
+          },
+          {
+            "id": "c",
+            "label": "54"
+          },
+          {
+            "id": "d",
+            "label": "104"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two consecutive odd positive integers have squares differing by 104. What is their sum?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48"
+            },
+            {
+              "id": "b",
+              "label": "52"
+            },
+            {
+              "id": "c",
+              "label": "54"
+            },
+            {
+              "id": "d",
+              "label": "104"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Consecutive odd numbers also differ by 2.",
+            "If they are a and a+2, 4(a+1)=104."
+          ],
+          "explanation": "a+1=26, so the numbers are 25 and 27. Their sum is 52."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\na+1=26, so the numbers are 25 and 27. Their sum is 52.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now recognise the centre of a consecutive pattern, use the right step size, and switch to an equation only when products or squares demand it.\n\nNext, we'll use place value to solve two-digit number puzzles and reversals.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Consecutive and Patterned Numbers",
-    "description": "Solve puzzles involving consecutive natural numbers, odd/even numbers and consecutive multiples.",
-    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Consecutive and Patterned Numbers. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 20
-  },
-  "scriptId": "script-pon-04-consecutive-patterned-numbers",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

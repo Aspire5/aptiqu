@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "si-10-integrated-surd-index-identities",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Integrated Surd–Index Identity Patterns",
+    "description": "Use shape recognition to collapse the chapter’s advanced surd and exponent expressions before heavy arithmetic begins.",
+    "teachingApproach": "Frame the lesson as pattern spotting: name the hidden algebraic identity first, substitute a compact symbol if useful, and only then compute. The varied-looking questions stay coherent because every one is solved by replacing brute force with a structural shortcut.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 9, Surds and Indices. Approved scope: Use this as the chapter capstone: the learner already knows the rules, so the skill is recognising which shape makes a large expression collapse. Cover substitutions such as u=a^(1/4) turning (u−1)(u³+u²+u+1) into u⁴−1, cyclic exponent products whose total exponent telescopes to zero, the identity a³+b³+c³−3abc when a+b+c=0, prime-factor counting after fractional powers, the cube identity behind (x+y−z)³+27xyz when cube roots add, simple consequences of abc=1, and a final pair of exponent equations solved by adding/subtracting the resulting linear relations. Each example should explicitly name the hidden shape before doing arithmetic."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's finish the chapter with the harder-looking expressions.\n\nThe trick is usually not heavier arithmetic. It is seeing a structure early: a factor identity, a cube expansion, exponent cancellation, or a repeated difference of squares.\n\nWe will practise spotting those structures before calculating.",
+        "text": "This final lesson is about one exam skill: spotting the shape before touching the numbers.\n\nA long expression may secretly be a geometric factorisation, a telescoping exponent sum, or a cube identity. The reward for seeing the shape is that most of the expression disappears.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "One solved example uses this factor pattern:\n\n(x-1)(x^3+x^2+x+1)=x^4-1.\n\nIt works because x^3+x^2+x+1=(x+1)(x^2+1), so the factors collapse by difference of squares.",
+        "text": "Suppose u=2^(1/4). Then u^4=2.\n\nNow look at (u−1)(u^3+u^2+u+1).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the geometric factorisation:\n\n(u−1)(u^3+u^2+u+1)=u^4−1\n=2−1=1\n\nThe substitution turns fractional powers into ordinary algebra.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,66 +53,44 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Let u=3^(1/4). Find (u−1)(u^3+u^2+u+1).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
-          },
-          {
-            "id": "b",
             "label": "2"
           },
           {
+            "id": "b",
+            "label": "1"
+          },
+          {
             "id": "c",
             "label": "3"
           },
           {
             "id": "d",
-            "label": "4"
+            "label": "8"
           }
         ]
       },
-      "content": {
-        "text": "If x^4 = 3, what is (x-1)(x^3+x^2+x+1)?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (x-1)(x^3+x^2+x+1)=x^4-1.",
-            "Substitute x^4=3."
-          ],
-          "prompt": "If x^4 = 3, what is (x-1)(x^3+x^2+x+1)?",
+          "questionType": "PRACTICE",
+          "prompt": "Let u=3^(1/4). Find (u−1)(u^3+u^2+u+1).",
           "options": [
             {
               "id": "a",
-              "label": "1"
+              "label": "2"
             },
             {
               "id": "b",
-              "label": "2"
+              "label": "1"
             },
             {
               "id": "c",
@@ -96,19 +98,58 @@
             },
             {
               "id": "d",
-              "label": "4"
+              "label": "8"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Correct. The expression equals x^4-1=3-1=2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use u^4−1.",
+            "u^4=3."
+          ],
+          "explanation": "The product is 3−1=2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nUse u^4−1.\n\nThe product is 3−1=2.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Let v=5^(1/3). Find (v−1)(v^2+v+1).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -118,49 +159,23 @@
           },
           {
             "id": "b",
-            "label": "5"
+            "label": "4"
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "5"
           },
           {
             "id": "d",
-            "label": "4"
+            "label": "6"
           }
         ]
       },
-      "content": {
-        "text": "If y^4 = 5, what is (y-1)(y^3+y^2+y+1)?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use the same factor identity.",
-            "The result is y^4-1."
-          ],
-          "prompt": "If y^4 = 5, what is (y-1)(y^3+y^2+y+1)?",
+          "questionType": "PRACTICE",
+          "prompt": "Let v=5^(1/3). Find (v−1)(v^2+v+1).",
           "options": [
             {
               "id": "a",
@@ -168,55 +183,77 @@
             },
             {
               "id": "b",
-              "label": "5"
+              "label": "4"
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "5"
             },
             {
               "id": "d",
-              "label": "4"
+              "label": "6"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Correct. 5-1=4.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use (v−1)(v^2+v+1)=v^3−1.",
+            "v^3=5."
+          ],
+          "explanation": "The result is 4."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf x^4 = 3, what is (x-1)(x^3+x^2+x+1)?\n\nStart from this clue:\nUse (x-1)(x^3+x^2+x+1)=x^4-1.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe result is 4.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n5-1=4.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Exponent products can telescope.\n\nConsider:\n(x^a/x^b)^(a+b) · (x^b/x^c)^(b+c) · (x^c/x^a)^(c+a).",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "Paired cube roots also have a useful structure.\n\nLet t=∛2+∛4.\nThen uv=∛8=2.\n\n(t)^3 = 2+4 + 3(2)t = 6+6t.\n\nSo t^3-6t=6.",
+        "text": "The total exponent of x is:\n(a−b)(a+b)+(b−c)(b+c)+(c−a)(c+a)\n=(a^2−b^2)+(b^2−c^2)+(c^2−a^2)=0.\n\nSo the product is x^0=1.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "For non-zero x, the cyclic product (x^p/x^q)^(p+q)(x^q/x^r)^(q+r)(x^r/x^p)^(r+p) equals:",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6"
-          },
-          {
-            "id": "b",
             "label": "0"
           },
           {
+            "id": "b",
+            "label": "1"
+          },
+          {
             "id": "c",
-            "label": "2"
+            "label": "x"
           },
           {
             "id": "d",
-            "label": "12"
+            "label": "x^(p+q+r)"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "For non-zero x, the cyclic product (x^p/x^q)^(p+q)(x^q/x^r)^(q+r)(x^r/x^p)^(r+p) equals:",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "x"
+            },
+            {
+              "id": "d",
+              "label": "x^(p+q+r)"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Convert each quotient to one power of x.",
+            "The squared terms cancel in a cycle."
+          ],
+          "explanation": "The total exponent telescopes to 0, so the value is 1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
       "content": {
-        "text": "If t = ∛2 + ∛4, what is t^3 - 6t?",
+        "text": "Let’s check the pattern.\n\nConvert each quotient to one power of x.\n\nThe total exponent telescopes to 0, so the value is 1.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
+          "targetNodeId": "retry_2"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (u+v)^3=u^3+v^3+3uv(u+v).",
-            "Here uv=2 and u^3+v^3=6."
-          ],
-          "prompt": "If t = ∛2 + ∛4, what is t^3 - 6t?",
-          "options": [
-            {
-              "id": "a",
-              "label": "6"
-            },
-            {
-              "id": "b",
-              "label": "0"
-            },
-            {
-              "id": "c",
-              "label": "2"
-            },
-            {
-              "id": "d",
-              "label": "12"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Correct. t^3=6+6t, so t^3-6t=6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "For non-zero y, (y^m/y^n)^(m+n)(y^n/y^k)^(n+k)(y^k/y^m)^(k+m) equals:",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "0"
           },
           {
             "id": "b",
-            "label": "9"
+            "label": "y"
           },
           {
             "id": "c",
-            "label": "12"
+            "label": "1"
           },
           {
             "id": "d",
-            "label": "18"
+            "label": "y^(m+n+k)"
           }
         ]
       },
-      "content": {
-        "text": "If t = ∛3 + ∛9, what is t^3 - 9t?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Here uv=∛27=3.",
-            "u^3+v^3=3+9=12."
-          ],
-          "prompt": "If t = ∛3 + ∛9, what is t^3 - 9t?",
+          "questionType": "PRACTICE",
+          "prompt": "For non-zero y, (y^m/y^n)^(m+n)(y^n/y^k)^(n+k)(y^k/y^m)^(k+m) equals:",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "0"
             },
             {
               "id": "b",
-              "label": "9"
+              "label": "y"
             },
             {
               "id": "c",
-              "label": "12"
+              "label": "1"
             },
             {
               "id": "d",
-              "label": "18"
+              "label": "y^(m+n+k)"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Correct. t^3=12+9t, so t^3-9t=12.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Each factor becomes a power of y.",
+            "The exponent sum is m^2−n^2+n^2−k^2+k^2−m^2."
+          ],
+          "explanation": "The exponent is 0, so the value is 1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nIf t = ∛2 + ∛4, what is t^3 - 6t?\n\nStart from this clue:\nUse (u+v)^3=u^3+v^3+3uv(u+v).\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe exponent is 0, so the value is 1.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nt^3=12+9t, so t^3-9t=12.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "A famous cube identity collapses when a+b+c=0.\n\na^3+b^3+c^3−3abc = (a+b+c)(...).",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "Long products of powers often collapse because exponents cancel.\n\n(x^a/x^b)(x^b/x^c)(x^c/x^a)\n= x^(a-b+b-c+c-a)\n= x^0\n= 1.",
+        "text": "If a+b+c=0, the whole expression is 0.\n\nThat is why source-style exponent products with this exponent become x^0=1.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "If a+b+c=0, what is 7^(a^3+b^3+c^3−3abc)?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "x"
-          },
-          {
-            "id": "b",
-            "label": "x^(a+b+c)"
-          },
-          {
-            "id": "c",
             "label": "0"
           },
           {
-            "id": "d",
+            "id": "b",
+            "label": "7"
+          },
+          {
+            "id": "c",
             "label": "1"
+          },
+          {
+            "id": "d",
+            "label": "7^(abc)"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If a+b+c=0, what is 7^(a^3+b^3+c^3−3abc)?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "7"
+            },
+            {
+              "id": "c",
+              "label": "1"
+            },
+            {
+              "id": "d",
+              "label": "7^(abc)"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use the cube identity.",
+            "The exponent becomes 0."
+          ],
+          "explanation": "The exponent is 0, so the value is 7^0=1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
       "content": {
-        "text": "What is (x^a/x^b)(x^b/x^c)(x^c/x^a), for the non-zero x used here?",
+        "text": "Let’s check the pattern.\n\nUse the cube identity.\n\nThe exponent is 0, so the value is 7^0=1.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
+          "targetNodeId": "retry_3"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Add all exponents from the three factors.",
-            "a-b+b-c+c-a=0."
-          ],
-          "prompt": "What is (x^a/x^b)(x^b/x^c)(x^c/x^a), for the non-zero x used here?",
-          "options": [
-            {
-              "id": "a",
-              "label": "x"
-            },
-            {
-              "id": "b",
-              "label": "x^(a+b+c)"
-            },
-            {
-              "id": "c",
-              "label": "0"
-            },
-            {
-              "id": "d",
-              "label": "1"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. The total exponent is 0, so the product is x^0=1.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "If p+q+r=0, what is 5^(p^3+q^3+r^3−3pqr)?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "p"
+            "label": "0"
           },
           {
             "id": "b",
-            "label": "1"
+            "label": "5"
           },
           {
             "id": "c",
-            "label": "p^(m+n+r)"
+            "label": "5^(pqr)"
           },
           {
             "id": "d",
-            "label": "0"
+            "label": "1"
           }
         ]
       },
-      "content": {
-        "text": "What is (p^m/p^n)(p^n/p^r)(p^r/p^m), for non-zero p?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Collect the exponents.",
-            "Everything cancels."
-          ],
-          "prompt": "What is (p^m/p^n)(p^n/p^r)(p^r/p^m), for non-zero p?",
+          "questionType": "PRACTICE",
+          "prompt": "If p+q+r=0, what is 5^(p^3+q^3+r^3−3pqr)?",
           "options": [
             {
               "id": "a",
-              "label": "p"
+              "label": "0"
             },
             {
               "id": "b",
-              "label": "1"
+              "label": "5"
             },
             {
               "id": "c",
-              "label": "p^(m+n+r)"
+              "label": "5^(pqr)"
             },
             {
               "id": "d",
-              "label": "0"
+              "label": "1"
             }
           ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. The exponent sum is 0, so the value is 1.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The cubic expression is zero.",
+            "Any non-zero base to power 0 is 1."
+          ],
+          "explanation": "The value is 1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is (x^a/x^b)(x^b/x^c)(x^c/x^a), for the non-zero x used here?\n\nStart from this clue:\nAdd all exponents from the three factors.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe value is 1.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe exponent sum is 0, so the value is 1.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Fractional powers can simplify before prime-factor counting.\n\n(32)^(2/5)=2^2 and (243)^(1/5)=3.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "Some objective questions ask for the number of prime factors after powers are expanded. Count repeated prime factors with multiplicity.\n\n12^3=(2^2×3)^3=2^6×3^3.\n\nThat contains 6+3=9 prime factors when repetitions are counted.",
+        "text": "Their product is 12=2^2×3. Counting prime factors with multiplicity gives 2+1=3.\n\nThe chapter uses the same idea on much larger-looking products.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,92 +689,109 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "(64)^(1/3) × (625)^(1/4) = 20. How many prime factors does 20 have, counting multiplicity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "5"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(64)^(1/3) × (625)^(1/4) = 20. How many prime factors does 20 have, counting multiplicity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "20=2^2×5.",
+            "Add the prime exponents."
+          ],
+          "explanation": "20=2^2×5, so there are 2+1=3 prime factors counting multiplicity."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\n20=2^2×5.\n\n20=2^2×5, so there are 2+1=3 prime factors counting multiplicity.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "(243)^(2/5) × (16)^(1/4) = 18. How many prime factors does 18 have, counting multiplicity?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
             "label": "3"
-          },
-          {
-            "id": "b",
-            "label": "6"
-          },
-          {
-            "id": "c",
-            "label": "9"
-          },
-          {
-            "id": "d",
-            "label": "12"
-          }
-        ]
-      },
-      "content": {
-        "text": "How many prime factors with multiplicity are in 12^3?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "12=2^2×3.",
-            "Raise each prime power to the third power, then add the exponents."
-          ],
-          "prompt": "How many prime factors with multiplicity are in 12^3?",
-          "options": [
-            {
-              "id": "a",
-              "label": "3"
-            },
-            {
-              "id": "b",
-              "label": "6"
-            },
-            {
-              "id": "c",
-              "label": "9"
-            },
-            {
-              "id": "d",
-              "label": "12"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. 12^3=2^6×3^3, giving 6+3=9 prime factors with multiplicity.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "6"
           },
           {
             "id": "b",
@@ -723,45 +803,19 @@
           },
           {
             "id": "d",
-            "label": "8"
+            "label": "6"
           }
         ]
       },
-      "content": {
-        "text": "How many prime factors with multiplicity are in 18^2?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "18=2×3^2.",
-            "Square to get 2^2×3^4."
-          ],
-          "prompt": "How many prime factors with multiplicity are in 18^2?",
+          "questionType": "PRACTICE",
+          "prompt": "(243)^(2/5) × (16)^(1/4) = 18. How many prime factors does 18 have, counting multiplicity?",
           "options": [
             {
               "id": "a",
-              "label": "6"
+              "label": "3"
             },
             {
               "id": "b",
@@ -773,47 +827,69 @@
             },
             {
               "id": "d",
-              "label": "8"
+              "label": "6"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "MEDIUM",
-          "explanation": "Correct. The multiplicities are 2 and 4, so the total is 6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 15,
+          "hints": [
+            "18=2×3^2.",
+            "Count 1+2."
+          ],
+          "explanation": "18 has 3 prime factors counting multiplicity."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nHow many prime factors with multiplicity are in 12^3?\n\nStart from this clue:\n12=2^2×3.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n18 has 3 prime factors counting multiplicity.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe multiplicities are 2 and 4, so the total is 6.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "The cube identity also links sums of cube roots.\n\nIf ∛x+∛y=∛z, cube both sides carefully.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "Repeated difference of squares can telescope.\n\n(2-1)(2+1)=2^2-1.\nMultiply by (2^2+1):\n(2^2-1)(2^2+1)=2^4-1.\n\nThe same pattern can continue with 2^4+1, 2^8+1, and so on.",
+        "text": "x+y+3∛(xyz)=z\nSo x+y−z = −3∛(xyz).\nCubing gives:\n(x+y−z)^3 = −27xyz\n\nTherefore (x+y−z)^3+27xyz=0.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "If ∛1+∛8=∛27, find (1+8−27)^3 + 27×1×8×27.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "9"
+            "label": "0"
           },
           {
             "id": "b",
-            "label": "15"
+            "label": "1"
           },
           {
             "id": "c",
-            "label": "16"
+            "label": "27"
           },
           {
             "id": "d",
-            "label": "31"
+            "label": "5832"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If ∛1+∛8=∛27, find (1+8−27)^3 + 27×1×8×27.",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "5832"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use the identity just derived.",
+            "The two large terms cancel."
+          ],
+          "explanation": "The expression is 0. Numerically, (−18)^3=−5832 and 27×8×27=5832."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
       "content": {
-        "text": "What is (2-1)(2+1)(2^2+1)?",
+        "text": "Let’s check the pattern.\n\nUse the identity just derived.\n\nThe expression is 0. Numerically, (−18)^3=−5832 and 27×8×27=5832.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
+          "targetNodeId": "retry_5"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "First (2-1)(2+1)=2^2-1.",
-            "Then (2^2-1)(2^2+1)=2^4-1."
-          ],
-          "prompt": "What is (2-1)(2+1)(2^2+1)?",
-          "options": [
-            {
-              "id": "a",
-              "label": "9"
-            },
-            {
-              "id": "b",
-              "label": "15"
-            },
-            {
-              "id": "c",
-              "label": "16"
-            },
-            {
-              "id": "d",
-              "label": "31"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. The product is 16-1=15.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "If ∛8+∛27=∛125, find (8+27−125)^3 + 27×8×27×125.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "64"
+            "label": "1"
           },
           {
             "id": "b",
-            "label": "81"
+            "label": "0"
           },
           {
             "id": "c",
-            "label": "80"
+            "label": "125"
           },
           {
             "id": "d",
-            "label": "40"
+            "label": "27000"
           }
         ]
       },
-      "content": {
-        "text": "What is (3-1)(3+1)(3^2+1)?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "First get 3^2-1.",
-            "Then multiply by 3^2+1 to get 3^4-1."
-          ],
-          "prompt": "What is (3-1)(3+1)(3^2+1)?",
+          "questionType": "PRACTICE",
+          "prompt": "If ∛8+∛27=∛125, find (8+27−125)^3 + 27×8×27×125.",
           "options": [
             {
               "id": "a",
-              "label": "64"
+              "label": "1"
             },
             {
               "id": "b",
-              "label": "81"
+              "label": "0"
             },
             {
               "id": "c",
-              "label": "80"
+              "label": "125"
             },
             {
               "id": "d",
-              "label": "40"
+              "label": "27000"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "HARD",
-          "explanation": "Correct. 3^4-1=81-1=80.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 20,
+          "hints": [
+            "2+3=5, so the cube-root condition holds.",
+            "Apply the same identity."
+          ],
+          "explanation": "The expression collapses to 0."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is (2-1)(2+1)(2^2+1)?\n\nStart from this clue:\nFirst (2-1)(2+1)=2^2-1.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nThe expression collapses to 0.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n3^4-1=81-1=80.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "A condition like abc=1 can turn reciprocals into ordinary variables.\n\nIf abc=1, then bc=1/a, so 1/(bc)=a.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "A final mixed check can combine a hidden square with a product law.\n\n(5+2√6)(5-2√6)=25-24=1.\n\nTherefore the product of their positive square roots is √1=1.",
+        "text": "Similarly 1/(ca)=b and 1/(ab)=c.\n\nThis replacement often makes a frightening rational expression collapse because every reciprocal product has a simple partner.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,220 +1113,621 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "If abc=1, simplify 1/(bc).",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
+            "label": "b"
           },
           {
             "id": "b",
+            "label": "a"
+          },
+          {
+            "id": "c",
+            "label": "c"
+          },
+          {
+            "id": "d",
+            "label": "abc"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If abc=1, simplify 1/(bc).",
+          "options": [
+            {
+              "id": "a",
+              "label": "b"
+            },
+            {
+              "id": "b",
+              "label": "a"
+            },
+            {
+              "id": "c",
+              "label": "c"
+            },
+            {
+              "id": "d",
+              "label": "abc"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "From abc=1, divide by bc.",
+            "a=1/(bc)."
+          ],
+          "explanation": "1/(bc)=a."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nFrom abc=1, divide by bc.\n\n1/(bc)=a.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "If pqr=1, simplify 1/(pr).",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "p"
+          },
+          {
+            "id": "b",
+            "label": "r"
+          },
+          {
+            "id": "c",
+            "label": "q"
+          },
+          {
+            "id": "d",
+            "label": "pqr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If pqr=1, simplify 1/(pr).",
+          "options": [
+            {
+              "id": "a",
+              "label": "p"
+            },
+            {
+              "id": "b",
+              "label": "r"
+            },
+            {
+              "id": "c",
+              "label": "q"
+            },
+            {
+              "id": "d",
+              "label": "pqr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Divide pqr=1 by pr.",
+            "q=1/(pr)."
+          ],
+          "explanation": "The expression is q."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nThe expression is q.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Another source-shaped pattern uses a ratio of conjugate-looking algebraic factors.\n\nWhen the same factor appears in numerator and denominator, cancel structure before expanding.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For example:\n[(xy+1)^a(xy−1)^b x^(a+b)] / [(xy+1)^a(xy−1)^b y^(a+b)]\n= (x/y)^(a+b).\n\nThe huge middle disappears because it is identical on both sides.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "[(t+1)^m(t−1)^n · a^(m+n)] / [(t+1)^m(t−1)^n · b^(m+n)] simplifies to:",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "(b/a)^(m+n)"
+          },
+          {
+            "id": "b",
+            "label": "a/b"
+          },
+          {
+            "id": "c",
+            "label": "(a/b)^(m+n)"
+          },
+          {
+            "id": "d",
+            "label": "1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "[(t+1)^m(t−1)^n · a^(m+n)] / [(t+1)^m(t−1)^n · b^(m+n)] simplifies to:",
+          "options": [
+            {
+              "id": "a",
+              "label": "(b/a)^(m+n)"
+            },
+            {
+              "id": "b",
+              "label": "a/b"
+            },
+            {
+              "id": "c",
+              "label": "(a/b)^(m+n)"
+            },
+            {
+              "id": "d",
+              "label": "1"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Cancel the identical (t+1)^m(t−1)^n factors.",
+            "Then combine the remaining quotient power."
+          ],
+          "explanation": "The expression becomes a^(m+n)/b^(m+n)=(a/b)^(m+n)."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nCancel the identical (t+1)^m(t−1)^n factors.\n\nThe expression becomes a^(m+n)/b^(m+n)=(a/b)^(m+n).\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "[(s+2)^p(s−2)^q · u^(p+q)] / [(s+2)^p(s−2)^q · v^(p+q)] simplifies to:",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "(v/u)^(p+q)"
+          },
+          {
+            "id": "b",
+            "label": "u/v"
+          },
+          {
+            "id": "c",
+            "label": "1"
+          },
+          {
+            "id": "d",
+            "label": "(u/v)^(p+q)"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "[(s+2)^p(s−2)^q · u^(p+q)] / [(s+2)^p(s−2)^q · v^(p+q)] simplifies to:",
+          "options": [
+            {
+              "id": "a",
+              "label": "(v/u)^(p+q)"
+            },
+            {
+              "id": "b",
+              "label": "u/v"
+            },
+            {
+              "id": "c",
+              "label": "1"
+            },
+            {
+              "id": "d",
+              "label": "(u/v)^(p+q)"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Cancel common factors first.",
+            "The remaining powers share exponent p+q."
+          ],
+          "explanation": "The result is (u/v)^(p+q)."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nThe result is (u/v)^(p+q).\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final capstone: two exponent equations can become a sum-and-difference system.\n\n3^(x−y)=27 and 3^(x+y)=243.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "27=3^3 and 243=3^5, so:\nx−y=3\nx+y=5\n\nAdd: 2x=8, so x=4.\n\nThe exponential shell disappears after the common-base step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "3^(x−y)=27 and 3^(x+y)=243. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
             "label": "5"
           },
           {
-            "id": "c",
-            "label": "√6"
-          },
-          {
             "id": "d",
-            "label": "2"
+            "label": "4"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3^(x−y)=27 and 3^(x+y)=243. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "5"
+            },
+            {
+              "id": "d",
+              "label": "4"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Convert 27 and 243 to powers of 3.",
+            "Solve x−y=3 and x+y=5."
+          ],
+          "explanation": "Adding the equations gives 2x=8, so x=4."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
       "content": {
-        "text": "What is √(5+2√6) × √(5-2√6)?",
+        "text": "Let’s check the pattern.\n\nConvert 27 and 243 to powers of 3.\n\nAdding the equations gives 2x=8, so x=4.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_8"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Combine the two roots into the root of a product.",
-            "Use (5+2√6)(5-2√6)=1."
-          ],
-          "prompt": "What is √(5+2√6) × √(5-2√6)?",
-          "options": [
-            {
-              "id": "a",
-              "label": "1"
-            },
-            {
-              "id": "b",
-              "label": "5"
-            },
-            {
-              "id": "c",
-              "label": "√6"
-            },
-            {
-              "id": "d",
-              "label": "2"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. The product inside the square root is 1, so the value is 1.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_8": {
+      "id": "retry_8",
       "type": "CHOICE",
+      "content": {
+        "text": "2^(p−q)=8 and 2^(p+q)=32. Find p.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "7"
+            "label": "4"
           },
           {
             "id": "b",
-            "label": "2"
+            "label": "3"
           },
           {
             "id": "c",
-            "label": "√3"
+            "label": "5"
           },
           {
             "id": "d",
-            "label": "1"
+            "label": "8"
           }
         ]
       },
-      "content": {
-        "text": "What is √(7+4√3) × √(7-4√3)?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Multiply the opposite-sign expressions first.",
-            "49-(4√3)^2=49-48=1."
-          ],
-          "prompt": "What is √(7+4√3) × √(7-4√3)?",
+          "questionType": "PRACTICE",
+          "prompt": "2^(p−q)=8 and 2^(p+q)=32. Find p.",
           "options": [
             {
               "id": "a",
-              "label": "7"
+              "label": "4"
             },
             {
               "id": "b",
-              "label": "2"
+              "label": "3"
             },
             {
               "id": "c",
-              "label": "√3"
+              "label": "5"
             },
             {
               "id": "d",
-              "label": "1"
+              "label": "8"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "HARD",
-          "explanation": "Correct. The product is √1=1.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 20,
+          "hints": [
+            "Convert both right sides to powers of 2.",
+            "Solve p−q=3 and p+q=5."
+          ],
+          "explanation": "Adding the two exponent equations gives 2p=8, so p=4. Then q=1 as a check."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is √(5+2√6) × √(5-2√6)?\n\nStart from this clue:\nCombine the two roots into the root of a product.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\nAdding the two exponent equations gives 2p=8, so p=4. Then q=1 as a check.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "complete": {
+      "id": "complete",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe product is √1=1.\n\nThe key is to identify the structure first, then apply the matching law.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "recap"
-        }
-      ]
-    },
-    "recap": {
-      "id": "recap",
-      "type": "CONTENT",
-      "content": {
-        "text": "In harder Surds and Indices questions, inspect before calculating.\n\nLook for a factor identity.\nLook for paired cube roots.\nCollect exponents before touching the base.\nRewrite powered integers into prime powers when counting factors.\nUse repeated difference of squares when factors double their exponents.\n\nName one long-looking expression from this lesson that became short after recognising its structure.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "finish"
-        }
-      ]
-    },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
-      "content": {
-        "text": "Excellent. This capstone is about recognition. On a difficult expression, first ask which earlier pattern it resembles. A correct structural rewrite is often more valuable than a long line of arithmetic.",
+        "text": "Advanced surd–index questions are often shorter than they look.\n\nName the shape first.\nSubstitute one symbol if it cleans the expression.\nLook for telescoping exponents or a standard identity.\nOnly then calculate.\n\nThe chapter’s hardest-looking expressions are usually tests of recognition, not endurance.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Integrated Surd and Index Identities",
-    "description": "Use identities and index structure to simplify the chapter's harder mixed expressions.",
-    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Integrated Surd and Index Identities. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
-    "targetDurationMinutes": 23
-  },
-  "scriptId": "script-si-10-integrated-surd-index-identities",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

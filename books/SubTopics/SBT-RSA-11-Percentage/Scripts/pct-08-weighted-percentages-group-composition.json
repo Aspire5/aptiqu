@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "pct-08-weighted-percentages-group-composition",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Weighted Percentages and Group Composition",
+    "description": "Combine percentages from groups of different sizes and recover subgroup counts when overall and subgroup percentages are given.",
+    "teachingApproach": "Replace vague “average percentages” with actual contributions. Start with two unequal groups, compute how many in each group satisfy the condition, then divide by the combined total. Extend to subgroup reconstruction and conditional composition.",
+    "targetDurationMinutes": 33,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 11, Percentage. Approved scope: Teach why percentages from unequal groups cannot be averaged directly. Use actual counts or weighted contributions to combine pass rates, defect rates, tax rates, literacy rates and other subgroup percentages. Cover male/female or skilled/unskilled splits, percentage composition after removing part of one subgroup, two shipments of different sizes, conditional composition such as capable/incapable candidates with different pass rates, and weighted average return/rate questions. Learners should convert each subgroup percentage into a contribution to the whole before combining."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's combine percentages from groups of different sizes.\n\nIf one class has 20 students and another has 80, their percentages cannot be averaged as if the classes were equally large.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose 20 students have an 80% pass rate: 16 pass.\n80 students have a 50% pass rate: 40 pass.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Together, 56 of 100 pass, so the combined pass rate is 56%.\n\nConvert each percentage to a count before combining.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "40 boys have a 75% pass rate and 60 girls have a 50% pass rate. What percent of all students pass?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "62.5%"
+          },
+          {
+            "id": "b",
+            "label": "57.5%"
+          },
+          {
+            "id": "c",
+            "label": "65%"
+          },
+          {
+            "id": "d",
+            "label": "60%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "40 boys have a 75% pass rate and 60 girls have a 50% pass rate. What percent of all students pass?",
+          "options": [
+            {
+              "id": "a",
+              "label": "62.5%"
+            },
+            {
+              "id": "b",
+              "label": "57.5%"
+            },
+            {
+              "id": "c",
+              "label": "65%"
+            },
+            {
+              "id": "d",
+              "label": "60%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Boys passing=30; girls passing=30.",
+            "60 pass out of 100."
+          ],
+          "explanation": "Combined pass rate=60%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe simple average 62.5% would wrongly treat the two groups as equal-sized.\n\nCombined pass rate=60%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "30 workers have 80% attendance and 70 workers have 60% attendance. Combined attendance rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70%"
+          },
+          {
+            "id": "b",
+            "label": "66%"
+          },
+          {
+            "id": "c",
+            "label": "68%"
+          },
+          {
+            "id": "d",
+            "label": "64%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "30 workers have 80% attendance and 70 workers have 60% attendance. Combined attendance rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "70%"
+            },
+            {
+              "id": "b",
+              "label": "66%"
+            },
+            {
+              "id": "c",
+              "label": "68%"
+            },
+            {
+              "id": "d",
+              "label": "64%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "24 of first group attend; 42 of second.",
+            "66 attend out of 100."
+          ],
+          "explanation": "Combined rate=66%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nCombined rate=66%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If group sizes are given as percentages of the whole, work with a 100-person model.\n\n60% male, 40% female.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 50% of males and 75% of females pass:\n30 male passes +30 female passes=60 passes out of 100.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A school is 70% boys and 30% girls. 60% of boys and 80% of girls pass. Overall pass rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "66%"
+          },
+          {
+            "id": "b",
+            "label": "70%"
+          },
+          {
+            "id": "c",
+            "label": "68%"
+          },
+          {
+            "id": "d",
+            "label": "64%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A school is 70% boys and 30% girls. 60% of boys and 80% of girls pass. Overall pass rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "66%"
+            },
+            {
+              "id": "b",
+              "label": "70%"
+            },
+            {
+              "id": "c",
+              "label": "68%"
+            },
+            {
+              "id": "d",
+              "label": "64%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use a 100-student model.",
+            "42 boys +24 girls pass."
+          ],
+          "explanation": "Overall pass rate=66%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nWeight subgroup rates by subgroup shares.\n\nOverall pass rate=66%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A workforce is 40% skilled and 60% unskilled. 90% of skilled and 50% of unskilled are permanent. What percent of all workers are permanent?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "70%"
+          },
+          {
+            "id": "b",
+            "label": "60%"
+          },
+          {
+            "id": "c",
+            "label": "66%"
+          },
+          {
+            "id": "d",
+            "label": "56%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A workforce is 40% skilled and 60% unskilled. 90% of skilled and 50% of unskilled are permanent. What percent of all workers are permanent?",
+          "options": [
+            {
+              "id": "a",
+              "label": "70%"
+            },
+            {
+              "id": "b",
+              "label": "60%"
+            },
+            {
+              "id": "c",
+              "label": "66%"
+            },
+            {
+              "id": "d",
+              "label": "56%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Skilled permanent=36% of whole.",
+            "Unskilled permanent=30% of whole."
+          ],
+          "explanation": "Total permanent=66%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nTotal permanent=66%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can reverse a weighted group problem from the complement.\n\n75% skilled, 25% unskilled. 80% of skilled and 20% of unskilled are permanent.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Permanent=60%+5%=65%.\nTemporary=35%.\nIf 35% equals 140 people, total=400.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "60% of workers are Group A and 40% Group B. 75% of A and 50% of B are permanent. If 210 workers are temporary, how many workers are there?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "500"
+          },
+          {
+            "id": "b",
+            "label": "600"
+          },
+          {
+            "id": "c",
+            "label": "700"
+          },
+          {
+            "id": "d",
+            "label": "840"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "60% of workers are Group A and 40% Group B. 75% of A and 50% of B are permanent. If 210 workers are temporary, how many workers are there?",
+          "options": [
+            {
+              "id": "a",
+              "label": "500"
+            },
+            {
+              "id": "b",
+              "label": "600"
+            },
+            {
+              "id": "c",
+              "label": "700"
+            },
+            {
+              "id": "d",
+              "label": "840"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Permanent share=45%+20%=65%.",
+            "Temporary share=35%."
+          ],
+          "explanation": "210/0.35=600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nFind the overall temporary percentage before reversing to the total.\n\n210/0.35=600.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "80% are trained and 20% untrained. 90% of trained and 30% of untrained are permanent. If 132 are temporary, total workers?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "440"
+          },
+          {
+            "id": "b",
+            "label": "550"
+          },
+          {
+            "id": "c",
+            "label": "660"
+          },
+          {
+            "id": "d",
+            "label": "600"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "80% are trained and 20% untrained. 90% of trained and 30% of untrained are permanent. If 132 are temporary, total workers?",
+          "options": [
+            {
+              "id": "a",
+              "label": "440"
+            },
+            {
+              "id": "b",
+              "label": "550"
+            },
+            {
+              "id": "c",
+              "label": "660"
+            },
+            {
+              "id": "d",
+              "label": "600"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Permanent=72%+6%=78%.",
+            "Temporary=22%."
+          ],
+          "explanation": "132/0.22=600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n132/0.22=600.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Weighted averages also appear in returns or rates.\n\nHalf a fund earns 4%, half earns 8%: average return=6%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "But if 1/4 earns 4% and 3/4 earns 8%:\n0.25×4+0.75×8=7%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "40% of capital earns 5% and 60% earns 10%. What is the overall return rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.5%"
+          },
+          {
+            "id": "b",
+            "label": "6%"
+          },
+          {
+            "id": "c",
+            "label": "8%"
+          },
+          {
+            "id": "d",
+            "label": "15%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "40% of capital earns 5% and 60% earns 10%. What is the overall return rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.5%"
+            },
+            {
+              "id": "b",
+              "label": "6%"
+            },
+            {
+              "id": "c",
+              "label": "8%"
+            },
+            {
+              "id": "d",
+              "label": "15%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Take 40% of 5 plus 60% of 10.",
+            "2+6=8."
+          ],
+          "explanation": "Overall rate=8%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nWeights are capital shares, not equal halves.\n\nOverall rate=8%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "25% of a fund earns 4%, 50% earns 6%, and 25% earns 12%. Overall return?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7%"
+          },
+          {
+            "id": "b",
+            "label": "6%"
+          },
+          {
+            "id": "c",
+            "label": "7.5%"
+          },
+          {
+            "id": "d",
+            "label": "8%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "25% of a fund earns 4%, 50% earns 6%, and 25% earns 12%. Overall return?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7%"
+            },
+            {
+              "id": "b",
+              "label": "6%"
+            },
+            {
+              "id": "c",
+              "label": "7.5%"
+            },
+            {
+              "id": "d",
+              "label": "8%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Weighted contributions: 1, 3, 3.",
+            "Add them."
+          ],
+          "explanation": "Overall return=7%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nOverall return=7%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two shipments with different sizes need the same logic.\n\nShipment B twice as large as A means size ratio 1:2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If defects are 2% and 5%, use 100 and 200 units:\ndefects=2+10=12 out of 300=4%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Shipment B is three times shipment A. Defect rates are 1% in A and 3% in B. What is the combined defect rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2%"
+          },
+          {
+            "id": "b",
+            "label": "3%"
+          },
+          {
+            "id": "c",
+            "label": "4%"
+          },
+          {
+            "id": "d",
+            "label": "2.5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Shipment B is three times shipment A. Defect rates are 1% in A and 3% in B. What is the combined defect rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2%"
+            },
+            {
+              "id": "b",
+              "label": "3%"
+            },
+            {
+              "id": "c",
+              "label": "4%"
+            },
+            {
+              "id": "d",
+              "label": "2.5%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use sizes 100 and 300.",
+            "Defects=1+9=10 out of 400."
+          ],
+          "explanation": "Combined rate=2.5%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nWeight the defect rates by shipment size.\n\nCombined rate=2.5%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two batches are in size ratio 2:3 with defect rates 4% and 9%. Combined defect rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6.5%"
+          },
+          {
+            "id": "b",
+            "label": "7%"
+          },
+          {
+            "id": "c",
+            "label": "7.5%"
+          },
+          {
+            "id": "d",
+            "label": "13%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two batches are in size ratio 2:3 with defect rates 4% and 9%. Combined defect rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6.5%"
+            },
+            {
+              "id": "b",
+              "label": "7%"
+            },
+            {
+              "id": "c",
+              "label": "7.5%"
+            },
+            {
+              "id": "d",
+              "label": "13%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use sizes 200 and 300.",
+            "Defects=8+27=35 out of 500."
+          ],
+          "explanation": "Combined defect rate=7%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\nCombined defect rate=7%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Literacy or employment questions may give an overall rate and a subgroup rate.\n\n60% male, 40% female; overall literacy 50%; male literacy 60%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Male literates=36% of total.\nOverall literates=50%, so female literates=14% of total.\nFemale literacy=14/40=35%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A town is 70% male, 30% female. Overall literacy is 55%, and 65% of males are literate. What percent of females are literate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31.67%"
+          },
+          {
+            "id": "b",
+            "label": "35%"
+          },
+          {
+            "id": "c",
+            "label": "23.33%"
+          },
+          {
+            "id": "d",
+            "label": "45%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A town is 70% male, 30% female. Overall literacy is 55%, and 65% of males are literate. What percent of females are literate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "31.67%"
+            },
+            {
+              "id": "b",
+              "label": "35%"
+            },
+            {
+              "id": "c",
+              "label": "23.33%"
+            },
+            {
+              "id": "d",
+              "label": "45%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Male literates=70%×65%=45.5% of total.",
+            "Female literates must supply the remaining 9.5% of total."
+          ],
+          "explanation": "Female literacy=9.5/30×100≈31.67%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nSubtract contributions to the whole before dividing by the female share.\n\nFemale literacy=9.5/30×100≈31.67%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A group is 60% A and 40% B. Overall success rate is 54%; A succeeds at 70%. What is B’s success rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24%"
+          },
+          {
+            "id": "b",
+            "label": "42%"
+          },
+          {
+            "id": "c",
+            "label": "30%"
+          },
+          {
+            "id": "d",
+            "label": "38%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A group is 60% A and 40% B. Overall success rate is 54%; A succeeds at 70%. What is B’s success rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24%"
+            },
+            {
+              "id": "b",
+              "label": "42%"
+            },
+            {
+              "id": "c",
+              "label": "30%"
+            },
+            {
+              "id": "d",
+              "label": "38%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "A contributes 42% of the whole.",
+            "B must contribute 12% of the whole."
+          ],
+          "explanation": "12/40=30%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n12/40=30%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Removing members from one subgroup changes the denominator.\n\n800 coats, 15% long: 120 long, 680 short.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Remove 500 short coats. Remaining: 120 long, 180 short, total 300.\nLong-coat share becomes 40%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A warehouse has 500 items, 20% premium. If 250 standard items are removed, what percent of the remaining items are premium?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20%"
+          },
+          {
+            "id": "b",
+            "label": "40%"
+          },
+          {
+            "id": "c",
+            "label": "25%"
+          },
+          {
+            "id": "d",
+            "label": "50%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A warehouse has 500 items, 20% premium. If 250 standard items are removed, what percent of the remaining items are premium?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20%"
+            },
+            {
+              "id": "b",
+              "label": "40%"
+            },
+            {
+              "id": "c",
+              "label": "25%"
+            },
+            {
+              "id": "d",
+              "label": "50%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Premium=100, standard=400.",
+            "After removing 250 standard, total remaining=250."
+          ],
+          "explanation": "100/250=40%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe numerator stays 100 while the total shrinks.\n\n100/250=40%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "600 books include 25% hardbacks. If 300 paperbacks are removed, what percent of remaining books are hardbacks?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25%"
+          },
+          {
+            "id": "b",
+            "label": "33 1/3%"
+          },
+          {
+            "id": "c",
+            "label": "60%"
+          },
+          {
+            "id": "d",
+            "label": "50%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "600 books include 25% hardbacks. If 300 paperbacks are removed, what percent of remaining books are hardbacks?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25%"
+            },
+            {
+              "id": "b",
+              "label": "33 1/3%"
+            },
+            {
+              "id": "c",
+              "label": "60%"
+            },
+            {
+              "id": "d",
+              "label": "50%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Hardbacks=150, paperbacks=450.",
+            "After removing 300 paperbacks, 300 books remain."
+          ],
+          "explanation": "150/300=50%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n150/300=50%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Conditional composition can look surprising.\n\nSuppose 40% are capable. Of them 80% pass. Of the 60% incapable, 20% pass.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capable passes=32% of all. Incapable passes=12%.\nAmong all passers, capable share=32/(32+12)=72.73%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "50% of candidates are Group A. 80% of A pass; 20% of Group B pass. What percent of all passers are from A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50%"
+          },
+          {
+            "id": "b",
+            "label": "60%"
+          },
+          {
+            "id": "c",
+            "label": "80%"
+          },
+          {
+            "id": "d",
+            "label": "75%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "50% of candidates are Group A. 80% of A pass; 20% of Group B pass. What percent of all passers are from A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50%"
+            },
+            {
+              "id": "b",
+              "label": "60%"
+            },
+            {
+              "id": "c",
+              "label": "80%"
+            },
+            {
+              "id": "d",
+              "label": "75%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use 100 candidates.",
+            "A passes=40, B passes=10."
+          ],
+          "explanation": "40 of 50 passers are A, so 80%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this one.\n\nThe final denominator is all passers, not all candidates.\n\n40 of 50 passers are A, so 80%.\n\nNow use the same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "30% are skilled. 90% of skilled pass a test; 30% of unskilled pass. What percent of passers are skilled?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "56.25%"
+          },
+          {
+            "id": "b",
+            "label": "30%"
+          },
+          {
+            "id": "c",
+            "label": "45%"
+          },
+          {
+            "id": "d",
+            "label": "60%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "30% are skilled. 90% of skilled pass a test; 30% of unskilled pass. What percent of passers are skilled?",
+          "options": [
+            {
+              "id": "a",
+              "label": "56.25%"
+            },
+            {
+              "id": "b",
+              "label": "30%"
+            },
+            {
+              "id": "c",
+              "label": "45%"
+            },
+            {
+              "id": "d",
+              "label": "60%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Skilled passers=27% of total.",
+            "Unskilled passers=21% of total."
+          ],
+          "explanation": "27/(27+21)=56.25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n27/(27+21)=56.25%.\n\nTry it once more and check the reference quantity before choosing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now combine percentages without taking misleading simple averages. Convert each subgroup into its contribution to the whole, then rebuild the total or the subgroup rate you need.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

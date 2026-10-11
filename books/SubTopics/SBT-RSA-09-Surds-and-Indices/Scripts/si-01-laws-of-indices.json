@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "si-01-laws-of-indices",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Laws of Indices",
+    "description": "See exponent laws as factor-counting shortcuts, then use them across products, quotients and common-base expressions.",
+    "teachingApproach": "Begin with visible repeated factors so every law has a reason, not just a formula. Let one operation change at a time, use trap options built from common exponent mistakes, and end by rewriting different-looking bases to one base before simplifying.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 9, Surds and Indices. Approved scope: Teach the six index laws stated in the chapter as consequences of how many copies of the same factor survive: a^m × a^n = a^(m+n), a^m ÷ a^n = a^(m−n), (a^m)^n = a^(mn), (ab)^n = a^n b^n, (a/b)^n = a^n/b^n, and a^0 = 1 for non-zero a. Start with small powers whose factors can be seen mentally, then move to mixed multiplication/division chains and bases such as 64 and 8 that should first be rewritten to one common base. Include the classic traps of multiplying exponents during ordinary multiplication, subtracting in the wrong direction during division, and treating a^0 as 0. Learners should name the base before touching the exponents and verify a shortcut with one small expanded example."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn the basic language of powers.\n\nIn 2^4, the base is 2 and the index is 4. It means:\n\n2 × 2 × 2 × 2.\n\nThe index laws are shortcuts for patterns like this. We will see why each shortcut works before using it.",
+        "text": "Let's make exponents feel less like rules to memorise and more like counting.\n\nWhen the base stays the same, the exponent simply tells us how many copies of that base are present. Once you see those copies, the laws of indices become shortcuts you can trust.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "An index tells us how many times a base is multiplied by itself.\n\nFor example:\n\n3^4 = 3 × 3 × 3 × 3 = 81.\n\nDo not multiply the base by the exponent. 3^4 is not 3 × 4.",
+        "text": "Start with the easiest pattern: multiplication of the same base.\n\n2^3 means 2×2×2.\n2^4 means four more 2s.\n\nTogether there are seven 2s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So:\n\n2^3 × 2^4 = 2^(3+4) = 2^7 = 128\n\nThe base stays 2. We add exponents because we are joining factor lists. We do not multiply 3×4.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "3^2 × 3^5 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "16"
+            "label": "2187"
           },
           {
             "id": "b",
-            "label": "8"
+            "label": "729"
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "243"
           },
           {
             "id": "d",
-            "label": "24"
+            "label": "6561"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3^2 × 3^5 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2187"
+            },
+            {
+              "id": "b",
+              "label": "729"
+            },
+            {
+              "id": "c",
+              "label": "243"
+            },
+            {
+              "id": "d",
+              "label": "6561"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Keep the base 3 and add the exponents.",
+            "3^(2+5)=3^7."
+          ],
+          "explanation": "3^2×3^5=3^7=2187. The tempting 3^10 comes from multiplying exponents, but multiplication of powers with the same base uses addition."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
       "content": {
-        "text": "What is 2^4?",
+        "text": "Let’s check the pattern.\n\nKeep the base 3 and add the exponents.\n\n3^2×3^5=3^7=2187. The tempting 3^10 comes from multiplying exponents, but multiplication of powers with the same base uses addition.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
+          "targetNodeId": "retry_1"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write four factors of 2.",
-            "2 × 2 × 2 × 2 = 16."
-          ],
-          "prompt": "What is 2^4?",
-          "options": [
-            {
-              "id": "a",
-              "label": "16"
-            },
-            {
-              "id": "b",
-              "label": "8"
-            },
-            {
-              "id": "c",
-              "label": "6"
-            },
-            {
-              "id": "d",
-              "label": "24"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Correct. 2^4 means 2 × 2 × 2 × 2, so the value is 16.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "5^2 × 5^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "9"
+            "label": "625"
           },
           {
             "id": "b",
-            "label": "6"
+            "label": "3125"
           },
           {
             "id": "c",
-            "label": "27"
+            "label": "125"
           },
           {
             "id": "d",
-            "label": "81"
+            "label": "15625"
           }
         ]
       },
-      "content": {
-        "text": "What is 3^3?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write three factors of 3.",
-            "3 × 3 × 3 = 27."
-          ],
-          "prompt": "What is 3^3?",
+          "questionType": "PRACTICE",
+          "prompt": "5^2 × 5^3 = ?",
           "options": [
             {
               "id": "a",
-              "label": "9"
+              "label": "625"
             },
             {
               "id": "b",
-              "label": "6"
+              "label": "3125"
             },
             {
               "id": "c",
-              "label": "27"
+              "label": "125"
             },
             {
               "id": "d",
-              "label": "81"
+              "label": "15625"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "Correct. 3^3 = 3 × 3 × 3 = 27.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Add 2 and 3.",
+            "5^5=3125."
+          ],
+          "explanation": "5^2×5^3=5^5=3125."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 2^4?\n\nStart from this clue:\nWrite four factors of 2.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n5^2×5^3=5^5=3125.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n3^3 = 3 × 3 × 3 = 27.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Division removes matching factors.\n\n7^6 ÷ 7^2 has six 7s on top and two 7s below. Two pairs cancel.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "When powers have the same base and are multiplied, join the repeated factors.\n\n2^3 × 2^2\n= (2×2×2)(2×2)\n= 2^5.\n\nSo a^m × a^n = a^(m+n). The base stays the same; the exponents add.",
+        "text": "Four 7s remain:\n\n7^6 ÷ 7^2 = 7^(6−2) = 7^4\n\nThe order matters: numerator exponent minus denominator exponent.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,194 +265,207 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "2^9 ÷ 2^4 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "12"
+            "label": "16"
           },
           {
             "id": "b",
-            "label": "7"
+            "label": "32"
           },
           {
             "id": "c",
-            "label": "1"
+            "label": "64"
           },
           {
             "id": "d",
-            "label": "4"
+            "label": "128"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2^9 ÷ 2^4 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "128"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Subtract the lower exponent from the upper one.",
+            "2^(9−4)=2^5."
+          ],
+          "explanation": "2^9÷2^4=2^5=32. Subtracting 9 from 4 would reverse the fraction."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
       "content": {
-        "text": "5^3 × 5^4 = 5^?",
+        "text": "Let’s check the pattern.\n\nSubtract the lower exponent from the upper one.\n\n2^9÷2^4=2^5=32. Subtracting 9 from 4 would reverse the fraction.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
+          "targetNodeId": "retry_2"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The base is the same on both powers.",
-            "For multiplication, add 3 + 4."
-          ],
-          "prompt": "5^3 × 5^4 = 5^?",
-          "options": [
-            {
-              "id": "a",
-              "label": "12"
-            },
-            {
-              "id": "b",
-              "label": "7"
-            },
-            {
-              "id": "c",
-              "label": "1"
-            },
-            {
-              "id": "d",
-              "label": "4"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "Correct. 5^3 × 5^4 = 5^(3+4) = 5^7, so the missing exponent is 7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "3^8 ÷ 3^5 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "10"
+            "label": "9"
           },
           {
             "id": "b",
-            "label": "3"
+            "label": "81"
           },
           {
             "id": "c",
-            "label": "5"
+            "label": "27"
           },
           {
             "id": "d",
-            "label": "7"
+            "label": "243"
           }
         ]
       },
-      "content": {
-        "text": "7^2 × 7^5 = 7^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Keep base 7.",
-            "Add the exponents 2 + 5."
-          ],
-          "prompt": "7^2 × 7^5 = 7^?",
+          "questionType": "PRACTICE",
+          "prompt": "3^8 ÷ 3^5 = ?",
           "options": [
             {
               "id": "a",
-              "label": "10"
+              "label": "9"
             },
             {
               "id": "b",
-              "label": "3"
+              "label": "81"
             },
             {
               "id": "c",
-              "label": "5"
+              "label": "27"
             },
             {
               "id": "d",
-              "label": "7"
+              "label": "243"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "Correct. 7^2 × 7^5 = 7^(2+5) = 7^7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "8−5=3.",
+            "3^3=27."
+          ],
+          "explanation": "3^8÷3^5=3^3=27."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\n5^3 × 5^4 = 5^?\n\nStart from this clue:\nThe base is the same on both powers.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n3^8÷3^5=3^3=27.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n7^2 × 7^5 = 7^(2+5) = 7^7.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Now put a power around another power.\n\n(5^2)^3 means three copies of 5^2 multiplied together.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "Division removes repeated factors.\n\n3^6 ÷ 3^2\n= (3×3×3×3×3×3)/(3×3)\n= 3^4.\n\nSo a^m ÷ a^n = a^(m-n) when the division is defined.",
+        "text": "Each copy contributes two 5s, and there are three copies:\n\n(5^2)^3 = 5^(2×3) = 5^6\n\nHere the exponents multiply because the whole power is repeated.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "(2^3)^4 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "11"
+            "label": "512"
           },
           {
             "id": "b",
-            "label": "24"
+            "label": "2048"
           },
           {
             "id": "c",
-            "label": "5"
+            "label": "4096"
           },
           {
             "id": "d",
-            "label": "2"
+            "label": "8192"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(2^3)^4 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "512"
+            },
+            {
+              "id": "b",
+              "label": "2048"
+            },
+            {
+              "id": "c",
+              "label": "4096"
+            },
+            {
+              "id": "d",
+              "label": "8192"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Multiply the exponents: 3×4.",
+            "2^12=4096."
+          ],
+          "explanation": "(2^3)^4=2^12=4096. Adding 3+4 would count only seven 2s, but there are four groups of three."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
       "content": {
-        "text": "3^8 ÷ 3^3 = 3^?",
+        "text": "Let’s check the pattern.\n\nMultiply the exponents: 3×4.\n\n(2^3)^4=2^12=4096. Adding 3+4 would count only seven 2s, but there are four groups of three.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
+          "targetNodeId": "retry_3"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Same base and division means subtract exponents.",
-            "Compute 8 - 3."
-          ],
-          "prompt": "3^8 ÷ 3^3 = 3^?",
-          "options": [
-            {
-              "id": "a",
-              "label": "11"
-            },
-            {
-              "id": "b",
-              "label": "24"
-            },
-            {
-              "id": "c",
-              "label": "5"
-            },
-            {
-              "id": "d",
-              "label": "2"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. 3^8 ÷ 3^3 = 3^(8-3) = 3^5.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
+      ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "(3^2)^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5"
+            "label": "81"
           },
           {
             "id": "b",
-            "label": "13"
+            "label": "243"
           },
           {
             "id": "c",
-            "label": "36"
+            "label": "2187"
           },
           {
             "id": "d",
-            "label": "4"
+            "label": "729"
           }
         ]
       },
-      "content": {
-        "text": "2^9 ÷ 2^4 = 2^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Keep base 2.",
-            "Subtract 4 from 9."
-          ],
-          "prompt": "2^9 ÷ 2^4 = 2^?",
+          "questionType": "PRACTICE",
+          "prompt": "(3^2)^3 = ?",
           "options": [
             {
               "id": "a",
-              "label": "5"
+              "label": "81"
             },
             {
               "id": "b",
-              "label": "13"
+              "label": "243"
             },
             {
               "id": "c",
-              "label": "36"
+              "label": "2187"
             },
             {
               "id": "d",
-              "label": "4"
+              "label": "729"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "MEDIUM",
-          "explanation": "Correct. 2^9 ÷ 2^4 = 2^5.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 15,
+          "hints": [
+            "2×3=6.",
+            "3^6=729."
+          ],
+          "explanation": "(3^2)^3=3^6=729."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\n3^8 ÷ 3^3 = 3^?\n\nStart from this clue:\nSame base and division means subtract exponents.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n(3^2)^3=3^6=729.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n2^9 ÷ 2^4 = 2^5.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "A power can cover a whole product too.\n\n(2×3)^4 means four copies of the entire pair 2×3.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "A power raised to another power repeats the whole power.\n\n(2^3)^4 = 2^(3×4) = 2^12.\n\nSo (a^m)^n = a^(mn).\n\nA common mistake is to add m and n. Here they multiply.",
+        "text": "Regroup the factors:\n\n(2×3)^4 = 2^4 × 3^4 = 16×81 = 1296\n\nThe exponent belongs to every factor inside the product.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "(2×5)^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5"
+            "label": "250"
           },
           {
             "id": "b",
-            "label": "9"
+            "label": "500"
           },
           {
             "id": "c",
-            "label": "1"
+            "label": "1250"
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "1000"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(2×5)^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "250"
+            },
+            {
+              "id": "b",
+              "label": "500"
+            },
+            {
+              "id": "c",
+              "label": "1250"
+            },
+            {
+              "id": "d",
+              "label": "1000"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Cube both 2 and 5.",
+            "2^3×5^3=8×125."
+          ],
+          "explanation": "(2×5)^3=2^3×5^3=8×125=1000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
       "content": {
-        "text": "(4^3)^2 = 4^?",
+        "text": "Let’s check the pattern.\n\nCube both 2 and 5.\n\n(2×5)^3=2^3×5^3=8×125=1000.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
+          "targetNodeId": "retry_4"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "This is a power of a power.",
-            "Multiply 3 × 2."
-          ],
-          "prompt": "(4^3)^2 = 4^?",
-          "options": [
-            {
-              "id": "a",
-              "label": "5"
-            },
-            {
-              "id": "b",
-              "label": "9"
-            },
-            {
-              "id": "c",
-              "label": "1"
-            },
-            {
-              "id": "d",
-              "label": "6"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "Correct. (4^3)^2 = 4^(3×2) = 4^6.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
+      ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "retry_4": {
+      "id": "retry_4",
       "type": "CHOICE",
+      "content": {
+        "text": "(3×4)^2 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "6"
+            "label": "144"
           },
           {
             "id": "b",
-            "label": "8"
+            "label": "72"
           },
           {
             "id": "c",
-            "label": "16"
+            "label": "96"
           },
           {
             "id": "d",
-            "label": "2"
+            "label": "288"
           }
         ]
       },
-      "content": {
-        "text": "(5^2)^4 = 5^?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use (a^m)^n = a^(mn).",
-            "2 × 4 = 8."
-          ],
-          "prompt": "(5^2)^4 = 5^?",
+          "questionType": "PRACTICE",
+          "prompt": "(3×4)^2 = ?",
           "options": [
             {
               "id": "a",
-              "label": "6"
+              "label": "144"
             },
             {
               "id": "b",
-              "label": "8"
+              "label": "72"
             },
             {
               "id": "c",
-              "label": "16"
+              "label": "96"
             },
             {
               "id": "d",
-              "label": "2"
+              "label": "288"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "MEDIUM",
-          "explanation": "Correct. (5^2)^4 = 5^8.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 15,
+          "hints": [
+            "Square both factors.",
+            "9×16=144."
+          ],
+          "explanation": "(3×4)^2=3^2×4^2=9×16=144."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\n(4^3)^2 = 4^?\n\nStart from this clue:\nThis is a power of a power.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n(3×4)^2=3^2×4^2=9×16=144.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n(5^2)^4 = 5^8.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "The same idea works for a fraction.\n\n(6/3)^4 can be simplified first to 2^4, or the power can be sent to top and bottom.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "A power can be distributed across a product or quotient.\n\n(2×3)^2 = 2^2 × 3^2.\n\nAnd:\n\n(6/5)^3 = 6^3 / 5^3.\n\nThe exponent applies to every factor in the bracket.",
+        "text": "Either route agrees:\n\n(6/3)^4 = 6^4/3^4 = (6/3)^4 = 2^4 = 16\n\nA power on a fraction acts on both numerator and denominator.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "(8/2)^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2^3 × 5^3"
+            "label": "64"
           },
           {
             "id": "b",
-            "label": "2^3 × 5"
+            "label": "16"
           },
           {
             "id": "c",
-            "label": "2 × 5^3"
+            "label": "32"
           },
           {
             "id": "d",
-            "label": "2^5"
+            "label": "128"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "(8/2)^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "64"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "128"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Simplify 8/2 first.",
+            "4^3=64."
+          ],
+          "explanation": "(8/2)^3=4^3=64. Powering only the numerator would break the fraction law."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
       "content": {
-        "text": "Which is equal to (2 × 5)^3?",
+        "text": "Let’s check the pattern.\n\nSimplify 8/2 first.\n\n(8/2)^3=4^3=64. Powering only the numerator would break the fraction law.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
+          "targetNodeId": "retry_5"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The exponent 3 applies to both factors.",
-            "Use (ab)^n = a^n b^n."
-          ],
-          "prompt": "Which is equal to (2 × 5)^3?",
-          "options": [
-            {
-              "id": "a",
-              "label": "2^3 × 5^3"
-            },
-            {
-              "id": "b",
-              "label": "2^3 × 5"
-            },
-            {
-              "id": "c",
-              "label": "2 × 5^3"
-            },
-            {
-              "id": "d",
-              "label": "2^5"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. (2×5)^3 = 2^3 × 5^3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "(15/5)^2 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3^2 / 4"
+            "label": "3"
           },
           {
             "id": "b",
-            "label": "3 / 4^2"
+            "label": "9"
           },
           {
             "id": "c",
-            "label": "(3/4) × 2"
+            "label": "25"
           },
           {
             "id": "d",
-            "label": "3^2 / 4^2"
+            "label": "45"
           }
         ]
       },
-      "content": {
-        "text": "Which is equal to (3/4)^2?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Square the numerator and denominator.",
-            "Use (a/b)^n = a^n/b^n."
-          ],
-          "prompt": "Which is equal to (3/4)^2?",
+          "questionType": "PRACTICE",
+          "prompt": "(15/5)^2 = ?",
           "options": [
             {
               "id": "a",
-              "label": "3^2 / 4"
+              "label": "3"
             },
             {
               "id": "b",
-              "label": "3 / 4^2"
+              "label": "9"
             },
             {
               "id": "c",
-              "label": "(3/4) × 2"
+              "label": "25"
             },
             {
               "id": "d",
-              "label": "3^2 / 4^2"
+              "label": "45"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "Correct. (3/4)^2 = 3^2/4^2.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "15/5=3.",
+            "3^2=9."
+          ],
+          "explanation": "(15/5)^2=3^2=9."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhich is equal to (2 × 5)^3?\n\nStart from this clue:\nThe exponent 3 applies to both factors.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s work through the retry.\n\n(15/5)^2=3^2=9.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\n(3/4)^2 = 3^2/4^2.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "One exponent often surprises learners: zero.\n\nTake 6^4 ÷ 6^4. The number divided by itself is 1.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "The chapter also uses a^0 = 1.\n\nExample:\n\n7^4 ÷ 7^4 = 7^(4-4) = 7^0.\n\nBut the left side is 1, so 7^0 = 1.\n\nThis is useful inside longer expressions.",
+        "text": "But the quotient law also gives:\n\n6^4 ÷ 6^4 = 6^(4−4) = 6^0\n\nSo 6^0=1. For any non-zero base, exponent zero gives 1 — not 0.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,100 +1113,329 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
+      "content": {
+        "text": "99^0 + 5 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "7^0"
+            "label": "5"
           },
           {
             "id": "b",
-            "label": "7^3"
+            "label": "6"
           },
           {
             "id": "c",
-            "label": "7^4"
+            "label": "99"
           },
           {
             "id": "d",
-            "label": "0"
+            "label": "104"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "99^0 + 5 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "99"
+            },
+            {
+              "id": "d",
+              "label": "104"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "99^0 is 1.",
+            "Then add 5."
+          ],
+          "explanation": "99^0+5=1+5=6. The trap answer 5 treats 99^0 as zero."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
       "content": {
-        "text": "What is 7^0 × 7^3?",
+        "text": "Let’s check the pattern.\n\n99^0 is 1.\n\n99^0+5=1+5=6. The trap answer 5 treats 99^0 as zero.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
+          "targetNodeId": "retry_6"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "7^0 = 1.",
-            "Multiplying by 1 does not change 7^3."
-          ],
-          "prompt": "What is 7^0 × 7^3?",
-          "options": [
-            {
-              "id": "a",
-              "label": "7^0"
-            },
-            {
-              "id": "b",
-              "label": "7^3"
-            },
-            {
-              "id": "c",
-              "label": "7^4"
-            },
-            {
-              "id": "d",
-              "label": "0"
-            }
-          ],
-          "difficulty": "HARD",
-          "explanation": "Correct. 7^0 = 1, so 7^0 × 7^3 = 7^3.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_6": {
+      "id": "retry_6",
       "type": "CHOICE",
+      "content": {
+        "text": "7^0 + 3^0 = ?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1"
+            "label": "0"
           },
           {
             "id": "b",
-            "label": "9"
+            "label": "1"
           },
           {
             "id": "c",
-            "label": "3"
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "7^0 + 3^0 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0"
+            },
+            {
+              "id": "b",
+              "label": "1"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Each non-zero base to power 0 equals 1.",
+            "1+1=2."
+          ],
+          "explanation": "7^0+3^0=1+1=2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n7^0+3^0=1+1=2.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Real questions mix the laws.\n\nFor 5^7 × 5^2 ÷ 5^4, keep one running exponent instead of calculating huge powers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Join the numerator powers, then remove the denominator power:\n\n5^(7+2−4)=5^5=3125\n\nThink: + for multiplication, − for division.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "2^8 × 2^3 ÷ 2^6 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "64"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "128"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2^8 × 2^3 ÷ 2^6 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "64"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "128"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Combine the exponents: 8+3−6.",
+            "That leaves 2^5."
+          ],
+          "explanation": "2^8×2^3÷2^6=2^(8+3−6)=2^5=32."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check the pattern.\n\nCombine the exponents: 8+3−6.\n\n2^8×2^3÷2^6=2^(8+3−6)=2^5=32.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "3^6 × 3^4 ÷ 3^7 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "81"
+          },
+          {
+            "id": "c",
+            "label": "243"
           },
           {
             "id": "d",
@@ -1125,119 +1443,291 @@
           }
         ]
       },
-      "content": {
-        "text": "What is (3^2 × 3^0) ÷ 3^1?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "3^0 = 1, or combine exponents directly.",
-            "2 + 0 - 1 = 1, so the result is 3^1."
-          ],
-          "prompt": "What is (3^2 × 3^0) ÷ 3^1?",
+          "questionType": "PRACTICE",
+          "prompt": "3^6 × 3^4 ÷ 3^7 = ?",
           "options": [
             {
               "id": "a",
-              "label": "1"
-            },
-            {
-              "id": "b",
               "label": "9"
             },
             {
+              "id": "b",
+              "label": "81"
+            },
+            {
               "id": "c",
-              "label": "3"
+              "label": "243"
             },
             {
               "id": "d",
               "label": "27"
             }
           ],
-          "difficulty": "HARD",
-          "explanation": "Correct. The combined exponent is 2+0-1=1, so the value is 3^1 = 3.",
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "6+4−7=3.",
+            "3^3=27."
+          ],
+          "explanation": "3^6×3^4÷3^7=3^3=27."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through the retry.\n\n3^6×3^4÷3^7=3^3=27.\n\nTry it once more. The structure is the same; only the values changed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the bases only look different.\n\n64 and 8 are both powers of 2:\n64=2^6, 8=2^3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So:\n\n64^2 ÷ 8^3\n= (2^6)^2 ÷ (2^3)^3\n= 2^12 ÷ 2^9\n= 2^3 = 8\n\nCommon base first. Exponent laws second.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "81^3 ÷ 9^4 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9"
+          },
+          {
+            "id": "b",
+            "label": "27"
+          },
+          {
+            "id": "c",
+            "label": "243"
+          },
+          {
+            "id": "d",
+            "label": "81"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "81^3 ÷ 9^4 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9"
+            },
+            {
+              "id": "b",
+              "label": "27"
+            },
+            {
+              "id": "c",
+              "label": "243"
+            },
+            {
+              "id": "d",
+              "label": "81"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use 81=3^4 and 9=3^2.",
+            "3^12÷3^8=3^4."
+          ],
+          "explanation": "81^3÷9^4=(3^4)^3÷(3^2)^4=3^(12−8)=3^4=81."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_8": {
+      "id": "remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "A common possible slip here is to use the right rule on the wrong structure.\n\nFor this question:\n\nWhat is 7^0 × 7^3?\n\nStart from this clue:\n7^0 = 1.\n\nThen follow the second clue and solve only after the expression is rewritten correctly.",
+        "text": "Let’s check the pattern.\n\nUse 81=3^4 and 9=3^2.\n\n81^3÷9^4=(3^4)^3÷(3^2)^4=3^(12−8)=3^4=81.\n\nNow use the same idea on fresh values.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "32^2 ÷ 4^3 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "32"
+          },
+          {
+            "id": "d",
+            "label": "64"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "32^2 ÷ 4^3 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "64"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "32=2^5 and 4=2^2.",
+            "2^10÷2^6=2^4."
+          ],
+          "explanation": "32^2÷4^3=2^10÷2^6=2^4=16."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "Let's repair the retry with its actual values.\n\nThe combined exponent is 2+0-1=1, so the value is 3^1 = 3.\n\nThe key is to identify the structure first, then apply the matching law.",
+        "text": "Let’s work through the retry.\n\n32^2÷4^3=2^10÷2^6=2^4=16.\n\nTry it once more. The structure is the same; only the values changed.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "complete": {
+      "id": "complete",
       "type": "CONTENT",
       "content": {
-        "text": "You can now read and combine ordinary indices.\n\nSame base, multiply → add exponents.\nSame base, divide → subtract exponents.\nPower of a power → multiply exponents.\nPower of a product/quotient → apply the power to every factor.\nFor the non-zero bases used here, a^0 = 1.\n\nBefore finishing, explain why 3^2 × 3^4 becomes 3^6 instead of 9^6.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "finish"
-        }
-      ]
-    },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
-      "content": {
-        "text": "Nice work. On a fresh expression, first point to the base and exponent, then say which index law you are using. If you can name the law and check it with a small expansion, the rule is becoming reliable.",
+        "text": "You can now read exponent expressions by asking one question first: what is the base?\n\nSame-base multiplication → add exponents.\nSame-base division → subtract.\nPower of a power → multiply.\nZero exponent → 1.\n\nWhen bases look different, rewrite them to one base before touching the exponents.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Laws of Indices",
-    "description": "Understand and apply the six core index laws used throughout the chapter.",
-    "sourceScope": "Based strictly on the Surds and Indices chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Laws of Indices. Fresh practice values are used to teach the same source-supported methods without extracting the chapter's objective questions.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-si-01-laws-of-indices",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

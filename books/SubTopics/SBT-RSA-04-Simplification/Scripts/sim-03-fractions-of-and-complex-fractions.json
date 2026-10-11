@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sim-03-fractions-of-and-complex-fractions",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Fractions, 'Of', and Complex Fractions",
+    "description": "Simplify expressions built from fractions and mixed numbers, including 'of' chains, division by a fraction, and ladder fractions.",
+    "teachingApproach": "Start from a concrete 'of' story, build through mixed-number conversion, 'of' chains with cancellation, reciprocal division, BODMAS with fractions, stacked fractions, and ladder fractions climbed from the bottom. Each rule is demonstrated with one worked line per change, then checked with a fresh question and parallel retry.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 4, Simplification. Approved scope: Teach fraction work inside simplification: converting mixed numbers to improper fractions and back, 'of' as multiplication in chains such as 2/3 of 3/4 of 96, and dividing by a fraction as multiplying by its reciprocal. Apply BODMAS to expressions mixing fractions with +, −, ×, ÷, then handle complex fractions (a fraction over a fraction, where the main bar means divide) and short ladder fractions such as 1 + 1/(2 + 1/3) worked strictly from the bottom up. Use common-denominator addition and subtraction with mixed numbers for capstone items. Show cancellation before multiplying as the speed habit exams reward. Learners should keep every intermediate value as an exact fraction and convert back to a mixed number only when the answer needs it."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn how fractions behave inside simplification.\n\nBy the end you will handle 'of' chains, mixed numbers, stacked fractions, and even ladder fractions — the exact shapes the book's 'Simplify' questions love.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn how fractions behave inside simplification.\n\nA shop sells 3/4 of its 28 chairs.\n\n'Of' with a fraction means multiply:\n\n3/4 of 28\n= 3/4 × 28\n= 3 × 7\n= 21 chairs",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Notice the shortcut: divide by the bottom number first, then multiply by the top.\n\n28 ÷ 4 = 7\n7 × 3 = 21\n\nDividing first keeps the numbers small — and small numbers mean fewer mistakes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is 3/4 of 28?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is 3/4 of 28?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "7"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "'Of' means multiply: 3/4 × 28.",
+            "Divide 28 by 4 first, then multiply by 3."
+          ],
+          "explanation": "3/4 × 28 = 3 × 7 = 21. Dividing 28 by 3 first gives the trap path; the denominator 4 does the dividing."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n'Of' means multiply: 3/4 × 28.\n\n3/4 × 28 = 3 × 7 = 21. Dividing 28 by 3 first gives the trap path; the denominator 4 does the dividing.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is 2/5 of 45?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15"
+          },
+          {
+            "id": "b",
+            "label": "22"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is 2/5 of 45?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15"
+            },
+            {
+              "id": "b",
+              "label": "22"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "9"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "45 ÷ 5 = 9 first.",
+            "Then 9 × 2."
+          ],
+          "explanation": "2/5 of 45 = 9 × 2 = 18. The answer 9 is only one-fifth; the numerator 2 doubles it."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n2/5 of 45 = 9 × 2 = 18. The answer 9 is only one-fifth; the numerator 2 doubles it.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Numbers like 4 3/7 are called mixed numbers — a whole part plus a fraction.\n\nBefore any × or ÷, convert them to improper fractions:\n\n4 3/7 = (4 × 7 + 3)/7 = 31/7\n\nWhole × bottom + top, all over the bottom.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Going back is just division:\n\n31/7 = 4 remainder 3 → 4 3/7\n\nRule of thumb: mixed numbers are for reading answers, improper fractions are for doing the maths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Convert 4 3/7 to an improper fraction.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "31/7"
+          },
+          {
+            "id": "b",
+            "label": "43/7"
+          },
+          {
+            "id": "c",
+            "label": "12/7"
+          },
+          {
+            "id": "d",
+            "label": "28/7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Convert 4 3/7 to an improper fraction.",
+          "options": [
+            {
+              "id": "a",
+              "label": "31/7"
+            },
+            {
+              "id": "b",
+              "label": "43/7"
+            },
+            {
+              "id": "c",
+              "label": "12/7"
+            },
+            {
+              "id": "d",
+              "label": "28/7"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Whole × denominator + numerator.",
+            "4 × 7 + 3 = 31, over 7."
+          ],
+          "explanation": "4 3/7 = (4 × 7 + 3)/7 = 31/7. The trap 43/7 just sticks the digits together without multiplying."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nWhole × denominator + numerator.\n\n4 3/7 = (4 × 7 + 3)/7 = 31/7. The trap 43/7 just sticks the digits together without multiplying.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Convert 5 2/3 to an improper fraction.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10/3"
+          },
+          {
+            "id": "b",
+            "label": "52/3"
+          },
+          {
+            "id": "c",
+            "label": "15/3"
+          },
+          {
+            "id": "d",
+            "label": "17/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Convert 5 2/3 to an improper fraction.",
+          "options": [
+            {
+              "id": "a",
+              "label": "10/3"
+            },
+            {
+              "id": "b",
+              "label": "52/3"
+            },
+            {
+              "id": "c",
+              "label": "15/3"
+            },
+            {
+              "id": "d",
+              "label": "17/3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "5 × 3 + 2 over 3.",
+            "15 + 2 = 17."
+          ],
+          "explanation": "5 2/3 = (5 × 3 + 2)/3 = 17/3. Multiplying 5 × 2 = 10 forgets the denominator's role."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n5 2/3 = (5 × 3 + 2)/3 = 17/3. Multiplying 5 × 2 = 10 forgets the denominator's role.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Chains of 'of' appear constantly:\n\n2/3 of 3/4 of 96\n\nWork from the right, or multiply the fractions first:\n\n2/3 × 3/4 = 6/12 = 1/2\n1/2 of 96 = 48",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Watch the cancellation trick:\n\n2/3 × 3/4\nThe 3 on top cancels the 3 below.\nLeft with 2/4 = 1/2.\n\nCancelling before multiplying is the habit that makes fraction questions fast.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "2/3 of 3/4 of 96 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72"
+          },
+          {
+            "id": "b",
+            "label": "48"
+          },
+          {
+            "id": "c",
+            "label": "64"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2/3 of 3/4 of 96 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72"
+            },
+            {
+              "id": "b",
+              "label": "48"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply the two fractions first, cancelling the 3s.",
+            "1/2 of 96."
+          ],
+          "explanation": "2/3 × 3/4 = 1/2, and 1/2 of 96 = 48. Taking 3/4 of 96 = 72 stops one step too early."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nMultiply the two fractions first, cancelling the 3s.\n\n2/3 × 3/4 = 1/2, and 1/2 of 96 = 48. Taking 3/4 of 96 = 72 stops one step too early.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "3/5 of 5/9 of 135 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "81"
+          },
+          {
+            "id": "b",
+            "label": "45"
+          },
+          {
+            "id": "c",
+            "label": "27"
+          },
+          {
+            "id": "d",
+            "label": "75"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3/5 of 5/9 of 135 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "81"
+            },
+            {
+              "id": "b",
+              "label": "45"
+            },
+            {
+              "id": "c",
+              "label": "27"
+            },
+            {
+              "id": "d",
+              "label": "75"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Cancel the 5s: 3/5 × 5/9 = 3/9 = 1/3.",
+            "Then 1/3 of 135."
+          ],
+          "explanation": "3/5 × 5/9 = 1/3, and 1/3 of 135 = 45. The trap 81 takes only 5/9 of 135 and stops."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n3/5 × 5/9 = 1/3, and 1/3 of 135 = 45. The trap 81 takes only 5/9 of 135 and stops.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "What does 6 ÷ 3/4 mean?\n\nIt asks: how many pieces of size 3/4 fit into 6?\n\nEach whole holds 4/3 of such a piece... easier way:\n\nDividing by a fraction = multiplying by it flipped upside down.\n\n6 ÷ 3/4 = 6 × 4/3 = 8",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The flipped fraction is called the reciprocal.\n\n3/4 ↔ 4/3\n\nSo:\n\n4/5 ÷ 8/15\n= 4/5 × 15/8\n= 60/40\n= 3/2\n\nFlip the second fraction, never the first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "7/8 ÷ 21/16 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3/2"
+          },
+          {
+            "id": "b",
+            "label": "147/128"
+          },
+          {
+            "id": "c",
+            "label": "6/7"
+          },
+          {
+            "id": "d",
+            "label": "2/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "7/8 ÷ 21/16 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3/2"
+            },
+            {
+              "id": "b",
+              "label": "147/128"
+            },
+            {
+              "id": "c",
+              "label": "6/7"
+            },
+            {
+              "id": "d",
+              "label": "2/3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Flip the second fraction: × 16/21.",
+            "7/8 × 16/21 — cancel 7 with 21 and 16 with 8."
+          ],
+          "explanation": "7/8 × 16/21 = (1 × 2)/(1 × 3) = 2/3 after cancelling. Flipping the first fraction instead gives 3/2, the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFlip the second fraction: × 16/21.\n\n7/8 × 16/21 = (1 × 2)/(1 × 3) = 2/3 after cancelling. Flipping the first fraction instead gives 3/2, the trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "4/7 ÷ 8/21 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3/2"
+          },
+          {
+            "id": "b",
+            "label": "2/3"
+          },
+          {
+            "id": "c",
+            "label": "32/147"
+          },
+          {
+            "id": "d",
+            "label": "7/6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "4/7 ÷ 8/21 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3/2"
+            },
+            {
+              "id": "b",
+              "label": "2/3"
+            },
+            {
+              "id": "c",
+              "label": "32/147"
+            },
+            {
+              "id": "d",
+              "label": "7/6"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Flip 8/21 into 21/8.",
+            "4/7 × 21/8 — cancel 4 with 8 and 21 with 7."
+          ],
+          "explanation": "4/7 × 21/8 = (1 × 3)/(1 × 2) = 3/2. Multiplying straight across without flipping gives 32/147, the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n4/7 × 21/8 = (1 × 3)/(1 × 2) = 3/2. Multiplying straight across without flipping gives 32/147, the trap.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Fractions obey the same BODMAS queue:\n\n3/4 + 5/6 × 4/5\n\nMultiplication first:\n\n5/6 × 4/5 = 20/30 = 2/3\n\nThen the addition:\n\n3/4 + 2/3 = 9/12 + 8/12 = 17/12 = 1 5/12",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "To add fractions, find a common bottom number.\n\n4 and 3 both fit into 12.\n\n3/4 = 9/12\n2/3 = 8/12\n\nThen add the tops: 17/12, which reads as 1 5/12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "3/4 + 5/6 × 4/5 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "19/15"
+          },
+          {
+            "id": "b",
+            "label": "5/4"
+          },
+          {
+            "id": "c",
+            "label": "1 5/12"
+          },
+          {
+            "id": "d",
+            "label": "3/2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3/4 + 5/6 × 4/5 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "19/15"
+            },
+            {
+              "id": "b",
+              "label": "5/4"
+            },
+            {
+              "id": "c",
+              "label": "1 5/12"
+            },
+            {
+              "id": "d",
+              "label": "3/2"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Multiply 5/6 × 4/5 before adding.",
+            "5/6 × 4/5 = 2/3, then 3/4 + 2/3 over 12."
+          ],
+          "explanation": "5/6 × 4/5 = 2/3; 3/4 + 2/3 = 9/12 + 8/12 = 17/12 = 1 5/12. Adding first gives (19/12) × 4/5 = 19/15, the BODMAS trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nMultiply 5/6 × 4/5 before adding.\n\n5/6 × 4/5 = 2/3; 3/4 + 2/3 = 9/12 + 8/12 = 17/12 = 1 5/12. Adding first gives (19/12) × 4/5 = 19/15, the BODMAS trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "2/3 + 3/4 × 8/9 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 1/3"
+          },
+          {
+            "id": "b",
+            "label": "34/27"
+          },
+          {
+            "id": "c",
+            "label": "7/6"
+          },
+          {
+            "id": "d",
+            "label": "2/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2/3 + 3/4 × 8/9 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 1/3"
+            },
+            {
+              "id": "b",
+              "label": "34/27"
+            },
+            {
+              "id": "c",
+              "label": "7/6"
+            },
+            {
+              "id": "d",
+              "label": "2/3"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "3/4 × 8/9 first.",
+            "That is 2/3, so 2/3 + 2/3."
+          ],
+          "explanation": "3/4 × 8/9 = 2/3; 2/3 + 2/3 = 4/3 = 1 1/3. Adding first gives 17/12 × 8/9 = 34/27, the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n3/4 × 8/9 = 2/3; 2/3 + 2/3 = 4/3 = 1 1/3. Adding first gives 17/12 × 8/9 = 34/27, the trap.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fraction can sit on top of another fraction:\n\n(2/3) / (5/6)\n\nThe long middle bar is the real division sign. It means:\n\n2/3 ÷ 5/6\n= 2/3 × 6/5\n= 12/15\n= 4/5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Always rewrite a stacked fraction as a flat division first.\n\ntop ÷ bottom\nthen flip the bottom and multiply.\n\nThis is how the book's giant 'simplify' questions are tamed — one layer at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify: (7/9) / (14/15)",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6/5"
+          },
+          {
+            "id": "b",
+            "label": "49/135"
+          },
+          {
+            "id": "c",
+            "label": "5/6"
+          },
+          {
+            "id": "d",
+            "label": "2/5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify: (7/9) / (14/15)",
+          "options": [
+            {
+              "id": "a",
+              "label": "6/5"
+            },
+            {
+              "id": "b",
+              "label": "49/135"
+            },
+            {
+              "id": "c",
+              "label": "5/6"
+            },
+            {
+              "id": "d",
+              "label": "2/5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Rewrite as 7/9 ÷ 14/15, then flip the bottom.",
+            "7/9 × 15/14 — cancel 7 with 14, 15 with 9."
+          ],
+          "explanation": "7/9 × 15/14 = (1 × 5)/(3 × 2) = 5/6. Flipping the top instead of the bottom gives 6/5, the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRewrite as 7/9 ÷ 14/15, then flip the bottom.\n\n7/9 × 15/14 = (1 × 5)/(3 × 2) = 5/6. Flipping the top instead of the bottom gives 6/5, the trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Simplify: (3/10) / (9/25)",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "27/250"
+          },
+          {
+            "id": "b",
+            "label": "5/6"
+          },
+          {
+            "id": "c",
+            "label": "6/5"
+          },
+          {
+            "id": "d",
+            "label": "5/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Simplify: (3/10) / (9/25)",
+          "options": [
+            {
+              "id": "a",
+              "label": "27/250"
+            },
+            {
+              "id": "b",
+              "label": "5/6"
+            },
+            {
+              "id": "c",
+              "label": "6/5"
+            },
+            {
+              "id": "d",
+              "label": "5/3"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "3/10 ÷ 9/25 = 3/10 × 25/9.",
+            "Cancel 3 with 9 and 25 with 10."
+          ],
+          "explanation": "3/10 × 25/9 = (1 × 5)/(2 × 3) = 5/6. Multiplying straight across gives 27/250, which forgets the flip."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n3/10 × 25/9 = (1 × 5)/(2 × 3) = 5/6. Multiplying straight across gives 27/250, which forgets the flip.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now a ladder fraction — a fraction whose bottom holds another fraction:\n\n1 + 1/(2 + 1/3)\n\nClimb from the bottom step:\n\n2 + 1/3 = 7/3",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Next step up:\n\n1/(7/3) = 3/7\n\nTop step:\n\n1 + 3/7 = 10/7 = 1 3/7\n\nNever start at the top. The ladder is always climbed from the lowest rung.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "1 + 1/(3 + 1/2) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 1/6"
+          },
+          {
+            "id": "b",
+            "label": "7/2"
+          },
+          {
+            "id": "c",
+            "label": "1 3/7"
+          },
+          {
+            "id": "d",
+            "label": "1 2/7"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1 + 1/(3 + 1/2) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 1/6"
+            },
+            {
+              "id": "b",
+              "label": "7/2"
+            },
+            {
+              "id": "c",
+              "label": "1 3/7"
+            },
+            {
+              "id": "d",
+              "label": "1 2/7"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Bottom rung: 3 + 1/2 = 7/2.",
+            "Then 1/(7/2) = 2/7, then add 1."
+          ],
+          "explanation": "3 + 1/2 = 7/2; 1/(7/2) = 2/7; 1 + 2/7 = 9/7 = 1 2/7. Computing 1/(3+1) + 1/2 climbs the ladder in the wrong direction."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nBottom rung: 3 + 1/2 = 7/2.\n\n3 + 1/2 = 7/2; 1/(7/2) = 2/7; 1 + 2/7 = 9/7 = 1 2/7. Computing 1/(3+1) + 1/2 climbs the ladder in the wrong direction.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "2 + 1/(4 + 1/3) = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 1/12"
+          },
+          {
+            "id": "b",
+            "label": "2 4/13"
+          },
+          {
+            "id": "c",
+            "label": "13/4"
+          },
+          {
+            "id": "d",
+            "label": "2 3/13"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2 + 1/(4 + 1/3) = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 1/12"
+            },
+            {
+              "id": "b",
+              "label": "2 4/13"
+            },
+            {
+              "id": "c",
+              "label": "13/4"
+            },
+            {
+              "id": "d",
+              "label": "2 3/13"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Bottom rung: 4 + 1/3 = 13/3.",
+            "1/(13/3) = 3/13, then add 2."
+          ],
+          "explanation": "4 + 1/3 = 13/3; 1/(13/3) = 3/13; 2 + 3/13 = 2 3/13."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n4 + 1/3 = 13/3; 1/(13/3) = 3/13; 2 + 3/13 = 2 3/13.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone — mixed numbers under + and −:\n\n2 1/3 + 4 1/6 − 3 1/2\n\nConvert everything first:\n\n7/3 + 25/6 − 7/2",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Common bottom: 6.\n\n14/6 + 25/6 − 21/6\n= (14 + 25 − 21)/6\n= 18/6\n= 3\n\nConvert, common denominator, then add the tops. Three clean stages.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "2 1/3 + 4 1/6 − 3 1/2 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 1/2"
+          },
+          {
+            "id": "b",
+            "label": "3"
+          },
+          {
+            "id": "c",
+            "label": "2 1/2"
+          },
+          {
+            "id": "d",
+            "label": "10/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2 1/3 + 4 1/6 − 3 1/2 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 1/2"
+            },
+            {
+              "id": "b",
+              "label": "3"
+            },
+            {
+              "id": "c",
+              "label": "2 1/2"
+            },
+            {
+              "id": "d",
+              "label": "10/3"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Convert to improper fractions, then use denominator 6.",
+            "7/3 = 14/6, 25/6 stays, 7/2 = 21/6."
+          ],
+          "explanation": "14/6 + 25/6 − 21/6 = 18/6 = 3. Adding whole parts and fractions separately (2 + 4 − 3 and 1/3 + 1/6 − 1/2) needs care: the fraction part becomes 0, so the total is still 3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nConvert to improper fractions, then use denominator 6.\n\n14/6 + 25/6 − 21/6 = 18/6 = 3. Adding whole parts and fractions separately (2 + 4 − 3 and 1/3 + 1/6 − 1/2) needs care: the fraction part becomes 0, so the total is still 3.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "5 1/2 − 2 1/3 + 1 1/6 = ?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 1/6"
+          },
+          {
+            "id": "b",
+            "label": "3 2/3"
+          },
+          {
+            "id": "c",
+            "label": "4 1/3"
+          },
+          {
+            "id": "d",
+            "label": "13/6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "5 1/2 − 2 1/3 + 1 1/6 = ?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 1/6"
+            },
+            {
+              "id": "b",
+              "label": "3 2/3"
+            },
+            {
+              "id": "c",
+              "label": "4 1/3"
+            },
+            {
+              "id": "d",
+              "label": "13/6"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Convert: 11/2 − 7/3 + 7/6, all over 6.",
+            "33/6 − 14/6 + 7/6."
+          ],
+          "explanation": "33/6 − 14/6 + 7/6 = 26/6 = 13/3 = 4 1/3. Converting and using a common bottom keeps the signs safe."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n33/6 − 14/6 + 7/6 = 26/6 = 13/3 = 4 1/3. Converting and using a common bottom keeps the signs safe.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You now own the fraction toolkit.\n\n'Of' means multiply — cancel before you multiply.\nMixed numbers convert to improper fractions before any work.\nDividing by a fraction flips the second fraction.\nLadder fractions climb from the bottom rung.\n\nNext, we hunt for missing numbers hidden inside equations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

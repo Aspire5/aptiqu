@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "src-04-perfect-squares-nearest-square",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Perfect Squares and Nearest-Square Problems",
+    "description": "Recognise square structure and make the smallest possible change that turns a number into a perfect square.",
+    "teachingApproach": "Build perfect-square judgement from prime-pair structure, then add the chapter’s digit clues, interval counting, digit-boundary squares, multiplier and divisor repairs, LCM-to-square construction, nearest-square gaps and a decimal gap capstone. Every “least” answer is justified by showing why no smaller change can reach a square.",
+    "targetDurationMinutes": "Teach perfect-square recognition from even prime exponents and the chapter’s unit-digit clues, including that a square cannot end in 8 and that squares ending in 1 come from unit digits 1 or 9. Cover counting perfect squares in an interval, the greatest and least n-digit perfect squares, least multipliers and divisors that repair odd prime exponents, the least perfect square divisible by several given numbers by starting from their LCM, and least additions or subtractions to reach the nearest square. Include the same reasoning for a small decimal perfect-square adjustment. Make minimality explicit: identify the neighbouring square first, then take the gap.",
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 5, Square Roots and Cube Roots. Approved scope: 33"
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn perfect squares and nearest-square problems with a small example.\n\nWe will build the method one step at a time and check each answer.",
+        "text": "Let's learn to recognise a perfect square before we calculate its root.\n\nA square has structure: prime factors pair up, nearby squares create clear gaps, and even the last digit can sometimes rule an answer out immediately.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "A perfect square has every prime factor appearing an even number of times.\n\nExample: 900 = 2²×3²×5².\n\nAll exponents are even, so 900 is a perfect square.\n\nA last digit can give a quick warning, but factor structure is the proof.",
+        "text": "A perfect square has no lonely prime factor.\n\nExample:\n3600 = 2⁴ × 3² × 5²\n\nAll exponents are even, so every prime can be paired.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That gives a fast test:\n\nall prime exponents even → perfect square\nany odd exponent → not a perfect square\n\nThe rule comes directly from the factor-pair method.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,194 +53,207 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Which number form is a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1225"
+            "label": "2³ × 3²"
           },
           {
             "id": "b",
-            "label": "1296"
+            "label": "2⁴ × 3² × 5⁶"
           },
           {
             "id": "c",
-            "label": "1369"
+            "label": "2² × 3⁵"
           },
           {
             "id": "d",
-            "label": "1238"
+            "label": "2 × 5²"
           }
         ]
       },
-      "content": {
-        "text": "Which number cannot be a perfect square because of its units digit?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Squares cannot end in 2, 3, 7 or 8.",
-            "1238 ends in 8."
-          ],
-          "prompt": "Which number cannot be a perfect square because of its units digit?",
+          "questionType": "PRACTICE",
+          "prompt": "Which number form is a perfect square?",
           "options": [
             {
               "id": "a",
-              "label": "1225"
+              "label": "2³ × 3²"
             },
             {
               "id": "b",
-              "label": "1296"
+              "label": "2⁴ × 3² × 5⁶"
             },
             {
               "id": "c",
-              "label": "1369"
+              "label": "2² × 3⁵"
             },
             {
               "id": "d",
-              "label": "1238"
+              "label": "2 × 5²"
             }
           ],
+          "correctOptionId": "b",
           "difficulty": "EASY",
-          "explanation": "1238 cannot be a perfect square because a square cannot end in 8.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Check every prime exponent.",
+            "4, 2 and 6 are all even."
+          ],
+          "explanation": "2⁴×3²×5⁶ is a perfect square because every exponent is even."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "remedy_1": {
+      "id": "remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "Use last-digit rules only to eliminate impossible cases. A permitted last digit does not prove the number is a square.",
+        "text": "A single odd exponent leaves one prime unpaired.\n\nOnly 2⁴×3²×5⁶ has all-even exponents.\n\nTry another recognition check.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry": {
-      "id": "q_1_retry",
+    "retry_1": {
+      "id": "retry_1",
       "type": "CHOICE",
+      "content": {
+        "text": "Which form is NOT a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "2025"
+            "label": "2² × 7⁴"
           },
           {
             "id": "b",
-            "label": "2028"
+            "label": "3⁶ × 5²"
           },
           {
             "id": "c",
-            "label": "2030"
+            "label": "2⁴ × 3⁴"
           },
           {
             "id": "d",
-            "label": "2032"
+            "label": "2⁵ × 3²"
           }
         ]
       },
-      "content": {
-        "text": "Which number is a perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "45²=2025.",
-            "Check the exact square, not only the last digit."
-          ],
-          "prompt": "Which number is a perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "Which form is NOT a perfect square?",
           "options": [
             {
               "id": "a",
-              "label": "2025"
+              "label": "2² × 7⁴"
             },
             {
               "id": "b",
-              "label": "2028"
+              "label": "3⁶ × 5²"
             },
             {
               "id": "c",
-              "label": "2030"
+              "label": "2⁴ × 3⁴"
             },
             {
               "id": "d",
-              "label": "2032"
+              "label": "2⁵ × 3²"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "2025=45², so it is a perfect square.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "xp": 10,
+          "hints": [
+            "Look for one odd exponent.",
+            "The exponent 5 is odd."
+          ],
+          "explanation": "2⁵×3² is not a perfect square because five 2s cannot all be paired."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "2025 passes the exact square check: 45×45=2025.",
+        "text": "Pair every prime mentally.\n\n2⁵ leaves one 2 alone, so that form is not a square.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "To count perfect squares between two limits, find the smallest integer whose square is above the lower limit and the largest integer whose square is below the upper limit.\n\nThen count those integer roots.",
+        "text": "The chapter also uses quick unit-digit clues. One useful warning is immediate:\n\nA perfect square cannot end in 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Another source pattern: if a square ends in 1, the original number must end in 1 or 9.\n\nThese are filters, not full proofs. A permitted last digit does not guarantee that the whole number is a square.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,12 +265,16 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Which ending immediately proves a whole number is NOT a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "1"
           },
           {
             "id": "b",
@@ -241,49 +282,23 @@
           },
           {
             "id": "c",
-            "label": "5"
+            "label": "9"
           },
           {
             "id": "d",
-            "label": "6"
+            "label": "8"
           }
         ]
       },
-      "content": {
-        "text": "How many perfect squares lie strictly between 100 and 200?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Squares are 11²,12²,13²,14² in this interval.",
-            "121,144,169,196."
-          ],
-          "prompt": "How many perfect squares lie strictly between 100 and 200?",
+          "questionType": "PRACTICE",
+          "prompt": "Which ending immediately proves a whole number is NOT a perfect square?",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "1"
             },
             {
               "id": "b",
@@ -291,131 +306,166 @@
             },
             {
               "id": "c",
-              "label": "5"
+              "label": "9"
             },
             {
               "id": "d",
-              "label": "6"
+              "label": "8"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "There are 4: 121, 144, 169 and 196.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "Use the chapter’s unit-digit warning.",
+            "A square cannot end in 8."
+          ],
+          "explanation": "An integer square cannot have unit digit 8."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "remedy_2": {
+      "id": "remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "Do not include an endpoint unless the wording allows it. 'Between' here is strict.",
+        "text": "This question asks only for a quick rejection clue.\n\nA final digit of 8 rules out a perfect square immediately.\n\nTry a parallel unit-digit check.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "If a perfect square ends in 1, which pair can be the unit digit of its square root?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "4"
+            "label": "1 or 9"
           },
           {
             "id": "b",
-            "label": "6"
+            "label": "2 or 8"
           },
           {
             "id": "c",
-            "label": "5"
+            "label": "3 or 7"
           },
           {
             "id": "d",
-            "label": "7"
+            "label": "4 or 6"
           }
         ]
       },
-      "content": {
-        "text": "How many perfect squares lie strictly between 50 and 150?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "8²=64 through 12²=144.",
-            "Count 8,9,10,11,12."
-          ],
-          "prompt": "How many perfect squares lie strictly between 50 and 150?",
+          "questionType": "PRACTICE",
+          "prompt": "If a perfect square ends in 1, which pair can be the unit digit of its square root?",
           "options": [
             {
               "id": "a",
-              "label": "4"
+              "label": "1 or 9"
             },
             {
               "id": "b",
-              "label": "6"
+              "label": "2 or 8"
             },
             {
               "id": "c",
-              "label": "5"
+              "label": "3 or 7"
             },
             {
               "id": "d",
-              "label": "7"
+              "label": "4 or 6"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "64,81,100,121,144: five squares.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "xp": 10,
+          "hints": [
+            "Think 1² and 9².",
+            "Both end in 1."
+          ],
+          "explanation": "A number ending in 1 or 9 has a square ending in 1."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "The integer roots are 8 through 12, giving 5 values.",
+        "text": "Check the one-digit squares.\n\n1² ends in 1 and 9²=81 also ends in 1.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "For the greatest n-digit perfect square, start from the largest n-digit number and move down to the nearest square.\n\nFor the least n-digit perfect square, start from the smallest n-digit number and move up to the next square.",
+        "text": "To count perfect squares in an interval, count their integer roots.\n\nBetween 120 and 300:\n11² = 121\n17² = 289",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the squares are 11² through 17².\n\nCount the roots, not the squares one by one:\n17 − 11 + 1 = 7 perfect squares.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,194 +477,207 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
+      "content": {
+        "text": "How many perfect squares lie from 50 to 200?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "9801"
+            "label": "7"
           },
           {
             "id": "b",
-            "label": "9604"
+            "label": "6"
           },
           {
             "id": "c",
-            "label": "9900"
+            "label": "8"
           },
           {
             "id": "d",
-            "label": "9999"
+            "label": "9"
           }
         ]
       },
-      "content": {
-        "text": "What is the greatest four-digit perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "The largest 4-digit number is 9999.",
-            "99²=9801 and 100²=10000 has five digits."
-          ],
-          "prompt": "What is the greatest four-digit perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "How many perfect squares lie from 50 to 200?",
           "options": [
             {
               "id": "a",
-              "label": "9801"
+              "label": "7"
             },
             {
               "id": "b",
-              "label": "9604"
+              "label": "6"
             },
             {
               "id": "c",
-              "label": "9900"
+              "label": "8"
             },
             {
               "id": "d",
-              "label": "9999"
+              "label": "9"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The greatest four-digit perfect square is 99²=9801.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First square at least 50 is 8²=64.",
+            "Last at most 200 is 14²=196. Count 8 through 14."
+          ],
+          "explanation": "Roots 8,9,10,11,12,13,14 give 7 perfect squares."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "remedy_3": {
+      "id": "remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Do not choose 9999 simply because it is the largest four-digit number. It must itself be a square.",
+        "text": "Find the first and last integer roots inside the interval.\n\n8 through 14 inclusive gives 14−8+1 = 7.\n\nTry another interval.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry": {
-      "id": "q_3_retry",
+    "retry_3": {
+      "id": "retry_3",
       "type": "CHOICE",
+      "content": {
+        "text": "How many perfect squares lie from 300 to 500?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "1000"
+            "label": "4"
           },
           {
             "id": "b",
-            "label": "1016"
+            "label": "5"
           },
           {
             "id": "c",
-            "label": "1089"
+            "label": "6"
           },
           {
             "id": "d",
-            "label": "1024"
+            "label": "7"
           }
         ]
       },
-      "content": {
-        "text": "What is the least four-digit perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "31²=961 is only three digits.",
-            "32²=1024."
-          ],
-          "prompt": "What is the least four-digit perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "How many perfect squares lie from 300 to 500?",
           "options": [
             {
               "id": "a",
-              "label": "1000"
+              "label": "4"
             },
             {
               "id": "b",
-              "label": "1016"
+              "label": "5"
             },
             {
               "id": "c",
-              "label": "1089"
+              "label": "6"
             },
             {
               "id": "d",
-              "label": "1024"
+              "label": "7"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The least four-digit perfect square is 32²=1024.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "18²=324 and 22²=484.",
+            "Count 18 through 22."
+          ],
+          "explanation": "18²,19²,20²,21²,22² are the five squares in the interval."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "Since 31²=961<1000 and 32²=1024≥1000, 1024 is the first four-digit square.",
+        "text": "Convert the interval into a root interval.\n\n18 through 22 gives 5 values.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "To make a number a perfect square by multiplication, repair every odd prime exponent.\n\n294 = 2×3×7².\n\nThe exponents of 2 and 3 are odd, so multiply by 2×3=6.\n\nThen every exponent is even.",
+        "text": "Boundary questions ask for the nearest square inside a digit limit.\n\nGreatest four-digit number: 9999.\nThe largest integer whose square stays below it is 99.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the greatest four-digit perfect square is:\n\n99² = 9801\n\nFor the least four-digit square, move upward from 1000: 31²=961 is too small, 32²=1024 works.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,6 +689,527 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the greatest four-digit perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9604"
+          },
+          {
+            "id": "b",
+            "label": "9900"
+          },
+          {
+            "id": "c",
+            "label": "9801"
+          },
+          {
+            "id": "d",
+            "label": "9981"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the greatest four-digit perfect square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9604"
+            },
+            {
+              "id": "b",
+              "label": "9900"
+            },
+            {
+              "id": "c",
+              "label": "9801"
+            },
+            {
+              "id": "d",
+              "label": "9981"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The root must be the largest two-digit integer below 100.",
+            "99²."
+          ],
+          "explanation": "99² = 9801, so 9801 is the greatest four-digit perfect square."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A four-digit square must have a root below 100.\n\nThe largest possible integer root is 99, and 99² = 9801.\n\nTry the lower boundary now.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the least four-digit perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1000"
+          },
+          {
+            "id": "b",
+            "label": "1024"
+          },
+          {
+            "id": "c",
+            "label": "1089"
+          },
+          {
+            "id": "d",
+            "label": "1156"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the least four-digit perfect square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1000"
+            },
+            {
+              "id": "b",
+              "label": "1024"
+            },
+            {
+              "id": "c",
+              "label": "1089"
+            },
+            {
+              "id": "d",
+              "label": "1156"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "31²=961 is still three digits.",
+            "32² = 1024."
+          ],
+          "explanation": "The least four-digit perfect square is 32² = 1024."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Move upward from 1000 until an integer square reaches four digits.\n\n32² = 1024 is the first one.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "To make a number a square by multiplying, repair the odd prime exponents.\n\n294 = 2 × 3 × 7²\n\nThe 2 and 3 are unpaired.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply by 2 × 3 = 6:\n\n294 × 6 = 2² × 3² × 7²\n\nNow every exponent is even, and 6 is the least multiplier because it supplies exactly the missing partners.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the least number by which 588 = 2² × 3 × 7² must be multiplied to make a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "21"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the least number by which 588 = 2² × 3 × 7² must be multiplied to make a perfect square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "21"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Only the exponent of 3 is odd.",
+            "Supply one more factor 3."
+          ],
+          "explanation": "Multiply by 3 so the factorisation becomes 2²×3²×7²."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not multiply by every prime again. Supply only the missing partner.\n\nThe lone 3 needs one more 3, so the least multiplier is 3.\n\nTry another repair.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the least multiplier for 675 = 3³ × 5² to become a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "5"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "15"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the least multiplier for 675 = 3³ × 5² to become a perfect square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "5"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "15"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The 5 exponent is already even.",
+            "3³ needs one more 3 to become 3⁴."
+          ],
+          "explanation": "Multiplying by 3 changes 3³ to 3⁴ while 5² stays paired."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Repair only the odd exponent.\n\n3³ needs one more 3, so the least multiplier is 3.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Division is the opposite repair. Remove the unpaired prime factors.\n\n1470 = 2 × 3 × 5 × 7²\n\nThe 2, 3 and 5 each appear once.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Divide by 2 × 3 × 5 = 30:\n\n1470 ÷ 30 = 49 = 7²\n\nAgain, remove only what prevents full pairing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the least number by which 1080 = 2³ × 3³ × 5 must be divided to make a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "15"
+          },
+          {
+            "id": "c",
+            "label": "60"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the least number by which 1080 = 2³ × 3³ × 5 must be divided to make a perfect square?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "15"
+            },
+            {
+              "id": "c",
+              "label": "60"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Each odd exponent needs one factor removed.",
+            "Remove one 2, one 3 and one 5."
+          ],
+          "explanation": "Divide by 2×3×5 = 30, leaving 2²×3² = 36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "For division, remove one copy from every odd exponent.\n\n2×3×5 = 30 is the least divisor that leaves all-even exponents.\n\nTry a parallel case.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the least divisor for 1800 = 2³ × 3² × 5² to become a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -647,37 +1231,11 @@
           }
         ]
       },
-      "content": {
-        "text": "What is the least number by which 180 must be multiplied to make a perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "180=2²×3²×5.",
-            "Only the factor 5 is unpaired."
-          ],
-          "prompt": "What is the least number by which 180 must be multiplied to make a perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the least divisor for 1800 = 2³ × 3² × 5² to become a perfect square?",
           "options": [
             {
               "id": "a",
@@ -696,548 +1254,692 @@
               "label": "10"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Multiply by 5: 180×5=900=30².",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Only the exponent of 2 is odd.",
+            "Remove one factor 2."
+          ],
+          "explanation": "1800 ÷ 2 = 900 = 30², so the least divisor is 2."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "Only repair the odd exponents. Do not multiply by an entire extra copy of the number.",
+        "text": "Only one prime count is odd.\n\nRemove one 2 and the remaining exponents are all even.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_4_retry": {
-      "id": "q_4_retry",
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "If several numbers must all divide the same perfect square, start with their LCM.\n\nFor 10, 12, 15 and 18:\nLCM = 180 = 2² × 3² × 5",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The 2s and 3s are already paired; only 5 is lonely.\n\nMultiply the LCM by 5:\n180 × 5 = 900 = 30²\n\nSo 900 is the least perfect square divisible by all four numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the least perfect square divisible by 6, 8 and 12?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "72"
           },
           {
             "id": "b",
-            "label": "2"
+            "label": "144"
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "288"
           },
           {
             "id": "d",
-            "label": "8"
+            "label": "576"
           }
         ]
       },
-      "content": {
-        "text": "What is the least number by which 72 must be divided to make a perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "72=2³×3².",
-            "Remove one factor 2 to leave 2²×3²."
-          ],
-          "prompt": "What is the least number by which 72 must be divided to make a perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the least perfect square divisible by 6, 8 and 12?",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "72"
             },
             {
               "id": "b",
-              "label": "2"
+              "label": "144"
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "288"
             },
             {
               "id": "d",
-              "label": "8"
+              "label": "576"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "72÷2=36, a perfect square.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "LCM(6,8,12) = 24 = 2³×3.",
+            "Repair the odd exponents with one 2 and one 3."
+          ],
+          "explanation": "24×6 = 144 = 12², and 144 is divisible by 6, 8 and 12."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "remedy_7": {
+      "id": "remedy_7",
       "type": "CONTENT",
       "content": {
-        "text": "The odd exponent is on 2. Dividing by one 2 changes 2³ to 2².",
+        "text": "First satisfy divisibility with the LCM; then repair square structure.\n\nLCM 24 needs ×6, giving 144.\n\nTry another LCM-to-square question.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "retry_7"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
-      "type": "CONTENT",
-      "content": {
-        "text": "For the least number to add, move up to the next square.\nFor the least number to subtract, move down to the previous square.\n\nExample: 1780 lies between 42²=1764 and 43²=1849.\nAdd 69 to reach 1849, or subtract 16 to reach 1764.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "q_5"
-        }
-      ]
-    },
-    "q_5": {
-      "id": "q_5",
+    "retry_7": {
+      "id": "retry_7",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the least perfect square divisible by 4, 9 and 10?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "10"
+            "label": "180"
           },
           {
             "id": "b",
-            "label": "34"
+            "label": "360"
           },
           {
             "id": "c",
-            "label": "21"
+            "label": "900"
           },
           {
             "id": "d",
+            "label": "1800"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is the least perfect square divisible by 4, 9 and 10?",
+          "options": [
+            {
+              "id": "a",
+              "label": "180"
+            },
+            {
+              "id": "b",
+              "label": "360"
+            },
+            {
+              "id": "c",
+              "label": "900"
+            },
+            {
+              "id": "d",
+              "label": "1800"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "LCM = 180 = 2²×3²×5.",
+            "One more 5 completes the square."
+          ],
+          "explanation": "180×5 = 900 = 30², the least perfect square divisible by all three."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Start from 180, not from the product of all three numbers.\n\nOnly the 5 exponent is odd, so ×5 gives 900.\n\nTry again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Nearest-square questions are gap questions.\n\nTake 1780. It lies between:\n42² = 1764\n43² = 1849",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "To make 1780 a square by adding, move to the next square:\n\n1849 − 1780 = 69\n\nIf the question asked for subtraction, use the lower square instead.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is the least number to add to 7700 to make a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "77"
+          },
+          {
+            "id": "b",
+            "label": "98"
+          },
+          {
+            "id": "c",
             "label": "44"
+          },
+          {
+            "id": "d",
+            "label": "131"
           }
         ]
       },
-      "content": {
-        "text": "What least number must be added to 990 to make a perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "31²=961 and 32²=1024.",
-            "1024−990=34."
-          ],
-          "prompt": "What least number must be added to 990 to make a perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the least number to add to 7700 to make a perfect square?",
           "options": [
             {
               "id": "a",
-              "label": "10"
+              "label": "77"
             },
             {
               "id": "b",
-              "label": "34"
+              "label": "98"
             },
             {
               "id": "c",
-              "label": "21"
-            },
-            {
-              "id": "d",
               "label": "44"
+            },
+            {
+              "id": "d",
+              "label": "131"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "The next square is 1024, so add 34.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "87²=7569 and 88²=7744.",
+            "Use the next square above 7700."
+          ],
+          "explanation": "7744−7700 = 44, so 44 is the least addition."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "remedy_8": {
+      "id": "remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "For 'least added', use the next square above the number, not the nearest square in either direction.",
+        "text": "The smallest addition must land on the very next square.\n\n88²=7744, so the gap is 44.\n\nTry another nearest-square gap.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_8": {
+      "id": "retry_8",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the least number to subtract from 549162 to make a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "19"
+            "label": "28"
           },
           {
             "id": "b",
-            "label": "21"
+            "label": "36"
           },
           {
             "id": "c",
-            "label": "34"
+            "label": "62"
           },
           {
             "id": "d",
-            "label": "49"
+            "label": "81"
           }
         ]
       },
-      "content": {
-        "text": "What least number must be subtracted from 710 to make a perfect square?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "26²=676 and 27²=729.",
-            "710−676=34."
-          ],
-          "prompt": "What least number must be subtracted from 710 to make a perfect square?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the least number to subtract from 549162 to make a perfect square?",
           "options": [
             {
               "id": "a",
-              "label": "19"
+              "label": "28"
             },
             {
               "id": "b",
-              "label": "21"
+              "label": "36"
             },
             {
               "id": "c",
-              "label": "34"
+              "label": "62"
             },
             {
               "id": "d",
-              "label": "49"
+              "label": "81"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "Subtract 34 to reach 676=26².",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The book-style long-division check puts the number just above 741².",
+            "741² = 549081."
+          ],
+          "explanation": "549162−549081 = 81, so subtracting 81 reaches 741²."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
       "type": "CONTENT",
       "content": {
-        "text": "For subtraction, move downward to the previous square: 710−676=34.",
+        "text": "For subtraction, use the nearest square below the number.\n\n741² = 549081, and the gap is 81.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "retry_8"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_9": {
+      "id": "teach_9",
       "type": "CONTENT",
       "content": {
-        "text": "Decimals can also be perfect squares.\n\n0.09 = (0.3)², so it has a rational square root.\n\n0.4 does not have a terminating rational square root in the simple perfect-square form used here.\n\nA quick exact test is to write the decimal as a reduced fraction and see whether numerator and denominator are both perfect squares.",
+        "text": "The same gap idea can work with a small decimal.\n\n0.000326 is just above 0.000324.\n\nAnd 0.000324 = 0.018².",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6"
+          "targetNodeId": "teach_9_step"
         }
       ]
     },
-    "q_6": {
-      "id": "q_6",
+    "teach_9_step": {
+      "id": "teach_9_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the least subtraction is:\n\n0.000326 − 0.000324 = 0.000002\n\nThe decimal looks different, but the logic is still ‘nearest square, then gap’.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_9"
+        }
+      ]
+    },
+    "q_9": {
+      "id": "q_9",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the least number to subtract from 0.000326 to make it a perfect square?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "0.3"
+            "label": "0.000002"
           },
           {
             "id": "b",
-            "label": "0.5"
+            "label": "0.000004"
           },
           {
             "id": "c",
-            "label": "0.7"
+            "label": "0.00002"
           },
           {
             "id": "d",
-            "label": "0.36"
+            "label": "0.0002"
           }
         ]
       },
-      "content": {
-        "text": "Which has a rational square root?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "0.36=36/100.",
-            "Both 36 and 100 are perfect squares."
-          ],
-          "prompt": "Which has a rational square root?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the least number to subtract from 0.000326 to make it a perfect square?",
           "options": [
             {
               "id": "a",
-              "label": "0.3"
+              "label": "0.000002"
             },
             {
               "id": "b",
-              "label": "0.5"
+              "label": "0.000004"
             },
             {
               "id": "c",
-              "label": "0.7"
+              "label": "0.00002"
             },
             {
               "id": "d",
-              "label": "0.36"
+              "label": "0.0002"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "√0.36=6/10=0.6, so 0.36 has a rational square root.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "0.018² = 0.000324.",
+            "Find the gap from 0.000326."
+          ],
+          "explanation": "0.000326−0.000324 = 0.000002."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "remedy_9": {
+      "id": "remedy_9",
       "type": "CONTENT",
       "content": {
-        "text": "A decimal that merely looks simple is not enough. Test it as a fraction or by squaring a candidate.",
+        "text": "Find the nearby exact square first.\n\n0.018² = 0.000324, so the required subtraction is 0.000002.\n\nTry the capstone again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_9"
         }
       ]
     },
-    "q_6_retry": {
-      "id": "q_6_retry",
+    "retry_9": {
+      "id": "retry_9",
       "type": "CHOICE",
+      "content": {
+        "text": "What is the least number to add to 0.000399 to reach the next square 0.02²?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "0.0625"
+            "label": "0.000001"
           },
           {
             "id": "b",
-            "label": "0.06"
+            "label": "0.00001"
           },
           {
             "id": "c",
-            "label": "0.065"
+            "label": "0.0001"
           },
           {
             "id": "d",
-            "label": "0.075"
+            "label": "0.001"
           }
         ]
       },
-      "content": {
-        "text": "Which is a perfect square decimal?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "0.25²=0.0625.",
-            "625/10000=(25/100)²."
-          ],
-          "prompt": "Which is a perfect square decimal?",
+          "questionType": "PRACTICE",
+          "prompt": "What is the least number to add to 0.000399 to reach the next square 0.02²?",
           "options": [
             {
               "id": "a",
-              "label": "0.0625"
+              "label": "0.000001"
             },
             {
               "id": "b",
-              "label": "0.06"
+              "label": "0.00001"
             },
             {
               "id": "c",
-              "label": "0.065"
+              "label": "0.0001"
             },
             {
               "id": "d",
-              "label": "0.075"
+              "label": "0.001"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "0.0625=(0.25)².",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "0.02² = 0.0004.",
+            "Subtract 0.000399 from 0.0004."
+          ],
+          "explanation": "0.0004−0.000399 = 0.000001."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "retry_remedy_9": {
+      "id": "retry_remedy_9",
       "type": "CONTENT",
       "content": {
-        "text": "0.25×0.25=0.0625, which proves it is a perfect square decimal.",
+        "text": "The next square is already named.\n\nThe task is only the decimal gap: 0.000001.\n\nTry again.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "retry_9"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "complete": {
+      "id": "complete",
       "type": "CONTENT",
       "content": {
-        "text": "Perfect-square questions are about even prime exponents and neighbouring squares.\n\nUse factor parity for multiply/divide repairs.\nUse the previous or next square for least subtraction/addition.\nUse integer roots to count squares in an interval.\nAnd remember: a last-digit rule can eliminate, but it cannot prove by itself.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "targetNodeId": "finish"
-        }
-      ]
-    },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
-      "content": {
-        "text": "You finished Perfect Squares and Nearest-Square Problems.\n\nTry to explain one method in your own words: what do you look for first, what operation comes next, and how do you know the final answer is reasonable?",
+        "text": "You can now recognise square structure, count squares in a range, find square boundaries, repair prime exponents with the least multiplier or divisor, and measure the smallest gap to the next square.\n\nNext, we stop asking only for whole-number roots and learn how to simplify surds such as √72 and √27.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Perfect Squares and Nearest-Square Problems",
-    "description": "Recognise perfect squares and find least additions, subtractions, multipliers or divisors that create one.",
-    "sourceScope": "Based strictly on the Square Roots and Cube Roots chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Perfect Squares and Nearest-Square Problems. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 18
-  },
-  "scriptId": "script-src-04-perfect-squares-nearest-square",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }

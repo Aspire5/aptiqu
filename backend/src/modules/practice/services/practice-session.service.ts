@@ -17,7 +17,7 @@ export class PracticeSessionService {
    * Initializes and persists a new 10-Question Practice Session.
    * Supports specific topic/subtopics or global random selection across live content.
    */
-  public async createSession(userId: string, topicId?: string, subtopicIds?: string[]) {
+  public async createSession(userId: string, topicId?: string, subtopicIds?: string[], smartPicks = false) {
     let resolvedSubtopicIds = subtopicIds;
     let resolvedTopicId = topicId;
 
@@ -109,33 +109,15 @@ export class PracticeSessionService {
       }
 
       if (foundSubtopics.length > 0) {
-        const resolvedIds = new Set<string>();
-        for (const s of foundSubtopics) {
-          resolvedIds.add(s.id);
-          if (s.slug) resolvedIds.add(s.slug);
-        }
-        resolvedSubtopicIds = Array.from(resolvedIds);
+        resolvedSubtopicIds = foundSubtopics.map(s => s.id);
         if (!resolvedTopicId) {
           resolvedTopicId = foundSubtopics[0].topicId;
         }
-      } else if (resolvedTopicId) {
-        // Fallback: If passed IDs were not directly matched, find all active subtopics under this topic
-        const topicSubs = await prisma.subtopic.findMany({
-          where: {
-            topicId: resolvedTopicId,
-            isActive: true,
-          },
-          select: { id: true, slug: true },
-          orderBy: { sequence: 'asc' },
-        });
-        if (topicSubs.length > 0) {
-          const resolvedIds = new Set<string>();
-          for (const s of topicSubs) {
-            resolvedIds.add(s.id);
-            if (s.slug) resolvedIds.add(s.slug);
-          }
-          resolvedSubtopicIds = Array.from(resolvedIds);
-        }
+      } else {
+        throw new Error('Selected subtopics are unavailable. Please update your selection.');
+      }
+      if (foundSubtopics.length !== candidateSubtopicIds.size) {
+        throw new Error('Some selected subtopics are unavailable. Please update your selection.');
       }
     }
 
@@ -154,6 +136,9 @@ export class PracticeSessionService {
       }
     }
 
+    if (topicId && (!resolvedSubtopicIds || !resolvedSubtopicIds.length)) {
+      throw new Error('No available subtopics in this topic. Choose another topic.');
+    }
     // 4. Global live curriculum fallback if still empty
     if (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0) {
       const { LiveCurriculumService } = await import('../../curriculum/services/live-curriculum.service');
@@ -204,8 +189,10 @@ export class PracticeSessionService {
     const questions = await practiceSelectionService.selectQuestionsForPractice(
       userId,
       resolvedSubtopicIds,
-      10
+      10,
+      smartPicks
     );
+    if (questions.length !== 10) throw new Error('A practice session requires 10 questions.');
 
     console.log(
       `[PracticeSession] Selected ${questions.length} questions. Saving practice session to database...`
@@ -282,6 +269,10 @@ export class PracticeSessionService {
           calculationMode: sq.question.calculationMode,
           hints: sq.question.hints,
           pattern: sq.question.pattern,
+          pyq: sq.question.pyq,
+          alternativeExplanation: isAnswered ? sq.question.alternativeExplanation : undefined,
+          preferredSolution: isAnswered ? sq.question.preferredSolution : undefined,
+          preferredReason: isAnswered ? sq.question.preferredReason : undefined,
           // Only reveal correct answer & explanation if user already answered
           correctAnswer: isAnswered ? sq.question.correctAnswer : undefined,
           explanation: isAnswered ? sq.question.explanation : undefined,
@@ -351,12 +342,28 @@ export class PracticeSessionService {
       throw new Error(`Question "${questionId}" has already been answered.`);
     }
 
+    if (session.questions[session.currentIndex]?.id !== sessionQuestion.id) {
+      throw new Error('Answer the current question first.');
+    }
+    if (!Number.isFinite(responseTimeMs) || responseTimeMs < 0 || responseTimeMs > 86400000) {
+      throw new Error('Invalid response time.');
+    }
     const question = sessionQuestion.question;
+    const option = selectedOptionId.trim().toUpperCase();
+    if (option !== 'TIMEOUT' && !(question.options as any[]).some(o => o.id === option)) {
+      throw new Error('Choose a valid option.');
+    }
     const isCorrect =
       selectedOptionId.trim().toUpperCase() === question.correctAnswer.trim().toUpperCase();
 
     // Perform database updates in a transaction
     return await prisma.$transaction(async (tx) => {
+      // Serialize answers for this session and recheck after acquiring the lock.
+      await tx.$queryRaw`SELECT id FROM learning.practice_sessions WHERE id = ${session.id}::uuid FOR UPDATE`;
+      const lockedSession = await tx.practiceSession.findUnique({ where: { id: session.id } });
+      if (lockedSession?.status !== 'ACTIVE') throw new Error('This session is no longer active.');
+      const fresh = await tx.practiceSessionQuestion.findUnique({ where: { id: sessionQuestion.id } });
+      if (fresh?.isAnswered) throw new Error('This question has already been answered.');
       // 1. Update PracticeSessionQuestion
       await tx.practiceSessionQuestion.update({
         where: { id: sessionQuestion.id },
@@ -371,6 +378,9 @@ export class PracticeSessionService {
 
       // 2. Update UserQuestionProgress (history & mastery tracking) ONLY for regular drills (not replays)
       if (!session.isReplay) {
+        // Different sessions for the same user may answer the same question.
+        // Serialize their progress updates to avoid lost counts/create races.
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${userId}))`;
         const existingProg = await tx.userQuestionProgress.findUnique({
           where: {
             userId_questionId: {
@@ -389,7 +399,7 @@ export class PracticeSessionService {
               lastSeenAt: new Date(),
               lastIsCorrect: isCorrect,
               avgResponseTimeMs: Math.round(
-                ((existingProg.avgResponseTimeMs || responseTimeMs) + responseTimeMs) / 2
+                ((existingProg.avgResponseTimeMs ?? responseTimeMs) * existingProg.timesSeen + responseTimeMs) / (existingProg.timesSeen + 1)
               ),
             },
           });
@@ -418,7 +428,7 @@ export class PracticeSessionService {
       const answeredCount = updatedQuestions.filter((q) => q.isAnswered).length;
       const isComplete = answeredCount === session.totalQuestions;
       const newCorrectCount = updatedQuestions.filter((q) => q.isCorrect).length;
-      const newTotalTimeMs = session.totalTimeMs + responseTimeMs;
+      const newTotalTimeMs = updatedQuestions.reduce((sum, q) => sum + (q.responseTimeMs || 0), 0);
 
       let xpResult: any = null;
       let totalXpToAward = 0;
@@ -508,8 +518,8 @@ export class PracticeSessionService {
       return { success: true, message: 'Session already completed.', xpAwarded: session.xpAwarded };
     }
 
-    await prisma.practiceSession.update({
-      where: { id: sessionId },
+    await prisma.practiceSession.updateMany({
+      where: { id: sessionId, userId, status: 'ACTIVE' },
       data: {
         status: 'ABANDONED',
         lastActivityAt: new Date(),
@@ -528,7 +538,7 @@ export class PracticeSessionService {
    */
   public async replayPracticeSession(userId: string, originalSessionId: string) {
     const original = await prisma.practiceSession.findFirst({
-      where: { id: originalSessionId },
+      where: { id: originalSessionId, userId },
       include: {
         questions: {
           orderBy: { sequence: 'asc' },
@@ -540,6 +550,7 @@ export class PracticeSessionService {
       throw new Error(`Practice session "${originalSessionId}" not found for replay.`);
     }
 
+    if (original.questions.length !== 10) throw new Error('This older session does not contain 10 questions. Start a new session.');
     return await prisma.$transaction(async (tx) => {
       const replaySession = await tx.practiceSession.create({
         data: {
@@ -582,6 +593,7 @@ export class PracticeSessionService {
     const match = await prisma.pvpMatch.findUnique({
       where: { id: matchId },
       include: {
+        players: { select: { userId: true } },
         questionSet: {
           include: {
             setQuestions: {
@@ -597,9 +609,10 @@ export class PracticeSessionService {
       throw new Error(`PvP Match "${matchId}" not found for replay.`);
     }
 
+    if (!match.players.some(player => player.userId === userId)) throw new Error('You can only replay your own matches.');
     const setQuestions = match.questionSet.setQuestions;
-    if (setQuestions.length === 0) {
-      throw new Error('PvP match question set contains no questions.');
+    if (setQuestions.length !== 10) {
+      throw new Error('A replay requires a complete 10-question set.');
     }
 
     const firstQuestion = setQuestions[0].question;
@@ -656,17 +669,14 @@ export class PracticeSessionService {
     ]);
 
     // Compute stats only over non-replay completed sessions
-    const nonReplayCompleted = await prisma.practiceSession.findMany({
+    const totals = await prisma.practiceSession.aggregate({
       where: { userId, isReplay: false, status: 'COMPLETED' },
-      select: { correctCount: true, totalQuestions: true, totalTimeMs: true },
+      _count: true,
+      _sum: { correctCount: true, totalQuestions: true, totalTimeMs: true },
     });
-
-    const totalAnsweredQuestions = nonReplayCompleted.reduce(
-      (sum, s) => sum + s.totalQuestions,
-      0
-    );
-    const totalCorrect = nonReplayCompleted.reduce((sum, s) => sum + s.correctCount, 0);
-    const totalTimeMs = nonReplayCompleted.reduce((sum, s) => sum + s.totalTimeMs, 0);
+    const totalAnsweredQuestions = totals._sum.totalQuestions || 0;
+    const totalCorrect = totals._sum.correctCount || 0;
+    const totalTimeMs = totals._sum.totalTimeMs || 0;
 
     const overallAccuracy =
       totalAnsweredQuestions > 0 ? Math.round((totalCorrect / totalAnsweredQuestions) * 100) : 0;
@@ -697,7 +707,7 @@ export class PracticeSessionService {
         totalPages: Math.ceil(totalCount / limit),
       },
       stats: {
-        completedDrillsCount: nonReplayCompleted.length,
+        completedDrillsCount: totals._count,
         overallAccuracy,
         avgResponseTimeMs,
       },

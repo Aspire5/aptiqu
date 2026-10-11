@@ -1,23 +1,47 @@
 {
+  "schemaVersion": "1.0",
+  "scriptId": "pon-01-turn-number-statements-into-equations",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Turning Number Statements into Equations",
+    "description": "Turn one-number statements into equations, undo operations in the right order, and keep only answers that fit the question.",
+    "teachingApproach": "Open with an equal-distance puzzle so the learner sees that a sentence can become an equation. Then move from linear statements to fractional parts, multi-step operation stories, simple quadratics, root selection and a mixed-fraction capstone. Every new form is demonstrated with actual numbers before a fresh parallel question, and each answer is checked against the original statement.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "Teach the chapter's core habit: give the unknown number a symbol, translate the verbal condition exactly, solve the equation, and check the result in the original sentence. Begin with equal-distance language such as 'as much greater than 36 as less than 86', then cover times-a-number statements, fractional parts of one number, multi-step operations, and equations where the number is multiplied by a fraction of itself or combined with its square. Show that quadratic equations can produce two algebraic roots but a positive/natural-number condition may remove one. Include a capstone mixing two fractional parts on opposite sides. Keep two-number systems and digit-place puzzles for later scripts."
+  },
+  "startNodeId": "start",
   "nodes": {
     "start": {
       "id": "start",
       "type": "CONTENT",
       "content": {
-        "text": "Let's learn how number puzzles become equations.\n\nThe book's main idea is simple: choose the unknown number, turn each condition into math, solve, and check.\n\nWe will begin with one unknown before moving to harder number puzzles.",
+        "text": "Let's learn how number riddles turn into equations.\n\nA sentence like 'a number is as much above 40 as it is below 90' looks wordy, but it hides one simple balance. Once that balance is visible, the puzzle becomes ordinary arithmetic.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_1"
+          "targetNodeId": "teach_1"
         }
       ]
     },
-    "concept_1": {
-      "id": "concept_1",
+    "teach_1": {
+      "id": "teach_1",
       "type": "CONTENT",
       "content": {
-        "text": "Start by giving the unknown number a simple name, usually x.\n\nThen translate the sentence, not the answer.\n\nExample: 'x is as much greater than 28 as it is less than 64' means\n\nx − 28 = 64 − x.\n\nBoth sides describe the two gaps.",
+        "text": "A number puzzle becomes much easier when the sentence turns into one clean equation.\n\nStart with this: a number is as much above 40 as it is below 90.\n\nThe two gaps are equal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let the number be x.\n\nGap above 40: x − 40\nGap below 90: 90 − x\n\nSo:\nx − 40 = 90 − x\n2x = 130\nx = 65\n\n65 sits exactly halfway between 40 and 90.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -29,6 +53,103 @@
     "q_1": {
       "id": "q_1",
       "type": "CHOICE",
+      "content": {
+        "text": "A number is as much greater than 28 as it is less than 72. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "44"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "56"
+          },
+          {
+            "id": "d",
+            "label": "100"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A number is as much greater than 28 as it is less than 72. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "44"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "56"
+            },
+            {
+              "id": "d",
+              "label": "100"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Equal gaps mean the number is the midpoint of 28 and 72.",
+            "Solve x−28 = 72−x."
+          ],
+          "explanation": "x−28 = 72−x gives 2x=100, so x=50. Check: 50−28=22 and 72−50=22."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nEqual gaps mean the number is the midpoint of 28 and 72.\n\nx−28 = 72−x gives 2x=100, so x=50. Check: 50−28=22 and 72−50=22.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A number is as much greater than 35 as it is less than 81. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -38,49 +159,23 @@
           },
           {
             "id": "b",
-            "label": "36"
+            "label": "63"
           },
           {
             "id": "c",
-            "label": "42"
+            "label": "58"
           },
           {
             "id": "d",
-            "label": "50"
+            "label": "116"
           }
         ]
       },
-      "content": {
-        "text": "A number is as much greater than 28 as it is less than 64. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write the two equal gaps: x−28 and 64−x.",
-            "x−28=64−x, so 2x=92."
-          ],
-          "prompt": "A number is as much greater than 28 as it is less than 64. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "A number is as much greater than 35 as it is less than 81. What is the number?",
           "options": [
             {
               "id": "a",
@@ -88,135 +183,77 @@
             },
             {
               "id": "b",
-              "label": "36"
+              "label": "63"
             },
             {
               "id": "c",
-              "label": "42"
+              "label": "58"
             },
             {
               "id": "d",
-              "label": "50"
+              "label": "116"
             }
           ],
+          "correctOptionId": "c",
           "difficulty": "EASY",
-          "explanation": "x−28=64−x. Therefore 2x=92 and x=46.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_1_retry": {
-      "id": "q_1_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "28"
-          },
-          {
-            "id": "b",
-            "label": "32"
-          },
-          {
-            "id": "c",
-            "label": "34"
-          },
-          {
-            "id": "d",
-            "label": "36"
-          }
-        ]
-      },
-      "content": {
-        "text": "A number is as much greater than 18 as it is less than 50. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_2"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_1_retry_fix"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
           "xp": 10,
           "hints": [
-            "Set x−18 equal to 50−x.",
-            "2x=68."
+            "The two distances are equal.",
+            "Solve x−35 = 81−x."
           ],
-          "prompt": "A number is as much greater than 18 as it is less than 50. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "28"
-            },
-            {
-              "id": "b",
-              "label": "32"
-            },
-            {
-              "id": "c",
-              "label": "34"
-            },
-            {
-              "id": "d",
-              "label": "36"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "x−18=50−x, so 2x=68 and x=34.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "explanation": "2x=116, so x=58. Both gaps are 23."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_1_remedy": {
-      "id": "q_1_remedy",
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA number is as much greater than 28 as it is less than 64. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n2x=116, so x=58. Both gaps are 23.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_1_retry"
+          "targetNodeId": "retry_1"
         }
       ]
     },
-    "q_1_retry_fix": {
-      "id": "q_1_retry_fix",
+    "teach_2": {
+      "id": "teach_2",
       "type": "CONTENT",
       "content": {
-        "text": "x−18=50−x, so 2x=68 and x=34.",
+        "text": "Now the clue tells us what happens to the number.\n\n'Five times a number, minus 12, is 18 more than twice the number.'\n\nTranslate each phrase before calculating.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_2"
+          "targetNodeId": "teach_2_step"
         }
       ]
     },
-    "concept_2": {
-      "id": "concept_2",
+    "teach_2_step": {
+      "id": "teach_2_step",
       "type": "CONTENT",
       "content": {
-        "text": "Words such as 'times', 'more than' and 'less than' decide the equation.\n\nIf 7 times a number, minus 12, equals 8 more than 3 times the number:\n\n7x − 12 = 3x + 8.\n\nOnly after writing this should you solve.",
+        "text": "Let the number be x.\n\nFive times the number, minus 12: 5x − 12\n18 more than twice the number: 2x + 18\n\n5x − 12 = 2x + 18\n3x = 30\nx = 10",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -228,6 +265,10 @@
     "q_2": {
       "id": "q_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Seven times a number minus 9 is 21 more than four times the number. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
@@ -237,49 +278,23 @@
           },
           {
             "id": "b",
-            "label": "5"
+            "label": "7"
           },
           {
             "id": "c",
-            "label": "6"
+            "label": "30"
           },
           {
             "id": "d",
-            "label": "8"
+            "label": "10"
           }
         ]
       },
-      "content": {
-        "text": "Seven times a number minus 12 equals 8 more than three times the number. Find the number.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_remedy"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Use 7x−12=3x+8.",
-            "Move 3x left and 12 right."
-          ],
-          "prompt": "Seven times a number minus 12 equals 8 more than three times the number. Find the number.",
+          "questionType": "PRACTICE",
+          "prompt": "Seven times a number minus 9 is 21 more than four times the number. What is the number?",
           "options": [
             {
               "id": "a",
@@ -287,135 +302,170 @@
             },
             {
               "id": "b",
-              "label": "5"
+              "label": "7"
             },
             {
               "id": "c",
-              "label": "6"
+              "label": "30"
             },
             {
               "id": "d",
-              "label": "8"
+              "label": "10"
             }
           ],
+          "correctOptionId": "d",
           "difficulty": "EASY",
-          "explanation": "7x−12=3x+8 gives 4x=20, so x=5.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "xp": 10,
+          "hints": [
+            "Translate the two sides as 7x−9 and 4x+21.",
+            "Move the 4x to the left and 9 to the right."
+          ],
+          "explanation": "7x−9=4x+21 gives 3x=30, so x=10. Check: 70−9=61 and 40+21=61."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_retry": {
-      "id": "q_2_retry",
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nTranslate the two sides as 7x−9 and 4x+21.\n\n7x−9=4x+21 gives 3x=30, so x=10. Check: 70−9=61 and 40+21=61.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
       "type": "CHOICE",
+      "content": {
+        "text": "Six times a number minus 8 equals three times the number plus 19. Find the number.",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "5"
-          },
-          {
-            "id": "b",
             "label": "9"
           },
           {
+            "id": "b",
+            "label": "3"
+          },
+          {
             "id": "c",
-            "label": "21"
+            "label": "11"
           },
           {
             "id": "d",
-            "label": "7"
+            "label": "27"
           }
         ]
       },
-      "content": {
-        "text": "Five times a number minus 9 equals 12 more than twice the number. Find the number.",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_3"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_2_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write 5x−9=2x+12.",
-            "Then 3x=21."
-          ],
-          "prompt": "Five times a number minus 9 equals 12 more than twice the number. Find the number.",
+          "questionType": "PRACTICE",
+          "prompt": "Six times a number minus 8 equals three times the number plus 19. Find the number.",
           "options": [
             {
               "id": "a",
-              "label": "5"
-            },
-            {
-              "id": "b",
               "label": "9"
             },
             {
+              "id": "b",
+              "label": "3"
+            },
+            {
               "id": "c",
-              "label": "21"
+              "label": "11"
             },
             {
               "id": "d",
-              "label": "7"
+              "label": "27"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "5x−9=2x+12, so 3x=21 and x=7.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "xp": 10,
+          "hints": [
+            "Use 6x−8 = 3x+19.",
+            "The x-terms differ by 3x."
+          ],
+          "explanation": "6x−8=3x+19 gives 3x=27, so x=9. Both sides become 46."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_2_remedy": {
-      "id": "q_2_remedy",
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nSeven times a number minus 12 equals 8 more than three times the number. Find the number.\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n6x−8=3x+19 gives 3x=27, so x=9. Both sides become 46.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_2_retry"
+          "targetNodeId": "retry_2"
         }
       ]
     },
-    "q_2_retry_fix": {
-      "id": "q_2_retry_fix",
+    "teach_3": {
+      "id": "teach_3",
       "type": "CONTENT",
       "content": {
-        "text": "5x−9=2x+12, so 3x=21 and x=7.",
+        "text": "Fractions in the sentence still refer to the same whole number.\n\nSuppose a number is 50 more than three-fifths of itself.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_3"
+          "targetNodeId": "teach_3_step"
         }
       ]
     },
-    "concept_3": {
-      "id": "concept_3",
+    "teach_3_step": {
+      "id": "teach_3_step",
       "type": "CONTENT",
       "content": {
-        "text": "A fractional part of x is just multiplication.\n\nThree-fifths of x = (3/5)x.\n\nSo if the difference between x and three-fifths of x is 36:\n\nx − (3/5)x = 36.\n\nThe left side is (2/5)x.",
+        "text": "Let the number be x.\n\nx − 3x/5 = 50\n2x/5 = 50\nx = 125\n\nThe key is that both x and 3x/5 describe the same number.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -427,86 +477,10 @@
     "q_3": {
       "id": "q_3",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "60"
-          },
-          {
-            "id": "b",
-            "label": "72"
-          },
-          {
-            "id": "c",
-            "label": "120"
-          },
-          {
-            "id": "d",
-            "label": "90"
-          }
-        ]
-      },
       "content": {
-        "text": "The difference between a number and three-fifths of it is 36. What is the number?",
+        "text": "The difference between a number and three-fourths of it is 18. What is the number?",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x−(3/5)x=(2/5)x.",
-            "(2/5)x=36."
-          ],
-          "prompt": "The difference between a number and three-fifths of it is 36. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "60"
-            },
-            {
-              "id": "b",
-              "label": "72"
-            },
-            {
-              "id": "c",
-              "label": "120"
-            },
-            {
-              "id": "d",
-              "label": "90"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "(2/5)x=36, so x=36×5/2=90.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
-        }
-      }
-    },
-    "q_3_retry": {
-      "id": "q_3_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
@@ -516,11 +490,11 @@
           },
           {
             "id": "b",
-            "label": "36"
+            "label": "24"
           },
           {
             "id": "c",
-            "label": "48"
+            "label": "54"
           },
           {
             "id": "d",
@@ -528,37 +502,11 @@
           }
         ]
       },
-      "content": {
-        "text": "The difference between a number and two-thirds of it is 24. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_4"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_3_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x−(2/3)x=(1/3)x.",
-            "One-third of x is 24."
-          ],
-          "prompt": "The difference between a number and two-thirds of it is 24. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "The difference between a number and three-fourths of it is 18. What is the number?",
           "options": [
             {
               "id": "a",
@@ -566,55 +514,170 @@
             },
             {
               "id": "b",
-              "label": "36"
+              "label": "24"
             },
             {
               "id": "c",
-              "label": "48"
+              "label": "54"
             },
             {
               "id": "d",
               "label": "96"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "EASY",
-          "explanation": "(1/3)x=24, so x=72.",
+          "xp": 10,
+          "hints": [
+            "The leftover part is one-fourth of the number.",
+            "x−3x/4 = x/4."
+          ],
+          "explanation": "x/4=18, so x=72. Check: three-fourths of 72 is 54, and 72−54=18."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nThe leftover part is one-fourth of the number.\n\nx/4=18, so x=72. Check: three-fourths of 72 is 54, and 72−54=18.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A number exceeds two-thirds of itself by 28. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "42"
+          },
+          {
+            "id": "b",
+            "label": "56"
+          },
+          {
+            "id": "c",
+            "label": "112"
+          },
+          {
+            "id": "d",
+            "label": "84"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "a"
+          "prompt": "A number exceeds two-thirds of itself by 28. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "42"
+            },
+            {
+              "id": "b",
+              "label": "56"
+            },
+            {
+              "id": "c",
+              "label": "112"
+            },
+            {
+              "id": "d",
+              "label": "84"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "x−2x/3 leaves one-third of x.",
+            "Set x/3 = 28."
+          ],
+          "explanation": "x/3=28, so x=84. Two-thirds is 56 and the gap is 28."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_3_remedy": {
-      "id": "q_3_remedy",
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nThe difference between a number and three-fifths of it is 36. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nx/3=28, so x=84. Two-thirds is 56 and the gap is 28.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_3_retry"
+          "targetNodeId": "retry_3"
         }
       ]
     },
-    "q_3_retry_fix": {
-      "id": "q_3_retry_fix",
+    "teach_4": {
+      "id": "teach_4",
       "type": "CONTENT",
       "content": {
-        "text": "(1/3)x=24, so x=72.",
+        "text": "Some clues apply several operations in a row.\n\nA number is doubled, 7 is added, and the result is tripled to get 81.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_4"
+          "targetNodeId": "teach_4_step"
         }
       ]
     },
-    "concept_4": {
-      "id": "concept_4",
+    "teach_4_step": {
+      "id": "teach_4_step",
       "type": "CONTENT",
       "content": {
-        "text": "Nested fractions are read from the inside out.\n\n'One-third of one-fourth of x' means\n\n(1/3)×(1/4)×x = x/12.\n\nDo not add the denominators. Multiply the fractions.",
+        "text": "Let the starting number be x.\n\n3(2x + 7) = 81\n2x + 7 = 27\n2x = 20\nx = 10\n\nNotice how the brackets keep the order of the story.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -626,194 +689,207 @@
     "q_4": {
       "id": "q_4",
       "type": "CHOICE",
+      "content": {
+        "text": "A number is doubled, 5 is added, and the result is tripled to get 69. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "30"
+            "label": "7"
           },
           {
             "id": "b",
-            "label": "40"
+            "label": "12"
           },
           {
             "id": "c",
-            "label": "36"
+            "label": "9"
           },
           {
             "id": "d",
-            "label": "120"
-          }
-        ]
-      },
-      "content": {
-        "text": "One-third of one-fourth of a number is 10. What is three-tenths of that number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x/12=10, so first find x.",
-            "x=120; now take 3/10 of it."
-          ],
-          "prompt": "One-third of one-fourth of a number is 10. What is three-tenths of that number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "30"
-            },
-            {
-              "id": "b",
-              "label": "40"
-            },
-            {
-              "id": "c",
-              "label": "36"
-            },
-            {
-              "id": "d",
-              "label": "120"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "x/12=10 gives x=120. Then (3/10)×120=36.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "c"
-        }
-      }
-    },
-    "q_4_retry": {
-      "id": "q_4_retry",
-      "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "24"
-          },
-          {
-            "id": "b",
-            "label": "30"
-          },
-          {
-            "id": "c",
             "label": "32"
-          },
-          {
-            "id": "d",
-            "label": "120"
           }
         ]
       },
-      "content": {
-        "text": "One-fifth of one-third of a number is 8. What is one-fourth of that number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_5"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_4_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "x/15=8.",
-            "Find x, then divide by 4."
-          ],
-          "prompt": "One-fifth of one-third of a number is 8. What is one-fourth of that number?",
+          "questionType": "PRACTICE",
+          "prompt": "A number is doubled, 5 is added, and the result is tripled to get 69. What is the number?",
           "options": [
             {
               "id": "a",
-              "label": "24"
+              "label": "7"
             },
             {
               "id": "b",
-              "label": "30"
+              "label": "12"
             },
             {
               "id": "c",
-              "label": "32"
+              "label": "9"
             },
             {
               "id": "d",
-              "label": "120"
+              "label": "32"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "x=120, and one-fourth of 120 is 30.",
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Keep the first two steps together: 3(2x+5)=69.",
+            "Divide by 3 before undoing +5."
+          ],
+          "explanation": "3(2x+5)=69 gives 2x+5=23, then 2x=18, so x=9."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nKeep the first two steps together: 3(2x+5)=69.\n\n3(2x+5)=69 gives 2x+5=23, then 2x=18, so x=9.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A number is tripled, 4 is subtracted, and the result is doubled to get 52. Find the number.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "30"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "b"
+          "prompt": "A number is tripled, 4 is subtracted, and the result is doubled to get 52. Find the number.",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "30"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Translate the story as 2(3x−4)=52.",
+            "Divide by 2, then add 4."
+          ],
+          "explanation": "2(3x−4)=52 gives 3x−4=26, then 3x=30, so x=10."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_4_remedy": {
-      "id": "q_4_remedy",
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nOne-third of one-fourth of a number is 10. What is three-tenths of that number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\n2(3x−4)=52 gives 3x−4=26, then 3x=30, so x=10.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_4_retry"
+          "targetNodeId": "retry_4"
         }
       ]
     },
-    "q_4_retry_fix": {
-      "id": "q_4_retry_fix",
+    "teach_5": {
+      "id": "teach_5",
       "type": "CONTENT",
       "content": {
-        "text": "x=120, and one-fourth of 120 is 30.",
+        "text": "A number can also be multiplied by a fraction of itself. That creates a square.\n\nIf a number times two-thirds of itself is 600:",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_5"
+          "targetNodeId": "teach_5_step"
         }
       ]
     },
-    "concept_5": {
-      "id": "concept_5",
+    "teach_5_step": {
+      "id": "teach_5_step",
       "type": "CONTENT",
       "content": {
-        "text": "Some one-number questions describe a short chain of operations.\n\nIf 'subtract 6, then divide by 7, and get 5', write\n\n(x−6)/7 = 5.\n\nUndo the operations in reverse order: multiply by 7, then add 6.",
+        "text": "x × (2x/3) = 600\n2x²/3 = 600\nx² = 900\nx = 30\n\nThe algebra also has −30, but a positive-number question keeps 30.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -825,194 +901,207 @@
     "q_5": {
       "id": "q_5",
       "type": "CHOICE",
+      "content": {
+        "text": "A positive number multiplied by three-fourths of itself is 432. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "29"
+            "label": "18"
           },
           {
             "id": "b",
-            "label": "41"
+            "label": "24"
           },
           {
             "id": "c",
-            "label": "35"
+            "label": "32"
           },
           {
             "id": "d",
-            "label": "49"
+            "label": "576"
           }
         ]
       },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A positive number multiplied by three-fourths of itself is 432. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "32"
+            },
+            {
+              "id": "d",
+              "label": "576"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "x×3x/4 = 432.",
+            "This gives x² = 576."
+          ],
+          "explanation": "3x²/4=432, so x²=576 and the positive root is x=24."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
       "content": {
-        "text": "A number is decreased by 6 and the result is divided by 7. The answer is 5. What is the number?",
+        "text": "Let's check this one.\n\nx×3x/4 = 432.\n\n3x²/4=432, so x²=576 and the positive root is x=24.\n\nNow try the same idea with fresh numbers.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_remedy"
+          "targetNodeId": "retry_5"
         }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "(x−6)/7=5.",
-            "x−6=35."
-          ],
-          "prompt": "A number is decreased by 6 and the result is divided by 7. The answer is 5. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "29"
-            },
-            {
-              "id": "b",
-              "label": "41"
-            },
-            {
-              "id": "c",
-              "label": "35"
-            },
-            {
-              "id": "d",
-              "label": "49"
-            }
-          ],
-          "difficulty": "EASY",
-          "explanation": "(x−6)/7=5, so x−6=35 and x=41.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "b"
-        }
-      }
+      ]
     },
-    "q_5_retry": {
-      "id": "q_5_retry",
+    "retry_5": {
+      "id": "retry_5",
       "type": "CHOICE",
+      "content": {
+        "text": "A positive number multiplied by one-half of itself is 200. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "28"
+            "label": "10"
           },
           {
             "id": "b",
-            "label": "36"
+            "label": "40"
           },
           {
             "id": "c",
-            "label": "52"
+            "label": "20"
           },
           {
             "id": "d",
-            "label": "44"
+            "label": "400"
           }
         ]
       },
-      "content": {
-        "text": "A number is decreased by 8 and the result is divided by 4. The answer is 9. What is the number?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "concept_6"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_5_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "(x−8)/4=9.",
-            "x−8=36."
-          ],
-          "prompt": "A number is decreased by 8 and the result is divided by 4. The answer is 9. What is the number?",
+          "questionType": "PRACTICE",
+          "prompt": "A positive number multiplied by one-half of itself is 200. What is the number?",
           "options": [
             {
               "id": "a",
-              "label": "28"
+              "label": "10"
             },
             {
               "id": "b",
-              "label": "36"
+              "label": "40"
             },
             {
               "id": "c",
-              "label": "52"
+              "label": "20"
             },
             {
               "id": "d",
-              "label": "44"
+              "label": "400"
             }
           ],
-          "difficulty": "EASY",
-          "explanation": "(x−8)/4=9, so x=44.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "d"
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "x×x/2=200.",
+            "So x²=400."
+          ],
+          "explanation": "x²/2=200 gives x²=400. The positive number is 20."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_5_remedy": {
-      "id": "q_5_remedy",
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA number is decreased by 6 and the result is divided by 7. The answer is 5. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nx²/2=200 gives x²=400. The positive number is 20.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_5_retry"
+          "targetNodeId": "retry_5"
         }
       ]
     },
-    "q_5_retry_fix": {
-      "id": "q_5_retry_fix",
+    "teach_6": {
+      "id": "teach_6",
       "type": "CONTENT",
       "content": {
-        "text": "(x−8)/4=9, so x=44.",
+        "text": "Another common shape is a number together with its square.\n\nSuppose x + x² = 156.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "concept_6"
+          "targetNodeId": "teach_6_step"
         }
       ]
     },
-    "concept_6": {
-      "id": "concept_6",
+    "teach_6_step": {
+      "id": "teach_6_step",
       "type": "CONTENT",
       "content": {
-        "text": "A number can also appear as x² or 1/x. Then the equation may become quadratic.\n\nFor a positive or natural number, solve the quadratic and keep only roots that fit the condition.\n\nAlways check the surviving answer in the original sentence.",
+        "text": "Move everything to one side:\nx² + x − 156 = 0\n\nFind two numbers whose product is −156 and sum is 1:\n13 and −12\n\n(x + 13)(x − 12)=0\nFor a positive-number question, x=12.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
@@ -1024,96 +1113,20 @@
     "q_6": {
       "id": "q_6",
       "type": "CHOICE",
-      "input": {
-        "type": "CHOICE",
-        "options": [
-          {
-            "id": "a",
-            "label": "8"
-          },
-          {
-            "id": "b",
-            "label": "6"
-          },
-          {
-            "id": "c",
-            "label": "9"
-          },
-          {
-            "id": "d",
-            "label": "12"
-          }
-        ]
-      },
       "content": {
-        "text": "A positive number added to its square gives 72. What is the number?",
+        "text": "A positive number plus its square is 210. What is the number?",
         "avatarPersona": "TUTOR"
       },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_remedy"
-        }
-      ],
-      "questionReference": {
-        "mode": "INLINE",
-        "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write x²+x=72.",
-            "x²+x−72=(x+9)(x−8)."
-          ],
-          "prompt": "A positive number added to its square gives 72. What is the number?",
-          "options": [
-            {
-              "id": "a",
-              "label": "8"
-            },
-            {
-              "id": "b",
-              "label": "6"
-            },
-            {
-              "id": "c",
-              "label": "9"
-            },
-            {
-              "id": "d",
-              "label": "12"
-            }
-          ],
-          "difficulty": "MEDIUM",
-          "explanation": "x²+x−72=0 gives x=8 or x=−9. The number is positive, so x=8.",
-          "questionType": "PRACTICE",
-          "correctOptionId": "a"
-        }
-      }
-    },
-    "q_6_retry": {
-      "id": "q_6_retry",
-      "type": "CHOICE",
       "input": {
         "type": "CHOICE",
         "options": [
           {
             "id": "a",
-            "label": "3"
+            "label": "14"
           },
           {
             "id": "b",
-            "label": "9"
+            "label": "10"
           },
           {
             "id": "c",
@@ -1121,49 +1134,23 @@
           },
           {
             "id": "d",
-            "label": "18"
+            "label": "196"
           }
         ]
       },
-      "content": {
-        "text": "A positive integer has the property that its square is 45 more than 12 times the number. What is the integer?",
-        "avatarPersona": "TUTOR"
-      },
-      "transitions": [
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": true,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "recap"
-        },
-        {
-          "condition": {
-            "field": "isCorrect",
-            "value": false,
-            "operator": "EQUALS"
-          },
-          "targetNodeId": "q_6_retry_fix"
-        }
-      ],
       "questionReference": {
         "mode": "INLINE",
         "inlineData": {
-          "xp": 10,
-          "hints": [
-            "Write x²−12x=45.",
-            "x²−12x−45=(x−15)(x+3)."
-          ],
-          "prompt": "A positive integer has the property that its square is 45 more than 12 times the number. What is the integer?",
+          "questionType": "PRACTICE",
+          "prompt": "A positive number plus its square is 210. What is the number?",
           "options": [
             {
               "id": "a",
-              "label": "3"
+              "label": "14"
             },
             {
               "id": "b",
-              "label": "9"
+              "label": "10"
             },
             {
               "id": "c",
@@ -1171,73 +1158,576 @@
             },
             {
               "id": "d",
-              "label": "18"
+              "label": "196"
             }
           ],
+          "correctOptionId": "a",
           "difficulty": "MEDIUM",
-          "explanation": "The roots are 15 and −3. The positive integer is 15.",
+          "xp": 15,
+          "hints": [
+            "Form x²+x−210=0.",
+            "Look for consecutive factors of 210 whose difference is 1."
+          ],
+          "explanation": "x²+x−210=(x+15)(x−14). The positive root is 14. Check: 14²+14=196+14=210."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nForm x²+x−210=0.\n\nx²+x−210=(x+15)(x−14). The positive root is 14. Check: 14²+14=196+14=210.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A positive number plus its square is 306. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16"
+          },
+          {
+            "id": "b",
+            "label": "18"
+          },
+          {
+            "id": "c",
+            "label": "289"
+          },
+          {
+            "id": "d",
+            "label": "17"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
           "questionType": "PRACTICE",
-          "correctOptionId": "c"
+          "prompt": "A positive number plus its square is 306. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16"
+            },
+            {
+              "id": "b",
+              "label": "18"
+            },
+            {
+              "id": "c",
+              "label": "289"
+            },
+            {
+              "id": "d",
+              "label": "17"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Form x²+x−306=0.",
+            "18×17=306."
+          ],
+          "explanation": "x²+x−306=(x+18)(x−17), so the positive number is 17."
         }
-      }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
     },
-    "q_6_remedy": {
-      "id": "q_6_remedy",
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
       "type": "CONTENT",
       "content": {
-        "text": "A common slip is to calculate before translating the condition. Start again from this exact question:\n\nA positive number added to its square gives 72. What is the number?\n\nWrite the needed equation or relationship first, then solve one step at a time.",
+        "text": "Let's work through this one.\n\nx²+x−306=(x+18)(x−17), so the positive number is 17.\n\nNow solve it once more using that same step.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "q_6_retry"
+          "targetNodeId": "retry_6"
         }
       ]
     },
-    "q_6_retry_fix": {
-      "id": "q_6_retry_fix",
+    "teach_7": {
+      "id": "teach_7",
       "type": "CONTENT",
       "content": {
-        "text": "The roots are 15 and −3. The positive integer is 15.",
+        "text": "A quadratic can produce two valid answers.\n\nFor x²−5x+6=0:\n(x−2)(x−3)=0\nSo x=2 or x=3. Both values satisfy the equation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "recap"
+          "targetNodeId": "teach_7_step"
         }
       ]
     },
-    "recap": {
-      "id": "recap",
+    "teach_7_step": {
+      "id": "teach_7_step",
       "type": "CONTENT",
       "content": {
-        "text": "Name the unknown x. Translate the words before calculating. Fractional parts are multiplication, operation chains can be undone in reverse, and x² or 1/x may create a quadratic. Check the final root in the original condition.",
+        "text": "The equation gives the candidates; the wording decides which candidates are allowed.\n\nIf the question says 'positive integer', keep only positive integers. If it gives no extra restriction, keep every value that checks in the original equation.",
         "avatarPersona": "TUTOR"
       },
       "transitions": [
         {
-          "targetNodeId": "finish"
+          "targetNodeId": "q_7"
         }
       ]
     },
-    "finish": {
-      "id": "finish",
-      "type": "COMPLETION",
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
       "content": {
-        "text": "You finished Turning Number Statements into Equations.\n\nPick one question you solved and explain the equation you wrote first. Then show how you checked the final answer against the original conditions.",
+        "text": "x²−7x+12=0. If x is a positive integer, which set contains all possible values?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 only"
+          },
+          {
+            "id": "b",
+            "label": "4 only"
+          },
+          {
+            "id": "c",
+            "label": "−3 and −4"
+          },
+          {
+            "id": "d",
+            "label": "3 and 4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "x²−7x+12=0. If x is a positive integer, which set contains all possible values?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 only"
+            },
+            {
+              "id": "b",
+              "label": "4 only"
+            },
+            {
+              "id": "c",
+              "label": "−3 and −4"
+            },
+            {
+              "id": "d",
+              "label": "3 and 4"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Factor x²−7x+12.",
+            "Two positive factors multiply to 12 and add to 7."
+          ],
+          "explanation": "x²−7x+12=(x−3)(x−4), so x can be 3 or 4. Both satisfy the stated positive-integer condition."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nFactor x²−7x+12.\n\nx²−7x+12=(x−3)(x−4), so x can be 3 or 4. Both satisfy the stated positive-integer condition.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "x²−9x+20=0. Which set gives all positive solutions?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 and 5"
+          },
+          {
+            "id": "b",
+            "label": "4 only"
+          },
+          {
+            "id": "c",
+            "label": "5 only"
+          },
+          {
+            "id": "d",
+            "label": "−4 and −5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "x²−9x+20=0. Which set gives all positive solutions?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 and 5"
+            },
+            {
+              "id": "b",
+              "label": "4 only"
+            },
+            {
+              "id": "c",
+              "label": "5 only"
+            },
+            {
+              "id": "d",
+              "label": "−4 and −5"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Factor the quadratic.",
+            "Use two numbers that multiply to 20 and add to 9."
+          ],
+          "explanation": "(x−4)(x−5)=0, so the positive solutions are 4 and 5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n(x−4)(x−5)=0, so the positive solutions are 4 and 5.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: one number can appear in several fractional forms at once.\n\nSuppose two-thirds of x minus 30 equals one-fourth of x plus 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "2x/3 − 30 = x/4 + 20\n\nMove the fraction terms together:\n2x/3 − x/4 = 50\n8x/12 − 3x/12 = 50\n5x/12 = 50\nx = 120\n\nTranslate first; simplify second.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three-fourths of a number minus 18 equals one-third of the number plus 12. What is the number?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "84"
+          },
+          {
+            "id": "c",
+            "label": "72"
+          },
+          {
+            "id": "d",
+            "label": "120"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three-fourths of a number minus 18 equals one-third of the number plus 12. What is the number?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "84"
+            },
+            {
+              "id": "c",
+              "label": "72"
+            },
+            {
+              "id": "d",
+              "label": "120"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Move the fractional x-terms to one side and constants to the other.",
+            "3x/4−x/3 = 30."
+          ],
+          "explanation": "(9x−4x)/12=30 gives 5x/12=30, so x=72. Check: 54−18=36 and 24+12=36."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this one.\n\nMove the fractional x-terms to one side and constants to the other.\n\n(9x−4x)/12=30 gives 5x/12=30, so x=72. Check: 54−18=36 and 24+12=36.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Five-sixths of a number minus 20 equals one-half of the number plus 14. Find the number.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "68"
+          },
+          {
+            "id": "b",
+            "label": "102"
+          },
+          {
+            "id": "c",
+            "label": "96"
+          },
+          {
+            "id": "d",
+            "label": "204"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Five-sixths of a number minus 20 equals one-half of the number plus 14. Find the number.",
+          "options": [
+            {
+              "id": "a",
+              "label": "68"
+            },
+            {
+              "id": "b",
+              "label": "102"
+            },
+            {
+              "id": "c",
+              "label": "96"
+            },
+            {
+              "id": "d",
+              "label": "204"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "5x/6−x/2 = 34.",
+            "Convert x/2 to 3x/6."
+          ],
+          "explanation": "5x/6−3x/6=34 gives x/3=34, so x=102. Both sides equal 65."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n5x/6−3x/6=34 gives x/3=34, so x=102. Both sides equal 65.\n\nNow solve it once more using that same step.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now turn one-number statements into equations instead of guessing from the options.\n\nYour strongest check is the original sentence: put the answer back and make sure every phrase becomes true.\n\nNext, the same idea grows into puzzles with two unknown numbers and two clues.",
         "avatarPersona": "TUTOR"
       },
       "transitions": []
     }
-  },
-  "version": 1,
-  "metadata": {
-    "title": "Turning Number Statements into Equations",
-    "description": "Translate one-number word statements into equations and solve them step by step.",
-    "sourceScope": "Based strictly on the Problems on Numbers chapter of R.S. Aggarwal Quantitative Aptitude, within the approved scope for Turning Number Statements into Equations. Fresh practice values are used to teach the same methods without copying objective questions verbatim.",
-    "targetDurationMinutes": 19
-  },
-  "scriptId": "script-pon-01-turn-number-statements-into-equations",
-  "entryNodeId": "start",
-  "schemaVersion": 1
+  }
 }
