@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-08-advanced-mixed-train-puzzles",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Advanced Mixed Train Puzzles and Shortcuts",
+    "description": "Combine crossing models to solve ratio, scaling, bogie, platform, and multi-condition train puzzles efficiently.",
+    "teachingApproach": "Teach ratio and cancellation shortcuts: time ratios, platform/train multiples, equal-length pole times, bogie scaling, chained train-plus-platform problems, same/opposite crossing-time ratios, and a changed-length capstone.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach higher-transfer patterns from the objective exercise: crossing-time ratios at the same speed, platform length as a multiple of train length, equal-length trains whose pole times predict their mutual crossing time, bogie-count changes that scale train length and crossing time, a train crossing another train and then a platform, and chained problems where a pole/platform observation determines train A before it meets train B. Encourage learners to cancel common train lengths or common speeds before calculating and to ask what distance the front must gain for the event to be complete."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Hard train questions often look like they need more formulas. Usually they need fewer calculations.\n\nIf the same speed, same length, or same pair of trains appears twice, look for a ratio or cancellation before touching the numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Crossing times can reveal length ratios without finding speed. At one fixed speed, distance and time scale together.\n\nIf a train crosses a pole in 20 s and a bridge in 50 s, the bridge event covers 50/20 = 2.5 train-lengths in total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total bridge-crossing distance = train + bridge = 2.5L.\nSo bridge = 1.5L.\n\nRatio thinking can replace arithmetic when the speed is identical in both events.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 20 s and a bridge in 50 s at the same speed. Bridge length is how many times the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.5 times"
+          },
+          {
+            "id": "b",
+            "label": "2 times"
+          },
+          {
+            "id": "c",
+            "label": "2.5 times"
+          },
+          {
+            "id": "d",
+            "label": "3 times"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 20 s and a bridge in 50 s at the same speed. Bridge length is how many times the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.5 times"
+            },
+            {
+              "id": "b",
+              "label": "2 times"
+            },
+            {
+              "id": "c",
+              "label": "2.5 times"
+            },
+            {
+              "id": "d",
+              "label": "3 times"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total crossing distance ratio = 50/20 = 2.5.",
+            "Bridge alone = 2.5L − L."
+          ],
+          "explanation": "Bridge length = 1.5L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTotal crossing distance ratio = 50/20 = 2.5.\n\nBridge length = 1.5L.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 12 s and a bridge in 30 s. Bridge length is how many times train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.2 times"
+          },
+          {
+            "id": "b",
+            "label": "1.5 times"
+          },
+          {
+            "id": "c",
+            "label": "2 times"
+          },
+          {
+            "id": "d",
+            "label": "2.5 times"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 12 s and a bridge in 30 s. Bridge length is how many times train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.2 times"
+            },
+            {
+              "id": "b",
+              "label": "1.5 times"
+            },
+            {
+              "id": "c",
+              "label": "2 times"
+            },
+            {
+              "id": "d",
+              "label": "2.5 times"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "30/12 = 2.5 total train-lengths.",
+            "Subtract one train-length."
+          ],
+          "explanation": "The bridge is 1.5 times the train length."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe bridge is 1.5 times the train length.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A platform described as a multiple of train length can be handled in one ratio step.\n\nIf platform = 3L, then complete crossing distance = 4L. So platform-crossing time is four times pole-crossing time at the same speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This works in reverse too. If a train takes 8 s at a pole and 32 s at a platform, total distance is 4L, so the platform must be 3L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 8 s and a platform in 32 s. The platform length is how many times the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 times"
+          },
+          {
+            "id": "b",
+            "label": "3 times"
+          },
+          {
+            "id": "c",
+            "label": "4 times"
+          },
+          {
+            "id": "d",
+            "label": "5 times"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 8 s and a platform in 32 s. The platform length is how many times the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 times"
+            },
+            {
+              "id": "b",
+              "label": "3 times"
+            },
+            {
+              "id": "c",
+              "label": "4 times"
+            },
+            {
+              "id": "d",
+              "label": "5 times"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Time ratio = distance ratio = 32/8 = 4.",
+            "Total distance is L + platform = 4L."
+          ],
+          "explanation": "Platform = 3L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTime ratio = distance ratio = 32/8 = 4.\n\nPlatform = 3L.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 10 s and a platform in 40 s. Platform length is how many times train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 times"
+          },
+          {
+            "id": "b",
+            "label": "4 times"
+          },
+          {
+            "id": "c",
+            "label": "3 times"
+          },
+          {
+            "id": "d",
+            "label": "5 times"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 10 s and a platform in 40 s. Platform length is how many times train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 times"
+            },
+            {
+              "id": "b",
+              "label": "4 times"
+            },
+            {
+              "id": "c",
+              "label": "3 times"
+            },
+            {
+              "id": "d",
+              "label": "5 times"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "40/10 = 4 total train-lengths.",
+            "Subtract the train's own L."
+          ],
+          "explanation": "The platform is three times the train length."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe platform is three times the train length.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal-length trains create another clean cancellation. Suppose train A crosses a pole in 6 s and train B in 9 s. Let each length be L.\n\nSpeeds are L/6 and L/9. Opposite crossing distance is 2L, so time = 2L ÷ (L/6 + L/9).\n",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "L cancels:\n2 ÷ (1/6 + 1/9) = 2 ÷ (5/18) = 36/5 = 7.2 s.\n\nThe actual train length never matters.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Equal-length trains take 6 s and 9 s to cross poles. Moving oppositely, how long to cross each other?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 s"
+          },
+          {
+            "id": "b",
+            "label": "9 s"
+          },
+          {
+            "id": "c",
+            "label": "7.2 s"
+          },
+          {
+            "id": "d",
+            "label": "15 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Equal-length trains take 6 s and 9 s to cross poles. Moving oppositely, how long to cross each other?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 s"
+            },
+            {
+              "id": "b",
+              "label": "9 s"
+            },
+            {
+              "id": "c",
+              "label": "7.2 s"
+            },
+            {
+              "id": "d",
+              "label": "15 s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 2 ÷ (1/6 + 1/9).",
+            "1/6 + 1/9 = 5/18."
+          ],
+          "explanation": "The crossing time is 36/5 = 7.2 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUse 2 ÷ (1/6 + 1/9).\n\nThe crossing time is 36/5 = 7.2 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Equal-length trains take 12 s and 18 s to cross poles. Opposite crossing time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 s"
+          },
+          {
+            "id": "b",
+            "label": "15 s"
+          },
+          {
+            "id": "c",
+            "label": "18 s"
+          },
+          {
+            "id": "d",
+            "label": "14.4 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Equal-length trains take 12 s and 18 s to cross poles. Opposite crossing time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 s"
+            },
+            {
+              "id": "b",
+              "label": "15 s"
+            },
+            {
+              "id": "c",
+              "label": "18 s"
+            },
+            {
+              "id": "d",
+              "label": "14.4 s"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Use 2 ÷ (1/12 + 1/18).",
+            "1/12 + 1/18 = 5/36."
+          ],
+          "explanation": "2 ÷ 5/36 = 72/5 = 14.4 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n2 ÷ 5/36 = 72/5 = 14.4 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Train length often scales with bogie count. If two identical 12-bogie trains cross in 120 s and one grows to 16 bogies, speeds stay the same but combined length changes from 24 bogies to 28 bogies.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Crossing time scales with combined length:\nnew time = 120 × 28/24 = 140 s.\nExtra time = 20 s.\n\nNo individual bogie length is needed because it cancels.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two identical 12-bogie trains cross in 120 s. One is increased to 16 equal bogies; speeds are unchanged. How much extra time is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 s"
+          },
+          {
+            "id": "b",
+            "label": "30 s"
+          },
+          {
+            "id": "c",
+            "label": "40 s"
+          },
+          {
+            "id": "d",
+            "label": "20 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two identical 12-bogie trains cross in 120 s. One is increased to 16 equal bogies; speeds are unchanged. How much extra time is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 s"
+            },
+            {
+              "id": "b",
+              "label": "30 s"
+            },
+            {
+              "id": "c",
+              "label": "40 s"
+            },
+            {
+              "id": "d",
+              "label": "20 s"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Combined bogies change from 24 to 28.",
+            "New time = 120 × 28/24 = 140 s."
+          ],
+          "explanation": "The increase is 140 − 120 = 20 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nCombined bogies change from 24 to 28.\n\nThe increase is 140 − 120 = 20 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two identical 10-bogie trains cross in 80 s. One grows to 15 bogies. How much extra time is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "25 s"
+          },
+          {
+            "id": "d",
+            "label": "40 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two identical 10-bogie trains cross in 80 s. One grows to 15 bogies. How much extra time is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "25 s"
+            },
+            {
+              "id": "d",
+              "label": "40 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Combined length changes from 20 to 25 bogies.",
+            "New time = 80 × 25/20 = 100 s."
+          ],
+          "explanation": "Extra time = 20 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nExtra time = 20 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A multi-condition puzzle becomes easy if you unlock train length first. Suppose train A moves at 72 km/hr and crosses an opposite train half its own length moving at 36 km/hr in 10 s.\n\nRelative speed = 108 km/hr = 30 m/s. In 10 s, combined length = 300 m.\nBut combined length = 1.5L, so A is 200 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If A then crosses a platform in 35 s at its own 20 m/s speed, total platform event distance = 700 m.\nPlatform = 700 − 200 = 500 m.\n\nSolve the clue that exposes length first; use it in the next clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Train A at 72 km/hr crosses an opposite train half its length at 36 km/hr in 10 s. A then crosses a platform in 35 s. Find the platform length.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "500 m"
+          },
+          {
+            "id": "b",
+            "label": "300 m"
+          },
+          {
+            "id": "c",
+            "label": "400 m"
+          },
+          {
+            "id": "d",
+            "label": "700 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Train A at 72 km/hr crosses an opposite train half its length at 36 km/hr in 10 s. A then crosses a platform in 35 s. Find the platform length.",
+          "options": [
+            {
+              "id": "a",
+              "label": "500 m"
+            },
+            {
+              "id": "b",
+              "label": "300 m"
+            },
+            {
+              "id": "c",
+              "label": "400 m"
+            },
+            {
+              "id": "d",
+              "label": "700 m"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "First crossing gives 1.5L = relative speed × 10.",
+            "Relative speed is 30 m/s, so L = 200 m; then use 20 m/s for 35 s."
+          ],
+          "explanation": "A covers 700 m during the platform event; subtract its 200 m length to get 500 m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFirst crossing gives 1.5L = relative speed × 10.\n\nA covers 700 m during the platform event; subtract its 200 m length to get 500 m.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 54 km/hr crosses an opposite train half its length at 36 km/hr in 12 s, then crosses a platform in 40 s. Platform length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "300 m"
+          },
+          {
+            "id": "b",
+            "label": "400 m"
+          },
+          {
+            "id": "c",
+            "label": "500 m"
+          },
+          {
+            "id": "d",
+            "label": "600 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 54 km/hr crosses an opposite train half its length at 36 km/hr in 12 s, then crosses a platform in 40 s. Platform length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "300 m"
+            },
+            {
+              "id": "b",
+              "label": "400 m"
+            },
+            {
+              "id": "c",
+              "label": "500 m"
+            },
+            {
+              "id": "d",
+              "label": "600 m"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 90 km/hr = 25 m/s; 1.5L = 300 m, so L = 200 m.",
+            "At 15 m/s for 40 s, total platform distance = 600 m."
+          ],
+          "explanation": "Platform = 600 − 200 = 400 m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nPlatform = 600 − 200 = 400 m.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pole time and platform time can determine train A before it meets train B.\n\nIf A crosses a pole in 9 s and a 180 m platform in 21 s, the extra 180 m takes 12 s, so A's speed is 15 m/s and its length is 135 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now if train B is 165 m long and approaches at 54 km/hr = 15 m/s, relative speed is 30 m/s.\nCombined length is 300 m, so crossing takes 10 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Train A crosses a pole in 9 s and a 180 m platform in 21 s. It then meets a 165 m train moving oppositely at 54 km/hr. How long do the trains take to cross?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "15 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Train A crosses a pole in 9 s and a 180 m platform in 21 s. It then meets a 165 m train moving oppositely at 54 km/hr. How long do the trains take to cross?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "15 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "First find A: speed 15 m/s, length 135 m.",
+            "B is also 15 m/s; total length 300 m, relative speed 30 m/s."
+          ],
+          "explanation": "300/30 = 10 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFirst find A: speed 15 m/s, length 135 m.\n\n300/30 = 10 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Train A crosses a pole in 8 s and a 160 m platform in 16 s. It then meets a 240 m train moving oppositely at 72 km/hr. Crossing time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 s"
+          },
+          {
+            "id": "b",
+            "label": "12 s"
+          },
+          {
+            "id": "c",
+            "label": "10 s"
+          },
+          {
+            "id": "d",
+            "label": "20 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Train A crosses a pole in 8 s and a 160 m platform in 16 s. It then meets a 240 m train moving oppositely at 72 km/hr. Crossing time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 s"
+            },
+            {
+              "id": "b",
+              "label": "12 s"
+            },
+            {
+              "id": "c",
+              "label": "10 s"
+            },
+            {
+              "id": "d",
+              "label": "20 s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "A speed = 160/(16−8)=20 m/s and length =160 m.",
+            "B speed =20 m/s; total length=400 m, relative=40 m/s."
+          ],
+          "explanation": "400/40 = 10 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n400/40 = 10 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same two trains may be tested in both directions. If they need 60 s to overtake in the same direction and 12 s to cross in opposite directions, the common sum of train lengths cancels.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "speed sum / speed difference = 60/12 = 5.\nSo (u+v)/(u−v)=5, giving u:v=3:2.\n\nThis shortcut is pure structure: no lengths, no conversion, no extra data.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains take 60 s to cross in the same direction and 12 s in opposite directions. Faster speed : slower speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 : 1"
+          },
+          {
+            "id": "b",
+            "label": "4 : 3"
+          },
+          {
+            "id": "c",
+            "label": "3 : 2"
+          },
+          {
+            "id": "d",
+            "label": "5 : 2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains take 60 s to cross in the same direction and 12 s in opposite directions. Faster speed : slower speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 : 1"
+            },
+            {
+              "id": "b",
+              "label": "4 : 3"
+            },
+            {
+              "id": "c",
+              "label": "3 : 2"
+            },
+            {
+              "id": "d",
+              "label": "5 : 2"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "The ratio (u+v)/(u−v) equals 60/12.",
+            "Solve (u+v)=5(u−v)."
+          ],
+          "explanation": "u:v = 3:2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe ratio (u+v)/(u−v) equals 60/12.\n\nu:v = 3:2.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The same trains take 30 s in the same direction and 10 s in opposite directions. Faster:slower speed ratio?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 2"
+          },
+          {
+            "id": "b",
+            "label": "4 : 3"
+          },
+          {
+            "id": "c",
+            "label": "3 : 1"
+          },
+          {
+            "id": "d",
+            "label": "2 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The same trains take 30 s in the same direction and 10 s in opposite directions. Faster:slower speed ratio?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 2"
+            },
+            {
+              "id": "b",
+              "label": "4 : 3"
+            },
+            {
+              "id": "c",
+              "label": "3 : 1"
+            },
+            {
+              "id": "d",
+              "label": "2 : 1"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "(u+v)/(u−v)=30/10=3.",
+            "u+v=3u−3v."
+          ],
+          "explanation": "2u=4v, so u:v=2:1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n2u=4v, so u:v=2:1.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final shortcut: same-speed events should make you compare times before calculating metres. Suppose a train crosses a pole in 15 s and a platform in 45 s. The whole platform event covers three train-lengths, so the platform itself is two train-lengths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the train is then made 50% longer but keeps the same speed and crosses that same platform, new total distance is 1.5L + 2L = 3.5L.\nOriginal speed = L/15.\nNew time = 3.5L ÷ (L/15) = 52.5 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 15 s and a platform in 45 s. If the train becomes 50% longer but keeps the same speed, how long will it take to cross the same platform?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 s"
+          },
+          {
+            "id": "b",
+            "label": "60 s"
+          },
+          {
+            "id": "c",
+            "label": "67.5 s"
+          },
+          {
+            "id": "d",
+            "label": "52.5 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 15 s and a platform in 45 s. If the train becomes 50% longer but keeps the same speed, how long will it take to cross the same platform?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 s"
+            },
+            {
+              "id": "b",
+              "label": "60 s"
+            },
+            {
+              "id": "c",
+              "label": "67.5 s"
+            },
+            {
+              "id": "d",
+              "label": "52.5 s"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "Original platform = 2L because 45/15 = 3 total L's.",
+            "New distance = 1.5L + 2L = 3.5L; speed = L/15."
+          ],
+          "explanation": "New time = 3.5 × 15 = 52.5 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOriginal platform = 2L because 45/15 = 3 total L's.\n\nNew time = 3.5 × 15 = 52.5 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 10 s and a platform in 30 s. If the train doubles in length at the same speed, time to cross the same platform?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 s"
+          },
+          {
+            "id": "b",
+            "label": "30 s"
+          },
+          {
+            "id": "c",
+            "label": "50 s"
+          },
+          {
+            "id": "d",
+            "label": "60 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 10 s and a platform in 30 s. If the train doubles in length at the same speed, time to cross the same platform?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 s"
+            },
+            {
+              "id": "b",
+              "label": "30 s"
+            },
+            {
+              "id": "c",
+              "label": "50 s"
+            },
+            {
+              "id": "d",
+              "label": "60 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "The platform is 2L because total event is 3L.",
+            "New total distance = 2L + 2L = 4L; speed = L/10."
+          ],
+          "explanation": "New time = 4 × 10 = 40 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nNew time = 4 × 10 = 40 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "Advanced train puzzles become manageable when you ask what is common between the two events.\n\nSame speed → compare distances and times.\nSame hidden length → cancel it.\nBogie changes → scale length.\nMulti-clue problems → let one clue unlock the next.\n\nThe last lesson changes the goal: decide whether the clues are sufficient at all.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

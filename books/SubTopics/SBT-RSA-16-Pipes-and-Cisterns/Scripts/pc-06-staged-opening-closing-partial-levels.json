@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pipe question changes completely when one pipe opens late or closes early.\n\nThe tank does not restart at that moment.\n\nWhatever water has already entered stays in the story. So we split the process into stages and carry the water level forward.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fills in 12 min and B in 18 min. Both run for 3 min, then A closes.\n\nTogether rate = 5/36 tank/min. In 3 min they fill 15/36 = 5/12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Remaining = 7/12.\nB alone fills at 1/18, so additional time = 7/12 × 18 = 10.5 min.\nThe first 3 minutes are already finished; do not count them again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 10 min and B in 15 min. Both run 3 min, then A closes. How much additional time does B need?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.5 minutes"
+          },
+          {
+            "id": "b",
+            "label": "10.5 minutes"
+          },
+          {
+            "id": "c",
+            "label": "12 minutes"
+          },
+          {
+            "id": "d",
+            "label": "7.5 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 10 min and B in 15 min. Both run 3 min, then A closes. How much additional time does B need?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.5 minutes"
+            },
+            {
+              "id": "b",
+              "label": "10.5 minutes"
+            },
+            {
+              "id": "c",
+              "label": "12 minutes"
+            },
+            {
+              "id": "d",
+              "label": "7.5 minutes"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First find how much both fill in 3 min.",
+            "Together rate = 1/6; 3 min fills 1/2."
+          ],
+          "explanation": "Half remains. B needs 1/2 × 15 = 7.5 min more."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nFirst find how much both fill in 3 min.\n\nHalf remains. B needs 1/2 × 15 = 7.5 min more.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 8 min and B in 12 min. Both run 2 min, then A closes. Additional time for B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7 minutes"
+          },
+          {
+            "id": "b",
+            "label": "4 minutes"
+          },
+          {
+            "id": "c",
+            "label": "8 minutes"
+          },
+          {
+            "id": "d",
+            "label": "6 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 8 min and B in 12 min. Both run 2 min, then A closes. Additional time for B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7 minutes"
+            },
+            {
+              "id": "b",
+              "label": "4 minutes"
+            },
+            {
+              "id": "c",
+              "label": "8 minutes"
+            },
+            {
+              "id": "d",
+              "label": "6 minutes"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Together rate = 5/24 per minute; in 2 min they fill 5/12.",
+            "Remaining 7/12; B needs 7/12 × 12."
+          ],
+          "explanation": "B needs 7 minutes more."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB needs 7 minutes more.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the total finish time is fixed and you must find when one pipe was closed.\n\nA fills in 24 min and B in 32 min. The tank must be full in 18 min. Let B run for x min; A runs all 18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A contributes 18/24 = 3/4.\nSo B must supply the remaining 1/4.\nx/32 = 1/4 → x = 8 min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 12 min, B in 20 min. A runs for 10 min total. After how many minutes should B be closed so the tank fills exactly at 10 min?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10/3 minutes"
+          },
+          {
+            "id": "b",
+            "label": "5 minutes"
+          },
+          {
+            "id": "c",
+            "label": "6 minutes"
+          },
+          {
+            "id": "d",
+            "label": "8 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 12 min, B in 20 min. A runs for 10 min total. After how many minutes should B be closed so the tank fills exactly at 10 min?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10/3 minutes"
+            },
+            {
+              "id": "b",
+              "label": "5 minutes"
+            },
+            {
+              "id": "c",
+              "label": "6 minutes"
+            },
+            {
+              "id": "d",
+              "label": "8 minutes"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A alone contributes 10/12 = 5/6.",
+            "B must contribute 1/6 at rate 1/20."
+          ],
+          "explanation": "x/20 = 1/6, so x = 10/3 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nA alone contributes 10/12 = 5/6.\n\nx/20 = 1/6, so x = 10/3 min.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 15 min, B in 30 min. Tank is to fill in 12 min with A open throughout. How long should B run?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 minutes"
+          },
+          {
+            "id": "b",
+            "label": "9 minutes"
+          },
+          {
+            "id": "c",
+            "label": "6 minutes"
+          },
+          {
+            "id": "d",
+            "label": "12 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 15 min, B in 30 min. Tank is to fill in 12 min with A open throughout. How long should B run?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 minutes"
+            },
+            {
+              "id": "b",
+              "label": "9 minutes"
+            },
+            {
+              "id": "c",
+              "label": "6 minutes"
+            },
+            {
+              "id": "d",
+              "label": "12 minutes"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A fills 12/15 = 4/5.",
+            "B must fill 1/5 at rate 1/30."
+          ],
+          "explanation": "B must run 6 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB must run 6 minutes.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "An outlet may be active only during the early stage.\n\nA fills in 6 h, B in 12 h, C empties in 8 h. C is closed 2 h before the tank becomes full. Let total time be t.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A and B run t hours; C runs t−2.\nt/6 + t/12 − (t−2)/8 = 1.\nMultiply by 24: 4t+2t−3t+6=24 → t=6 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 8 h, B in 24 h, C empties in 12 h. C is closed 3 h before the tank is full. Total fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7 hours"
+          },
+          {
+            "id": "b",
+            "label": "12 hours"
+          },
+          {
+            "id": "c",
+            "label": "9 hours"
+          },
+          {
+            "id": "d",
+            "label": "15 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 8 h, B in 24 h, C empties in 12 h. C is closed 3 h before the tank is full. Total fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7 hours"
+            },
+            {
+              "id": "b",
+              "label": "12 hours"
+            },
+            {
+              "id": "c",
+              "label": "9 hours"
+            },
+            {
+              "id": "d",
+              "label": "15 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "A+B run t; C runs t−3.",
+            "t/8+t/24−(t−3)/12=1."
+          ],
+          "explanation": "Multiply by 24: 3t+t−2t+6=24, so 2t=18 and t=9 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nA+B run t; C runs t−3.\n\nMultiply by 24: 3t+t−2t+6=24, so 2t=18 and t=9 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 10 h, B in 15 h, C empties in 30 h. C closes 2 h before full. Total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 hours"
+          },
+          {
+            "id": "b",
+            "label": "7 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "8 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 10 h, B in 15 h, C empties in 30 h. C closes 2 h before full. Total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 hours"
+            },
+            {
+              "id": "b",
+              "label": "7 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "8 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Equation: t/10+t/15−(t−2)/30=1.",
+            "Use denominator 30."
+          ],
+          "explanation": "3t+2t−t+2=30 → 4t=28 → t=7 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n3t+2t−t+2=30 → 4t=28 → t=7 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A second inlet may open after a water-level trigger.\n\nA fills in 6 h. It runs alone until the tank is half full, which takes 3 h. Then B, which fills in 12 h, joins.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Together rate = 1/6+1/12 = 1/4.\nThe remaining half takes 1/2 ÷ 1/4 = 2 h.\nTotal = 5 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 8 h. When the tank is half full, B opens; B alone fills in 24 h. Total fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "7 hours"
+          },
+          {
+            "id": "c",
+            "label": "7.6 hours"
+          },
+          {
+            "id": "d",
+            "label": "10 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 8 h. When the tank is half full, B opens; B alone fills in 24 h. Total fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "7 hours"
+            },
+            {
+              "id": "c",
+              "label": "7.6 hours"
+            },
+            {
+              "id": "d",
+              "label": "10 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First half by A takes 4 h.",
+            "Together rate = 1/8+1/24 = 1/6; half takes 3 h."
+          ],
+          "explanation": "Total = 4+3 = 7 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nFirst half by A takes 4 h.\n\nTotal = 4+3 = 7 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 10 h; after 2/5 is full, B opens. B fills in 15 h. Total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "8 hours"
+          },
+          {
+            "id": "c",
+            "label": "9 hours"
+          },
+          {
+            "id": "d",
+            "label": "7.6 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 10 h; after 2/5 is full, B opens. B fills in 15 h. Total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "8 hours"
+            },
+            {
+              "id": "c",
+              "label": "9 hours"
+            },
+            {
+              "id": "d",
+              "label": "7.6 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First 2/5 by A takes 4 h.",
+            "Remaining 3/5 at rate 1/10+1/15=1/6 takes 18/5=3.6 h."
+          ],
+          "explanation": "Total = 7.6 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nTotal = 7.6 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A water-level trigger can even make the tank move backward before another pipe joins.\n\nA fills in 6 h. At half full, outlet C opens and empties in 3 h. A+C net rate is −1/6, so the level falls.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "To fall from 1/2 to 1/4 means losing 1/4 tank, which takes 1.5 h. Then B opens; suppose B fills in 4 h.\nA+B−C = 1/6+1/4−1/3 = 1/12.\nThe remaining 3/4 takes 9 h. Total = 13.5 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 8 h. At half full, an outlet that empties in 4 h opens. At 1/4 full, B opens and fills in 3 h. Total time to full?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9.6 hours"
+          },
+          {
+            "id": "b",
+            "label": "8 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "14 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 8 h. At half full, an outlet that empties in 4 h opens. At 1/4 full, B opens and fills in 3 h. Total time to full?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9.6 hours"
+            },
+            {
+              "id": "b",
+              "label": "8 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "14 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First half takes 4 h. A+outlet then empties at 1/8, so falling by 1/4 takes 2 h.",
+            "Final net = 1/8+1/3−1/4 = 5/24."
+          ],
+          "explanation": "The last 3/4 takes (3/4)÷(5/24)=18/5=3.6 h. Total = 4+2+3.6 = 9.6 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nFirst half takes 4 h. A+outlet then empties at 1/8, so falling by 1/4 takes 2 h.\n\nThe last 3/4 takes (3/4)÷(5/24)=18/5=3.6 h. Total = 4+2+3.6 = 9.6 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 10 h. At half full, an outlet empties in 5 h. At 1/4 full, B opens and fills in 4 h. Total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 hours"
+          },
+          {
+            "id": "b",
+            "label": "15 hours"
+          },
+          {
+            "id": "c",
+            "label": "12.5 hours"
+          },
+          {
+            "id": "d",
+            "label": "17.5 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 10 h. At half full, an outlet empties in 5 h. At 1/4 full, B opens and fills in 4 h. Total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 hours"
+            },
+            {
+              "id": "b",
+              "label": "15 hours"
+            },
+            {
+              "id": "c",
+              "label": "12.5 hours"
+            },
+            {
+              "id": "d",
+              "label": "17.5 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First half takes 5 h; then net emptying is 1/10, so dropping 1/4 takes 2.5 h.",
+            "Final net = 1/10+1/4−1/5 = 3/20."
+          ],
+          "explanation": "The final 3/4 takes 5 h. Total = 5+2.5+5 = 12.5 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe final 3/4 takes 5 h. Total = 5+2.5+5 = 12.5 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Staggered clock starts are just stages written on a clock.\n\nA opens at 8:00 and fills in 6 h. B opens at 9:00 and fills in 12 h. C opens at 10:00 and fills in 12 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let t be hours after 8:00 when full.\nA runs t, B t−1, C t−2.\nt/6 +(t−1)/12 +(t−2)/12 = 1.\n8t−6=12 → t=2.25 h, so 10:15 a.m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 8 h and opens at 9:00. B fills in 16 h and opens at 10:00. When will the tank be full?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1:40 p.m."
+          },
+          {
+            "id": "b",
+            "label": "3:00 p.m."
+          },
+          {
+            "id": "c",
+            "label": "2:40 p.m."
+          },
+          {
+            "id": "d",
+            "label": "12:40 p.m."
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 8 h and opens at 9:00. B fills in 16 h and opens at 10:00. When will the tank be full?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1:40 p.m."
+            },
+            {
+              "id": "b",
+              "label": "3:00 p.m."
+            },
+            {
+              "id": "c",
+              "label": "2:40 p.m."
+            },
+            {
+              "id": "d",
+              "label": "12:40 p.m."
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let t be hours after 9:00.",
+            "t/8 +(t−1)/16 =1."
+          ],
+          "explanation": "2t+t−1=16 → 3t=17 → t=5 h 40 min. Finish = 2:40 p.m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLet t be hours after 9:00.\n\n2t+t−1=16 → 3t=17 → t=5 h 40 min. Finish = 2:40 p.m.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 6 h at 8:00; B fills in 12 h at 9:00. Finish time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "11:20 a.m."
+          },
+          {
+            "id": "b",
+            "label": "12:20 p.m."
+          },
+          {
+            "id": "c",
+            "label": "1:00 p.m."
+          },
+          {
+            "id": "d",
+            "label": "12:00 p.m."
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 6 h at 8:00; B fills in 12 h at 9:00. Finish time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "11:20 a.m."
+            },
+            {
+              "id": "b",
+              "label": "12:20 p.m."
+            },
+            {
+              "id": "c",
+              "label": "1:00 p.m."
+            },
+            {
+              "id": "d",
+              "label": "12:00 p.m."
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "t/6 +(t−1)/12=1.",
+            "2t+t−1=12."
+          ],
+          "explanation": "3t=13 → 4 h 20 min after 8:00 = 12:20 p.m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n3t=13 → 4 h 20 min after 8:00 = 12:20 p.m.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The tank may already contain water when a new stage begins.\n\nA tank is 3/4 full. Inlet A fills in 8 h, outlet B empties in 5 h. Net emptying = 1/5−1/8 = 3/40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Time to empty the existing 3/4 is (3/4) ÷ (3/40) = 10 h.\nThe initial water level belongs in the calculation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank is 2/3 full. Inlet fills in 12 h; outlet empties in 8 h. Time to empty?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 hours"
+          },
+          {
+            "id": "b",
+            "label": "16 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "24 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank is 2/3 full. Inlet fills in 12 h; outlet empties in 8 h. Time to empty?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 hours"
+            },
+            {
+              "id": "b",
+              "label": "16 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "24 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net emptying = 1/8−1/12 = 1/24.",
+            "Use only 2/3 tank."
+          ],
+          "explanation": "2/3 × 24 = 16 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nNet emptying = 1/8−1/12 = 1/24.\n\n2/3 × 24 = 16 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank is 3/5 full. Inlet fills in 15 h; outlet empties in 10 h. Emptying time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 hours"
+          },
+          {
+            "id": "b",
+            "label": "30 hours"
+          },
+          {
+            "id": "c",
+            "label": "9 hours"
+          },
+          {
+            "id": "d",
+            "label": "18 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank is 3/5 full. Inlet fills in 15 h; outlet empties in 10 h. Emptying time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 hours"
+            },
+            {
+              "id": "b",
+              "label": "30 hours"
+            },
+            {
+              "id": "c",
+              "label": "9 hours"
+            },
+            {
+              "id": "d",
+              "label": "18 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net emptying = 1/10−1/15 = 1/30.",
+            "3/5 × 30."
+          ],
+          "explanation": "The tank empties in 18 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe tank empties in 18 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: staged questions are bookkeeping, not a new formula.\n\nFor each stage, record the active rate and the amount of tank changed. The end of one stage becomes the start of the next.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful check is conservation: all the positive and negative fractions across the stages must add to exactly one full tank from empty to full.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 12 h and runs alone for 3 h. Then B, which fills in 8 h, joins for 2 h. After that A closes. How much longer does B need to finish?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 hours"
+          },
+          {
+            "id": "b",
+            "label": "4 hours"
+          },
+          {
+            "id": "c",
+            "label": "5 hours"
+          },
+          {
+            "id": "d",
+            "label": "8/3 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 12 h and runs alone for 3 h. Then B, which fills in 8 h, joins for 2 h. After that A closes. How much longer does B need to finish?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 hours"
+            },
+            {
+              "id": "b",
+              "label": "4 hours"
+            },
+            {
+              "id": "c",
+              "label": "5 hours"
+            },
+            {
+              "id": "d",
+              "label": "8/3 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Stage 1 fills 3/12=1/4. Stage 2 fills 2(1/12+1/8)=5/12.",
+            "Total filled = 1/4+5/12 = 2/3."
+          ],
+          "explanation": "One-third remains. B at 1/8 tank/hour needs 8/3 = 2 2/3 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nStage 1 fills 3/12=1/4. Stage 2 fills 2(1/12+1/8)=5/12.\n\nOne-third remains. B at 1/8 tank/hour needs 8/3 = 2 2/3 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 10 h for 2 h alone. Then B (15 h) joins for 3 h. A closes. Additional time for B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.5 hours"
+          },
+          {
+            "id": "b",
+            "label": "4 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "8 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 10 h for 2 h alone. Then B (15 h) joins for 3 h. A closes. Additional time for B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.5 hours"
+            },
+            {
+              "id": "b",
+              "label": "4 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "8 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "A alone fills 1/5. Together for 3 h fill 3(1/10+1/15)=1/2.",
+            "Total = 7/10, so 3/10 remains."
+          ],
+          "explanation": "B needs 3/10 × 15 = 4.5 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB needs 3/10 × 15 = 4.5 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now handle a changing pipe schedule without mixing stages.\n\nFor every stage:\nactive pipes → net rate → time → amount changed.\n\nThen carry the new water level into the next stage.\n\nNext, we turn repeating schedules into cycles.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Staged Filling: Pipes Open or Close Midway",
+    "description": "Split the process into stages when the active pipes change.",
+    "teachingApproach": "Make a short timeline for the tank, but keep each stage separate: which pipes are active, for how long, and how much of the tank changes? Progress from one pipe closing to threshold-triggered openings and staggered clock starts. The learner carries the ending water level of one stage into the next instead of restarting from an empty tank.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 16, Pipes and Cisterns. Approved scope: Teach piecewise tank problems. Cover two pipes starting together and one closing, an outlet closing before the tank is full, a second inlet opening after half the tank is filled, pipes opening at different clock times, and a pipe or leak activated when the water reaches a stated fraction. Each stage should have its own active-pipe rate and its own amount of tank handled. Emphasize that the next stage begins with the water already accumulated or lost in earlier stages."
+  },
+  "scriptId": "pc-06-staged-opening-closing-partial-levels",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

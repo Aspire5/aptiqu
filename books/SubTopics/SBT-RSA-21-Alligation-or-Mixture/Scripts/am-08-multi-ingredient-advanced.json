@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "am-08-multi-ingredient-advanced",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Multi-Ingredient and Advanced Mixture Puzzles",
+    "description": "Choose the right model for three-component, profit-linked, and multi-step mixture problems.",
+    "teachingApproach": "Teach method selection before calculation. Use weighted average for value problems, direct component balance for add/remove stories, and alligation after collapsing subgroups when possible. Progress through three-component ratios, combined varieties, unknown ingredient quantities, and a capstone that joins component bookkeeping to a target mean.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 21, Alligation or Mixture. Approved scope: Teach method selection for the chapter's harder mixture questions. Cover three ingredients in a fixed ratio, removing a proportional sample and then adding selected pure ingredients, finding an unknown third variety price when two known varieties are first combined, and cost/profit problems where one ingredient quantity is known and the other must be found from the target mixture cost. Include percentage-profit alligation as a weighted-average application and multi-component composition equations in the style of grape-pineapple-banana questions. Learners should first ask: is this a weighted average, a one-component add/remove problem, or a component-balance equation? The capstone should combine ratio bookkeeping with a mean-value condition."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's tackle the mixture questions that look crowded.\n\nThree juices, two prices plus profit, or a remove-and-add story can seem like different topics. The real skill is deciding what is being conserved: total value, one component, or a weighted mean.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three-component ratios are easiest when turned into actual parts.\n\nGrape:pineapple:banana = 4:6:5.\nTotal parts = 15.\n\nSo every 15 L sample contains 4 L grape, 6 L pineapple, 5 L banana.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A well-mixed sample keeps the same 4:6:5 composition.\n\nIf 30 L is removed, twice as much leaves: 8 L, 12 L, and 10 L.\n\nThis proportional-removal idea is the base for harder three-juice questions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture has A:B:C=2:3:5. If 20 L is removed, how much C leaves?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 L"
+          },
+          {
+            "id": "b",
+            "label": "6 L"
+          },
+          {
+            "id": "c",
+            "label": "8 L"
+          },
+          {
+            "id": "d",
+            "label": "10 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture has A:B:C=2:3:5. If 20 L is removed, how much C leaves?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 L"
+            },
+            {
+              "id": "b",
+              "label": "6 L"
+            },
+            {
+              "id": "c",
+              "label": "8 L"
+            },
+            {
+              "id": "d",
+              "label": "10 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "C is 5/10 of every sample.",
+            "20×5/10 = 10 L."
+          ],
+          "explanation": "20×5/10 = 10 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture has X:Y:Z=3:4:5. If 24 L is removed, how much Y leaves?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 L"
+          },
+          {
+            "id": "b",
+            "label": "6 L"
+          },
+          {
+            "id": "c",
+            "label": "10 L"
+          },
+          {
+            "id": "d",
+            "label": "12 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture has X:Y:Z=3:4:5. If 24 L is removed, how much Y leaves?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 L"
+            },
+            {
+              "id": "b",
+              "label": "6 L"
+            },
+            {
+              "id": "c",
+              "label": "10 L"
+            },
+            {
+              "id": "d",
+              "label": "12 L"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Y is 4/12 of the mixture.",
+            "24×4/12 = 8 L."
+          ],
+          "explanation": "24×4/12 = 8 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nC is 5/10 of every sample.\n\n20×5/10 = 10 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n24×4/12 = 8 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "After removing a proportional sample, pure ingredients may be added back.\n\nStart 4x,6x,5x. Remove 15 L → remove 4,6,5.\nThen add 8 L grape and 2 L pineapple.\n\nNew grape = 4x−4+8 = 4x+4.\nNew pineapple = 6x−6+2 = 6x−4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the story says pineapple ends 10 L above grape:\n(6x−4)−(4x+4)=10\n2x−8=10\nx=9.\n\nOriginal total = 15x = 135 L.\n\nEvery term has a clear component meaning.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A:B:C=2:3:5. From the vessel, 10 L is removed; then 4 L A and 1 L B are added. If final B exceeds final A by 5 L, what was the original total?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 L"
+          },
+          {
+            "id": "b",
+            "label": "90 L"
+          },
+          {
+            "id": "c",
+            "label": "70 L"
+          },
+          {
+            "id": "d",
+            "label": "80 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A:B:C=2:3:5. From the vessel, 10 L is removed; then 4 L A and 1 L B are added. If final B exceeds final A by 5 L, what was the original total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 L"
+            },
+            {
+              "id": "b",
+              "label": "90 L"
+            },
+            {
+              "id": "c",
+              "label": "70 L"
+            },
+            {
+              "id": "d",
+              "label": "80 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let amounts be 2x,3x,5x. A 10 L sample removes 2,3,5.",
+            "Final A=2x−2+4=2x+2; B=3x−3+1=3x−2."
+          ],
+          "explanation": "Final A=2x−2+4=2x+2; B=3x−3+1=3x−2. Difference=x−4=5, so x=9 and total=10x=90 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A:B:C=3:2:5. From the vessel, 10 L is removed; then 5 L A is added. If final A exceeds final B by 7 L, what was the original total?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 L"
+          },
+          {
+            "id": "b",
+            "label": "30 L"
+          },
+          {
+            "id": "c",
+            "label": "40 L"
+          },
+          {
+            "id": "d",
+            "label": "50 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A:B:C=3:2:5. From the vessel, 10 L is removed; then 5 L A is added. If final A exceeds final B by 7 L, what was the original total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 L"
+            },
+            {
+              "id": "b",
+              "label": "30 L"
+            },
+            {
+              "id": "c",
+              "label": "40 L"
+            },
+            {
+              "id": "d",
+              "label": "50 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let amounts be 3x,2x,5x. A 10 L sample removes 3,2,5.",
+            "Final A=3x−3+5=3x+2; B=2x−2."
+          ],
+          "explanation": "Final A=3x−3+5=3x+2; B=2x−2. Difference=x+4=7, so x=3 and total=10x=30 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nLet amounts be 2x,3x,5x. A 10 L sample removes 2,3,5.\n\nFinal A=2x−2+4=2x+2; B=3x−3+1=3x−2. Difference=x−4=5, so x=9 and total=10x=90 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFinal A=3x−3+5=3x+2; B=2x−2. Difference=x+4=7, so x=3 and total=10x=30 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three price varieties can sometimes be collapsed.\n\nSuppose varieties at ₹120 and ₹140 are used in equal amounts. Their subgroup mean is ₹130.\n\nIf the third variety is used in twice that subgroup amount, the whole problem becomes ₹130 versus ₹x in ratio 1:2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For final mean ₹160:\n(1×130 + 2x)/3 = 160\n130 + 2x = 480\n2x=350 → x=₹175.\n\nCollapsing a balanced subgroup reduces clutter without changing the weighted average.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "₹90 and ₹110 ingredients are used equally. Their combined group is mixed with twice as much of a third ingredient to make a ₹140 mixture. Find the third price.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹160"
+          },
+          {
+            "id": "b",
+            "label": "₹150"
+          },
+          {
+            "id": "c",
+            "label": "₹170"
+          },
+          {
+            "id": "d",
+            "label": "₹180"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "₹90 and ₹110 ingredients are used equally. Their combined group is mixed with twice as much of a third ingredient to make a ₹140 mixture. Find the third price.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹160"
+            },
+            {
+              "id": "b",
+              "label": "₹150"
+            },
+            {
+              "id": "c",
+              "label": "₹170"
+            },
+            {
+              "id": "d",
+              "label": "₹180"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First subgroup mean = ₹100.",
+            "(100 + 2x)/3 = 140 → 100+2x=420 → x=160."
+          ],
+          "explanation": "(100 + 2x)/3 = 140 → 100+2x=420 → x=160."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "₹150 and ₹170 ingredients are used equally. Their combined group is mixed with twice as much third ingredient to make ₹200. Find the third price.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹210"
+          },
+          {
+            "id": "b",
+            "label": "₹230"
+          },
+          {
+            "id": "c",
+            "label": "₹220"
+          },
+          {
+            "id": "d",
+            "label": "₹240"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "₹150 and ₹170 ingredients are used equally. Their combined group is mixed with twice as much third ingredient to make ₹200. Find the third price.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹210"
+            },
+            {
+              "id": "b",
+              "label": "₹230"
+            },
+            {
+              "id": "c",
+              "label": "₹220"
+            },
+            {
+              "id": "d",
+              "label": "₹240"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First subgroup mean=₹160.",
+            "(160+2x)/3=200 → 160+2x=600 → x=220."
+          ],
+          "explanation": "(160+2x)/3=200 → 160+2x=600 → x=220."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nFirst subgroup mean = ₹100.\n\n(100 + 2x)/3 = 140 → 100+2x=420 → x=160.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n(160+2x)/3=200 → 160+2x=600 → x=220.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "If one ingredient quantity is known, target mean can reveal the other quantity.\n\n35 kg at ₹60 is mixed with x kg at ₹75 to make a ₹66 mixture.\n\n35×60 + 75x = 66(35+x).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "2100 + 75x = 2310 + 66x\n9x = 210\nx = 23⅓ kg.\n\nAlligation could also give the ratio first; direct total-value algebra is often clearer when one quantity is already known.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "20 kg at ₹50 is mixed with x kg at ₹80 to make a ₹68 mixture. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 kg"
+          },
+          {
+            "id": "b",
+            "label": "25 kg"
+          },
+          {
+            "id": "c",
+            "label": "30 kg"
+          },
+          {
+            "id": "d",
+            "label": "40 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "20 kg at ₹50 is mixed with x kg at ₹80 to make a ₹68 mixture. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 kg"
+            },
+            {
+              "id": "b",
+              "label": "25 kg"
+            },
+            {
+              "id": "c",
+              "label": "30 kg"
+            },
+            {
+              "id": "d",
+              "label": "40 kg"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Set total cost equal to mean×total quantity.",
+            "1000+80x = 68(20+x)=1360+68x."
+          ],
+          "explanation": "1000+80x = 68(20+x)=1360+68x. So 12x=360 and x=30 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "30 kg at ₹40 is mixed with x kg at ₹70 to make a ₹58 mixture. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 kg"
+          },
+          {
+            "id": "b",
+            "label": "36 kg"
+          },
+          {
+            "id": "c",
+            "label": "50 kg"
+          },
+          {
+            "id": "d",
+            "label": "45 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "30 kg at ₹40 is mixed with x kg at ₹70 to make a ₹58 mixture. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 kg"
+            },
+            {
+              "id": "b",
+              "label": "36 kg"
+            },
+            {
+              "id": "c",
+              "label": "50 kg"
+            },
+            {
+              "id": "d",
+              "label": "45 kg"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "1200+70x = 58(30+x).",
+            "1200+70x=1740+58x →12x=540 →x=45 kg."
+          ],
+          "explanation": "1200+70x=1740+58x →12x=540 →x=45 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nSet total cost equal to mean×total quantity.\n\n1000+80x = 68(20+x)=1360+68x. So 12x=360 and x=30 kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n1200+70x=1740+58x →12x=540 →x=45 kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Profit-linked quantity questions add one setup step.\n\nIf a mixture sells at ₹118 with 18% profit, mixture cost is ₹100.\n\nOnly then compare ingredient costs with ₹100 to find the mixing ratio or unknown quantity.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For costs ₹85 and ₹115 around mean ₹100:\ncheaper:dearer = 15:15 = 1:1.\n\nProfit determines the mean cost; alligation determines the ingredient relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture sells for ₹132 at 10% profit. It contains 25 kg of ingredient A costing ₹100/kg and ingredient B costing ₹150/kg. How much B is used?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12.5 kg"
+          },
+          {
+            "id": "b",
+            "label": "16.67 kg"
+          },
+          {
+            "id": "c",
+            "label": "20 kg"
+          },
+          {
+            "id": "d",
+            "label": "25 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture sells for ₹132 at 10% profit. It contains 25 kg of ingredient A costing ₹100/kg and ingredient B costing ₹150/kg. How much B is used?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12.5 kg"
+            },
+            {
+              "id": "b",
+              "label": "16.67 kg"
+            },
+            {
+              "id": "c",
+              "label": "20 kg"
+            },
+            {
+              "id": "d",
+              "label": "25 kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Mixture cost = ₹120/kg. Use A:B=(150−120):(120−100)=30:20=3:2.",
+            "If A=25 kg corresponds to 3 parts, B=25×2/3 = 16."
+          ],
+          "explanation": "If A=25 kg corresponds to 3 parts, B=25×2/3 = 16.67 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture sells for ₹126 at 5% profit. It contains 24 kg of A at ₹100 and B at ₹140. How much B is used?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 kg"
+          },
+          {
+            "id": "b",
+            "label": "18 kg"
+          },
+          {
+            "id": "c",
+            "label": "30 kg"
+          },
+          {
+            "id": "d",
+            "label": "36 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture sells for ₹126 at 5% profit. It contains 24 kg of A at ₹100 and B at ₹140. How much B is used?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 kg"
+            },
+            {
+              "id": "b",
+              "label": "18 kg"
+            },
+            {
+              "id": "c",
+              "label": "30 kg"
+            },
+            {
+              "id": "d",
+              "label": "36 kg"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Mixture cost=126/1.05=₹120. Ratio A:B=(140−120):(120−100)=1:1.",
+            "Equal quantities are needed, so B=24 kg."
+          ],
+          "explanation": "Equal quantities are needed, so B=24 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nMixture cost = ₹120/kg. Use A:B=(150−120):(120−100)=30:20=3:2.\n\nIf A=25 kg corresponds to 3 parts, B=25×2/3 = 16.67 kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nEqual quantities are needed, so B=24 kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Profit percentages can be treated as mixture values too.\n\nSuppose one batch earns 8%, another 18%, and overall profit is 14%.\n\nThe batch ratio is 2:3 by alligation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If total stock is 1000 kg, five parts make 1000 kg.\nOne part=200 kg.\n\nThe 18% batch is 3×200 = 600 kg.\n\nThis joins alligation with ratio-to-quantity scaling.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 600 kg stock is sold partly at 5% profit and the rest at 15%. Overall profit is 11%. How much is sold at 15%?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "240 kg"
+          },
+          {
+            "id": "b",
+            "label": "300 kg"
+          },
+          {
+            "id": "c",
+            "label": "360 kg"
+          },
+          {
+            "id": "d",
+            "label": "400 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 600 kg stock is sold partly at 5% profit and the rest at 15%. Overall profit is 11%. How much is sold at 15%?",
+          "options": [
+            {
+              "id": "a",
+              "label": "240 kg"
+            },
+            {
+              "id": "b",
+              "label": "300 kg"
+            },
+            {
+              "id": "c",
+              "label": "360 kg"
+            },
+            {
+              "id": "d",
+              "label": "400 kg"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Ratio 5%-part : 15%-part = (15−11):(11−5)=4:6=2:3.",
+            "Five parts make 600 kg, so the 15% portion is 3/5×600 = 360 kg."
+          ],
+          "explanation": "Five parts make 600 kg, so the 15% portion is 3/5×600 = 360 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 480 kg stock is split between 6% and 18% profit, giving 15% overall. How much is at 18%?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120 kg"
+          },
+          {
+            "id": "b",
+            "label": "360 kg"
+          },
+          {
+            "id": "c",
+            "label": "240 kg"
+          },
+          {
+            "id": "d",
+            "label": "320 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 480 kg stock is split between 6% and 18% profit, giving 15% overall. How much is at 18%?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120 kg"
+            },
+            {
+              "id": "b",
+              "label": "360 kg"
+            },
+            {
+              "id": "c",
+              "label": "240 kg"
+            },
+            {
+              "id": "d",
+              "label": "320 kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Ratio 6%-part:18%-part=(18−15):(15−6)=3:9=1:3.",
+            "Four parts make 480 kg, so 3 parts=360 kg."
+          ],
+          "explanation": "Four parts make 480 kg, so 3 parts=360 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nRatio 5%-part : 15%-part = (15−11):(11−5)=4:6=2:3.\n\nFive parts make 600 kg, so the 15% portion is 3/5×600 = 360 kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFour parts make 480 kg, so 3 parts=360 kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Method choice matters more than formula choice.\n\nUse alligation when two endpoint values combine to a target mean.\nUse direct balance when components are physically added or removed.\nUse weighted-average algebra when quantities are already known or when one price is unknown.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Before calculating, ask: what stays conserved?\n\nCost/value is conserved in price mixtures.\nComponent quantity is tracked in add/remove stories.\nTotal volume is restored in draw-and-replace.\n\nThat question points to the right model.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which method is most direct: 30 L at 70% concentration has 5 L removed and replaced by pure water. Find final concentration.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Component balance"
+          },
+          {
+            "id": "b",
+            "label": "Simple average"
+          },
+          {
+            "id": "c",
+            "label": "Profit alligation"
+          },
+          {
+            "id": "d",
+            "label": "Time-rate equation"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Which method is most direct: 30 L at 70% concentration has 5 L removed and replaced by pure water. Find final concentration.",
+          "options": [
+            {
+              "id": "a",
+              "label": "Component balance"
+            },
+            {
+              "id": "b",
+              "label": "Simple average"
+            },
+            {
+              "id": "c",
+              "label": "Profit alligation"
+            },
+            {
+              "id": "d",
+              "label": "Time-rate equation"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "This story physically removes and adds liquid.",
+            "Track active liquid removed from the sample, then divide the remaining active amount by the restored 30 L total."
+          ],
+          "explanation": "Track active liquid removed from the sample, then divide the remaining active amount by the restored 30 L total."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which method is most direct: two teas cost ₹120 and ₹180, and the target mixture costs ₹150. Find the mixing ratio.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Repeated replacement"
+          },
+          {
+            "id": "b",
+            "label": "Distance-rate"
+          },
+          {
+            "id": "c",
+            "label": "Alligation"
+          },
+          {
+            "id": "d",
+            "label": "Component removal"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Which method is most direct: two teas cost ₹120 and ₹180, and the target mixture costs ₹150. Find the mixing ratio.",
+          "options": [
+            {
+              "id": "a",
+              "label": "Repeated replacement"
+            },
+            {
+              "id": "b",
+              "label": "Distance-rate"
+            },
+            {
+              "id": "c",
+              "label": "Alligation"
+            },
+            {
+              "id": "d",
+              "label": "Component removal"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Two endpoint values combine to a target mean.",
+            "Alligation gives the ratio immediately from the price gaps."
+          ],
+          "explanation": "Alligation gives the ratio immediately from the price gaps."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nThis story physically removes and adds liquid.\n\nTrack active liquid removed from the sample, then divide the remaining active amount by the restored 30 L total.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nAlligation gives the ratio immediately from the price gaps.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: hard mixture questions often combine two models, but only one at a time.\n\nYou might first use profit to recover mean cost, then alligation for a ratio. Or first remove a proportional sample, then use a component equation after adding pure ingredients.\n\nKeep the stages separate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A clear solution should let you say what every number means.\n\nIf a number is a price, do not suddenly use it as a quantity. If a ratio is a component ratio, do not treat its first term as a percentage.\n\nMeaning first, arithmetic second.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A:B:C=2:3:5 in a vessel. 20 L is removed; then 8 L of A and 2 L of B are added. Final B is 4 L more than final A. What was the original total volume?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "80 L"
+          },
+          {
+            "id": "b",
+            "label": "100 L"
+          },
+          {
+            "id": "c",
+            "label": "140 L"
+          },
+          {
+            "id": "d",
+            "label": "120 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A:B:C=2:3:5 in a vessel. 20 L is removed; then 8 L of A and 2 L of B are added. Final B is 4 L more than final A. What was the original total volume?",
+          "options": [
+            {
+              "id": "a",
+              "label": "80 L"
+            },
+            {
+              "id": "b",
+              "label": "100 L"
+            },
+            {
+              "id": "c",
+              "label": "140 L"
+            },
+            {
+              "id": "d",
+              "label": "120 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let initial amounts be 2x,3x,5x. A 20 L sample removes 4,6,10.",
+            "Final A=2x−4+8=2x+4; B=3x−6+2=3x−4."
+          ],
+          "explanation": "Final A=2x−4+8=2x+4; B=3x−6+2=3x−4. Difference B−A=x−8=4, so x=12 and total=10x=120 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A:B:C=3:4:5. 24 L is removed; then 6 L A and 2 L C are added. Final C exceeds A by 6 L. What was the original total?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 L"
+          },
+          {
+            "id": "b",
+            "label": "72 L"
+          },
+          {
+            "id": "c",
+            "label": "96 L"
+          },
+          {
+            "id": "d",
+            "label": "84 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A:B:C=3:4:5. 24 L is removed; then 6 L A and 2 L C are added. Final C exceeds A by 6 L. What was the original total?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 L"
+            },
+            {
+              "id": "b",
+              "label": "72 L"
+            },
+            {
+              "id": "c",
+              "label": "96 L"
+            },
+            {
+              "id": "d",
+              "label": "84 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let initial amounts be 3x,4x,5x. The 24 L sample removes 6,8,10.",
+            "Final A=3x−6+6=3x; C=5x−10+2=5x−8."
+          ],
+          "explanation": "Final A=3x−6+6=3x; C=5x−10+2=5x−8. Difference=2x−8=6, so x=7 and total=12x=84 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nLet initial amounts be 2x,3x,5x. A 20 L sample removes 4,6,10.\n\nFinal A=2x−4+8=2x+4; B=3x−6+2=3x−4. Difference B−A=x−8=4, so x=12 and total=10x=120 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFinal A=3x−6+6=3x; C=5x−10+2=5x−8. Difference=2x−8=6, so x=7 and total=12x=84 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now choose the model before calculating.\n\nUse weighted average or alligation for target values, component balance for physical add/remove stories, and subgroup averaging when several ingredients can be collapsed.\n\nThat method choice is the main skill behind the chapter's hardest mixture questions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

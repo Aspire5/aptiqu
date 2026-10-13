@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Data Sufficiency changes the goal.\n\nYou are not asked to use every statement. You are asked: is the answer uniquely determined?\n\nName the rate information you need, then test statements one at a time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Question: How long does A take alone?\nI. A+B finish in 10 days.\nII. B alone takes 15 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Neither statement alone gives A. Together they give A rate =1/10−1/15=1/30.\nSo both are necessary.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find A's solo time. I: A+B=12 days. II: B=18 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Neither even together"
+          },
+          {
+            "id": "d",
+            "label": "Both together only"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find A's solo time. I: A+B=12 days. II: B=18 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Neither even together"
+            },
+            {
+              "id": "d",
+              "label": "Both together only"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A's rate needs team rate minus B's rate.",
+            "Each statement supplies one piece."
+          ],
+          "explanation": "Both together determine A uniquely."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nA's rate needs team rate minus B's rate.\n\nBoth together determine A uniquely.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find A time. I: A+B=8 days. II: B=24 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Both together only"
+          },
+          {
+            "id": "b",
+            "label": "I alone"
+          },
+          {
+            "id": "c",
+            "label": "II alone"
+          },
+          {
+            "id": "d",
+            "label": "Either alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find A time. I: A+B=8 days. II: B=24 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Both together only"
+            },
+            {
+              "id": "b",
+              "label": "I alone"
+            },
+            {
+              "id": "c",
+              "label": "II alone"
+            },
+            {
+              "id": "d",
+              "label": "Either alone"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "You need both team and B rates.",
+            "Then A=1/8−1/24."
+          ],
+          "explanation": "Both together only."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nBoth together only.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes one statement alone gives the answer directly.\n\nQuestion: How long does Mohan take?\nI. Mohan+Prakash together take 17 days.\nII. Rakesh is twice as fast as Mohan and Rakesh takes 10 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "II alone gives Mohan's time: twice Rakesh's time =20 days. I is unnecessary.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: B's solo time. I: A+B together=9 days. II: A is twice as fast as B and A alone takes 12 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "II alone"
+          },
+          {
+            "id": "b",
+            "label": "I alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together only"
+          },
+          {
+            "id": "d",
+            "label": "Neither together"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: B's solo time. I: A+B together=9 days. II: A is twice as fast as B and A alone takes 12 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "II alone"
+            },
+            {
+              "id": "b",
+              "label": "I alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together only"
+            },
+            {
+              "id": "d",
+              "label": "Neither together"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "II gives A:B rate=2:1 and A's actual time.",
+            "That fixes B at 24 days."
+          ],
+          "explanation": "II alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nII gives A:B rate=2:1 and A's actual time.\n\nII alone is sufficient.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: A's solo time. I: A+B=10 days. II: B is half as fast as A and B takes 30 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "Both together only"
+          },
+          {
+            "id": "c",
+            "label": "II alone"
+          },
+          {
+            "id": "d",
+            "label": "Either alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: A's solo time. I: A+B=10 days. II: B is half as fast as A and B takes 30 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "Both together only"
+            },
+            {
+              "id": "c",
+              "label": "II alone"
+            },
+            {
+              "id": "d",
+              "label": "Either alone"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "II directly fixes A from the efficiency ratio.",
+            "A is twice B's rate, so half B's time."
+          ],
+          "explanation": "II alone is sufficient; A takes 15 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nII alone is sufficient; A takes 15 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two statements can still be insufficient if they never isolate the requested worker.\n\nI. B+C=8 days.\nII. A+B=12 days.\nAsked: B alone?\nThere are three unknown rates but only two independent equations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Many different B rates could satisfy both pair equations with different A and C rates.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: B alone. I: A+B=10 days. II: B+C=15 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Insufficient even together"
+          },
+          {
+            "id": "d",
+            "label": "Both together sufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: B alone. I: A+B=10 days. II: B+C=15 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Insufficient even together"
+            },
+            {
+              "id": "d",
+              "label": "Both together sufficient"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "There are still three unknown individual rates.",
+            "Two pair equations do not isolate B."
+          ],
+          "explanation": "Even together, the data are insufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nThere are still three unknown individual rates.\n\nEven together, the data are insufficient.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: C alone. I: A+C=12. II: B+C=18. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "Insufficient even together"
+          },
+          {
+            "id": "c",
+            "label": "II alone"
+          },
+          {
+            "id": "d",
+            "label": "Both together sufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: C alone. I: A+C=12. II: B+C=18. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "Insufficient even together"
+            },
+            {
+              "id": "c",
+              "label": "II alone"
+            },
+            {
+              "id": "d",
+              "label": "Both together sufficient"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A and B remain unknown separately.",
+            "Two equations for three rates are not enough."
+          ],
+          "explanation": "Insufficient even together."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nInsufficient even together.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Either statement may independently determine the answer.\n\nGiven A+B together take 6 days.\nI. B takes 5 days longer than A.\nII. A:B solo times=2:3.\nEither relation, combined with the stem, fixes both times.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not insist on using both when each alone already closes the system.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B=8 days. I: B takes 8 days longer than A. II: time ratio A:B=2:3. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone only"
+          },
+          {
+            "id": "b",
+            "label": "Either I or II alone"
+          },
+          {
+            "id": "c",
+            "label": "II alone only"
+          },
+          {
+            "id": "d",
+            "label": "Both together only"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B=8 days. I: B takes 8 days longer than A. II: time ratio A:B=2:3. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone only"
+            },
+            {
+              "id": "b",
+              "label": "Either I or II alone"
+            },
+            {
+              "id": "c",
+              "label": "II alone only"
+            },
+            {
+              "id": "d",
+              "label": "Both together only"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Test each relation separately with the together-time.",
+            "Each gives enough to solve the two solo times."
+          ],
+          "explanation": "Either statement alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nTest each relation separately with the together-time.\n\nEither statement alone is sufficient.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B=12 days. I: A is 50% more efficient than B. II: time ratio A:B=2:3. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I only"
+          },
+          {
+            "id": "b",
+            "label": "II only"
+          },
+          {
+            "id": "c",
+            "label": "Both needed"
+          },
+          {
+            "id": "d",
+            "label": "Either I or II alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B=12 days. I: A is 50% more efficient than B. II: time ratio A:B=2:3. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I only"
+            },
+            {
+              "id": "b",
+              "label": "II only"
+            },
+            {
+              "id": "c",
+              "label": "Both needed"
+            },
+            {
+              "id": "d",
+              "label": "Either I or II alone"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "I gives the same time ratio A:B = 2:3 as II.",
+            "Either ratio plus team time fixes scale."
+          ],
+          "explanation": "Either alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nEither alone is sufficient.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A workforce question may have several statements that each independently encode the same total work.\n\nIf 8 workers do 20% in 8 days, that alone fixes total worker-days. Another full-job statement might be redundant.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Data Sufficiency rewards recognizing equivalent work information.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: workers needed for 10 days. I: 10 workers finish in 20 days. II: 20 workers finish in 10 days. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Either I or II alone"
+          },
+          {
+            "id": "b",
+            "label": "I only"
+          },
+          {
+            "id": "c",
+            "label": "II only"
+          },
+          {
+            "id": "d",
+            "label": "Both needed"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: workers needed for 10 days. I: 10 workers finish in 20 days. II: 20 workers finish in 10 days. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Either I or II alone"
+            },
+            {
+              "id": "b",
+              "label": "I only"
+            },
+            {
+              "id": "c",
+              "label": "II only"
+            },
+            {
+              "id": "d",
+              "label": "Both needed"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Each statement says total work=200 worker-days.",
+            "200/10 gives required workforce."
+          ],
+          "explanation": "Either alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nEach statement says total work=200 worker-days.\n\nEither alone is sufficient.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: workers for 12 days. I: 18 workers finish in 8 days. II: 12 workers finish in 12 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I only"
+          },
+          {
+            "id": "b",
+            "label": "II only"
+          },
+          {
+            "id": "c",
+            "label": "Either I or II alone"
+          },
+          {
+            "id": "d",
+            "label": "Both needed"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: workers for 12 days. I: 18 workers finish in 8 days. II: 12 workers finish in 12 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I only"
+            },
+            {
+              "id": "b",
+              "label": "II only"
+            },
+            {
+              "id": "c",
+              "label": "Either I or II alone"
+            },
+            {
+              "id": "d",
+              "label": "Both needed"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Both imply 144 worker-days.",
+            "Either alone determines the answer."
+          ],
+          "explanation": "Either alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nEither alone is sufficient.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Mixed-worker sufficiency needs enough information to compare worker types.\n\nIf you know only women efficiency relative to men and women relative to children, but not any absolute team time or total work, you may still be unable to find a specific headcount for a fixed deadline.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Ratios tell relative speeds; a deadline answer often also needs scale.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: how many women finish a job in 10 days? I: one woman is 75% as efficient as one man. II: 10 men finish in 15 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together only"
+          },
+          {
+            "id": "d",
+            "label": "Either alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: how many women finish a job in 10 days? I: one woman is 75% as efficient as one man. II: 10 men finish in 15 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together only"
+            },
+            {
+              "id": "d",
+              "label": "Either alone"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "I gives relative efficiency; II gives job scale.",
+            "Together convert 10 men's rate into equivalent women."
+          ],
+          "explanation": "Both statements are needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nI gives relative efficiency; II gives job scale.\n\nBoth statements are needed.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: women needed in 12 days. I: woman rate = 2/3 man rate. II: 8 men finish in 18 days. Sufficiency?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "Both together only"
+          },
+          {
+            "id": "c",
+            "label": "II alone"
+          },
+          {
+            "id": "d",
+            "label": "Neither together"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: women needed in 12 days. I: woman rate = 2/3 man rate. II: 8 men finish in 18 days. Sufficiency?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "Both together only"
+            },
+            {
+              "id": "c",
+              "label": "II alone"
+            },
+            {
+              "id": "d",
+              "label": "Neither together"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Need both conversion ratio and total work scale.",
+            "Together they determine the count."
+          ],
+          "explanation": "Both together are sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nBoth together are sufficient.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three pairwise team rates are a classic three-statement case.\n\nTo find B alone from AB, BC and AC, all three pair rates are generally needed because ABC must first be reconstructed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Any missing pair leaves too many unknowns unless another statement supplies an equivalent relation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: B alone. I: AB=12 days. II: BC=8 days. III: AC=6 days. Necessary data?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I and II only"
+          },
+          {
+            "id": "b",
+            "label": "All three"
+          },
+          {
+            "id": "c",
+            "label": "II and III only"
+          },
+          {
+            "id": "d",
+            "label": "Any two"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: B alone. I: AB=12 days. II: BC=8 days. III: AC=6 days. Necessary data?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I and II only"
+            },
+            {
+              "id": "b",
+              "label": "All three"
+            },
+            {
+              "id": "c",
+              "label": "II and III only"
+            },
+            {
+              "id": "d",
+              "label": "Any two"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B = ABC−AC, and ABC comes from all three pair rates.",
+            "Two pair rates alone leave one degree of freedom."
+          ],
+          "explanation": "All three are required."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nB = ABC−AC, and ABC comes from all three pair rates.\n\nAll three are required.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: C alone. I: AB=10. II: BC=15. III: AC=12. Necessary?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Any two"
+          },
+          {
+            "id": "b",
+            "label": "I and II only"
+          },
+          {
+            "id": "c",
+            "label": "II and III only"
+          },
+          {
+            "id": "d",
+            "label": "All three"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: C alone. I: AB=10. II: BC=15. III: AC=12. Necessary?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Any two"
+            },
+            {
+              "id": "b",
+              "label": "I and II only"
+            },
+            {
+              "id": "c",
+              "label": "II and III only"
+            },
+            {
+              "id": "d",
+              "label": "All three"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use pair-sum identity to get ABC.",
+            "Then subtract AB to isolate C."
+          ],
+          "explanation": "All three are needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nAll three are needed.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: sufficiency is about uniqueness, not calculation length.\n\nA direct statement can be sufficient even if another pair of statements could also be combined to reach the same answer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once the requested value is fixed, stop. Extra information is redundant.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: A's solo time. I: A alone takes 20 days. II: A+B finish in 12 days. III: B alone takes 30 days. Which statement alone is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "II alone"
+          },
+          {
+            "id": "b",
+            "label": "III alone"
+          },
+          {
+            "id": "c",
+            "label": "No single statement"
+          },
+          {
+            "id": "d",
+            "label": "I alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: A's solo time. I: A alone takes 20 days. II: A+B finish in 12 days. III: B alone takes 30 days. Which statement alone is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "II alone"
+            },
+            {
+              "id": "b",
+              "label": "III alone"
+            },
+            {
+              "id": "c",
+              "label": "No single statement"
+            },
+            {
+              "id": "d",
+              "label": "I alone"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Statement I directly gives the requested quantity.",
+            "II or III alone does not."
+          ],
+          "explanation": "I alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nStatement I directly gives the requested quantity.\n\nI alone is sufficient.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Asked: total worker-days. I: 24 workers take 15 days. II: 30 workers take 12 days. III: total work is 360 worker-days. Which statement alone is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Any one of I, II, or III"
+          },
+          {
+            "id": "b",
+            "label": "I only"
+          },
+          {
+            "id": "c",
+            "label": "III only"
+          },
+          {
+            "id": "d",
+            "label": "I and II together"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Asked: total worker-days. I: 24 workers take 15 days. II: 30 workers take 12 days. III: total work is 360 worker-days. Which statement alone is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Any one of I, II, or III"
+            },
+            {
+              "id": "b",
+              "label": "I only"
+            },
+            {
+              "id": "c",
+              "label": "III only"
+            },
+            {
+              "id": "d",
+              "label": "I and II together"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "I gives 24×15=360; II gives 30×12=360; III states 360.",
+            "Each statement independently fixes the answer."
+          ],
+          "explanation": "Any one statement alone is sufficient."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nAny one statement alone is sufficient.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now judge Time and Work data efficiently.\n\nAsk what unknown rate or relation the question needs.\nTest statements independently.\nEquivalent statements do not add information.\nStop once the answer is unique.\n\nThat completes Topic 17: Time and Work.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Data Sufficiency for Time and Work",
+    "description": "Identify the minimum rate information needed to answer a Time and Work question.",
+    "teachingApproach": "Make sufficiency a question about unknown rates. For each statement, identify which rate, ratio, or work relation it determines, then decide whether that fixes the requested quantity. Cover both-needed, one-alone, either-alone, both-insufficient, redundant three-statement cases, pairwise teams, worker equivalence, and required headcount.",
+    "targetDurationMinutes": 31,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 17, Time and Work. Approved scope: Teach the chapter's data-sufficiency patterns. Cover both statements needed, either statement alone sufficient, even both insufficient, equivalent or redundant statements, pairwise team rates, efficiency ratios, mixed worker groups, required workforce, and three-statement necessity/redundancy questions. The learner should identify the exact rate or relation required before calculating and stop as soon as uniqueness is proved."
+  },
+  "scriptId": "tw-11-data-sufficiency-time-work",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

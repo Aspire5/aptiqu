@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "If A and B together do 1/12 of a job each day, and B alone does 1/20, then A is not mysterious.\n\nA's rate = team rate − B's rate.\n\nWe are going to use subtraction to reveal hidden workers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A+B finish in 12 days; B alone finishes in 18.\n\nTeam rate = 1/12.\nB rate = 1/18.\nA rate = 1/12 − 1/18 = 1/36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The solo time is the reciprocal of the hidden rate, so A takes 36 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B finish in 10 days. B alone takes 15 days. How long does A alone take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 days"
+          },
+          {
+            "id": "b",
+            "label": "25 days"
+          },
+          {
+            "id": "c",
+            "label": "45 days"
+          },
+          {
+            "id": "d",
+            "label": "30 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B finish in 10 days. B alone takes 15 days. How long does A alone take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 days"
+            },
+            {
+              "id": "b",
+              "label": "25 days"
+            },
+            {
+              "id": "c",
+              "label": "45 days"
+            },
+            {
+              "id": "d",
+              "label": "30 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A's rate = 1/10 − 1/15.",
+            "That difference is 1/30."
+          ],
+          "explanation": "A's rate is 1/30, so A alone takes 30 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nA's rate = 1/10 − 1/15.\n\nA's rate is 1/30, so A alone takes 30 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B finish in 8 days. B alone takes 12 days. A alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 days"
+          },
+          {
+            "id": "b",
+            "label": "18 days"
+          },
+          {
+            "id": "c",
+            "label": "20 days"
+          },
+          {
+            "id": "d",
+            "label": "30 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B finish in 8 days. B alone takes 12 days. A alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 days"
+            },
+            {
+              "id": "b",
+              "label": "18 days"
+            },
+            {
+              "id": "c",
+              "label": "20 days"
+            },
+            {
+              "id": "d",
+              "label": "30 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Subtract B's rate from the team rate.",
+            "1/8 − 1/12 = 1/24."
+          ],
+          "explanation": "A alone takes 24 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nA alone takes 24 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same idea finds a third helper.\n\nA takes 12 days, B 18 days, but A+B+C finish in 6 days.\nC rate = 1/6 − 1/12 − 1/18 = 1/36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "C's solo time is therefore 36 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A takes 10 days, B 15 days, and A+B+C take 5 days. C alone takes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 days"
+          },
+          {
+            "id": "b",
+            "label": "20 days"
+          },
+          {
+            "id": "c",
+            "label": "25 days"
+          },
+          {
+            "id": "d",
+            "label": "45 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A takes 10 days, B 15 days, and A+B+C take 5 days. C alone takes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 days"
+            },
+            {
+              "id": "b",
+              "label": "20 days"
+            },
+            {
+              "id": "c",
+              "label": "25 days"
+            },
+            {
+              "id": "d",
+              "label": "45 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Start with 1/5 and subtract 1/10 and 1/15.",
+            "Use denominator 30: 6−3−2 = 1 part."
+          ],
+          "explanation": "C's rate is 1/30, so C takes 30 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nStart with 1/5 and subtract 1/10 and 1/15.\n\nC's rate is 1/30, so C takes 30 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A takes 8 days, B 24 days, and all three take 4 days. C alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 days"
+          },
+          {
+            "id": "b",
+            "label": "16 days"
+          },
+          {
+            "id": "c",
+            "label": "12 days"
+          },
+          {
+            "id": "d",
+            "label": "24 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A takes 8 days, B 24 days, and all three take 4 days. C alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 days"
+            },
+            {
+              "id": "b",
+              "label": "16 days"
+            },
+            {
+              "id": "c",
+              "label": "12 days"
+            },
+            {
+              "id": "d",
+              "label": "24 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use 1/4 − 1/8 − 1/24.",
+            "6/24−3/24−1/24 = 2/24 = 1/12."
+          ],
+          "explanation": "C alone takes 12 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nC alone takes 12 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A helper can be hidden inside a faster completion.\n\nA alone needs 9 days. With an assistant, the job takes 6 days.\nAssistant rate = 1/6 − 1/9 = 1/18.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the assistant alone would need 18 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A alone needs 12 days. With a helper, the job takes 8 days. Helper alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 days"
+          },
+          {
+            "id": "b",
+            "label": "20 days"
+          },
+          {
+            "id": "c",
+            "label": "24 days"
+          },
+          {
+            "id": "d",
+            "label": "32 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A alone needs 12 days. With a helper, the job takes 8 days. Helper alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 days"
+            },
+            {
+              "id": "b",
+              "label": "20 days"
+            },
+            {
+              "id": "c",
+              "label": "24 days"
+            },
+            {
+              "id": "d",
+              "label": "32 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Helper rate = 1/8 − 1/12.",
+            "That is 1/24."
+          ],
+          "explanation": "The helper alone takes 24 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nHelper rate = 1/8 − 1/12.\n\nThe helper alone takes 24 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A alone needs 15 days. With a helper, 10 days. Helper alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 days"
+          },
+          {
+            "id": "b",
+            "label": "30 days"
+          },
+          {
+            "id": "c",
+            "label": "25 days"
+          },
+          {
+            "id": "d",
+            "label": "45 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A alone needs 15 days. With a helper, 10 days. Helper alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 days"
+            },
+            {
+              "id": "b",
+              "label": "30 days"
+            },
+            {
+              "id": "c",
+              "label": "25 days"
+            },
+            {
+              "id": "d",
+              "label": "45 days"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Subtract 1/15 from 1/10.",
+            "The difference is 1/30."
+          ],
+          "explanation": "Helper alone takes 30 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nHelper alone takes 30 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A remainder clue can reveal a worker's whole-job time.\n\nA can do the job in 50 days and works 10 days: 1/5 is done. B finishes the remaining 4/5 in 32 days.\nB's whole time = 32 ÷ (4/5) = 40 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once B's whole-job time is recovered, B can be combined with anyone normally.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A can finish in 40 days and works 8 days. B finishes the rest in 24 days. How long would B alone take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 days"
+          },
+          {
+            "id": "b",
+            "label": "30 days"
+          },
+          {
+            "id": "c",
+            "label": "32 days"
+          },
+          {
+            "id": "d",
+            "label": "36 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A can finish in 40 days and works 8 days. B finishes the rest in 24 days. How long would B alone take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 days"
+            },
+            {
+              "id": "b",
+              "label": "30 days"
+            },
+            {
+              "id": "c",
+              "label": "32 days"
+            },
+            {
+              "id": "d",
+              "label": "36 days"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A does 8/40 = 1/5, so B completes 4/5.",
+            "If 4/5 takes 24 days, whole work takes 24 × 5/4."
+          ],
+          "explanation": "B alone would take 30 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nA does 8/40 = 1/5, so B completes 4/5.\n\nB alone would take 30 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A takes 60 days and works 12 days. B finishes the rest in 32 days. B alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "32 days"
+          },
+          {
+            "id": "b",
+            "label": "36 days"
+          },
+          {
+            "id": "c",
+            "label": "48 days"
+          },
+          {
+            "id": "d",
+            "label": "40 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A takes 60 days and works 12 days. B finishes the rest in 32 days. B alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "32 days"
+            },
+            {
+              "id": "b",
+              "label": "36 days"
+            },
+            {
+              "id": "c",
+              "label": "48 days"
+            },
+            {
+              "id": "d",
+              "label": "40 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A does 1/5, leaving 4/5.",
+            "32 × 5/4 = 40."
+          ],
+          "explanation": "B alone takes 40 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB alone takes 40 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the hidden rate is found after the team works first.\n\nA+B finish in 15 days. They work 6 days, completing 6/15 = 2/5. B then finishes the remaining 3/5 in 18 days.\nB's full-job time = 18 × 5/3 = 30 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Then A can be found by 1/15 − 1/30 = 1/30, so A also takes 30 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B finish in 12 days. They work 4 days; B alone finishes the rest in 16 days. B alone takes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 days"
+          },
+          {
+            "id": "b",
+            "label": "18 days"
+          },
+          {
+            "id": "c",
+            "label": "20 days"
+          },
+          {
+            "id": "d",
+            "label": "30 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B finish in 12 days. They work 4 days; B alone finishes the rest in 16 days. B alone takes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 days"
+            },
+            {
+              "id": "b",
+              "label": "18 days"
+            },
+            {
+              "id": "c",
+              "label": "20 days"
+            },
+            {
+              "id": "d",
+              "label": "30 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Team completes 4/12 = 1/3, leaving 2/3.",
+            "If 2/3 takes B 16 days, whole job takes 24."
+          ],
+          "explanation": "B's solo time is 24 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nTeam completes 4/12 = 1/3, leaving 2/3.\n\nB's solo time is 24 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B finish in 10 days. They work 5 days; B finishes the remaining half in 15 days. B alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 days"
+          },
+          {
+            "id": "b",
+            "label": "25 days"
+          },
+          {
+            "id": "c",
+            "label": "30 days"
+          },
+          {
+            "id": "d",
+            "label": "35 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B finish in 10 days. They work 5 days; B finishes the remaining half in 15 days. B alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 days"
+            },
+            {
+              "id": "b",
+              "label": "25 days"
+            },
+            {
+              "id": "c",
+              "label": "30 days"
+            },
+            {
+              "id": "d",
+              "label": "35 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Half the job takes B 15 days.",
+            "Double that time for the whole job."
+          ],
+          "explanation": "B alone takes 30 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB alone takes 30 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A known worker can also be recovered from a team's output rather than a stated job time.\n\nA+B make 300 units in 6 hours = 50 units/hour. B alone makes 180 units in 6 hours = 30/hour.\nA makes 20/hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Always subtract in the same unit: units/hour from units/hour, not total units from hourly rates.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B produce 420 units in 7 hours. B alone produces 245 units in 7 hours. What is A's hourly rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 units/hour"
+          },
+          {
+            "id": "b",
+            "label": "35 units/hour"
+          },
+          {
+            "id": "c",
+            "label": "25 units/hour"
+          },
+          {
+            "id": "d",
+            "label": "60 units/hour"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B produce 420 units in 7 hours. B alone produces 245 units in 7 hours. What is A's hourly rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 units/hour"
+            },
+            {
+              "id": "b",
+              "label": "35 units/hour"
+            },
+            {
+              "id": "c",
+              "label": "25 units/hour"
+            },
+            {
+              "id": "d",
+              "label": "60 units/hour"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Team rate is 60/hour; B rate is 35/hour.",
+            "Subtract the rates."
+          ],
+          "explanation": "A's rate = 60−35 = 25 units/hour."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nTeam rate is 60/hour; B rate is 35/hour.\n\nA's rate = 60−35 = 25 units/hour.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B type 360 pages in 6 hours. B alone types 210 pages in 6 hours. A's rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 pages/hour"
+          },
+          {
+            "id": "b",
+            "label": "25 pages/hour"
+          },
+          {
+            "id": "c",
+            "label": "30 pages/hour"
+          },
+          {
+            "id": "d",
+            "label": "60 pages/hour"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B type 360 pages in 6 hours. B alone types 210 pages in 6 hours. A's rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 pages/hour"
+            },
+            {
+              "id": "b",
+              "label": "25 pages/hour"
+            },
+            {
+              "id": "c",
+              "label": "30 pages/hour"
+            },
+            {
+              "id": "d",
+              "label": "60 pages/hour"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Convert both totals to pages/hour.",
+            "60−35 = 25."
+          ],
+          "explanation": "A types 25 pages per hour."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nA types 25 pages per hour.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a worker's contribution is known as a fraction of team work, rate ratios appear immediately.\n\nIf A does 2/3 of what the team completes, B does the remaining 1/3. So A:B = 2:1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work shares and rate shares are the same when the workers operate for the same amount of time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A and B work together throughout. A completes 3/5 of the job. What is the rate ratio A:B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2:3"
+          },
+          {
+            "id": "b",
+            "label": "3:2"
+          },
+          {
+            "id": "c",
+            "label": "3:5"
+          },
+          {
+            "id": "d",
+            "label": "5:2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A and B work together throughout. A completes 3/5 of the job. What is the rate ratio A:B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2:3"
+            },
+            {
+              "id": "b",
+              "label": "3:2"
+            },
+            {
+              "id": "c",
+              "label": "3:5"
+            },
+            {
+              "id": "d",
+              "label": "5:2"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B completes the remaining 2/5.",
+            "Compare 3/5 to 2/5."
+          ],
+          "explanation": "A:B = 3:2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nB completes the remaining 2/5.\n\nA:B = 3:2.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two workers work together throughout. B completes 4/7 of the work. Rate ratio A:B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4:3"
+          },
+          {
+            "id": "b",
+            "label": "3:7"
+          },
+          {
+            "id": "c",
+            "label": "7:4"
+          },
+          {
+            "id": "d",
+            "label": "3:4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two workers work together throughout. B completes 4/7 of the work. Rate ratio A:B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4:3"
+            },
+            {
+              "id": "b",
+              "label": "3:7"
+            },
+            {
+              "id": "c",
+              "label": "7:4"
+            },
+            {
+              "id": "d",
+              "label": "3:4"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A completes 3/7.",
+            "Compare 3/7 and 4/7."
+          ],
+          "explanation": "A:B = 3:4."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nA:B = 3:4.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: hidden-rate problems are subtraction problems in disguise.\n\nDo not subtract times. Subtract rates.\n\nA+B time 12 days and B time 20 days does not mean A takes 8 days. It means A rate = 1/12−1/20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That distinction prevents one of the most common Time and Work errors.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B finish in 15 days and B alone in 25 days. A alone takes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 days"
+          },
+          {
+            "id": "b",
+            "label": "30 days"
+          },
+          {
+            "id": "c",
+            "label": "40 days"
+          },
+          {
+            "id": "d",
+            "label": "37.5 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B finish in 15 days and B alone in 25 days. A alone takes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 days"
+            },
+            {
+              "id": "b",
+              "label": "30 days"
+            },
+            {
+              "id": "c",
+              "label": "40 days"
+            },
+            {
+              "id": "d",
+              "label": "37.5 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Subtract rates: 1/15−1/25.",
+            "The difference is 2/75, so time is 75/2."
+          ],
+          "explanation": "A alone takes 37.5 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nSubtract rates: 1/15−1/25.\n\nA alone takes 37.5 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B finish in 18 days and B alone in 30 days. A alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 days"
+          },
+          {
+            "id": "b",
+            "label": "12 days"
+          },
+          {
+            "id": "c",
+            "label": "36 days"
+          },
+          {
+            "id": "d",
+            "label": "48 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B finish in 18 days and B alone in 30 days. A alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 days"
+            },
+            {
+              "id": "b",
+              "label": "12 days"
+            },
+            {
+              "id": "c",
+              "label": "36 days"
+            },
+            {
+              "id": "d",
+              "label": "48 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "1/18−1/30 = 1/45.",
+            "Flip the hidden rate at the end."
+          ],
+          "explanation": "A alone takes 45 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nA alone takes 45 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now recover a hidden worker from a team.\n\nTeam rate = sum of individual rates.\nMissing rate = team rate − known rates.\n\nKeep the result as a rate until the end, then take its reciprocal to get the worker's solo time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Combined Workers and Hidden Individual Rates",
+    "description": "Find an unknown worker or helper by subtracting known work rates.",
+    "teachingApproach": "Make the hidden-rate idea visual: the team's rate is the sum of its members, so a missing member is team minus known member. Build from two workers to a third helper, partial-work clues, and staged remainder clues. Keep every unknown as a daily rate until the final reciprocal converts it into days.",
+    "targetDurationMinutes": 29,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 17, Time and Work. Approved scope: Teach subtraction of work rates: if A+B have a known rate and B is known, then A is the difference. Extend to a third helper, one known pair plus an individual, partial-work clues that reveal an individual's whole-job time, and questions where a worker completes the remainder after another has worked first. Keep the unknown as a rate before converting it back into days."
+  },
+  "scriptId": "tw-02-combined-workers-hidden-rates",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

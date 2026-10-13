@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A worker count alone does not tell us how much work gets done. A day length alone does not either.\n\nFor equal-efficiency workers, the useful unit is total worker-hours:\nworkers × hours per day × days.\n\nThink of it as the work budget.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "8 workers work 6 hours/day for 10 days. Their work budget is 8×6×10 = 480 worker-hours.\n\nIf 12 workers work 5 hours/day, days d must satisfy 12×5×d = 480.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So d = 8 days.\n\nThis method avoids juggling several separate proportions. Everything becomes one effort total.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "10 workers at 7 hours/day finish a job in 12 days. How many days for 14 workers at 5 hours/day?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 days"
+          },
+          {
+            "id": "b",
+            "label": "16.8 days"
+          },
+          {
+            "id": "c",
+            "label": "8 days"
+          },
+          {
+            "id": "d",
+            "label": "12 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "10 workers at 7 hours/day finish a job in 12 days. How many days for 14 workers at 5 hours/day?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 days"
+            },
+            {
+              "id": "b",
+              "label": "16.8 days"
+            },
+            {
+              "id": "c",
+              "label": "8 days"
+            },
+            {
+              "id": "d",
+              "label": "12 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Set worker-hours equal.",
+            "10×7×12 = 14×5×d."
+          ],
+          "explanation": "Both sides have 70 per day, so the time stays 12 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nSet worker-hours equal.\n\nBoth sides have 70 per day, so the time stays 12 days.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "9 workers at 8 hours/day finish in 15 days. How many days for 12 workers at 6 hours/day?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 days"
+          },
+          {
+            "id": "b",
+            "label": "11.25 days"
+          },
+          {
+            "id": "c",
+            "label": "20 days"
+          },
+          {
+            "id": "d",
+            "label": "10 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "9 workers at 8 hours/day finish in 15 days. How many days for 12 workers at 6 hours/day?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 days"
+            },
+            {
+              "id": "b",
+              "label": "11.25 days"
+            },
+            {
+              "id": "c",
+              "label": "20 days"
+            },
+            {
+              "id": "d",
+              "label": "10 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Daily worker-hours are equal: 9×8 and 12×6.",
+            "If daily effort is unchanged, days are unchanged."
+          ],
+          "explanation": "Both teams produce 72 worker-hours per day, so 15 days are still needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nBoth teams produce 72 worker-hours per day, so 15 days are still needed.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "To find workers, keep the work budget fixed and divide by the new hours and days.\n\n18 workers × 6 h × 20 d = 2160 worker-hours.\nFor 12 days at 9 h/day: workers = 2160/(12×9) = 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The answer can rise or fall depending on both changes. A shorter deadline asks for more workers; a longer daily shift asks for fewer. The product decides the balance.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "24 workers at 5 hours/day finish in 18 days. How many workers at 9 hours/day can finish in 12 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "16"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "27"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "24 workers at 5 hours/day finish in 18 days. How many workers at 9 hours/day can finish in 12 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "16"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "27"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total effort = 24×5×18.",
+            "Divide by 9×12."
+          ],
+          "explanation": "24×5×18 = 2160; 2160/(108) = 20 workers."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nTotal effort = 24×5×18.\n\n24×5×18 = 2160; 2160/(108) = 20 workers.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "15 workers at 8 hours/day finish in 16 days. How many workers at 10 hours/day for 12 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "20"
+          },
+          {
+            "id": "c",
+            "label": "16"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "15 workers at 8 hours/day finish in 16 days. How many workers at 10 hours/day for 12 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "20"
+            },
+            {
+              "id": "c",
+              "label": "16"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Set 15×8×16 = x×10×12.",
+            "The total work budget is 1920."
+          ],
+          "explanation": "x = 1920/120 = 16."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nx = 1920/120 = 16.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "To find hours per day, divide total work by workers × days.\n\n6 workers at 8 hours/day for 15 days give 720 worker-hours. If 10 workers must finish in 9 days, hours/day = 720/(10×9)=8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is useful when an exam asks for a longer shift instead of more people.\n\nThe work budget stays the same; only the missing factor changes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "12 workers at 6 hours/day finish in 20 days. How many hours/day must 15 workers work to finish in 12 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 hours"
+          },
+          {
+            "id": "b",
+            "label": "10 hours"
+          },
+          {
+            "id": "c",
+            "label": "8 hours"
+          },
+          {
+            "id": "d",
+            "label": "12 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "12 workers at 6 hours/day finish in 20 days. How many hours/day must 15 workers work to finish in 12 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 hours"
+            },
+            {
+              "id": "b",
+              "label": "10 hours"
+            },
+            {
+              "id": "c",
+              "label": "8 hours"
+            },
+            {
+              "id": "d",
+              "label": "12 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total work = 12×6×20.",
+            "Set it equal to 15×h×12."
+          ],
+          "explanation": "1440 = 180h, so h = 8 hours/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nTotal work = 12×6×20.\n\n1440 = 180h, so h = 8 hours/day.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "8 workers at 9 hours/day finish in 14 days. How many hours/day for 12 workers to finish in 9 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7 hours"
+          },
+          {
+            "id": "b",
+            "label": "9⅓ hours"
+          },
+          {
+            "id": "c",
+            "label": "10½ hours"
+          },
+          {
+            "id": "d",
+            "label": "8⅔ hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "8 workers at 9 hours/day finish in 14 days. How many hours/day for 12 workers to finish in 9 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7 hours"
+            },
+            {
+              "id": "b",
+              "label": "9⅓ hours"
+            },
+            {
+              "id": "c",
+              "label": "10½ hours"
+            },
+            {
+              "id": "d",
+              "label": "8⅔ hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total work = 8×9×14 = 1008.",
+            "12×9 = 108, so h = 1008/108."
+          ],
+          "explanation": "h = 28/3 = 9⅓ hours/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nh = 28/3 = 9⅓ hours/day.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now let the amount of work change.\n\nIf one job needs 600 worker-hours, a job twice as large needs 1200 worker-hours at the same efficiency.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work amount is direct with the work budget.\n\nMore work is not a reason to flip a ratio; it is a reason to scale the required worker-hours upward.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "14 workers at 6 hours/day finish one job in 10 days. How many days will 21 workers at 8 hours/day need for a job twice as large?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 days"
+          },
+          {
+            "id": "b",
+            "label": "10 days"
+          },
+          {
+            "id": "c",
+            "label": "20 days"
+          },
+          {
+            "id": "d",
+            "label": "7.5 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "14 workers at 6 hours/day finish one job in 10 days. How many days will 21 workers at 8 hours/day need for a job twice as large?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 days"
+            },
+            {
+              "id": "b",
+              "label": "10 days"
+            },
+            {
+              "id": "c",
+              "label": "20 days"
+            },
+            {
+              "id": "d",
+              "label": "7.5 days"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Old work budget = 14×6×10.",
+            "New job needs twice that; divide by 21×8."
+          ],
+          "explanation": "Old = 840. New job = 1680. New daily effort = 168, so days = 10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nOld work budget = 14×6×10.\n\nOld = 840. New job = 1680. New daily effort = 168, so days = 10.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "16 workers at 5 hours/day finish a job in 12 days. How many days for 20 workers at 6 hours/day to finish 1.5 times the work?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 days"
+          },
+          {
+            "id": "b",
+            "label": "18 days"
+          },
+          {
+            "id": "c",
+            "label": "10 days"
+          },
+          {
+            "id": "d",
+            "label": "12 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "16 workers at 5 hours/day finish a job in 12 days. How many days for 20 workers at 6 hours/day to finish 1.5 times the work?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 days"
+            },
+            {
+              "id": "b",
+              "label": "18 days"
+            },
+            {
+              "id": "c",
+              "label": "10 days"
+            },
+            {
+              "id": "d",
+              "label": "12 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Old work = 16×5×12 = 960 units.",
+            "New work = 1440; new daily effort = 120."
+          ],
+          "explanation": "1440/120 = 12 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n1440/120 = 12 days.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Output questions use the same model in the other direction.\n\nIf 6 workers working 5 hours/day for 4 days make 240 units, then each worker-hour makes 240/(6×5×4) = 2 units.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once the unit output is known, any new combination is easy. Or simply scale the product workers × hours × days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "5 workers at 6 hours/day make 360 units in 4 days. How many units will 8 workers at 5 hours/day make in 9 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1080"
+          },
+          {
+            "id": "b",
+            "label": "720"
+          },
+          {
+            "id": "c",
+            "label": "900"
+          },
+          {
+            "id": "d",
+            "label": "1296"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "5 workers at 6 hours/day make 360 units in 4 days. How many units will 8 workers at 5 hours/day make in 9 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1080"
+            },
+            {
+              "id": "b",
+              "label": "720"
+            },
+            {
+              "id": "c",
+              "label": "900"
+            },
+            {
+              "id": "d",
+              "label": "1296"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Output is direct with workers, hours and days.",
+            "360 × 8/5 × 5/6 × 9/4."
+          ],
+          "explanation": "The factors simplify to 3. Output = 1080 units."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nOutput is direct with workers, hours and days.\n\nThe factors simplify to 3. Output = 1080 units.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "4 workers at 8 hours/day make 256 parts in 5 days. How many parts will 10 workers at 4 hours/day make in 8 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "320"
+          },
+          {
+            "id": "b",
+            "label": "640"
+          },
+          {
+            "id": "c",
+            "label": "512"
+          },
+          {
+            "id": "d",
+            "label": "400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "4 workers at 8 hours/day make 256 parts in 5 days. How many parts will 10 workers at 4 hours/day make in 8 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "320"
+            },
+            {
+              "id": "b",
+              "label": "640"
+            },
+            {
+              "id": "c",
+              "label": "512"
+            },
+            {
+              "id": "d",
+              "label": "400"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Scale by workers 10/4, hours 4/8, days 8/5.",
+            "The combined factor is 2."
+          ],
+          "explanation": "256 × 2 = 512 parts."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n256 × 2 = 512 parts.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "The classic 'more people, half the time, many times the work' question is just one equation.\n\nIf x workers do one job in t days, then to do 8 jobs in t/2 days requires 16x workers — eight times the work in half the time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not solve these by intuition alone. Two changes can multiply quickly.\n\nRequired workers scale directly with work and inversely with time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "12 workers finish one job in 18 days. How many workers are needed to finish 3 times the work in 9 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36"
+          },
+          {
+            "id": "b",
+            "label": "54"
+          },
+          {
+            "id": "c",
+            "label": "72"
+          },
+          {
+            "id": "d",
+            "label": "108"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "12 workers finish one job in 18 days. How many workers are needed to finish 3 times the work in 9 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36"
+            },
+            {
+              "id": "b",
+              "label": "54"
+            },
+            {
+              "id": "c",
+              "label": "72"
+            },
+            {
+              "id": "d",
+              "label": "108"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Work is ×3 and time is ×1/2.",
+            "Workers scale by 3 ÷ 1/2 = 6."
+          ],
+          "explanation": "12 × 6 = 72 workers."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nWork is ×3 and time is ×1/2.\n\n12 × 6 = 72 workers.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "20 workers finish one job in 16 days. How many workers for 4 times the work in 8 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "80"
+          },
+          {
+            "id": "b",
+            "label": "160"
+          },
+          {
+            "id": "c",
+            "label": "120"
+          },
+          {
+            "id": "d",
+            "label": "200"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "20 workers finish one job in 16 days. How many workers for 4 times the work in 8 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "80"
+            },
+            {
+              "id": "b",
+              "label": "160"
+            },
+            {
+              "id": "c",
+              "label": "120"
+            },
+            {
+              "id": "d",
+              "label": "200"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Four times the work and half the time.",
+            "Required workforce is multiplied by 8."
+          ],
+          "explanation": "20 × 8 = 160 workers."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n20 × 8 = 160 workers.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A subtle question may ask for work done instead of resources.\n\nIf 2 people × 2 h/day × 2 days produce 2 machines, then multiplying each of the three effort factors by 3 multiplies output by 3³ = 27.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The output is direct with every effort factor.\n\nThree independent scale factors multiply; they do not add.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "3 workers working 4 hours/day for 5 days produce 120 units. How many units will 6 workers working 8 hours/day for 10 days produce?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "480"
+          },
+          {
+            "id": "b",
+            "label": "960"
+          },
+          {
+            "id": "c",
+            "label": "720"
+          },
+          {
+            "id": "d",
+            "label": "1440"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3 workers working 4 hours/day for 5 days produce 120 units. How many units will 6 workers working 8 hours/day for 10 days produce?",
+          "options": [
+            {
+              "id": "a",
+              "label": "480"
+            },
+            {
+              "id": "b",
+              "label": "960"
+            },
+            {
+              "id": "c",
+              "label": "720"
+            },
+            {
+              "id": "d",
+              "label": "1440"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Each factor doubles: workers, hours and days.",
+            "Three doublings multiply output by 8."
+          ],
+          "explanation": "120 × 2³ = 960 units."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nEach factor doubles: workers, hours and days.\n\n120 × 2³ = 960 units.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "5 workers working 6 hours/day for 4 days make 300 units. What if workers triple, hours halve, and days double?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "450"
+          },
+          {
+            "id": "b",
+            "label": "600"
+          },
+          {
+            "id": "c",
+            "label": "1200"
+          },
+          {
+            "id": "d",
+            "label": "900"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "5 workers working 6 hours/day for 4 days make 300 units. What if workers triple, hours halve, and days double?",
+          "options": [
+            {
+              "id": "a",
+              "label": "450"
+            },
+            {
+              "id": "b",
+              "label": "600"
+            },
+            {
+              "id": "c",
+              "label": "1200"
+            },
+            {
+              "id": "d",
+              "label": "900"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply scale factors 3 × 1/2 × 2.",
+            "The combined factor is 3."
+          ],
+          "explanation": "300 × 3 = 900 units."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n300 × 3 = 900 units.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: symbolic chain rule strips away the story.\n\nIf x workers, x hours/day, for x days produce x units, then the rate constant k satisfies x = kx³, so k = 1/x².",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "With y workers, y hours/day and y days, output = (1/x²)·y³ = y³/x².\n\nThis is the same work-budget model, just written algebraically.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "If a workers working b hours/day for c days produce q units, what output is produced by 2a workers, b/2 hours/day, and 3c days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "q"
+          },
+          {
+            "id": "b",
+            "label": "6q"
+          },
+          {
+            "id": "c",
+            "label": "3q/2"
+          },
+          {
+            "id": "d",
+            "label": "3q"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If a workers working b hours/day for c days produce q units, what output is produced by 2a workers, b/2 hours/day, and 3c days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "q"
+            },
+            {
+              "id": "b",
+              "label": "6q"
+            },
+            {
+              "id": "c",
+              "label": "3q/2"
+            },
+            {
+              "id": "d",
+              "label": "3q"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Output scales directly with all three effort factors.",
+            "Multiply 2 × 1/2 × 3."
+          ],
+          "explanation": "The combined factor is 3, so output = 3q."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nOutput scales directly with all three effort factors.\n\nThe combined factor is 3, so output = 3q.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "If x workers working x hours/day for x days produce x units, what do 2x workers working 2x hours/day for 2x days produce?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8x"
+          },
+          {
+            "id": "b",
+            "label": "4x"
+          },
+          {
+            "id": "c",
+            "label": "6x"
+          },
+          {
+            "id": "d",
+            "label": "16x"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If x workers working x hours/day for x days produce x units, what do 2x workers working 2x hours/day for 2x days produce?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8x"
+            },
+            {
+              "id": "b",
+              "label": "4x"
+            },
+            {
+              "id": "c",
+              "label": "6x"
+            },
+            {
+              "id": "d",
+              "label": "16x"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Each of the three effort factors doubles.",
+            "Output therefore multiplies by 2³."
+          ],
+          "explanation": "Output = 8 × x = 8x."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nOutput = 8 × x = 8x.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now compress three moving quantities into one work budget.\n\nFor equal-efficiency workers:\nwork ∝ workers × hours/day × days.\n\nSame work means those products are equal. More work means the product must grow in the same factor.\n\nNext, not every worker will be equally efficient — so we will convert them into a common effort unit first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Workers × Hours × Days: The Work Budget",
+    "description": "Use worker-hours-days as one work budget for equal-efficiency labour.",
+    "teachingApproach": "Introduce one worker-hour as a unit of effort. For equal-efficiency workers, total work is proportional to workers × hours per day × days. Build from same-work problems to finding any missing factor, then add changed work amount and output quantity. Use cancellation-first arithmetic and finish with the chapter-style symbolic x/y pattern.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 15, Chain Rule. Approved scope: Teach the work-budget model for equal-efficiency workers: work is proportional to workers × hours per day × days. Cover finding days, workers, hours per day, output quantity, changed amount of work, half-time/double-work patterns, and symbolic forms. Use cancellation-friendly mental arithmetic. Distinguish 'same work' from 'more work' so learners know when work amount must enter the chain."
+  },
+  "scriptId": "cr-04-workers-hours-days-work",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

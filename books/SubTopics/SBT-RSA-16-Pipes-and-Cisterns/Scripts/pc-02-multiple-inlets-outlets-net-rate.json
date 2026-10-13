@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now more than one pipe is open.\n\nDo not combine their times. Combine their rates.\n\nA pipe filling in 6 hours adds 1/6 tank each hour. Another filling in 3 hours adds 1/3. Together they add 1/2 tank per hour, so the tank fills in 2 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two inlets work together by adding rates.\n\nA fills in 12 hours: 1/12 per hour.\nB fills in 18 hours: 1/18 per hour.\nTogether: 1/12 + 1/18 = 5/36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 5/36 of the tank is filled each hour, the whole tank takes 36/5 = 7.2 hours.\n\nThe combined time must be less than 12 hours, the faster individual pipe.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pipes fill a tank in 10 hours and 15 hours. Together, how long?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12.5 hours"
+          },
+          {
+            "id": "b",
+            "label": "25 hours"
+          },
+          {
+            "id": "c",
+            "label": "5 hours"
+          },
+          {
+            "id": "d",
+            "label": "6 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pipes fill a tank in 10 hours and 15 hours. Together, how long?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12.5 hours"
+            },
+            {
+              "id": "b",
+              "label": "25 hours"
+            },
+            {
+              "id": "c",
+              "label": "5 hours"
+            },
+            {
+              "id": "d",
+              "label": "6 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Add 1/10 + 1/15.",
+            "The sum is 1/6 tank per hour."
+          ],
+          "explanation": "Together they fill at 1/6 tank per hour, so they take 6 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nAdd 1/10 + 1/15.\n\nTogether they fill at 1/6 tank per hour, so they take 6 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pipes fill a tank in 8 hours and 24 hours. Together, how long?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "16 hours"
+          },
+          {
+            "id": "c",
+            "label": "4 hours"
+          },
+          {
+            "id": "d",
+            "label": "32 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pipes fill a tank in 8 hours and 24 hours. Together, how long?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "16 hours"
+            },
+            {
+              "id": "c",
+              "label": "4 hours"
+            },
+            {
+              "id": "d",
+              "label": "32 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "1/8 + 1/24 = 4/24.",
+            "4/24 = 1/6."
+          ],
+          "explanation": "Together they take 6 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nTogether they take 6 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add inlets, subtract outlets.\n\nA fills in 8 hours and B fills in 12 hours. C empties in 24 hours.\nNet rate = 1/8 + 1/12 − 1/24 = 1/6.\nSo the tank fills in 6 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sign is part of the story. A waste pipe simply contributes a negative rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 6 h, B in 12 h, and C empties in 18 h. All open. Fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36/7 hours"
+          },
+          {
+            "id": "b",
+            "label": "4.5 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "9 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 6 h, B in 12 h, and C empties in 18 h. All open. Fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36/7 hours"
+            },
+            {
+              "id": "b",
+              "label": "4.5 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "9 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net rate = 1/6 + 1/12 − 1/18.",
+            "Use denominator 36."
+          ],
+          "explanation": "6/36 + 3/36 − 2/36 = 7/36, so time = 36/7 hours, about 5.14 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nNet rate = 1/6 + 1/12 − 1/18.\n\n6/36 + 3/36 − 2/36 = 7/36, so time = 36/7 hours, about 5.14 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 8 h, B in 24 h, C empties in 12 h. All open. Fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "24 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "8 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 8 h, B in 24 h, C empties in 12 h. All open. Fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "24 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "8 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net rate = 1/8 + 1/24 − 1/12.",
+            "Use denominator 24."
+          ],
+          "explanation": "3/24 + 1/24 − 2/24 = 2/24 = 1/12, so 12 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n3/24 + 1/24 − 2/24 = 2/24 = 1/12, so 12 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the outlet wins.\n\nAn inlet fills in 10 hours, but an outlet empties in 6 hours.\nNet rate = 1/10 − 1/6 = −1/15.\nThe negative sign means the water level falls at 1/15 tank per hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the tank is only half full, it does not need 15 hours to empty.\nTime = 1/2 ÷ 1/15 = 7.5 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank is 3/5 full. An inlet fills in 12 h and an outlet empties in 8 h. How long until empty?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.2 hours"
+          },
+          {
+            "id": "b",
+            "label": "24 hours"
+          },
+          {
+            "id": "c",
+            "label": "14.4 hours"
+          },
+          {
+            "id": "d",
+            "label": "4.8 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank is 3/5 full. An inlet fills in 12 h and an outlet empties in 8 h. How long until empty?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.2 hours"
+            },
+            {
+              "id": "b",
+              "label": "24 hours"
+            },
+            {
+              "id": "c",
+              "label": "14.4 hours"
+            },
+            {
+              "id": "d",
+              "label": "4.8 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The outlet is faster, so find the net emptying rate.",
+            "1/8 − 1/12 = 1/24; then use only 3/5 of a tank."
+          ],
+          "explanation": "Net emptying is 1/24 tank/hour. Time = 3/5 × 24 = 72/5 = 14.4 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nThe outlet is faster, so find the net emptying rate.\n\nNet emptying is 1/24 tank/hour. Time = 3/5 × 24 = 72/5 = 14.4 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank is 2/3 full. An inlet fills in 15 h and an outlet empties in 10 h. Emptying time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 hours"
+          },
+          {
+            "id": "b",
+            "label": "20 hours"
+          },
+          {
+            "id": "c",
+            "label": "30 hours"
+          },
+          {
+            "id": "d",
+            "label": "6⅔ hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank is 2/3 full. An inlet fills in 15 h and an outlet empties in 10 h. Emptying time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 hours"
+            },
+            {
+              "id": "b",
+              "label": "20 hours"
+            },
+            {
+              "id": "c",
+              "label": "30 hours"
+            },
+            {
+              "id": "d",
+              "label": "6⅔ hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net emptying = 1/10 − 1/15.",
+            "That is 1/30 tank/hour."
+          ],
+          "explanation": "Time = 2/3 × 30 = 20 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nTime = 2/3 × 30 = 20 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Several identical pipes can be counted from the net rate.\n\nSuppose 10 pipes are open. Each inlet fills in 10 h; each waste pipe empties in 30 h. The tank fills in 3 h.\nLet x be inlets, so 10−x are waste pipes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "x/10 − (10−x)/30 = 1/3.\nMultiply by 30:\n3x − (10−x) = 10\n4x = 20 → x = 5.\nSo 5 are waste pipes too.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Eight pipes are open. Each inlet fills in 8 h and each waste pipe empties in 24 h. Together they fill the tank in 3 h. How many are waste pipes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Eight pipes are open. Each inlet fills in 8 h and each waste pipe empties in 24 h. Together they fill the tank in 3 h. How many are waste pipes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "5"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let x be inlets and 8−x be outlets.",
+            "x/8 − (8−x)/24 = 1/3."
+          ],
+          "explanation": "Multiply by 24: 3x − (8−x)=8, so 4x=16 and x=4 inlets. Therefore 4 are waste pipes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLet x be inlets and 8−x be outlets.\n\nMultiply by 24: 3x − (8−x)=8, so 4x=16 and x=4 inlets. Therefore 4 are waste pipes.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Twelve pipes are open. Each inlet fills in 8 h and each waste pipe empties in 24 h. Together they fill the tank in 2 h. How many are waste pipes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Twelve pipes are open. Each inlet fills in 8 h and each waste pipe empties in 24 h. Together they fill the tank in 2 h. How many are waste pipes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "6"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let x be inlets.",
+            "x/8 − (12−x)/24 = 1/2."
+          ],
+          "explanation": "Multiply by 24: 3x − (12−x)=12, so 4x=24 and x=6. Hence 6 waste pipes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nMultiply by 24: 3x − (12−x)=12, so 4x=24 and x=6. Hence 6 waste pipes.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "When several inlets carry different liquids, their shares are proportional to their rates.\n\nP, Q, R fill alone in 30, 20, 10 min. Their rates are 1/30 : 1/20 : 1/10 = 2 : 3 : 6.\nSo R contributes 6/11 of whatever mixture has entered.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The time cancels because all three pipes run for the same duration.\nYou only need the rate ratio.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three inlet pipes fill alone in 24, 12 and 8 minutes. What fraction of the incoming liquid is supplied by the fastest pipe?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/2"
+          },
+          {
+            "id": "b",
+            "label": "1/3"
+          },
+          {
+            "id": "c",
+            "label": "3/8"
+          },
+          {
+            "id": "d",
+            "label": "2/3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three inlet pipes fill alone in 24, 12 and 8 minutes. What fraction of the incoming liquid is supplied by the fastest pipe?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/2"
+            },
+            {
+              "id": "b",
+              "label": "1/3"
+            },
+            {
+              "id": "c",
+              "label": "3/8"
+            },
+            {
+              "id": "d",
+              "label": "2/3"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Compare rates, not times.",
+            "Rates are 1/24 : 1/12 : 1/8 = 1 : 2 : 3."
+          ],
+          "explanation": "The fastest pipe supplies 3 of 6 rate-parts, so its fraction is 1/2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nCompare rates, not times.\n\nThe fastest pipe supplies 3 of 6 rate-parts, so its fraction is 1/2.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pipes fill alone in 18, 9 and 6 minutes. What fraction comes from the 6-minute pipe?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/6"
+          },
+          {
+            "id": "b",
+            "label": "1/3"
+          },
+          {
+            "id": "c",
+            "label": "1/2"
+          },
+          {
+            "id": "d",
+            "label": "2/5"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pipes fill alone in 18, 9 and 6 minutes. What fraction comes from the 6-minute pipe?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/6"
+            },
+            {
+              "id": "b",
+              "label": "1/3"
+            },
+            {
+              "id": "c",
+              "label": "1/2"
+            },
+            {
+              "id": "d",
+              "label": "2/5"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Rates are 1 : 2 : 3 after multiplying by 18.",
+            "The last pipe has 3 of 6 parts."
+          ],
+          "explanation": "Its share is 1/2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nIts share is 1/2.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pairwise information can reveal another pair without solving every pipe separately.\n\nLet rates be a, b, c.\nIf a+b+c = S, b+c = U, and a+c = V, then\na+b = 2S − U − V.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why?\n2(a+b+c) − (b+c) − (a+c) leaves exactly a+b.\nThis is a fast rate identity, not a new pipe formula.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "All three outlets together drain at 1/2 tank/hour. B+C drain at 1/5, and A+C at 1/4. What is the rate of A+B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9/20 tank/hour"
+          },
+          {
+            "id": "b",
+            "label": "7/20 tank/hour"
+          },
+          {
+            "id": "c",
+            "label": "11/20 tank/hour"
+          },
+          {
+            "id": "d",
+            "label": "3/10 tank/hour"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "All three outlets together drain at 1/2 tank/hour. B+C drain at 1/5, and A+C at 1/4. What is the rate of A+B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9/20 tank/hour"
+            },
+            {
+              "id": "b",
+              "label": "7/20 tank/hour"
+            },
+            {
+              "id": "c",
+              "label": "11/20 tank/hour"
+            },
+            {
+              "id": "d",
+              "label": "3/10 tank/hour"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use 2S − U − V.",
+            "1 − 1/5 − 1/4."
+          ],
+          "explanation": "1 − 4/20 − 5/20 = 11/20 tank/hour."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nUse 2S − U − V.\n\n1 − 4/20 − 5/20 = 11/20 tank/hour.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "All three drain at 1/3 tank/hour. B+C drain at 1/6 and A+C at 1/5. Rate of A+B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7/30 tank/hour"
+          },
+          {
+            "id": "b",
+            "label": "3/10 tank/hour"
+          },
+          {
+            "id": "c",
+            "label": "1/5 tank/hour"
+          },
+          {
+            "id": "d",
+            "label": "11/30 tank/hour"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "All three drain at 1/3 tank/hour. B+C drain at 1/6 and A+C at 1/5. Rate of A+B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7/30 tank/hour"
+            },
+            {
+              "id": "b",
+              "label": "3/10 tank/hour"
+            },
+            {
+              "id": "c",
+              "label": "1/5 tank/hour"
+            },
+            {
+              "id": "d",
+              "label": "11/30 tank/hour"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Compute 2/3 − 1/6 − 1/5.",
+            "Use denominator 30."
+          ],
+          "explanation": "20/30 − 5/30 − 6/30 = 9/30 = 3/10."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n20/30 − 5/30 − 6/30 = 9/30 = 3/10.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes pipes are given in litres per minute instead of tank fractions.\n\nIf a tank holds T litres, an inlet adds x L/min and an outlet removes y L/min, then net flow is x−y L/min.\nFill time = T/(x−y), provided x>y.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is exactly the same signed-rate idea, just measured in litres instead of tanks.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 1,200 L tank receives 70 L/min while 30 L/min leaves. Fill time from empty?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17.1 minutes"
+          },
+          {
+            "id": "b",
+            "label": "30 minutes"
+          },
+          {
+            "id": "c",
+            "label": "40 minutes"
+          },
+          {
+            "id": "d",
+            "label": "12 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 1,200 L tank receives 70 L/min while 30 L/min leaves. Fill time from empty?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17.1 minutes"
+            },
+            {
+              "id": "b",
+              "label": "30 minutes"
+            },
+            {
+              "id": "c",
+              "label": "40 minutes"
+            },
+            {
+              "id": "d",
+              "label": "12 minutes"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find net flow first.",
+            "70−30 = 40 L/min."
+          ],
+          "explanation": "1200 ÷ 40 = 30 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nFind net flow first.\n\n1200 ÷ 40 = 30 minutes.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 900 L tank receives 55 L/min and loses 25 L/min. Time to fill?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16.4 minutes"
+          },
+          {
+            "id": "b",
+            "label": "45 minutes"
+          },
+          {
+            "id": "c",
+            "label": "25 minutes"
+          },
+          {
+            "id": "d",
+            "label": "30 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 900 L tank receives 55 L/min and loses 25 L/min. Time to fill?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16.4 minutes"
+            },
+            {
+              "id": "b",
+              "label": "45 minutes"
+            },
+            {
+              "id": "c",
+              "label": "25 minutes"
+            },
+            {
+              "id": "d",
+              "label": "30 minutes"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net flow = 30 L/min.",
+            "900 ÷ 30."
+          ],
+          "explanation": "The tank fills in 30 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe tank fills in 30 minutes.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: a system of pipes is one signed sum.\n\nFor four pipes, you do not need four separate tricks. Convert each to a rate, attach + or −, add, then invert the net rate if a whole tank must change.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Direction is your safety check. If the final rate is positive, the water rises. If it is negative, the water falls. If it is zero, the level never changes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A and B fill in 12 h and 18 h. C and D empty in 24 h and 72 h. All open. How long to fill from empty?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9 hours"
+          },
+          {
+            "id": "b",
+            "label": "18 hours"
+          },
+          {
+            "id": "c",
+            "label": "24 hours"
+          },
+          {
+            "id": "d",
+            "label": "12 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A and B fill in 12 h and 18 h. C and D empty in 24 h and 72 h. All open. How long to fill from empty?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9 hours"
+            },
+            {
+              "id": "b",
+              "label": "18 hours"
+            },
+            {
+              "id": "c",
+              "label": "24 hours"
+            },
+            {
+              "id": "d",
+              "label": "12 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Net rate = 1/12 + 1/18 − 1/24 − 1/72.",
+            "Use denominator 72."
+          ],
+          "explanation": "6+4−3−1 = 6 parts out of 72 = 1/12, so 12 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nNet rate = 1/12 + 1/18 − 1/24 − 1/72.\n\n6+4−3−1 = 6 parts out of 72 = 1/12, so 12 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two inlets fill in 10 h and 15 h; an outlet empties in 30 h. All open. Fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.5 hours"
+          },
+          {
+            "id": "b",
+            "label": "6 hours"
+          },
+          {
+            "id": "c",
+            "label": "5 hours"
+          },
+          {
+            "id": "d",
+            "label": "10 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two inlets fill in 10 h and 15 h; an outlet empties in 30 h. All open. Fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.5 hours"
+            },
+            {
+              "id": "b",
+              "label": "6 hours"
+            },
+            {
+              "id": "c",
+              "label": "5 hours"
+            },
+            {
+              "id": "d",
+              "label": "10 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Add 1/10 + 1/15 − 1/30.",
+            "Use denominator 30."
+          ],
+          "explanation": "3/30 + 2/30 − 1/30 = 4/30 = 2/15, so time = 15/2 = 7.5 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n3/30 + 2/30 − 1/30 = 4/30 = 2/15, so time = 15/2 = 7.5 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now treat a pipe system like a signed rate equation.\n\nInlet → add.\nOutlet → subtract.\nPositive total → tank fills.\nNegative total → tank empties.\n\nNever add or subtract the times themselves. Convert each time to a rate first.\n\nNext, we use this same idea to uncover hidden leaks and waste pipes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Multiple Inlets and Outlets: Net Rate",
+    "description": "Add inlet rates, subtract outlet rates, and decide whether the tank fills or empties.",
+    "teachingApproach": "Treat every active pipe as a signed rate. Build from two inlets to mixed inlet/outlet systems, then to several identical pipes, contribution shares, and reverse counts of waste pipes. Each section starts with a direction check: will the water level rise or fall? Only then does the learner combine fractions.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 16, Pipes and Cisterns. Approved scope: Teach combined-pipe questions by adding inlet rates and subtracting outlet rates. Cover two inlets, two inlets plus an outlet, one inlet plus a stronger outlet, three or more pipes, and questions asking how many identical inlet/waste pipes are present. Include a contribution-share question where several inlet pipes carry different liquids and the learner finds the fraction supplied by one pipe. Require a direction check first: positive net rate means filling, negative net rate means emptying."
+  },
+  "scriptId": "pc-02-multiple-inlets-outlets-net-rate",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

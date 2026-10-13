@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "am-02-mean-price-missing-price",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Finding Mean Price and Missing Ingredient Price",
+    "description": "Use weighted averages in both directions to find mixture price, missing component price, and combined group values.",
+    "teachingApproach": "Begin by rebuilding mean price from quantity-weighted total cost. Then reverse the same equation to find a missing ingredient price. Progress to fixed mixing ratios, treating two equal varieties as one combined component, and weighted profit rates. Every shortcut is checked against the underlying total-value equation.",
+    "targetDurationMinutes": 29,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 21, Alligation or Mixture. Approved scope: Teach the weighted-average form of mean price when quantities are known, then reverse it to find an unknown ingredient price. Cover equal quantities, unequal ratios, a missing dearer or cheaper price, and a third variety combined with two known varieties in a fixed ratio. Include the chapter pattern where two first varieties are mixed equally and treated as one combined component before alligation with a third variety. Also cover average profit percentage across two parts as another weighted-average problem. Learners should keep quantity weights visible and verify that the resulting mean lies between the component values whenever all components are positive."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's run mixture prices in both directions.\n\nIf 4 kg costs ₹15/kg and 6 kg costs ₹25/kg, the final price is not the simple middle. Quantity decides the weight. Once that makes sense, we can also work backwards to find a missing ingredient price.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A mixture price is a weighted average, not always the middle of the two prices.\n\nMix 2 kg at ₹10 with 3 kg at ₹20.\nTotal cost = 20 + 60 = ₹80.\nTotal quantity = 5 kg.\nMean = ₹16/kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The weights are the quantities.\n\nA useful formula is:\nmean = (q₁p₁ + q₂p₂) ÷ (q₁+q₂).\n\nUse it when the quantities are already known. Alligation is faster when the mean is known and the ratio is missing.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "4 kg at ₹15/kg is mixed with 6 kg at ₹25/kg. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹19/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹21/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹20/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹40/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "4 kg at ₹15/kg is mixed with 6 kg at ₹25/kg. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹19/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹21/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹20/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹40/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find total cost, then divide by 10 kg.",
+            "4×15 + 6×25 = 60 + 150 = 210."
+          ],
+          "explanation": "4×15 + 6×25 = 60 + 150 = 210. Mean = 210÷10 = ₹21/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "3 kg at ₹18/kg is mixed with 7 kg at ₹28/kg. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹23/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹24/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹25/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹46/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "3 kg at ₹18/kg is mixed with 7 kg at ₹28/kg. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹23/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹24/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹25/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹46/kg"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use the quantities as weights.",
+            "3×18 + 7×28 = 54 + 196 = 250."
+          ],
+          "explanation": "3×18 + 7×28 = 54 + 196 = 250. Divide by 10 kg to get ₹25/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nFind total cost, then divide by 10 kg.\n\n4×15 + 6×25 = 60 + 150 = 210. Mean = 210÷10 = ₹21/kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n3×18 + 7×28 = 54 + 196 = 250. Divide by 10 kg to get ₹25/kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now reverse the weighted average.\n\n2 kg at ₹12 and 3 kg at ₹x make a mixture worth ₹18.\n\nTotal mixture cost = 5×18 = ₹90.\nKnown cost = 2×12 = ₹24.\nSo 3x = 90−24 = 66.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "x = 66÷3 = ₹22/kg.\n\nThis method is direct: target total value minus known total value leaves the missing component's total value.\n\nThen divide by its quantity.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "5 kg at ₹16 and 3 kg at ₹x make a mixture worth ₹19/kg. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹24/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹21/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹23/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹27/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "5 kg at ₹16 and 3 kg at ₹x make a mixture worth ₹19/kg. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹24/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹21/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹23/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹27/kg"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find the target total cost of 8 kg first.",
+            "Target cost = 8×19 = 152."
+          ],
+          "explanation": "Target cost = 8×19 = 152. Known cost = 5×16 = 80. Missing total = 72, so x = 72÷3 = ₹24/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "2 kg at ₹25 and 6 kg at ₹x make a mixture worth ₹31/kg. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹29/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹32/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹37/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹33/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2 kg at ₹25 and 6 kg at ₹x make a mixture worth ₹31/kg. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹29/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹32/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹37/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹33/kg"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Target total cost = 8×31.",
+            "8×31=248."
+          ],
+          "explanation": "8×31=248. Known cost=50. Remaining=198 for 6 kg, so x=33."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nFind the target total cost of 8 kg first.\n\nTarget cost = 8×19 = 152. Known cost = 5×16 = 80. Missing total = 72, so x = 72÷3 = ₹24/kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n8×31=248. Known cost=50. Remaining=198 for 6 kg, so x=33.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the mixing ratio is known, use ratio-parts as weights.\n\nPrices ₹14 and ₹26 are mixed in ratio 3:1.\n\nMean = (3×14 + 1×26) ÷ 4\n= (42+26)÷4\n= ₹17/kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The actual kilograms do not matter.\n\nA 3:1 ratio could mean 3 kg and 1 kg, or 30 kg and 10 kg. The mean is the same because the weights stay proportional.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Prices ₹20 and ₹35 are mixed in ratio 2:3. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹26/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹27/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹31/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹29/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Prices ₹20 and ₹35 are mixed in ratio 2:3. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹26/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹27/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹31/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹29/kg"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use 2 and 3 as the weights.",
+            "Mean = (2×20 + 3×35)/5 = (40+105)/5 = 145/5 = ₹29/kg."
+          ],
+          "explanation": "Mean = (2×20 + 3×35)/5 = (40+105)/5 = 145/5 = ₹29/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Prices ₹18 and ₹42 are mixed in ratio 3:5. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹33/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹27/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹30/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹36/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Prices ₹18 and ₹42 are mixed in ratio 3:5. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹33/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹27/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹30/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹36/kg"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Weighted mean = (3×18 + 5×42) ÷ 8.",
+            "54+210=264."
+          ],
+          "explanation": "54+210=264. 264÷8 = ₹33/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nUse 2 and 3 as the weights.\n\nMean = (2×20 + 3×35)/5 = (40+105)/5 = 145/5 = ₹29/kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n54+210=264. 264÷8 = ₹33/kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can also find a missing price from a ratio.\n\n₹10 and ₹x are mixed in ratio 2:3 to make ₹16.\n\n2×10 + 3x = 5×16\n20 + 3x = 80\n3x = 60.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So x = ₹20.\n\nThis is the same weighted-average equation, just solved backwards.\n\nA quick check: ₹16 lies between ₹10 and ₹20 and is closer to ₹20 because more of ₹20 is used.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A ₹12 ingredient and a ₹x ingredient are mixed in ratio 1:3 to make ₹24. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹26/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹30/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹28/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹32/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A ₹12 ingredient and a ₹x ingredient are mixed in ratio 1:3 to make ₹24. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹26/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹30/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹28/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹32/kg"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Set 12 + 3x equal to 4×24.",
+            "12+3x=96, so 3x=84 and x=₹28/kg."
+          ],
+          "explanation": "12+3x=96, so 3x=84 and x=₹28/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A ₹30 ingredient and a ₹x ingredient are mixed in ratio 2:1 to make ₹36. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹40/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹48/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹42/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹54/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A ₹30 ingredient and a ₹x ingredient are mixed in ratio 2:1 to make ₹36. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹40/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹48/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹42/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹54/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "2×30 + x = 3×36.",
+            "60+x=108, so x=₹48/kg."
+          ],
+          "explanation": "60+x=108, so x=₹48/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nSet 12 + 3x equal to 4×24.\n\n12+3x=96, so 3x=84 and x=₹28/kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n60+x=108, so x=₹48/kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three varieties can often be simplified before solving.\n\nSuppose ₹100 and ₹140 teas are mixed equally, and that combined group is mixed with a third tea in an equal total quantity.\n\nThe first two together average to ₹120/kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the problem has only two effective components: ₹120 and ₹x, mixed 1:1.\n\nIf the final mean is ₹150, then (120+x)/2 = 150, so x = ₹180.\n\nCombining a balanced subgroup first can make a three-item question look like a two-item one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Tea at ₹80 and ₹100 is mixed equally. That combined tea is then mixed in equal quantity with a third tea to make a ₹120 mixture. What is the third tea's price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹130/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹140/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹160/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹150/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Tea at ₹80 and ₹100 is mixed equally. That combined tea is then mixed in equal quantity with a third tea to make a ₹120 mixture. What is the third tea's price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹130/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹140/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹160/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹150/kg"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First average ₹80 and ₹100.",
+            "The first pair averages ₹90."
+          ],
+          "explanation": "The first pair averages ₹90. Equal quantities of ₹90 and x give ₹120: (90+x)/2=120, so x=₹150."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Coffee at ₹110 and ₹130 is mixed equally. The combined coffee is mixed in equal quantity with a third coffee to make ₹150/kg. Find the third price.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹160/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹180/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹170/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹190/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Coffee at ₹110 and ₹130 is mixed equally. The combined coffee is mixed in equal quantity with a third coffee to make ₹150/kg. Find the third price.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹160/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹180/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹170/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹190/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First pair mean = ₹120.",
+            "(120+x)/2=150, so x=₹180/kg."
+          ],
+          "explanation": "(120+x)/2=150, so x=₹180/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nFirst average ₹80 and ₹100.\n\nThe first pair averages ₹90. Equal quantities of ₹90 and x give ₹120: (90+x)/2=120, so x=₹150.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n(120+x)/2=150, so x=₹180/kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Weighted averages also work for profit percentages.\n\nSuppose half a stock is sold at 10% profit and half at 20%.\n\nEqual amounts mean the overall profit is the simple average: 15%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the amounts are unequal, weight the profit rates.\n\nFor 2 parts at 8% and 3 parts at 18%:\noverall profit = (2×8 + 3×18)÷5\n= 70÷5 = 14%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A stock is split in ratio 1:3. The first part earns 6% profit and the second 14%. What is the overall profit rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12%"
+          },
+          {
+            "id": "b",
+            "label": "10%"
+          },
+          {
+            "id": "c",
+            "label": "11%"
+          },
+          {
+            "id": "d",
+            "label": "13%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A stock is split in ratio 1:3. The first part earns 6% profit and the second 14%. What is the overall profit rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12%"
+            },
+            {
+              "id": "b",
+              "label": "10%"
+            },
+            {
+              "id": "c",
+              "label": "11%"
+            },
+            {
+              "id": "d",
+              "label": "13%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Weight 6 and 14 by 1 and 3.",
+            "(1×6 + 3×14)/4 = 48/4 = 12%."
+          ],
+          "explanation": "(1×6 + 3×14)/4 = 48/4 = 12%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two portions are in ratio 3:2 and earn 5% and 20% profit. What is the overall profit rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10%"
+          },
+          {
+            "id": "b",
+            "label": "12%"
+          },
+          {
+            "id": "c",
+            "label": "13%"
+          },
+          {
+            "id": "d",
+            "label": "11%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two portions are in ratio 3:2 and earn 5% and 20% profit. What is the overall profit rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10%"
+            },
+            {
+              "id": "b",
+              "label": "12%"
+            },
+            {
+              "id": "c",
+              "label": "13%"
+            },
+            {
+              "id": "d",
+              "label": "11%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Weighted mean = (3×5 + 2×20)÷5.",
+            "15+40=55; 55÷5 = 11%."
+          ],
+          "explanation": "15+40=55; 55÷5 = 11%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nWeight 6 and 14 by 1 and 3.\n\n(1×6 + 3×14)/4 = 48/4 = 12%.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n15+40=55; 55÷5 = 11%.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Alligation can reverse that profit question too.\n\nIf one part earns 8%, another 18%, and the overall profit is 14%, then:\nfirst : second = (18−14):(14−8) = 4:6 = 2:3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is exactly the same geometry as ingredient prices.\n\nThe overall profit 14% lies closer to 18%, so more stock must have been sold at 18% profit.\n\nAlligation is a weighted-average shortcut, not a chapter-specific trick.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Part of a stock earns 4% profit and the rest 16%. Overall profit is 10%. Find first : second.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 : 2"
+          },
+          {
+            "id": "b",
+            "label": "2 : 1"
+          },
+          {
+            "id": "c",
+            "label": "1 : 1"
+          },
+          {
+            "id": "d",
+            "label": "3 : 2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Part of a stock earns 4% profit and the rest 16%. Overall profit is 10%. Find first : second.",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 : 2"
+            },
+            {
+              "id": "b",
+              "label": "2 : 1"
+            },
+            {
+              "id": "c",
+              "label": "1 : 1"
+            },
+            {
+              "id": "d",
+              "label": "3 : 2"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "10 is halfway between 4 and 16.",
+            "(16−10):(10−4)=6:6=1:1."
+          ],
+          "explanation": "(16−10):(10−4)=6:6=1:1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "One portion earns 7% and another 22%. Overall profit is 17%. Find first : second.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 : 2"
+          },
+          {
+            "id": "b",
+            "label": "2 : 1"
+          },
+          {
+            "id": "c",
+            "label": "3 : 2"
+          },
+          {
+            "id": "d",
+            "label": "2 : 3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One portion earns 7% and another 22%. Overall profit is 17%. Find first : second.",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 : 2"
+            },
+            {
+              "id": "b",
+              "label": "2 : 1"
+            },
+            {
+              "id": "c",
+              "label": "3 : 2"
+            },
+            {
+              "id": "d",
+              "label": "2 : 3"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use (22−17):(17−7).",
+            "5:10 = 1:2."
+          ],
+          "explanation": "5:10 = 1:2. More of the 22% portion pulls the mean toward 22%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\n10 is halfway between 4 and 16.\n\n(16−10):(10−4)=6:6=1:1.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n5:10 = 1:2. More of the 22% portion pulls the mean toward 22%.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: choose the shortest weighted-average route.\n\nIf two known varieties are equal, combine them first. If a ratio is already given, use ratio-parts as weights. If a quantity is missing, use target total value minus known value.\n\nAll three are the same idea seen from different sides.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A good final check asks two questions:\n\n1. Does the mean sit between the component values?\n2. Is it closer to the component used more heavily?\n\nIf either fails, recheck the weights before doing more algebra.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "₹20 and ₹30 ingredients are mixed equally. That blend is mixed with a ₹45 ingredient in ratio 2:3. What is the final mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹34/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹37/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹35/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹39/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "₹20 and ₹30 ingredients are mixed equally. That blend is mixed with a ₹45 ingredient in ratio 2:3. What is the final mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹34/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹37/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹35/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹39/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The first blend costs ₹25/kg, then weight ₹25 and ₹45 by 2:3.",
+            "First blend = ₹25."
+          ],
+          "explanation": "First blend = ₹25. Final mean = (2×25 + 3×45)/5 = (50+135)/5 = ₹37/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "₹40 and ₹60 ingredients are mixed equally. That blend is mixed with a ₹75 ingredient in ratio 1:2. What is the final mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹62.50/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹65/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹66.67/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹70/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "₹40 and ₹60 ingredients are mixed equally. That blend is mixed with a ₹75 ingredient in ratio 1:2. What is the final mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹62.50/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹65/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹66.67/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹70/kg"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "First blend = ₹50/kg. Then compute (1×50 + 2×75)÷3.",
+            "200÷3 = ₹66."
+          ],
+          "explanation": "200÷3 = ₹66.67/kg approximately."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nThe first blend costs ₹25/kg, then weight ₹25 and ₹45 by 2:3.\n\nFirst blend = ₹25. Final mean = (2×25 + 3×45)/5 = (50+135)/5 = ₹37/kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n200÷3 = ₹66.67/kg approximately.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now move both ways through a weighted average: quantities and prices can give the mean, while a mean and weights can reveal a missing price.\n\nYou can also collapse balanced subgroups and treat profit rates as weighted values.\n\nNext, we connect this to adulteration and free water.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

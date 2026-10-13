@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "td-09-circular-tracks-laps-meetings",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Circular Tracks, Laps, and Repeated Meetings",
+    "description": "Apply relative speed on a circle, distinguish first meeting from first overtake, and use lap-time LCM for common returns.",
+    "teachingApproach": "Map the circle to a gap measured in one circumference. Use the sum of speeds for opposite directions and the difference for same-direction overtaking, then count repeated meetings, handle opposite starting points, use LCM for returning to the start together, and recover speeds from same/opposite meeting intervals.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 18, Time and Distance. Approved scope: Cover first meetings and overtakes on circular tracks, repeated meeting counts, common return to the starting point, opposite starting points, mixed units, lap rates, and recovery of individual speeds from opposite-direction and same-direction meeting intervals."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn circular-track problems with one simple idea: a full lap is the gap that must be gained or closed.\n\nRelative speed still works — the road just wraps around.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two cyclists start from the same point on a 300 m track in opposite directions at 7 m/s and 8 m/s.\n\nThey move toward each other around the circle at 15 m/s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "They meet when their combined distance equals one full circumference:\n\nTime = 300 ÷ 15 = 20 seconds.\n\nOpposite directions on a circle → circumference ÷ sum of speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners start from the same point on a 360 m track in opposite directions at 5 m/s and 7 m/s. When do they first meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 sec"
+          },
+          {
+            "id": "b",
+            "label": "60 sec"
+          },
+          {
+            "id": "c",
+            "label": "90 sec"
+          },
+          {
+            "id": "d",
+            "label": "30 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners start from the same point on a 360 m track in opposite directions at 5 m/s and 7 m/s. When do they first meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 sec"
+            },
+            {
+              "id": "b",
+              "label": "60 sec"
+            },
+            {
+              "id": "c",
+              "label": "90 sec"
+            },
+            {
+              "id": "d",
+              "label": "30 sec"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 5 + 7 = 12 m/s.",
+            "One full 360 m gap must be closed."
+          ],
+          "explanation": "First meeting time = 360 ÷ 12 = 30 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nRelative speed = 5 + 7 = 12 m/s.\n\nFirst meeting time = 360 ÷ 12 = 30 seconds.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two cyclists start together in opposite directions on a 420 m track at 6 m/s and 8 m/s. When do they first meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 sec"
+          },
+          {
+            "id": "b",
+            "label": "30 sec"
+          },
+          {
+            "id": "c",
+            "label": "35 sec"
+          },
+          {
+            "id": "d",
+            "label": "60 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two cyclists start together in opposite directions on a 420 m track at 6 m/s and 8 m/s. When do they first meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 sec"
+            },
+            {
+              "id": "b",
+              "label": "30 sec"
+            },
+            {
+              "id": "c",
+              "label": "35 sec"
+            },
+            {
+              "id": "d",
+              "label": "60 sec"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 14 m/s.",
+            "420 ÷ 14."
+          ],
+          "explanation": "They close one circumference in 420 ÷ 14 = 30 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThey close one circumference in 420 ÷ 14 = 30 seconds.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If both move in the same direction, the faster runner must gain one full lap.\n\nOn a 400 m track, speeds 6 and 4 m/s give a relative speed of 2 m/s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Overtake time = 400 ÷ 2 = 200 seconds.\n\nSame direction on a circle → circumference ÷ speed difference.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners start together on a 300 m track in the same direction at 8 m/s and 5 m/s. When does the faster runner first overtake the slower?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "37.5 sec"
+          },
+          {
+            "id": "b",
+            "label": "100 sec"
+          },
+          {
+            "id": "c",
+            "label": "60 sec"
+          },
+          {
+            "id": "d",
+            "label": "150 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners start together on a 300 m track in the same direction at 8 m/s and 5 m/s. When does the faster runner first overtake the slower?",
+          "options": [
+            {
+              "id": "a",
+              "label": "37.5 sec"
+            },
+            {
+              "id": "b",
+              "label": "100 sec"
+            },
+            {
+              "id": "c",
+              "label": "60 sec"
+            },
+            {
+              "id": "d",
+              "label": "150 sec"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 8 − 5 = 3 m/s.",
+            "The faster runner must gain one 300 m lap."
+          ],
+          "explanation": "Overtake time = 300 ÷ 3 = 100 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nRelative speed = 8 − 5 = 3 m/s.\n\nOvertake time = 300 ÷ 3 = 100 seconds.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two cyclists ride in the same direction on a 480 m track at 10 m/s and 6 m/s. When is the first overtake?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 sec"
+          },
+          {
+            "id": "b",
+            "label": "80 sec"
+          },
+          {
+            "id": "c",
+            "label": "160 sec"
+          },
+          {
+            "id": "d",
+            "label": "120 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two cyclists ride in the same direction on a 480 m track at 10 m/s and 6 m/s. When is the first overtake?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 sec"
+            },
+            {
+              "id": "b",
+              "label": "80 sec"
+            },
+            {
+              "id": "c",
+              "label": "160 sec"
+            },
+            {
+              "id": "d",
+              "label": "120 sec"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Difference in speed = 4 m/s.",
+            "480 ÷ 4."
+          ],
+          "explanation": "The faster cyclist gains 480 m at 4 m/s, taking 120 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe faster cyclist gains 480 m at 4 m/s, taking 120 seconds.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Meeting count comes from relative laps completed.\n\nTwo walkers go in opposite directions at 2 and 3 rounds per hour.\nRelative rate = 5 rounds per hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "In 1.5 hours, relative laps = 5 × 1.5 = 7.5.\n\nThey have completed 7 full relative laps, so they cross 7 times after the start before 1.5 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners move in opposite directions at 3 and 5 rounds per hour. How many times do they meet during the first 30 minutes after starting together, excluding the starting instant?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners move in opposite directions at 3 and 5 rounds per hour. How many times do they meet during the first 30 minutes after starting together, excluding the starting instant?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Relative rate = 8 rounds per hour.",
+            "30 minutes = 1/2 hour, so relative laps = 4."
+          ],
+          "explanation": "They complete 4 relative laps in 30 minutes, giving 4 meetings after the start."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nRelative rate = 8 rounds per hour.\n\nThey complete 4 relative laps in 30 minutes, giving 4 meetings after the start.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners move in opposite directions at 2 and 4 rounds per hour. How many times do they meet in the first 1 hour after the start, excluding the starting instant?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners move in opposite directions at 2 and 4 rounds per hour. How many times do they meet in the first 1 hour after the start, excluding the starting instant?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Relative rate = 6 rounds per hour.",
+            "Each completed relative lap gives one meeting."
+          ],
+          "explanation": "In one hour they complete 6 relative laps, so they meet 6 times after the start."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nIn one hour they complete 6 relative laps, so they meet 6 times after the start.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Meeting somewhere is different from meeting again at the starting point.\n\nOn a 360 m track, runners at 6 and 9 m/s have lap times:\n360/6 = 60 sec\n360/9 = 40 sec.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "They are both back at the start together after the least common multiple of 60 and 40:\n\nLCM = 120 sec.\n\nUse lap-time LCM for a shared return to the start.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "On a 300 m track, two runners have speeds 5 m/s and 6 m/s. After how long are both back at the starting point together?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50 sec"
+          },
+          {
+            "id": "b",
+            "label": "60 sec"
+          },
+          {
+            "id": "c",
+            "label": "300 sec"
+          },
+          {
+            "id": "d",
+            "label": "150 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "On a 300 m track, two runners have speeds 5 m/s and 6 m/s. After how long are both back at the starting point together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50 sec"
+            },
+            {
+              "id": "b",
+              "label": "60 sec"
+            },
+            {
+              "id": "c",
+              "label": "300 sec"
+            },
+            {
+              "id": "d",
+              "label": "150 sec"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Their lap times are 60 sec and 50 sec.",
+            "Find LCM(60, 50)."
+          ],
+          "explanation": "LCM of 60 and 50 is 300 seconds. That is the first time both complete whole numbers of laps together."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nTheir lap times are 60 sec and 50 sec.\n\nLCM of 60 and 50 is 300 seconds. That is the first time both complete whole numbers of laps together.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "On a 240 m track, runners move at 6 m/s and 8 m/s. When are both back at the start together?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120 sec"
+          },
+          {
+            "id": "b",
+            "label": "30 sec"
+          },
+          {
+            "id": "c",
+            "label": "40 sec"
+          },
+          {
+            "id": "d",
+            "label": "80 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "On a 240 m track, runners move at 6 m/s and 8 m/s. When are both back at the start together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120 sec"
+            },
+            {
+              "id": "b",
+              "label": "30 sec"
+            },
+            {
+              "id": "c",
+              "label": "40 sec"
+            },
+            {
+              "id": "d",
+              "label": "80 sec"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Lap times are 40 sec and 30 sec.",
+            "LCM(40, 30) = 120."
+          ],
+          "explanation": "The first common return is after 120 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe first common return is after 120 seconds.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "If runners start at opposite points, the initial gap is only half a lap.\n\nOn a 400 m track, opposite points are 200 m apart.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If both move in the same direction at 6 and 4 m/s, the faster gains at 2 m/s.\n\nFirst catch time = 200 ÷ 2 = 100 sec.\n\nThe starting position changes the gap to close.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners start at opposite points of a 360 m track and move in the same direction at 8 m/s and 5 m/s. When do they first meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 sec"
+          },
+          {
+            "id": "b",
+            "label": "90 sec"
+          },
+          {
+            "id": "c",
+            "label": "60 sec"
+          },
+          {
+            "id": "d",
+            "label": "120 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners start at opposite points of a 360 m track and move in the same direction at 8 m/s and 5 m/s. When do they first meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 sec"
+            },
+            {
+              "id": "b",
+              "label": "90 sec"
+            },
+            {
+              "id": "c",
+              "label": "60 sec"
+            },
+            {
+              "id": "d",
+              "label": "120 sec"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Initial gap = half of 360 = 180 m.",
+            "Relative speed = 3 m/s."
+          ],
+          "explanation": "The faster runner closes 180 m at 3 m/s, so first meeting time = 60 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nInitial gap = half of 360 = 180 m.\n\nThe faster runner closes 180 m at 3 m/s, so first meeting time = 60 seconds.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two cyclists start at opposite points of a 500 m track in the same direction at 9 m/s and 4 m/s. When do they first meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50 sec"
+          },
+          {
+            "id": "b",
+            "label": "25 sec"
+          },
+          {
+            "id": "c",
+            "label": "100 sec"
+          },
+          {
+            "id": "d",
+            "label": "125 sec"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two cyclists start at opposite points of a 500 m track in the same direction at 9 m/s and 4 m/s. When do they first meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50 sec"
+            },
+            {
+              "id": "b",
+              "label": "25 sec"
+            },
+            {
+              "id": "c",
+              "label": "100 sec"
+            },
+            {
+              "id": "d",
+              "label": "125 sec"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Initial gap = 250 m.",
+            "Speed difference = 5 m/s."
+          ],
+          "explanation": "Time = 250 ÷ 5 = 50 seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nTime = 250 ÷ 5 = 50 seconds.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two meeting times can reveal both speeds.\n\nOn a 1.2 km circle, suppose opposite-direction meetings occur every 15 sec and same-direction overtakes every 60 sec.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sum of speeds = 1.2/15 = 0.08 km/s.\nDifference = 1.2/60 = 0.02 km/s.\n\nSlower speed = (0.08 − 0.02)/2 = 0.03 km/s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "On a 900 m track, two runners meet every 10 sec in opposite directions and the faster overtakes the slower every 30 sec in the same direction. What is the slower speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 m/s"
+          },
+          {
+            "id": "b",
+            "label": "20 m/s"
+          },
+          {
+            "id": "c",
+            "label": "45 m/s"
+          },
+          {
+            "id": "d",
+            "label": "60 m/s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "On a 900 m track, two runners meet every 10 sec in opposite directions and the faster overtakes the slower every 30 sec in the same direction. What is the slower speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 m/s"
+            },
+            {
+              "id": "b",
+              "label": "20 m/s"
+            },
+            {
+              "id": "c",
+              "label": "45 m/s"
+            },
+            {
+              "id": "d",
+              "label": "60 m/s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Sum = 900/10 = 90 m/s; difference = 900/30 = 30 m/s.",
+            "Slower = (sum − difference)/2."
+          ],
+          "explanation": "Slower speed = (90 − 30)/2 = 30 m/s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nSum = 900/10 = 90 m/s; difference = 900/30 = 30 m/s.\n\nSlower speed = (90 − 30)/2 = 30 m/s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "On a 600 m track, opposite-direction meeting time is 12 sec and same-direction overtake time is 30 sec. What is the slower speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 m/s"
+          },
+          {
+            "id": "b",
+            "label": "20 m/s"
+          },
+          {
+            "id": "c",
+            "label": "15 m/s"
+          },
+          {
+            "id": "d",
+            "label": "35 m/s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "On a 600 m track, opposite-direction meeting time is 12 sec and same-direction overtake time is 30 sec. What is the slower speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 m/s"
+            },
+            {
+              "id": "b",
+              "label": "20 m/s"
+            },
+            {
+              "id": "c",
+              "label": "15 m/s"
+            },
+            {
+              "id": "d",
+              "label": "35 m/s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Sum = 50 m/s; difference = 20 m/s.",
+            "Slower = (50 − 20)/2."
+          ],
+          "explanation": "Slower speed = 15 m/s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nSlower speed = 15 m/s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Track length and ordinary speeds can be mixed safely after unit conversion.\n\nA 600 m track is 0.6 km. Two walkers move opposite ways at 4.8 and 3.2 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Relative speed = 8 km/hr.\nMeeting time = 0.6/8 hr = 0.075 hr.\n\n0.075 × 60 = 4.5 minutes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 600 m circular track has two walkers moving in opposite directions at 4.8 km/hr and 3.2 km/hr. When do they first meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 min"
+          },
+          {
+            "id": "b",
+            "label": "5 min"
+          },
+          {
+            "id": "c",
+            "label": "7.5 min"
+          },
+          {
+            "id": "d",
+            "label": "4.5 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 600 m circular track has two walkers moving in opposite directions at 4.8 km/hr and 3.2 km/hr. When do they first meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 min"
+            },
+            {
+              "id": "b",
+              "label": "5 min"
+            },
+            {
+              "id": "c",
+              "label": "7.5 min"
+            },
+            {
+              "id": "d",
+              "label": "4.5 min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Convert 600 m to 0.6 km.",
+            "Relative speed = 8 km/hr."
+          ],
+          "explanation": "Time = 0.6/8 hr = 0.075 hr = 4.5 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nConvert 600 m to 0.6 km.\n\nTime = 0.6/8 hr = 0.075 hr = 4.5 minutes.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 720 m track has two walkers moving oppositely at 5.4 km/hr and 3.6 km/hr. When do they first meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 min"
+          },
+          {
+            "id": "b",
+            "label": "4.8 min"
+          },
+          {
+            "id": "c",
+            "label": "6 min"
+          },
+          {
+            "id": "d",
+            "label": "8 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 720 m track has two walkers moving oppositely at 5.4 km/hr and 3.6 km/hr. When do they first meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 min"
+            },
+            {
+              "id": "b",
+              "label": "4.8 min"
+            },
+            {
+              "id": "c",
+              "label": "6 min"
+            },
+            {
+              "id": "d",
+              "label": "8 min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "0.72 km ÷ 9 km/hr = 0.08 hr.",
+            "Convert 0.08 hr to minutes."
+          ],
+          "explanation": "0.08 × 60 = 4.8 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n0.08 × 60 = 4.8 minutes.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A circular capstone often asks for repeated meetings over a time window.\n\nIf opposite-direction lap rates are 3 and 5 rounds/hr, relative rate is 8 rounds/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "In 20 minutes = 1/3 hour:\nRelative laps = 8/3 = 2 full laps plus part of another.\n\nSo they meet twice after the start in those 20 minutes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners move in opposite directions at 3 and 5 rounds per hour. How many times do they meet in the first 20 minutes after starting, excluding the start?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "3"
+          },
+          {
+            "id": "d",
+            "label": "8"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners move in opposite directions at 3 and 5 rounds per hour. How many times do they meet in the first 20 minutes after starting, excluding the start?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "3"
+            },
+            {
+              "id": "d",
+              "label": "8"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Relative rate = 8 rounds/hr.",
+            "20 min = 1/3 hr; count completed relative laps."
+          ],
+          "explanation": "8 × 1/3 = 2 2/3 relative laps, so two full meeting cycles are completed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nRelative rate = 8 rounds/hr.\n\n8 × 1/3 = 2 2/3 relative laps, so two full meeting cycles are completed.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two runners move oppositely at 4 and 6 rounds per hour. How many times do they meet in the first 18 minutes after starting, excluding the start?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two runners move oppositely at 4 and 6 rounds per hour. How many times do they meet in the first 18 minutes after starting, excluding the start?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Relative rate = 10 rounds/hr.",
+            "18 min = 0.3 hr."
+          ],
+          "explanation": "10 × 0.3 = 3 full relative laps, so they meet 3 times."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\n10 × 0.3 = 3 full relative laps, so they meet 3 times.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now carry relative speed around a circle.\n\nOne circumference is the gap for a same-point meeting or overtake, half a circumference may be the gap from opposite points, and LCM of lap times handles a shared return to the start.\n\nNext, we tackle the chapter's unusual motion stories — sounds, escalators, leaps, climb-slip cycles and pickup puzzles.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

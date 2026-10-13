@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "bs-06-swimming-across-flowing-river",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Swimming Across a Flowing River",
+    "description": "Solve the chapter’s across-the-river problems by separating across-motion from sideways current.",
+    "teachingApproach": "Use a river-width picture instead of upstream/downstream travel. First show the chapter case where the swimmer heads across and is allowed to drift, so across-time is width divided by still-water swimming speed. Then handle landing directly opposite with a right-triangle speed relation and recover current from no-current/current crossing times.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 19, Boats and Streams. Approved scope: Teach the chapter’s two crossing setups. First, when a swimmer heads across the width and is allowed to be carried sideways, crossing time depends on river width and swimming speed in still water; the current changes the landing point, not the across-time. Second, when the swimmer must land directly opposite, part of the swimming speed must cancel the current; use the right-triangle relation behind the chapter formula to find current speed or crossing time. Cover width recovery, sideways drift, the source 100-m river with 4-minute no-current and 5-minute flowing-water times, and feasibility checks that still-water swimming speed must exceed current speed for a directly-opposite landing."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's turn the boat around.\n\nSo far we moved along the river. Now the goal is to cross its width. The current pushes sideways, so we must separate 'across' motion from 'along the river' motion.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A swimmer can swim at 4 km/hr in still water. The river is 1 km wide.\n\nIf he heads straight across the width and allows the current to carry him sideways, his across component remains 4 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Crossing time = width ÷ across speed\n= 1/4 hour\n= 15 minutes.\n\nThe current changes where he lands, but in this chapter setup it does not change the time needed to clear the 1 km width.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swimmer moves at 5 km/hr in still water across a river 1 km wide, allowing sideways drift. How long does the crossing take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 minutes"
+          },
+          {
+            "id": "b",
+            "label": "12 minutes"
+          },
+          {
+            "id": "c",
+            "label": "15 minutes"
+          },
+          {
+            "id": "d",
+            "label": "20 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swimmer moves at 5 km/hr in still water across a river 1 km wide, allowing sideways drift. How long does the crossing take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 minutes"
+            },
+            {
+              "id": "b",
+              "label": "12 minutes"
+            },
+            {
+              "id": "c",
+              "label": "15 minutes"
+            },
+            {
+              "id": "d",
+              "label": "20 minutes"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use width ÷ swimming speed.",
+            "1/5 hour = 12 minutes."
+          ],
+          "explanation": "Crossing time = 1/5 hour = 12 minutes. The sideways current does not change the across component in this setup."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nUse width ÷ swimming speed.\n\nCrossing time = 1/5 hour = 12 minutes. The sideways current does not change the across component in this setup.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swimmer moves at 6 km/hr in still water across a river 1.2 km wide, allowing sideways drift. How long does the crossing take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 minutes"
+          },
+          {
+            "id": "b",
+            "label": "10 minutes"
+          },
+          {
+            "id": "c",
+            "label": "15 minutes"
+          },
+          {
+            "id": "d",
+            "label": "20 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swimmer moves at 6 km/hr in still water across a river 1.2 km wide, allowing sideways drift. How long does the crossing take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 minutes"
+            },
+            {
+              "id": "b",
+              "label": "10 minutes"
+            },
+            {
+              "id": "c",
+              "label": "15 minutes"
+            },
+            {
+              "id": "d",
+              "label": "20 minutes"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Time = 1.2/6 hour.",
+            "0.2 hour = 12 minutes."
+          ],
+          "explanation": "The crossing takes 0.2 hour = 12 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe crossing takes 0.2 hour = 12 minutes.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same relation can find the width.\n\nA swimmer moves across at 6 km/hr and takes 20 minutes.\n20 minutes = 1/3 hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Width = speed × time\n= 6 × 1/3\n= 2 km.\n\nThe current is not needed when the question only asks how much width is cleared in this drift-allowed setup.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swimmer's still-water speed is 6 km/hr and the crossing takes 20 minutes. What is the river width?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 km"
+          },
+          {
+            "id": "b",
+            "label": "1 km"
+          },
+          {
+            "id": "c",
+            "label": "3 km"
+          },
+          {
+            "id": "d",
+            "label": "4 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swimmer's still-water speed is 6 km/hr and the crossing takes 20 minutes. What is the river width?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 km"
+            },
+            {
+              "id": "b",
+              "label": "1 km"
+            },
+            {
+              "id": "c",
+              "label": "3 km"
+            },
+            {
+              "id": "d",
+              "label": "4 km"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Convert 20 minutes to 1/3 hour.",
+            "Width = 6 × 1/3."
+          ],
+          "explanation": "The width is 2 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nConvert 20 minutes to 1/3 hour.\n\nThe width is 2 km.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swimmer moves at 4.5 km/hr and takes 16 minutes to cross. What is the river width?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.8 km"
+          },
+          {
+            "id": "b",
+            "label": "1.2 km"
+          },
+          {
+            "id": "c",
+            "label": "1.5 km"
+          },
+          {
+            "id": "d",
+            "label": "2 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swimmer moves at 4.5 km/hr and takes 16 minutes to cross. What is the river width?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.8 km"
+            },
+            {
+              "id": "b",
+              "label": "1.2 km"
+            },
+            {
+              "id": "c",
+              "label": "1.5 km"
+            },
+            {
+              "id": "d",
+              "label": "2 km"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "16 minutes = 4/15 hour.",
+            "4.5 × 4/15."
+          ],
+          "explanation": "Width = 4.5 × 4/15 = 1.2 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nWidth = 4.5 × 4/15 = 1.2 km.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The current still causes sideways drift.\n\nIf current = 3 km/hr and crossing time = 15 minutes = 1/4 hour, the river carries the swimmer:\n3 × 1/4 = 0.75 km sideways.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is a useful picture:\n\nacross distance comes from the swimmer's across motion;\nsideways drift comes from current × crossing time.\n\nThey happen at the same time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A crossing takes 20 minutes while the current flows at 2.4 km/hr. How far downstream does the swimmer drift?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.4 km"
+          },
+          {
+            "id": "b",
+            "label": "1.2 km"
+          },
+          {
+            "id": "c",
+            "label": "2.4 km"
+          },
+          {
+            "id": "d",
+            "label": "0.8 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A crossing takes 20 minutes while the current flows at 2.4 km/hr. How far downstream does the swimmer drift?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.4 km"
+            },
+            {
+              "id": "b",
+              "label": "1.2 km"
+            },
+            {
+              "id": "c",
+              "label": "2.4 km"
+            },
+            {
+              "id": "d",
+              "label": "0.8 km"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "20 minutes = 1/3 hour.",
+            "Drift = 2.4 × 1/3."
+          ],
+          "explanation": "The current carries the swimmer 0.8 km downstream during the crossing."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\n20 minutes = 1/3 hour.\n\nThe current carries the swimmer 0.8 km downstream during the crossing.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A crossing takes 15 minutes while the current flows at 4 km/hr. How far downstream is the drift?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "0.5 km"
+          },
+          {
+            "id": "b",
+            "label": "1.5 km"
+          },
+          {
+            "id": "c",
+            "label": "1 km"
+          },
+          {
+            "id": "d",
+            "label": "4 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A crossing takes 15 minutes while the current flows at 4 km/hr. How far downstream is the drift?",
+          "options": [
+            {
+              "id": "a",
+              "label": "0.5 km"
+            },
+            {
+              "id": "b",
+              "label": "1.5 km"
+            },
+            {
+              "id": "c",
+              "label": "1 km"
+            },
+            {
+              "id": "d",
+              "label": "4 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "15 minutes = 1/4 hour.",
+            "4 × 1/4."
+          ],
+          "explanation": "Drift = 1 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nDrift = 1 km.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now change the goal: land directly opposite.\n\nIn still water, crossing a 100 m river takes 4 minutes, so swimming speed = 25 m/min.\nWith current, the directly-opposite crossing takes 5 minutes, so the across component is 20 m/min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The swimmer aims upstream so one component cancels the current. The speeds form a right triangle:\n\n25² = 20² + current²\ncurrent² = 225\ncurrent = 15 m/min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 100 m river takes 4 minutes to cross in still water and 5 minutes to cross while landing directly opposite in flowing water. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 m/min"
+          },
+          {
+            "id": "b",
+            "label": "20 m/min"
+          },
+          {
+            "id": "c",
+            "label": "15 m/min"
+          },
+          {
+            "id": "d",
+            "label": "25 m/min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 100 m river takes 4 minutes to cross in still water and 5 minutes to cross while landing directly opposite in flowing water. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 m/min"
+            },
+            {
+              "id": "b",
+              "label": "20 m/min"
+            },
+            {
+              "id": "c",
+              "label": "15 m/min"
+            },
+            {
+              "id": "d",
+              "label": "25 m/min"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Still-water speed = 100/4 = 25 m/min.",
+            "Across component = 100/5 = 20; use a right triangle."
+          ],
+          "explanation": "Current = √(25²−20²) = √225 = 15 m/min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nStill-water speed = 100/4 = 25 m/min.\n\nCurrent = √(25²−20²) = √225 = 15 m/min.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 m river takes 4 minutes in still water and 5 minutes when landing directly opposite in flowing water. Current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 m/min"
+          },
+          {
+            "id": "b",
+            "label": "48 m/min"
+          },
+          {
+            "id": "c",
+            "label": "60 m/min"
+          },
+          {
+            "id": "d",
+            "label": "36 m/min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 m river takes 4 minutes in still water and 5 minutes when landing directly opposite in flowing water. Current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 m/min"
+            },
+            {
+              "id": "b",
+              "label": "48 m/min"
+            },
+            {
+              "id": "c",
+              "label": "60 m/min"
+            },
+            {
+              "id": "d",
+              "label": "36 m/min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Still-water speed is 60 m/min; across component is 48.",
+            "Current = √(60²−48²)."
+          ],
+          "explanation": "Current = √(3600−2304) = √1296 = 36 m/min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent = √(3600−2304) = √1296 = 36 m/min.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same right triangle can give crossing time.\n\nSwimming speed = 13 km/hr, current = 5 km/hr.\nTo land directly opposite, the across component is:\n√(13²−5²) = √144 = 12 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a 1.2 km-wide river:\nTime = 1.2/12 hour\n= 0.1 hour\n= 6 minutes.\n\nUse the across component, not the full swimming speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swimmer moves at 13 km/hr in still water against a 5 km/hr current and wants to land directly opposite. River width is 1.2 km. Crossing time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 minutes"
+          },
+          {
+            "id": "b",
+            "label": "6 minutes"
+          },
+          {
+            "id": "c",
+            "label": "8 minutes"
+          },
+          {
+            "id": "d",
+            "label": "10 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swimmer moves at 13 km/hr in still water against a 5 km/hr current and wants to land directly opposite. River width is 1.2 km. Crossing time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 minutes"
+            },
+            {
+              "id": "b",
+              "label": "6 minutes"
+            },
+            {
+              "id": "c",
+              "label": "8 minutes"
+            },
+            {
+              "id": "d",
+              "label": "10 minutes"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Across component = √(13²−5²) = 12 km/hr.",
+            "1.2/12 hour = 0.1 hour."
+          ],
+          "explanation": "The crossing takes 0.1 hour = 6 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nAcross component = √(13²−5²) = 12 km/hr.\n\nThe crossing takes 0.1 hour = 6 minutes.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swimmer moves at 10 km/hr in still water against a 6 km/hr current and wants to land directly opposite. River width is 0.8 km. Crossing time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 minutes"
+          },
+          {
+            "id": "b",
+            "label": "4.8 minutes"
+          },
+          {
+            "id": "c",
+            "label": "8 minutes"
+          },
+          {
+            "id": "d",
+            "label": "10 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swimmer moves at 10 km/hr in still water against a 6 km/hr current and wants to land directly opposite. River width is 0.8 km. Crossing time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 minutes"
+            },
+            {
+              "id": "b",
+              "label": "4.8 minutes"
+            },
+            {
+              "id": "c",
+              "label": "8 minutes"
+            },
+            {
+              "id": "d",
+              "label": "10 minutes"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Across component = √(10²−6²) = 8 km/hr.",
+            "0.8/8 hour = 0.1 hour."
+          ],
+          "explanation": "Crossing time = 6 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCrossing time = 6 minutes.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can recover current from the two crossing times without naming the angle.\n\nWidth = 150 m.\nNo-current time = 3 min → swimming speed = 50 m/min.\nDirect-opposite time with current = 5 min → across component = 30 m/min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Current = √(50²−30²)\n= √1600\n= 40 m/min.\n\nThis is exactly the chapter formula written as a speed triangle.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 150 m river takes 3 min in still water and 5 min for a directly-opposite crossing in current. What is current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 m/min"
+          },
+          {
+            "id": "b",
+            "label": "30 m/min"
+          },
+          {
+            "id": "c",
+            "label": "50 m/min"
+          },
+          {
+            "id": "d",
+            "label": "40 m/min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 150 m river takes 3 min in still water and 5 min for a directly-opposite crossing in current. What is current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 m/min"
+            },
+            {
+              "id": "b",
+              "label": "30 m/min"
+            },
+            {
+              "id": "c",
+              "label": "50 m/min"
+            },
+            {
+              "id": "d",
+              "label": "40 m/min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Find the two speed components: 50 and 30 m/min.",
+            "Use √(50²−30²)."
+          ],
+          "explanation": "Current speed = 40 m/min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind the two speed components: 50 and 30 m/min.\n\nCurrent speed = 40 m/min.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 m river takes 4 min in still water and 5 min for a directly-opposite crossing. Current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 m/min"
+          },
+          {
+            "id": "b",
+            "label": "36 m/min"
+          },
+          {
+            "id": "c",
+            "label": "48 m/min"
+          },
+          {
+            "id": "d",
+            "label": "60 m/min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 m river takes 4 min in still water and 5 min for a directly-opposite crossing. Current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 m/min"
+            },
+            {
+              "id": "b",
+              "label": "36 m/min"
+            },
+            {
+              "id": "c",
+              "label": "48 m/min"
+            },
+            {
+              "id": "d",
+              "label": "60 m/min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Speeds are 60 and 48 m/min.",
+            "Use the right-triangle difference of squares."
+          ],
+          "explanation": "Current = √(60²−48²) = 36 m/min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent = √(60²−48²) = 36 m/min.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A directly-opposite crossing needs the swimmer to have enough speed to cancel the current sideways.\n\nIf swimming speed is 6 km/hr and current is 4, an across component remains:\n√(36−16) = √20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If current were as fast as the swimmer, cancelling it would use the entire swimming speed and leave no across component.\n\nSo in this chapter model, directly-opposite crossing requires still-water swimming speed > current speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which pair allows a swimmer to land directly opposite with a positive across speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Swimmer 5 km/hr, current 5 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "Swimmer 4 km/hr, current 6 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "Swimmer 6 km/hr, current 4 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "Swimmer 3 km/hr, current 5 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Which pair allows a swimmer to land directly opposite with a positive across speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Swimmer 5 km/hr, current 5 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "Swimmer 4 km/hr, current 6 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "Swimmer 6 km/hr, current 4 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "Swimmer 3 km/hr, current 5 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The swimmer's own speed must exceed the current.",
+            "Only 6 > 4 among the choices."
+          ],
+          "explanation": "With 6 and 4, some speed remains for crossing after cancelling the current. Equal or stronger current leaves no positive across component."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe swimmer's own speed must exceed the current.\n\nWith 6 and 4, some speed remains for crossing after cancelling the current. Equal or stronger current leaves no positive across component.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Which pair allows a directly-opposite crossing?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Swimmer 7 km/hr, current 7 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "Swimmer 6 km/hr, current 9 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "Swimmer 5 km/hr, current 8 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "Swimmer 10 km/hr, current 8 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Which pair allows a directly-opposite crossing?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Swimmer 7 km/hr, current 7 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "Swimmer 6 km/hr, current 9 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "Swimmer 5 km/hr, current 8 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "Swimmer 10 km/hr, current 8 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Look for swimming speed greater than current speed.",
+            "10 > 8."
+          ],
+          "explanation": "Only the 10 km/hr swimmer can fully cancel an 8 km/hr current and still have across speed left."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nOnly the 10 km/hr swimmer can fully cancel an 8 km/hr current and still have across speed left.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's finish with all parts visible.\n\nRiver width = 300 m.\nSwimming speed in still water = 100 m/min.\nCurrent = 60 m/min.\nThe swimmer wants to land directly opposite.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Across component = √(100²−60²)\n= √6400\n= 80 m/min.\n\nCrossing time = 300/80 = 3.75 minutes = 3 min 45 sec.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 300 m river has current 60 m/min. A swimmer can do 100 m/min in still water and lands directly opposite. How long does the crossing take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 min 45 sec"
+          },
+          {
+            "id": "b",
+            "label": "3 min"
+          },
+          {
+            "id": "c",
+            "label": "4 min"
+          },
+          {
+            "id": "d",
+            "label": "5 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 300 m river has current 60 m/min. A swimmer can do 100 m/min in still water and lands directly opposite. How long does the crossing take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 min 45 sec"
+            },
+            {
+              "id": "b",
+              "label": "3 min"
+            },
+            {
+              "id": "c",
+              "label": "4 min"
+            },
+            {
+              "id": "d",
+              "label": "5 min"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Find across component √(100²−60²).",
+            "Then divide 300 by 80."
+          ],
+          "explanation": "Across speed = 80 m/min, so time = 3.75 minutes = 3 min 45 sec."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind across component √(100²−60²).\n\nAcross speed = 80 m/min, so time = 3.75 minutes = 3 min 45 sec.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 m river has current 30 m/min. A swimmer can do 50 m/min in still water and lands directly opposite. Crossing time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.8 minutes"
+          },
+          {
+            "id": "b",
+            "label": "5 minutes"
+          },
+          {
+            "id": "c",
+            "label": "6 minutes"
+          },
+          {
+            "id": "d",
+            "label": "8 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 m river has current 30 m/min. A swimmer can do 50 m/min in still water and lands directly opposite. Crossing time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.8 minutes"
+            },
+            {
+              "id": "b",
+              "label": "5 minutes"
+            },
+            {
+              "id": "c",
+              "label": "6 minutes"
+            },
+            {
+              "id": "d",
+              "label": "8 minutes"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Across component = √(50²−30²) = 40 m/min.",
+            "240/40 = 6."
+          ],
+          "explanation": "The directly-opposite crossing takes 6 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe directly-opposite crossing takes 6 minutes.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now distinguish the chapter's two river-crossing setups.\n\nIf sideways drift is allowed, the across-time comes from width and swimming speed. If the swimmer must land directly opposite, some speed is spent cancelling the current and the across component becomes smaller.\n\nNext, we combine all the chapter ideas in advanced journey patterns.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -1,0 +1,1945 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pipe question does not always say 'one tank per hour.'\n\nIt may say 40 litres per minute, give the tank dimensions, or describe a town's daily water use.\n\nThe model is still the same: amount changes at a rate. The only job is to keep the units consistent.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A 1000 L tank receives 60 L/min while 20 L/min drains away.\nNet flow = 40 L/min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Time = 1000/40 = 25 min.\nAlways combine litre rates before dividing the tank capacity by them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 1500 L tank receives 80 L/min and loses 30 L/min. Fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18.75 minutes"
+          },
+          {
+            "id": "b",
+            "label": "50 minutes"
+          },
+          {
+            "id": "c",
+            "label": "20 minutes"
+          },
+          {
+            "id": "d",
+            "label": "30 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 1500 L tank receives 80 L/min and loses 30 L/min. Fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18.75 minutes"
+            },
+            {
+              "id": "b",
+              "label": "50 minutes"
+            },
+            {
+              "id": "c",
+              "label": "20 minutes"
+            },
+            {
+              "id": "d",
+              "label": "30 minutes"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net flow = 50 L/min.",
+            "1500 ÷ 50."
+          ],
+          "explanation": "The tank fills in 30 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nNet flow = 50 L/min.\n\nThe tank fills in 30 min.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 2100 L tank receives 90 L/min and loses 20 L/min. Time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 minutes"
+          },
+          {
+            "id": "b",
+            "label": "23⅓ minutes"
+          },
+          {
+            "id": "c",
+            "label": "70 minutes"
+          },
+          {
+            "id": "d",
+            "label": "21 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 2100 L tank receives 90 L/min and loses 20 L/min. Time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 minutes"
+            },
+            {
+              "id": "b",
+              "label": "23⅓ minutes"
+            },
+            {
+              "id": "c",
+              "label": "70 minutes"
+            },
+            {
+              "id": "d",
+              "label": "21 minutes"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net flow = 70 L/min.",
+            "2100/70."
+          ],
+          "explanation": "The answer is 30 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe answer is 30 min.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A known litre rate can reveal tank capacity if you know what fraction of the tank it represents.\n\nIf 12 L/min equals 1/20 tank/min, then the whole tank is 20×12 = 240 L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "First express the pipe's flow as a fraction of the tank per minute. Then scale that fraction up to one whole tank.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "An inlet adds 15 L/min, which equals 1/24 of the tank each minute. What is the tank capacity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "360 L"
+          },
+          {
+            "id": "b",
+            "label": "240 L"
+          },
+          {
+            "id": "c",
+            "label": "600 L"
+          },
+          {
+            "id": "d",
+            "label": "39 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An inlet adds 15 L/min, which equals 1/24 of the tank each minute. What is the tank capacity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "360 L"
+            },
+            {
+              "id": "b",
+              "label": "240 L"
+            },
+            {
+              "id": "c",
+              "label": "600 L"
+            },
+            {
+              "id": "d",
+              "label": "39 L"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "One whole has 24 such parts.",
+            "15 × 24."
+          ],
+          "explanation": "Capacity = 360 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nOne whole has 24 such parts.\n\nCapacity = 360 L.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "20 L/min equals 1/30 tank per minute. Capacity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "500 L"
+          },
+          {
+            "id": "b",
+            "label": "50 L"
+          },
+          {
+            "id": "c",
+            "label": "600 L"
+          },
+          {
+            "id": "d",
+            "label": "900 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "20 L/min equals 1/30 tank per minute. Capacity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "500 L"
+            },
+            {
+              "id": "b",
+              "label": "50 L"
+            },
+            {
+              "id": "c",
+              "label": "600 L"
+            },
+            {
+              "id": "d",
+              "label": "900 L"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply by 30.",
+            "20 × 30."
+          ],
+          "explanation": "Capacity = 600 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nCapacity = 600 L.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Geometry enters when the tank capacity is not given directly.\n\nA rectangular tank 2 m × 1.5 m × 1 m has volume 3 m³ = 3000 L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If water enters at 100 L/min, fill time = 3000/100 = 30 min.\nGeometry gives the amount; pipe rate gives the speed of change.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank is 2 m × 2 m × 1.5 m. Water enters at 200 L/min. Fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 minutes"
+          },
+          {
+            "id": "b",
+            "label": "45 minutes"
+          },
+          {
+            "id": "c",
+            "label": "30 minutes"
+          },
+          {
+            "id": "d",
+            "label": "60 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank is 2 m × 2 m × 1.5 m. Water enters at 200 L/min. Fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 minutes"
+            },
+            {
+              "id": "b",
+              "label": "45 minutes"
+            },
+            {
+              "id": "c",
+              "label": "30 minutes"
+            },
+            {
+              "id": "d",
+              "label": "60 minutes"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Volume = 6 m³ = 6000 L.",
+            "6000 ÷ 200."
+          ],
+          "explanation": "The tank fills in 30 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nVolume = 6 m³ = 6000 L.\n\nThe tank fills in 30 min.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank is 3 m × 2 m × 1 m. Flow is 250 L/min. Time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18 minutes"
+          },
+          {
+            "id": "b",
+            "label": "24 minutes"
+          },
+          {
+            "id": "c",
+            "label": "30 minutes"
+          },
+          {
+            "id": "d",
+            "label": "40 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank is 3 m × 2 m × 1 m. Flow is 250 L/min. Time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18 minutes"
+            },
+            {
+              "id": "b",
+              "label": "24 minutes"
+            },
+            {
+              "id": "c",
+              "label": "30 minutes"
+            },
+            {
+              "id": "d",
+              "label": "40 minutes"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Volume = 6 m³ = 6000 L.",
+            "6000/250."
+          ],
+          "explanation": "Time = 24 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nTime = 24 min.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pipe's physical flow can come from cross-sectional area × speed.\n\nA 20 cm² pipe carrying water at 100 cm/s moves 2000 cm³ each second = 2 L/s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A 3000 L tank at 2 L/s takes 1500 s = 25 min.\nKeep centimetres with centimetres or metres with metres before converting volume.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A pipe has cross-section 25 cm² and water speed 80 cm/s. How many litres per second flow through it?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 L/s"
+          },
+          {
+            "id": "b",
+            "label": "2 L/s"
+          },
+          {
+            "id": "c",
+            "label": "0.2 L/s"
+          },
+          {
+            "id": "d",
+            "label": "2000 L/s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A pipe has cross-section 25 cm² and water speed 80 cm/s. How many litres per second flow through it?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 L/s"
+            },
+            {
+              "id": "b",
+              "label": "2 L/s"
+            },
+            {
+              "id": "c",
+              "label": "0.2 L/s"
+            },
+            {
+              "id": "d",
+              "label": "2000 L/s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Volume per second = area × speed.",
+            "25×80 = 2000 cm³/s = 2 L/s."
+          ],
+          "explanation": "The flow is 2 L/s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nVolume per second = area × speed.\n\nThe flow is 2 L/s.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Cross-section 30 cm², speed 50 cm/s. Flow?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 L/s"
+          },
+          {
+            "id": "b",
+            "label": "0.15 L/s"
+          },
+          {
+            "id": "c",
+            "label": "1500 L/s"
+          },
+          {
+            "id": "d",
+            "label": "1.5 L/s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Cross-section 30 cm², speed 50 cm/s. Flow?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 L/s"
+            },
+            {
+              "id": "b",
+              "label": "0.15 L/s"
+            },
+            {
+              "id": "c",
+              "label": "1500 L/s"
+            },
+            {
+              "id": "d",
+              "label": "1.5 L/s"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "30×50 = 1500 cm³/s.",
+            "1000 cm³ = 1 L."
+          ],
+          "explanation": "Flow = 1.5 L/s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nFlow = 1.5 L/s.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Water-level rise uses volume = tank base area × rise.\n\nA 4 m × 3 m tank has base area 12 m². Raising the level by 0.5 m needs 6 m³ of water.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the inflow is 2 m³/min, that rise takes 3 min.\nThe height is not a separate pipe formula; it is just another way to describe volume.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 5 m × 4 m tank rises by 0.6 m. How much water entered?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 m³"
+          },
+          {
+            "id": "b",
+            "label": "9.6 m³"
+          },
+          {
+            "id": "c",
+            "label": "20 m³"
+          },
+          {
+            "id": "d",
+            "label": "3 m³"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 5 m × 4 m tank rises by 0.6 m. How much water entered?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 m³"
+            },
+            {
+              "id": "b",
+              "label": "9.6 m³"
+            },
+            {
+              "id": "c",
+              "label": "20 m³"
+            },
+            {
+              "id": "d",
+              "label": "3 m³"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Base area = 20 m².",
+            "Volume = 20×0.6."
+          ],
+          "explanation": "12 m³ entered."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nBase area = 20 m².\n\n12 m³ entered.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank 6 m × 2 m rises 0.75 m. Volume added?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 m³"
+          },
+          {
+            "id": "b",
+            "label": "12 m³"
+          },
+          {
+            "id": "c",
+            "label": "9 m³"
+          },
+          {
+            "id": "d",
+            "label": "6 m³"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank 6 m × 2 m rises 0.75 m. Volume added?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 m³"
+            },
+            {
+              "id": "b",
+              "label": "12 m³"
+            },
+            {
+              "id": "c",
+              "label": "9 m³"
+            },
+            {
+              "id": "d",
+              "label": "6 m³"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Base area = 12 m².",
+            "12×0.75."
+          ],
+          "explanation": "Volume = 9 m³."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nVolume = 9 m³.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Buckets are discrete flow units.\n\n12 buckets of 13.5 L hold 162 L. If new buckets hold 9 L, the same tank needs 162/9 = 18 buckets.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capacity stays fixed. Bigger bucket → fewer trips; smaller bucket → more trips.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank needs 20 buckets of 12 L. How many 8 L buckets fill the same tank?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24"
+          },
+          {
+            "id": "b",
+            "label": "32"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank needs 20 buckets of 12 L. How many 8 L buckets fill the same tank?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24"
+            },
+            {
+              "id": "b",
+              "label": "32"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Tank capacity = 20×12 = 240 L.",
+            "240/8."
+          ],
+          "explanation": "30 buckets are needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nTank capacity = 20×12 = 240 L.\n\n30 buckets are needed.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A drum needs 15 buckets of 16 L. How many 10 L buckets?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "24"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "18"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A drum needs 15 buckets of 16 L. How many 10 L buckets?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "24"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "18"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Capacity = 240 L.",
+            "240/10."
+          ],
+          "explanation": "24 buckets are needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n24 buckets are needed.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Steady supply with changing demand is a storage problem.\n\nSuppose supply is 30,000 L every 3 hours. If demand is 10,000, the tank gains 20,000. If next demand is 45,000, the stored amount falls by 15,000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Track cumulative storage after each period.\nThe minimum tank capacity that avoids wastage is the highest stored amount reached during the schedule.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A reservoir receives 20,000 L each period. Demands over four periods are 5,000; 25,000; 10,000; 30,000 L. Starting empty, what minimum storage capacity prevents wastage?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10,000 L"
+          },
+          {
+            "id": "b",
+            "label": "20,000 L"
+          },
+          {
+            "id": "c",
+            "label": "15,000 L"
+          },
+          {
+            "id": "d",
+            "label": "25,000 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A reservoir receives 20,000 L each period. Demands over four periods are 5,000; 25,000; 10,000; 30,000 L. Starting empty, what minimum storage capacity prevents wastage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10,000 L"
+            },
+            {
+              "id": "b",
+              "label": "20,000 L"
+            },
+            {
+              "id": "c",
+              "label": "15,000 L"
+            },
+            {
+              "id": "d",
+              "label": "25,000 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Track storage after each period.",
+            "Balances: +15,000; +10,000; +20,000; +10,000."
+          ],
+          "explanation": "The peak stored amount is 20,000 L, so the correct capacity is 20,000 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nTrack storage after each period.\n\nThe peak stored amount is 20,000 L, so the correct capacity is 20,000 L.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Supply is 25,000 L per period. Demands: 10,000; 30,000; 15,000; 35,000. Minimum capacity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15,000 L"
+          },
+          {
+            "id": "b",
+            "label": "25,000 L"
+          },
+          {
+            "id": "c",
+            "label": "10,000 L"
+          },
+          {
+            "id": "d",
+            "label": "20,000 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Supply is 25,000 L per period. Demands: 10,000; 30,000; 15,000; 35,000. Minimum capacity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15,000 L"
+            },
+            {
+              "id": "b",
+              "label": "25,000 L"
+            },
+            {
+              "id": "c",
+              "label": "10,000 L"
+            },
+            {
+              "id": "d",
+              "label": "20,000 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Cumulative storage: 15k, 10k, 20k, 10k.",
+            "Take the maximum."
+          ],
+          "explanation": "Minimum capacity is 20,000 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nMinimum capacity is 20,000 L.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A tank may receive a constant daily inflow while a town draws water.\n\nIf a full tank plus 50 days of inflow supports 32,000 gallons/day, and the same tank plus 40 days of inflow supports 37,000/day, subtract the two equations to isolate daily inflow.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sustainable daily use is exactly the daily inflow. At that demand, the stored tank level never trends downward over time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A tank lasts 30 days at 20,000 L/day and 20 days at 25,000 L/day, while receiving a constant daily inflow. What daily use can continue forever?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5,000 L/day"
+          },
+          {
+            "id": "b",
+            "label": "15,000 L/day"
+          },
+          {
+            "id": "c",
+            "label": "20,000 L/day"
+          },
+          {
+            "id": "d",
+            "label": "10,000 L/day"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A tank lasts 30 days at 20,000 L/day and 20 days at 25,000 L/day, while receiving a constant daily inflow. What daily use can continue forever?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5,000 L/day"
+            },
+            {
+              "id": "b",
+              "label": "15,000 L/day"
+            },
+            {
+              "id": "c",
+              "label": "20,000 L/day"
+            },
+            {
+              "id": "d",
+              "label": "10,000 L/day"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let tank capacity be T and daily inflow be s.",
+            "T+30s=600,000; T+20s=500,000."
+          ],
+          "explanation": "Subtract: 10s=100,000, so s=10,000 L/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLet tank capacity be T and daily inflow be s.\n\nSubtract: 10s=100,000, so s=10,000 L/day.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A reservoir lasts 40 days at 18,000 L/day and 25 days at 24,000 L/day with constant inflow. Sustainable use?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8,000 L/day"
+          },
+          {
+            "id": "b",
+            "label": "6,000 L/day"
+          },
+          {
+            "id": "c",
+            "label": "10,000 L/day"
+          },
+          {
+            "id": "d",
+            "label": "12,000 L/day"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A reservoir lasts 40 days at 18,000 L/day and 25 days at 24,000 L/day with constant inflow. Sustainable use?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8,000 L/day"
+            },
+            {
+              "id": "b",
+              "label": "6,000 L/day"
+            },
+            {
+              "id": "c",
+              "label": "10,000 L/day"
+            },
+            {
+              "id": "d",
+              "label": "12,000 L/day"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "T+40s=720,000 and T+25s=600,000.",
+            "Subtract the equations."
+          ],
+          "explanation": "15s=120,000, so s=8,000 L/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n15s=120,000, so s=8,000 L/day.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "teach_9": {
+      "id": "teach_9",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: simultaneous inlet pipes can also create a mixture.\n\nIf pipes P, Q and R carry different liquids, the fraction of each liquid in the tank equals that pipe's contribution divided by total inflow, provided they run for the same time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_9_step"
+        }
+      ]
+    },
+    "teach_9_step": {
+      "id": "teach_9_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For fill times 30, 20 and 10 min, rate ratio is 2:3:6. The third liquid therefore forms 6/11 of the incoming mixture.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_9"
+        }
+      ]
+    },
+    "q_9": {
+      "id": "q_9",
+      "type": "CHOICE",
+      "content": {
+        "text": "Three pipes carry liquids A, B, C and fill alone in 24, 12 and 8 min. What fraction of the incoming mixture is liquid C?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/2"
+          },
+          {
+            "id": "b",
+            "label": "1/4"
+          },
+          {
+            "id": "c",
+            "label": "1/3"
+          },
+          {
+            "id": "d",
+            "label": "3/4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Three pipes carry liquids A, B, C and fill alone in 24, 12 and 8 min. What fraction of the incoming mixture is liquid C?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/2"
+            },
+            {
+              "id": "b",
+              "label": "1/4"
+            },
+            {
+              "id": "c",
+              "label": "1/3"
+            },
+            {
+              "id": "d",
+              "label": "3/4"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Convert times to rates: 1:2:3.",
+            "C has 3 of 6 rate-parts."
+          ],
+          "explanation": "Liquid C forms 1/2 of the mixture."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_9": {
+      "id": "remedy_9",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nConvert times to rates: 1:2:3.\n\nLiquid C forms 1/2 of the mixture.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_9"
+        }
+      ]
+    },
+    "retry_9": {
+      "id": "retry_9",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pipes fill alone in 18, 12 and 9 min. What fraction comes from the 9-min pipe?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1/2"
+          },
+          {
+            "id": "b",
+            "label": "1/3"
+          },
+          {
+            "id": "c",
+            "label": "4/9"
+          },
+          {
+            "id": "d",
+            "label": "2/9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pipes fill alone in 18, 12 and 9 min. What fraction comes from the 9-min pipe?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1/2"
+            },
+            {
+              "id": "b",
+              "label": "1/3"
+            },
+            {
+              "id": "c",
+              "label": "4/9"
+            },
+            {
+              "id": "d",
+              "label": "2/9"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Rate ratio using denominator 36 is 2:3:4.",
+            "The 9-min pipe has 4 of 9 total parts."
+          ],
+          "explanation": "Its fraction is 4/9."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_9",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_9": {
+      "id": "retry_remedy_9",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nIts fraction is 4/9.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_9"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now move between tank fractions and real flow quantities.\n\nCapacity ÷ net flow = time.\nFlow × time = volume.\nFor storage, track cumulative surplus and shortage.\nFor mixtures, compare the inlet volumes contributed over the same time.\n\nThe final script teaches how to judge whether pipe data is sufficient before solving.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Tank Capacity, Flow, Storage, and Special Applications",
+    "description": "Connect pipe rates with litres, geometry, steady supply, storage, and liquid composition.",
+    "teachingApproach": "Keep the tank-rate model visible while changing units. Begin with litres per minute and tank capacity, then convert physical tank and pipe dimensions into volume rates. Extend to bucket capacity, supply-demand storage tables, sustainable demand, and mixture shares from simultaneous inlet pipes. Unit conversion is taught only where it supports the flow reasoning.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 16, Pipes and Cisterns. Approved scope: Apply pipe-rate reasoning to physical flow and storage. Cover litres per minute, finding tank capacity from a fractional rate, rectangular tank volume, water rise from a pipe of known cross-section and speed, bucket capacity, steady supply versus varying demand, sustainable daily use with constant replenishment, and the fraction of one liquid in a tank filled by several inlet pipes. Include unit conversion where required, but keep the pipe-rate idea visible rather than turning the lesson into geometry alone."
+  },
+  "scriptId": "pc-08-capacity-flow-storage-applications",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

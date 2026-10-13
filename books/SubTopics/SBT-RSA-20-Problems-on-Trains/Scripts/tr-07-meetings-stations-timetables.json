@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-07-meetings-stations-timetables",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Train Meetings Between Stations and Timetables",
+    "description": "Solve when and where trains meet, including delayed starts, distance differences at the meeting point, and after-meeting travel times.",
+    "teachingApproach": "Move from simultaneous and delayed station starts to meeting-point distance differences, route-rate meetings, the square-root after-meeting relation, route reconstruction, timetable arithmetic, and a full after-meeting capstone.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach station-to-station meeting problems using closing speed after accounting for any head start. Cover simultaneous starts, delayed starts, finding route length from the difference in distances travelled at meeting, and meeting times from full-route travel times. Teach the chapter's after-meeting relation: when two trains start simultaneously from opposite ends, meet, then take a and b hours to reach the far ends, their speed ratio is sqrt(b):sqrt(a). Use it to recover speeds and route length. Finish with timetable capstones that convert a start delay into distance already covered before closing begins."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Train-length questions zoom in on seconds. Station-meeting questions zoom out to whole journeys.\n\nThe engine is still relative speed — first account for any head start, then close the remaining route.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two trains starting from opposite stations are just a large relative-speed problem. If the stations are 240 km apart and speeds are 60 and 40 km/hr, the gap closes at 100 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Meeting time = 240/100 = 2.4 h = 2 h 24 min.\n\nHere train lengths are irrelevant because the question asks when their fronts meet, not when the trains completely cross each other.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains start simultaneously from stations 240 km apart at 60 and 40 km/hr toward each other. When do they meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2.4 h"
+          },
+          {
+            "id": "b",
+            "label": "2 h"
+          },
+          {
+            "id": "c",
+            "label": "2.5 h"
+          },
+          {
+            "id": "d",
+            "label": "3 h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains start simultaneously from stations 240 km apart at 60 and 40 km/hr toward each other. When do they meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2.4 h"
+            },
+            {
+              "id": "b",
+              "label": "2 h"
+            },
+            {
+              "id": "c",
+              "label": "2.5 h"
+            },
+            {
+              "id": "d",
+              "label": "3 h"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use route distance divided by closing speed.",
+            "Closing speed = 60 + 40 = 100 km/hr."
+          ],
+          "explanation": "240/100 = 2.4 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUse route distance divided by closing speed.\n\n240/100 = 2.4 hours.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains start 300 km apart at 75 and 45 km/hr toward each other. Meeting time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 h"
+          },
+          {
+            "id": "b",
+            "label": "2.5 h"
+          },
+          {
+            "id": "c",
+            "label": "3 h"
+          },
+          {
+            "id": "d",
+            "label": "4 h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains start 300 km apart at 75 and 45 km/hr toward each other. Meeting time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 h"
+            },
+            {
+              "id": "b",
+              "label": "2.5 h"
+            },
+            {
+              "id": "c",
+              "label": "3 h"
+            },
+            {
+              "id": "d",
+              "label": "4 h"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Closing speed = 120 km/hr.",
+            "300/120 = 2.5."
+          ],
+          "explanation": "They meet after 2.5 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThey meet after 2.5 hours.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A delayed start creates a head start. Train A leaves at 7 a.m. at 20 km/hr; train B leaves the opposite station at 8 a.m. at 25 km/hr. The stations are 110 km apart.\n\nBy 8 a.m., A has already covered 20 km, so only 90 km remains between them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "From 8 a.m. onward they close at 20 + 25 = 45 km/hr.\n90/45 = 2 hours.\nSo they meet at 10 a.m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Stations are 110 km apart. A leaves at 7 a.m. at 20 km/hr; B leaves the other end at 8 a.m. at 25 km/hr toward A. When do they meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9 a.m."
+          },
+          {
+            "id": "b",
+            "label": "10 a.m."
+          },
+          {
+            "id": "c",
+            "label": "9:30 a.m."
+          },
+          {
+            "id": "d",
+            "label": "11 a.m."
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Stations are 110 km apart. A leaves at 7 a.m. at 20 km/hr; B leaves the other end at 8 a.m. at 25 km/hr toward A. When do they meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9 a.m."
+            },
+            {
+              "id": "b",
+              "label": "10 a.m."
+            },
+            {
+              "id": "c",
+              "label": "9:30 a.m."
+            },
+            {
+              "id": "d",
+              "label": "11 a.m."
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Give A its one-hour head start first.",
+            "At 8 a.m. the gap is 90 km; closing speed is 45 km/hr."
+          ],
+          "explanation": "The remaining 90 km closes in 2 hours, so meeting time is 10 a.m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nGive A its one-hour head start first.\n\nThe remaining 90 km closes in 2 hours, so meeting time is 10 a.m.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Stations are 180 km apart. A leaves at 8 a.m. at 30 km/hr; B leaves at 9 a.m. at 30 km/hr toward A. When do they meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10:30 a.m."
+          },
+          {
+            "id": "b",
+            "label": "11 a.m."
+          },
+          {
+            "id": "c",
+            "label": "11:30 a.m."
+          },
+          {
+            "id": "d",
+            "label": "12 noon"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Stations are 180 km apart. A leaves at 8 a.m. at 30 km/hr; B leaves at 9 a.m. at 30 km/hr toward A. When do they meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10:30 a.m."
+            },
+            {
+              "id": "b",
+              "label": "11 a.m."
+            },
+            {
+              "id": "c",
+              "label": "11:30 a.m."
+            },
+            {
+              "id": "d",
+              "label": "12 noon"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "By 9 a.m., A has covered 30 km, leaving 150 km.",
+            "Closing speed after 9 a.m. is 60 km/hr."
+          ],
+          "explanation": "150/60 = 2.5 hours after 9 a.m., so 11:30 a.m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n150/60 = 2.5 hours after 9 a.m., so 11:30 a.m.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the meeting point is described by a difference in distances. If trains move at 60 and 40 km/hr, then each hour the faster train travels 20 km more.\n\nIf it has travelled 100 km more at the meeting, they must have travelled for 100/20 = 5 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Then total route length = (60 + 40) × 5 = 500 km.\n\nThe distance difference gives the time; the distance sum gives the whole route.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains approach each other at 60 and 40 km/hr. At meeting, the faster train has travelled 100 km more. What is the station distance?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "400 km"
+          },
+          {
+            "id": "b",
+            "label": "600 km"
+          },
+          {
+            "id": "c",
+            "label": "500 km"
+          },
+          {
+            "id": "d",
+            "label": "1000 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains approach each other at 60 and 40 km/hr. At meeting, the faster train has travelled 100 km more. What is the station distance?",
+          "options": [
+            {
+              "id": "a",
+              "label": "400 km"
+            },
+            {
+              "id": "b",
+              "label": "600 km"
+            },
+            {
+              "id": "c",
+              "label": "500 km"
+            },
+            {
+              "id": "d",
+              "label": "1000 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Time to meeting = 100 ÷ (60−40).",
+            "Then multiply meeting time by 60+40."
+          ],
+          "explanation": "Meeting time is 5 h; route length = 100 × 5 = 500 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTime to meeting = 100 ÷ (60−40).\n\nMeeting time is 5 h; route length = 100 × 5 = 500 km.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains approach at 72 and 48 km/hr. At meeting, the faster has travelled 120 km more. Find the station distance.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "480 km"
+          },
+          {
+            "id": "b",
+            "label": "720 km"
+          },
+          {
+            "id": "c",
+            "label": "1200 km"
+          },
+          {
+            "id": "d",
+            "label": "600 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains approach at 72 and 48 km/hr. At meeting, the faster has travelled 120 km more. Find the station distance.",
+          "options": [
+            {
+              "id": "a",
+              "label": "480 km"
+            },
+            {
+              "id": "b",
+              "label": "720 km"
+            },
+            {
+              "id": "c",
+              "label": "1200 km"
+            },
+            {
+              "id": "d",
+              "label": "600 km"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Time = 120/(72−48) = 5 h.",
+            "Route = (72+48) × 5."
+          ],
+          "explanation": "The station distance is 600 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe station distance is 600 km.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Full-route travel times can give a meeting time without knowing the distance. Suppose one train would cover the route alone in 2 hours and the other in 3 hours.\n\nIn one hour they cover 1/2 and 1/3 of the route. Together they close 5/6 of the route per hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Meeting time = 1 ÷ (5/6) = 6/5 h = 1 h 12 min.\n\nThis is the same closing-speed idea measured in 'routes per hour' instead of km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "One train would cover the route in 2 h, the other in 3 h. Starting simultaneously from opposite ends, when do they meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 h"
+          },
+          {
+            "id": "b",
+            "label": "1 h 30 min"
+          },
+          {
+            "id": "c",
+            "label": "2 h"
+          },
+          {
+            "id": "d",
+            "label": "1 h 12 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One train would cover the route in 2 h, the other in 3 h. Starting simultaneously from opposite ends, when do they meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 h"
+            },
+            {
+              "id": "b",
+              "label": "1 h 30 min"
+            },
+            {
+              "id": "c",
+              "label": "2 h"
+            },
+            {
+              "id": "d",
+              "label": "1 h 12 min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Their route rates are 1/2 and 1/3 per hour.",
+            "Add them, then invert."
+          ],
+          "explanation": "1/(1/2+1/3) = 6/5 h = 1 h 12 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTheir route rates are 1/2 and 1/3 per hour.\n\n1/(1/2+1/3) = 6/5 h = 1 h 12 min.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "One train needs 3 h for the full route and the other 6 h. Starting oppositely together, meeting time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 h"
+          },
+          {
+            "id": "b",
+            "label": "1.5 h"
+          },
+          {
+            "id": "c",
+            "label": "2.5 h"
+          },
+          {
+            "id": "d",
+            "label": "3 h"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One train needs 3 h for the full route and the other 6 h. Starting oppositely together, meeting time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 h"
+            },
+            {
+              "id": "b",
+              "label": "1.5 h"
+            },
+            {
+              "id": "c",
+              "label": "2.5 h"
+            },
+            {
+              "id": "d",
+              "label": "3 h"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Closing route rate = 1/3 + 1/6 = 1/2.",
+            "Invert 1/2."
+          ],
+          "explanation": "They meet after 2 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThey meet after 2 hours.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A famous train pattern starts after the meeting. Two trains start simultaneously from opposite ends, meet, then train A takes 4 h to reach B while train B takes 9 h to reach A.\n\nThe speed ratio is not 9:4. It is the square-root ratio: A:B = √9:√4 = 3:2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Why? Before meeting, each train's distance is proportional to its speed. After meeting, each train covers the distance the other had already covered. Combining those two proportional relationships produces the square.\n\nMemory hook: after-meeting times 4 and 9 → speeds 3 and 2, reversed under square roots.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "After two trains meet, A needs 4 h to reach B and B needs 9 h to reach A. What is speed A : speed B?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 2"
+          },
+          {
+            "id": "b",
+            "label": "2 : 3"
+          },
+          {
+            "id": "c",
+            "label": "4 : 9"
+          },
+          {
+            "id": "d",
+            "label": "9 : 4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After two trains meet, A needs 4 h to reach B and B needs 9 h to reach A. What is speed A : speed B?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 2"
+            },
+            {
+              "id": "b",
+              "label": "2 : 3"
+            },
+            {
+              "id": "c",
+              "label": "4 : 9"
+            },
+            {
+              "id": "d",
+              "label": "9 : 4"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use speed ratio = √(B's remaining time) : √(A's remaining time).",
+            "√9 : √4 = 3 : 2."
+          ],
+          "explanation": "A is faster, so it has the larger ratio term: 3:2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUse speed ratio = √(B's remaining time) : √(A's remaining time).\n\nA is faster, so it has the larger ratio term: 3:2.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "After meeting, A takes 9 h to reach B and B takes 16 h to reach A. Find speed A : B.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 4"
+          },
+          {
+            "id": "b",
+            "label": "4 : 3"
+          },
+          {
+            "id": "c",
+            "label": "9 : 16"
+          },
+          {
+            "id": "d",
+            "label": "16 : 9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After meeting, A takes 9 h to reach B and B takes 16 h to reach A. Find speed A : B.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 4"
+            },
+            {
+              "id": "b",
+              "label": "4 : 3"
+            },
+            {
+              "id": "c",
+              "label": "9 : 16"
+            },
+            {
+              "id": "d",
+              "label": "16 : 9"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Take square roots of the opposite remaining times.",
+            "√16 : √9 = 4 : 3."
+          ],
+          "explanation": "The speed ratio is 4:3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe speed ratio is 4:3.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "The after-meeting times can also recover the whole route if one speed is known. Suppose A:B = 3:2, so let speeds be 60 and 40 km/hr.\n\nAfter meeting, A takes 4 h to reach B: that remaining part is 60 × 4 = 240 km.\nB takes 9 h to reach A: the other part is 40 × 9 = 360 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Those two post-meeting distances are the two halves of the route split by the meeting point.\nRoute length = 240 + 360 = 600 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "After meeting, A takes 4 h and B takes 9 h to reach the opposite stations. If B's speed is 40 km/hr, what is the route length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "480 km"
+          },
+          {
+            "id": "b",
+            "label": "600 km"
+          },
+          {
+            "id": "c",
+            "label": "720 km"
+          },
+          {
+            "id": "d",
+            "label": "900 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After meeting, A takes 4 h and B takes 9 h to reach the opposite stations. If B's speed is 40 km/hr, what is the route length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "480 km"
+            },
+            {
+              "id": "b",
+              "label": "600 km"
+            },
+            {
+              "id": "c",
+              "label": "720 km"
+            },
+            {
+              "id": "d",
+              "label": "900 km"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "The time pattern gives speed ratio A:B = 3:2.",
+            "So A = 60 km/hr; add A's 4-hour remainder and B's 9-hour remainder."
+          ],
+          "explanation": "Route = 60×4 + 40×9 = 240 + 360 = 600 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe time pattern gives speed ratio A:B = 3:2.\n\nRoute = 60×4 + 40×9 = 240 + 360 = 600 km.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "After meeting, A takes 9 h and B 16 h. If B's speed is 45 km/hr, what is the route length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1080 km"
+          },
+          {
+            "id": "b",
+            "label": "1350 km"
+          },
+          {
+            "id": "c",
+            "label": "1260 km"
+          },
+          {
+            "id": "d",
+            "label": "1440 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After meeting, A takes 9 h and B 16 h. If B's speed is 45 km/hr, what is the route length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1080 km"
+            },
+            {
+              "id": "b",
+              "label": "1350 km"
+            },
+            {
+              "id": "c",
+              "label": "1260 km"
+            },
+            {
+              "id": "d",
+              "label": "1440 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Speed ratio A:B = 4:3, so A = 60 km/hr.",
+            "Route = 60×9 + 45×16."
+          ],
+          "explanation": "540 + 720 = 1260 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n540 + 720 = 1260 km.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Delayed timetable problems are easiest when you freeze the clock at the later departure.\n\nA leaves at 6 a.m. at 50 km/hr. B leaves the other end at 7 a.m. at 70 km/hr. The route is 360 km.\nBy 7 a.m., A has covered 50 km, leaving 310 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "From 7 a.m., closing speed = 120 km/hr.\nTime = 310/120 = 31/12 h = 2 h 35 min.\nMeeting time = 9:35 a.m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Stations are 360 km apart. A leaves at 6 a.m. at 50 km/hr; B leaves the other end at 7 a.m. at 70 km/hr. When do they meet?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8:35 a.m."
+          },
+          {
+            "id": "b",
+            "label": "9:30 a.m."
+          },
+          {
+            "id": "c",
+            "label": "9:35 a.m."
+          },
+          {
+            "id": "d",
+            "label": "10:05 a.m."
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Stations are 360 km apart. A leaves at 6 a.m. at 50 km/hr; B leaves the other end at 7 a.m. at 70 km/hr. When do they meet?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8:35 a.m."
+            },
+            {
+              "id": "b",
+              "label": "9:30 a.m."
+            },
+            {
+              "id": "c",
+              "label": "9:35 a.m."
+            },
+            {
+              "id": "d",
+              "label": "10:05 a.m."
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "At 7 a.m., A has already covered 50 km.",
+            "310 km remains; divide by 120 km/hr."
+          ],
+          "explanation": "310/120 h = 2 h 35 min after 7 a.m., so 9:35 a.m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nAt 7 a.m., A has already covered 50 km.\n\n310/120 h = 2 h 35 min after 7 a.m., so 9:35 a.m.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Stations are 300 km apart. A leaves at 6 a.m. at 40 km/hr; B leaves the other end at 7 a.m. at 60 km/hr. Meeting time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9:24 a.m."
+          },
+          {
+            "id": "b",
+            "label": "9:30 a.m."
+          },
+          {
+            "id": "c",
+            "label": "10 a.m."
+          },
+          {
+            "id": "d",
+            "label": "9:36 a.m."
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Stations are 300 km apart. A leaves at 6 a.m. at 40 km/hr; B leaves the other end at 7 a.m. at 60 km/hr. Meeting time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9:24 a.m."
+            },
+            {
+              "id": "b",
+              "label": "9:30 a.m."
+            },
+            {
+              "id": "c",
+              "label": "10 a.m."
+            },
+            {
+              "id": "d",
+              "label": "9:36 a.m."
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "At 7 a.m., remaining gap = 300−40 = 260 km.",
+            "Closing speed = 100 km/hr, so 2.6 h = 2 h 36 min."
+          ],
+          "explanation": "They meet at 9:36 a.m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThey meet at 9:36 a.m.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: combine after-meeting times with total route length. Suppose the route is 600 km, and after meeting A needs 4 h while B needs 9 h.\n\nSpeed ratio = 3:2. Let speeds be 3k and 2k.\nAfter meeting, the two remaining distances are 12k and 18k, together 30k.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "30k = 600 → k = 20.\nSo speeds are 60 and 40 km/hr.\n\nThis avoids finding the meeting time first; the post-meeting pieces already reconstruct the whole route.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 600 km route is travelled by two trains starting simultaneously from opposite ends. After meeting, A takes 4 h to finish and B takes 9 h. What is the slower speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "40 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 600 km route is travelled by two trains starting simultaneously from opposite ends. After meeting, A takes 4 h to finish and B takes 9 h. What is the slower speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "40 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "Speed ratio = 3:2; use 3k and 2k.",
+            "Remaining distances are 12k and 18k, totaling 30k = 600."
+          ],
+          "explanation": "k=20, so the slower train moves at 2k = 40 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nSpeed ratio = 3:2; use 3k and 2k.\n\nk=20, so the slower train moves at 2k = 40 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 1260 km route has post-meeting times 9 h for A and 16 h for B. What is the slower speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "40 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "48 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "60 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 1260 km route has post-meeting times 9 h for A and 16 h for B. What is the slower speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "40 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "48 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "60 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Speed ratio A:B = 4:3; use 4k and 3k.",
+            "Remaining distances = 36k + 48k = 84k = 1260."
+          ],
+          "explanation": "k=15, so slower speed = 3k = 45 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nk=15, so slower speed = 3k = 45 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now solve train meetings on a whole route as cleanly as crossing a pole.\n\nHandle head starts before closing speed.\nUse distance differences to recover meeting time.\nAnd remember the special after-meeting square-root speed ratio.\n\nNext, we combine several train ideas into exam-style shortcut puzzles.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

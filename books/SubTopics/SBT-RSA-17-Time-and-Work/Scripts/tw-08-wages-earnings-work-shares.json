@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fixed payment for a job should follow the work done.\n\nIf A does twice as much of the job as B, A should receive twice as much of the job payment.\n\nSo the first task is always: find each person's work contribution.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A takes 8 days, B 12 days. If they work together throughout, their work-rate ratio is 1/8:1/12 = 3:2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So a ₹500 job payment splits as ₹300 and ₹200.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A takes 6 days, B 9 days. They earn ₹600 together. B's share?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹200"
+          },
+          {
+            "id": "b",
+            "label": "₹300"
+          },
+          {
+            "id": "c",
+            "label": "₹360"
+          },
+          {
+            "id": "d",
+            "label": "₹240"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A takes 6 days, B 9 days. They earn ₹600 together. B's share?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹200"
+            },
+            {
+              "id": "b",
+              "label": "₹300"
+            },
+            {
+              "id": "c",
+              "label": "₹360"
+            },
+            {
+              "id": "d",
+              "label": "₹240"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Rate ratio A:B = 1/6:1/9 = 3:2.",
+            "B gets 2 of 5 parts."
+          ],
+          "explanation": "B's share = 600×2/5 = ₹240."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nRate ratio A:B = 1/6:1/9 = 3:2.\n\nB's share = 600×2/5 = ₹240.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A takes 10 days, B 15. Total payment ₹1000. A's share?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹600"
+          },
+          {
+            "id": "b",
+            "label": "₹400"
+          },
+          {
+            "id": "c",
+            "label": "₹500"
+          },
+          {
+            "id": "d",
+            "label": "₹667"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A takes 10 days, B 15. Total payment ₹1000. A's share?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹600"
+            },
+            {
+              "id": "b",
+              "label": "₹400"
+            },
+            {
+              "id": "c",
+              "label": "₹500"
+            },
+            {
+              "id": "d",
+              "label": "₹667"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Rate ratio = 3:2.",
+            "A gets 3/5."
+          ],
+          "explanation": "A receives ₹600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nA receives ₹600.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A helper added to finish faster earns according to the helper's hidden rate.\n\nA=6 days, B=8 days, with C they finish in 3 days.\nC rate = 1/3−1/6−1/8 = 1/24.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rate ratio A:B:C = 4:3:1, so a payment splits in that ratio.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A=8 days, B=12 days; with C they finish in 4 days. Total pay ₹900. C's share?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹150"
+          },
+          {
+            "id": "b",
+            "label": "₹100"
+          },
+          {
+            "id": "c",
+            "label": "₹225"
+          },
+          {
+            "id": "d",
+            "label": "₹300"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A=8 days, B=12 days; with C they finish in 4 days. Total pay ₹900. C's share?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹150"
+            },
+            {
+              "id": "b",
+              "label": "₹100"
+            },
+            {
+              "id": "c",
+              "label": "₹225"
+            },
+            {
+              "id": "d",
+              "label": "₹300"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "C rate = 1/4−1/8−1/12 = 1/24.",
+            "A:B:C rates = 3:2:1, so C gets 1/6."
+          ],
+          "explanation": "C receives ₹150."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nC rate = 1/4−1/8−1/12 = 1/24.\n\nC receives ₹150.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A=10, B=15; with C team time 5 days. Total ₹1200. C's share?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹150"
+          },
+          {
+            "id": "b",
+            "label": "₹300"
+          },
+          {
+            "id": "c",
+            "label": "₹200"
+          },
+          {
+            "id": "d",
+            "label": "₹400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A=10, B=15; with C team time 5 days. Total ₹1200. C's share?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹150"
+            },
+            {
+              "id": "b",
+              "label": "₹300"
+            },
+            {
+              "id": "c",
+              "label": "₹200"
+            },
+            {
+              "id": "d",
+              "label": "₹400"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "C rate=1/5−1/10−1/15=1/30.",
+            "Rates 3:2:1, so C gets 1/6."
+          ],
+          "explanation": "C gets ₹200."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nC gets ₹200.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Different work durations change shares even if daily rates are fixed.\n\nIf daily work rates are in ratio 5:6:4 but they work 6,4,9 days, total contributions are 30:24:36 = 5:4:6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Multiply rate ratio by actual days before splitting the money.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Daily rates A:B:C = 3:4:2. They work 8,6,10 days. Contribution ratio?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3:4:2"
+          },
+          {
+            "id": "b",
+            "label": "12:12:10"
+          },
+          {
+            "id": "c",
+            "label": "6:6:5"
+          },
+          {
+            "id": "d",
+            "label": "24:24:20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Daily rates A:B:C = 3:4:2. They work 8,6,10 days. Contribution ratio?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3:4:2"
+            },
+            {
+              "id": "b",
+              "label": "12:12:10"
+            },
+            {
+              "id": "c",
+              "label": "6:6:5"
+            },
+            {
+              "id": "d",
+              "label": "24:24:20"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply: 3×8, 4×6, 2×10 = 24:24:20.",
+            "Simplify by 4."
+          ],
+          "explanation": "Contribution ratio = 6:6:5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nMultiply: 3×8, 4×6, 2×10 = 24:24:20.\n\nContribution ratio = 6:6:5.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Daily rates A:B = 2:3; they work 9 and 4 days. Contribution ratio?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2:3"
+          },
+          {
+            "id": "b",
+            "label": "3:2"
+          },
+          {
+            "id": "c",
+            "label": "6:4"
+          },
+          {
+            "id": "d",
+            "label": "9:6"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Daily rates A:B = 2:3; they work 9 and 4 days. Contribution ratio?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2:3"
+            },
+            {
+              "id": "b",
+              "label": "3:2"
+            },
+            {
+              "id": "c",
+              "label": "6:4"
+            },
+            {
+              "id": "d",
+              "label": "9:6"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Work = rate×days → 18:12.",
+            "Simplify 18:12."
+          ],
+          "explanation": "Contribution ratio = 3:2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nContribution ratio = 3:2.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A total daily earning can be unpacked from pair sums.\n\nIf A+B+C earn ₹300/day, A+C ₹188 and B+C ₹152:\nB=300−188=112, A=300−152=148, so C=40.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is ordinary pair-sum subtraction, but the quantities are earnings instead of work rates.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B+C earn ₹420/day. A+C earn ₹260, B+C earn ₹300. C earns?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹120"
+          },
+          {
+            "id": "b",
+            "label": "₹140"
+          },
+          {
+            "id": "c",
+            "label": "₹160"
+          },
+          {
+            "id": "d",
+            "label": "₹180"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B+C earn ₹420/day. A+C earn ₹260, B+C earn ₹300. C earns?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹120"
+            },
+            {
+              "id": "b",
+              "label": "₹140"
+            },
+            {
+              "id": "c",
+              "label": "₹160"
+            },
+            {
+              "id": "d",
+              "label": "₹180"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B=420−260=160 and A=420−300=120.",
+            "C=420−120−160."
+          ],
+          "explanation": "C earns ₹140/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nB=420−260=160 and A=420−300=120.\n\nC earns ₹140/day.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B+C earn ₹360. A+C=220, B+C=250. C?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹90"
+          },
+          {
+            "id": "b",
+            "label": "₹120"
+          },
+          {
+            "id": "c",
+            "label": "₹140"
+          },
+          {
+            "id": "d",
+            "label": "₹110"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B+C earn ₹360. A+C=220, B+C=250. C?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹90"
+            },
+            {
+              "id": "b",
+              "label": "₹120"
+            },
+            {
+              "id": "c",
+              "label": "₹140"
+            },
+            {
+              "id": "d",
+              "label": "₹110"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B=140, A=110.",
+            "C=360−250? Careful: A=360−250=110, B=360−220=140, so C=110."
+          ],
+          "explanation": "C earns ₹110/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nC earns ₹110/day.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fixed wage fund can also be treated like a whole.\n\nIf the same money pays A for 21 days or B for 28 days, daily wages are M/21 and M/28. Together daily wage = M/12.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the fund lasts 12 days when both are paid.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fund pays A for 18 days or B for 27 days. How long can it pay both together?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10.8 days"
+          },
+          {
+            "id": "b",
+            "label": "9 days"
+          },
+          {
+            "id": "c",
+            "label": "12 days"
+          },
+          {
+            "id": "d",
+            "label": "15 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fund pays A for 18 days or B for 27 days. How long can it pay both together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10.8 days"
+            },
+            {
+              "id": "b",
+              "label": "9 days"
+            },
+            {
+              "id": "c",
+              "label": "12 days"
+            },
+            {
+              "id": "d",
+              "label": "15 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Combined daily wage is M/18+M/27 = 5M/54.",
+            "Duration = M ÷ 5M/54 = 54/5."
+          ],
+          "explanation": "The fund lasts 10.8 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nCombined daily wage is M/18+M/27 = 5M/54.\n\nThe fund lasts 10.8 days.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fund pays A 20 days or B 30 days. Together duration?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 days"
+          },
+          {
+            "id": "b",
+            "label": "15 days"
+          },
+          {
+            "id": "c",
+            "label": "12 days"
+          },
+          {
+            "id": "d",
+            "label": "25 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fund pays A 20 days or B 30 days. Together duration?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 days"
+            },
+            {
+              "id": "b",
+              "label": "15 days"
+            },
+            {
+              "id": "c",
+              "label": "12 days"
+            },
+            {
+              "id": "d",
+              "label": "25 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "1/20+1/30 = 1/12 of the fund per day.",
+            "Reciprocal gives 12 days."
+          ],
+          "explanation": "12 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n12 days.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the question gives a worker's total share and asks for daily wages.\n\nFirst find total share from work ratio, then divide by actual days worked.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not divide the entire job payment by that worker's days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A and B work 5 days together, rates A:B=3:2, total pay ₹1000. What is B's daily wage?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹40/day"
+          },
+          {
+            "id": "b",
+            "label": "₹100/day"
+          },
+          {
+            "id": "c",
+            "label": "₹80/day"
+          },
+          {
+            "id": "d",
+            "label": "₹200/day"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A and B work 5 days together, rates A:B=3:2, total pay ₹1000. What is B's daily wage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹40/day"
+            },
+            {
+              "id": "b",
+              "label": "₹100/day"
+            },
+            {
+              "id": "c",
+              "label": "₹80/day"
+            },
+            {
+              "id": "d",
+              "label": "₹200/day"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B gets 2/5 of ₹1000 = ₹400.",
+            "₹400 over 5 days = ₹80/day."
+          ],
+          "explanation": "B receives ₹400 in total, so B's daily wage is ₹80."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nB gets 2/5 of ₹1000 = ₹400.\n\nB receives ₹400 in total, so B's daily wage is ₹80.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A and B work 8 days, rate ratio 5:3, total pay ₹1600. B daily wage?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹60/day"
+          },
+          {
+            "id": "b",
+            "label": "₹75/day"
+          },
+          {
+            "id": "c",
+            "label": "₹100/day"
+          },
+          {
+            "id": "d",
+            "label": "₹200/day"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A and B work 8 days, rate ratio 5:3, total pay ₹1600. B daily wage?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹60/day"
+            },
+            {
+              "id": "b",
+              "label": "₹75/day"
+            },
+            {
+              "id": "c",
+              "label": "₹100/day"
+            },
+            {
+              "id": "d",
+              "label": "₹200/day"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B share=3/8×1600=600.",
+            "600/8=75."
+          ],
+          "explanation": "B earns ₹75/day."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB earns ₹75/day.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A wage increase may be worthwhile if productivity rises enough.\n\nCompare total wage bill, not just daily wage. Higher daily pay can still reduce total cost if the job finishes much sooner.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 25% higher daily wage with 25% higher daily output shortens time by 20%, so total cost may stay the same—not automatically rise 25%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A worker's daily wage rises 20%, and daily output rises 25%. Original job cost index is 100. New cost index?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "100"
+          },
+          {
+            "id": "b",
+            "label": "96"
+          },
+          {
+            "id": "c",
+            "label": "120"
+          },
+          {
+            "id": "d",
+            "label": "125"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A worker's daily wage rises 20%, and daily output rises 25%. Original job cost index is 100. New cost index?",
+          "options": [
+            {
+              "id": "a",
+              "label": "100"
+            },
+            {
+              "id": "b",
+              "label": "96"
+            },
+            {
+              "id": "c",
+              "label": "120"
+            },
+            {
+              "id": "d",
+              "label": "125"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Time falls to 1/1.25 = 0.8 of original.",
+            "Cost factor = 1.2×0.8 = 0.96."
+          ],
+          "explanation": "New total cost is 96% of old cost."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nTime falls to 1/1.25 = 0.8 of original.\n\nNew total cost is 96% of old cost.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "Daily wage rises 10%, output rises 25%. New total cost as % of old?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "90%"
+          },
+          {
+            "id": "b",
+            "label": "100%"
+          },
+          {
+            "id": "c",
+            "label": "110%"
+          },
+          {
+            "id": "d",
+            "label": "88%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Daily wage rises 10%, output rises 25%. New total cost as % of old?",
+          "options": [
+            {
+              "id": "a",
+              "label": "90%"
+            },
+            {
+              "id": "b",
+              "label": "100%"
+            },
+            {
+              "id": "c",
+              "label": "110%"
+            },
+            {
+              "id": "d",
+              "label": "88%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Time factor = 0.8.",
+            "Cost factor=1.10×0.8=0.88."
+          ],
+          "explanation": "New cost is 88% of old."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nNew cost is 88% of old.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: if people work the same time, rate ratio alone splits wages. If they work different times, use actual work = rate × time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The money follows completed work, not title, age, or number of days by itself.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A is twice as efficient as B. They work together for the whole job and earn ₹900. B's share?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹225"
+          },
+          {
+            "id": "b",
+            "label": "₹450"
+          },
+          {
+            "id": "c",
+            "label": "₹600"
+          },
+          {
+            "id": "d",
+            "label": "₹300"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A is twice as efficient as B. They work together for the whole job and earn ₹900. B's share?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹225"
+            },
+            {
+              "id": "b",
+              "label": "₹450"
+            },
+            {
+              "id": "c",
+              "label": "₹600"
+            },
+            {
+              "id": "d",
+              "label": "₹300"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Rate ratio A:B=2:1.",
+            "B gets 1/3 of total."
+          ],
+          "explanation": "B receives ₹300."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's isolate the exact work-rate idea.\n\nRate ratio A:B=2:1.\n\nB receives ₹300.\n\nNow use that same idea with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A is 3 times as efficient as B; total job pay ₹1200. B share?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹300"
+          },
+          {
+            "id": "b",
+            "label": "₹200"
+          },
+          {
+            "id": "c",
+            "label": "₹400"
+          },
+          {
+            "id": "d",
+            "label": "₹900"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A is 3 times as efficient as B; total job pay ₹1200. B share?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹300"
+            },
+            {
+              "id": "b",
+              "label": "₹200"
+            },
+            {
+              "id": "c",
+              "label": "₹400"
+            },
+            {
+              "id": "d",
+              "label": "₹900"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Rate ratio 3:1.",
+            "B gets 1/4."
+          ],
+          "explanation": "B gets ₹300."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nB gets ₹300.\n\nTry it once more using the same relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now split wages by contribution.\n\nSame working time → wage ratio equals rate ratio.\nDifferent working times → compare rate × time.\nA helper's share is the work the helper actually supplied.\n\nPayment follows work, not headcount.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Wages, Earnings, and Work Shares",
+    "description": "Divide payment according to work contribution and recover daily earnings.",
+    "teachingApproach": "Tie wages directly to work share. Start with two workers who work for the same duration, then add a helper, different working durations, daily wage ratios, and reverse earning questions. Keep job-payment shares separate from time spent: rate × time determines contribution, and contribution determines payment.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 17, Time and Work. Approved scope: Teach that payment for a completed job is divided in the ratio of work contributions, not simply time spent. Cover two-worker wage splits from completion times, a helper added to finish early, daily wage ratios combined with different days worked, recovering daily wages from total earnings, a fixed fund paying workers for different numbers of days, and efficiency-linked wage comparisons. Include the chapter pattern of A+B and B+C work fractions to recover A's share."
+  },
+  "scriptId": "tw-08-wages-earnings-work-shares",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

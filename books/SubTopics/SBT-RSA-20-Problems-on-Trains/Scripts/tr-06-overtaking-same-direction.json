@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-06-overtaking-same-direction",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Overtaking Trains in the Same Direction",
+    "description": "Subtract train speeds and use the sum of their lengths to model one train completely overtaking another.",
+    "teachingApproach": "Start with sum-of-lengths over speed-difference, reverse for unknown speeds and lengths, then add same-start and head-start geometry, cancel common train length for speed ratios, and finish with two-walker inference.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach overtaking as relative motion: the faster train must gain a distance equal to both train lengths, so use speed difference and sum of lengths. Cover time to overtake, unknown faster/slower speed, equal-length trains, trains starting together, an explicit head start, speed ratios obtained from same-direction versus opposite-direction crossing times, and the two-walker inference pattern as a transfer exercise."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Overtaking looks different from a head-on crossing, but only one sign changes.\n\nBoth train lengths still have to clear. Because both trains move the same way, the faster train gains only at the difference of their speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Overtaking is the same crossing geometry with slower relative motion. The faster train must gain enough to move its entire length and the slower train's entire length past it.\n\nSo distance = L₁ + L₂, but relative speed = faster − slower.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: 150 m and 100 m trains at 72 and 54 km/hr.\nRelative speed = 18 km/hr = 5 m/s.\nTotal length = 250 m.\nTime = 250/5 = 50 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Trains 150 m and 100 m long move in the same direction at 72 and 54 km/hr. How long does the faster train take to overtake completely?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50 s"
+          },
+          {
+            "id": "b",
+            "label": "25 s"
+          },
+          {
+            "id": "c",
+            "label": "40 s"
+          },
+          {
+            "id": "d",
+            "label": "60 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Trains 150 m and 100 m long move in the same direction at 72 and 54 km/hr. How long does the faster train take to overtake completely?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50 s"
+            },
+            {
+              "id": "b",
+              "label": "25 s"
+            },
+            {
+              "id": "c",
+              "label": "40 s"
+            },
+            {
+              "id": "d",
+              "label": "60 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Same direction → subtract speeds.",
+            "18 km/hr = 5 m/s; total length = 250 m."
+          ],
+          "explanation": "250/5 = 50 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nSame direction → subtract speeds.\n\n250/5 = 50 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "Trains 180 m and 120 m long move in the same direction at 90 and 72 km/hr. Overtaking time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 s"
+          },
+          {
+            "id": "b",
+            "label": "60 s"
+          },
+          {
+            "id": "c",
+            "label": "50 s"
+          },
+          {
+            "id": "d",
+            "label": "72 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Trains 180 m and 120 m long move in the same direction at 90 and 72 km/hr. Overtaking time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 s"
+            },
+            {
+              "id": "b",
+              "label": "60 s"
+            },
+            {
+              "id": "c",
+              "label": "50 s"
+            },
+            {
+              "id": "d",
+              "label": "72 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 18 km/hr = 5 m/s.",
+            "Total length = 300 m."
+          ],
+          "explanation": "300/5 = 60 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n300/5 = 60 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the faster speed is unknown, the crossing time gives the speed difference.\n\nTwo trains total 300 m and overtake in 20 s, so relative speed = 15 m/s = 54 km/hr. If the slower train is 54 km/hr, the faster is 108 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Same direction reverses cleanly:\nfaster speed = slower speed + relative speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains 100 m and 200 m long move in the same direction. The slower train is at 54 km/hr and the faster overtakes it in 20 s. Find the faster speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "108 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "126 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains 100 m and 200 m long move in the same direction. The slower train is at 54 km/hr and the faster overtakes it in 20 s. Find the faster speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "108 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "126 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total length = 300 m, so relative speed = 15 m/s = 54 km/hr.",
+            "Faster = slower + relative."
+          ],
+          "explanation": "The faster train moves at 108 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTotal length = 300 m, so relative speed = 15 m/s = 54 km/hr.\n\nThe faster train moves at 108 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains 120 m and 180 m long are in the same direction. The slower moves at 36 km/hr and is overtaken in 30 s. Find the faster speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "108 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains 120 m and 180 m long are in the same direction. The slower moves at 36 km/hr and is overtaken in 30 s. Find the faster speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "108 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "300/30 = 10 m/s = 36 km/hr relative.",
+            "36 + 36 = 72."
+          ],
+          "explanation": "The faster train moves at 72 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe faster train moves at 72 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can also find the slower speed.\n\nIf two trains total 300 m and the faster overtakes in 24 s, relative speed = 12.5 m/s = 45 km/hr.\nIf the faster train moves at 90 km/hr, slower = 90 − 45 = 45 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sanity check: the slower train must be positive and lower than the faster one. If your subtraction gives the opposite, you have swapped the roles.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Trains 180 m and 120 m long move in the same direction. The faster train at 90 km/hr overtakes in 24 s. Find the slower speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "135 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Trains 180 m and 120 m long move in the same direction. The faster train at 90 km/hr overtakes in 24 s. Find the slower speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "135 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 300/24 = 12.5 m/s = 45 km/hr.",
+            "Slower = 90 − 45."
+          ],
+          "explanation": "The slower train moves at 45 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRelative speed = 300/24 = 12.5 m/s = 45 km/hr.\n\nThe slower train moves at 45 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Trains 200 m and 160 m long move in the same direction. The faster moves at 108 km/hr and overtakes in 24 s. Find the slower speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "162 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "54 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Trains 200 m and 160 m long move in the same direction. The faster moves at 108 km/hr and overtakes in 24 s. Find the slower speed.",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "162 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "54 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 360/24 = 15 m/s = 54 km/hr.",
+            "Slower = 108 − 54."
+          ],
+          "explanation": "The slower speed is 54 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe slower speed is 54 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal train lengths can be recovered from overtaking time.\n\nIf equal trains differ in speed by 18 km/hr = 5 m/s and fully overtake in 40 s, total relative distance is 5 × 40 = 200 m.\nThat is two equal train lengths, so each train is 100 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The sum-of-lengths rule still applies even when the lengths are equal. Equal simply lets you split the total in half.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two equal-length trains differ in speed by 18 km/hr and one overtakes the other in 40 s. What is each train's length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "80 m"
+          },
+          {
+            "id": "b",
+            "label": "160 m"
+          },
+          {
+            "id": "c",
+            "label": "200 m"
+          },
+          {
+            "id": "d",
+            "label": "100 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two equal-length trains differ in speed by 18 km/hr and one overtakes the other in 40 s. What is each train's length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "80 m"
+            },
+            {
+              "id": "b",
+              "label": "160 m"
+            },
+            {
+              "id": "c",
+              "label": "200 m"
+            },
+            {
+              "id": "d",
+              "label": "100 m"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "18 km/hr = 5 m/s.",
+            "Relative distance in 40 s = 200 m = 2L."
+          ],
+          "explanation": "Each train is 100 m long."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n18 km/hr = 5 m/s.\n\nEach train is 100 m long.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two equal-length trains differ in speed by 27 km/hr and overtake in 32 s. What is each length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120 m"
+          },
+          {
+            "id": "b",
+            "label": "100 m"
+          },
+          {
+            "id": "c",
+            "label": "160 m"
+          },
+          {
+            "id": "d",
+            "label": "240 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two equal-length trains differ in speed by 27 km/hr and overtake in 32 s. What is each length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120 m"
+            },
+            {
+              "id": "b",
+              "label": "100 m"
+            },
+            {
+              "id": "c",
+              "label": "160 m"
+            },
+            {
+              "id": "d",
+              "label": "240 m"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "27 km/hr = 7.5 m/s.",
+            "7.5 × 32 = 240 m = 2L."
+          ],
+          "explanation": "Each train is 120 m long."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nEach train is 120 m long.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "If two trains start together from the same point, the faster one's front is not yet 'past' the slower train completely. It must gain both train lengths.\n\nTwo 150 m trains at 72 and 54 km/hr have relative speed 5 m/s and total gain needed 300 m, so complete overtaking takes 60 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is why 'start together' does not mean the faster train has already crossed. Complete crossing means its rear has cleared the slower train's front.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two 150 m trains start together in the same direction at 72 and 54 km/hr. How long until the faster train completely crosses the slower?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 s"
+          },
+          {
+            "id": "b",
+            "label": "30 s"
+          },
+          {
+            "id": "c",
+            "label": "45 s"
+          },
+          {
+            "id": "d",
+            "label": "90 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two 150 m trains start together in the same direction at 72 and 54 km/hr. How long until the faster train completely crosses the slower?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 s"
+            },
+            {
+              "id": "b",
+              "label": "30 s"
+            },
+            {
+              "id": "c",
+              "label": "45 s"
+            },
+            {
+              "id": "d",
+              "label": "90 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 5 m/s.",
+            "Complete crossing needs 150 + 150 = 300 m of relative gain."
+          ],
+          "explanation": "300/5 = 60 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRelative speed = 5 m/s.\n\n300/5 = 60 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two 180 m trains start together at 90 and 72 km/hr. Complete overtaking time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 s"
+          },
+          {
+            "id": "b",
+            "label": "72 s"
+          },
+          {
+            "id": "c",
+            "label": "60 s"
+          },
+          {
+            "id": "d",
+            "label": "90 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two 180 m trains start together at 90 and 72 km/hr. Complete overtaking time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 s"
+            },
+            {
+              "id": "b",
+              "label": "72 s"
+            },
+            {
+              "id": "c",
+              "label": "60 s"
+            },
+            {
+              "id": "d",
+              "label": "90 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 5 m/s.",
+            "Distance = 360 m."
+          ],
+          "explanation": "360/5 = 72 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n360/5 = 72 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A head start is just extra distance to gain. Suppose the faster train's front is 250 m behind the slower train's rear. If the trains are 100 m and 150 m long, complete overtaking needs 250 + 100 + 150 = 500 m of relative gain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "At a 10 m/s speed difference, that takes 50 s.\n\nThe phrase 'front is behind rear' makes the gap unambiguous: add the empty gap and both train lengths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 100 m faster train has its front 250 m behind the rear of a 150 m slower train. Their speed difference is 36 km/hr. How long for complete overtaking?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25 s"
+          },
+          {
+            "id": "b",
+            "label": "50 s"
+          },
+          {
+            "id": "c",
+            "label": "40 s"
+          },
+          {
+            "id": "d",
+            "label": "60 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 100 m faster train has its front 250 m behind the rear of a 150 m slower train. Their speed difference is 36 km/hr. How long for complete overtaking?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25 s"
+            },
+            {
+              "id": "b",
+              "label": "50 s"
+            },
+            {
+              "id": "c",
+              "label": "40 s"
+            },
+            {
+              "id": "d",
+              "label": "60 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Gain needed = 250 + 100 + 150 = 500 m.",
+            "36 km/hr = 10 m/s."
+          ],
+          "explanation": "500/10 = 50 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nGain needed = 250 + 100 + 150 = 500 m.\n\n500/10 = 50 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 120 m faster train starts with its front 300 m behind the rear of a 180 m slower train. Their speed difference is 54 km/hr. Overtaking time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 s"
+          },
+          {
+            "id": "b",
+            "label": "30 s"
+          },
+          {
+            "id": "c",
+            "label": "40 s"
+          },
+          {
+            "id": "d",
+            "label": "50 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 120 m faster train starts with its front 300 m behind the rear of a 180 m slower train. Their speed difference is 54 km/hr. Overtaking time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 s"
+            },
+            {
+              "id": "b",
+              "label": "30 s"
+            },
+            {
+              "id": "c",
+              "label": "40 s"
+            },
+            {
+              "id": "d",
+              "label": "50 s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Gain needed = 300 + 120 + 180 = 600 m.",
+            "54 km/hr = 15 m/s."
+          ],
+          "explanation": "600/15 = 40 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n600/15 = 40 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same pair of trains may be tested in both directions. Let total train length be S.\n\nIf same-direction crossing takes 60 s, speed difference = S/60.\nIf opposite-direction crossing takes 12 s, speed sum = S/12 = 5S/60.\nSo (u+v)/(u−v) = 5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Solve the ratio without ever knowing S:\nu + v = 5u − 5v\n4u = 6v\nu : v = 3 : 2.\n\nCommon distance cancels — only the time ratio matters.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The same two trains cross in 60 s when moving in the same direction and 12 s when moving oppositely. What is the faster-to-slower speed ratio?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 : 1"
+          },
+          {
+            "id": "b",
+            "label": "4 : 3"
+          },
+          {
+            "id": "c",
+            "label": "3 : 2"
+          },
+          {
+            "id": "d",
+            "label": "5 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The same two trains cross in 60 s when moving in the same direction and 12 s when moving oppositely. What is the faster-to-slower speed ratio?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 : 1"
+            },
+            {
+              "id": "b",
+              "label": "4 : 3"
+            },
+            {
+              "id": "c",
+              "label": "3 : 2"
+            },
+            {
+              "id": "d",
+              "label": "5 : 1"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "Speed sum / speed difference = 60/12 = 5.",
+            "Let faster = u, slower = v: (u+v)/(u−v)=5."
+          ],
+          "explanation": "Solving gives u:v = 3:2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nSpeed sum / speed difference = 60/12 = 5.\n\nSolving gives u:v = 3:2.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "The same trains take 40 s in the same direction and 10 s in opposite directions. Faster:slower speed ratio?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 2"
+          },
+          {
+            "id": "b",
+            "label": "4 : 3"
+          },
+          {
+            "id": "c",
+            "label": "5 : 2"
+          },
+          {
+            "id": "d",
+            "label": "5 : 3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "The same trains take 40 s in the same direction and 10 s in opposite directions. Faster:slower speed ratio?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 2"
+            },
+            {
+              "id": "b",
+              "label": "4 : 3"
+            },
+            {
+              "id": "c",
+              "label": "5 : 2"
+            },
+            {
+              "id": "d",
+              "label": "5 : 3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "(u+v)/(u−v) = 40/10 = 4.",
+            "u+v = 4u−4v."
+          ],
+          "explanation": "3u = 5v, so u:v = 5:3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n3u = 5v, so u:v = 5:3.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A train overtaking two walkers gives two equations with the same train length. Suppose walkers move at 1 m/s and 2 m/s and the train passes them in 10 s and 12 s.\n\nL = 10(v−1) = 12(v−2).\nSo 10v−10 = 12v−24 → v = 7 m/s, and L = 60 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This pattern is the same elimination idea you used with two platforms — one hidden quantity repeats, so compare the two observations instead of solving from scratch.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train overtakes walkers at 3.6 km/hr and 7.2 km/hr in 10 s and 12 s. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21.6 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "28.8 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "36 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "25.2 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train overtakes walkers at 3.6 km/hr and 7.2 km/hr in 10 s and 12 s. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21.6 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "28.8 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "36 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "25.2 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "Convert walkers to 1 m/s and 2 m/s.",
+            "Set 10(v−1)=12(v−2), giving v=7 m/s."
+          ],
+          "explanation": "7 m/s = 25.2 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nConvert walkers to 1 m/s and 2 m/s.\n\n7 m/s = 25.2 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train overtakes walkers at 3.6 km/hr and 10.8 km/hr in 8 s and 10 s. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "39.6 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "32.4 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "36 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "43.2 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train overtakes walkers at 3.6 km/hr and 10.8 km/hr in 8 s and 10 s. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "39.6 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "32.4 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "36 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "43.2 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Walker speeds are 1 m/s and 3 m/s.",
+            "Set 8(v−1)=10(v−3), so v=11 m/s."
+          ],
+          "explanation": "11 m/s = 39.6 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n11 m/s = 39.6 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "For overtaking trains, remember the contrast:\n\nlengths add\nspeeds subtract\n\nA head start simply adds more relative distance to gain. When the same hidden length appears twice, compare the observations and cancel it.\n\nNext, we zoom out from individual trains to entire routes between stations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

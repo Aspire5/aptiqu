@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A food store is like a battery. Every person drains some amount each day.\n\nIf ration per person stays fixed, total stock can be measured in person-days:\npeople × days.\n\nIf ration changes too, use people × ration × days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "500 people have food for 24 days. With no ration change, stock = 500×24 = 12,000 person-days.\n\nIf only 400 people remain, days = 12,000/400 = 30.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The food amount stays fixed, so people and days are inverse.\n\nFewer consumers make the same stock last longer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "600 people have provisions for 20 days. If only 480 people remain from the start, how long will the food last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 days"
+          },
+          {
+            "id": "b",
+            "label": "24 days"
+          },
+          {
+            "id": "c",
+            "label": "30 days"
+          },
+          {
+            "id": "d",
+            "label": "25 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "600 people have provisions for 20 days. If only 480 people remain from the start, how long will the food last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 days"
+            },
+            {
+              "id": "b",
+              "label": "24 days"
+            },
+            {
+              "id": "c",
+              "label": "30 days"
+            },
+            {
+              "id": "d",
+              "label": "25 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Stock = 600×20 person-days.",
+            "Divide by 480 consumers."
+          ],
+          "explanation": "12,000/480 = 25 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nStock = 600×20 person-days.\n\n12,000/480 = 25 days.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "720 people have food for 15 days. If the group becomes 540 from day 1, how many days will it last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 days"
+          },
+          {
+            "id": "b",
+            "label": "11.25 days"
+          },
+          {
+            "id": "c",
+            "label": "18 days"
+          },
+          {
+            "id": "d",
+            "label": "25 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "720 people have food for 15 days. If the group becomes 540 from day 1, how many days will it last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 days"
+            },
+            {
+              "id": "b",
+              "label": "11.25 days"
+            },
+            {
+              "id": "c",
+              "label": "18 days"
+            },
+            {
+              "id": "d",
+              "label": "25 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Fewer people means more days.",
+            "720×15 = 540×d."
+          ],
+          "explanation": "d = 20 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nd = 20 days.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "When people leave after some days, subtract the food already eaten first.\n\n400 people have food for 50 days. After 10 days, 320 remain. The stock left equals 400×40 person-days = 16,000.\nNow 320 people get 16,000/320 = 50 more days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The original 50 days includes the first 10 days already used.\n\nDo not multiply the smaller group by all 50 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "900 soldiers have food for 40 days. After 8 days, 180 leave. How many more days will the remaining food last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 days"
+          },
+          {
+            "id": "b",
+            "label": "32 days"
+          },
+          {
+            "id": "c",
+            "label": "48 days"
+          },
+          {
+            "id": "d",
+            "label": "50 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "900 soldiers have food for 40 days. After 8 days, 180 leave. How many more days will the remaining food last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 days"
+            },
+            {
+              "id": "b",
+              "label": "32 days"
+            },
+            {
+              "id": "c",
+              "label": "48 days"
+            },
+            {
+              "id": "d",
+              "label": "50 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "After 8 days, the stock left is 900×32 person-days.",
+            "Remaining soldiers = 720."
+          ],
+          "explanation": "900×32/720 = 40 more days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nAfter 8 days, the stock left is 900×32 person-days.\n\n900×32/720 = 40 more days.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "1000 people have food for 30 days. After 6 days, 200 leave. How many more days does the food last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 days"
+          },
+          {
+            "id": "b",
+            "label": "36 days"
+          },
+          {
+            "id": "c",
+            "label": "30 days"
+          },
+          {
+            "id": "d",
+            "label": "37.5 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1000 people have food for 30 days. After 6 days, 200 leave. How many more days does the food last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 days"
+            },
+            {
+              "id": "b",
+              "label": "36 days"
+            },
+            {
+              "id": "c",
+              "label": "30 days"
+            },
+            {
+              "id": "d",
+              "label": "37.5 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Remaining stock = 1000×24 person-days.",
+            "Remaining people = 800."
+          ],
+          "explanation": "24,000/800 = 30 more days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n24,000/800 = 30 more days.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Reinforcements do the opposite.\n\n500 people have food for 27 days. After 3 days, 300 more arrive. Remaining stock = 500×24 = 12,000 person-days. New group = 800, so food lasts 15 more days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Always use the population that existed during each stage.\n\nThe extra people were not consuming food before they arrived.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "600 soldiers have food for 35 days. After 5 days, 300 more arrive. How many more days will the food last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 days"
+          },
+          {
+            "id": "b",
+            "label": "23⅓ days"
+          },
+          {
+            "id": "c",
+            "label": "20 days"
+          },
+          {
+            "id": "d",
+            "label": "15 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "600 soldiers have food for 35 days. After 5 days, 300 more arrive. How many more days will the food last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 days"
+            },
+            {
+              "id": "b",
+              "label": "23⅓ days"
+            },
+            {
+              "id": "c",
+              "label": "20 days"
+            },
+            {
+              "id": "d",
+              "label": "15 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Remaining stock = 600×30 person-days.",
+            "New strength = 900."
+          ],
+          "explanation": "18,000/900 = 20 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nRemaining stock = 600×30 person-days.\n\n18,000/900 = 20 days.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "800 people have provisions for 28 days. After 7 days, 400 more join. How many more days will the stock last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 days"
+          },
+          {
+            "id": "b",
+            "label": "14 days"
+          },
+          {
+            "id": "c",
+            "label": "18⅔ days"
+          },
+          {
+            "id": "d",
+            "label": "10.5 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "800 people have provisions for 28 days. After 7 days, 400 more join. How many more days will the stock last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 days"
+            },
+            {
+              "id": "b",
+              "label": "14 days"
+            },
+            {
+              "id": "c",
+              "label": "18⅔ days"
+            },
+            {
+              "id": "d",
+              "label": "10.5 days"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Remaining stock = 800×21 person-days.",
+            "New group = 1200."
+          ],
+          "explanation": "16,800/1200 = 14 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n16,800/1200 = 14 days.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Ration per head adds another factor.\n\n3300 people taking 850 g/day have stock for 25 remaining days. If the ration falls to 825 g/day, more people can be supported for the same 17 days.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Stock ∝ people × ration × days.\n\nLower ration or fewer days allows a larger population; higher ration or more days allows a smaller one.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "1200 people receive 750 g/day for 20 days. At 600 g/day, how many people can the same stock support for 25 days?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "960"
+          },
+          {
+            "id": "b",
+            "label": "1200"
+          },
+          {
+            "id": "c",
+            "label": "1500"
+          },
+          {
+            "id": "d",
+            "label": "1875"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1200 people receive 750 g/day for 20 days. At 600 g/day, how many people can the same stock support for 25 days?",
+          "options": [
+            {
+              "id": "a",
+              "label": "960"
+            },
+            {
+              "id": "b",
+              "label": "1200"
+            },
+            {
+              "id": "c",
+              "label": "1500"
+            },
+            {
+              "id": "d",
+              "label": "1875"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Set people×ration×days equal.",
+            "1200×750×20 = x×600×25."
+          ],
+          "explanation": "Both sides have the same ration-day product: 750×20 = 600×25, so x = 1200."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nSet people×ration×days equal.\n\nBoth sides have the same ration-day product: 750×20 = 600×25, so x = 1200.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "900 people receive 800 g/day for 30 days. If ration becomes 600 g/day and stock must last 40 days, how many people can be fed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "675"
+          },
+          {
+            "id": "b",
+            "label": "1200"
+          },
+          {
+            "id": "c",
+            "label": "1600"
+          },
+          {
+            "id": "d",
+            "label": "900"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "900 people receive 800 g/day for 30 days. If ration becomes 600 g/day and stock must last 40 days, how many people can be fed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "675"
+            },
+            {
+              "id": "b",
+              "label": "1200"
+            },
+            {
+              "id": "c",
+              "label": "1600"
+            },
+            {
+              "id": "d",
+              "label": "900"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Compare ration×days: 800×30 and 600×40.",
+            "They are equal."
+          ],
+          "explanation": "The per-person total consumption is unchanged, so 900 people can still be fed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe per-person total consumption is unchanged, so 900 people can still be fed.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Medicine supply is the same model.\n\nIf each patient takes t tablets/day, p patients for d days consume tpd tablets.\nIf dosage rises 20% and patients fall by one-third, new daily use factor = 1.2 × 2/3 = 0.8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Daily consumption falls to 80%, so the stock lasts 1/0.8 = 1.25 times as long.\n\nThis is chain rule hidden inside healthcare wording.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A medicine stock lasts 30 days for 100 patients at 2 tablets/day. Dosage rises by 25% and patient count falls to 80. How long will it last?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 days"
+          },
+          {
+            "id": "b",
+            "label": "24 days"
+          },
+          {
+            "id": "c",
+            "label": "37.5 days"
+          },
+          {
+            "id": "d",
+            "label": "48 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A medicine stock lasts 30 days for 100 patients at 2 tablets/day. Dosage rises by 25% and patient count falls to 80. How long will it last?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 days"
+            },
+            {
+              "id": "b",
+              "label": "24 days"
+            },
+            {
+              "id": "c",
+              "label": "37.5 days"
+            },
+            {
+              "id": "d",
+              "label": "48 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "New dosage factor = 1.25; patient factor = 0.8.",
+            "Their product is 1."
+          ],
+          "explanation": "Daily tablet use is unchanged, so the stock still lasts 30 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nNew dosage factor = 1.25; patient factor = 0.8.\n\nDaily tablet use is unchanged, so the stock still lasts 30 days.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A stock lasts 24 days for 150 patients. Dosage falls by 20% and patients rise by 25%. How long now?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "19.2 days"
+          },
+          {
+            "id": "b",
+            "label": "30 days"
+          },
+          {
+            "id": "c",
+            "label": "24 days"
+          },
+          {
+            "id": "d",
+            "label": "15.36 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A stock lasts 24 days for 150 patients. Dosage falls by 20% and patients rise by 25%. How long now?",
+          "options": [
+            {
+              "id": "a",
+              "label": "19.2 days"
+            },
+            {
+              "id": "b",
+              "label": "30 days"
+            },
+            {
+              "id": "c",
+              "label": "24 days"
+            },
+            {
+              "id": "d",
+              "label": "15.36 days"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Daily-use factor = 0.8 × 1.25.",
+            "That product equals 1."
+          ],
+          "explanation": "Daily use stays the same, so duration remains 24 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nDaily use stays the same, so duration remains 24 days.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Different consumers can be converted just like different workers.\n\nIf a meal can feed 120 men or 200 children, then 1 man consumes as much as 200/120 = 5/3 children.\nOr 5 children consume as much as 3 men.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Convert everyone into one consumption unit before subtracting or adding groups.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A meal can feed 90 adults or 150 children. After 100 children eat, how many adults can be fed with the remainder?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20"
+          },
+          {
+            "id": "b",
+            "label": "40"
+          },
+          {
+            "id": "c",
+            "label": "30"
+          },
+          {
+            "id": "d",
+            "label": "50"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A meal can feed 90 adults or 150 children. After 100 children eat, how many adults can be fed with the remainder?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20"
+            },
+            {
+              "id": "b",
+              "label": "40"
+            },
+            {
+              "id": "c",
+              "label": "30"
+            },
+            {
+              "id": "d",
+              "label": "50"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "100 of 150 child-meals are used; 50 child-meals remain.",
+            "50 children correspond to 50×90/150 adults."
+          ],
+          "explanation": "Remaining capacity = 50 child-meals = 30 adult-meals."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\n100 of 150 child-meals are used; 50 child-meals remain.\n\nRemaining capacity = 50 child-meals = 30 adult-meals.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Food can serve 80 adults or 120 children. If 45 children eat, how many adults can still be fed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "35"
+          },
+          {
+            "id": "b",
+            "label": "50"
+          },
+          {
+            "id": "c",
+            "label": "45"
+          },
+          {
+            "id": "d",
+            "label": "60"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Food can serve 80 adults or 120 children. If 45 children eat, how many adults can still be fed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "35"
+            },
+            {
+              "id": "b",
+              "label": "50"
+            },
+            {
+              "id": "c",
+              "label": "45"
+            },
+            {
+              "id": "d",
+              "label": "60"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "75 child-meals remain.",
+            "75 × 80/120."
+          ],
+          "explanation": "75 × 2/3 = 50 adults."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n75 × 2/3 = 50 adults.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A reverse provision question asks for the original group.\n\nSuppose a fort has food for 40 more days after 10 days have passed. Then 500 reinforcements arrive and the remaining stock lasts 35 days. If original strength is x: x×40 = (x+500)×35.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Solve the invariant, not the story.\n40x = 35x + 17,500 → x = 3,500.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "After 12 days, a camp has 28 days of food left for x people. Then 300 more arrive and the food lasts 21 days. What was x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "600"
+          },
+          {
+            "id": "b",
+            "label": "900"
+          },
+          {
+            "id": "c",
+            "label": "1200"
+          },
+          {
+            "id": "d",
+            "label": "1500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After 12 days, a camp has 28 days of food left for x people. Then 300 more arrive and the food lasts 21 days. What was x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "600"
+            },
+            {
+              "id": "b",
+              "label": "900"
+            },
+            {
+              "id": "c",
+              "label": "1200"
+            },
+            {
+              "id": "d",
+              "label": "1500"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Remaining stock before arrival = 28x person-days.",
+            "After arrival it equals 21(x+300)."
+          ],
+          "explanation": "28x = 21x + 6300 → 7x = 6300 → x = 900."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nRemaining stock before arrival = 28x person-days.\n\n28x = 21x + 6300 → 7x = 6300 → x = 900.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A camp has 30 days of food left for x people. After 200 arrive, it lasts 25 days. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "800"
+          },
+          {
+            "id": "b",
+            "label": "1200"
+          },
+          {
+            "id": "c",
+            "label": "1500"
+          },
+          {
+            "id": "d",
+            "label": "1000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A camp has 30 days of food left for x people. After 200 arrive, it lasts 25 days. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "800"
+            },
+            {
+              "id": "b",
+              "label": "1200"
+            },
+            {
+              "id": "c",
+              "label": "1500"
+            },
+            {
+              "id": "d",
+              "label": "1000"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "30x = 25(x+200).",
+            "Solve the 5x difference."
+          ],
+          "explanation": "30x=25x+5000, so x=1000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n30x=25x+5000, so x=1000.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: a desertion question can look paradoxical.\n\nAfter 10 days, one-fifth of the people leave, yet the remaining food is said to last until the same final day as originally planned. That longer remaining duration balances the smaller population.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let original duration be y days. After 10 days, full group would have stock for y−10 days. The reduced group is 4/5 of original and lasts y days from that point in the book-style setup: x(y−10)=4x/5·y. Solve the timeline exactly as stated.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A camp originally has food for y days. After 12 days, one-quarter of the people leave, and the remaining food is then enough for y more days. Find y.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 days"
+          },
+          {
+            "id": "b",
+            "label": "60 days"
+          },
+          {
+            "id": "c",
+            "label": "72 days"
+          },
+          {
+            "id": "d",
+            "label": "48 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A camp originally has food for y days. After 12 days, one-quarter of the people leave, and the remaining food is then enough for y more days. Find y.",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 days"
+            },
+            {
+              "id": "b",
+              "label": "60 days"
+            },
+            {
+              "id": "c",
+              "label": "72 days"
+            },
+            {
+              "id": "d",
+              "label": "48 days"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let original people be x.",
+            "x(y−12) = (3x/4)y."
+          ],
+          "explanation": "y−12 = 3y/4 → y/4 = 12 → y = 48 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's repair the exact step.\n\nLet original people be x.\n\ny−12 = 3y/4 → y/4 = 12 → y = 48 days.\n\nNow try the same relationship with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "After 15 days, one-third of a group leaves. The remaining food is enough for the reduced group for the original planned duration y. Find y.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 days"
+          },
+          {
+            "id": "b",
+            "label": "30 days"
+          },
+          {
+            "id": "c",
+            "label": "60 days"
+          },
+          {
+            "id": "d",
+            "label": "75 days"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "After 15 days, one-third of a group leaves. The remaining food is enough for the reduced group for the original planned duration y. Find y.",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 days"
+            },
+            {
+              "id": "b",
+              "label": "30 days"
+            },
+            {
+              "id": "c",
+              "label": "60 days"
+            },
+            {
+              "id": "d",
+              "label": "75 days"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Equation: x(y−15) = (2x/3)y.",
+            "Cancel x and solve."
+          ],
+          "explanation": "y−15 = 2y/3 → y/3 = 15 → y = 45 days."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\ny−15 = 2y/3 → y/3 = 15 → y = 45 days.\n\nTry it once more. Keep the same direction rule in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now read provision questions as stock-accounting problems.\n\nFirst remove what was consumed before the change. Then use consumers × ration × remaining days for the leftover stock.\n\nReinforcements shorten supply life; people leaving extend it; smaller rations extend it too.\n\nNext, we apply chain rule to machines, production and physical job dimensions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Provisions and Rations: Think in Person-Days",
+    "description": "Model a fixed stock as consumers × daily ration × days.",
+    "teachingApproach": "Treat food or medicine as a stock measured in consumption-days. Start with constant ration, then let people leave or join after some days, change ration per head, combine equivalent consumer groups, and vary medicine dosage and patient count. Every stage begins by reducing the stock for days already consumed before changing the population.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 15, Chain Rule. Approved scope: Teach provision problems with the stock model: total stock is proportional to number of consumers × daily consumption per consumer × number of days. Cover men leaving, reinforcements arriving, ration per head changing, dosage changing while patient count changes, mixed-equivalent consumers such as men and children, and reverse questions asking the original group size or stock duration. Always subtract the days already consumed before changing the population."
+  },
+  "scriptId": "cr-07-provisions-rations-consumption",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-01-train-length-pole-speed-units",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Train Length, Pole Crossings, and Speed Units",
+    "description": "Build the core train model: crossing a point means the whole train moves one train-length, with quick km/hr ↔ m/s conversion.",
+    "teachingApproach": "Open with the front-to-rear crossing picture, then build unit conversion, pole-time, hidden length, hidden speed, same-speed scaling, pillar counting, and a platform bridge. Each worked event is followed immediately by a fresh parallel question.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach that a train has cleared a pole, signal, tree, or standing person only when its rear has passed the point, so the distance travelled equals the train's own length. Cover km/hr to m/s using ×5/18 and m/s to km/hr using ×18/5, then use distance = speed × time to find crossing time, train length, or speed. Include same-speed length scaling, minute/second conversion, and the chapter's equally spaced pillar-count idea where the starting pillar makes the count one more than the number of gaps. Keep the mental model visual: front enters, rear clears, one train-length has moved."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's make train crossings feel like one moving picture.\n\nThe key question is always: how far must the front of the train move before the rear has completely cleared the object? Start with the simplest object of all — a point.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A train crossing a pole is a tiny event with one important detail: the front passes first, but the event is not over until the rear also clears the pole.\n\nSo a 180 m train must move 180 m to completely pass a pole.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That gives the first train rule:\n\npoint object → distance = train length\n\nIf the train moves at 54 km/hr, convert first: 54 × 5/18 = 15 m/s.\n\nThen time = 180 ÷ 15 = 12 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 m train moves at 54 km/hr. How long does it take to pass a signal post?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "15 s"
+          },
+          {
+            "id": "d",
+            "label": "18 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 m train moves at 54 km/hr. How long does it take to pass a signal post?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "15 s"
+            },
+            {
+              "id": "d",
+              "label": "18 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A signal post has no length to add.",
+            "54 km/hr = 15 m/s; use 180 ÷ 15."
+          ],
+          "explanation": "The train must move exactly its own 180 m. At 15 m/s, time = 180/15 = 12 s. Adding an imaginary signal length is the trap."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nA signal post has no length to add.\n\nThe train must move exactly its own 180 m. At 15 m/s, time = 180/15 = 12 s. Adding an imaginary signal length is the trap.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 225 m train moves at 81 km/hr. How long does it take to pass a pole?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "18 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 225 m train moves at 81 km/hr. How long does it take to pass a pole?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "18 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "81 km/hr = 22.5 m/s.",
+            "Time = 225 ÷ 22.5."
+          ],
+          "explanation": "81 × 5/18 = 22.5 m/s. A pole adds no distance, so 225/22.5 = 10 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n81 × 5/18 = 22.5 m/s. A pole adds no distance, so 225/22.5 = 10 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Train questions switch units constantly. The safest mental bridge is:\n\nkm/hr → m/s: multiply by 5/18\nm/s → km/hr: multiply by 18/5\n\nNotice 72 km/hr becomes 20 m/s because 72 ÷ 18 = 4, then 4 × 5 = 20.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The conversion is not decoration. Lengths are usually in metres and crossing times in seconds, so the speed must usually be in m/s before you divide.\n\nA quick check: m/s should be a smaller number than the same speed in km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "72 km/hr is how many metres per second?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14.4 m/s"
+          },
+          {
+            "id": "b",
+            "label": "20 m/s"
+          },
+          {
+            "id": "c",
+            "label": "25 m/s"
+          },
+          {
+            "id": "d",
+            "label": "40 m/s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "72 km/hr is how many metres per second?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14.4 m/s"
+            },
+            {
+              "id": "b",
+              "label": "20 m/s"
+            },
+            {
+              "id": "c",
+              "label": "25 m/s"
+            },
+            {
+              "id": "d",
+              "label": "40 m/s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Multiply by 5/18.",
+            "72 ÷ 18 = 4, then × 5."
+          ],
+          "explanation": "72 × 5/18 = 20 m/s. Using 18/5 would convert in the wrong direction."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nMultiply by 5/18.\n\n72 × 5/18 = 20 m/s. Using 18/5 would convert in the wrong direction.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "25 m/s is how many km/hr?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "100 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "25 m/s is how many km/hr?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "100 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "For m/s to km/hr, multiply by 18/5.",
+            "25 ÷ 5 = 5, then × 18."
+          ],
+          "explanation": "25 × 18/5 = 90 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n25 × 18/5 = 90 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the time is given and the train length is hidden. The same picture works backwards.\n\nIf a train at 90 km/hr crosses a pole in 8 s, its speed is 25 m/s.\nIn 8 s it moves 25 × 8 = 200 m.\nThat movement is exactly its length.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So for a pole crossing:\n\ntrain length = speed × crossing time\n\nThe useful habit is to convert speed first, then multiply. No extra formula is needed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 90 km/hr crosses a pole in 8 seconds. What is its length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "180 m"
+          },
+          {
+            "id": "b",
+            "label": "225 m"
+          },
+          {
+            "id": "c",
+            "label": "200 m"
+          },
+          {
+            "id": "d",
+            "label": "720 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 90 km/hr crosses a pole in 8 seconds. What is its length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "180 m"
+            },
+            {
+              "id": "b",
+              "label": "225 m"
+            },
+            {
+              "id": "c",
+              "label": "200 m"
+            },
+            {
+              "id": "d",
+              "label": "720 m"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "90 km/hr = 25 m/s.",
+            "Length = 25 × 8."
+          ],
+          "explanation": "The point-crossing distance is the train length: 25 × 8 = 200 m. Using 90 × 8 mixes kilometres per hour with seconds."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n90 km/hr = 25 m/s.\n\nThe point-crossing distance is the train length: 25 × 8 = 200 m. Using 90 × 8 mixes kilometres per hour with seconds.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 108 km/hr crosses a signal in 7 seconds. What is its length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "180 m"
+          },
+          {
+            "id": "b",
+            "label": "240 m"
+          },
+          {
+            "id": "c",
+            "label": "756 m"
+          },
+          {
+            "id": "d",
+            "label": "210 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 108 km/hr crosses a signal in 7 seconds. What is its length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "180 m"
+            },
+            {
+              "id": "b",
+              "label": "240 m"
+            },
+            {
+              "id": "c",
+              "label": "756 m"
+            },
+            {
+              "id": "d",
+              "label": "210 m"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "108 km/hr = 30 m/s.",
+            "Length = 30 × 7."
+          ],
+          "explanation": "108 × 5/18 = 30 m/s, so the train length is 30 × 7 = 210 m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n108 × 5/18 = 30 m/s, so the train length is 30 × 7 = 210 m.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "The reverse is just as direct. If a 150 m train clears a pole in 10 s, it covers 150 m in 10 s.\n\nSpeed = 150 ÷ 10 = 15 m/s\n= 15 × 18/5 = 54 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the two stages separate:\n1. metres ÷ seconds gives m/s;\n2. only then convert to km/hr if the answer asks for it.\n\nThat prevents the common mistake of reporting 15 as 15 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 150 m train crosses a pole in 10 seconds. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "54 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 150 m train crosses a pole in 10 seconds. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "54 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First find m/s: 150 ÷ 10.",
+            "15 m/s × 18/5 = 54 km/hr."
+          ],
+          "explanation": "150/10 = 15 m/s, and 15 × 18/5 = 54 km/hr. The value 15 is the speed in m/s, not km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFirst find m/s: 150 ÷ 10.\n\n150/10 = 15 m/s, and 15 × 18/5 = 54 km/hr. The value 15 is the speed in m/s, not km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 m train crosses a post in 12 seconds. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "20 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "80 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 m train crosses a post in 12 seconds. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "20 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "80 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "240 ÷ 12 = 20 m/s.",
+            "Convert 20 m/s using ×18/5."
+          ],
+          "explanation": "20 m/s = 72 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n20 m/s = 72 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fast-looking number becomes simple after unit conversion.\n\n162 km/hr = 45 m/s.\nSo a 225 m train at that speed clears a pole in 225 ÷ 45 = 5 seconds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Mental shortcut: when the km/hr number is divisible by 18, divide first and multiply by 5.\n\n162 ÷ 18 = 9, and 9 × 5 = 45. That is much easier than multiplying 162 by 5 first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 225 m train runs at 162 km/hr. How long does it take to cross a pole?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 s"
+          },
+          {
+            "id": "b",
+            "label": "4 s"
+          },
+          {
+            "id": "c",
+            "label": "6 s"
+          },
+          {
+            "id": "d",
+            "label": "9 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 225 m train runs at 162 km/hr. How long does it take to cross a pole?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 s"
+            },
+            {
+              "id": "b",
+              "label": "4 s"
+            },
+            {
+              "id": "c",
+              "label": "6 s"
+            },
+            {
+              "id": "d",
+              "label": "9 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "162 km/hr = 45 m/s.",
+            "225 ÷ 45 = ?"
+          ],
+          "explanation": "At 45 m/s, a 225 m train needs 5 seconds to move one full train-length."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n162 km/hr = 45 m/s.\n\nAt 45 m/s, a 225 m train needs 5 seconds to move one full train-length.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 288 m train runs at 144 km/hr. How long does it take to cross a signal?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 s"
+          },
+          {
+            "id": "b",
+            "label": "7.2 s"
+          },
+          {
+            "id": "c",
+            "label": "8 s"
+          },
+          {
+            "id": "d",
+            "label": "12 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 288 m train runs at 144 km/hr. How long does it take to cross a signal?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 s"
+            },
+            {
+              "id": "b",
+              "label": "7.2 s"
+            },
+            {
+              "id": "c",
+              "label": "8 s"
+            },
+            {
+              "id": "d",
+              "label": "12 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "144 km/hr = 40 m/s.",
+            "288 ÷ 40 = 7.2."
+          ],
+          "explanation": "144 × 5/18 = 40 m/s, so 288/40 = 7.2 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n144 × 5/18 = 40 m/s, so 288/40 = 7.2 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "At the same speed, crossing time grows in the same ratio as train length.\n\nIf a 120 m train takes 6 s to clear a pole, then a 180 m train at the same speed is 1.5 times as long, so it takes 1.5 × 6 = 9 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can use proportional thinking without finding the speed at all:\n\ntime₂/time₁ = length₂/length₁\n\nThis is faster when the speed is explicitly the same.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 120 m train crosses a pole in 6 s. At the same speed, how long will a 180 m train take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 s"
+          },
+          {
+            "id": "b",
+            "label": "9 s"
+          },
+          {
+            "id": "c",
+            "label": "10 s"
+          },
+          {
+            "id": "d",
+            "label": "12 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 120 m train crosses a pole in 6 s. At the same speed, how long will a 180 m train take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 s"
+            },
+            {
+              "id": "b",
+              "label": "9 s"
+            },
+            {
+              "id": "c",
+              "label": "10 s"
+            },
+            {
+              "id": "d",
+              "label": "12 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "180 m is 1.5 times 120 m.",
+            "Multiply 6 s by 1.5."
+          ],
+          "explanation": "Same speed means time scales directly with length: 6 × 180/120 = 9 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n180 m is 1.5 times 120 m.\n\nSame speed means time scales directly with length: 6 × 180/120 = 9 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 160 m train crosses a pole in 8 s. At the same speed, how long will a 240 m train take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 s"
+          },
+          {
+            "id": "b",
+            "label": "14 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "16 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 160 m train crosses a pole in 8 s. At the same speed, how long will a 240 m train take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 s"
+            },
+            {
+              "id": "b",
+              "label": "14 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "16 s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "240/160 = 1.5.",
+            "8 × 1.5 = 12."
+          ],
+          "explanation": "The second train is 1.5 times as long, so it needs 1.5 times the time: 12 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe second train is 1.5 times as long, so it needs 1.5 times the time: 12 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The chapter also hides simple distance counting inside train stories. Suppose pillars stand every 100 m. If a train covers 6000 m, there are 6000/100 = 60 gaps between the first and last pillar.\n\nBut the number of pillars is 61 because both ends count.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Memory hook: gaps + 1 = posts, when you count the post at the start and the post at the end.\n\nThis is the same fence-post idea used in many aptitude questions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train moves at 36 km/hr for 10 minutes. Pillars are 100 m apart. If the first pillar is counted, how many pillars are seen?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "59"
+          },
+          {
+            "id": "c",
+            "label": "61"
+          },
+          {
+            "id": "d",
+            "label": "600"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train moves at 36 km/hr for 10 minutes. Pillars are 100 m apart. If the first pillar is counted, how many pillars are seen?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "59"
+            },
+            {
+              "id": "c",
+              "label": "61"
+            },
+            {
+              "id": "d",
+              "label": "600"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "36 km/hr = 10 m/s; 10 minutes = 600 s.",
+            "Distance = 6000 m, so there are 60 gaps and 61 pillars."
+          ],
+          "explanation": "The train covers 10 × 600 = 6000 m. That contains 60 intervals of 100 m, so counting the starting pillar gives 61 pillars."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n36 km/hr = 10 m/s; 10 minutes = 600 s.\n\nThe train covers 10 × 600 = 6000 m. That contains 60 intervals of 100 m, so counting the starting pillar gives 61 pillars.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train moves at 54 km/hr for 8 minutes. Pillars are 120 m apart. Counting the first pillar, how many are seen?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60"
+          },
+          {
+            "id": "b",
+            "label": "62"
+          },
+          {
+            "id": "c",
+            "label": "64"
+          },
+          {
+            "id": "d",
+            "label": "61"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train moves at 54 km/hr for 8 minutes. Pillars are 120 m apart. Counting the first pillar, how many are seen?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60"
+            },
+            {
+              "id": "b",
+              "label": "62"
+            },
+            {
+              "id": "c",
+              "label": "64"
+            },
+            {
+              "id": "d",
+              "label": "61"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "54 km/hr = 15 m/s; 8 minutes = 480 s.",
+            "Distance = 7200 m; 7200/120 = 60 gaps."
+          ],
+          "explanation": "15 × 480 = 7200 m. Sixty 120-m gaps mean 61 pillars when both ends are counted."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n15 × 480 = 7200 m. Sixty 120-m gaps mean 61 pillars when both ends are counted.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now connect the ideas. A train at 48 km/hr crosses a pole in 9 s.\n\n48 km/hr = 40/3 m/s, so its length is (40/3) × 9 = 120 m.\nIf it next meets a 180 m platform, the crossing distance becomes 120 + 180 = 300 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the bridge into the next lesson: a point adds no length, but a platform does.\n\nFor the 300 m total distance here, time = 300 ÷ (40/3) = 22.5 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 48 km/hr crosses a pole in 9 s. How long will it take to cross a 180 m platform?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "13.5 s"
+          },
+          {
+            "id": "b",
+            "label": "18 s"
+          },
+          {
+            "id": "c",
+            "label": "27 s"
+          },
+          {
+            "id": "d",
+            "label": "22.5 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 48 km/hr crosses a pole in 9 s. How long will it take to cross a 180 m platform?",
+          "options": [
+            {
+              "id": "a",
+              "label": "13.5 s"
+            },
+            {
+              "id": "b",
+              "label": "18 s"
+            },
+            {
+              "id": "c",
+              "label": "27 s"
+            },
+            {
+              "id": "d",
+              "label": "22.5 s"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First find the train length from the pole crossing.",
+            "Length = 120 m; platform crossing distance = 120 + 180 = 300 m."
+          ],
+          "explanation": "The train is 120 m long. At 40/3 m/s, covering 300 m takes 22.5 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFirst find the train length from the pole crossing.\n\nThe train is 120 m long. At 40/3 m/s, covering 300 m takes 22.5 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 72 km/hr crosses a pole in 8 s. How long will it take to cross a 240 m platform?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 s"
+          },
+          {
+            "id": "b",
+            "label": "12 s"
+          },
+          {
+            "id": "c",
+            "label": "16 s"
+          },
+          {
+            "id": "d",
+            "label": "24 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 72 km/hr crosses a pole in 8 s. How long will it take to cross a 240 m platform?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 s"
+            },
+            {
+              "id": "b",
+              "label": "12 s"
+            },
+            {
+              "id": "c",
+              "label": "16 s"
+            },
+            {
+              "id": "d",
+              "label": "24 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "72 km/hr = 20 m/s, so the train is 160 m long.",
+            "Total distance = 160 + 240 = 400 m."
+          ],
+          "explanation": "The train length is 20 × 8 = 160 m. Crossing the platform means 400 m at 20 m/s, so 20 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe train length is 20 × 8 = 160 m. Crossing the platform means 400 m at 20 m/s, so 20 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now turn a pole crossing into distance, time, length, or speed without memorising separate formulas.\n\nPoint object → move one train-length.\nkm/hr ↔ m/s before mixing metres and seconds.\nLength = speed × time.\n\nNext, the object itself gets a length — platforms, bridges, and tunnels.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

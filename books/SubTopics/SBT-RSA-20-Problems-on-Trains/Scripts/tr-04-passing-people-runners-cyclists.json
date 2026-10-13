@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-04-passing-people-runners-cyclists",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Trains Passing People, Runners, and Cyclists",
+    "description": "Use relative speed when the object being passed is moving, subtracting for the same direction and adding for the opposite direction.",
+    "teachingApproach": "Build relative speed from same-direction subtraction and opposite-direction addition, then reverse the model to find train speed, add initial gaps and cycle length, move to passenger observations, and finish with a two-walker system.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach moving-person crossings with relative speed. In the same direction use train speed minus person speed; in opposite directions use the sum. Cover finding crossing time, train speed, and train length; a jogger with an initial lead; a cyclist whose cycle length slightly increases the distance; a passenger in one train observing an opposite train; and the two-walker pattern where one train overtakes walkers at different speeds in different times, allowing train speed and length to be inferred."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A person on the track turns a normal train question into a relative-speed question.\n\nThe distance is still easy — usually one train-length. The only decision is whether the train is gaining on the person or rushing toward them.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A moving person changes the speed, not the distance. A train still has to gain one full train-length to pass a person.\n\nIf both move in the same direction, the train gains slowly: relative speed = train speed − person speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: a 200 m train at 72 km/hr passes a runner at 12 km/hr.\nRelative speed = 60 km/hr = 50/3 m/s.\nTime = 200 ÷ (50/3) = 12 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 200 m train at 72 km/hr passes a runner moving at 12 km/hr in the same direction. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "15 s"
+          },
+          {
+            "id": "d",
+            "label": "18 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 200 m train at 72 km/hr passes a runner moving at 12 km/hr in the same direction. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "15 s"
+            },
+            {
+              "id": "d",
+              "label": "18 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Same direction → subtract the speeds.",
+            "72 − 12 = 60 km/hr = 50/3 m/s."
+          ],
+          "explanation": "The train gains 50/3 m each second. Gaining 200 m takes 12 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nSame direction → subtract the speeds.\n\nThe train gains 50/3 m each second. Gaining 200 m takes 12 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 m train at 63 km/hr passes a runner at 9 km/hr in the same direction. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9 s"
+          },
+          {
+            "id": "b",
+            "label": "12 s"
+          },
+          {
+            "id": "c",
+            "label": "15 s"
+          },
+          {
+            "id": "d",
+            "label": "18 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 m train at 63 km/hr passes a runner at 9 km/hr in the same direction. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9 s"
+            },
+            {
+              "id": "b",
+              "label": "12 s"
+            },
+            {
+              "id": "c",
+              "label": "15 s"
+            },
+            {
+              "id": "d",
+              "label": "18 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 54 km/hr = 15 m/s.",
+            "180/15 = 12."
+          ],
+          "explanation": "The crossing time is 12 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe crossing time is 12 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Opposite directions make the train and person close the gap faster. Now relative speed is the sum.\n\nA 180 m train at 60 km/hr meets a runner at 12 km/hr coming the other way.\nRelative speed = 72 km/hr = 20 m/s, so time = 9 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Memory hook:\nsame direction → subtract\nopposite direction → add\n\nThe distance for a point-like person is still just the train length.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 m train at 60 km/hr passes a runner moving at 12 km/hr in the opposite direction. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7.5 s"
+          },
+          {
+            "id": "b",
+            "label": "9 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "15 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 m train at 60 km/hr passes a runner moving at 12 km/hr in the opposite direction. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7.5 s"
+            },
+            {
+              "id": "b",
+              "label": "9 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "15 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Opposite direction → add 60 + 12.",
+            "72 km/hr = 20 m/s; 180/20 = 9."
+          ],
+          "explanation": "The time is 9 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOpposite direction → add 60 + 12.\n\nThe time is 9 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 m train at 72 km/hr passes a runner at 18 km/hr coming the other way. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "9.6 s"
+          },
+          {
+            "id": "d",
+            "label": "12 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 m train at 72 km/hr passes a runner at 18 km/hr coming the other way. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "9.6 s"
+            },
+            {
+              "id": "d",
+              "label": "12 s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed = 90 km/hr = 25 m/s.",
+            "240/25 = 9.6."
+          ],
+          "explanation": "The crossing time is 9.6 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe crossing time is 9.6 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A crossing time can reveal the train speed.\n\nA 150 m train passes a walker at 6 km/hr in the same direction in 10 s. Relative speed = 150/10 = 15 m/s = 54 km/hr.\nSo train speed = 54 + 6 = 60 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The direction tells you how to reverse the relative-speed equation.\n\nSame direction: train = relative + walker.\nOpposite direction: train = relative − walker.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 150 m train passes a walker at 6 km/hr in the same direction in 10 s. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "66 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 150 m train passes a walker at 6 km/hr in the same direction in 10 s. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "66 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find relative speed from 150/10.",
+            "15 m/s = 54 km/hr, then add the walker's 6 km/hr."
+          ],
+          "explanation": "The train speed is 60 km/hr. Stopping at 54 km/hr reports only the relative speed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFind relative speed from 150/10.\n\nThe train speed is 60 km/hr. Stopping at 54 km/hr reports only the relative speed.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 m train passes a runner at 9 km/hr in the same direction in 12 s. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "63 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 m train passes a runner at 9 km/hr in the same direction in 12 s. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "63 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "180/12 = 15 m/s = 54 km/hr relative.",
+            "Train speed = 54 + 9."
+          ],
+          "explanation": "The train moves at 63 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe train moves at 63 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "For opposite motion, reverse the sum.\n\nA 240 m train passes a runner coming toward it in 12 s. Relative speed = 20 m/s = 72 km/hr. If the runner moves at 8 km/hr, then train speed = 72 − 8 = 64 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful sanity check: the train's own speed must be lower than the opposite-direction relative speed because the runner contributes part of that closing speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 m train passes a runner moving at 8 km/hr in the opposite direction in 12 s. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "80 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "56 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "64 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 m train passes a runner moving at 8 km/hr in the opposite direction in 12 s. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "80 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "56 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "64 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed is 240/12 = 20 m/s = 72 km/hr.",
+            "Opposite direction means relative = train + runner."
+          ],
+          "explanation": "Train speed = 72 − 8 = 64 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRelative speed is 240/12 = 20 m/s = 72 km/hr.\n\nTrain speed = 72 − 8 = 64 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 210 m train passes a runner at 6 km/hr coming the other way in 10.5 s. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "66 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "78 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 210 m train passes a runner at 6 km/hr coming the other way in 10.5 s. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "66 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "78 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "210/10.5 = 20 m/s = 72 km/hr relative.",
+            "Subtract the runner's 6 km/hr."
+          ],
+          "explanation": "The train speed is 66 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe train speed is 66 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a jogger starts ahead, the train must first erase the gap and then move enough to get its full length past the jogger.\n\nSuppose the train is 120 m long and its front is 180 m behind the jogger. To pass completely, relative gain needed = 180 + 120 = 300 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "At train 54 km/hr and jogger 9 km/hr, relative speed = 45 km/hr = 12.5 m/s.\nTime = 300/12.5 = 24 s.\n\nThe initial lead is real distance; do not ignore it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 120 m train at 54 km/hr is 180 m behind a jogger moving at 9 km/hr in the same direction. How long until the train completely passes the jogger?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 s"
+          },
+          {
+            "id": "b",
+            "label": "14.4 s"
+          },
+          {
+            "id": "c",
+            "label": "18 s"
+          },
+          {
+            "id": "d",
+            "label": "30 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 120 m train at 54 km/hr is 180 m behind a jogger moving at 9 km/hr in the same direction. How long until the train completely passes the jogger?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 s"
+            },
+            {
+              "id": "b",
+              "label": "14.4 s"
+            },
+            {
+              "id": "c",
+              "label": "18 s"
+            },
+            {
+              "id": "d",
+              "label": "30 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Relative gain needed = 180 + 120 = 300 m.",
+            "Relative speed = 45 km/hr = 12.5 m/s."
+          ],
+          "explanation": "300/12.5 = 24 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRelative gain needed = 180 + 120 = 300 m.\n\n300/12.5 = 24 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 160 m train at 72 km/hr is 200 m behind a runner at 18 km/hr. How long until it completely passes?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 s"
+          },
+          {
+            "id": "b",
+            "label": "24 s"
+          },
+          {
+            "id": "c",
+            "label": "20 s"
+          },
+          {
+            "id": "d",
+            "label": "30 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 160 m train at 72 km/hr is 200 m behind a runner at 18 km/hr. How long until it completely passes?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 s"
+            },
+            {
+              "id": "b",
+              "label": "24 s"
+            },
+            {
+              "id": "c",
+              "label": "20 s"
+            },
+            {
+              "id": "d",
+              "label": "30 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Gain needed = 200 + 160 = 360 m.",
+            "Relative speed = 54 km/hr = 15 m/s."
+          ],
+          "explanation": "360/15 = 24 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n360/15 = 24 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A cyclist is almost a point, but some questions give the cycle a length. Then add that length too.\n\nA 199 m train passing a 1 m cycle covers 200 m relative to the cyclist. At train speed 15 m/s and cyclist speed 5 m/s in the same direction, relative speed is 10 m/s, so time is 20 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the cyclist turns around, relative speed becomes 15 + 5 = 20 m/s. The same 200 m then takes only 10 s.\n\nSame distance, different closing speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 199 m train moves at 15 m/s. A cyclist on a 1 m cycle moves at 5 m/s in the opposite direction. How long does the train take to pass completely?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 s"
+          },
+          {
+            "id": "b",
+            "label": "10 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "20 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 199 m train moves at 15 m/s. A cyclist on a 1 m cycle moves at 5 m/s in the opposite direction. How long does the train take to pass completely?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 s"
+            },
+            {
+              "id": "b",
+              "label": "10 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "20 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Distance = 199 + 1 = 200 m.",
+            "Opposite direction → relative speed = 15 + 5 = 20 m/s."
+          ],
+          "explanation": "200/20 = 10 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nDistance = 199 + 1 = 200 m.\n\n200/20 = 10 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 179 m train moves at 14 m/s. A cyclist on a 1 m cycle moves at 4 m/s in the opposite direction. How long does the train take to pass?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9 s"
+          },
+          {
+            "id": "b",
+            "label": "12 s"
+          },
+          {
+            "id": "c",
+            "label": "10 s"
+          },
+          {
+            "id": "d",
+            "label": "18 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 179 m train moves at 14 m/s. A cyclist on a 1 m cycle moves at 4 m/s in the opposite direction. How long does the train take to pass?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9 s"
+            },
+            {
+              "id": "b",
+              "label": "12 s"
+            },
+            {
+              "id": "c",
+              "label": "10 s"
+            },
+            {
+              "id": "d",
+              "label": "18 s"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total length = 180 m.",
+            "Relative speed = 14 + 4 = 18 m/s."
+          ],
+          "explanation": "180/18 = 10 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n180/18 = 10 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A passenger sitting inside one train is moving too. If an opposite goods train passes the passenger, the distance to clear is only the goods train's length, but the speed is the sum of both train speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Example: passenger train 45 km/hr. A 250 m goods train passes in 10 s.\nRelative speed = 25 m/s = 90 km/hr.\nGoods speed = 90 − 45 = 45 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A passenger's train moves at 45 km/hr. An opposite 250 m goods train passes the passenger in 10 s. What is the goods train's speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "90 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A passenger's train moves at 45 km/hr. An opposite 250 m goods train passes the passenger in 10 s. What is the goods train's speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "90 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Only the goods train length, 250 m, must pass the passenger.",
+            "Relative speed = 250/10 = 25 m/s = 90 km/hr."
+          ],
+          "explanation": "Opposite relative speed is the sum, so goods speed = 90 − 45 = 45 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nOnly the goods train length, 250 m, must pass the passenger.\n\nOpposite relative speed is the sum, so goods speed = 90 − 45 = 45 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A passenger's train moves at 54 km/hr. An opposite 300 m train passes the passenger in 12 s. What is the other train's speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "36 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A passenger's train moves at 54 km/hr. An opposite 300 m train passes the passenger in 12 s. What is the other train's speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "36 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "300/12 = 25 m/s = 90 km/hr relative.",
+            "Other speed = 90 − 54."
+          ],
+          "explanation": "The other train moves at 36 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe other train moves at 36 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two overtaking times can reveal both train speed and length. Let train speed be v m/s and length L.\n\nPassing a 3 m/s walker in 12 s gives L = 12(v − 3).\nPassing a 5 m/s walker in 15 s gives L = 15(v − 5).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Set the two expressions equal:\n12v − 36 = 15v − 75\n3v = 39 → v = 13 m/s.\nThen L = 12 × 10 = 120 m.\n\nSame train means the hidden L is the bridge between the two clues.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train passes walkers moving at 3 m/s and 5 m/s in the same direction in 12 s and 15 s respectively. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "43.2 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "46.8 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train passes walkers moving at 3 m/s and 5 m/s in the same direction in 12 s and 15 s respectively. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "43.2 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "46.8 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "Use L = 12(v − 3) = 15(v − 5).",
+            "Solve for v = 13 m/s, then convert to km/hr."
+          ],
+          "explanation": "v = 13 m/s, so speed = 13 × 18/5 = 46.8 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUse L = 12(v − 3) = 15(v − 5).\n\nv = 13 m/s, so speed = 13 × 18/5 = 46.8 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train passes walkers moving at 2 m/s and 4 m/s in 10 s and 12 s respectively. What is the train speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50.4 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "43.2 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "48 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "54 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train passes walkers moving at 2 m/s and 4 m/s in 10 s and 12 s respectively. What is the train speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50.4 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "43.2 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "48 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "54 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Set 10(v − 2) = 12(v − 4).",
+            "This gives v = 14 m/s."
+          ],
+          "explanation": "14 m/s = 50.4 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n14 m/s = 50.4 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now see a moving person as part of the speed, not part of the mystery.\n\nSame direction → subtract speeds.\nOpposite direction → add speeds.\nDistance is the train length, plus any stated gap or cycle length.\n\nNext, both moving objects become trains, so both lengths matter.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-09-data-sufficiency-trains",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Data Sufficiency for Train Problems",
+    "description": "Decide whether the given statements determine the requested train speed, length, crossing time, or arrival time without doing unnecessary calculation.",
+    "teachingApproach": "Teach sufficiency by first naming the variables a train formula needs, then test statements independently before combining them. Cover pole, platform, stationary-train, direction ambiguity, redundant three-statement sets, moving-train underdetermination, and arrival-time redundancy.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach data sufficiency using the chapter's dedicated exercise. Start by listing the quantities a train formula needs, then test Statement I alone, Statement II alone, and combinations. Cover pole crossings, platforms, stationary trains, moving trains, direction ambiguity, three-statement questions where any two suffice, and redundancy questions. The learner's goal is not to solve every number fully; it is to know whether one unique answer is forced. Use fresh train scenarios parallel to the book's DS patterns."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Data Sufficiency is a different game.\n\nDo not ask, 'Can I calculate a lot?' Ask, 'Do these statements force exactly one answer to the question?' The best move is often stopping early.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Data Sufficiency changes the question. You are not being asked to calculate everything. You are being asked: do the statements force one unique answer?\n\nStart by naming what the target formula needs.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For example, speed from crossing a pole needs train length and pole-crossing time. If the time is already in the question, a statement giving the train length is enough. A statement about an unrelated platform is useful only if it lets you recover that length or speed uniquely.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 12 s. What is its speed? I: Train length is 240 m. II: The train is red. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Even both are insufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 12 s. What is its speed? I: Train length is 240 m. II: The train is red. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Even both are insufficient"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Speed = train length ÷ 12 s.",
+            "Only Statement I supplies the missing train length."
+          ],
+          "explanation": "I alone gives speed = 240/12 = 20 m/s. II adds no numerical information."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nSpeed = train length ÷ 12 s.\n\nI alone gives speed = 240/12 = 20 m/s. II adds no numerical information.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a signal post in 10 s. What is its length? I: Speed is 72 km/hr. II: It has 12 coaches. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "II alone"
+          },
+          {
+            "id": "b",
+            "label": "I alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Even both are insufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a signal post in 10 s. What is its length? I: Speed is 72 km/hr. II: It has 12 coaches. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "II alone"
+            },
+            {
+              "id": "b",
+              "label": "I alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Even both are insufficient"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Length = speed × 10 s.",
+            "Coach count gives no coach length."
+          ],
+          "explanation": "I alone fixes speed at 20 m/s, hence length 200 m. II alone cannot determine length."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nI alone fixes speed at 20 m/s, hence length 200 m. II alone cannot determine length.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A stationary engine behaves like a platform: crossing distance is train length + engine length. If crossing time is known, speed still depends on that total length.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So if neither length is known, knowing only one is not enough. This is a classic DS trap: a formula exists, but too many unknown quantities remain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a stationary engine in 20 s. What is the train speed? I: Train length is 180 m. II: Engine length is 120 m. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "Both together"
+          },
+          {
+            "id": "c",
+            "label": "II alone"
+          },
+          {
+            "id": "d",
+            "label": "Either statement alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a stationary engine in 20 s. What is the train speed? I: Train length is 180 m. II: Engine length is 120 m. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "Both together"
+            },
+            {
+              "id": "c",
+              "label": "II alone"
+            },
+            {
+              "id": "d",
+              "label": "Either statement alone"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Crossing distance is train length + engine length.",
+            "You need the full 300 m distance before dividing by 20 s."
+          ],
+          "explanation": "Neither statement alone gives the total crossing distance. Together they give 300/20 = 15 m/s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nCrossing distance is train length + engine length.\n\nNeither statement alone gives the total crossing distance. Together they give 300/20 = 15 m/s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a stationary train in 25 s. What is its speed? I: Moving train length is 200 m. II: Stationary train length is 300 m. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Either statement alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a stationary train in 25 s. What is its speed? I: Moving train length is 200 m. II: Stationary train length is 300 m. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Either statement alone"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Stationary-train crossing distance is the sum of both lengths.",
+            "Both lengths are needed."
+          ],
+          "explanation": "Together the distance is 500 m, giving 20 m/s. Either one alone leaves the other length unknown."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nTogether the distance is 500 m, giving 20 m/s. Either one alone leaves the other length unknown.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes either statement alone can solve the target. Suppose the question already gives pole-crossing time. A statement giving train length fixes speed directly. A different statement giving speed directly also fixes it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "In DS, do not combine statements automatically. Test each one alone first. If either one independently forces the same kind of answer, the correct judgement is 'either alone'.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 9 s. What is its speed? I: Train length is 180 m. II: The train speed is 72 km/hr. Which is true?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Only I"
+          },
+          {
+            "id": "b",
+            "label": "Only II"
+          },
+          {
+            "id": "c",
+            "label": "Either statement alone is sufficient"
+          },
+          {
+            "id": "d",
+            "label": "Both are required"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 9 s. What is its speed? I: Train length is 180 m. II: The train speed is 72 km/hr. Which is true?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Only I"
+            },
+            {
+              "id": "b",
+              "label": "Only II"
+            },
+            {
+              "id": "c",
+              "label": "Either statement alone is sufficient"
+            },
+            {
+              "id": "d",
+              "label": "Both are required"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Test I by itself: 180/9 gives speed.",
+            "Test II by itself: it directly states the speed."
+          ],
+          "explanation": "I alone gives 20 m/s = 72 km/hr; II alone already gives 72 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTest I by itself: 180/9 gives speed.\n\nI alone gives 20 m/s = 72 km/hr; II alone already gives 72 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 8 s. What is its length? I: Speed is 90 km/hr. II: Length is 200 m. Which is true?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Only I"
+          },
+          {
+            "id": "b",
+            "label": "Only II"
+          },
+          {
+            "id": "c",
+            "label": "Both are required"
+          },
+          {
+            "id": "d",
+            "label": "Either statement alone is sufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 8 s. What is its length? I: Speed is 90 km/hr. II: Length is 200 m. Which is true?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Only I"
+            },
+            {
+              "id": "b",
+              "label": "Only II"
+            },
+            {
+              "id": "c",
+              "label": "Both are required"
+            },
+            {
+              "id": "d",
+              "label": "Either statement alone is sufficient"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "I alone gives 25 m/s × 8 = 200 m.",
+            "II alone states the target directly."
+          ],
+          "explanation": "Each statement independently fixes the train length."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nEach statement independently fixes the train length.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Direction can be missing data. Knowing two speeds does not tell relative speed until you know whether the trains move in the same direction or in opposite directions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For two moving trains, relative speed is either a difference or a sum. If the question needs crossing time and direction is absent, even precise speeds and lengths may still leave two possible answers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains are 120 m and 180 m long, with speeds 72 and 54 km/hr. How long do they take to cross? I: They are on parallel tracks. II: Their directions are not stated. Is the information sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Yes, lengths alone are enough"
+          },
+          {
+            "id": "b",
+            "label": "Yes, speeds alone are enough"
+          },
+          {
+            "id": "c",
+            "label": "Yes, all given data force one time"
+          },
+          {
+            "id": "d",
+            "label": "No, direction is still needed"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains are 120 m and 180 m long, with speeds 72 and 54 km/hr. How long do they take to cross? I: They are on parallel tracks. II: Their directions are not stated. Is the information sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Yes, lengths alone are enough"
+            },
+            {
+              "id": "b",
+              "label": "Yes, speeds alone are enough"
+            },
+            {
+              "id": "c",
+              "label": "Yes, all given data force one time"
+            },
+            {
+              "id": "d",
+              "label": "No, direction is still needed"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Relative speed depends on same vs opposite direction.",
+            "The given lengths and speeds permit two different crossing times."
+          ],
+          "explanation": "Without direction, relative speed could be 18 km/hr or 126 km/hr, so the time is not unique."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nRelative speed depends on same vs opposite direction.\n\nWithout direction, relative speed could be 18 km/hr or 126 km/hr, so the time is not unique.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two trains have known lengths and speeds. What else is essential to determine their complete crossing time? I: Whether they move in the same or opposite direction. II: Their colours. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Neither"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two trains have known lengths and speeds. What else is essential to determine their complete crossing time? I: Whether they move in the same or opposite direction. II: Their colours. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Neither"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Direction selects sum or difference of speeds.",
+            "Colour never enters the crossing equation."
+          ],
+          "explanation": "Statement I supplies the missing motion relationship; II is irrelevant."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nStatement I supplies the missing motion relationship; II is irrelevant.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A platform and a pole can form a complete pair of equations. If pole time and platform time are known, then a known platform length lets you get speed from the extra time and then train length.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "But if the platform length itself is unknown, those two times only tell a ratio of distances — not a unique number of metres.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 10 s and a platform in 25 s. What is the train length? I: Platform length is 300 m. II: The platform is at Station X. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Even both are insufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 10 s and a platform in 25 s. What is the train length? I: Platform length is 300 m. II: The platform is at Station X. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Even both are insufficient"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Extra 15 s corresponds to the platform length.",
+            "With 300 m known, speed and then train length are fixed."
+          ],
+          "explanation": "I gives speed = 300/15 = 20 m/s and train length = 200 m. II contributes nothing quantitative."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nExtra 15 s corresponds to the platform length.\n\nI gives speed = 300/15 = 20 m/s and train length = 200 m. II contributes nothing quantitative.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 12 s and a platform in 30 s. What is its speed? I: Platform length is 360 m. II: Train has 15 coaches. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "II alone"
+          },
+          {
+            "id": "b",
+            "label": "I alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Even both are insufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 12 s and a platform in 30 s. What is its speed? I: Platform length is 360 m. II: Train has 15 coaches. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "II alone"
+            },
+            {
+              "id": "b",
+              "label": "I alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Even both are insufficient"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Extra 18 s corresponds to 360 m.",
+            "Coach count has no coach length."
+          ],
+          "explanation": "I alone gives speed 20 m/s. II cannot determine speed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nI alone gives speed 20 m/s. II cannot determine speed.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Three-statement DS often contains redundancy. Suppose you want train speed. A pole time plus train length is one complete route. A platform time plus platform length and pole time may be another. You do not need every statement just because three are present.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The discipline is to search for the smallest sufficient set. If two different pairs work, say so; if one statement is unnecessary, identify it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find a train's speed. I: It crosses a pole in 10 s. II: Its length is 200 m. III: It crosses a 300 m platform in 25 s. Which set is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "I and II are sufficient; III is redundant"
+          },
+          {
+            "id": "c",
+            "label": "II and III only"
+          },
+          {
+            "id": "d",
+            "label": "All three are necessary"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find a train's speed. I: It crosses a pole in 10 s. II: Its length is 200 m. III: It crosses a 300 m platform in 25 s. Which set is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "I and II are sufficient; III is redundant"
+            },
+            {
+              "id": "c",
+              "label": "II and III only"
+            },
+            {
+              "id": "d",
+              "label": "All three are necessary"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "I + II directly give 200/10 = 20 m/s.",
+            "III is not needed once speed is already fixed."
+          ],
+          "explanation": "I and II uniquely determine the speed. Statement III merely confirms the same 20 m/s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nI + II directly give 200/10 = 20 m/s.\n\nI and II uniquely determine the speed. Statement III merely confirms the same 20 m/s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Find a train's length. I: It crosses a pole in 8 s. II: It crosses a 240 m platform in 20 s. III: Its speed is 72 km/hr. Which is true?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Only I and II"
+          },
+          {
+            "id": "b",
+            "label": "Only I and III"
+          },
+          {
+            "id": "c",
+            "label": "Any two of the three are sufficient"
+          },
+          {
+            "id": "d",
+            "label": "All three are required"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Find a train's length. I: It crosses a pole in 8 s. II: It crosses a 240 m platform in 20 s. III: Its speed is 72 km/hr. Which is true?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Only I and II"
+            },
+            {
+              "id": "b",
+              "label": "Only I and III"
+            },
+            {
+              "id": "c",
+              "label": "Any two of the three are sufficient"
+            },
+            {
+              "id": "d",
+              "label": "All three are required"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "I+III gives length directly; I+II gives speed then length; II+III gives total distance then length.",
+            "Each pair produces one unique length."
+          ],
+          "explanation": "Any two statements are enough; the third becomes a check."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nAny two statements are enough; the third becomes a check.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A moving-train DS question can stay impossible even after combining statements. Example: relative speed of X and Y is known, and Y crosses a pole in a known time. Without Y's length, Y's actual speed is still unknown, so X's speed is not fixed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Count independent unknowns, not the number of statements. Two statements can still describe too many unknown quantities.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is train X's speed? I: X and Y move oppositely with relative speed 150 km/hr. II: Y crosses a pole in 10 s. Is this sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone is sufficient"
+          },
+          {
+            "id": "b",
+            "label": "II alone is sufficient"
+          },
+          {
+            "id": "c",
+            "label": "No, even together it is insufficient"
+          },
+          {
+            "id": "d",
+            "label": "Both together are sufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is train X's speed? I: X and Y move oppositely with relative speed 150 km/hr. II: Y crosses a pole in 10 s. Is this sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone is sufficient"
+            },
+            {
+              "id": "b",
+              "label": "II alone is sufficient"
+            },
+            {
+              "id": "c",
+              "label": "No, even together it is insufficient"
+            },
+            {
+              "id": "d",
+              "label": "Both together are sufficient"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "I gives X speed + Y speed = 150.",
+            "II gives Y length / Y speed = 10, but Y length is unknown."
+          ],
+          "explanation": "Y's speed cannot be recovered from pole time without its length, so X's speed remains undetermined."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nI gives X speed + Y speed = 150.\n\nY's speed cannot be recovered from pole time without its length, so X's speed remains undetermined.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "What is train A's speed? I: A and B move in the same direction with relative speed 36 km/hr. II: B crosses a pole in 12 s. Is this sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "No, even together it is insufficient"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "What is train A's speed? I: A and B move in the same direction with relative speed 36 km/hr. II: B crosses a pole in 12 s. Is this sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "No, even together it is insufficient"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "I gives only A−B = 36.",
+            "II still mixes B's unknown length and speed."
+          ],
+          "explanation": "Without B's length or speed, there are multiple possible pairs, so A's speed is not unique."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nWithout B's length or speed, there are multiple possible pairs, so A's speed is not unique.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final DS habit: a statement that looks long can be redundant, while a short one can unlock everything. Focus only on whether the target becomes unique.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For arrival time, for example, speed and route distance are enough once departure time is known. A separate crossing fact may be unnecessary if another statement already gives the speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train leaves city Y at 7:15 a.m. for city X, 558 km away. What time does it arrive? I: Its speed is 72 km/hr. II: It crosses a 200 m train in 15 s. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "II alone"
+          },
+          {
+            "id": "b",
+            "label": "Both are required"
+          },
+          {
+            "id": "c",
+            "label": "Even both are insufficient"
+          },
+          {
+            "id": "d",
+            "label": "I alone"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train leaves city Y at 7:15 a.m. for city X, 558 km away. What time does it arrive? I: Its speed is 72 km/hr. II: It crosses a 200 m train in 15 s. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "II alone"
+            },
+            {
+              "id": "b",
+              "label": "Both are required"
+            },
+            {
+              "id": "c",
+              "label": "Even both are insufficient"
+            },
+            {
+              "id": "d",
+              "label": "I alone"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 15,
+          "hints": [
+            "Arrival time needs journey time = 558/speed.",
+            "I directly supplies the speed; II does not uniquely do so without more data."
+          ],
+          "explanation": "I gives 558/72 = 7 h 45 min, so arrival is 3:00 p.m. II is unnecessary."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nArrival time needs journey time = 558/speed.\n\nI gives 558/72 = 7 h 45 min, so arrival is 3:00 p.m. II is unnecessary.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train leaves at 6:30 a.m. for a city 360 km away. What is arrival time? I: Speed is 60 km/hr. II: Train length is 180 m. Which is sufficient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "I alone"
+          },
+          {
+            "id": "b",
+            "label": "II alone"
+          },
+          {
+            "id": "c",
+            "label": "Both together"
+          },
+          {
+            "id": "d",
+            "label": "Neither"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train leaves at 6:30 a.m. for a city 360 km away. What is arrival time? I: Speed is 60 km/hr. II: Train length is 180 m. Which is sufficient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "I alone"
+            },
+            {
+              "id": "b",
+              "label": "II alone"
+            },
+            {
+              "id": "c",
+              "label": "Both together"
+            },
+            {
+              "id": "d",
+              "label": "Neither"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Route time needs route distance and speed, not train length.",
+            "360/60 = 6 h."
+          ],
+          "explanation": "Statement I gives arrival at 12:30 p.m. Train length is irrelevant to the inter-city journey time."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nStatement I gives arrival at 12:30 p.m. Train length is irrelevant to the inter-city journey time.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now judge train information before calculating it.\n\nName the target.\nList what the formula needs.\nTest each statement alone.\nCombine only when necessary.\nAnd stop the moment one unique answer is forced.\n\nThat completes Problems on Trains.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

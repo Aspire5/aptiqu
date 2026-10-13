@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "am-06-draw-off-replace-once",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Draw-Off and Replace: One Operation",
+    "description": "Track what leaves a well-mixed vessel, then update the components after one replacement.",
+    "teachingApproach": "Establish that every removed sample has the same composition as the vessel at that moment. Practise proportional removal first, then add pure water or the second liquid, solve target-ratio equations, and work backwards from final ratios to unknown original amounts. Keep all component bookkeeping visible so the learner understands the shortcut rather than memorising it.",
+    "targetDurationMinutes": 29,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 21, Alligation or Mixture. Approved scope: Teach the key idea that a well-mixed sample has the same composition as the whole vessel. When x litres are drawn off, each component leaves in its current fraction; only after that is the replacement added. Cover one draw-and-replace operation with water or the second liquid, solving for the withdrawal required to reach a target ratio, and reverse questions where the final ratio and the withdrawal reveal the original quantity. Include the chapter patterns 7 : 5 with a fixed amount removed and replaced by B, and 3 : 5 water-syrup changed to equal parts by replacement with water. Use direct component bookkeeping before any shortcut so learners can see why the algebra works."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn what really leaves when a mixed liquid is removed.\n\nIf milk and water are well mixed, a 5-litre sample has the same milk-water ratio as the whole vessel. First that mixed sample leaves; only then does the replacement enter.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A vessel has milk:water = 3:2. That means every 5 litres contains 3 L milk and 2 L water.\n\nIf the vessel is well mixed, any sample we remove has the same 3:2 composition.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So removing 10 L removes:\nmilk = 10×3/5 = 6 L\nwater = 10×2/5 = 4 L.\n\nYou do not get to choose which component leaves. Both leave in the current ratio.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture has A:B=4:1. If 15 L is drawn off, how much A leaves?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 L"
+          },
+          {
+            "id": "b",
+            "label": "12 L"
+          },
+          {
+            "id": "c",
+            "label": "10 L"
+          },
+          {
+            "id": "d",
+            "label": "15 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture has A:B=4:1. If 15 L is drawn off, how much A leaves?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 L"
+            },
+            {
+              "id": "b",
+              "label": "12 L"
+            },
+            {
+              "id": "c",
+              "label": "10 L"
+            },
+            {
+              "id": "d",
+              "label": "15 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "A is 4/5 of every sample.",
+            "15×4/5 = 12 L of A leaves."
+          ],
+          "explanation": "15×4/5 = 12 L of A leaves."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A milk:water mixture is 2:3. If 20 L is removed, how much milk leaves?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 L"
+          },
+          {
+            "id": "b",
+            "label": "12 L"
+          },
+          {
+            "id": "c",
+            "label": "8 L"
+          },
+          {
+            "id": "d",
+            "label": "15 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A milk:water mixture is 2:3. If 20 L is removed, how much milk leaves?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 L"
+            },
+            {
+              "id": "b",
+              "label": "12 L"
+            },
+            {
+              "id": "c",
+              "label": "8 L"
+            },
+            {
+              "id": "d",
+              "label": "15 L"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Milk fraction is 2/5.",
+            "20×2/5 = 8 L."
+          ],
+          "explanation": "20×2/5 = 8 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nA is 4/5 of every sample.\n\n15×4/5 = 12 L of A leaves.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n20×2/5 = 8 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now replace the removed sample with pure water.\n\nStart with 25 L at milk:water=3:2 → milk 15, water 10.\nRemove 5 L → milk 3 and water 2 leave.\nRemaining: milk 12, water 8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Add 5 L water back.\nFinal: milk 12, water 13.\n\nThe total returns to 25 L, but the composition changes because the replacement is pure water rather than the original mixture.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "20 L mixture has milk:water=3:2. Remove 5 L and replace it with water. How much milk remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 L"
+          },
+          {
+            "id": "b",
+            "label": "10 L"
+          },
+          {
+            "id": "c",
+            "label": "12 L"
+          },
+          {
+            "id": "d",
+            "label": "9 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "20 L mixture has milk:water=3:2. Remove 5 L and replace it with water. How much milk remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 L"
+            },
+            {
+              "id": "b",
+              "label": "10 L"
+            },
+            {
+              "id": "c",
+              "label": "12 L"
+            },
+            {
+              "id": "d",
+              "label": "9 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Initial milk=12 L. The 5 L sample removes 3 L milk.",
+            "Milk remaining = 12−3 = 9 L."
+          ],
+          "explanation": "Milk remaining = 12−3 = 9 L. Adding water does not change milk amount."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "30 L mixture has A:B=2:1. Remove 6 L and replace with B. How much A remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 L"
+          },
+          {
+            "id": "b",
+            "label": "14 L"
+          },
+          {
+            "id": "c",
+            "label": "18 L"
+          },
+          {
+            "id": "d",
+            "label": "20 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "30 L mixture has A:B=2:1. Remove 6 L and replace with B. How much A remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 L"
+            },
+            {
+              "id": "b",
+              "label": "14 L"
+            },
+            {
+              "id": "c",
+              "label": "18 L"
+            },
+            {
+              "id": "d",
+              "label": "20 L"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Initial A=20 L. Removed A = 6×2/3.",
+            "Removed A=4 L, so 16 L remains."
+          ],
+          "explanation": "Removed A=4 L, so 16 L remains."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nInitial milk=12 L. The 5 L sample removes 3 L milk.\n\nMilk remaining = 12−3 = 9 L. Adding water does not change milk amount.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nRemoved A=4 L, so 16 L remains.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "We can solve for the withdrawal needed.\n\nAn 8 L vessel has water:syrup = 3:5. Let x L be removed and replaced with water.\n\nRemoved water = 3x/8; removed syrup = 5x/8.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Final water = 3−3x/8+x.\nFinal syrup = 5−5x/8.\n\nFor equal parts, set them equal.\nThis gives x = 8/5 L, which is 1/5 of the vessel.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 10 L vessel has A:B=1:4. How much mixture should be removed and replaced by A so the final ratio becomes 1:1?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3.75 L"
+          },
+          {
+            "id": "b",
+            "label": "2.5 L"
+          },
+          {
+            "id": "c",
+            "label": "4 L"
+          },
+          {
+            "id": "d",
+            "label": "5 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 10 L vessel has A:B=1:4. How much mixture should be removed and replaced by A so the final ratio becomes 1:1?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3.75 L"
+            },
+            {
+              "id": "b",
+              "label": "2.5 L"
+            },
+            {
+              "id": "c",
+              "label": "4 L"
+            },
+            {
+              "id": "d",
+              "label": "5 L"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Initial A=2, B=8. Remove x in ratio 1:4, then add x to A.",
+            "Final A=2−x/5+x=2+4x/5; B=8−4x/5."
+          ],
+          "explanation": "Final A=2−x/5+x=2+4x/5; B=8−4x/5. Set equal: 2+4x/5=8−4x/5 → 8x/5=6 → x=3.75 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 12 L vessel has milk:water=1:2. How much mixture is removed and replaced by milk to make the final ratio 1:1?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 L"
+          },
+          {
+            "id": "b",
+            "label": "3 L"
+          },
+          {
+            "id": "c",
+            "label": "4 L"
+          },
+          {
+            "id": "d",
+            "label": "6 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 12 L vessel has milk:water=1:2. How much mixture is removed and replaced by milk to make the final ratio 1:1?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 L"
+            },
+            {
+              "id": "b",
+              "label": "3 L"
+            },
+            {
+              "id": "c",
+              "label": "4 L"
+            },
+            {
+              "id": "d",
+              "label": "6 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Initial milk=4, water=8.",
+            "Final milk=4−x/3+x=4+2x/3; water=8−2x/3."
+          ],
+          "explanation": "Final milk=4−x/3+x=4+2x/3; water=8−2x/3. Equate: 4+2x/3=8−2x/3 → 4x/3=4 → x=3 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nInitial A=2, B=8. Remove x in ratio 1:4, then add x to A.\n\nFinal A=2−x/5+x=2+4x/5; B=8−4x/5. Set equal: 2+4x/5=8−4x/5 → 8x/5=6 → x=3.75 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFinal milk=4−x/3+x=4+2x/3; water=8−2x/3. Equate: 4+2x/3=8−2x/3 → 4x/3=4 → x=3 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A quicker form comes from the amount of one component that must change.\n\nIf water is the replacement, only the original component falls. After removing fraction f of the vessel, the original component is multiplied by (1−f).",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For one operation, retained original component = original amount × (1−removed fraction).\n\nThis is the seed of the repeated-replacement formula.\n\nFor a single operation, direct component bookkeeping is usually easiest.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vessel contains 24 L pure milk. One-quarter of it is removed and replaced with water. How much milk remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 L"
+          },
+          {
+            "id": "b",
+            "label": "12 L"
+          },
+          {
+            "id": "c",
+            "label": "18 L"
+          },
+          {
+            "id": "d",
+            "label": "20 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vessel contains 24 L pure milk. One-quarter of it is removed and replaced with water. How much milk remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 L"
+            },
+            {
+              "id": "b",
+              "label": "12 L"
+            },
+            {
+              "id": "c",
+              "label": "18 L"
+            },
+            {
+              "id": "d",
+              "label": "20 L"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Three-quarters of the original milk remains.",
+            "24×3/4 = 18 L."
+          ],
+          "explanation": "24×3/4 = 18 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vessel contains 35 L pure juice. One-fifth is removed and replaced with water. How much juice remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "7 L"
+          },
+          {
+            "id": "b",
+            "label": "21 L"
+          },
+          {
+            "id": "c",
+            "label": "30 L"
+          },
+          {
+            "id": "d",
+            "label": "28 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vessel contains 35 L pure juice. One-fifth is removed and replaced with water. How much juice remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "7 L"
+            },
+            {
+              "id": "b",
+              "label": "21 L"
+            },
+            {
+              "id": "c",
+              "label": "30 L"
+            },
+            {
+              "id": "d",
+              "label": "28 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Retained fraction is 4/5.",
+            "35×4/5 = 28 L."
+          ],
+          "explanation": "35×4/5 = 28 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nThree-quarters of the original milk remains.\n\n24×3/4 = 18 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n35×4/5 = 28 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Reverse questions often hide the original scale.\n\nSuppose a vessel starts with A:B=7:5, so quantities are 7x and 5x. Remove 9 L of mixture, then fill with B.\n\nThe 9 L sample removes A:B in 7:5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Removed A = 9×7/12 = 21/4.\nRemoved B = 15/4.\n\nThen B gets the full 9 L replacement. If the final ratio is known, one equation in x reveals the original amounts.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vessel starts with A:B=3:2. Remove 10 L and replace with B. Final ratio becomes 1:1. What was the original amount of A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 L"
+          },
+          {
+            "id": "b",
+            "label": "24 L"
+          },
+          {
+            "id": "c",
+            "label": "30 L"
+          },
+          {
+            "id": "d",
+            "label": "40 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vessel starts with A:B=3:2. Remove 10 L and replace with B. Final ratio becomes 1:1. What was the original amount of A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 L"
+            },
+            {
+              "id": "b",
+              "label": "24 L"
+            },
+            {
+              "id": "c",
+              "label": "30 L"
+            },
+            {
+              "id": "d",
+              "label": "40 L"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let original A=3x, B=2x. The 10 L sample removes 6 L A and 4 L B.",
+            "Final A=3x−6; final B=2x−4+10=2x+6."
+          ],
+          "explanation": "Final A=3x−6; final B=2x−4+10=2x+6. Equal gives x=12, so original A=36 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vessel starts with milk:water=2:1. Remove 6 L and replace with water. Final ratio becomes 1:1. What was the original milk quantity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 L"
+          },
+          {
+            "id": "b",
+            "label": "18 L"
+          },
+          {
+            "id": "c",
+            "label": "24 L"
+          },
+          {
+            "id": "d",
+            "label": "16 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vessel starts with milk:water=2:1. Remove 6 L and replace with water. Final ratio becomes 1:1. What was the original milk quantity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 L"
+            },
+            {
+              "id": "b",
+              "label": "18 L"
+            },
+            {
+              "id": "c",
+              "label": "24 L"
+            },
+            {
+              "id": "d",
+              "label": "16 L"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let milk=2x, water=x. The sample removes 4 L milk and 2 L water.",
+            "Final milk=2x−4; water=x−2+6=x+4."
+          ],
+          "explanation": "Final milk=2x−4; water=x−2+6=x+4. Equate: 2x−4=x+4 → x=8, so milk=16 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nLet original A=3x, B=2x. The 10 L sample removes 6 L A and 4 L B.\n\nFinal A=3x−6; final B=2x−4+10=2x+6. Equal gives x=12, so original A=36 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFinal milk=2x−4; water=x−2+6=x+4. Equate: 2x−4=x+4 → x=8, so milk=16 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Replacement can also be with another solution, not a pure component.\n\nIf the original is 60% active and the replacement is 20% active, then the removed sample takes out 60% active while the refill adds back only 20% active.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a 10 L replacement in a 50 L vessel:\nactive lost = 10×0.60 = 6 L\nactive added = 10×0.20 = 2 L\nnet active loss = 4 L.\n\nTrack the chosen component through both moves.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 40 L vessel is 50% alcohol. Remove 8 L and replace it with 25% alcohol solution. How much alcohol is in the final vessel?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 L"
+          },
+          {
+            "id": "b",
+            "label": "20 L"
+          },
+          {
+            "id": "c",
+            "label": "18 L"
+          },
+          {
+            "id": "d",
+            "label": "22 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 40 L vessel is 50% alcohol. Remove 8 L and replace it with 25% alcohol solution. How much alcohol is in the final vessel?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 L"
+            },
+            {
+              "id": "b",
+              "label": "20 L"
+            },
+            {
+              "id": "c",
+              "label": "18 L"
+            },
+            {
+              "id": "d",
+              "label": "22 L"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Alcohol lost = 8×50%; alcohol added = 8×25%.",
+            "Initial alcohol=20 L."
+          ],
+          "explanation": "Initial alcohol=20 L. Lose 4 L, add 2 L → final 18 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 30 L vessel is 60% juice. Remove 5 L and replace it with 20% juice mixture. How much juice remains?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 L"
+          },
+          {
+            "id": "b",
+            "label": "14 L"
+          },
+          {
+            "id": "c",
+            "label": "15 L"
+          },
+          {
+            "id": "d",
+            "label": "17 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 30 L vessel is 60% juice. Remove 5 L and replace it with 20% juice mixture. How much juice remains?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 L"
+            },
+            {
+              "id": "b",
+              "label": "14 L"
+            },
+            {
+              "id": "c",
+              "label": "15 L"
+            },
+            {
+              "id": "d",
+              "label": "17 L"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Start with 18 L juice.",
+            "Lose 3 L juice, add 1 L juice, so final=16 L."
+          ],
+          "explanation": "Lose 3 L juice, add 1 L juice, so final=16 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nAlcohol lost = 8×50%; alcohol added = 8×25%.\n\nInitial alcohol=20 L. Lose 4 L, add 2 L → final 18 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nLose 3 L juice, add 1 L juice, so final=16 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "One-operation replacement is a two-move story:\n\n1. Remove a sample in the vessel's current composition.\n2. Add the replacement in its own composition.\n\nSkipping either composition is the common trap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A good check is total volume.\n\nIf 8 L is removed and 8 L added, the vessel must finish at its original volume.\n\nIf your component totals add to something else, recheck the removal or refill.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 25 L vessel is 40% A. Remove 5 L and replace with pure A. What is the final percentage of A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "44%"
+          },
+          {
+            "id": "b",
+            "label": "48%"
+          },
+          {
+            "id": "c",
+            "label": "60%"
+          },
+          {
+            "id": "d",
+            "label": "52%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 25 L vessel is 40% A. Remove 5 L and replace with pure A. What is the final percentage of A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "44%"
+            },
+            {
+              "id": "b",
+              "label": "48%"
+            },
+            {
+              "id": "c",
+              "label": "60%"
+            },
+            {
+              "id": "d",
+              "label": "52%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Initial A=10 L. The removed sample contains 2 L A.",
+            "After removal A=8 L; add 5 L A → 13 L out of 25 = 52%."
+          ],
+          "explanation": "After removal A=8 L; add 5 L A → 13 L out of 25 = 52%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 20 L vessel is 30% A. Remove 4 L and replace with pure A. What is the final percentage of A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "38%"
+          },
+          {
+            "id": "b",
+            "label": "44%"
+          },
+          {
+            "id": "c",
+            "label": "40%"
+          },
+          {
+            "id": "d",
+            "label": "50%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 20 L vessel is 30% A. Remove 4 L and replace with pure A. What is the final percentage of A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "38%"
+            },
+            {
+              "id": "b",
+              "label": "44%"
+            },
+            {
+              "id": "c",
+              "label": "40%"
+            },
+            {
+              "id": "d",
+              "label": "50%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Initial A=6 L. Remove 1.2 L A, then add 4 L A.",
+            "Final A=6−1."
+          ],
+          "explanation": "Final A=6−1.2+4=8.8 L. 8.8/20=44%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nInitial A=10 L. The removed sample contains 2 L A.\n\nAfter removal A=8 L; add 5 L A → 13 L out of 25 = 52%.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFinal A=6−1.2+4=8.8 L. 8.8/20=44%.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: use direct bookkeeping when the story changes composition once.\n\nStart from actual component amounts, remove each component in proportion, add the refill, then form the requested ratio or percentage.\n\nThe algebra stays small when every line has a physical meaning.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the problem asks for the original quantity, let the starting ratio be scaled by one variable, such as 4x and 3x.\n\nThe removal amount is known, so the final ratio gives one equation in x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vessel has milk:water=5:3. Remove 16 L and replace with water. Final ratio becomes 1:1. What was the original milk quantity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 L"
+          },
+          {
+            "id": "b",
+            "label": "50 L"
+          },
+          {
+            "id": "c",
+            "label": "45 L"
+          },
+          {
+            "id": "d",
+            "label": "60 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vessel has milk:water=5:3. Remove 16 L and replace with water. Final ratio becomes 1:1. What was the original milk quantity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 L"
+            },
+            {
+              "id": "b",
+              "label": "50 L"
+            },
+            {
+              "id": "c",
+              "label": "45 L"
+            },
+            {
+              "id": "d",
+              "label": "60 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let milk=5x, water=3x. A 16 L sample removes 10 L milk and 6 L water.",
+            "Final milk=5x−10; water=3x−6+16=3x+10."
+          ],
+          "explanation": "Final milk=5x−10; water=3x−6+16=3x+10. Equal gives 2x=20 → x=10, so milk=50 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vessel has A:B=5:3. Remove 16 L and replace with B. Final ratio becomes 1:1. What was the original amount of A?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 L"
+          },
+          {
+            "id": "b",
+            "label": "45 L"
+          },
+          {
+            "id": "c",
+            "label": "50 L"
+          },
+          {
+            "id": "d",
+            "label": "60 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vessel has A:B=5:3. Remove 16 L and replace with B. Final ratio becomes 1:1. What was the original amount of A?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 L"
+            },
+            {
+              "id": "b",
+              "label": "45 L"
+            },
+            {
+              "id": "c",
+              "label": "50 L"
+            },
+            {
+              "id": "d",
+              "label": "60 L"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let A=5x, B=3x. The 16 L sample removes 10 L A and 6 L B.",
+            "Final A=5x−10; B=3x−6+16=3x+10."
+          ],
+          "explanation": "Final A=5x−10; B=3x−6+16=3x+10. Equal gives 2x=20 → x=10, so A=50 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nLet milk=5x, water=3x. A 16 L sample removes 10 L milk and 6 L water.\n\nFinal milk=5x−10; water=3x−6+16=3x+10. Equal gives 2x=20 → x=10, so milk=50 L.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nFinal A=5x−10; B=3x−6+16=3x+10. Equal gives 2x=20 → x=10, so A=50 L.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now handle one draw-and-replace operation without guessing.\n\nA removed sample leaves in the vessel's current composition; the refill enters in its own composition. Track those two moves separately, then rebuild the final ratio or percentage.\n\nNext, we repeat that operation several times.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

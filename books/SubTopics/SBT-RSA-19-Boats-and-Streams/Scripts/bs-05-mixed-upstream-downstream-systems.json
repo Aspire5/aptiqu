@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "bs-05-mixed-upstream-downstream-systems",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Mixed Upstream–Downstream Systems",
+    "description": "Solve two mixed journey equations for upstream and downstream speeds, then recover still-water speed and current.",
+    "teachingApproach": "Show first that the awkward equations are linear in the reciprocals of the two effective speeds. Use short elimination with p=1/U and q=1/D, then convert back to speeds. Scale up to swapped-distance systems, linked towns, and two boats sharing one current.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 19, Boats and Streams. Approved scope: Teach the chapter’s two-equation pattern where one journey mixes upstream and downstream distances and a second journey gives another mix. Introduce p = 1/(upstream speed) and q = 1/(downstream speed) when that turns reciprocal equations into a simple linear system. Cover swapped-distance systems, extracting still-water/current speeds after solving the two effective rates, equidistant three-town river problems, and two-boat problems that share the same current. Keep algebra readable and verify recovered rates by replaying one original trip."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn the hardest-looking pattern in this chapter without drowning in fractions.\n\nWhen two journeys mix upstream and downstream distances, the unknowns often become simple if we solve for the reciprocals of the two effective speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose:\n40 km upstream + 55 km downstream takes 13 h,\n30 km upstream + 44 km downstream takes 10 h.\n\nLet U be upstream speed and D downstream speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The equations are:\n40/U + 55/D = 13\n30/U + 44/D = 10.\n\nSet p=1/U and q=1/D. Now they are linear:\n40p+55q=13\n30p+44q=10.\nSolving gives U=5, D=11, so still water=8 and current=3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "For the mixed journeys 40/U + 55/D = 13 and 30/U + 44/D = 10, the effective speeds are U=5 and D=11 km/hr. What is the still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "6 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "16 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "For the mixed journeys 40/U + 55/D = 13 and 30/U + 44/D = 10, the effective speeds are U=5 and D=11 km/hr. What is the still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "6 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "16 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Still water is the midpoint of U and D.",
+            "(5 + 11) ÷ 2."
+          ],
+          "explanation": "Still-water speed = 8 km/hr. Current is the half-difference, 3 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nStill water is the midpoint of U and D.\n\nStill-water speed = 8 km/hr. Current is the half-difference, 3 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixed-journey system gives upstream speed 4 km/hr and downstream speed 8 km/hr. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "6 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "12 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "2 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixed-journey system gives upstream speed 4 km/hr and downstream speed 8 km/hr. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "6 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "12 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "2 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use half the difference.",
+            "(8 − 4) ÷ 2."
+          ],
+          "explanation": "Current speed = 2 km/hr; still-water speed = 6 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent speed = 2 km/hr; still-water speed = 6 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's see a clean elimination.\n\n20/U + 30/D = 7\n15/U + 20/D = 5.\n\nUse p=1/U and q=1/D.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That becomes:\n20p + 30q = 7\n15p + 20q = 5.\n\nEliminate one variable in the usual way. The solution is p=1/5 and q=1/10.\nSo U=5 and D=10 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "If 20/U + 30/D = 7 and 15/U + 20/D = 5, what is the downstream speed D?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "7.5 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "15 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "10 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "If 20/U + 30/D = 7 and 15/U + 20/D = 5, what is the downstream speed D?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "7.5 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "15 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "10 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use p=1/U and q=1/D.",
+            "The solution is p=1/5 and q=1/10."
+          ],
+          "explanation": "q=1/10 means D=10 km/hr. The reciprocal is the speed, not the time coefficient itself."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nUse p=1/U and q=1/D.\n\nq=1/10 means D=10 km/hr. The reciprocal is the speed, not the time coefficient itself.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system gives 18/U + 24/D = 5 and 12/U + 36/D = 5. If U=6 and D=12, what is the still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "6 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "9 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "18 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system gives 18/U + 24/D = 5 and 12/U + 36/D = 5. If U=6 and D=12, what is the still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "6 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "9 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "18 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Take the midpoint of 6 and 12.",
+            "(6+12)/2."
+          ],
+          "explanation": "Still-water speed = 9 km/hr; current = 3 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nStill-water speed = 9 km/hr; current = 3 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Swapping the upstream and downstream distances creates another common exam shape.\n\nSuppose 24 km upstream + 36 km downstream takes 6 h.\nAnd 36 km upstream + 24 km downstream takes 6.5 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "These are:\n24/U + 36/D = 6\n36/U + 24/D = 6.5.\n\nThey solve to U=8 and D=12 km/hr.\nSo still water = 10 and current = 2 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swapped-distance system gives upstream speed 8 km/hr and downstream speed 12 km/hr. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "10 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "20 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swapped-distance system gives upstream speed 8 km/hr and downstream speed 12 km/hr. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "10 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "20 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Current is half the gap between effective speeds.",
+            "(12−8)/2."
+          ],
+          "explanation": "The gap is 4 km/hr, which equals twice the current. So current = 2 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nCurrent is half the gap between effective speeds.\n\nThe gap is 4 km/hr, which equals twice the current. So current = 2 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A swapped-distance system gives upstream speed 6 km/hr and downstream speed 10 km/hr. What is the still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "16 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A swapped-distance system gives upstream speed 6 km/hr and downstream speed 10 km/hr. What is the still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "16 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Still water is the midpoint.",
+            "(6+10)/2."
+          ],
+          "explanation": "Still-water speed = 8 km/hr and current = 2 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nStill-water speed = 8 km/hr and current = 2 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "After solving a system, always translate back to the two physical speeds.\n\nIf p=1/5 and q=1/11, then U=5 and D=11 — not 1/5 and 1/11 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Then:\nStill water = (11+5)/2 = 8\nCurrent = (11−5)/2 = 3 km/hr.\n\nThis reciprocal-to-speed step is an easy place to lose the meaning of the variables.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system gives 1/U = 1/5 and 1/D = 1/11. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "6 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "1/3 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system gives 1/U = 1/5 and 1/D = 1/11. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "6 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "1/3 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Convert the reciprocals back to U and D first.",
+            "U=5, D=11; take half the difference."
+          ],
+          "explanation": "Current = (11−5)/2 = 3 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nConvert the reciprocals back to U and D first.\n\nCurrent = (11−5)/2 = 3 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system gives 1/U = 1/7 and 1/D = 1/13. What is the still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "10 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "6 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "20 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system gives 1/U = 1/7 and 1/D = 1/13. What is the still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "10 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "6 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "20 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "U=7 and D=13.",
+            "Take their midpoint."
+          ],
+          "explanation": "Still-water speed = (7+13)/2 = 10 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nStill-water speed = (7+13)/2 = 10 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now link three towns. P, Q and R lie on the same river, with PQ = QR = x.\n\nP→Q and back takes 10 h. P→R downstream takes 4 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let downstream speed=a, upstream=b.\nP→R is 2x, so 2x/a=4 ⇒ x=2a.\nRound trip P↔Q:\nx/a + x/b = 10\n2 + 2a/b = 10 ⇒ a/b=4.\nStill water : current = (4+1):(4−1)=5:3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "P, Q, R are equally spaced on a river. P→Q→P takes 10 h, while P→R downstream takes 4 h. What is still-water speed : current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 : 3"
+          },
+          {
+            "id": "b",
+            "label": "4 : 1"
+          },
+          {
+            "id": "c",
+            "label": "3 : 1"
+          },
+          {
+            "id": "d",
+            "label": "5 : 2"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "P, Q, R are equally spaced on a river. P→Q→P takes 10 h, while P→R downstream takes 4 h. What is still-water speed : current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 : 3"
+            },
+            {
+              "id": "b",
+              "label": "4 : 1"
+            },
+            {
+              "id": "c",
+              "label": "3 : 1"
+            },
+            {
+              "id": "d",
+              "label": "5 : 2"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let downstream:upstream = a:b.",
+            "Use P→R to express x in terms of a, then the P↔Q round trip."
+          ],
+          "explanation": "The conditions give downstream:upstream = 4:1, so still water : current = 5:3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nLet downstream:upstream = a:b.\n\nThe conditions give downstream:upstream = 4:1, so still water : current = 5:3.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "P, Q, R are equally spaced. P→Q→P takes 8 h, while P→R downstream takes 4 h. What is still-water speed : current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 1"
+          },
+          {
+            "id": "b",
+            "label": "4 : 1"
+          },
+          {
+            "id": "c",
+            "label": "5 : 3"
+          },
+          {
+            "id": "d",
+            "label": "2 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "P, Q, R are equally spaced. P→Q→P takes 8 h, while P→R downstream takes 4 h. What is still-water speed : current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 1"
+            },
+            {
+              "id": "b",
+              "label": "4 : 1"
+            },
+            {
+              "id": "c",
+              "label": "5 : 3"
+            },
+            {
+              "id": "d",
+              "label": "2 : 1"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Again x=2a from the P→R trip.",
+            "2 + 2a/b = 8 gives a/b=3."
+          ],
+          "explanation": "Downstream:upstream = 3:1. Therefore still water : current = 4:2 = 2:1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nDownstream:upstream = 3:1. Therefore still water : current = 4:2 = 2:1.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two boats can share the same current.\n\nBoat B moves at 10 km/hr in still water. Boat A's still-water speed equals B's upstream speed.\nBoat A travels 20 km downstream in 2 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Boat A downstream speed = 10 km/hr.\nBut A still water = 10−s, so A downstream = (10−s)+s = 10.\nNow if B travels 40 km upstream in 5 h, B upstream = 8, so current s=2 and A still water=8 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Boat B moves at 10 km/hr in still water. Its upstream speed equals Boat A's still-water speed. If B's upstream speed is 8 km/hr, what is Boat A's still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "10 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "8 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "12 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Boat B moves at 10 km/hr in still water. Its upstream speed equals Boat A's still-water speed. If B's upstream speed is 8 km/hr, what is Boat A's still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "10 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "8 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "12 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The condition says the two speeds are equal.",
+            "Boat B upstream = 10 − current = 8."
+          ],
+          "explanation": "Boat A's still-water speed is exactly Boat B's upstream speed, 8 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe condition says the two speeds are equal.\n\nBoat A's still-water speed is exactly Boat B's upstream speed, 8 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Boat B moves at 12 km/hr in still water. Boat A's still-water speed equals B's upstream speed. If the current is 4 km/hr, what is A's still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "8 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "12 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "16 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Boat B moves at 12 km/hr in still water. Boat A's still-water speed equals B's upstream speed. If the current is 4 km/hr, what is A's still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "8 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "12 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "16 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Boat B upstream = 12−4.",
+            "That equals Boat A's still-water speed."
+          ],
+          "explanation": "Boat A's still-water speed is 8 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nBoat A's still-water speed is 8 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Not every mixed system needs awkward values.\n\nSuppose:\n12 km upstream + 30 km downstream takes 5 h,\n24 km upstream + 10 km downstream also takes 5 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The clean solution is U=6 and D=10 km/hr:\n12/6 + 30/10 = 2+3 = 5\n24/6 + 10/10 = 4+1 = 5.\n\nThen still water=8 and current=2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system is satisfied by upstream speed 6 km/hr and downstream speed 10 km/hr. What is the still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "8 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "16 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system is satisfied by upstream speed 6 km/hr and downstream speed 10 km/hr. What is the still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "8 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "16 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Still water is the midpoint of the effective speeds.",
+            "(6+10)/2."
+          ],
+          "explanation": "Still-water speed = 8 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nStill water is the midpoint of the effective speeds.\n\nStill-water speed = 8 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system is satisfied by upstream speed 5 km/hr and downstream speed 15 km/hr. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "10 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "7.5 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "20 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system is satisfied by upstream speed 5 km/hr and downstream speed 15 km/hr. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "10 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "7.5 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "20 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use half the difference.",
+            "(15−5)/2."
+          ],
+          "explanation": "Current speed = 5 km/hr; still-water speed = 10 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent speed = 5 km/hr; still-water speed = 10 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A final system can ask for a later journey, not the speeds themselves.\n\nSuppose the mixed conditions lead to U=6 and D=12 km/hr.\nNow the boat must cover 36 km upstream and 24 km downstream.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Time upstream = 36/6 = 6 h.\nTime downstream = 24/12 = 2 h.\nTotal = 8 h.\n\nOnce the rates are known, return to ordinary distance ÷ speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixed system gives upstream speed 6 km/hr and downstream speed 12 km/hr. How long for 36 km upstream plus 24 km downstream?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "7 hours"
+          },
+          {
+            "id": "c",
+            "label": "10 hours"
+          },
+          {
+            "id": "d",
+            "label": "8 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixed system gives upstream speed 6 km/hr and downstream speed 12 km/hr. How long for 36 km upstream plus 24 km downstream?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "7 hours"
+            },
+            {
+              "id": "c",
+              "label": "10 hours"
+            },
+            {
+              "id": "d",
+              "label": "8 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find the two leg times separately.",
+            "36/6 + 24/12."
+          ],
+          "explanation": "The times are 6 h and 2 h, totaling 8 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind the two leg times separately.\n\nThe times are 6 h and 2 h, totaling 8 hours.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixed system gives upstream speed 8 km/hr and downstream speed 16 km/hr. How long for 40 km upstream plus 48 km downstream?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "7 hours"
+          },
+          {
+            "id": "c",
+            "label": "8 hours"
+          },
+          {
+            "id": "d",
+            "label": "9 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixed system gives upstream speed 8 km/hr and downstream speed 16 km/hr. How long for 40 km upstream plus 48 km downstream?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "7 hours"
+            },
+            {
+              "id": "c",
+              "label": "8 hours"
+            },
+            {
+              "id": "d",
+              "label": "9 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "40/8 = 5 h.",
+            "48/16 = 3 h; add them."
+          ],
+          "explanation": "Total time = 5 + 3 = 8 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nTotal time = 5 + 3 = 8 hours.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now solve two mixed river conditions without guessing.\n\nYou can linearise reciprocal equations, recover upstream and downstream speeds, convert them to boat/current speed, and handle linked-town or two-boat versions of the same structure.\n\nNext, we switch from travelling along the river to swimming across it.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

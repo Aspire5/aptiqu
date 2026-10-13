@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "td-04-stoppages-rests-effective-speed",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Stoppages, Rests, and Effective Speed",
+    "description": "Separate moving time from waiting time, count scheduled stops correctly, and connect running speed with whole-trip average speed.",
+    "teachingApproach": "Use one elapsed hour to make running speed versus effective speed visible. Then count stops before the destination, handle rests after fixed distances, remove stoppage time when recovering running speed, and finish by combining moving time and stop time into a whole-trip average. Repeatedly call out the endpoint trap: there is no extra stop after arrival.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 18, Time and Distance. Approved scope: Cover running speed versus speed including stoppages, fixed-duration halts, stops after fixed distances, rests after each kilometre, equal halts at junctions, recovering running speed from elapsed time, and whole-trip average speed including stops. Teach careful counting of stops before—not after—the destination."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn why a vehicle can have two different speeds on the same route.\n\nIts running speed ignores stops. Its overall speed includes every minute spent waiting.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A bus runs at 64 km/hr, but its overall speed including stops is 48 km/hr.\n\nIn one elapsed hour it covers 48 km.\nAt 64 km/hr, 48 km needs 48/64 = 3/4 hour = 45 minutes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So in each elapsed hour:\n\n45 minutes moving\n15 minutes stopped\n\nThe missing 15 minutes is the stoppage time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bus runs at 60 km/hr, but including stops its average is 45 km/hr. How many minutes does it stop per elapsed hour?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 min"
+          },
+          {
+            "id": "b",
+            "label": "20 min"
+          },
+          {
+            "id": "c",
+            "label": "15 min"
+          },
+          {
+            "id": "d",
+            "label": "25 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bus runs at 60 km/hr, but including stops its average is 45 km/hr. How many minutes does it stop per elapsed hour?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 min"
+            },
+            {
+              "id": "b",
+              "label": "20 min"
+            },
+            {
+              "id": "c",
+              "label": "15 min"
+            },
+            {
+              "id": "d",
+              "label": "25 min"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "In one elapsed hour it covers 45 km.",
+            "At 60 km/hr, 45 km takes 45 minutes."
+          ],
+          "explanation": "The bus needs 45 minutes of movement to cover 45 km at 60 km/hr. The remaining 15 minutes of the hour are stoppage time."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nIn one elapsed hour it covers 45 km.\n\nThe bus needs 45 minutes of movement to cover 45 km at 60 km/hr. The remaining 15 minutes of the hour are stoppage time.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vehicle runs at 80 km/hr, but including stops averages 60 km/hr. How many minutes does it stop per elapsed hour?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 min"
+          },
+          {
+            "id": "b",
+            "label": "12 min"
+          },
+          {
+            "id": "c",
+            "label": "20 min"
+          },
+          {
+            "id": "d",
+            "label": "25 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vehicle runs at 80 km/hr, but including stops averages 60 km/hr. How many minutes does it stop per elapsed hour?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 min"
+            },
+            {
+              "id": "b",
+              "label": "12 min"
+            },
+            {
+              "id": "c",
+              "label": "20 min"
+            },
+            {
+              "id": "d",
+              "label": "25 min"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "In one elapsed hour it covers 60 km.",
+            "60 km at 80 km/hr takes 3/4 hour."
+          ],
+          "explanation": "Moving time is 45 minutes, so stopping time is 60 − 45 = 15 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nMoving time is 45 minutes, so stopping time is 60 − 45 = 15 minutes.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now suppose stops happen after fixed distances.\n\nA car covers 900 km at 90 km/hr and stops 10 minutes after every 180 km.\nDriving time = 10 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Count only stops before the destination:\n180, 360, 540, 720 km → 4 stops.\n\nThere is no extra stop after arriving at 900 km.\nStop time = 40 min.\nTotal = 10 hr 40 min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A car covers 900 km at 90 km/hr and stops 10 minutes after every 180 km. What total time does the trip take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 hr 40 min"
+          },
+          {
+            "id": "b",
+            "label": "10 hr 50 min"
+          },
+          {
+            "id": "c",
+            "label": "11 hr"
+          },
+          {
+            "id": "d",
+            "label": "9 hr 40 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A car covers 900 km at 90 km/hr and stops 10 minutes after every 180 km. What total time does the trip take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 hr 40 min"
+            },
+            {
+              "id": "b",
+              "label": "10 hr 50 min"
+            },
+            {
+              "id": "c",
+              "label": "11 hr"
+            },
+            {
+              "id": "d",
+              "label": "9 hr 40 min"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Driving time is 900 ÷ 90 = 10 hr.",
+            "Stops occur at 180, 360, 540 and 720 km — four stops."
+          ],
+          "explanation": "Four stops add 40 minutes to 10 hours of driving, giving 10 hr 40 min. Do not count a stop after the destination."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nDriving time is 900 ÷ 90 = 10 hr.\n\nFour stops add 40 minutes to 10 hours of driving, giving 10 hr 40 min. Do not count a stop after the destination.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bus covers 720 km at 72 km/hr and stops 8 minutes after every 120 km. What is the total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 hr 48 min"
+          },
+          {
+            "id": "b",
+            "label": "10 hr 32 min"
+          },
+          {
+            "id": "c",
+            "label": "10 hr 40 min"
+          },
+          {
+            "id": "d",
+            "label": "11 hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bus covers 720 km at 72 km/hr and stops 8 minutes after every 120 km. What is the total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 hr 48 min"
+            },
+            {
+              "id": "b",
+              "label": "10 hr 32 min"
+            },
+            {
+              "id": "c",
+              "label": "10 hr 40 min"
+            },
+            {
+              "id": "d",
+              "label": "11 hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Driving time = 10 hr.",
+            "Stops are at 120, 240, 360, 480 and 600 km — five stops."
+          ],
+          "explanation": "Five stops add 40 minutes. Total time = 10 hr 40 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nFive stops add 40 minutes. Total time = 10 hr 40 min.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rest-after-each-kilometre questions have the same counting trap.\n\nFor a 5 km walk, resting after every kilometre means rests after km 1, 2, 3 and 4.\n\nThere is no need to rest after the journey is over.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "At 10 km/hr, 5 km takes 30 minutes of walking.\nFour 5-minute rests add 20 minutes.\n\nTotal = 50 minutes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ravi walks 6 km at 12 km/hr and rests 4 minutes after every kilometre. How long does the journey take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54 min"
+          },
+          {
+            "id": "b",
+            "label": "48 min"
+          },
+          {
+            "id": "c",
+            "label": "30 min"
+          },
+          {
+            "id": "d",
+            "label": "50 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ravi walks 6 km at 12 km/hr and rests 4 minutes after every kilometre. How long does the journey take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54 min"
+            },
+            {
+              "id": "b",
+              "label": "48 min"
+            },
+            {
+              "id": "c",
+              "label": "30 min"
+            },
+            {
+              "id": "d",
+              "label": "50 min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Walking time = 6/12 hour = 30 minutes.",
+            "There are 5 rests before the final kilometre is complete."
+          ],
+          "explanation": "Walking takes 30 minutes. Five rests add 20 minutes, so total time = 50 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nWalking time = 6/12 hour = 30 minutes.\n\nWalking takes 30 minutes. Five rests add 20 minutes, so total time = 50 minutes.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A walker covers 4 km at 8 km/hr and rests 6 minutes after every kilometre. What total time is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54 min"
+          },
+          {
+            "id": "b",
+            "label": "48 min"
+          },
+          {
+            "id": "c",
+            "label": "42 min"
+          },
+          {
+            "id": "d",
+            "label": "30 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A walker covers 4 km at 8 km/hr and rests 6 minutes after every kilometre. What total time is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54 min"
+            },
+            {
+              "id": "b",
+              "label": "48 min"
+            },
+            {
+              "id": "c",
+              "label": "42 min"
+            },
+            {
+              "id": "d",
+              "label": "30 min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Walking time = 30 minutes.",
+            "There are 3 rests, not 4."
+          ],
+          "explanation": "Walking takes 30 minutes. Three rests add 18 minutes. Total = 48 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nWalking takes 30 minutes. Three rests add 18 minutes. Total = 48 minutes.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the question gives the total trip time and the stops separately.\n\nA train covers 300 km in 5 hr 30 min, including 30 minutes of stops.\n\nActual moving time = 5 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Running speed = 300 ÷ 5 = 60 km/hr.\n\nAlways remove stoppage time before finding a speed that is meant to exclude stops.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train covers 420 km in 7 hr 20 min. It stops for a total of 20 minutes. What is its running speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "57.27 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "63 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "70 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train covers 420 km in 7 hr 20 min. It stops for a total of 20 minutes. What is its running speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "57.27 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "63 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "70 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Remove the 20 minutes of stops from the total time.",
+            "Moving time = 7 hours."
+          ],
+          "explanation": "7 hr 20 min − 20 min = 7 hr moving time. Running speed = 420 ÷ 7 = 60 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nRemove the 20 minutes of stops from the total time.\n\n7 hr 20 min − 20 min = 7 hr moving time. Running speed = 420 ÷ 7 = 60 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bus covers 330 km in 6 hours, including 30 minutes of stops. What is its running speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "66 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "60 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bus covers 330 km in 6 hours, including 30 minutes of stops. What is its running speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "66 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "60 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Moving time = 5.5 hours.",
+            "Speed = 330 ÷ 5.5."
+          ],
+          "explanation": "Moving time is 5.5 hours. Running speed = 330 ÷ 5.5 = 60 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nMoving time is 5.5 hours. Running speed = 330 ÷ 5.5 = 60 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Equal stops at several junctions can be recovered from the missing time.\n\nA train travels 720 km at 60 km/hr, so moving time is 12 hours.\nIf the whole trip lasts 14 hours, stoppage time is 2 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If it halts equally at 4 junctions:\n\n2 hours ÷ 4 = 1/2 hour = 30 minutes per junction.\n\nFirst find total lost time, then share it equally.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train covers 720 km at 60 km/hr in a total elapsed time of 14 hours. It halts equally at 4 junctions. How long is each halt?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 min"
+          },
+          {
+            "id": "b",
+            "label": "24 min"
+          },
+          {
+            "id": "c",
+            "label": "40 min"
+          },
+          {
+            "id": "d",
+            "label": "30 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train covers 720 km at 60 km/hr in a total elapsed time of 14 hours. It halts equally at 4 junctions. How long is each halt?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 min"
+            },
+            {
+              "id": "b",
+              "label": "24 min"
+            },
+            {
+              "id": "c",
+              "label": "40 min"
+            },
+            {
+              "id": "d",
+              "label": "30 min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Moving time = 720 ÷ 60 = 12 hr.",
+            "Total halt time = 2 hr, shared across 4 junctions."
+          ],
+          "explanation": "The train loses 2 hours to stops. 120 minutes ÷ 4 = 30 minutes at each junction."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nMoving time = 720 ÷ 60 = 12 hr.\n\nThe train loses 2 hours to stops. 120 minutes ÷ 4 = 30 minutes at each junction.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train covers 900 km at 75 km/hr in 15 hours total and halts equally at 6 junctions. How long is each halt?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 min"
+          },
+          {
+            "id": "b",
+            "label": "30 min"
+          },
+          {
+            "id": "c",
+            "label": "25 min"
+          },
+          {
+            "id": "d",
+            "label": "45 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train covers 900 km at 75 km/hr in 15 hours total and halts equally at 6 junctions. How long is each halt?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 min"
+            },
+            {
+              "id": "b",
+              "label": "30 min"
+            },
+            {
+              "id": "c",
+              "label": "25 min"
+            },
+            {
+              "id": "d",
+              "label": "45 min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Moving time = 900 ÷ 75 = 12 hr.",
+            "Three hours of stopping are shared among six junctions."
+          ],
+          "explanation": "Total halt time = 15 − 12 = 3 hr = 180 min. Each halt = 180 ÷ 6 = 30 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nTotal halt time = 15 − 12 = 3 hr = 180 min. Each halt = 180 ÷ 6 = 30 min.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Fixed-distance stopping also appears as a schedule question.\n\nA train travels 400 km at 80 km/hr and stops 5 minutes after every 100 km.\nDriving time = 5 hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Stops happen at 100, 200 and 300 km: three stops.\n\nStop time = 15 min.\nTotal trip time = 5 hr 15 min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train travels 400 km at 80 km/hr and stops 5 minutes after every 100 km. What is the total journey time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5 hr 20 min"
+          },
+          {
+            "id": "b",
+            "label": "5 hr 15 min"
+          },
+          {
+            "id": "c",
+            "label": "5 hr"
+          },
+          {
+            "id": "d",
+            "label": "5 hr 30 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train travels 400 km at 80 km/hr and stops 5 minutes after every 100 km. What is the total journey time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5 hr 20 min"
+            },
+            {
+              "id": "b",
+              "label": "5 hr 15 min"
+            },
+            {
+              "id": "c",
+              "label": "5 hr"
+            },
+            {
+              "id": "d",
+              "label": "5 hr 30 min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Driving time = 5 hours.",
+            "There are three stops before the 400 km destination."
+          ],
+          "explanation": "Three 5-minute stops add 15 minutes to the 5 hours of driving, so total time = 5 hr 15 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nDriving time = 5 hours.\n\nThree 5-minute stops add 15 minutes to the 5 hours of driving, so total time = 5 hr 15 min.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train travels 360 km at 60 km/hr and stops 4 minutes after every 90 km. What total time is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hr 16 min"
+          },
+          {
+            "id": "b",
+            "label": "6 hr 8 min"
+          },
+          {
+            "id": "c",
+            "label": "6 hr 24 min"
+          },
+          {
+            "id": "d",
+            "label": "6 hr 12 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train travels 360 km at 60 km/hr and stops 4 minutes after every 90 km. What total time is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hr 16 min"
+            },
+            {
+              "id": "b",
+              "label": "6 hr 8 min"
+            },
+            {
+              "id": "c",
+              "label": "6 hr 24 min"
+            },
+            {
+              "id": "d",
+              "label": "6 hr 12 min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Driving time = 6 hr.",
+            "Stops occur at 90, 180 and 270 km."
+          ],
+          "explanation": "There are 3 stops, adding 12 minutes. Total = 6 hr 12 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThere are 3 stops, adding 12 minutes. Total = 6 hr 12 min.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A stop can also be described as a fixed fraction of every hour.\n\nIf a bus can run at 72 km/hr but stops 12 minutes in each elapsed hour, it moves for only 48 minutes = 4/5 hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Distance covered in that elapsed hour:\n72 × 4/5 = 57.6 km.\n\nSo its overall speed is 57.6 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bus runs at 60 km/hr but stops for 15 minutes in every elapsed hour. What is its overall speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "50 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "48 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "37.5 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bus runs at 60 km/hr but stops for 15 minutes in every elapsed hour. What is its overall speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "50 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "48 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "37.5 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "It moves for 45 minutes = 3/4 hour.",
+            "Distance in one elapsed hour = 60 × 3/4."
+          ],
+          "explanation": "The bus moves for 3/4 of each hour, covering 45 km. Overall speed = 45 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nIt moves for 45 minutes = 3/4 hour.\n\nThe bus moves for 3/4 of each hour, covering 45 km. Overall speed = 45 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vehicle runs at 90 km/hr but rests 10 minutes in every elapsed hour. What is its overall speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "80 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "81 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "75 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "72 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vehicle runs at 90 km/hr but rests 10 minutes in every elapsed hour. What is its overall speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "80 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "81 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "75 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "72 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "It moves for 50 minutes = 5/6 hour.",
+            "90 × 5/6."
+          ],
+          "explanation": "In one elapsed hour the vehicle moves for 5/6 hour and covers 75 km. Overall speed = 75 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nIn one elapsed hour the vehicle moves for 5/6 hour and covers 75 km. Overall speed = 75 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a whole-trip average, combine driving time and every stop.\n\nA car covers 300 km at 75 km/hr and stops 5 minutes after each 75 km.\nDriving time = 4 hr.\nStops before arrival: 3.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Stop time = 15 min = 0.25 hr.\nTotal elapsed time = 4.25 hr.\n\nWhole-trip average = 300 ÷ 4.25 ≈ 70.59 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A car covers 300 km at 75 km/hr and stops 5 minutes after each 75 km. What is its average speed for the whole trip?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "75 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "66.67 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "70.59 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "72 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A car covers 300 km at 75 km/hr and stops 5 minutes after each 75 km. What is its average speed for the whole trip?",
+          "options": [
+            {
+              "id": "a",
+              "label": "75 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "66.67 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "70.59 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "72 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "There are 3 stops, totaling 15 minutes.",
+            "Average = 300 km ÷ 4.25 hr."
+          ],
+          "explanation": "Driving takes 4 hr; stops add 0.25 hr. Average speed = 300 ÷ 4.25 = 70.59 km/hr approximately."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThere are 3 stops, totaling 15 minutes.\n\nDriving takes 4 hr; stops add 0.25 hr. Average speed = 300 ÷ 4.25 = 70.59 km/hr approximately.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bus covers 240 km at 60 km/hr and stops 6 minutes after each 60 km. What is its whole-trip average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "55.81 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "54.55 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "57.14 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bus covers 240 km at 60 km/hr and stops 6 minutes after each 60 km. What is its whole-trip average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "55.81 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "54.55 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "57.14 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Three stops add 18 minutes = 0.3 hr.",
+            "Average = 240 ÷ 4.3."
+          ],
+          "explanation": "Driving time = 4 hr. Three stops add 0.3 hr, so average = 240 ÷ 4.3 = 55.81 km/hr approximately."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nDriving time = 4 hr. Three stops add 0.3 hr, so average = 240 ÷ 4.3 = 55.81 km/hr approximately.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now separate motion from waiting time.\n\nYou know how to count only the stops that actually happen, recover lost time, and turn running speed into an effective journey speed.\n\nNext, we use speed changes to explain early arrivals, late arrivals and schedule-recovery questions.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

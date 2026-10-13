@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "bs-03-round-trips-average-speed",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Round Trips, Total Time, and Average Speed",
+    "description": "Add upstream and downstream times correctly, recover distance, and find whole-trip average speed.",
+    "teachingApproach": "Start with a short out-and-back trip and keep each leg visible. Show why total time is a sum and why average speed must use total distance divided by total time. Then reverse the setup to find distance, still-water speed, current, and partial-return distances.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 19, Boats and Streams. Approved scope: Teach an upstream-downstream round trip as two equal-distance legs with different effective speeds. Cover finding the one-way distance from total time, finding total time from a known distance, equal-distance average speed using total distance divided by total time, comparing a boat round trip with a road traveller, partial returns such as coming back to a midpoint, and reverse problems where total round-trip time plus current speed determines still-water speed. Include the chapter pattern where a boat of known still-water speed travels a fixed distance downstream and back in a given total time, leading to a simple quadratic that factors cleanly."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn how a river changes a round trip.\n\nThe distance out and back may be the same, but the times are not. Treat the two legs separately, then join them at the end.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A boat moves at 5 km/hr in still water and the current is 1 km/hr.\n\nDownstream = 6 km/hr\nUpstream = 4 km/hr.\n\nSuppose the place is x km away.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The round-trip time is:\n\nx/6 + x/4.\n\nIf the whole trip takes 1 hour:\n2x/12 + 3x/12 = 1\n5x/12 = 1\nx = 2.4 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 5 km/hr in still water, current is 1 km/hr, and an out-and-back trip takes 1 hour. How far away is the turning point?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.2 km"
+          },
+          {
+            "id": "b",
+            "label": "4.8 km"
+          },
+          {
+            "id": "c",
+            "label": "2.4 km"
+          },
+          {
+            "id": "d",
+            "label": "3 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 5 km/hr in still water, current is 1 km/hr, and an out-and-back trip takes 1 hour. How far away is the turning point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.2 km"
+            },
+            {
+              "id": "b",
+              "label": "4.8 km"
+            },
+            {
+              "id": "c",
+              "label": "2.4 km"
+            },
+            {
+              "id": "d",
+              "label": "3 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use x/6 + x/4 = 1.",
+            "Combine the two time fractions."
+          ],
+          "explanation": "The times are x/6 and x/4. Their sum is 5x/12 = 1, so x = 12/5 = 2.4 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nUse x/6 + x/4 = 1.\n\nThe times are x/6 and x/4. Their sum is 5x/12 = 1, so x = 12/5 = 2.4 km.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 8 km/hr in still water, current is 2 km/hr, and an out-and-back trip takes 1 h 20 min. How far away is the turning point?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 km"
+          },
+          {
+            "id": "b",
+            "label": "5 km"
+          },
+          {
+            "id": "c",
+            "label": "4 km"
+          },
+          {
+            "id": "d",
+            "label": "6 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 8 km/hr in still water, current is 2 km/hr, and an out-and-back trip takes 1 h 20 min. How far away is the turning point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 km"
+            },
+            {
+              "id": "b",
+              "label": "5 km"
+            },
+            {
+              "id": "c",
+              "label": "4 km"
+            },
+            {
+              "id": "d",
+              "label": "6 km"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "1 h 20 min = 4/3 h.",
+            "Use x/10 + x/6 = 4/3."
+          ],
+          "explanation": "x/10 + x/6 = 4x/15 = 4/3, so x = 5 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nx/10 + x/6 = 4x/15 = 4/3, so x = 5 km.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A chapter example uses 7.5 km/hr in still water and 1.5 km/hr current.\n\nSo downstream = 9 and upstream = 6 km/hr.\nThe full out-and-back time is 50 minutes = 5/6 hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let one-way distance be x:\n\nx/9 + x/6 = 5/6\n(2x + 3x)/18 = 5/6\n5x/18 = 5/6\nx = 3 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 7.5 km/hr in still water with a 1.5 km/hr current. A round trip takes 50 minutes. How far away is the turning point?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 km"
+          },
+          {
+            "id": "b",
+            "label": "4.5 km"
+          },
+          {
+            "id": "c",
+            "label": "2 km"
+          },
+          {
+            "id": "d",
+            "label": "3 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 7.5 km/hr in still water with a 1.5 km/hr current. A round trip takes 50 minutes. How far away is the turning point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 km"
+            },
+            {
+              "id": "b",
+              "label": "4.5 km"
+            },
+            {
+              "id": "c",
+              "label": "2 km"
+            },
+            {
+              "id": "d",
+              "label": "3 km"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Build 9 km/hr downstream and 6 km/hr upstream.",
+            "Set x/9 + x/6 = 5/6."
+          ],
+          "explanation": "The equation gives 5x/18 = 5/6, so x = 3 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nBuild 9 km/hr downstream and 6 km/hr upstream.\n\nThe equation gives 5x/18 = 5/6, so x = 3 km.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 10 km/hr in still water with a 2 km/hr current. A round trip takes 1 h 15 min. How far away is the turning point?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 km"
+          },
+          {
+            "id": "b",
+            "label": "12 km"
+          },
+          {
+            "id": "c",
+            "label": "5 km"
+          },
+          {
+            "id": "d",
+            "label": "8 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 10 km/hr in still water with a 2 km/hr current. A round trip takes 1 h 15 min. How far away is the turning point?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 km"
+            },
+            {
+              "id": "b",
+              "label": "12 km"
+            },
+            {
+              "id": "c",
+              "label": "5 km"
+            },
+            {
+              "id": "d",
+              "label": "8 km"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Speeds are 12 and 8 km/hr.",
+            "1 h 15 min = 5/4 h; solve x/12 + x/8 = 5/4."
+          ],
+          "explanation": "x/12 + x/8 = 5x/24 = 5/4, so x = 6 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nx/12 + x/8 = 5x/24 = 5/4, so x = 6 km.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Average speed is not the simple average of downstream and upstream speeds.\n\nIf the two equal-distance speeds are 60 and 40 km/hr, the slow leg lasts longer.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Use total distance ÷ total time. For equal distances, this becomes:\n\nAverage = 2xy/(x+y)\n= 2×60×40/100\n= 48 km/hr.\n\nNot 50.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers equal distances at 60 km/hr downstream and 40 km/hr upstream. What is its average speed for the round trip?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "50 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "52 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers equal distances at 60 km/hr downstream and 40 km/hr upstream. What is its average speed for the round trip?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "50 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "52 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use the equal-distance average-speed formula.",
+            "2×60×40 ÷ (60+40)."
+          ],
+          "explanation": "Average speed = 4800/100 = 48 km/hr. The arithmetic mean 50 ignores the extra time on the slower leg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nUse the equal-distance average-speed formula.\n\nAverage speed = 4800/100 = 48 km/hr. The arithmetic mean 50 ignores the extra time on the slower leg.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers equal distances at 18 km/hr downstream and 12 km/hr upstream. What is its average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "13.5 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "16 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "14.4 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers equal distances at 18 km/hr downstream and 12 km/hr upstream. What is its average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "13.5 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "16 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "14.4 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use 2xy/(x+y).",
+            "2×18×12 ÷ 30."
+          ],
+          "explanation": "Average = 432/30 = 14.4 km/hr, not the simple mean 15."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nAverage = 432/30 = 14.4 km/hr, not the simple mean 15.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "This explains a neat comparison.\n\nA cyclist rides both ways at 12 km/hr.\nA boat moves at 10 km/hr in still water with current 4, so its river speeds are 14 and 6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Boat round-trip average:\n2×14×6/(14+6) = 168/20 = 8.4 km/hr.\n\nThe cyclist averages 12 km/hr, so the cyclist returns first over the same out-and-back distance.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat's river speeds are 14 km/hr downstream and 6 km/hr upstream. What is its round-trip average speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "8.4 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "9 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "12 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat's river speeds are 14 km/hr downstream and 6 km/hr upstream. What is its round-trip average speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "8.4 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "9 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "12 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Equal distances: use 2xy/(x+y).",
+            "2×14×6 ÷ 20."
+          ],
+          "explanation": "The average is 168/20 = 8.4 km/hr. The simple mean 10 is too high because the upstream leg lasts longer."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nEqual distances: use 2xy/(x+y).\n\nThe average is 168/20 = 8.4 km/hr. The simple mean 10 is too high because the upstream leg lasts longer.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A cyclist rides both ways at 10 km/hr. A boat moves at 9 km/hr in still water with a 3 km/hr current. Who returns first over the same round trip?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "Boat"
+          },
+          {
+            "id": "b",
+            "label": "They tie"
+          },
+          {
+            "id": "c",
+            "label": "Cyclist"
+          },
+          {
+            "id": "d",
+            "label": "Cannot be determined"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A cyclist rides both ways at 10 km/hr. A boat moves at 9 km/hr in still water with a 3 km/hr current. Who returns first over the same round trip?",
+          "options": [
+            {
+              "id": "a",
+              "label": "Boat"
+            },
+            {
+              "id": "b",
+              "label": "They tie"
+            },
+            {
+              "id": "c",
+              "label": "Cyclist"
+            },
+            {
+              "id": "d",
+              "label": "Cannot be determined"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Boat speeds are 12 and 6 km/hr.",
+            "Its equal-distance average is 8 km/hr, below 10."
+          ],
+          "explanation": "Boat average = 2×12×6/18 = 8 km/hr. The cyclist averages 10 km/hr, so the cyclist returns first."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nBoat average = 2×12×6/18 = 8 km/hr. The cyclist averages 10 km/hr, so the cyclist returns first.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the distance is known and the question asks for total time.\n\nStill water = 9 km/hr, current = 1.5.\nDownstream = 10.5, upstream = 7.5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a point 105 km away:\n\nDownstream time = 105/10.5 = 10 h\nUpstream time = 105/7.5 = 14 h\nTotal = 24 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 9 km/hr in still water and the current is 1.5 km/hr. It travels 105 km downstream and returns. Total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 hours"
+          },
+          {
+            "id": "b",
+            "label": "22 hours"
+          },
+          {
+            "id": "c",
+            "label": "28 hours"
+          },
+          {
+            "id": "d",
+            "label": "24 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 9 km/hr in still water and the current is 1.5 km/hr. It travels 105 km downstream and returns. Total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 hours"
+            },
+            {
+              "id": "b",
+              "label": "22 hours"
+            },
+            {
+              "id": "c",
+              "label": "28 hours"
+            },
+            {
+              "id": "d",
+              "label": "24 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find the two effective speeds first.",
+            "Add 105/10.5 and 105/7.5."
+          ],
+          "explanation": "The two times are 10 h and 14 h, so total time = 24 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind the two effective speeds first.\n\nThe two times are 10 h and 14 h, so total time = 24 h.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 8 km/hr in still water and the current is 2 km/hr. It travels 60 km downstream and returns. Total time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 hours"
+          },
+          {
+            "id": "b",
+            "label": "16 hours"
+          },
+          {
+            "id": "c",
+            "label": "14 hours"
+          },
+          {
+            "id": "d",
+            "label": "18 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 8 km/hr in still water and the current is 2 km/hr. It travels 60 km downstream and returns. Total time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 hours"
+            },
+            {
+              "id": "b",
+              "label": "16 hours"
+            },
+            {
+              "id": "c",
+              "label": "14 hours"
+            },
+            {
+              "id": "d",
+              "label": "18 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Downstream = 10, upstream = 6 km/hr.",
+            "60/10 + 60/6."
+          ],
+          "explanation": "The times are 6 h and 10 h, giving 16 hours in total."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe times are 6 h and 10 h, giving 16 hours in total.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A return trip may stop before the starting point.\n\nSuppose A to B is x km. A boat goes A→B downstream, then comes back only to the midpoint C.\n\nStill water = 14, current = 4, so speeds are 18 down and 10 up.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Total time 19 hours gives:\n\nx/18 + (x/2)/10 = 19\nx/18 + x/20 = 19\n19x/180 = 19\nx = 180 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 14 km/hr in still water with a 4 km/hr current. It goes from A to B downstream, then back upstream to the midpoint of AB. Total time is 19 hours. Find AB.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "90 km"
+          },
+          {
+            "id": "b",
+            "label": "160 km"
+          },
+          {
+            "id": "c",
+            "label": "180 km"
+          },
+          {
+            "id": "d",
+            "label": "200 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 14 km/hr in still water with a 4 km/hr current. It goes from A to B downstream, then back upstream to the midpoint of AB. Total time is 19 hours. Find AB.",
+          "options": [
+            {
+              "id": "a",
+              "label": "90 km"
+            },
+            {
+              "id": "b",
+              "label": "160 km"
+            },
+            {
+              "id": "c",
+              "label": "180 km"
+            },
+            {
+              "id": "d",
+              "label": "200 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "The return distance is only AB/2.",
+            "Use x/18 + x/20 = 19."
+          ],
+          "explanation": "The downstream time is x/18 and midpoint-return time is x/20. Their sum gives x = 180 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe return distance is only AB/2.\n\nThe downstream time is x/18 and midpoint-return time is x/20. Their sum gives x = 180 km.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 11 km/hr in still water with a 1 km/hr current. It goes A→B downstream and then back to the midpoint. Total time is 12 hours. Find AB.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 km"
+          },
+          {
+            "id": "b",
+            "label": "120 km"
+          },
+          {
+            "id": "c",
+            "label": "75 km"
+          },
+          {
+            "id": "d",
+            "label": "90 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 11 km/hr in still water with a 1 km/hr current. It goes A→B downstream and then back to the midpoint. Total time is 12 hours. Find AB.",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 km"
+            },
+            {
+              "id": "b",
+              "label": "120 km"
+            },
+            {
+              "id": "c",
+              "label": "75 km"
+            },
+            {
+              "id": "d",
+              "label": "90 km"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Speeds are 12 down and 10 up.",
+            "Use x/12 + x/20 = 12."
+          ],
+          "explanation": "x/12 + x/20 = 2x/15 = 12, so x = 90 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nx/12 + x/20 = 2x/15 = 12, so x = 90 km.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now reverse the round trip to find the boat speed.\n\nA boat travels 8 km upstream and 8 km back. Current = 1 km/hr. Total time = 4 h 16 min = 64/15 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let still-water speed be u:\n8/(u−1) + 8/(u+1) = 64/15.\n\nTrying the clean factor u=4 gives 8/3 + 8/5 = 64/15 exactly.\nSo u = 4 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat travels 8 km upstream and 8 km downstream in 4 h 16 min. Current speed is 1 km/hr. What is its still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "5 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "6 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat travels 8 km upstream and 8 km downstream in 4 h 16 min. Current speed is 1 km/hr. What is its still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "5 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "6 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use 8/(u−1) + 8/(u+1).",
+            "Check u=4: 8/3 + 8/5."
+          ],
+          "explanation": "For u=4, total time = 40/15 + 24/15 = 64/15 h, exactly 4 h 16 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nUse 8/(u−1) + 8/(u+1).\n\nFor u=4, total time = 40/15 + 24/15 = 64/15 h, exactly 4 h 16 min.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat travels 12 km upstream and 12 km downstream in 5 hours. Current speed is 1 km/hr. What is its still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "6 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "5 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "7 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat travels 12 km upstream and 12 km downstream in 5 hours. Current speed is 1 km/hr. What is its still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "6 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "5 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "7 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Use 12/(u−1) + 12/(u+1) = 5.",
+            "u=5 gives 12/4 + 12/6."
+          ],
+          "explanation": "At u=5, the times are 3 h and 2 h, totaling 5 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nAt u=5, the times are 3 h and 2 h, totaling 5 hours.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A final reverse pattern keeps the still-water speed fixed and asks for the current.\n\nStill water = 10 km/hr. One-way distance = 91 km. Round-trip time = 20 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let current = v:\n\n91/(10+v) + 91/(10−v) = 20.\nIf v=3, the speeds are 13 and 7, giving 7 h + 13 h = 20 h.\nSo v=3 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 10 km/hr in still water. It travels 91 km downstream and back in 20 hours. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "5 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 10 km/hr in still water. It travels 91 km downstream and back in 20 hours. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "5 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Try effective speeds 10+v and 10−v.",
+            "For v=3, 91/13 = 7 and 91/7 = 13."
+          ],
+          "explanation": "The two leg times are 7 and 13 hours when current is 3 km/hr, totaling 20 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nTry effective speeds 10+v and 10−v.\n\nThe two leg times are 7 and 13 hours when current is 3 km/hr, totaling 20 hours.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 8 km/hr in still water. It travels 60 km downstream and back in 16 hours. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "1 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "4 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 8 km/hr in still water. It travels 60 km downstream and back in 16 hours. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "1 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "4 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Test v=2: effective speeds 10 and 6.",
+            "60/10 + 60/6 = 16."
+          ],
+          "explanation": "With current 2 km/hr, the times are 6 h and 10 h, exactly 16 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nWith current 2 km/hr, the times are 6 h and 10 h, exactly 16 hours.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now handle a full river round trip without averaging the printed speeds blindly.\n\nYou can add leg times, recover one-way distance, compare whole-trip average speeds, and reverse total-time equations to find an unknown boat or current speed.\n\nNext, we turn those same ideas into equations when the unknown is hidden more deeply.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

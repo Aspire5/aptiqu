@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "sint-03-amount-differences-constant-yearly-interest",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Amount Differences and Constant Yearly Interest",
+    "description": "Exploit the fact that simple-interest amounts rise by the same rupee amount every year to solve two-date questions quickly.",
+    "teachingApproach": "Use a staircase mental model: every year adds the same rupee step. Start with reading the step size from two amounts, then rewind to principal, infer rate, and project forward. Questions should reward spotting the constant difference rather than plugging everything into PRT/100.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 22, Simple Interest (printed pp. 641–662). Approved scope: Teach the linear-growth nature of simple interest: the difference between amounts at two times equals the interest for the gap. Use this to find one-year interest, principal, rate, and amounts at new times without repeatedly applying the full formula. Include proportional scaling across time, scaling to a new principal under the same rate-time conditions, and two-amount capstones that recover both principal and rate."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Amount Differences and Constant Yearly Interest\n\nExploit the fact that simple-interest amounts rise by the same rupee amount every year to solve two-date questions quickly.\n\nWe will build the idea with small numbers first, then move into the exam-style patterns from the chapter.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Under simple interest, the amount rises by the same number of rupees every year. So the difference between two amounts is exactly the interest earned during the time gap.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If an amount is ₹7600 after 2 years and ₹8500 after 5 years, the 3-year increase is ₹900. Therefore yearly interest = ₹300.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum amounts to ₹6900 after 3 years and ₹8100 after 7 years. What is the yearly interest?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹300"
+          },
+          {
+            "id": "b",
+            "label": "₹240"
+          },
+          {
+            "id": "c",
+            "label": "₹400"
+          },
+          {
+            "id": "d",
+            "label": "₹1200"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum amounts to ₹6900 after 3 years and ₹8100 after 7 years. What is the yearly interest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹300"
+            },
+            {
+              "id": "b",
+              "label": "₹240"
+            },
+            {
+              "id": "c",
+              "label": "₹400"
+            },
+            {
+              "id": "d",
+              "label": "₹1200"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The time gap is 4 years.",
+            "8100 − 6900 = 1200; divide by 4."
+          ],
+          "explanation": "The amount rises ₹1200 over 4 years, so yearly interest = ₹300."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nThe time gap is 4 years.\n\nThe amount rises ₹1200 over 4 years, so yearly interest = ₹300.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum amounts to ₹8400 after 2 years and ₹9300 after 5 years. What is the yearly interest?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹225"
+          },
+          {
+            "id": "b",
+            "label": "₹450"
+          },
+          {
+            "id": "c",
+            "label": "₹900"
+          },
+          {
+            "id": "d",
+            "label": "₹300"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum amounts to ₹8400 after 2 years and ₹9300 after 5 years. What is the yearly interest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹225"
+            },
+            {
+              "id": "b",
+              "label": "₹450"
+            },
+            {
+              "id": "c",
+              "label": "₹900"
+            },
+            {
+              "id": "d",
+              "label": "₹300"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The gap is 3 years.",
+            "₹900 spread over 3 years."
+          ],
+          "explanation": "9300 − 8400 = 900 over 3 years, so yearly interest = ₹300."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\n9300 − 8400 = 900 over 3 years, so yearly interest = ₹300.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once yearly interest is known, rewind from any amount to the original principal by subtracting the interest already earned by that time.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose yearly interest is ₹300 and the amount after 3 years is ₹6900. Three years contributed ₹900, so P = 6900 − 900 = ₹6000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum amounts to ₹9200 after 4 years and ₹10100 after 7 years. Find the principal.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹7700"
+          },
+          {
+            "id": "b",
+            "label": "₹8000"
+          },
+          {
+            "id": "c",
+            "label": "₹8300"
+          },
+          {
+            "id": "d",
+            "label": "₹8900"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum amounts to ₹9200 after 4 years and ₹10100 after 7 years. Find the principal.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹7700"
+            },
+            {
+              "id": "b",
+              "label": "₹8000"
+            },
+            {
+              "id": "c",
+              "label": "₹8300"
+            },
+            {
+              "id": "d",
+              "label": "₹8900"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The 3-year amount difference is ₹900, so yearly interest is ₹300.",
+            "Subtract 4 × 300 from ₹9200."
+          ],
+          "explanation": "Yearly interest = ₹300. Four years' interest = ₹1200. Principal = 9200 − 1200 = ₹8000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nThe 3-year amount difference is ₹900, so yearly interest is ₹300.\n\nYearly interest = ₹300. Four years' interest = ₹1200. Principal = 9200 − 1200 = ₹8000.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum amounts to ₹7400 after 2 years and ₹8600 after 6 years. Find the principal.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹6200"
+          },
+          {
+            "id": "b",
+            "label": "₹7000"
+          },
+          {
+            "id": "c",
+            "label": "₹6800"
+          },
+          {
+            "id": "d",
+            "label": "₹7200"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum amounts to ₹7400 after 2 years and ₹8600 after 6 years. Find the principal.",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹6200"
+            },
+            {
+              "id": "b",
+              "label": "₹7000"
+            },
+            {
+              "id": "c",
+              "label": "₹6800"
+            },
+            {
+              "id": "d",
+              "label": "₹7200"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The 4-year difference is ₹1200 → ₹300 per year.",
+            "At year 2, subtract ₹600 from ₹7400."
+          ],
+          "explanation": "Principal = ₹7400 − ₹600 = ₹6800."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\nPrincipal = ₹7400 − ₹600 = ₹6800.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Yearly interest also reveals the rate once the principal is known: rate = yearly interest ÷ principal × 100.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If P = ₹8000 and yearly interest = ₹480, then R = 480/8000 × 100 = 6%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A principal of ₹6000 earns ₹450 each year as S.I. What is the rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5%"
+          },
+          {
+            "id": "b",
+            "label": "6%"
+          },
+          {
+            "id": "c",
+            "label": "7.5%"
+          },
+          {
+            "id": "d",
+            "label": "9%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A principal of ₹6000 earns ₹450 each year as S.I. What is the rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5%"
+            },
+            {
+              "id": "b",
+              "label": "6%"
+            },
+            {
+              "id": "c",
+              "label": "7.5%"
+            },
+            {
+              "id": "d",
+              "label": "9%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "450 ÷ 6000 = 0.075.",
+            "Convert 0.075 to a percent."
+          ],
+          "explanation": "The annual interest is 7.5% of ₹6000, so R = 7.5%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\n450 ÷ 6000 = 0.075.\n\nThe annual interest is 7.5% of ₹6000, so R = 7.5%.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A principal of ₹8000 earns ₹300 each year as S.I. What is the rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2.5%"
+          },
+          {
+            "id": "b",
+            "label": "3.75%"
+          },
+          {
+            "id": "c",
+            "label": "4%"
+          },
+          {
+            "id": "d",
+            "label": "6%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A principal of ₹8000 earns ₹300 each year as S.I. What is the rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2.5%"
+            },
+            {
+              "id": "b",
+              "label": "3.75%"
+            },
+            {
+              "id": "c",
+              "label": "4%"
+            },
+            {
+              "id": "d",
+              "label": "6%"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "300/8000 ×100.",
+            "300 is 3.75% of 8000."
+          ],
+          "explanation": "R = 3.75%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\nR = 3.75%.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same yearly step lets you jump to a new year without finding rate or principal first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If an amount is ₹8900 after 3 years and ₹10100 after 7 years, the rise is ₹1200 in 4 years = ₹300 per year. Three more years after year 7 add ₹900, so year 10 amount is ₹11000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum is ₹8900 after 3 years and ₹10100 after 7 years. What is the amount after 10 years?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹10400"
+          },
+          {
+            "id": "b",
+            "label": "₹10700"
+          },
+          {
+            "id": "c",
+            "label": "₹11300"
+          },
+          {
+            "id": "d",
+            "label": "₹11000"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum is ₹8900 after 3 years and ₹10100 after 7 years. What is the amount after 10 years?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹10400"
+            },
+            {
+              "id": "b",
+              "label": "₹10700"
+            },
+            {
+              "id": "c",
+              "label": "₹11300"
+            },
+            {
+              "id": "d",
+              "label": "₹11000"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Yearly increase = ₹300.",
+            "From year 7 to year 10 is 3 more years."
+          ],
+          "explanation": "₹10100 + 3×₹300 = ₹11000."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nYearly increase = ₹300.\n\n₹10100 + 3×₹300 = ₹11000.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum is ₹11200 after 4 years and ₹12700 after 9 years. What is the amount after 12 years?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹13600"
+          },
+          {
+            "id": "b",
+            "label": "₹13000"
+          },
+          {
+            "id": "c",
+            "label": "₹13300"
+          },
+          {
+            "id": "d",
+            "label": "₹14200"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum is ₹11200 after 4 years and ₹12700 after 9 years. What is the amount after 12 years?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹13600"
+            },
+            {
+              "id": "b",
+              "label": "₹13000"
+            },
+            {
+              "id": "c",
+              "label": "₹13300"
+            },
+            {
+              "id": "d",
+              "label": "₹14200"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "₹1500 over 5 years means ₹300 per year.",
+            "Add 3 more yearly steps to ₹12700."
+          ],
+          "explanation": "₹12700 + ₹900 = ₹13600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\n₹12700 + ₹900 = ₹13600.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the same principal and rate continue, interest is directly proportional to time. A known multi-year interest can be resized without finding the rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If 4 years give ₹1600, one year gives ₹400. Seven years give ₹2800.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum earns ₹1350 in 3 years at S.I. What will it earn in 8 years at the same rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹3600"
+          },
+          {
+            "id": "b",
+            "label": "₹2250"
+          },
+          {
+            "id": "c",
+            "label": "₹3000"
+          },
+          {
+            "id": "d",
+            "label": "₹4050"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum earns ₹1350 in 3 years at S.I. What will it earn in 8 years at the same rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹3600"
+            },
+            {
+              "id": "b",
+              "label": "₹2250"
+            },
+            {
+              "id": "c",
+              "label": "₹3000"
+            },
+            {
+              "id": "d",
+              "label": "₹4050"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Find one-year interest first.",
+            "1350 ÷ 3 = 450; then ×8."
+          ],
+          "explanation": "Yearly interest = ₹450, so 8-year interest = ₹3600."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nFind one-year interest first.\n\nYearly interest = ₹450, so 8-year interest = ₹3600.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum earns ₹2000 in 5 years. What will it earn in 2 years at the same rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹400"
+          },
+          {
+            "id": "b",
+            "label": "₹1000"
+          },
+          {
+            "id": "c",
+            "label": "₹1200"
+          },
+          {
+            "id": "d",
+            "label": "₹800"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum earns ₹2000 in 5 years. What will it earn in 2 years at the same rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹400"
+            },
+            {
+              "id": "b",
+              "label": "₹1000"
+            },
+            {
+              "id": "c",
+              "label": "₹1200"
+            },
+            {
+              "id": "d",
+              "label": "₹800"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "₹2000 ÷ 5 = ₹400 per year.",
+            "Two years gives 2×₹400."
+          ],
+          "explanation": "The answer is ₹800."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\nThe answer is ₹800.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A 'doubling in N years' statement also gives a yearly step. Doubling means the total interest after N years equals one whole principal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If a sum doubles in 10 years, each year adds 1/10 of P. After 6 years, interest is 6/10P, so amount is 1.6P.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum doubles in 8 years at S.I. What will its amount be after 6 years?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.5P"
+          },
+          {
+            "id": "b",
+            "label": "1.75P"
+          },
+          {
+            "id": "c",
+            "label": "1.6P"
+          },
+          {
+            "id": "d",
+            "label": "2P"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum doubles in 8 years at S.I. What will its amount be after 6 years?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.5P"
+            },
+            {
+              "id": "b",
+              "label": "1.75P"
+            },
+            {
+              "id": "c",
+              "label": "1.6P"
+            },
+            {
+              "id": "d",
+              "label": "2P"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "In 8 years, interest = P.",
+            "In 6 years, interest = 6/8 P = 0.75P."
+          ],
+          "explanation": "Amount = P + 0.75P = 1.75P."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nIn 8 years, interest = P.\n\nAmount = P + 0.75P = 1.75P.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum doubles in 12 years. What is its amount after 3 years?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1.2P"
+          },
+          {
+            "id": "b",
+            "label": "1.33P"
+          },
+          {
+            "id": "c",
+            "label": "1.25P"
+          },
+          {
+            "id": "d",
+            "label": "1.5P"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum doubles in 12 years. What is its amount after 3 years?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1.2P"
+            },
+            {
+              "id": "b",
+              "label": "1.33P"
+            },
+            {
+              "id": "c",
+              "label": "1.25P"
+            },
+            {
+              "id": "d",
+              "label": "1.5P"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Three years is one quarter of 12.",
+            "Interest after 3 years is P/4."
+          ],
+          "explanation": "Amount = 1.25P."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\nAmount = 1.25P.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "When principal changes but the same rate-time product applies, the interest scales in the same ratio as principal.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If ₹6000 becomes ₹7800 under some fixed R and T, its interest is ₹1800. A principal of ₹10000 is 5/3 as large, so its interest is 1800×5/3 = ₹3000 and amount ₹13000.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "₹8000 becomes ₹9200 under a fixed rate and time. What will ₹12000 become under the same conditions?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹13200"
+          },
+          {
+            "id": "b",
+            "label": "₹13600"
+          },
+          {
+            "id": "c",
+            "label": "₹13800"
+          },
+          {
+            "id": "d",
+            "label": "₹14400"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "₹8000 becomes ₹9200 under a fixed rate and time. What will ₹12000 become under the same conditions?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹13200"
+            },
+            {
+              "id": "b",
+              "label": "₹13600"
+            },
+            {
+              "id": "c",
+              "label": "₹13800"
+            },
+            {
+              "id": "d",
+              "label": "₹14400"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Interest on ₹8000 is ₹1200.",
+            "₹12000 is 1.5 times as large, so interest is 1.5×₹1200."
+          ],
+          "explanation": "Interest = ₹1800, so amount = ₹13800."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nInterest on ₹8000 is ₹1200.\n\nInterest = ₹1800, so amount = ₹13800.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "₹5000 becomes ₹5750 under fixed conditions. What will ₹8000 become?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹8750"
+          },
+          {
+            "id": "b",
+            "label": "₹9200"
+          },
+          {
+            "id": "c",
+            "label": "₹9000"
+          },
+          {
+            "id": "d",
+            "label": "₹9500"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "₹5000 becomes ₹5750 under fixed conditions. What will ₹8000 become?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹8750"
+            },
+            {
+              "id": "b",
+              "label": "₹9200"
+            },
+            {
+              "id": "c",
+              "label": "₹9000"
+            },
+            {
+              "id": "d",
+              "label": "₹9500"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "₹5000 earns ₹750.",
+            "Scale the interest by 8000/5000 = 1.6."
+          ],
+          "explanation": "Interest = 750×1.6 = ₹1200. Amount = ₹9200."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\nInterest = 750×1.6 = ₹1200. Amount = ₹9200.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: two amounts at two times can reveal both principal and rate. First use the gap to get yearly interest. Then rewind to principal. Only then convert yearly interest to a percentage.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If A3 = ₹7800 and A5 = ₹9000, then two years add ₹1200 → ₹600/year. P = 7800 − 3×600 = ₹6000. Rate = 600/6000 = 10%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum is ₹6900 after 2 years and ₹8250 after 5 years. What is the rate of S.I.?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "5%"
+          },
+          {
+            "id": "b",
+            "label": "6%"
+          },
+          {
+            "id": "c",
+            "label": "9%"
+          },
+          {
+            "id": "d",
+            "label": "7.5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum is ₹6900 after 2 years and ₹8250 after 5 years. What is the rate of S.I.?",
+          "options": [
+            {
+              "id": "a",
+              "label": "5%"
+            },
+            {
+              "id": "b",
+              "label": "6%"
+            },
+            {
+              "id": "c",
+              "label": "9%"
+            },
+            {
+              "id": "d",
+              "label": "7.5%"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Three years add ₹1350 → ₹450 per year.",
+            "Principal = 6900 − 2×450 = ₹6000."
+          ],
+          "explanation": "Yearly interest is ₹450 on ₹6000, so rate = 7.5%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "The key clue is this:\n\nThree years add ₹1350 → ₹450 per year.\n\nYearly interest is ₹450 on ₹6000, so rate = 7.5%.\n\nNow try the same idea with fresh numbers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A sum is ₹9200 after 4 years and ₹9800 after 6 years. What is the rate?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3.75%"
+          },
+          {
+            "id": "b",
+            "label": "2.5%"
+          },
+          {
+            "id": "c",
+            "label": "4%"
+          },
+          {
+            "id": "d",
+            "label": "5%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A sum is ₹9200 after 4 years and ₹9800 after 6 years. What is the rate?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3.75%"
+            },
+            {
+              "id": "b",
+              "label": "2.5%"
+            },
+            {
+              "id": "c",
+              "label": "4%"
+            },
+            {
+              "id": "d",
+              "label": "5%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Two years add ₹600 → ₹300 per year.",
+            "Principal = 9200 − 4×300 = ₹8000."
+          ],
+          "explanation": "Rate = 300/8000 ×100 = 3.75%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Work through this version once:\n\nRate = 300/8000 ×100 = 3.75%.\n\nKeep the same reasoning and try it again.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now read simple interest as a straight-line pattern. Next, we turn doubling, trebling, and 'interest is a fraction of principal' statements into fast rate-and-time shortcuts.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

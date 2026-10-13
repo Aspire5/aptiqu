@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "am-01-mean-price-alligation-ratio",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Mean Price and the Alligation Ratio",
+    "description": "Understand alligation as a weighted-average shortcut and turn price gaps into a mixing ratio.",
+    "teachingApproach": "Start with two equal-price bags to make mean price concrete, then make the quantities unequal so the learner sees why the mean moves toward the heavier ingredient. Derive the cross-difference rule from that balance, practise reading the ratio in the correct direction, convert ratios to quantities, and finish by applying the same idea to concentration percentages.",
+    "targetDurationMinutes": 28,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 21, Alligation or Mixture. Approved scope: Teach mean price as the cost of one unit of the finished mixture and show why it must lie between the two ingredient prices. Build the rule of alligation from weighted-average reasoning before naming the cross-difference shortcut. Cover cheaper : dearer = (dearer price − mean price) : (mean price − cheaper price), interpreting why the mixture contains more of the ingredient whose price is closer to the mean. Convert an alligation ratio into actual quantities when the total amount or one ingredient quantity is given. Include integer, decimal, and percentage-strength versions so learners see that the same weighted-average idea works for prices and concentrations. Learners should check a ratio by recomputing the weighted mean rather than trusting the cross alone."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn why price gaps can tell us a mixing ratio.\n\nImagine rice at ₹20/kg and ₹30/kg mixed to sell at ₹24/kg. The final price must sit between the two — and because ₹24 is closer to ₹20, the mixture should contain more of the cheaper rice.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two bags of rice cost ₹20/kg and ₹30/kg.\n\nIf we mix 1 kg of each, the 2 kg mixture costs ₹50 in total.\n\nSo one kilogram of the mixture costs:\n₹50 ÷ 2 = ₹25.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That ₹25 is the mean price: the cost of one unit of the finished mixture.\n\nWith positive quantities, the mean must sit between the two ingredient prices.\n\nHere: ₹20 < ₹25 < ₹30.\n\nThat simple check catches many impossible answers.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "1 kg of pulses at ₹18/kg is mixed with 1 kg at ₹26/kg. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹22/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹20/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹24/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹44/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1 kg of pulses at ₹18/kg is mixed with 1 kg at ₹26/kg. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹22/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹20/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹24/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹44/kg"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Add the two costs, then divide by the 2 kg total.",
+            "₹18 + ₹26 = ₹44 for 2 kg, so mean price = ₹44 ÷ 2 = ₹22/kg."
+          ],
+          "explanation": "₹18 + ₹26 = ₹44 for 2 kg, so mean price = ₹44 ÷ 2 = ₹22/kg. ₹44 is the total cost, not the unit price."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "1 kg of tea at ₹32/kg is mixed with 1 kg at ₹44/kg. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹36/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹38/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹40/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹76/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "1 kg of tea at ₹32/kg is mixed with 1 kg at ₹44/kg. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹36/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹38/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹40/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹76/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Equal quantities make the mean the simple average.",
+            "(32 + 44) ÷ 2 = 38, so the mixture costs ₹38/kg."
+          ],
+          "explanation": "(32 + 44) ÷ 2 = 38, so the mixture costs ₹38/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nAdd the two costs, then divide by the 2 kg total.\n\n₹18 + ₹26 = ₹44 for 2 kg, so mean price = ₹44 ÷ 2 = ₹22/kg. ₹44 is the total cost, not the unit price.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n(32 + 44) ÷ 2 = 38, so the mixture costs ₹38/kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now make the quantities unequal.\n\nMix 3 kg at ₹20/kg with 1 kg at ₹30/kg.\n\nTotal cost = 3×20 + 1×30 = ₹90.\nTotal quantity = 4 kg.\n\nMean price = 90 ÷ 4 = ₹22.50/kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Notice where ₹22.50 sits: much closer to ₹20 than to ₹30.\n\nWhy? Because there is more of the cheaper ingredient.\n\nA weighted mean is pulled toward the ingredient used in greater quantity.\n\nThis idea is exactly what alligation turns into a shortcut.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "2 kg at ₹24/kg is mixed with 6 kg at ₹32/kg. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹26/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹30/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹28/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹56/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "2 kg at ₹24/kg is mixed with 6 kg at ₹32/kg. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹26/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹30/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹28/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹56/kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use total cost ÷ total quantity.",
+            "Total cost = 2×24 + 6×32 = 48 + 192 = 240."
+          ],
+          "explanation": "Total cost = 2×24 + 6×32 = 48 + 192 = 240. Total quantity = 8 kg, so mean = 240 ÷ 8 = ₹30/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "5 kg at ₹18/kg is mixed with 3 kg at ₹34/kg. What is the mean price?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "₹24/kg"
+          },
+          {
+            "id": "b",
+            "label": "₹22/kg"
+          },
+          {
+            "id": "c",
+            "label": "₹26/kg"
+          },
+          {
+            "id": "d",
+            "label": "₹52/kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "5 kg at ₹18/kg is mixed with 3 kg at ₹34/kg. What is the mean price?",
+          "options": [
+            {
+              "id": "a",
+              "label": "₹24/kg"
+            },
+            {
+              "id": "b",
+              "label": "₹22/kg"
+            },
+            {
+              "id": "c",
+              "label": "₹26/kg"
+            },
+            {
+              "id": "d",
+              "label": "₹52/kg"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find the weighted total cost first.",
+            "5×18 + 3×34 = 90 + 102 = 192."
+          ],
+          "explanation": "5×18 + 3×34 = 90 + 102 = 192. Divide by 8 kg: 192 ÷ 8 = ₹24/kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nUse total cost ÷ total quantity.\n\nTotal cost = 2×24 + 6×32 = 48 + 192 = 240. Total quantity = 8 kg, so mean = 240 ÷ 8 = ₹30/kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n5×18 + 3×34 = 90 + 102 = 192. Divide by 8 kg: 192 ÷ 8 = ₹24/kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Suppose we want a mixture worth ₹23/kg from ingredients costing ₹20 and ₹32.\n\nThe mean is ₹3 above the cheaper price and ₹9 below the dearer price.\n\nThose gaps tell us the opposite quantities:\ncheaper : dearer = 9 : 3 = 3 : 1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the alligation rule:\n\ncheaper : dearer\n= (dearer − mean) : (mean − cheaper)\n\nThe differences cross over.\n\nThe larger gap from ₹32 down to ₹23 gives the larger amount of the cheaper ingredient.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "In what ratio should items costing ₹15 and ₹25 be mixed to get a mean price of ₹19?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 : 3"
+          },
+          {
+            "id": "b",
+            "label": "4 : 3"
+          },
+          {
+            "id": "c",
+            "label": "3 : 2"
+          },
+          {
+            "id": "d",
+            "label": "5 : 4"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In what ratio should items costing ₹15 and ₹25 be mixed to get a mean price of ₹19?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 : 3"
+            },
+            {
+              "id": "b",
+              "label": "4 : 3"
+            },
+            {
+              "id": "c",
+              "label": "3 : 2"
+            },
+            {
+              "id": "d",
+              "label": "5 : 4"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Cross the gaps: 25−19 and 19−15.",
+            "Cheaper : dearer = (25−19):(19−15) = 6:4 = 3:2."
+          ],
+          "explanation": "Cheaper : dearer = (25−19):(19−15) = 6:4 = 3:2."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "In what ratio should grains costing ₹28 and ₹40 be mixed to get a mean price of ₹31?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 : 3"
+          },
+          {
+            "id": "b",
+            "label": "2 : 1"
+          },
+          {
+            "id": "c",
+            "label": "4 : 1"
+          },
+          {
+            "id": "d",
+            "label": "3 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In what ratio should grains costing ₹28 and ₹40 be mixed to get a mean price of ₹31?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 : 3"
+            },
+            {
+              "id": "b",
+              "label": "2 : 1"
+            },
+            {
+              "id": "c",
+              "label": "4 : 1"
+            },
+            {
+              "id": "d",
+              "label": "3 : 1"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use (40−31):(31−28).",
+            "Cheaper : dearer = 9:3 = 3:1."
+          ],
+          "explanation": "Cheaper : dearer = 9:3 = 3:1. The mean is close to ₹28, so more of the ₹28 grain is sensible."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nCross the gaps: 25−19 and 19−15.\n\nCheaper : dearer = (25−19):(19−15) = 6:4 = 3:2.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nCheaper : dearer = 9:3 = 3:1. The mean is close to ₹28, so more of the ₹28 grain is sensible.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "The direction of the ratio matters.\n\nFor ₹12 and ₹20 mixed to mean ₹18:\n\ncheaper : dearer = (20−18):(18−12)\n= 2:6 = 1:3.\n\nSo we use three times as much of the dearer item.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A quick sense-check helps.\n\n₹18 is much closer to ₹20 than to ₹12.\nSo the mixture should contain more of the ₹20 ingredient.\n\nIf your ratio says more of the cheaper one, you probably read the cross-differences backwards.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A ₹10 ingredient and a ₹22 ingredient make a mixture worth ₹19. Which ratio is correct for cheaper : dearer?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 1"
+          },
+          {
+            "id": "b",
+            "label": "9 : 12"
+          },
+          {
+            "id": "c",
+            "label": "12 : 9"
+          },
+          {
+            "id": "d",
+            "label": "1 : 3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A ₹10 ingredient and a ₹22 ingredient make a mixture worth ₹19. Which ratio is correct for cheaper : dearer?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 1"
+            },
+            {
+              "id": "b",
+              "label": "9 : 12"
+            },
+            {
+              "id": "c",
+              "label": "12 : 9"
+            },
+            {
+              "id": "d",
+              "label": "1 : 3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The mean ₹19 is closer to ₹22, so the dearer ingredient should be larger.",
+            "(22−19):(19−10) = 3:9 = 1:3."
+          ],
+          "explanation": "(22−19):(19−10) = 3:9 = 1:3."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A ₹36 ingredient and a ₹48 ingredient make a mixture worth ₹45. Find cheaper : dearer.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 : 1"
+          },
+          {
+            "id": "b",
+            "label": "9 : 12"
+          },
+          {
+            "id": "c",
+            "label": "1 : 3"
+          },
+          {
+            "id": "d",
+            "label": "4 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A ₹36 ingredient and a ₹48 ingredient make a mixture worth ₹45. Find cheaper : dearer.",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 : 1"
+            },
+            {
+              "id": "b",
+              "label": "9 : 12"
+            },
+            {
+              "id": "c",
+              "label": "1 : 3"
+            },
+            {
+              "id": "d",
+              "label": "4 : 1"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Cross the two gaps around 45.",
+            "(48−45):(45−36) = 3:9 = 1:3."
+          ],
+          "explanation": "(48−45):(45−36) = 3:9 = 1:3. More of ₹48 pulls the mean close to ₹48."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nThe mean ₹19 is closer to ₹22, so the dearer ingredient should be larger.\n\n(22−19):(19−10) = 3:9 = 1:3.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n(48−45):(45−36) = 3:9 = 1:3. More of ₹48 pulls the mean close to ₹48.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once alligation gives a ratio, turn ratio-parts into real quantity.\n\nSuppose cheaper : dearer = 3:2 and the total mixture is 40 kg.\n\nThere are 5 equal parts.\nOne part = 40 ÷ 5 = 8 kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the quantities are:\ncheaper = 3×8 = 24 kg\ndearer = 2×8 = 16 kg.\n\nAlways split the total by total ratio-parts first. That keeps the arithmetic small.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture ratio is 5:3 and the total is 64 kg. How much is the first ingredient?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 kg"
+          },
+          {
+            "id": "b",
+            "label": "24 kg"
+          },
+          {
+            "id": "c",
+            "label": "32 kg"
+          },
+          {
+            "id": "d",
+            "label": "48 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture ratio is 5:3 and the total is 64 kg. How much is the first ingredient?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 kg"
+            },
+            {
+              "id": "b",
+              "label": "24 kg"
+            },
+            {
+              "id": "c",
+              "label": "32 kg"
+            },
+            {
+              "id": "d",
+              "label": "48 kg"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "There are 8 ratio-parts in 64 kg.",
+            "One part = 64÷8 = 8 kg."
+          ],
+          "explanation": "One part = 64÷8 = 8 kg. First ingredient = 5×8 = 40 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture ratio is 7:5 and the total is 72 litres. How much is the second liquid?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "42 litres"
+          },
+          {
+            "id": "b",
+            "label": "35 litres"
+          },
+          {
+            "id": "c",
+            "label": "25 litres"
+          },
+          {
+            "id": "d",
+            "label": "30 litres"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture ratio is 7:5 and the total is 72 litres. How much is the second liquid?",
+          "options": [
+            {
+              "id": "a",
+              "label": "42 litres"
+            },
+            {
+              "id": "b",
+              "label": "35 litres"
+            },
+            {
+              "id": "c",
+              "label": "25 litres"
+            },
+            {
+              "id": "d",
+              "label": "30 litres"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Twelve parts make 72 litres.",
+            "One part = 72÷12 = 6 litres."
+          ],
+          "explanation": "One part = 72÷12 = 6 litres. Second liquid = 5×6 = 30 litres."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nThere are 8 ratio-parts in 64 kg.\n\nOne part = 64÷8 = 8 kg. First ingredient = 5×8 = 40 kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nOne part = 72÷12 = 6 litres. Second liquid = 5×6 = 30 litres.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes one quantity is already given.\n\nIf cheaper : dearer = 3:5 and the dearer amount is 35 kg, then 5 parts = 35 kg.\n\nOne part = 7 kg.\nCheaper amount = 3×7 = 21 kg.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "No total is needed.\n\nMatch the known quantity to its ratio-number, find one part, then scale the other side.\n\nThis is often faster than setting up an equation.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two ingredients must be mixed in the ratio 4:7. If the second ingredient is 42 kg, how much first ingredient is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "28 kg"
+          },
+          {
+            "id": "b",
+            "label": "24 kg"
+          },
+          {
+            "id": "c",
+            "label": "36 kg"
+          },
+          {
+            "id": "d",
+            "label": "48 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two ingredients must be mixed in the ratio 4:7. If the second ingredient is 42 kg, how much first ingredient is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "28 kg"
+            },
+            {
+              "id": "b",
+              "label": "24 kg"
+            },
+            {
+              "id": "c",
+              "label": "36 kg"
+            },
+            {
+              "id": "d",
+              "label": "48 kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Seven parts equal 42 kg.",
+            "One part = 42÷7 = 6 kg."
+          ],
+          "explanation": "One part = 42÷7 = 6 kg. First ingredient = 4×6 = 24 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A mixture needs liquids in the ratio 5:8. If the first liquid is 30 litres, how much second liquid is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 litres"
+          },
+          {
+            "id": "b",
+            "label": "18 litres"
+          },
+          {
+            "id": "c",
+            "label": "36 litres"
+          },
+          {
+            "id": "d",
+            "label": "45 litres"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A mixture needs liquids in the ratio 5:8. If the first liquid is 30 litres, how much second liquid is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 litres"
+            },
+            {
+              "id": "b",
+              "label": "18 litres"
+            },
+            {
+              "id": "c",
+              "label": "36 litres"
+            },
+            {
+              "id": "d",
+              "label": "45 litres"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Five parts equal 30 litres.",
+            "One part = 6 litres, so 8 parts = 48 litres."
+          ],
+          "explanation": "One part = 6 litres, so 8 parts = 48 litres."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nSeven parts equal 42 kg.\n\nOne part = 42÷7 = 6 kg. First ingredient = 4×6 = 24 kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nOne part = 6 litres, so 8 parts = 48 litres.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Alligation is not only about rupees. It works for any weighted value.\n\nMix a 20% solution with a 50% solution to get 30%.\n\nQuantity of 20% : quantity of 50%\n= (50−30):(30−20)\n= 20:10 = 2:1.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The numbers can be prices, alcohol percentages, milk fractions, or profit rates.\n\nThe structure is the same: two endpoint values and one target mean between them.\n\nChoose one value to track and stay with it throughout.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "In what ratio should 35% and 55% solutions be mixed to make a 40% solution?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 : 3"
+          },
+          {
+            "id": "b",
+            "label": "2 : 1"
+          },
+          {
+            "id": "c",
+            "label": "3 : 1"
+          },
+          {
+            "id": "d",
+            "label": "4 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In what ratio should 35% and 55% solutions be mixed to make a 40% solution?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 : 3"
+            },
+            {
+              "id": "b",
+              "label": "2 : 1"
+            },
+            {
+              "id": "c",
+              "label": "3 : 1"
+            },
+            {
+              "id": "d",
+              "label": "4 : 1"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Use (55−40):(40−35).",
+            "15:5 = 3:1."
+          ],
+          "explanation": "15:5 = 3:1. The target 40% is closer to 35%, so more of the 35% solution is needed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "In what ratio should 10% and 40% solutions be mixed to make a 25% solution?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "1 : 2"
+          },
+          {
+            "id": "b",
+            "label": "2 : 1"
+          },
+          {
+            "id": "c",
+            "label": "1 : 1"
+          },
+          {
+            "id": "d",
+            "label": "3 : 1"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "In what ratio should 10% and 40% solutions be mixed to make a 25% solution?",
+          "options": [
+            {
+              "id": "a",
+              "label": "1 : 2"
+            },
+            {
+              "id": "b",
+              "label": "2 : 1"
+            },
+            {
+              "id": "c",
+              "label": "1 : 1"
+            },
+            {
+              "id": "d",
+              "label": "3 : 1"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The target is exactly halfway between 10 and 40.",
+            "(40−25):(25−10) = 15:15 = 1:1."
+          ],
+          "explanation": "(40−25):(25−10) = 15:15 = 1:1."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nUse (55−40):(40−35).\n\n15:5 = 3:1. The target 40% is closer to 35%, so more of the 35% solution is needed.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\n(40−25):(25−10) = 15:15 = 1:1.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: price gaps give the ratio, then the ratio gives quantity.\n\nSuppose ₹42 and ₹54 ingredients must make ₹48.\n\nAlligation gives:\n(54−48):(48−42) = 6:6 = 1:1.\n\nFor 30 kg total, that means 15 kg of each.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The full mental chain is:\n1. Check the mean lies between the two values.\n2. Cross the gaps to get the ratio.\n3. Convert ratio-parts to quantity.\n4. Recheck the weighted mean.\n\nThat four-step check is more reliable than memorising a diagram.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ingredients costing ₹30 and ₹50 must form 48 kg of mixture worth ₹35/kg. How much of the ₹30 ingredient is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 kg"
+          },
+          {
+            "id": "b",
+            "label": "24 kg"
+          },
+          {
+            "id": "c",
+            "label": "30 kg"
+          },
+          {
+            "id": "d",
+            "label": "36 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ingredients costing ₹30 and ₹50 must form 48 kg of mixture worth ₹35/kg. How much of the ₹30 ingredient is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 kg"
+            },
+            {
+              "id": "b",
+              "label": "24 kg"
+            },
+            {
+              "id": "c",
+              "label": "30 kg"
+            },
+            {
+              "id": "d",
+              "label": "36 kg"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "First find cheaper:dearer, then split 48 kg.",
+            "Ratio = (50−35):(35−30) = 15:5 = 3:1."
+          ],
+          "explanation": "Ratio = (50−35):(35−30) = 15:5 = 3:1. Four parts make 48 kg, so the cheaper amount is 3×12 = 36 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Ingredients costing ₹24 and ₹36 must form 72 kg of mixture worth ₹29/kg. How much of the ₹24 ingredient is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 kg"
+          },
+          {
+            "id": "b",
+            "label": "42 kg"
+          },
+          {
+            "id": "c",
+            "label": "36 kg"
+          },
+          {
+            "id": "d",
+            "label": "45 kg"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Ingredients costing ₹24 and ₹36 must form 72 kg of mixture worth ₹29/kg. How much of the ₹24 ingredient is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 kg"
+            },
+            {
+              "id": "b",
+              "label": "42 kg"
+            },
+            {
+              "id": "c",
+              "label": "36 kg"
+            },
+            {
+              "id": "d",
+              "label": "45 kg"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find cheaper:dearer = (36−29):(29−24).",
+            "Ratio=7:5."
+          ],
+          "explanation": "Ratio=7:5. Twelve parts make 72 kg, so cheaper quantity=7×6=42 kg."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "A common slip here is to mix up which number is a price, quantity, or fraction.\n\nFirst find cheaper:dearer, then split 48 kg.\n\nRatio = (50−35):(35−30) = 15:5 = 3:1. Four parts make 48 kg, so the cheaper amount is 3×12 = 36 kg.\n\nNow use the same idea on fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's rebuild this one from the quantities in the question.\n\nRatio=7:5. Twelve parts make 72 kg, so cheaper quantity=7×6=42 kg.\n\nTry it again with that relationship in view.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now see alligation as a weighted-average shortcut, not a diagram to memorise.\n\nCheck that the mean lies between the two values, cross the gaps in the correct direction, then turn the ratio into quantity when needed.\n\nNext, we run the same weighted-average idea backwards to find missing prices.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

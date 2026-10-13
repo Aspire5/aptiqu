@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A leak is just a pipe you cannot see.\n\nIf a pump should fill a tank in 4 hours but actually takes 5 hours, some of the incoming water is escaping.\n\nThe leak rate is the missing part between the normal rate and the slower real rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pump fills a tank in 4 hours, so its normal rate is 1/4 tank/hour. With a leak, the tank fills in 5 hours, so the actual net rate is 1/5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Leak rate = 1/4 − 1/5 = 1/20 tank/hour.\nSo the leak alone would empty the full tank in 20 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A pump fills a tank in 6 h, but with a leak it takes 8 h. How long would the leak alone take to empty the tank?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14 hours"
+          },
+          {
+            "id": "b",
+            "label": "48 hours"
+          },
+          {
+            "id": "c",
+            "label": "8 hours"
+          },
+          {
+            "id": "d",
+            "label": "24 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A pump fills a tank in 6 h, but with a leak it takes 8 h. How long would the leak alone take to empty the tank?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14 hours"
+            },
+            {
+              "id": "b",
+              "label": "48 hours"
+            },
+            {
+              "id": "c",
+              "label": "8 hours"
+            },
+            {
+              "id": "d",
+              "label": "24 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Leak rate = normal rate − actual rate.",
+            "1/6 − 1/8 = 1/24."
+          ],
+          "explanation": "The leak empties 1/24 tank per hour, so it takes 24 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLeak rate = normal rate − actual rate.\n\nThe leak empties 1/24 tank per hour, so it takes 24 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A pump fills in 5 h, but with a leak it takes 6 h. Leak-emptying time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 hours"
+          },
+          {
+            "id": "b",
+            "label": "11 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "15 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A pump fills in 5 h, but with a leak it takes 6 h. Leak-emptying time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 hours"
+            },
+            {
+              "id": "b",
+              "label": "11 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "15 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find 1/5 − 1/6.",
+            "That difference is 1/30."
+          ],
+          "explanation": "The leak alone takes 30 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe leak alone takes 30 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "A waste pipe can be found when two inlets and the combined time are known.\n\nInlets fill in 12 h and 18 h, so together they add 5/36 per hour. If all pipes together fill in 9 h, net rate is 1/9 = 4/36.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The missing 1/36 must be leaving through the waste pipe.\nSo the waste pipe alone empties the tank in 36 hours.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two inlets fill in 10 h and 15 h. With a waste pipe also open, the tank fills in 7.5 h. How long does the waste pipe alone take to empty it?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 hours"
+          },
+          {
+            "id": "b",
+            "label": "15 hours"
+          },
+          {
+            "id": "c",
+            "label": "60 hours"
+          },
+          {
+            "id": "d",
+            "label": "22.5 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two inlets fill in 10 h and 15 h. With a waste pipe also open, the tank fills in 7.5 h. How long does the waste pipe alone take to empty it?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 hours"
+            },
+            {
+              "id": "b",
+              "label": "15 hours"
+            },
+            {
+              "id": "c",
+              "label": "60 hours"
+            },
+            {
+              "id": "d",
+              "label": "22.5 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Inlet rate = 1/10 + 1/15 = 1/6.",
+            "Net rate = 1/7.5 = 2/15."
+          ],
+          "explanation": "Leak rate = 1/6 − 2/15 = 5/30 − 4/30 = 1/30, so 30 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nInlet rate = 1/10 + 1/15 = 1/6.\n\nLeak rate = 1/6 − 2/15 = 5/30 − 4/30 = 1/30, so 30 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Inlets fill in 8 h and 12 h. With a waste pipe, the tank fills in 6 h. Waste-pipe time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 hours"
+          },
+          {
+            "id": "b",
+            "label": "18 hours"
+          },
+          {
+            "id": "c",
+            "label": "24 hours"
+          },
+          {
+            "id": "d",
+            "label": "48 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Inlets fill in 8 h and 12 h. With a waste pipe, the tank fills in 6 h. Waste-pipe time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 hours"
+            },
+            {
+              "id": "b",
+              "label": "18 hours"
+            },
+            {
+              "id": "c",
+              "label": "24 hours"
+            },
+            {
+              "id": "d",
+              "label": "48 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Inlets together give 5/24.",
+            "Net rate is 1/6 = 4/24."
+          ],
+          "explanation": "The waste rate is 1/24, so it empties in 24 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe waste rate is 1/24, so it empties in 24 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Leak questions can reveal tank capacity too.\n\nA leak empties a full tank in 8 h. An inlet adds 6 L/min. With both open, a full tank empties in 12 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The inlet offsets part of the leak:\n1/8 − 1/12 = 1/24 tank/hour.\nBut 6 L/min = 360 L/hour, so 1/24 tank = 360 L.\nCapacity = 24 × 360 = 8640 L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A leak empties a full tank in 6 h. An inlet adds 5 L/min. With both open, the full tank empties in 10 h. What is the tank capacity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3000 L"
+          },
+          {
+            "id": "b",
+            "label": "6000 L"
+          },
+          {
+            "id": "c",
+            "label": "4500 L"
+          },
+          {
+            "id": "d",
+            "label": "7500 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A leak empties a full tank in 6 h. An inlet adds 5 L/min. With both open, the full tank empties in 10 h. What is the tank capacity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3000 L"
+            },
+            {
+              "id": "b",
+              "label": "6000 L"
+            },
+            {
+              "id": "c",
+              "label": "4500 L"
+            },
+            {
+              "id": "d",
+              "label": "7500 L"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net emptying is 1/10; leak alone is 1/6.",
+            "The inlet equals 1/6 − 1/10 = 1/15 tank/hour."
+          ],
+          "explanation": "5 L/min = 300 L/hour = 1/15 tank, so capacity = 4500 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nNet emptying is 1/10; leak alone is 1/6.\n\n5 L/min = 300 L/hour = 1/15 tank, so capacity = 4500 L.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A leak empties a tank in 5 h. An inlet adds 8 L/min. Together, a full tank empties in 10 h. Capacity?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2400 L"
+          },
+          {
+            "id": "b",
+            "label": "4800 L"
+          },
+          {
+            "id": "c",
+            "label": "9600 L"
+          },
+          {
+            "id": "d",
+            "label": "6000 L"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A leak empties a tank in 5 h. An inlet adds 8 L/min. Together, a full tank empties in 10 h. Capacity?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2400 L"
+            },
+            {
+              "id": "b",
+              "label": "4800 L"
+            },
+            {
+              "id": "c",
+              "label": "9600 L"
+            },
+            {
+              "id": "d",
+              "label": "6000 L"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Inlet rate as a tank fraction = 1/5 − 1/10 = 1/10 per hour.",
+            "8 L/min = 480 L/hour."
+          ],
+          "explanation": "If 480 L is 1/10 of the tank, capacity is 4800 L."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nIf 480 L is 1/10 of the tank, capacity is 4800 L.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A leak may begin only after part of the tank is filled.\n\nSuppose two inlets normally fill at 1/10 tank/hour. The tank reaches half full in 5 h. Then a leak removes one-fourth of the incoming flow.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "After the leak begins, only 3/4 of the incoming rate remains:\nnet = 3/4 × 1/10 = 3/40.\nThe last half takes (1/2) ÷ (3/40) = 20/3 h.\nTotal = 11 2/3 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system normally fills at 1/12 tank/hour. After 1/3 of the tank is full, a leak removes 1/4 of the incoming water. Total fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 hours"
+          },
+          {
+            "id": "b",
+            "label": "14 2/3 hours"
+          },
+          {
+            "id": "c",
+            "label": "16 hours"
+          },
+          {
+            "id": "d",
+            "label": "18 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system normally fills at 1/12 tank/hour. After 1/3 of the tank is full, a leak removes 1/4 of the incoming water. Total fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 hours"
+            },
+            {
+              "id": "b",
+              "label": "14 2/3 hours"
+            },
+            {
+              "id": "c",
+              "label": "16 hours"
+            },
+            {
+              "id": "d",
+              "label": "18 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First 1/3 at rate 1/12 takes 4 h.",
+            "Afterward net rate = 3/4 × 1/12 = 1/16."
+          ],
+          "explanation": "Remaining 2/3 takes 2/3 × 16 = 10 2/3 h. Total = 14 2/3 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nFirst 1/3 at rate 1/12 takes 4 h.\n\nRemaining 2/3 takes 2/3 × 16 = 10 2/3 h. Total = 14 2/3 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A system normally fills at 1/8 tank/hour. After half the tank is full, a leak removes 1/5 of the incoming flow. Total fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 hours"
+          },
+          {
+            "id": "b",
+            "label": "10 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "9 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A system normally fills at 1/8 tank/hour. After half the tank is full, a leak removes 1/5 of the incoming flow. Total fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 hours"
+            },
+            {
+              "id": "b",
+              "label": "10 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "9 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "First half takes 4 h.",
+            "New net rate = 4/5 × 1/8 = 1/10."
+          ],
+          "explanation": "The remaining half takes 5 h, so total time is 9 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe remaining half takes 5 h, so total time is 9 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A waste pipe may stay unnoticed until the expected finish time.\n\nCold and hot inlets together fill a bath in 8 min. After 8 min, the bath is only 2/3 full because a waste pipe was open.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "In 8 min the waste removed 1/3 tank, so its rate is (1/3)/8 = 1/24 tank/min.\nThe waste pipe alone would empty the bath in 24 min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two inlets together should fill a tank in 10 min. After 10 min, because of an open waste pipe, only 3/4 is full. Waste-pipe emptying time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 minutes"
+          },
+          {
+            "id": "b",
+            "label": "30 minutes"
+          },
+          {
+            "id": "c",
+            "label": "20 minutes"
+          },
+          {
+            "id": "d",
+            "label": "13⅓ minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two inlets together should fill a tank in 10 min. After 10 min, because of an open waste pipe, only 3/4 is full. Waste-pipe emptying time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 minutes"
+            },
+            {
+              "id": "b",
+              "label": "30 minutes"
+            },
+            {
+              "id": "c",
+              "label": "20 minutes"
+            },
+            {
+              "id": "d",
+              "label": "13⅓ minutes"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The waste removed 1/4 tank in 10 min.",
+            "Leak rate = 1/40 tank/min."
+          ],
+          "explanation": "The waste pipe alone empties the tank in 40 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nThe waste removed 1/4 tank in 10 min.\n\nThe waste pipe alone empties the tank in 40 minutes.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A bath should fill in 6 min. With a waste pipe accidentally open, after 6 min it is 2/3 full. Waste-pipe time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "9 minutes"
+          },
+          {
+            "id": "b",
+            "label": "12 minutes"
+          },
+          {
+            "id": "c",
+            "label": "18 minutes"
+          },
+          {
+            "id": "d",
+            "label": "24 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A bath should fill in 6 min. With a waste pipe accidentally open, after 6 min it is 2/3 full. Waste-pipe time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "9 minutes"
+            },
+            {
+              "id": "b",
+              "label": "12 minutes"
+            },
+            {
+              "id": "c",
+              "label": "18 minutes"
+            },
+            {
+              "id": "d",
+              "label": "24 minutes"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "One-third of a tank was lost in 6 min.",
+            "Rate = 1/18 tank/min."
+          ],
+          "explanation": "The waste pipe alone takes 18 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe waste pipe alone takes 18 minutes.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A delay itself can tell you how strong the leak is.\n\nTwo inlets together normally fill in 6 h. Because of leakage, they take 8 h.\nLeak = 1/6 − 1/8 = 1/24 tank/hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This method works even if the normal 6-hour time came from adding several inlet rates first. Always compare expected net rate with observed net rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two pipes together would fill a tank in 9 h. With a leak, they need 12 h. Leak-emptying time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "21 hours"
+          },
+          {
+            "id": "b",
+            "label": "108 hours"
+          },
+          {
+            "id": "c",
+            "label": "36 hours"
+          },
+          {
+            "id": "d",
+            "label": "12 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two pipes together would fill a tank in 9 h. With a leak, they need 12 h. Leak-emptying time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "21 hours"
+            },
+            {
+              "id": "b",
+              "label": "108 hours"
+            },
+            {
+              "id": "c",
+              "label": "36 hours"
+            },
+            {
+              "id": "d",
+              "label": "12 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Leak rate = 1/9 − 1/12.",
+            "Use denominator 36."
+          ],
+          "explanation": "4/36 − 3/36 = 1/36, so the leak alone takes 36 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLeak rate = 1/9 − 1/12.\n\n4/36 − 3/36 = 1/36, so the leak alone takes 36 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "An inlet system normally fills in 10 h but with a leak takes 15 h. Leak time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25 hours"
+          },
+          {
+            "id": "b",
+            "label": "30 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "15 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "An inlet system normally fills in 10 h but with a leak takes 15 h. Leak time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25 hours"
+            },
+            {
+              "id": "b",
+              "label": "30 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "15 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "1/10 − 1/15 = 1/30.",
+            "Invert the leak rate."
+          ],
+          "explanation": "The leak alone empties the tank in 30 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nThe leak alone empties the tank in 30 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A leak can make a full tank drain even while an inlet stays open.\n\nIf a leak empties in 8 h and an inlet fills in 24 h, net emptying is 1/8 − 1/24 = 1/12. A full tank therefore empties in 12 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the same signed-rate model. The only difference is that the negative side wins.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A leak empties in 6 h while an inlet fills in 18 h. If the tank starts full, how long until empty with both open?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4.5 hours"
+          },
+          {
+            "id": "b",
+            "label": "9 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "18 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A leak empties in 6 h while an inlet fills in 18 h. If the tank starts full, how long until empty with both open?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4.5 hours"
+            },
+            {
+              "id": "b",
+              "label": "9 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "18 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net emptying = 1/6 − 1/18.",
+            "That is 2/18 = 1/9."
+          ],
+          "explanation": "The full tank empties in 9 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nNet emptying = 1/6 − 1/18.\n\nThe full tank empties in 9 hours.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A leak empties in 10 h and an inlet fills in 15 h. Full tank emptying time with both?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "25 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "30 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A leak empties in 10 h and an inlet fills in 15 h. Full tank emptying time with both?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "25 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "30 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Net emptying = 1/10 − 1/15.",
+            "That is 1/30."
+          ],
+          "explanation": "It empties in 30 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nIt empties in 30 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: leak questions are difference-of-rates questions.\n\nKnown system rate − observed net rate = hidden loss rate.\nOr, if the tank is draining, observed drain rate − known inlet rate can reveal the hidden outlet.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not compare the times by subtraction. A 4-hour pipe and a 5-hour observed fill do not imply a 1-hour leak. Convert both to rates first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A pump fills in 3 h. With a leak, it fills in 4 h. A second outlet also empties at 1/24 tank/hour. If the leak and second outlet act together on a full tank, how long to empty it?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12 hours"
+          },
+          {
+            "id": "b",
+            "label": "6 hours"
+          },
+          {
+            "id": "c",
+            "label": "24 hours"
+          },
+          {
+            "id": "d",
+            "label": "8 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A pump fills in 3 h. With a leak, it fills in 4 h. A second outlet also empties at 1/24 tank/hour. If the leak and second outlet act together on a full tank, how long to empty it?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12 hours"
+            },
+            {
+              "id": "b",
+              "label": "6 hours"
+            },
+            {
+              "id": "c",
+              "label": "24 hours"
+            },
+            {
+              "id": "d",
+              "label": "8 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "First find the leak: 1/3 − 1/4 = 1/12.",
+            "Then add leak 1/12 and outlet 1/24."
+          ],
+          "explanation": "Total emptying rate = 2/24 + 1/24 = 3/24 = 1/8, so 8 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nFirst find the leak: 1/3 − 1/4 = 1/12.\n\nTotal emptying rate = 2/24 + 1/24 = 3/24 = 1/8, so 8 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A pump fills in 5 h but with a leak takes 10 h. Another outlet empties in 20 h. Leak + outlet emptying time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20/3 hours"
+          },
+          {
+            "id": "b",
+            "label": "10 hours"
+          },
+          {
+            "id": "c",
+            "label": "5 hours"
+          },
+          {
+            "id": "d",
+            "label": "15 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A pump fills in 5 h but with a leak takes 10 h. Another outlet empties in 20 h. Leak + outlet emptying time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20/3 hours"
+            },
+            {
+              "id": "b",
+              "label": "10 hours"
+            },
+            {
+              "id": "c",
+              "label": "5 hours"
+            },
+            {
+              "id": "d",
+              "label": "15 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Leak rate = 1/5 − 1/10 = 1/10.",
+            "Add 1/10 + 1/20 = 3/20."
+          ],
+          "explanation": "Time = 20/3 hours, about 6 h 40 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nTime = 20/3 hours, about 6 h 40 min.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now turn a delay into a leak rate.\n\nExpected fill rate − actual net fill rate = leak rate.\n\nThe same subtraction can reveal a waste pipe, a tank capacity, or the amount lost after a leak begins.\n\nNext, we compare pipes whose rates are linked by efficiency or diameter.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Leaks and Waste Pipes: Find the Hidden Rate",
+    "description": "Recover a leak or waste-pipe rate from the difference between expected and actual filling.",
+    "teachingApproach": "Treat a leak as an unseen outlet. First calculate what the known inlet system should do, then compare it with what actually happens. The gap between those rates is the leak. Progress from a single delayed fill to waste-pipe recovery, tank capacity, leaks beginning mid-process, and a late-discovered waste pipe.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 16, Pipes and Cisterns. Approved scope: Teach leaks as hidden outlets. Compare a pipe's normal fill rate with the slower observed net fill rate to obtain the leak rate. Cover finding leak-emptying time, finding a waste-pipe rate from two filling pipes and a combined time, tank capacity from a known litre-per-minute inlet plus leakage, and a leak that appears only after part of the tank is filled. Include late discovery of an open waste pipe. Keep signs meaningful: a negative contribution means water leaves the tank."
+  },
+  "scriptId": "pc-03-leaks-waste-hidden-rate",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

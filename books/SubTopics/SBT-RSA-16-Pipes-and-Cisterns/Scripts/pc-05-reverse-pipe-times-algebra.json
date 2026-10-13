@@ -1,0 +1,1733 @@
+{
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "So far the pipe times were given.\n\nNow the question may give only the together-time and a clue such as 'B takes 5 hours longer than A.'\n\nThe safe move is to name the unknown time, turn it into a reciprocal rate, and let the rates add.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "If A fills in 12 h and A+B together fill in 8 h, B's rate is the missing part:\n1/8 − 1/12 = 1/24.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So B alone takes 24 h.\nThis is the simplest reverse pipe problem: combined rate minus known rate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 10 h. A and B together fill in 6 h. How long does B alone take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4 hours"
+          },
+          {
+            "id": "b",
+            "label": "16 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "15 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 10 h. A and B together fill in 6 h. How long does B alone take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4 hours"
+            },
+            {
+              "id": "b",
+              "label": "16 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "15 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "B rate = 1/6 − 1/10.",
+            "Use denominator 30."
+          ],
+          "explanation": "5/30 − 3/30 = 2/30 = 1/15, so B takes 15 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nB rate = 1/6 − 1/10.\n\n5/30 − 3/30 = 2/30 = 1/15, so B takes 15 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A fills in 18 h. Together A+B fill in 12 h. B alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 hours"
+          },
+          {
+            "id": "b",
+            "label": "30 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "24 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A fills in 18 h. Together A+B fill in 12 h. B alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 hours"
+            },
+            {
+              "id": "b",
+              "label": "30 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "24 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "1/12 − 1/18 = ?",
+            "Use denominator 36."
+          ],
+          "explanation": "3/36 − 2/36 = 1/36, so 36 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n3/36 − 2/36 = 1/36, so 36 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now suppose B takes 5 hours longer than A, and together they fill in 6 hours.\nLet A take x hours; B takes x+5.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Rate equation:\n1/x + 1/(x+5) = 1/6.\nThis becomes x² − 7x − 30 = 0 = (x−10)(x+3).\nTime cannot be negative, so A=10 h and B=15 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two pipes together fill in 4 h. B takes 6 h longer than A. How long does A take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "2 hours"
+          },
+          {
+            "id": "c",
+            "label": "8 hours"
+          },
+          {
+            "id": "d",
+            "label": "10 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two pipes together fill in 4 h. B takes 6 h longer than A. How long does A take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "2 hours"
+            },
+            {
+              "id": "c",
+              "label": "8 hours"
+            },
+            {
+              "id": "d",
+              "label": "10 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let A=x and B=x+6.",
+            "1/x + 1/(x+6) = 1/4."
+          ],
+          "explanation": "4(2x+6)=x(x+6) → x²−2x−24=0 → (x−6)(x+4)=0. A takes 6 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLet A=x and B=x+6.\n\n4(2x+6)=x(x+6) → x²−2x−24=0 → (x−6)(x+4)=0. A takes 6 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "Together two pipes fill in 6 h. B takes 5 h longer than A. A's time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "15 hours"
+          },
+          {
+            "id": "b",
+            "label": "5 hours"
+          },
+          {
+            "id": "c",
+            "label": "10 hours"
+          },
+          {
+            "id": "d",
+            "label": "12 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Together two pipes fill in 6 h. B takes 5 h longer than A. A's time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "15 hours"
+            },
+            {
+              "id": "b",
+              "label": "5 hours"
+            },
+            {
+              "id": "c",
+              "label": "10 hours"
+            },
+            {
+              "id": "d",
+              "label": "12 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use 1/x + 1/(x+5)=1/6.",
+            "Choose the positive root."
+          ],
+          "explanation": "x=10 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nx=10 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "A time ratio is often easier than a difference.\n\nSuppose A:B times = 2:3. Let their times be 2k and 3k. If together they fill in 6 h:\n1/(2k)+1/(3k)=1/6.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "5/(6k)=1/6, so k=5.\nA=10 h and B=15 h.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A and B take times in ratio 3:5. Together they fill in 15 h. How long does A alone take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 hours"
+          },
+          {
+            "id": "b",
+            "label": "18 hours"
+          },
+          {
+            "id": "c",
+            "label": "24 hours"
+          },
+          {
+            "id": "d",
+            "label": "30 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A and B take times in ratio 3:5. Together they fill in 15 h. How long does A alone take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 hours"
+            },
+            {
+              "id": "b",
+              "label": "18 hours"
+            },
+            {
+              "id": "c",
+              "label": "24 hours"
+            },
+            {
+              "id": "d",
+              "label": "30 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let times be 3k and 5k.",
+            "1/(3k)+1/(5k)=1/15."
+          ],
+          "explanation": "8/(15k)=1/15, so k=8. A=24 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLet times be 3k and 5k.\n\n8/(15k)=1/15, so k=8. A=24 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "Times are in ratio 1:2. Together time is 8 h. Faster pipe time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16 hours"
+          },
+          {
+            "id": "b",
+            "label": "12 hours"
+          },
+          {
+            "id": "c",
+            "label": "24 hours"
+          },
+          {
+            "id": "d",
+            "label": "6 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Times are in ratio 1:2. Together time is 8 h. Faster pipe time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16 hours"
+            },
+            {
+              "id": "b",
+              "label": "12 hours"
+            },
+            {
+              "id": "c",
+              "label": "24 hours"
+            },
+            {
+              "id": "d",
+              "label": "6 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Let times be k and 2k.",
+            "1/k + 1/(2k)=1/8."
+          ],
+          "explanation": "3/(2k)=1/8 → k=12 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\n3/(2k)=1/8 → k=12 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "'Three times as fast' is a rate ratio, not a time ratio.\n\nIf fast:slow rates = 3:1, together = 4 parts. If together time is 36 min, one rate-part is 1/144 tank/min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the slower pipe takes 144 min and the faster pipe takes 48 min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "One pipe is 4 times as fast as another. Together they fill in 10 min. Slower pipe time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 minutes"
+          },
+          {
+            "id": "b",
+            "label": "50 minutes"
+          },
+          {
+            "id": "c",
+            "label": "12.5 minutes"
+          },
+          {
+            "id": "d",
+            "label": "25 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One pipe is 4 times as fast as another. Together they fill in 10 min. Slower pipe time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 minutes"
+            },
+            {
+              "id": "b",
+              "label": "50 minutes"
+            },
+            {
+              "id": "c",
+              "label": "12.5 minutes"
+            },
+            {
+              "id": "d",
+              "label": "25 minutes"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Rates are 4r and r = 5r total.",
+            "5r=1/10."
+          ],
+          "explanation": "r=1/50, so the slower pipe takes 50 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nRates are 4r and r = 5r total.\n\nr=1/50, so the slower pipe takes 50 min.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "One pipe is twice as fast as another. Together fill in 18 min. Slower pipe time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "36 minutes"
+          },
+          {
+            "id": "b",
+            "label": "27 minutes"
+          },
+          {
+            "id": "c",
+            "label": "72 minutes"
+          },
+          {
+            "id": "d",
+            "label": "54 minutes"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "One pipe is twice as fast as another. Together fill in 18 min. Slower pipe time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "36 minutes"
+            },
+            {
+              "id": "b",
+              "label": "27 minutes"
+            },
+            {
+              "id": "c",
+              "label": "72 minutes"
+            },
+            {
+              "id": "d",
+              "label": "54 minutes"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Together rate = 3r.",
+            "3r=1/18."
+          ],
+          "explanation": "r=1/54, so 54 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nr=1/54, so 54 min.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Pairwise rates can reveal the all-pipe rate.\n\nIf A+B, B+C and A+C rates are known, add them. Each individual pipe appears twice.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So 2(A+B+C) = (A+B)+(B+C)+(A+C).\nAll-three rate is half the sum of the three pair rates.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B fill in 8 h, B+C in 12 h, A+C in 6 h. How long do all three take together?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16/3 hours"
+          },
+          {
+            "id": "b",
+            "label": "8 hours"
+          },
+          {
+            "id": "c",
+            "label": "4 hours"
+          },
+          {
+            "id": "d",
+            "label": "6 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B fill in 8 h, B+C in 12 h, A+C in 6 h. How long do all three take together?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16/3 hours"
+            },
+            {
+              "id": "b",
+              "label": "8 hours"
+            },
+            {
+              "id": "c",
+              "label": "4 hours"
+            },
+            {
+              "id": "d",
+              "label": "6 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "All-three rate = 1/2(1/8+1/12+1/6).",
+            "Use denominator 24."
+          ],
+          "explanation": "Pair-rate sum = 3/24+2/24+4/24=9/24=3/8. Half is 3/16, so time = 16/3 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nAll-three rate = 1/2(1/8+1/12+1/6).\n\nPair-rate sum = 3/24+2/24+4/24=9/24=3/8. Half is 3/16, so time = 16/3 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "Pair times are 10 h, 15 h and 6 h. All three together time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 hours"
+          },
+          {
+            "id": "b",
+            "label": "5 hours"
+          },
+          {
+            "id": "c",
+            "label": "6 hours"
+          },
+          {
+            "id": "d",
+            "label": "15/2 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Pair times are 10 h, 15 h and 6 h. All three together time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 hours"
+            },
+            {
+              "id": "b",
+              "label": "5 hours"
+            },
+            {
+              "id": "c",
+              "label": "6 hours"
+            },
+            {
+              "id": "d",
+              "label": "15/2 hours"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Rate = 1/2(1/10+1/15+1/6).",
+            "Use denominator 30: 3+2+5 =10."
+          ],
+          "explanation": "Half of 10/30 = 1/6, so all three take 6 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nHalf of 10/30 = 1/6, so all three take 6 h.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the unknown is a flow capacity rather than a time.\n\nA 2400 m³ tank is filled at x m³/min and emptied at x+10 m³/min. Emptying takes 8 min less than filling.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "2400/x − 2400/(x+10) = 8.\nThis simplifies to x² + 10x − 3000 = 0.\nPositive root: x = 50 m³/min.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 1200 L tank is filled at x L/min and emptied at x+20 L/min. Emptying takes 10 min less. Find x.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 L/min"
+          },
+          {
+            "id": "b",
+            "label": "60 L/min"
+          },
+          {
+            "id": "c",
+            "label": "40 L/min"
+          },
+          {
+            "id": "d",
+            "label": "80 L/min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 1200 L tank is filled at x L/min and emptied at x+20 L/min. Emptying takes 10 min less. Find x.",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 L/min"
+            },
+            {
+              "id": "b",
+              "label": "60 L/min"
+            },
+            {
+              "id": "c",
+              "label": "40 L/min"
+            },
+            {
+              "id": "d",
+              "label": "80 L/min"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "1200/x − 1200/(x+20)=10.",
+            "Simplify to x(x+20)=2400."
+          ],
+          "explanation": "x²+20x−2400=0 = (x−40)(x+60), so x=40 L/min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\n1200/x − 1200/(x+20)=10.\n\nx²+20x−2400=0 = (x−40)(x+60), so x=40 L/min.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 600 L tank fills at x L/min and empties at x+10 L/min. Emptying is 5 min faster. x?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 L/min"
+          },
+          {
+            "id": "b",
+            "label": "30 L/min"
+          },
+          {
+            "id": "c",
+            "label": "40 L/min"
+          },
+          {
+            "id": "d",
+            "label": "50 L/min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 600 L tank fills at x L/min and empties at x+10 L/min. Emptying is 5 min faster. x?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 L/min"
+            },
+            {
+              "id": "b",
+              "label": "30 L/min"
+            },
+            {
+              "id": "c",
+              "label": "40 L/min"
+            },
+            {
+              "id": "d",
+              "label": "50 L/min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "600/x − 600/(x+10)=5.",
+            "This gives x(x+10)=1200."
+          ],
+          "explanation": "x²+10x−1200=0 gives x=30 L/min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nx²+10x−1200=0 gives x=30 L/min.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A rate equation can also find a missing outlet.\n\nIf A+B fill at 1/5 tank/hour and all three with outlet C fill at 1/8, then C removes 1/5 − 1/8 = 3/40 tank/hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So C alone empties in 40/3 hours.\nThe key is to solve in rates first; convert to a time only at the end.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B together fill in 4 h. With outlet C open, the tank fills in 6 h. How long does C alone take to empty it?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10 hours"
+          },
+          {
+            "id": "b",
+            "label": "12 hours"
+          },
+          {
+            "id": "c",
+            "label": "24 hours"
+          },
+          {
+            "id": "d",
+            "label": "2 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B together fill in 4 h. With outlet C open, the tank fills in 6 h. How long does C alone take to empty it?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10 hours"
+            },
+            {
+              "id": "b",
+              "label": "12 hours"
+            },
+            {
+              "id": "c",
+              "label": "24 hours"
+            },
+            {
+              "id": "d",
+              "label": "2 hours"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "C rate = 1/4 − 1/6.",
+            "That difference is 1/12."
+          ],
+          "explanation": "C alone empties in 12 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nC rate = 1/4 − 1/6.\n\nC alone empties in 12 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A+B fill in 3 h. With outlet C, they fill in 5 h. C alone?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8 hours"
+          },
+          {
+            "id": "b",
+            "label": "15 hours"
+          },
+          {
+            "id": "c",
+            "label": "5 hours"
+          },
+          {
+            "id": "d",
+            "label": "15/2 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A+B fill in 3 h. With outlet C, they fill in 5 h. C alone?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8 hours"
+            },
+            {
+              "id": "b",
+              "label": "15 hours"
+            },
+            {
+              "id": "c",
+              "label": "5 hours"
+            },
+            {
+              "id": "d",
+              "label": "15/2 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "C rate = 1/3 − 1/5 = 2/15.",
+            "Invert 2/15."
+          ],
+          "explanation": "C takes 15/2 = 7.5 hours."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nC takes 15/2 = 7.5 hours.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: reverse problems become manageable when every clue is translated into rate language before algebra begins.\n\n'Together in 4 h' means rates sum to 1/4.\n'6 h longer' means times differ by 6.\n'Twice as fast' means rates differ by a factor of 2.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Do not mix rate language and time language in the same ratio. Decide which one the clue describes first.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two pipes together fill in 6 h. A is twice as fast as B. A leak empties at half of B's rate. If all three are open, how long to fill the tank?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6 hours"
+          },
+          {
+            "id": "b",
+            "label": "8 hours"
+          },
+          {
+            "id": "c",
+            "label": "12 hours"
+          },
+          {
+            "id": "d",
+            "label": "36/5 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two pipes together fill in 6 h. A is twice as fast as B. A leak empties at half of B's rate. If all three are open, how long to fill the tank?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6 hours"
+            },
+            {
+              "id": "b",
+              "label": "8 hours"
+            },
+            {
+              "id": "c",
+              "label": "12 hours"
+            },
+            {
+              "id": "d",
+              "label": "36/5 hours"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Let B rate=r. Then A=2r and together A+B=3r=1/6.",
+            "So r=1/18; leak=1/36."
+          ],
+          "explanation": "Net rate = 1/6 − 1/36 = 5/36, so time = 36/5 = 7.2 h."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check the exact rate idea.\n\nLet B rate=r. Then A=2r and together A+B=3r=1/6.\n\nNet rate = 1/6 − 1/36 = 5/36, so time = 36/5 = 7.2 h.\n\nNow use the same relationship with fresh values.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "Two pipes together fill in 10 h. A is 3 times as fast as B. A leak empties at B's rate. All open: fill time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40/3 hours"
+          },
+          {
+            "id": "b",
+            "label": "10 hours"
+          },
+          {
+            "id": "c",
+            "label": "15 hours"
+          },
+          {
+            "id": "d",
+            "label": "20 hours"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Two pipes together fill in 10 h. A is 3 times as fast as B. A leak empties at B's rate. All open: fill time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40/3 hours"
+            },
+            {
+              "id": "b",
+              "label": "10 hours"
+            },
+            {
+              "id": "c",
+              "label": "15 hours"
+            },
+            {
+              "id": "d",
+              "label": "20 hours"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "A+B=4r=1/10, so r=1/40.",
+            "Net with leak = 4r−r=3r=3/40."
+          ],
+          "explanation": "Time = 40/3 h, about 13 h 20 min."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work the parallel case through.\n\nTime = 40/3 h, about 13 h 20 min.\n\nTry it once more. Keep the same rate relationship in mind.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now work backwards from a combined rate.\n\nName the unknown time or flow.\nTurn every time into a reciprocal rate.\nBuild one rate equation.\nKeep only a positive, physically possible solution.\n\nNext, we handle questions where the active pipes change during the filling process.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  },
+  "version": 1,
+  "metadata": {
+    "title": "Reverse Pipe Problems and Unknown Times",
+    "description": "Recover individual pipe times from together-times, ratios, differences, and pairwise information.",
+    "teachingApproach": "Build rate equations from the story rather than guessing times. Start with one known individual time, then fixed time differences, time ratios, pairwise rates, and quadratic capacity questions. Whenever a quadratic gives two roots, keep only the positive physically meaningful time or flow rate.",
+    "targetDurationMinutes": 32,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 16, Pipes and Cisterns. Approved scope: Teach reverse-rate algebra. Cover one known pipe plus a together-time, individual times differing by a fixed number of hours, one pipe being a multiple of another, pairwise rates, and questions where the unknown appears in a reciprocal equation that becomes quadratic. Use positive-time checks to reject impossible roots. Include a pump whose fill and empty capacities differ by a fixed rate and whose times differ by a fixed amount. Learners should form rate equations from the story rather than guess times."
+  },
+  "scriptId": "pc-05-reverse-pipe-times-algebra",
+  "entryNodeId": "start",
+  "schemaVersion": 1
+}

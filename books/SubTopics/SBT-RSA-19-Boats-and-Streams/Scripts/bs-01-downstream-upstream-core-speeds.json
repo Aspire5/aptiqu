@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "bs-01-downstream-upstream-core-speeds",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Downstream, Upstream, Still-Water Speed, and Current",
+    "description": "Build the core u + v / u − v river-speed model and recover boat or current speed from observed journeys.",
+    "teachingApproach": "Open with a moving-walkway picture: the current helps downstream and resists upstream. Name the two base speeds only after the learner sees the effect. Then reverse the model with half-sum and half-difference, hide the effective speeds inside distance/time data, and finish with a source-shaped capstone.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 19, Boats and Streams. Approved scope: Teach downstream as boat speed in still water plus current, and upstream as boat speed in still water minus current. Use a moving-belt mental model so the signs make sense. Cover recovering still-water speed as half the sum of downstream and upstream speeds and current speed as half their difference, deriving observed speeds from distance and time, finding a missing upstream or downstream speed from the other quantities, and checking that upstream is slower than downstream. Include source-shaped questions where downstream and upstream speeds are hidden inside different distances and times."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn the two speeds hiding inside every boat-and-stream question.\n\nA boat has its own speed. The river adds a push in one direction and takes the same push away in the other.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Picture a moving walkway.\n\nA boat moves at 12 km/hr in still water. The current flows at 3 km/hr.\n\nDownstream, both pushes point the same way: 12 + 3 = 15 km/hr.\nUpstream, the river pushes back: 12 − 3 = 9 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let u be the boat's speed in still water and v the current.\n\nDownstream = u + v\nUpstream = u − v\n\nThe current is the same size in both directions; only its sign changes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 10 km/hr in still water and the current is 2 km/hr. What is its downstream speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "14"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 10 km/hr in still water and the current is 2 km/hr. What is its downstream speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "14"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Downstream means the current helps.",
+            "Add 10 and 2."
+          ],
+          "explanation": "Downstream speed = 10 + 2 = 12 km/hr. Subtracting would describe the upstream trip."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nDownstream means the current helps.\n\nDownstream speed = 10 + 2 = 12 km/hr. Subtracting would describe the upstream trip.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 14 km/hr in still water and the current is 3 km/hr. What is its upstream speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "17"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 14 km/hr in still water and the current is 3 km/hr. What is its upstream speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "17"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Upstream means the current works against the boat.",
+            "Subtract 3 from 14."
+          ],
+          "explanation": "Upstream speed = 14 − 3 = 11 km/hr. Adding the current would give the downstream speed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nUpstream speed = 14 − 3 = 11 km/hr. Adding the current would give the downstream speed.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now suppose you only see the effective speeds:\n\nDownstream = 18 km/hr\nUpstream = 10 km/hr\n\nAdd them: 28. The current cancels, so 28 = 2 × still-water speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "That gives two useful reverse rules:\n\nStill-water speed = (downstream + upstream) ÷ 2\nCurrent speed = (downstream − upstream) ÷ 2\n\nFor 18 and 10: still water = 14, current = 4.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat travels at 18 km/hr downstream and 10 km/hr upstream. What is its speed in still water?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "14"
+          },
+          {
+            "id": "c",
+            "label": "8"
+          },
+          {
+            "id": "d",
+            "label": "28"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat travels at 18 km/hr downstream and 10 km/hr upstream. What is its speed in still water?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "14"
+            },
+            {
+              "id": "c",
+              "label": "8"
+            },
+            {
+              "id": "d",
+              "label": "28"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use half the sum.",
+            "(18 + 10) ÷ 2."
+          ],
+          "explanation": "Still-water speed = (18 + 10) ÷ 2 = 14 km/hr. The value 4 is the current, not the boat's own speed."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nUse half the sum.\n\nStill-water speed = (18 + 10) ÷ 2 = 14 km/hr. The value 4 is the current, not the boat's own speed.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat travels at 22 km/hr downstream and 14 km/hr upstream. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "18"
+          },
+          {
+            "id": "b",
+            "label": "8"
+          },
+          {
+            "id": "c",
+            "label": "4"
+          },
+          {
+            "id": "d",
+            "label": "36"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat travels at 22 km/hr downstream and 14 km/hr upstream. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "18"
+            },
+            {
+              "id": "b",
+              "label": "8"
+            },
+            {
+              "id": "c",
+              "label": "4"
+            },
+            {
+              "id": "d",
+              "label": "36"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use half the difference.",
+            "(22 − 14) ÷ 2."
+          ],
+          "explanation": "Current speed = (22 − 14) ÷ 2 = 4 km/hr. Using the full difference would count the current twice."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent speed = (22 − 14) ÷ 2 = 4 km/hr. Using the full difference would count the current twice.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the speeds are hidden inside journeys.\n\nA boat covers 24 km downstream in 2 hours: 24 ÷ 2 = 12 km/hr.\nIt covers 8 km upstream in 1 hour: 8 ÷ 1 = 8 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the river part is visible:\n\nCurrent = (12 − 8) ÷ 2 = 2 km/hr.\n\nAlways turn each distance-time pair into a speed first. Then use half-sum or half-difference.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers 24 km downstream in 2 hours and 8 km upstream in 1 hour. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "10"
+          },
+          {
+            "id": "c",
+            "label": "2"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers 24 km downstream in 2 hours and 8 km upstream in 1 hour. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "10"
+            },
+            {
+              "id": "c",
+              "label": "2"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find the two effective speeds first.",
+            "Downstream = 12 and upstream = 8, then halve their difference."
+          ],
+          "explanation": "The effective speeds are 12 and 8 km/hr. Current = (12 − 8) ÷ 2 = 2 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind the two effective speeds first.\n\nThe effective speeds are 12 and 8 km/hr. Current = (12 − 8) ÷ 2 = 2 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers 30 km downstream in 2 hours and 18 km upstream in 2 hours. What is its speed in still water?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "24"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers 30 km downstream in 2 hours and 18 km upstream in 2 hours. What is its speed in still water?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "24"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Convert both journeys to speeds.",
+            "Downstream = 15, upstream = 9; take half the sum."
+          ],
+          "explanation": "Still-water speed = (15 + 9) ÷ 2 = 12 km/hr. The current would be 3 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nStill-water speed = (15 + 9) ÷ 2 = 12 km/hr. The current would be 3 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "One effective speed plus the current is also enough.\n\nSuppose downstream speed is 15 km/hr and current is 2.5 km/hr.\n\nStill water = 15 − 2.5 = 12.5\nUpstream = 12.5 − 2.5 = 10 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "A quick shortcut appears:\n\nUpstream = downstream − 2 × current\nDownstream = upstream + 2 × current\n\nWhy twice? The current changes from +v to −v, a swing of 2v.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Downstream speed is 15 km/hr and the current is 2.5 km/hr. What is the upstream speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "12.5"
+          },
+          {
+            "id": "b",
+            "label": "17.5"
+          },
+          {
+            "id": "c",
+            "label": "7.5"
+          },
+          {
+            "id": "d",
+            "label": "10"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Downstream speed is 15 km/hr and the current is 2.5 km/hr. What is the upstream speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "12.5"
+            },
+            {
+              "id": "b",
+              "label": "17.5"
+            },
+            {
+              "id": "c",
+              "label": "7.5"
+            },
+            {
+              "id": "d",
+              "label": "10"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "The change from downstream to upstream is twice the current.",
+            "15 − 2 × 2.5."
+          ],
+          "explanation": "Upstream = 15 − 5 = 10 km/hr. Subtracting the current only once stops at the still-water speed, 12.5."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe change from downstream to upstream is twice the current.\n\nUpstream = 15 − 5 = 10 km/hr. Subtracting the current only once stops at the still-water speed, 12.5.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "Downstream speed is 20 km/hr and the current is 3 km/hr. What is the upstream speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "14"
+          },
+          {
+            "id": "b",
+            "label": "17"
+          },
+          {
+            "id": "c",
+            "label": "23"
+          },
+          {
+            "id": "d",
+            "label": "11"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "Downstream speed is 20 km/hr and the current is 3 km/hr. What is the upstream speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "14"
+            },
+            {
+              "id": "b",
+              "label": "17"
+            },
+            {
+              "id": "c",
+              "label": "23"
+            },
+            {
+              "id": "d",
+              "label": "11"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Move from +3 current to −3 current.",
+            "20 − 6."
+          ],
+          "explanation": "Upstream speed = 20 − 2 × 3 = 14 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nUpstream speed = 20 − 2 × 3 = 14 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same idea works from still-water and one river speed.\n\nStill water = 9 km/hr\nUpstream = 7 km/hr\n\nSo current = 9 − 7 = 2 km/hr, and downstream = 9 + 2 = 11 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Keep the roles separate:\n\nstill water is the middle value,\ndownstream is above it by v,\nupstream is below it by v.\n\nSo still water is always the midpoint of the two river speeds.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 9 km/hr in still water and 7 km/hr upstream. What is its downstream speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "11"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "9"
+          },
+          {
+            "id": "d",
+            "label": "16"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 9 km/hr in still water and 7 km/hr upstream. What is its downstream speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "11"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "9"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find the current first.",
+            "Current = 9 − 7 = 2, then 9 + 2."
+          ],
+          "explanation": "Current = 2 km/hr, so downstream = 9 + 2 = 11 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind the current first.\n\nCurrent = 2 km/hr, so downstream = 9 + 2 = 11 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat moves at 12 km/hr in still water and 15 km/hr downstream. What is its upstream speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "12"
+          },
+          {
+            "id": "c",
+            "label": "18"
+          },
+          {
+            "id": "d",
+            "label": "9"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat moves at 12 km/hr in still water and 15 km/hr downstream. What is its upstream speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "12"
+            },
+            {
+              "id": "c",
+              "label": "18"
+            },
+            {
+              "id": "d",
+              "label": "9"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The current is the gap between 15 and 12.",
+            "Current = 3, so upstream = 12 − 3."
+          ],
+          "explanation": "Current = 15 − 12 = 3 km/hr. Upstream = 12 − 3 = 9 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent = 15 − 12 = 3 km/hr. Upstream = 12 − 3 = 9 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A useful check: downstream must be faster than upstream.\n\nIf the two observed speeds are 8 and 4 km/hr, the midpoint is 6 and the half-gap is 2.\n\nSo the boat moves at 6 km/hr in still water and the current is 2 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The current is never the full gap between downstream and upstream.\n\nWhy?\nDownstream contains +v and upstream contains −v.\nThe gap is therefore 2v.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat's downstream speed is 8 km/hr and upstream speed is 4 km/hr. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "4"
+          },
+          {
+            "id": "b",
+            "label": "2"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "12"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat's downstream speed is 8 km/hr and upstream speed is 4 km/hr. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "4"
+            },
+            {
+              "id": "b",
+              "label": "2"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "12"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Take half the gap, not the full gap.",
+            "(8 − 4) ÷ 2."
+          ],
+          "explanation": "The full gap is 4 km/hr, which equals 2 × current. So current = 2 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nTake half the gap, not the full gap.\n\nThe full gap is 4 km/hr, which equals 2 × current. So current = 2 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat's downstream speed is 13 km/hr and upstream speed is 7 km/hr. What is its speed in still water?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3"
+          },
+          {
+            "id": "b",
+            "label": "6"
+          },
+          {
+            "id": "c",
+            "label": "10"
+          },
+          {
+            "id": "d",
+            "label": "20"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat's downstream speed is 13 km/hr and upstream speed is 7 km/hr. What is its speed in still water?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3"
+            },
+            {
+              "id": "b",
+              "label": "6"
+            },
+            {
+              "id": "c",
+              "label": "10"
+            },
+            {
+              "id": "d",
+              "label": "20"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Still water is the midpoint.",
+            "(13 + 7) ÷ 2."
+          ],
+          "explanation": "Still-water speed = 20 ÷ 2 = 10 km/hr. The current is 3 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nStill-water speed = 20 ÷ 2 = 10 km/hr. The current is 3 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Watch how units can hide the same idea.\n\nA boat covers 1 km downstream in 5 minutes. That is 12 km/hr.\nIt covers 6 km upstream in 1 hour. That is 6 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now the core model finishes the job:\n\nStill water = (12 + 6) ÷ 2 = 9 km/hr\nCurrent = (12 − 6) ÷ 2 = 3 km/hr.\n\nConvert first. Compare second.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers 1 km downstream in 5 minutes and 6 km upstream in 1 hour. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "6"
+          },
+          {
+            "id": "b",
+            "label": "9"
+          },
+          {
+            "id": "c",
+            "label": "12"
+          },
+          {
+            "id": "d",
+            "label": "3"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers 1 km downstream in 5 minutes and 6 km upstream in 1 hour. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "6"
+            },
+            {
+              "id": "b",
+              "label": "9"
+            },
+            {
+              "id": "c",
+              "label": "12"
+            },
+            {
+              "id": "d",
+              "label": "3"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Turn 1 km in 5 minutes into km/hr.",
+            "That is 12 km/hr downstream; upstream is 6 km/hr."
+          ],
+          "explanation": "Downstream = 12 and upstream = 6 km/hr. Current = (12 − 6) ÷ 2 = 3 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nTurn 1 km in 5 minutes into km/hr.\n\nDownstream = 12 and upstream = 6 km/hr. Current = (12 − 6) ÷ 2 = 3 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers 2 km downstream in 10 minutes and 4 km upstream in 1 hour. What is its still-water speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "8"
+          },
+          {
+            "id": "b",
+            "label": "4"
+          },
+          {
+            "id": "c",
+            "label": "6"
+          },
+          {
+            "id": "d",
+            "label": "16"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers 2 km downstream in 10 minutes and 4 km upstream in 1 hour. What is its still-water speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "8"
+            },
+            {
+              "id": "b",
+              "label": "4"
+            },
+            {
+              "id": "c",
+              "label": "6"
+            },
+            {
+              "id": "d",
+              "label": "16"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "2 km in 10 minutes is 12 km/hr.",
+            "Use the midpoint of 12 and 4."
+          ],
+          "explanation": "Downstream = 12 km/hr and upstream = 4 km/hr. Still-water speed = (12 + 4) ÷ 2 = 8 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nDownstream = 12 km/hr and upstream = 4 km/hr. Still-water speed = (12 + 4) ÷ 2 = 8 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's combine distance, time, and the river model.\n\nSuppose a boat covers 32 km downstream in 6 hours and 14 km upstream in 6 hours.\n\nDownstream = 32/6 = 16/3\nUpstream = 14/6 = 7/3 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "The current is half their difference:\n\n[(16/3) − (7/3)] ÷ 2\n= (9/3) ÷ 2\n= 3 ÷ 2\n= 1.5 km/hr.\n\nThe fractions look awkward, but the subtraction becomes simple.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers 32 km downstream and 14 km upstream, taking 6 hours for each leg. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "3 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "2.5 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "1.5 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "0.75 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers 32 km downstream and 14 km upstream, taking 6 hours for each leg. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "3 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "2.5 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "1.5 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "0.75 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Find each effective speed from distance ÷ time.",
+            "Then take half the difference."
+          ],
+          "explanation": "Downstream = 16/3 and upstream = 7/3 km/hr. Their difference is 3, so current = 1.5 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nFind each effective speed from distance ÷ time.\n\nDownstream = 16/3 and upstream = 7/3 km/hr. Their difference is 3, so current = 1.5 km/hr.\n\nNow use that idea on a fresh question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A boat covers 30 km downstream and 18 km upstream, taking 6 hours for each leg. What is the current speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "2 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "1 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "4 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "3 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A boat covers 30 km downstream and 18 km upstream, taking 6 hours for each leg. What is the current speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "2 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "1 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "4 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "3 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 20,
+          "hints": [
+            "Downstream = 5 and upstream = 3 km/hr.",
+            "Current is half of 5 − 3."
+          ],
+          "explanation": "Current = (5 − 3) ÷ 2 = 1 km/hr. Still-water speed is 4 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nCurrent = (5 − 3) ÷ 2 = 1 km/hr. Still-water speed is 4 km/hr.\n\nTry the question once more and check the key relationship.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now separate the boat from the river.\n\nYou can build downstream and upstream speeds, recover still-water speed and current from a pair of observed rates, and uncover those rates when they are hidden inside distance and time.\n\nNext, we use ratios to do the same reasoning even faster.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

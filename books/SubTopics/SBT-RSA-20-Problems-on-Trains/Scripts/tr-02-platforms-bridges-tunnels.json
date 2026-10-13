@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "tr-02-platforms-bridges-tunnels",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Platforms, Bridges, and Tunnels",
+    "description": "Extend the crossing model to long stationary objects by adding the train length to the object length.",
+    "teachingApproach": "Begin with the visual sum-of-lengths model, then reverse it to find platform or train length, extend to tunnels and length multiples, and finish with the extra-time and two-platform subtraction shortcuts.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal Quantitative Aptitude for Competitive Examinations, Chapter 20, Problems on Trains. Approved scope: Teach that to completely cross a platform, bridge, or tunnel, the train's front must travel the train length plus the object's length. Use this to find crossing time, train length, platform/bridge/tunnel length, and speed. Cover objects that are a multiple of the train length, and develop the extra-time shortcut: compared with crossing a pole, the additional time is exactly the time needed to cover the platform or bridge length. Include two-platform comparisons where the difference in crossing times corresponds to the difference in platform lengths."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pole is only a point. A platform has length.\n\nThat one change creates most train-length questions: the front must travel far enough for the entire train to clear both its own length and the object's length.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A platform changes one thing: the train must clear an object that also has length.\n\nPicture a 160 m train approaching a 240 m platform. From the instant the front reaches the platform until the rear leaves it, the front travels 160 + 240 = 400 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So the rule is:\n\nextended stationary object → distance = train length + object length\n\nAt 72 km/hr = 20 m/s, 400 m takes 20 s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 160 m train at 72 km/hr crosses a 240 m platform. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "20 s"
+          },
+          {
+            "id": "b",
+            "label": "8 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "24 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 160 m train at 72 km/hr crosses a 240 m platform. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "20 s"
+            },
+            {
+              "id": "b",
+              "label": "8 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "24 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Add the train and platform lengths.",
+            "400 m at 20 m/s takes 20 s."
+          ],
+          "explanation": "The front must gain 160 + 240 = 400 m before the rear clears the platform. 400/20 = 20 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nAdd the train and platform lengths.\n\nThe front must gain 160 + 240 = 400 m before the rear clears the platform. 400/20 = 20 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 m train at 90 km/hr crosses a 270 m platform. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10.8 s"
+          },
+          {
+            "id": "b",
+            "label": "18 s"
+          },
+          {
+            "id": "c",
+            "label": "12 s"
+          },
+          {
+            "id": "d",
+            "label": "20 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 m train at 90 km/hr crosses a 270 m platform. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10.8 s"
+            },
+            {
+              "id": "b",
+              "label": "18 s"
+            },
+            {
+              "id": "c",
+              "label": "12 s"
+            },
+            {
+              "id": "d",
+              "label": "20 s"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "90 km/hr = 25 m/s.",
+            "Total distance = 180 + 270 = 450 m."
+          ],
+          "explanation": "450/25 = 18 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n450/25 = 18 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same equation can reveal the platform length.\n\nA 120 m train at 54 km/hr moves at 15 m/s. In 20 s it covers 300 m while crossing a platform.\n\n300 = train 120 + platform\nSo platform = 180 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Mental pattern:\nobject length = speed × crossing time − train length\n\nYou are not subtracting because of a formula; you are removing the part of the total crossing distance occupied by the train itself.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 120 m train at 54 km/hr crosses a platform in 20 s. Find the platform length.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120 m"
+          },
+          {
+            "id": "b",
+            "label": "180 m"
+          },
+          {
+            "id": "c",
+            "label": "240 m"
+          },
+          {
+            "id": "d",
+            "label": "300 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 120 m train at 54 km/hr crosses a platform in 20 s. Find the platform length.",
+          "options": [
+            {
+              "id": "a",
+              "label": "120 m"
+            },
+            {
+              "id": "b",
+              "label": "180 m"
+            },
+            {
+              "id": "c",
+              "label": "240 m"
+            },
+            {
+              "id": "d",
+              "label": "300 m"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "54 km/hr = 15 m/s, so total crossing distance is 300 m.",
+            "Subtract the 120 m train length."
+          ],
+          "explanation": "The crossing distance is 15 × 20 = 300 m. Platform = 300 − 120 = 180 m. Reporting 300 m confuses total crossing distance with platform length."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\n54 km/hr = 15 m/s, so total crossing distance is 300 m.\n\nThe crossing distance is 15 × 20 = 300 m. Platform = 300 − 120 = 180 m. Reporting 300 m confuses total crossing distance with platform length.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 150 m train at 72 km/hr crosses a bridge in 18 s. Find the bridge length.",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "150 m"
+          },
+          {
+            "id": "b",
+            "label": "180 m"
+          },
+          {
+            "id": "c",
+            "label": "210 m"
+          },
+          {
+            "id": "d",
+            "label": "360 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 150 m train at 72 km/hr crosses a bridge in 18 s. Find the bridge length.",
+          "options": [
+            {
+              "id": "a",
+              "label": "150 m"
+            },
+            {
+              "id": "b",
+              "label": "180 m"
+            },
+            {
+              "id": "c",
+              "label": "210 m"
+            },
+            {
+              "id": "d",
+              "label": "360 m"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "72 km/hr = 20 m/s; total distance = 360 m.",
+            "Bridge = 360 − 150."
+          ],
+          "explanation": "The train covers 360 m. Removing its own 150 m leaves a 210 m bridge."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe train covers 360 m. Removing its own 150 m leaves a 210 m bridge.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the platform is known instead, the train length is the leftover part.\n\nA train at 90 km/hr = 25 m/s crosses a 250 m platform in 20 s.\nTotal crossing distance = 25 × 20 = 500 m.\nTrain length = 500 − 250 = 250 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "This is the same picture viewed from the other side:\ntrain length = speed × time − object length.\n\nAlways identify which piece is already known before subtracting.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 90 km/hr crosses a 250 m platform in 20 s. What is the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "200 m"
+          },
+          {
+            "id": "b",
+            "label": "300 m"
+          },
+          {
+            "id": "c",
+            "label": "250 m"
+          },
+          {
+            "id": "d",
+            "label": "500 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 90 km/hr crosses a 250 m platform in 20 s. What is the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "200 m"
+            },
+            {
+              "id": "b",
+              "label": "300 m"
+            },
+            {
+              "id": "c",
+              "label": "250 m"
+            },
+            {
+              "id": "d",
+              "label": "500 m"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Find the total crossing distance first.",
+            "25 m/s × 20 s = 500 m; subtract 250 m."
+          ],
+          "explanation": "Total distance is 500 m. Half of that is the platform, so the train is the remaining 250 m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFind the total crossing distance first.\n\nTotal distance is 500 m. Half of that is the platform, so the train is the remaining 250 m.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 72 km/hr crosses a 320 m bridge in 25 s. What is the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "160 m"
+          },
+          {
+            "id": "b",
+            "label": "200 m"
+          },
+          {
+            "id": "c",
+            "label": "500 m"
+          },
+          {
+            "id": "d",
+            "label": "180 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 72 km/hr crosses a 320 m bridge in 25 s. What is the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "160 m"
+            },
+            {
+              "id": "b",
+              "label": "200 m"
+            },
+            {
+              "id": "c",
+              "label": "500 m"
+            },
+            {
+              "id": "d",
+              "label": "180 m"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "72 km/hr = 20 m/s, so total crossing distance is 500 m.",
+            "Train = 500 − 320."
+          ],
+          "explanation": "The train is 180 m long."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe train is 180 m long.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A tunnel follows exactly the same rule as a platform. The labels change; the geometry does not.\n\nA 100 m train entering a 500 m tunnel is not fully out until the front has travelled 600 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "At 108 km/hr = 30 m/s, 600 m takes 20 s.\n\nSo when the question says 'from the moment the front enters until the rear emerges', that phrase is telling you to add both lengths.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 100 m train at 108 km/hr completely passes through a 500 m tunnel. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "16.7 s"
+          },
+          {
+            "id": "b",
+            "label": "18 s"
+          },
+          {
+            "id": "c",
+            "label": "25 s"
+          },
+          {
+            "id": "d",
+            "label": "20 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 100 m train at 108 km/hr completely passes through a 500 m tunnel. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "16.7 s"
+            },
+            {
+              "id": "b",
+              "label": "18 s"
+            },
+            {
+              "id": "c",
+              "label": "25 s"
+            },
+            {
+              "id": "d",
+              "label": "20 s"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Use train length + tunnel length.",
+            "600 m ÷ 30 m/s = 20 s."
+          ],
+          "explanation": "The complete tunnel event covers 100 + 500 = 600 m. At 30 m/s, time is 20 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nUse train length + tunnel length.\n\nThe complete tunnel event covers 100 + 500 = 600 m. At 30 m/s, time is 20 s.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 m train at 90 km/hr passes through a 420 m tunnel. How long does it take?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "24 s"
+          },
+          {
+            "id": "b",
+            "label": "16.8 s"
+          },
+          {
+            "id": "c",
+            "label": "18 s"
+          },
+          {
+            "id": "d",
+            "label": "30 s"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 m train at 90 km/hr passes through a 420 m tunnel. How long does it take?",
+          "options": [
+            {
+              "id": "a",
+              "label": "24 s"
+            },
+            {
+              "id": "b",
+              "label": "16.8 s"
+            },
+            {
+              "id": "c",
+              "label": "18 s"
+            },
+            {
+              "id": "d",
+              "label": "30 s"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Total distance = 600 m.",
+            "90 km/hr = 25 m/s."
+          ],
+          "explanation": "600/25 = 24 s."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n600/25 = 24 s.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the object length is described relative to the train. If a platform is twice the train length, crossing distance is not 2L — it is L + 2L = 3L.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "For a train at 90 km/hr = 25 m/s taking 36 s, total crossing distance is 900 m.\n\n3L = 900, so L = 300 m and the platform is 600 m.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 90 km/hr crosses a platform twice its own length in 36 s. What is the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "300 m"
+          },
+          {
+            "id": "b",
+            "label": "225 m"
+          },
+          {
+            "id": "c",
+            "label": "450 m"
+          },
+          {
+            "id": "d",
+            "label": "600 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 90 km/hr crosses a platform twice its own length in 36 s. What is the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "300 m"
+            },
+            {
+              "id": "b",
+              "label": "225 m"
+            },
+            {
+              "id": "c",
+              "label": "450 m"
+            },
+            {
+              "id": "d",
+              "label": "600 m"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Train + platform = L + 2L = 3L.",
+            "25 × 36 = 900, so 3L = 900."
+          ],
+          "explanation": "The train is 300 m long. Treating 900 m as the platform alone double-counts the event."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nTrain + platform = L + 2L = 3L.\n\nThe train is 300 m long. Treating 900 m as the platform alone double-counts the event.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train at 72 km/hr crosses a platform three times its own length in 40 s. What is the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "160 m"
+          },
+          {
+            "id": "b",
+            "label": "200 m"
+          },
+          {
+            "id": "c",
+            "label": "240 m"
+          },
+          {
+            "id": "d",
+            "label": "600 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train at 72 km/hr crosses a platform three times its own length in 40 s. What is the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "160 m"
+            },
+            {
+              "id": "b",
+              "label": "200 m"
+            },
+            {
+              "id": "c",
+              "label": "240 m"
+            },
+            {
+              "id": "d",
+              "label": "600 m"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "Crossing distance = L + 3L = 4L.",
+            "20 × 40 = 800, so L = 200."
+          ],
+          "explanation": "Four train-lengths equal 800 m, so one train-length is 200 m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nFour train-lengths equal 800 m, so one train-length is 200 m.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "A pole crossing can make platform questions much faster. Suppose the same train crosses a pole in 8 s and a 240 m platform in 20 s.\n\nThe train's own length is present in both events. The extra 12 s is caused only by the extra 240 m platform.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "So speed = 240 ÷ 12 = 20 m/s.\nThen train length = 20 × 8 = 160 m.\n\nMemory hook: extra object length ÷ extra time = train speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 8 s and a 240 m platform in 20 s. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "90 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 8 s and a 240 m platform in 20 s. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "90 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The extra 12 s is for the 240 m platform only.",
+            "240/12 = 20 m/s = 72 km/hr."
+          ],
+          "explanation": "Subtracting the two events removes the train length. Speed = 20 m/s = 72 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nThe extra 12 s is for the 240 m platform only.\n\nSubtracting the two events removes the train length. Speed = 20 m/s = 72 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 10 s and a 300 m bridge in 25 s. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "90 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 10 s and a 300 m bridge in 25 s. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "90 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "EASY",
+          "xp": 10,
+          "hints": [
+            "The bridge adds 300 m and 15 s.",
+            "300/15 = 20 m/s."
+          ],
+          "explanation": "The speed is 20 m/s = 72 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nThe speed is 20 m/s = 72 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "The same subtraction works with two platforms. A train crosses 140 m in 18 s and 260 m in 24 s.\n\nThe platform grows by 120 m and time grows by 6 s.\nSo speed = 120/6 = 20 m/s.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now recover the train length from either event:\n18 × 20 = 360 m total\nTrain = 360 − 140 = 220 m.\n\nOne subtraction can remove the unknown train length completely.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a 140 m platform in 18 s and a 260 m platform in 24 s. What is the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120 m"
+          },
+          {
+            "id": "b",
+            "label": "200 m"
+          },
+          {
+            "id": "c",
+            "label": "220 m"
+          },
+          {
+            "id": "d",
+            "label": "240 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a 140 m platform in 18 s and a 260 m platform in 24 s. What is the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120 m"
+            },
+            {
+              "id": "b",
+              "label": "200 m"
+            },
+            {
+              "id": "c",
+              "label": "220 m"
+            },
+            {
+              "id": "d",
+              "label": "240 m"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Find speed from the differences: 120 m in 6 s.",
+            "Speed = 20 m/s; then use the 18 s crossing."
+          ],
+          "explanation": "At 20 m/s, the first crossing covers 360 m. Removing the 140 m platform leaves a 220 m train."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nFind speed from the differences: 120 m in 6 s.\n\nAt 20 m/s, the first crossing covers 360 m. Removing the 140 m platform leaves a 220 m train.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a 180 m platform in 20 s and a 360 m platform in 30 s. What is the train length?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "160 m"
+          },
+          {
+            "id": "b",
+            "label": "200 m"
+          },
+          {
+            "id": "c",
+            "label": "360 m"
+          },
+          {
+            "id": "d",
+            "label": "180 m"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a 180 m platform in 20 s and a 360 m platform in 30 s. What is the train length?",
+          "options": [
+            {
+              "id": "a",
+              "label": "160 m"
+            },
+            {
+              "id": "b",
+              "label": "200 m"
+            },
+            {
+              "id": "c",
+              "label": "360 m"
+            },
+            {
+              "id": "d",
+              "label": "180 m"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The extra 180 m takes 10 s, so speed = 18 m/s.",
+            "First total distance = 18 × 20 = 360 m."
+          ],
+          "explanation": "Train length = 360 − 180 = 180 m."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\nTrain length = 360 − 180 = 180 m.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Capstone: a train crosses a pole in 10 s and a 250 m bridge in 25 s.\n\nAgain, the extra 15 s corresponds to the bridge alone: speed = 250/15 = 50/3 m/s = 60 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Once speed is known, every other crossing follows from distance ÷ speed.\n\nThis 'subtract the events first' habit is the fastest route whenever the same train appears in two observations.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 10 s and a 250 m bridge in 25 s. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "60 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 10 s and a 250 m bridge in 25 s. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "60 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 15,
+          "hints": [
+            "Bridge length / extra time gives speed.",
+            "250 ÷ (25 − 10) = 50/3 m/s."
+          ],
+          "explanation": "50/3 m/s × 18/5 = 60 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s check this clue.\n\nBridge length / extra time gives speed.\n\n50/3 m/s × 18/5 = 60 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A train crosses a pole in 12 s and a 360 m platform in 30 s. What is its speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "54 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "90 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A train crosses a pole in 12 s and a 360 m platform in 30 s. What is its speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "54 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "90 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The platform adds 360 m and 18 s.",
+            "360/18 = 20 m/s."
+          ],
+          "explanation": "20 m/s = 72 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let’s work through this one.\n\n20 m/s = 72 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now handle every stationary object with one picture:\n\npoint → train length only\nextended object → train length + object length\n\nAnd when the same train crosses two objects, subtract the two observations first. Next, we turn that shortcut into a full inference toolkit.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}

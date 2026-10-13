@@ -1,0 +1,1733 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "td-05-speed-change-early-late-schedules",
+  "sourceType": "MANUAL",
+  "metadata": {
+    "title": "Changed Speed, Early/Late Arrival, and Schedules",
+    "description": "Turn speed changes into time differences, solve early/late arrival equations, and recover the speed needed to meet a deadline.",
+    "teachingApproach": "Begin with a fractional speed reduction so the inverse time effect is visible. Then use early-versus-late time differences to recover distance, build simple speed-change equations, handle delayed departures, and finish with remaining-distance deadline problems. Every schedule question is translated into distance, time used, and time left before arithmetic begins.",
+    "targetDurationMinutes": 30,
+    "sourceScope": "R.S. Aggarwal, Quantitative Aptitude for Competitive Examinations, Chapter 18, Time and Distance. Approved scope: Cover late/early arrival from changed speed, distance from two speed-time conditions, speed increases that save fixed time, late departure with fixed arrival, percentage speed increases, two-condition speed/distance equations, and remaining-speed questions after part of a journey has already been completed."
+  },
+  "startNodeId": "start",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's learn why a small speed change can make someone early or late.\n\nThe key is to keep the distance fixed. When speed changes, time changes in the opposite direction.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1"
+        }
+      ]
+    },
+    "teach_1": {
+      "id": "teach_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "A trip normally takes T minutes. A traveller moves at only 4/5 of the usual speed.\n\nFor the same distance, time becomes 5/4 T.\nThe extra time is 1/4 T.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_1_step"
+        }
+      ]
+    },
+    "teach_1_step": {
+      "id": "teach_1_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "If the traveller is 15 minutes late:\n\nT/4 = 15\nT = 60 minutes.\n\nWe found the usual time without needing the distance.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_1"
+        }
+      ]
+    },
+    "q_1": {
+      "id": "q_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A man walks at 4/5 of his usual speed and arrives 15 minutes late. What is his usual travel time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 min"
+          },
+          {
+            "id": "b",
+            "label": "75 min"
+          },
+          {
+            "id": "c",
+            "label": "45 min"
+          },
+          {
+            "id": "d",
+            "label": "60 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A man walks at 4/5 of his usual speed and arrives 15 minutes late. What is his usual travel time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 min"
+            },
+            {
+              "id": "b",
+              "label": "75 min"
+            },
+            {
+              "id": "c",
+              "label": "45 min"
+            },
+            {
+              "id": "d",
+              "label": "60 min"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "New time is 5/4 of usual time.",
+            "The extra 1/4 of the usual time equals 15 minutes."
+          ],
+          "explanation": "If usual time is T, new time is 5T/4. The delay is T/4 = 15, so T = 60 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_1": {
+      "id": "remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nNew time is 5/4 of usual time.\n\nIf usual time is T, new time is 5T/4. The delay is T/4 = 15, so T = 60 minutes.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "retry_1": {
+      "id": "retry_1",
+      "type": "CHOICE",
+      "content": {
+        "text": "A traveller moves at 3/4 of the usual speed and arrives 20 minutes late. What is the usual travel time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "45 min"
+          },
+          {
+            "id": "b",
+            "label": "60 min"
+          },
+          {
+            "id": "c",
+            "label": "80 min"
+          },
+          {
+            "id": "d",
+            "label": "40 min"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A traveller moves at 3/4 of the usual speed and arrives 20 minutes late. What is the usual travel time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "45 min"
+            },
+            {
+              "id": "b",
+              "label": "60 min"
+            },
+            {
+              "id": "c",
+              "label": "80 min"
+            },
+            {
+              "id": "d",
+              "label": "40 min"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "New time = 4/3 of usual.",
+            "The extra 1/3 equals 20 minutes."
+          ],
+          "explanation": "Delay = T/3 = 20, so usual time T = 60 minutes."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_1",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_1": {
+      "id": "retry_remedy_1",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nDelay = T/3 = 20, so usual time T = 60 minutes.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_1"
+        }
+      ]
+    },
+    "teach_2": {
+      "id": "teach_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two different speeds can give one late arrival and one early arrival.\n\nAt 30 km/hr a person is 20 min late; at 40 km/hr the same person is 10 min early.\n\nSo the two travel times differ by 30 minutes = 1/2 hour.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_2_step"
+        }
+      ]
+    },
+    "teach_2_step": {
+      "id": "teach_2_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let distance be D.\n\nD/30 − D/40 = 1/2\nD/120 = 1/2\nD = 60 km.\n\nEarly/late wording becomes a difference between travel times.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_2"
+        }
+      ]
+    },
+    "q_2": {
+      "id": "q_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "At 30 km/hr a traveller is 20 minutes late; at 40 km/hr the traveller is 10 minutes early. What is the distance?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 km"
+          },
+          {
+            "id": "b",
+            "label": "60 km"
+          },
+          {
+            "id": "c",
+            "label": "80 km"
+          },
+          {
+            "id": "d",
+            "label": "120 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "At 30 km/hr a traveller is 20 minutes late; at 40 km/hr the traveller is 10 minutes early. What is the distance?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 km"
+            },
+            {
+              "id": "b",
+              "label": "60 km"
+            },
+            {
+              "id": "c",
+              "label": "80 km"
+            },
+            {
+              "id": "d",
+              "label": "120 km"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The two travel times differ by 30 minutes = 1/2 hour.",
+            "Solve D/30 − D/40 = 1/2."
+          ],
+          "explanation": "1/30 − 1/40 = 1/120. So D/120 = 1/2, giving D = 60 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_2": {
+      "id": "remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe two travel times differ by 30 minutes = 1/2 hour.\n\n1/30 − 1/40 = 1/120. So D/120 = 1/2, giving D = 60 km.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "retry_2": {
+      "id": "retry_2",
+      "type": "CHOICE",
+      "content": {
+        "text": "At 24 km/hr a traveller is 25 minutes late; at 30 km/hr the traveller is 5 minutes early. What is the distance?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "48 km"
+          },
+          {
+            "id": "b",
+            "label": "72 km"
+          },
+          {
+            "id": "c",
+            "label": "90 km"
+          },
+          {
+            "id": "d",
+            "label": "60 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "At 24 km/hr a traveller is 25 minutes late; at 30 km/hr the traveller is 5 minutes early. What is the distance?",
+          "options": [
+            {
+              "id": "a",
+              "label": "48 km"
+            },
+            {
+              "id": "b",
+              "label": "72 km"
+            },
+            {
+              "id": "c",
+              "label": "90 km"
+            },
+            {
+              "id": "d",
+              "label": "60 km"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "The travel-time difference is again 30 minutes = 1/2 hour.",
+            "D/24 − D/30 = D/120."
+          ],
+          "explanation": "D/24 − D/30 = D/120 = 1/2, so D = 60 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_2",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_2": {
+      "id": "retry_remedy_2",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nD/24 − D/30 = D/120 = 1/2, so D = 60 km.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_2"
+        }
+      ]
+    },
+    "teach_3": {
+      "id": "teach_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Sometimes the distance is known and the speed change saves a fixed amount of time.\n\nFor a 240 km trip, increasing speed by 20 km/hr saves 1 hour.\nLet the old speed be x.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_3_step"
+        }
+      ]
+    },
+    "teach_3_step": {
+      "id": "teach_3_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Old time − new time = 1:\n\n240/x − 240/(x + 20) = 1\n\nThis becomes x² + 20x − 4800 = 0,\nso x = 60 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_3"
+        }
+      ]
+    },
+    "q_3": {
+      "id": "q_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 km trip takes 1 hour less when speed is increased by 20 km/hr. What was the original speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "40 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "80 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "100 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 km trip takes 1 hour less when speed is increased by 20 km/hr. What was the original speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "40 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "80 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "100 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Set 240/x − 240/(x+20) = 1.",
+            "Check x = 60: 4 hr versus 3 hr."
+          ],
+          "explanation": "At 60 km/hr the trip takes 4 hr; at 80 km/hr it takes 3 hr. The saving is exactly 1 hour, so 60 km/hr is correct."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_3": {
+      "id": "remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nSet 240/x − 240/(x+20) = 1.\n\nAt 60 km/hr the trip takes 4 hr; at 80 km/hr it takes 3 hr. The saving is exactly 1 hour, so 60 km/hr is correct.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "retry_3": {
+      "id": "retry_3",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 km trip takes 1 hour less when speed is increased by 15 km/hr. What was the original speed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "30 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "75 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 km trip takes 1 hour less when speed is increased by 15 km/hr. What was the original speed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "30 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "75 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Test the time difference for 45 and 60 km/hr.",
+            "180/45 = 4 hr; 180/60 = 3 hr."
+          ],
+          "explanation": "At 45 km/hr the time is 4 hr; at 60 km/hr it is 3 hr. Original speed = 45 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_3",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_3": {
+      "id": "retry_remedy_3",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nAt 45 km/hr the time is 4 hr; at 60 km/hr it is 3 hr. Original speed = 45 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_3"
+        }
+      ]
+    },
+    "teach_4": {
+      "id": "teach_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "A late start shortens the time available, so the required speed must rise.\n\nA 300 km journey is planned at 60 km/hr.\nScheduled travel time = 5 hr.\nIf departure is 1 hr late, only 4 hr remain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_4_step"
+        }
+      ]
+    },
+    "teach_4_step": {
+      "id": "teach_4_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Required speed = 300 ÷ 4 = 75 km/hr.\n\nThe important move is to reduce the available time first. Do not simply add the lost hour to the speed.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_4"
+        }
+      ]
+    },
+    "q_4": {
+      "id": "q_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 km trip is scheduled at 48 km/hr. Departure is 1 hour late, but arrival must stay on time. What speed is now required?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "49 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "58 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "72 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 km trip is scheduled at 48 km/hr. Departure is 1 hour late, but arrival must stay on time. What speed is now required?",
+          "options": [
+            {
+              "id": "a",
+              "label": "49 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "58 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "72 km/hr"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Scheduled time = 240 ÷ 48 = 5 hr.",
+            "Only 4 hours remain after the late start."
+          ],
+          "explanation": "The original trip allowed 5 hr. After losing 1 hr, required speed = 240 ÷ 4 = 60 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_4": {
+      "id": "remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nScheduled time = 240 ÷ 48 = 5 hr.\n\nThe original trip allowed 5 hr. After losing 1 hr, required speed = 240 ÷ 4 = 60 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "retry_4": {
+      "id": "retry_4",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 km trip is scheduled at 45 km/hr. Departure is 1 hour late. What speed is required to arrive on time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "50 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "55 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "67.5 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 km trip is scheduled at 45 km/hr. Departure is 1 hour late. What speed is required to arrive on time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "50 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "55 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "67.5 km/hr"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "MEDIUM",
+          "xp": 10,
+          "hints": [
+            "Scheduled time = 4 hr.",
+            "Only 3 hr remain."
+          ],
+          "explanation": "Required speed = 180 ÷ 3 = 60 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_4",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_4": {
+      "id": "retry_remedy_4",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nRequired speed = 180 ÷ 3 = 60 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_4"
+        }
+      ]
+    },
+    "teach_5": {
+      "id": "teach_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "A delayed departure can also be expressed as a percentage speed increase.\n\nA 180 km trip at 60 km/hr normally takes 3 hr.\nLose 30 minutes, and only 2.5 hr remain.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_5_step"
+        }
+      ]
+    },
+    "teach_5_step": {
+      "id": "teach_5_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "New speed = 180 ÷ 2.5 = 72 km/hr.\n\nIncrease = 12 on a base of 60:\n12/60 = 20%.\n\nSo the required speed rises by 20%.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_5"
+        }
+      ]
+    },
+    "q_5": {
+      "id": "q_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 180 km trip normally runs at 60 km/hr. Departure is 30 minutes late. What percentage speed increase is needed to arrive on time?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "10%"
+          },
+          {
+            "id": "b",
+            "label": "16.67%"
+          },
+          {
+            "id": "c",
+            "label": "20%"
+          },
+          {
+            "id": "d",
+            "label": "25%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 180 km trip normally runs at 60 km/hr. Departure is 30 minutes late. What percentage speed increase is needed to arrive on time?",
+          "options": [
+            {
+              "id": "a",
+              "label": "10%"
+            },
+            {
+              "id": "b",
+              "label": "16.67%"
+            },
+            {
+              "id": "c",
+              "label": "20%"
+            },
+            {
+              "id": "d",
+              "label": "25%"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Normal time is 3 hr; available time becomes 2.5 hr.",
+            "New speed = 180 ÷ 2.5 = 72 km/hr."
+          ],
+          "explanation": "Speed rises from 60 to 72, an increase of 12. 12/60 = 20%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_5": {
+      "id": "remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nNormal time is 3 hr; available time becomes 2.5 hr.\n\nSpeed rises from 60 to 72, an increase of 12. 12/60 = 20%.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "retry_5": {
+      "id": "retry_5",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 240 km trip normally runs at 80 km/hr. Departure is 36 minutes late. What percentage speed increase is needed?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "25%"
+          },
+          {
+            "id": "b",
+            "label": "20%"
+          },
+          {
+            "id": "c",
+            "label": "30%"
+          },
+          {
+            "id": "d",
+            "label": "36%"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 240 km trip normally runs at 80 km/hr. Departure is 36 minutes late. What percentage speed increase is needed?",
+          "options": [
+            {
+              "id": "a",
+              "label": "25%"
+            },
+            {
+              "id": "b",
+              "label": "20%"
+            },
+            {
+              "id": "c",
+              "label": "30%"
+            },
+            {
+              "id": "d",
+              "label": "36%"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Normal time = 3 hr; 36 min = 0.6 hr, so 2.4 hr remain.",
+            "New speed = 240 ÷ 2.4 = 100 km/hr."
+          ],
+          "explanation": "Speed must rise from 80 to 100 km/hr. Increase = 20/80 = 25%."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_5",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_5": {
+      "id": "retry_remedy_5",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nSpeed must rise from 80 to 100 km/hr. Increase = 20/80 = 25%.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_5"
+        }
+      ]
+    },
+    "teach_6": {
+      "id": "teach_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Two speed-change clues can reveal both original speed and distance.\n\nSuppose going 20 km/hr faster saves 1 hour, while going 10 km/hr slower costs 1 hour.\n\nA clean pair is original speed 40 km/hr over 120 km.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_6_step"
+        }
+      ]
+    },
+    "teach_6_step": {
+      "id": "teach_6_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Check it:\n\n120/40 = 3 hr\n120/60 = 2 hr → saves 1 hr\n120/30 = 4 hr → costs 1 hr\n\nThe two time differences lock both unknowns.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_6"
+        }
+      ]
+    },
+    "q_6": {
+      "id": "q_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A journey takes 1 hour less if speed is 20 km/hr faster and 1 hour more if speed is 10 km/hr slower. What is the distance?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "120 km"
+          },
+          {
+            "id": "b",
+            "label": "90 km"
+          },
+          {
+            "id": "c",
+            "label": "100 km"
+          },
+          {
+            "id": "d",
+            "label": "150 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A journey takes 1 hour less if speed is 20 km/hr faster and 1 hour more if speed is 10 km/hr slower. What is the distance?",
+          "options": [
+            {
+              "id": "a",
+              "label": "120 km"
+            },
+            {
+              "id": "b",
+              "label": "90 km"
+            },
+            {
+              "id": "c",
+              "label": "100 km"
+            },
+            {
+              "id": "d",
+              "label": "150 km"
+            }
+          ],
+          "correctOptionId": "a",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Let original speed be v and distance D; compare D/v with D/(v+20) and D/(v−10).",
+            "The consistent pair is v = 40 km/hr and D = 120 km."
+          ],
+          "explanation": "At 40 km/hr, 120 km takes 3 hr. At 60 it takes 2 hr; at 30 it takes 4 hr. Both conditions are satisfied, so distance = 120 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_6": {
+      "id": "remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nLet original speed be v and distance D; compare D/v with D/(v+20) and D/(v−10).\n\nAt 40 km/hr, 120 km takes 3 hr. At 60 it takes 2 hr; at 30 it takes 4 hr. Both conditions are satisfied, so distance = 120 km.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "retry_6": {
+      "id": "retry_6",
+      "type": "CHOICE",
+      "content": {
+        "text": "A journey takes 30 minutes less if speed is 10 km/hr faster and 1 hour more if speed is 10 km/hr slower. What is the distance?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 km"
+          },
+          {
+            "id": "b",
+            "label": "75 km"
+          },
+          {
+            "id": "c",
+            "label": "60 km"
+          },
+          {
+            "id": "d",
+            "label": "90 km"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A journey takes 30 minutes less if speed is 10 km/hr faster and 1 hour more if speed is 10 km/hr slower. What is the distance?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 km"
+            },
+            {
+              "id": "b",
+              "label": "75 km"
+            },
+            {
+              "id": "c",
+              "label": "60 km"
+            },
+            {
+              "id": "d",
+              "label": "90 km"
+            }
+          ],
+          "correctOptionId": "c",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "Try original speed 30 km/hr.",
+            "60/30 = 2 hr, 60/40 = 1.5 hr, 60/20 = 3 hr."
+          ],
+          "explanation": "At 30 km/hr, 60 km takes 2 hr. Speed 40 saves 30 min; speed 20 adds 1 hr. So the distance is 60 km."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_6",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_6": {
+      "id": "retry_remedy_6",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nAt 30 km/hr, 60 km takes 2 hr. Speed 40 saves 30 min; speed 20 adds 1 hr. So the distance is 60 km.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_6"
+        }
+      ]
+    },
+    "teach_7": {
+      "id": "teach_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "A fixed arrival deadline can force a much higher speed on the remaining part.\n\nA 90 km trip must finish in 3 hr.\nThe first 45 km are covered at 20 km/hr, taking 2.25 hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_7_step"
+        }
+      ]
+    },
+    "teach_7_step": {
+      "id": "teach_7_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Only 0.75 hr remains for the last 45 km.\n\nRequired speed = 45 ÷ 0.75 = 60 km/hr.\n\nDo not average 20 and 60; the deadline is controlled by time already spent.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_7"
+        }
+      ]
+    },
+    "q_7": {
+      "id": "q_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 120 km journey must be completed in 3 hours. The first 60 km are covered at 30 km/hr. What speed is needed for the remaining 60 km?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "40 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "45 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "60 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 120 km journey must be completed in 3 hours. The first 60 km are covered at 30 km/hr. What speed is needed for the remaining 60 km?",
+          "options": [
+            {
+              "id": "a",
+              "label": "40 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "45 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "60 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "The first 60 km take 2 hours.",
+            "Only 1 hour remains for the last 60 km."
+          ],
+          "explanation": "First half takes 2 hr, leaving 1 hr. Required speed = 60 km ÷ 1 hr = 60 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_7": {
+      "id": "remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe first 60 km take 2 hours.\n\nFirst half takes 2 hr, leaving 1 hr. Required speed = 60 km ÷ 1 hr = 60 km/hr.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "retry_7": {
+      "id": "retry_7",
+      "type": "CHOICE",
+      "content": {
+        "text": "A 100 km journey must be completed in 2.5 hours. The first 50 km are covered at 25 km/hr. What speed is needed for the rest?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "50 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "100 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "75 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "125 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A 100 km journey must be completed in 2.5 hours. The first 50 km are covered at 25 km/hr. What speed is needed for the rest?",
+          "options": [
+            {
+              "id": "a",
+              "label": "50 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "100 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "75 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "125 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "The first 50 km take 2 hours.",
+            "Only 0.5 hour remains."
+          ],
+          "explanation": "The remaining 50 km must be covered in 0.5 hr, requiring 100 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_7",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_7": {
+      "id": "retry_remedy_7",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nThe remaining 50 km must be covered in 0.5 hr, requiring 100 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_7"
+        }
+      ]
+    },
+    "teach_8": {
+      "id": "teach_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Now combine schedule time with a partly completed route.\n\nA train must cover 46 km in 1 hour.\nIt covers the first 25 km at 40 km/hr, using 25/40 hr = 37.5 minutes.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "teach_8_step"
+        }
+      ]
+    },
+    "teach_8_step": {
+      "id": "teach_8_step",
+      "type": "CONTENT",
+      "content": {
+        "text": "Time left = 22.5 min = 3/8 hr.\nDistance left = 21 km.\n\nRequired speed = 21 ÷ (3/8) = 56 km/hr.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "q_8"
+        }
+      ]
+    },
+    "q_8": {
+      "id": "q_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vehicle must cover 60 km in 1 hour. It covers the first 24 km at 36 km/hr. What speed is required for the remaining distance?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "108 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "120 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vehicle must cover 60 km in 1 hour. It covers the first 24 km at 36 km/hr. What speed is required for the remaining distance?",
+          "options": [
+            {
+              "id": "a",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "108 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "120 km/hr"
+            }
+          ],
+          "correctOptionId": "b",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "The first 24 km take 2/3 hour = 40 minutes.",
+            "36 km remain for the last 20 minutes = 1/3 hour."
+          ],
+          "explanation": "Remaining speed = 36 ÷ (1/3) = 108 km/hr. The slow first section uses up two-thirds of the available time."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "remedy_8": {
+      "id": "remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's check this clue.\n\nThe first 24 km take 2/3 hour = 40 minutes.\n\nRemaining speed = 36 ÷ (1/3) = 108 km/hr. The slow first section uses up two-thirds of the available time.\n\nNow use that idea on a new question.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "retry_8": {
+      "id": "retry_8",
+      "type": "CHOICE",
+      "content": {
+        "text": "A vehicle must cover 72 km in 1.5 hours. It covers the first 30 km at 30 km/hr. What speed is needed for the remaining 42 km?",
+        "avatarPersona": "TUTOR"
+      },
+      "input": {
+        "type": "CHOICE",
+        "options": [
+          {
+            "id": "a",
+            "label": "60 km/hr"
+          },
+          {
+            "id": "b",
+            "label": "72 km/hr"
+          },
+          {
+            "id": "c",
+            "label": "90 km/hr"
+          },
+          {
+            "id": "d",
+            "label": "84 km/hr"
+          }
+        ]
+      },
+      "questionReference": {
+        "mode": "INLINE",
+        "inlineData": {
+          "questionType": "PRACTICE",
+          "prompt": "A vehicle must cover 72 km in 1.5 hours. It covers the first 30 km at 30 km/hr. What speed is needed for the remaining 42 km?",
+          "options": [
+            {
+              "id": "a",
+              "label": "60 km/hr"
+            },
+            {
+              "id": "b",
+              "label": "72 km/hr"
+            },
+            {
+              "id": "c",
+              "label": "90 km/hr"
+            },
+            {
+              "id": "d",
+              "label": "84 km/hr"
+            }
+          ],
+          "correctOptionId": "d",
+          "difficulty": "HARD",
+          "xp": 10,
+          "hints": [
+            "The first 30 km take 1 hour.",
+            "Only 0.5 hour remains for 42 km."
+          ],
+          "explanation": "Required speed = 42 ÷ 0.5 = 84 km/hr."
+        }
+      },
+      "transitions": [
+        {
+          "targetNodeId": "complete",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": true
+          }
+        },
+        {
+          "targetNodeId": "retry_remedy_8",
+          "condition": {
+            "field": "isCorrect",
+            "operator": "EQUALS",
+            "value": false
+          }
+        }
+      ]
+    },
+    "retry_remedy_8": {
+      "id": "retry_remedy_8",
+      "type": "CONTENT",
+      "content": {
+        "text": "Let's work through this one.\n\nRequired speed = 42 ÷ 0.5 = 84 km/hr.\n\nTry the question once more and check each clue.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": [
+        {
+          "targetNodeId": "retry_8"
+        }
+      ]
+    },
+    "complete": {
+      "id": "complete",
+      "type": "CONTENT",
+      "content": {
+        "text": "You can now turn “late”, “early”, “faster” and “slower” into exact time equations.\n\nYou know to keep the distance fixed, compare travel times, and protect the arrival deadline by finding how much time remains.\n\nNext, we put two moving people into the same picture and use relative speed to decide when they meet or separate.",
+        "avatarPersona": "TUTOR"
+      },
+      "transitions": []
+    }
+  }
+}
