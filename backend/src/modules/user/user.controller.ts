@@ -13,7 +13,7 @@ export class UserController {
         return;
       }
 
-      const profile = await userService.getProfile(userId);
+      const profile = await userService.getProfile(userId, req.query.summary !== 'true');
 
       res.status(200).json({
         success: true,

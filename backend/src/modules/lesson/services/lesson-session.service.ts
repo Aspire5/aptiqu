@@ -139,7 +139,7 @@ export class LessonSessionService {
         roadmapStepId: step.id,
         status: { in: ['ACTIVE', 'PAUSED'] },
       },
-      orderBy: { startedAt: 'desc' },
+      orderBy: { lastActivityAt: 'desc' },
       include: { script: true },
     });
 
@@ -470,7 +470,7 @@ export class LessonSessionService {
         ...(effectiveRoadmapStepId ? { roadmapStepId: effectiveRoadmapStepId } : {}),
         status: { in: ['ACTIVE', 'PAUSED'] },
       },
-      orderBy: { startedAt: 'desc' },
+      orderBy: { lastActivityAt: 'desc' },
     });
 
     if (restart && session) {
@@ -974,7 +974,7 @@ export class LessonSessionService {
         roadmapStepId: step.id,
         status: { in: ['ACTIVE', 'PAUSED'] },
       },
-      orderBy: { startedAt: 'desc' },
+      orderBy: { lastActivityAt: 'desc' },
       include: { script: true },
     });
 

@@ -16,34 +16,37 @@ import 'package:aptiqu/core/routing/app_routes.dart';
 class TopBarZone extends StatelessWidget {
   final double height;
 
-  const TopBarZone({
-    super.key,
-    required this.height,
-  });
+  const TopBarZone({super.key, required this.height});
 
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
-    final xpController = Get.isRegistered<XpController>() ? Get.find<XpController>() : null;
+    final xpController = Get.isRegistered<XpController>()
+        ? Get.find<XpController>()
+        : null;
 
     return Obx(() {
       final user = authController.currentUser.value;
       final xp = xpController?.progress.value;
 
-      final firstName = user?.firstName.isNotEmpty == true ? user!.firstName : 'Learner';
-      final level = (xp != null && xp.level > 0) ? xp.level : (user?.level ?? 1);
+      final firstName = user?.firstName.isNotEmpty == true
+          ? user!.firstName
+          : 'Learner';
+      final level = (xp != null && xp.level > 0)
+          ? xp.level
+          : (user?.level ?? 1);
       final levelProgress = (xp != null && xp.progress > 0)
           ? xp.progress
           : ((user != null && user.progress > 0)
-              ? user.progress
-              : ((user != null && user.xpRequiredForNextLevel > 0 && user.xpIntoCurrentLevel > 0)
-                  ? user.xpIntoCurrentLevel / user.xpRequiredForNextLevel
-                  : 0.0));
+                ? user.progress
+                : ((user != null &&
+                          user.xpRequiredForNextLevel > 0 &&
+                          user.xpIntoCurrentLevel > 0)
+                      ? user.xpIntoCurrentLevel / user.xpRequiredForNextLevel
+                      : 0.0));
       final streak = user?.streak ?? '0d';
       final coins = user?.coins ?? 0;
-      final avatarUrl = user?.avatarUrl.isNotEmpty == true
-          ? user!.avatarUrl
-          : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80';
+      final avatarUrl = user?.avatarUrl ?? '';
 
       return Container(
         height: height,
@@ -51,10 +54,7 @@ class TopBarZone extends StatelessWidget {
         decoration: BoxDecoration(
           color: AptiquColors.surfaceDim.withValues(alpha: 0.95),
           border: const Border(
-            bottom: BorderSide(
-              color: AptiquColors.outlineVariant,
-              width: 0.8,
-            ),
+            bottom: BorderSide(color: AptiquColors.outlineVariant, width: 0.8),
           ),
           boxShadow: [
             BoxShadow(
@@ -69,108 +69,118 @@ class TopBarZone extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Left Side: Circular Profile Image with Level Progress Ring + First Name & Level
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                context.push(AppRoutes.profile);
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Subtle circular level progression ring around avatar
-                      SizedBox(
-                        width: 38,
-                        height: 38,
-                        child: CustomPaint(
-                          painter: _AvatarProgressRingPainter(
-                            progress: levelProgress,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 31,
-                        height: 31,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AptiquColors.surfaceDim,
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                        child: ClipOval(
-                          child: Image.network(
-                            avatarUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              color: AptiquColors.surfaceContainerHigh,
-                              child: const Icon(
-                                Icons.person_rounded,
-                                color: AptiquColors.primary,
-                                size: 18,
-                              ),
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  context.push(AppRoutes.profile);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Subtle circular level progression ring around avatar
+                        SizedBox(
+                          width: 38,
+                          height: 38,
+                          child: CustomPaint(
+                            painter: _AvatarProgressRingPainter(
+                              progress: levelProgress,
                             ),
                           ),
                         ),
-                      ),
-                      // Online Active Indicator Dot
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          width: 8,
-                          height: 8,
+                        Container(
+                          width: 31,
+                          height: 31,
                           decoration: BoxDecoration(
-                            color: AptiquColors.secondary,
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: AptiquColors.surfaceDim,
                               width: 1.5,
                             ),
-                            boxShadow: AptiquColors.secondaryGlow,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AptiquColors.primaryContainer.withValues(
+                                  alpha: 0.35,
+                                ),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          child: ClipOval(
+                            child: avatarUrl.isEmpty
+                                ? const Icon(
+                                    Icons.person_rounded,
+                                    color: AptiquColors.primary,
+                                    size: 18,
+                                  )
+                                : Image.network(
+                                    avatarUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      color: AptiquColors.surfaceContainerHigh,
+                                      child: const Icon(
+                                        Icons.person_rounded,
+                                        color: AptiquColors.primary,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          firstName,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: AptiquTypography.headlineSm.copyWith(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            height: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 1),
-                        Text(
-                          'LEVEL $level',
-                          style: AptiquTypography.labelCaps.copyWith(
-                            fontSize: 9,
-                            color: AptiquColors.secondary,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.7,
+                        // Online Active Indicator Dot
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: AptiquColors.secondary,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AptiquColors.surfaceDim,
+                                width: 1.5,
+                              ),
+                              boxShadow: AptiquColors.secondaryGlow,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            firstName,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: AptiquTypography.headlineSm.copyWith(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w700,
+                              height: 1.1,
+                            ),
+                          ),
+                          const SizedBox(height: 1),
+                          Text(
+                            'LEVEL $level',
+                            style: AptiquTypography.labelCaps.copyWith(
+                              fontSize: 9,
+                              color: AptiquColors.secondary,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.7,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -188,7 +198,8 @@ class TopBarZone extends StatelessWidget {
                       days: streak,
                       onTap: () => context.push(AppRoutes.dailyStreak),
                     ),
-                    if (user?.dailyChallengeDue == true && user?.dailyChallengeCompleted != true)
+                    if (user?.dailyChallengeDue == true &&
+                        user?.dailyChallengeCompleted != true)
                       Positioned(
                         top: -2,
                         right: -2,
@@ -198,7 +209,10 @@ class TopBarZone extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: const Color(0xFFEF4444),
                             shape: BoxShape.circle,
-                            border: Border.all(color: AptiquColors.surfaceDim, width: 1.5),
+                            border: Border.all(
+                              color: AptiquColors.surfaceDim,
+                              width: 1.5,
+                            ),
                             boxShadow: const [
                               BoxShadow(
                                 color: Color(0xFFEF4444),

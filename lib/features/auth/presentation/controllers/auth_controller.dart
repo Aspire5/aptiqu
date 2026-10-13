@@ -42,7 +42,10 @@ class AuthController extends GetxController {
       }
 
       // Fetch live user profile from backend
-      final response = await dioClient.dio.get('/user/profile');
+      final response = await dioClient.dio.get(
+        '/user/profile',
+        queryParameters: {'summary': 'true'},
+      );
       if (response.statusCode == 200 && response.data['success'] == true) {
         final profileData = response.data['data'];
         currentUser.value = UserModel.fromJson(profileData);
@@ -66,7 +69,10 @@ class AuthController extends GetxController {
   /// Refreshes the user profile from the backend
   Future<void> fetchUserProfile() async {
     try {
-      final response = await dioClient.dio.get('/user/profile');
+      final response = await dioClient.dio.get(
+        '/user/profile',
+        queryParameters: {'summary': 'true'},
+      );
       if (response.statusCode == 200 && response.data['success'] == true) {
         final profileData = response.data['data'];
         currentUser.value = UserModel.fromJson(profileData);

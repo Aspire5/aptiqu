@@ -17,6 +17,11 @@ model User {
   createdAt              DateTime       @default(now()) @map("created_at")
   updatedAt              DateTime       @updatedAt @map("updated_at")
 
+  homeEvents             HomeEvent[]
+  homeTotals             HomeTotal[]
+  homeDays               HomeDay[]
+  homeBadges             HomeBadge[]
+  homeRanked             HomeRanked?
   profile                Profile?
   refreshTokens          RefreshToken[]
   gameStats              GameStats?
@@ -623,6 +628,7 @@ model PvpMatch {
 
   questionSet              PvpQuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Restrict)
   winner                   User?          @relation("PvpMatchWinner", fields: [winnerId], references: [id], onDelete: SetNull)
+  homeSnapshots            HomeRanked[]
   players                  PvpMatchPlayer[]
   answers                  PvpMatchAnswer[]
 
@@ -1114,3 +1120,61 @@ model BookProcessingJob {
 
 
 
+
+// Database-maintained Home projections; canonical answer tables are authoritative.
+model HomeEvent {
+  source String
+  sourceId String @map("source_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  day DateTime @db.Date
+  difficulty String
+  correct Int
+  timed Int @default(0)
+  timeMs BigInt @default(0) @map("time_ms")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([source, sourceId])
+  @@map("home_events")
+  @@schema("gamification")
+}
+model HomeTotal {
+  userId String @map("user_id") @db.Uuid
+  difficulty String
+  attempted BigInt @default(0)
+  correct BigInt @default(0)
+  timed BigInt @default(0)
+  timeMs BigInt @default(0) @map("time_ms")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, difficulty])
+  @@map("home_totals")
+  @@schema("gamification")
+}
+model HomeDay {
+  userId String @map("user_id") @db.Uuid
+  day DateTime @db.Date
+  attempted BigInt @default(0)
+  correct BigInt @default(0)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, day])
+  @@map("home_days")
+  @@schema("gamification")
+}
+model HomeBadge {
+  userId String @map("user_id") @db.Uuid
+  badgeId String @map("badge_id")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, badgeId])
+  @@map("home_badges")
+  @@schema("gamification")
+}
+model HomeRanked {
+  userId String @id @map("user_id") @db.Uuid
+  matchId String @map("match_id") @db.Uuid
+  playedAt DateTime @map("played_at") @db.Timestamp(3)
+  result String
+  correct Int
+  questions Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match PvpMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  @@map("home_ranked")
+  @@schema("gamification")
+}

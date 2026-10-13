@@ -148,7 +148,7 @@ class ChatPlaygroundZone extends StatelessWidget {
             // Circular Red 'X' Exit Button on top right
             InkWell(
               borderRadius: BorderRadius.circular(16),
-              onTap: () => controller.exitToSubjectCards(),
+              onTap: () => controller.exitToHome(),
               child: Container(
                 width: 24,
                 height: 24,

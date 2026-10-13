@@ -43,13 +43,13 @@ class BottomNavZone extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // 1. PLAY (formerly HOME)
+            // 1. HOME
             _buildNavItem(
               index: 0,
               selectedIndex: selectedIndex,
-              label: 'PLAY',
-              icon: Icons.play_circle_filled_rounded,
-              onTap: () => controller.selectedNavIndex.value = 0,
+              label: 'HOME',
+              icon: Icons.home_rounded,
+              onTap: () => controller.selectHomeTab(),
             ),
 
             // 2. TOPICS
@@ -67,7 +67,10 @@ class BottomNavZone extends StatelessWidget {
               selectedIndex: selectedIndex,
               label: 'PRACTICE',
               icon: Icons.sports_esports_rounded,
-              onTap: () => controller.selectedNavIndex.value = 2,
+              onTap: () {
+                controller.isFullScreen.value = false;
+                controller.selectedNavIndex.value = 2;
+              },
             ),
 
             // 4. RANKED (with cyan notification badge)
@@ -76,8 +79,11 @@ class BottomNavZone extends StatelessWidget {
               selectedIndex: selectedIndex,
               label: 'RANKED',
               icon: Icons.emoji_events_rounded,
-              hasBadge: true,
-              onTap: () => controller.selectedNavIndex.value = 3,
+              hasBadge: false,
+              onTap: () {
+                controller.isFullScreen.value = false;
+                controller.selectedNavIndex.value = 3;
+              },
             ),
           ],
         ),

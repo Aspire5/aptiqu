@@ -6,7 +6,7 @@ export class UserService {
   /**
    * Retrieves user profile and gamification stats including XP and level progression.
    */
-  async getProfile(userId: string) {
+  async getProfile(userId: string, includeStats = true) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -62,7 +62,7 @@ export class UserService {
         timeRemainingMs: streakSync.msUntilMidnight,
         expiresAt: streakSync.expiresAt,
       },
-      stats: await this.getUserStats(userId),
+      stats: includeStats ? await this.getUserStats(userId) : undefined,
     };
   }
 

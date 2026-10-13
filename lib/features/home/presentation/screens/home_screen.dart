@@ -7,11 +7,11 @@ import '../widgets/bottom_nav_zone.dart';
 import '../widgets/top_bar_zone.dart';
 import '../widgets/chat_playground_zone.dart';
 import '../widgets/constellation_roadmap_view.dart';
-import '../widgets/subject_play_cards_view.dart';
+import '../widgets/home_dashboard_view.dart';
 import '../../../practice/views/practice_catalog_view.dart';
 import '../../../pvp/views/pvp_lobby_view.dart';
 
-/// Screen 3: Redesigned Home Screen with 3 Strict Zones
+/// Home dashboard and existing immersive player share stable tab navigation.
 /// - Top 12%: Avatar + First Name & Level | Space | Streak & Points Badges
 /// - Center 76%: Conversational AI Playground / Topics Directory
 /// - Bottom 12%: Streamlined 4-option Nav (HOME, TOPICS, PRACTICE, RANKED)
@@ -66,8 +66,11 @@ class HomeScreen extends StatelessWidget {
                     child: Obx(() {
                       final currentTab = controller.selectedNavIndex.value;
                       if (currentTab == 0) {
-                        if (controller.showSubjectCards.value) {
-                          return const SubjectPlayCardsView();
+                        if (controller.showHomeDashboard.value) {
+                          return const HomeDashboardView();
+                        }
+                        if (controller.isOpeningLesson.value) {
+                          return const Center(child: CircularProgressIndicator(color: AptiquColors.primary));
                         }
                         return ChatPlaygroundZone(
                           height: totalHeight -

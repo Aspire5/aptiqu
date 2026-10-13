@@ -17,6 +17,7 @@ class UserModel {
   final double progress;
   final String streak;
   final int coins;
+  final int highestStreak;
   final bool isRegistrationComplete;
   final bool dailyChallengeDue;
   final bool dailyChallengeCompleted;
@@ -41,6 +42,7 @@ class UserModel {
     this.progress = 0.0,
     this.streak = '0d',
     this.coins = 0,
+    this.highestStreak = 0,
     this.isRegistrationComplete = false,
     this.dailyChallengeDue = false,
     this.dailyChallengeCompleted = false,
@@ -66,6 +68,7 @@ class UserModel {
     double? progress,
     String? streak,
     int? coins,
+    int? highestStreak,
     bool? isRegistrationComplete,
     bool? dailyChallengeDue,
     bool? dailyChallengeCompleted,
@@ -91,6 +94,7 @@ class UserModel {
       progress: progress ?? this.progress,
       streak: streak ?? this.streak,
       coins: coins ?? this.coins,
+      highestStreak: highestStreak ?? this.highestStreak,
       isRegistrationComplete:
           isRegistrationComplete ?? this.isRegistrationComplete,
       dailyChallengeDue: dailyChallengeDue ?? this.dailyChallengeDue,
@@ -141,6 +145,7 @@ class UserModel {
       }(),
       // Coins from backend
       coins: json['coins'] ?? 0,
+      highestStreak: (json['highestStreak'] as num?)?.toInt() ?? 0,
       isRegistrationComplete: json['isRegistrationComplete'] ?? false,
       dailyChallengeDue: json['dailyChallengeDue'] ??
           json['dailyChallenge']?['isDue'] ??

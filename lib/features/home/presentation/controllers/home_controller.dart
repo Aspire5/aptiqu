@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../models/home_dashboard_model.dart';
 import '../../../../core/theme/aptiqu_colors.dart';
 import '../../models/roadmap_model.dart';
 import '../../repositories/roadmap_repository.dart';
@@ -144,9 +146,50 @@ class ChatMessageModel {
 }
 
 /// Controller managing the Home interactive learning playground
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
   final scrollController = ScrollController();
   final RxInt selectedNavIndex = 0.obs;
+  final Rxn<HomeDashboardModel> dashboard = Rxn<HomeDashboardModel>();
+  final RxBool isLoadingDashboard = false.obs;
+  final RxBool isOpeningLesson = false.obs;
+  final RxnString dashboardError = RxnString();
+
+  Future<void> fetchDashboard() async {
+    if (isLoadingDashboard.value) return;
+    isLoadingDashboard.value = true;
+    dashboardError.value = null;
+    try {
+      final response = await Get.find<DioClient>().dio.get('/user/home');
+      if (!isClosed) {
+        dashboard.value = HomeDashboardModel.fromJson(response.data['data']);
+      }
+    } catch (_) {
+      if (!isClosed) {
+        dashboardError.value =
+            'Your progress could not be refreshed. Try again.';
+      }
+    } finally {
+      if (!isClosed) isLoadingDashboard.value = false;
+    }
+  }
+
+  void selectHomeTab() {
+    isFullScreen.value = false;
+    selectedNavIndex.value = 0;
+    showHomeDashboard.value = true;
+    fetchDashboard();
+    if (Get.isRegistered<AuthController>()) {
+      Get.find<AuthController>().fetchUserProfile();
+    }
+  }
+
+  Future<void> resumeFromHome(HomeResume resume) async {
+    if (isSubmittingAction.value || isOpeningLesson.value) return;
+    selectedNavIndex.value = 0;
+    showHomeDashboard.value = false;
+    await loadLessonState(resume.stepId);
+  }
+
   final RxList<ChatMessageModel> messages = <ChatMessageModel>[].obs;
 
   // Active step tracker for the offline interactive script
@@ -159,6 +202,7 @@ class HomeController extends GetxController {
   final RxBool isFullScreen = false.obs;
 
   void selectTopicsTab() {
+    isFullScreen.value = false;
     selectedNavIndex.value = 1;
     topicsTabTapCount.value++;
     if (selectedSubjectId.isNotEmpty) {
@@ -194,20 +238,8 @@ class HomeController extends GetxController {
   GlobalKey latestAiMessageKey = GlobalKey();
   String? targetedMessageId;
 
-  // Subject Card Selection Overlay (active on fresh login/boot until a subject is played)
-  final RxBool showSubjectCards = true.obs;
-
-  void playSubject(RoadmapSubjectSummary subject) {
-    selectedSubjectId.value = subject.id;
-    showSubjectCards.value = false;
-    final stepId = subject.activeStepId;
-    if (stepId != null && stepId.isNotEmpty) {
-      activeRoadmapStepId.value = stepId;
-      loadLessonState(stepId);
-    } else {
-      fetchSubjectMap(subject.id, updateLessonState: true);
-    }
-  }
+  // Home dashboard is shown on boot and when leaving the player.
+  final RxBool showHomeDashboard = true.obs;
 
   void viewSubjectDetails(RoadmapSubjectSummary subject) {
     selectedSubjectId.value = subject.id;
@@ -215,19 +247,23 @@ class HomeController extends GetxController {
     fetchSubjectMap(subject.id, updateLessonState: false);
   }
 
-  void exitToSubjectCards() {
+  void exitToHome() {
     _conversationGeneration++;
     messages.removeWhere((message) => message.isThinking);
     isSubmittingAction.value = false;
-    showSubjectCards.value = true;
+    showHomeDashboard.value = true;
+    isFullScreen.value = false;
+    fetchDashboard();
     fetchActiveRoadmap();
   }
 
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addObserver(this);
     _loadInitialConversation();
     fetchActiveRoadmap();
+    fetchDashboard();
     if (Get.isRegistered<AuthController>()) {
       Get.find<AuthController>().fetchUserProfile();
     }
@@ -245,7 +281,9 @@ class HomeController extends GetxController {
             !subjects.any((s) => s.id == selectedSubjectId.value)) {
           selectedSubjectId.value = subjects.first.id;
         }
-        await fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+        if (selectedNavIndex.value == 1) {
+          await fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+        }
       }
     } catch (e) {
       roadmapError.value = e.toString();
@@ -292,6 +330,7 @@ class HomeController extends GetxController {
   /// Loads or resumes the active lesson state for the current roadmap step.
   /// If user left a script in progress, it restores the playground to that exact position.
   Future<void> loadLessonState(String stepId) async {
+    isOpeningLesson.value = true;
     try {
       activeRoadmapStepId.value = stepId;
       final state = await lessonRepo.getActiveLessonState(stepId);
@@ -303,6 +342,9 @@ class HomeController extends GetxController {
 
       if (state.hasActiveSession && state.session != null) {
         final session = state.session!;
+        if (session.status == 'PAUSED') {
+          await lessonRepo.resumeSession(session.id);
+        }
         currentSession.value = session;
         isLessonActive.value = true;
         _clearConversation();
@@ -343,7 +385,11 @@ class HomeController extends GetxController {
         );
       }
     } catch (e) {
-      _loadInitialConversation();
+      showHomeDashboard.value = true;
+      dashboardError.value =
+          'This lesson could not be opened. Please try again.';
+    } finally {
+      isOpeningLesson.value = false;
     }
   }
 
@@ -586,7 +632,7 @@ class HomeController extends GetxController {
           }
         }
       } else {
-        exitToSubjectCards();
+        exitToHome();
       }
       return;
     }
@@ -602,7 +648,7 @@ class HomeController extends GetxController {
       messages.refresh();
 
       if (selectedText == 'Back to Subjects') {
-        exitToSubjectCards();
+        exitToHome();
         return;
       }
 
@@ -619,7 +665,7 @@ class HomeController extends GetxController {
         activeRoadmapStepId.value = next.roadmapStepId!;
         await startNextLesson(stepId: next.roadmapStepId!);
       } else {
-        exitToSubjectCards();
+        exitToHome();
       }
       return;
     }
@@ -775,7 +821,7 @@ class HomeController extends GetxController {
     } catch (e) {
       _removeThinking(thinkingId);
       if (_conversationGeneration != generation) return;
-      exitToSubjectCards();
+      exitToHome();
     }
   }
 
@@ -889,7 +935,7 @@ class HomeController extends GetxController {
     bool restart = true,
   }) async {
     selectedNavIndex.value = 0; // Switch directly to Home tab
-    showSubjectCards.value = false;
+    showHomeDashboard.value = false;
     _clearConversation();
     currentSession.value = null;
     isLessonActive.value = false;
@@ -1106,7 +1152,7 @@ class HomeController extends GetxController {
       );
     } else {
       activeRoadmapStepId.value = topic.roadmapStepId;
-      showSubjectCards.value = false;
+      showHomeDashboard.value = false;
       selectedNavIndex.value = 0; // Go directly to Home playground!
       final firstSubtopic =
           topic.subtopics.isNotEmpty ? topic.subtopics.first : null;
@@ -1204,7 +1250,18 @@ class HomeController extends GetxController {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && selectedNavIndex.value == 0 && showHomeDashboard.value) {
+      fetchDashboard();
+      if (Get.isRegistered<AuthController>()) {
+        Get.find<AuthController>().fetchUserProfile();
+      }
+    }
+  }
+
+  @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
     _conversationGeneration++;
     scrollController.dispose();
     super.onClose();
