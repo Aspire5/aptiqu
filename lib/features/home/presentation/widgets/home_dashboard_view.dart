@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+import '../../../../core/network/dio_client.dart';
+import 'achievement_browser.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -76,14 +79,7 @@ class HomeDashboardContent extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
         children: [
-          Text(
-            'Home',
-            style: AptiquTypography.headlineSm.copyWith(fontSize: 28),
-          ),
-          const SizedBox(height: 4),
-          _text('A little progress, every day.'),
-          const SizedBox(height: 24),
-          _progress(),
+          _daily(),
           const SizedBox(height: 16),
           if (d?.resume != null)
             _action(
@@ -101,8 +97,6 @@ class HomeDashboardContent extends StatelessWidget {
               icon: Icons.explore_outlined,
               onTap: onTopics,
             ),
-          const SizedBox(height: 12),
-          _daily(),
           if (loading) ...[
             const SizedBox(height: 16),
             const LinearProgressIndicator(
@@ -138,27 +132,11 @@ class HomeDashboardContent extends StatelessWidget {
                     days: d.activity.length > 28
                         ? d.activity.sublist(d.activity.length - 28)
                         : d.activity,
+                    today: d.today,
                   ),
                   const SizedBox(height: 12),
                   _text(
-                    'Each square is a day. More answers, more colour. Tap for details. Dates use IST.',
-                    size: 12,
-                  ),
-                  const SizedBox(height: 14),
-                  _text(
-                    '${user?.streak ?? '0d'} Daily Challenge streak',
-                    color: AptiquColors.primary,
-                  ),
-                  const SizedBox(height: 4),
-                  if ((user?.highestStreak ?? 0) > 0) ...[
-                    _text(
-                      'Best Daily Challenge streak: ${user!.highestStreak} days',
-                      size: 12,
-                    ),
-                    const SizedBox(height: 4),
-                  ],
-                  _text(
-                    'Your streak grows when you complete the Daily Challenge correctly.',
+                    'More answers, more colour. Tap a date for details. All dates use IST.',
                     size: 12,
                   ),
                 ],
@@ -174,10 +152,39 @@ class HomeDashboardContent extends StatelessWidget {
             const SizedBox(height: 28),
             _heading('Achievements', 'Milestones along the way'),
             const SizedBox(height: 12),
+            if (d.badges.isEmpty)
+              _card(
+                child: _text(
+                  'New achievements will appear here when they are available.',
+                ),
+              ),
             for (final badge in d.badges) ...[
               _badge(badge),
               const SizedBox(height: 8),
             ],
+            if (d.badges.isNotEmpty)
+              TextButton.icon(
+                onPressed: () => showModalBottomSheet<void>(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: AptiquColors.surfaceContainerLow,
+                  builder: (_) => SizedBox(
+                    height: MediaQuery.sizeOf(context).height * .85,
+                    child: AchievementBrowser(
+                      badgeBuilder: _badge,
+                      fetchPage: (page) async {
+                        final response = await Get.find<DioClient>().dio.get(
+                          '/user/achievements',
+                          queryParameters: {'page': page, 'limit': 20},
+                        );
+                        return Map<String, dynamic>.from(response.data['data']);
+                      },
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.workspace_premium_outlined),
+                label: const Text('View all achievements'),
+              ),
             const SizedBox(height: 20),
             _heading('Ranked', 'Test your skills against another learner'),
             const SizedBox(height: 12),
@@ -202,79 +209,52 @@ class HomeDashboardContent extends StatelessWidget {
     );
   }
 
-  Widget _progress() => _card(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.bolt_rounded,
-              color: AptiquColors.secondary,
-              size: 24,
+  Widget _daily() {
+    final streakDays =
+        int.tryParse(
+          (user?.streak ?? '0d').replaceAll(RegExp(r'[^0-9]'), ''),
+        ) ??
+        0;
+    return _card(
+      padding: 4,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            onTap: onDaily,
+            leading: const Icon(
+              Icons.local_fire_department_rounded,
+              color: AptiquColors.tertiary,
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _text(
-                'Your progress',
-                color: AptiquColors.onSurface,
-                weight: FontWeight.w600,
-              ),
+            title: _text(
+              'Daily Challenge',
+              color: AptiquColors.onSurface,
+              weight: FontWeight.w600,
             ),
-            _text('Level ${user?.level ?? 1}', color: AptiquColors.primary),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Text(
-          '${user?.totalXp ?? 0} XP',
-          style: AptiquTypography.headlineSm.copyWith(fontSize: 26),
-        ),
-        const SizedBox(height: 12),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: (user?.progress ?? 0).clamp(0, 1),
-            minHeight: 6,
-            color: AptiquColors.primaryContainer,
-            backgroundColor: AptiquColors.outlineVariant,
+            subtitle: _text(
+              user?.dailyChallengeCompleted == true
+                  ? 'Finished today · see your result'
+                  : user?.dailyChallengeDue == true
+                  ? 'Available today · keep your streak going'
+                  : 'See today’s challenge',
+              size: 12,
+            ),
+            trailing: const Icon(
+              Icons.chevron_right_rounded,
+              color: AptiquColors.onSurfaceVariant,
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        _text(
-          '${user?.xpIntoCurrentLevel ?? 0} / ${user?.xpRequiredForNextLevel ?? 20} XP to the next level',
-          size: 12,
-        ),
-      ],
-    ),
-  );
-
-  Widget _daily() => _card(
-    padding: 4,
-    child: ListTile(
-      onTap: onDaily,
-      leading: const Icon(
-        Icons.local_fire_department_outlined,
-        color: AptiquColors.primary,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+            child: _text(
+              'Current Streak : $streakDays ${streakDays == 1 ? 'Day' : 'Days'}',
+              size: 13,
+            ),
+          ),
+        ],
       ),
-      title: _text(
-        'Daily Challenge',
-        color: AptiquColors.onSurface,
-        weight: FontWeight.w600,
-      ),
-      subtitle: _text(
-        user?.dailyChallengeCompleted == true
-            ? 'Completed today · see your streak'
-            : user?.dailyChallengeDue == true
-            ? 'Available today · keep your streak going'
-            : 'See today’s challenge',
-        size: 12,
-      ),
-      trailing: const Icon(
-        Icons.chevron_right_rounded,
-        color: AptiquColors.onSurfaceVariant,
-      ),
-    ),
-  );
+    );
+  }
 
   Widget _performance(BuildContext context, HomeDashboardModel d) {
     final p = d.performance;
@@ -529,95 +509,207 @@ class HomeDashboardContent extends StatelessWidget {
 
 class ActivityCalendar extends StatelessWidget {
   final List<HomeActivityDay> days;
-  const ActivityCalendar({super.key, required this.days});
+  final String? today;
+  const ActivityCalendar({super.key, required this.days, this.today});
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final width = constraints.maxWidth < 308 ? 308.0 : constraints.maxWidth;
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: width,
-          child: Wrap(
-            children: [for (final day in days) _day(context, day, width / 7)],
-          ),
-        ),
-      );
-    },
-  );
-
-  Widget _day(
-    BuildContext context,
-    HomeActivityDay day,
-    double width,
-  ) => SizedBox(
-    width: width,
-    height: 44,
-    child: Semantics(
-      button: true,
-      label:
-          '${day.date}: ${day.attempted} submissions, ${day.correct} correct',
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () => showModalBottomSheet<void>(
-          context: context,
-          backgroundColor: AptiquColors.surfaceContainerLow,
-          builder: (_) => SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(day.date, style: AptiquTypography.headlineSm),
-                  const SizedBox(height: 12),
-                  Text(
-                    day.attempted == 0
-                        ? 'No recorded question submissions.'
-                        : '${day.attempted} answers submitted\n${day.correct} correct',
-                    style: AptiquTypography.bodySm,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Asia/Kolkata · IST',
-                    style: TextStyle(color: AptiquColors.onSurfaceVariant),
-                  ),
-                ],
-              ),
+  Widget build(BuildContext context) {
+    final sorted = [...days]..sort((a, b) => a.date.compareTo(b.date));
+    final months = <String, List<HomeActivityDay>>{};
+    for (final day in sorted) {
+      months.putIfAbsent(day.date.substring(0, 7), () => []).add(day);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final entries in months.values) ...[
+          Text(
+            DateFormat('MMMM yyyy').format(DateTime.parse(entries.first.date)),
+            style: AptiquTypography.bodySm.copyWith(
+              color: AptiquColors.onSurface,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(6),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: day.attempted == 0
-                  ? AptiquColors.surfaceContainerHigh
-                  : AptiquColors.primaryContainer.withValues(
-                      alpha: day.attempted < 5
-                          ? .4
-                          : day.attempted < 15
-                          ? .7
-                          : 1,
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              for (final label in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AptiquColors.onSurfaceVariant,
+                      ),
                     ),
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: AptiquColors.outlineVariant),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final firstWeekday =
+                  DateTime.parse(entries.first.date).weekday - 1;
+              return Wrap(
+                children: [
+                  for (var i = 0; i < firstWeekday; i++)
+                    SizedBox(width: constraints.maxWidth / 7, height: 48),
+                  for (final day in entries)
+                    _day(context, day, constraints.maxWidth / 7),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
+        Wrap(
+          spacing: 14,
+          runSpacing: 8,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.local_fire_department_rounded,
+                  size: 17,
+                  color: AptiquColors.tertiary,
+                ),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    'Daily Challenge completed',
+                    style: AptiquTypography.bodySm.copyWith(fontSize: 11),
+                  ),
+                ),
+              ],
             ),
-            child: Center(
-              child: Text(
-                day.date.substring(8),
-                style: TextStyle(
-                  fontSize: 11,
-                  color: day.attempted == 0
-                      ? AptiquColors.onSurfaceVariant
-                      : AptiquColors.onSurface,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AptiquColors.secondary),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Today',
+                  style: AptiquTypography.bodySm.copyWith(fontSize: 11),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _day(BuildContext context, HomeActivityDay day, double width) {
+    final date = DateTime.parse(day.date);
+    final isToday = day.date == today;
+    return SizedBox(
+      width: width,
+      height: 48,
+      child: Semantics(
+        button: true,
+        label:
+            '${day.date}: ${day.attempted} submissions, ${day.correct} correct${day.dailyChallengeCompleted ? ', Daily Challenge completed' : ''}',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => showModalBottomSheet<void>(
+            context: context,
+            backgroundColor: AptiquColors.surfaceContainerLow,
+            builder: (_) => SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      DateFormat('EEE, d MMM yyyy').format(date),
+                      style: AptiquTypography.headlineSm,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      day.attempted == 0
+                          ? 'No recorded question submissions.'
+                          : '${day.attempted} answers submitted\n${day.correct} correct',
+                      style: AptiquTypography.bodySm,
+                    ),
+                    if (day.dailyChallengeCompleted) ...[
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Daily Challenge completed',
+                        style: TextStyle(color: AptiquColors.tertiary),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Asia/Kolkata · IST',
+                      style: TextStyle(color: AptiquColors.onSurfaceVariant),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: day.attempted == 0
+                          ? AptiquColors.surfaceContainerHigh
+                          : AptiquColors.primaryContainer.withValues(
+                              alpha: day.attempted < 5
+                                  ? .4
+                                  : day.attempted < 15
+                                  ? .7
+                                  : 1,
+                            ),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: isToday
+                            ? AptiquColors.secondary
+                            : AptiquColors.outlineVariant,
+                        width: isToday ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${date.day}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AptiquColors.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                if (day.dailyChallengeCompleted)
+                  const Positioned(
+                    top: -4,
+                    right: -3,
+                    child: Icon(
+                      Icons.local_fire_department_rounded,
+                      size: 17,
+                      color: AptiquColors.tertiary,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

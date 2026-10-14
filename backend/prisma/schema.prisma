@@ -648,6 +648,7 @@ model PvpMatchPlayer {
 
   @@unique([matchId, userId])
   @@index([userId, joinedAt(sort: Desc)])
+  @@index([userId, isWinner, matchId])
   @@map("pvp_match_players")
   @@schema("learning")
 }
@@ -979,6 +980,7 @@ model DailyChallengeParticipation {
 
   @@unique([userId, dateString])
   @@index([userId, startedAt(sort: Desc)])
+  @@index([userId, status, dateString])
   @@index([dateString, status])
   @@map("daily_challenge_participations")
   @@schema("learning")
@@ -1111,4 +1113,45 @@ model BookProcessingJob {
   @@index([bookId, stage])
   @@map("book_processing_jobs")
   @@schema("learning")
+}
+
+
+// Definitions are authored in the admin console. Progress is calculated from
+// canonical answers/matches/participations, with no triggers or seeded catalog.
+enum AchievementMetric {
+  ATTEMPTED
+  CORRECT
+  DAILY_COMPLETED
+  PVP_WINS
+  BEST_STREAK
+  @@schema("gamification")
+}
+
+enum AchievementSource {
+  ALL
+  LESSON
+  PRACTICE
+  DAILY
+  PVP
+  @@schema("gamification")
+}
+
+model Achievement {
+  id          String            @id @default(uuid()) @db.Uuid
+  title       String            @db.VarChar(120)
+  description String            @db.VarChar(500)
+  metric      AchievementMetric
+  source      AchievementSource @default(ALL)
+  difficulty  QuestionDifficultyEnum?
+  target      Int
+  sortOrder   Int               @default(0) @map("sort_order")
+  isActive    Boolean           @default(true) @map("is_active")
+  deletedAt   DateTime?         @map("deleted_at")
+  version     Int               @default(1)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  @@index([isActive, deletedAt, sortOrder, id])
+  @@map("achievements")
+  @@schema("gamification")
 }

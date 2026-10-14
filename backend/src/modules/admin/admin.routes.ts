@@ -1,3 +1,4 @@
+import { AdminAchievementsController } from './admin-achievements.controller';
 import { Router } from 'express';
 import { authenticateAdmin } from './admin.middleware';
 import { AdminAuthController } from './admin-auth.controller';
@@ -21,6 +22,13 @@ router.post('/auth/login', AdminAuthController.login);
 // PROTECTED ADMIN ROUTES (Require Admin JWT)
 // ==========================================
 router.use(authenticateAdmin);
+
+router.get('/achievements/options', AdminAchievementsController.options);
+router.get('/achievements', AdminAchievementsController.list);
+router.post('/achievements', AdminAchievementsController.create);
+router.put('/achievements/:id', AdminAchievementsController.update);
+router.delete('/achievements/:id', AdminAchievementsController.remove);
+router.post('/achievements/:id/restore', AdminAchievementsController.restore);
 
 // Auth verification
 router.get('/auth/me', AdminAuthController.me);

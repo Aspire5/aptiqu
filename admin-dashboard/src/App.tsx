@@ -1,3 +1,4 @@
+import { AchievementsPage } from './pages/AchievementsPage';
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -58,6 +59,7 @@ export const App: React.FC = () => {
             <Route path="books" element={<BooksPage />} />
             <Route path="questions" element={<QuestionsPage />} />
             <Route path="ai-prompts" element={<AiPromptsPage />} />
+            <Route path="achievements" element={<AchievementsPage />} />
             <Route path="users" element={<UsersPage />} />
           </Route>
 

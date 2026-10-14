@@ -22,11 +22,18 @@ class HomeActivityDay {
   final String date;
   final int attempted;
   final int correct;
-  const HomeActivityDay(this.date, this.attempted, this.correct);
+  final bool dailyChallengeCompleted;
+  const HomeActivityDay(
+    this.date,
+    this.attempted,
+    this.correct, {
+    this.dailyChallengeCompleted = false,
+  });
   factory HomeActivityDay.fromJson(Map<String, dynamic> j) => HomeActivityDay(
     j['date'],
     (j['attempted'] as num).toInt(),
     (j['correct'] as num).toInt(),
+    dailyChallengeCompleted: j['dailyChallengeCompleted'] == true,
   );
 }
 
@@ -40,6 +47,7 @@ class HomeResume {
 }
 
 class HomeBadge {
+  final String id;
   final String title;
   final String description;
   final int progress;
@@ -50,14 +58,16 @@ class HomeBadge {
     this.description,
     this.progress,
     this.target,
-    this.unlocked,
-  );
+    this.unlocked, {
+    this.id = '',
+  });
   factory HomeBadge.fromJson(Map<String, dynamic> j) => HomeBadge(
     j['title'],
     j['description'],
     (j['progress'] as num).toInt(),
     (j['target'] as num).toInt(),
     j['unlocked'],
+    id: j['id'] as String? ?? '',
   );
 }
 
@@ -71,6 +81,7 @@ class HomeRanked {
 }
 
 class HomeDashboardModel {
+  final String? today;
   final HomePerformance performance;
   final Map<String, HomePerformance> difficulty;
   final List<HomeActivityDay> activity;
@@ -78,6 +89,7 @@ class HomeDashboardModel {
   final HomeResume? resume;
   final HomeRanked? ranked;
   const HomeDashboardModel({
+    this.today,
     required this.performance,
     required this.difficulty,
     required this.activity,
@@ -87,6 +99,7 @@ class HomeDashboardModel {
   });
   factory HomeDashboardModel.fromJson(Map<String, dynamic> j) =>
       HomeDashboardModel(
+        today: j['today'],
         performance: HomePerformance.fromJson(j['performance']),
         difficulty: {
           for (final row in j['difficulty'])

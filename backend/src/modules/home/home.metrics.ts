@@ -6,11 +6,6 @@ export function performance(rows: Counts[]) {
   return { ...totals, accuracy: totals.attempted ? totals.correct / totals.attempted : null,
     averageSolveTimeMs: totals.timed ? totals.timeMs / totals.timed : null };
 }
-export const badgeCatalog = [
-  { id: 'first_answer', title: 'First step', description: 'Submit your first answer', target: 1 },
-  { id: 'correct_25', title: 'Finding your stride', description: 'Get 25 answers correct', target: 25 },
-  { id: 'hard_10', title: 'Challenge seeker', description: 'Get 10 hard answers correct', target: 10 },
-] as const;
 export function dateKey(now: Date) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
 }

@@ -10,9 +10,11 @@ import 'package:aptiqu/core/theme/aptiqu_theme.dart';
 import 'package:aptiqu/features/auth/domain/models/user_model.dart';
 import 'package:aptiqu/features/home/models/home_dashboard_model.dart';
 import 'package:aptiqu/features/home/presentation/widgets/home_dashboard_view.dart';
+import 'package:aptiqu/features/home/presentation/widgets/achievement_browser.dart';
 import 'practice_catalog_test.dart' show TestFontManifest;
 
 HomeDashboardModel fixture({bool populated = false}) => HomeDashboardModel(
+  today: '2026-10-13',
   performance: populated
       ? const HomePerformance(
           attempted: 40,
@@ -37,18 +39,19 @@ HomeDashboardModel fixture({bool populated = false}) => HomeDashboardModel(
       DateTime(2026, 8, 19 + i).toIso8601String().substring(0, 10),
       populated && i % 3 == 0 ? 8 : 0,
       populated && i % 3 == 0 ? 6 : 0,
+      dailyChallengeCompleted: populated && i == 55,
     ),
   ),
   badges: [
     HomeBadge(
-      'First step',
+      'Sample achievement',
       'Submit your first answer',
       populated ? 1 : 0,
       1,
       populated,
     ),
     HomeBadge(
-      'Finding your stride',
+      'Sample challenge milestone',
       'Get 25 answers correct',
       populated ? 25 : 0,
       25,
@@ -155,6 +158,14 @@ void main() {
     var opened = false;
     await show(tester, data: fixture(), topics: () => opened = true);
     expect(find.text('Explore topics'), findsOneWidget);
+    expect(find.text('Home'), findsNothing);
+    expect(find.text('Your progress'), findsNothing);
+    expect(find.text('125 XP'), findsNothing);
+    expect(find.text('Current Streak : 0 Days'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.text('Daily Challenge')).dy,
+      lessThan(tester.getTopLeft(find.text('Your next discovery')).dy),
+    );
     expect(find.text('Continue learning'), findsNothing);
     await tester.tap(find.text('Explore topics'));
     expect(opened, true);
@@ -200,7 +211,7 @@ void main() {
       180,
       scrollable: find.byType(Scrollable).first,
     );
-    final day = fixture(populated: true).activity[28];
+    final day = fixture(populated: true).activity[42];
     await tester.tap(
       find.byWidgetPredicate(
         (w) =>
@@ -210,7 +221,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text(day.date), findsOneWidget);
+    expect(find.textContaining('Sep 2026'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();
@@ -229,8 +240,9 @@ void main() {
     tester,
   ) async {
     await show(tester, loading: true);
-    expect(find.text('125 XP'), findsOneWidget);
-    expect(find.byType(LinearProgressIndicator), findsNWidgets(2));
+    expect(find.text('125 XP'), findsNothing);
+    expect(find.text('Daily Challenge'), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
     var retried = false;
     await show(
       tester,
@@ -242,4 +254,94 @@ void main() {
     expect(retried, true);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('calendar labels months and marks only successful Daily Challenges', (
+    tester,
+  ) async {
+    await show(tester, data: fixture(populated: true));
+    await tester.scrollUntilVisible(
+      find.byType(ActivityCalendar),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('September 2026'), findsOneWidget);
+    expect(find.text('October 2026'), findsOneWidget);
+    expect(find.text('Mo'), findsNWidgets(2));
+    expect(
+      find.descendant(
+        of: find.byType(ActivityCalendar),
+        matching: find.byIcon(Icons.local_fire_department_rounded),
+      ),
+      findsNWidgets(2),
+    );
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label ==
+                '2026-10-13: 8 submissions, 6 correct, Daily Challenge completed',
+      ),
+      findsNothing,
+    );
+    // This fixture has a successful challenge on a zero-answer day: the marker
+    // comes from challenge completion rather than heatmap colour.
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label ==
+                '2026-10-13: 0 submissions, 0 correct, Daily Challenge completed',
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+    'achievement browser loads server pages and retries without duplicate entries',
+    (tester) async {
+      var calls = 0;
+      var fail = true;
+      Map<String, dynamic> item(String id) => {
+        'id': id,
+        'title': 'Server milestone $id',
+        'description': 'Server description',
+        'progress': 2,
+        'target': 5,
+        'unlocked': false,
+      };
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AptiquTheme.darkTheme,
+          home: Scaffold(
+            body: AchievementBrowser(
+              badgeBuilder: (b) => Text(b.title),
+              fetchPage: (page) async {
+                calls++;
+                if (page == 2 && fail) {
+                  fail = false;
+                  throw StateError('Offline');
+                }
+                return {
+                  'items': page == 1 ? [item('A')] : [item('A'), item('B')],
+                  'total': 2,
+                  'hasMore': page == 1,
+                };
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Server milestone A'), findsOneWidget);
+      await tester.tap(find.text('Load more'));
+      await tester.pumpAndSettle();
+      expect(find.text('Retry'), findsOneWidget);
+      await tester.tap(find.text('Retry'));
+      await tester.pumpAndSettle();
+      expect(calls, 3);
+      expect(find.text('Server milestone A'), findsOneWidget);
+      expect(find.text('Server milestone B'), findsOneWidget);
+      expect(find.text('Load more'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

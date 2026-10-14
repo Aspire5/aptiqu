@@ -9,7 +9,8 @@ import {
   LogOut, 
   Server,
   Sparkles,
-  BookOpen
+  BookOpen,
+  Award
 } from 'lucide-react';
 
 export const AdminLayout: React.FC = () => {
@@ -27,6 +28,7 @@ export const AdminLayout: React.FC = () => {
     if (location.pathname.includes('/syllabus')) return 'Syllabus & Curriculum';
     if (location.pathname.includes('/questions')) return 'Question Bank';
     if (location.pathname.includes('/ai-prompts')) return 'AI Prompts Control Center';
+    if (location.pathname.includes('/achievements')) return 'Achievements';
     if (location.pathname.includes('/users')) return 'User Management';
     return 'Executive SaaS Dashboard';
   };
@@ -96,6 +98,9 @@ export const AdminLayout: React.FC = () => {
           >
             <Users size={18} />
             <span>Users</span>
+          </NavLink>
+          <NavLink to="/achievements" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <Award size={18} /><span>Achievements</span>
           </NavLink>
         </nav>
 
