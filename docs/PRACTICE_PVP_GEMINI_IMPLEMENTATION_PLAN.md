@@ -13,7 +13,7 @@ This engineering plan details the architecture and implementation roadmap for **
 4. **Persistent Content Pooling & On-Demand Generation**: AI questions are generated on-demand when inventory shortages are detected, verified, stored in PostgreSQL, and pooled. Questions and PvP question sets are reused across users, avoiding redundant AI inference costs. Background replenishment queues are excluded from MVP.
 5. **Strict Content Gate (Live Syllabus Only)**: Only topics and subtopics with active, published lesson scripts (`LessonScript.status = PUBLISHED` and `publishedVersionId != null` assigned via `ScriptAssignment`) are eligible for question generation, practice sessions, and PvP matches. Locked/future curriculum is rejected.
 6. **Centralized XP Integration**: All XP minted by Practice and PvP is routed through `XpService.getInstance().awardXp` with the canonical `XpPolicy`, guaranteeing idempotency and level progression consistency. No shortcut XP exists for premature session exit.
-7. **Development Phase Pragmatism**: The project is in active development. Database resets (`prisma migrate reset`) and fresh re-seeding are standard practice. No complex migration fallbacks or multi-step migration scripts are needed.
+7. **Development Phase Pragmatism**: The project is in active development. The database structure is maintained directly in `schema.prisma` and applied manually with `npx prisma db push`. No complex migration fallbacks or multi-step migration scripts are needed.
 
 ---
 
@@ -418,7 +418,7 @@ In `model User`:
 
 ### 1.3 Development Migration Philosophy
 - We are in the active development phase. Never introduce multi-step migration complexity or temporary migration defaults.
-- Running `npx prisma migrate dev --name add_practice_pvp_and_question_domain` or `npx prisma migrate reset` followed by `npm run seed:curriculum` is the official, fast mechanism to clean and align the schema.
+- Update `schema.prisma`, run `npx prisma db push` and `npx prisma generate`, and then run `npm run seed:curriculum` when content needs seeding. No migration history or automated schema setup is required.
 - Fingerprints for all questions (whether seeded, manual, or AI-generated) are computed using the exact same `SHA-256(normalized prompt + options)` logic.
 
 ---
@@ -1418,7 +1418,8 @@ npm install @google/genai ws @types/ws
 When ready to begin Phase 1:
 ```bash
 cd /Users/shagunkumar/Desktop/aptiqu/backend
-npx prisma migrate dev --name add_practice_pvp_and_question_domain
+npx prisma db push
+npx prisma generate
 ```
 
 ### Step 5: Verify Redis is Running Locally
@@ -1472,7 +1473,7 @@ Ensure Mathematical Foundations & Mental Calculation is seeded with its publishe
    - The active player continues uninterrupted through the entire 10-question match. The opponent who went AFK/disconnected is scored 0 for missed questions, and the active player is awarded the victory report and XP upon completing Question 10.
 9. **Deduplication & Migrations**:
    - Uniform `SHA-256(normalized prompt + options)` via `FingerprintService`. No MD5 anywhere.
-   - Development database policy: simple migrate/reset and re-seed.
+   - Development database policy: manual schema push and content seeding as needed.
 10. **XP System**: Reuses the centralized `XpService` and `XpPolicy`.
 
 ### B. DECISIONS REQUIRING APPROVAL

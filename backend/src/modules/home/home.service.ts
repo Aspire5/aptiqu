@@ -1,19 +1,15 @@
 import { prisma } from '../../config/prisma';
-import { badgeCatalog, calendar, Counts, dateKey, performance } from './home.metrics';
+import { badgeCatalog, calendar, dateKey, performance } from './home.metrics';
+import { homeStatsQuery, HomeStatsRow, latestHomeMatchQuery } from './home.queries';
 
 export class HomeService {
   async getHome(userId: string, now = new Date()) {
     const today = dateKey(now);
     const start = new Date(new Date(`${today}T00:00:00Z`).getTime() - 27 * 86400000).toISOString().slice(0, 10);
-    // Fixed-size aggregates and a single indexed latest-session lookup. No raw history scans.
-    const [rows, days, badges, resume, lastMatch] = await prisma.$transaction([
-      prisma.$queryRaw<(Counts & { difficulty: string })[]>`
-        SELECT difficulty,attempted::float8,correct::float8,timed::float8,time_ms::float8 AS "timeMs"
-        FROM gamification.home_totals WHERE user_id=${userId}::uuid AND attempted > 0`,
-      prisma.$queryRaw<{ date: string; attempted: number; correct: number }[]>`
-        SELECT day::text AS date,attempted::float8,correct::float8 FROM gamification.home_days
-        WHERE user_id=${userId}::uuid AND day BETWEEN ${start}::date AND ${today}::date ORDER BY day`,
-      prisma.$queryRaw<{ badge_id: string }[]>`SELECT badge_id FROM gamification.home_badges WHERE user_id=${userId}::uuid`,
+    const startUtc = new Date(`${start}T00:00:00+05:30`).toISOString();
+    const endUtc = new Date(new Date(`${today}T00:00:00+05:30`).getTime() + 86400000).toISOString();
+    const [stats, resume, lastMatch] = await prisma.$transaction([
+      prisma.$queryRaw<HomeStatsRow[]>(homeStatsQuery(userId, startUtc, endUtc)),
       prisma.lessonSession.findFirst({
         where: { userId, status: { in: ['ACTIVE', 'PAUSED'] }, roadmapStepId: { not: null },
           script: { status: 'PUBLISHED' }, roadmapStep: { isActive: true, roadmap: { isActive: true }, subject: { isActive: true }, topic: { isActive: true }, scriptAssignments: { some: { status: 'PUBLISHED' } } } },
@@ -21,9 +17,11 @@ export class HomeService {
         select: { roadmapStepId: true, lastActivityAt: true, script: { select: { title: true } },
           roadmapStep: { select: { topic: { select: { name: true } } } } },
       }),
-      prisma.$queryRaw<{ result: string; correct: number; questions: number }[]>`
-        SELECT result,correct,questions FROM gamification.home_ranked WHERE user_id=${userId}::uuid`,
+      prisma.$queryRaw<{ result: string; correct: number; questions: number }[]>(latestHomeMatchQuery(userId)),
     ], { isolationLevel: 'RepeatableRead' });
+    const rows = stats.filter(r => r.kind === 'difficulty');
+    const days = stats.filter(r => r.kind === 'day' && r.date !== null)
+      .map(r => ({ date: r.date!, attempted: r.attempted, correct: r.correct }));
     const summary = performance(rows);
     return {
       timezone: 'Asia/Kolkata', today, performance: summary,
@@ -31,9 +29,11 @@ export class HomeService {
       activity: calendar(today, days),
       resume: resume ? { stepId: resume.roadmapStepId, title: resume.script.title,
         topic: resume.roadmapStep?.topic.name, lastPlayedAt: resume.lastActivityAt } : null,
-      badges: badgeCatalog.map(b => ({ ...b, unlocked: badges.some(a => a.badge_id === b.id),
-        progress: Math.min(b.target, b.id === 'first_answer' ? summary.attempted : b.id === 'correct_25'
-          ? summary.correct : rows.find(r => r.difficulty === 'HARD')?.correct ?? 0) })),
+      badges: badgeCatalog.map(b => {
+        const progress = Math.min(b.target, b.id === 'first_answer' ? summary.attempted : b.id === 'correct_25'
+          ? summary.correct : rows.find(r => r.difficulty === 'HARD')?.correct ?? 0);
+        return { ...b, unlocked: progress >= b.target, progress };
+      }),
       ranked: lastMatch[0] ?? null,
     };
   }

@@ -25,39 +25,61 @@ test('calendar is chronological, bounded, handles leap day and sparse history', 
   assert.deepEqual(days.at(-1), { date: '2024-03-01', attempted: 0, correct: 0 });
   assert.equal(new Set(days.map(d => d.date)).size, 28);
 });
-test('Home contract has five bounded reads and handles empty/populated users', async () => {
+test('Home derives its contract from aggregates, resume and latest match in one snapshot', async () => {
   const originalRaw = prisma.$queryRaw;
   const originalSession = prisma.lessonSession.findFirst;
   const originalTransaction = prisma.$transaction;
-  let queries: string[] = [];
-  let fixture: unknown[] = [[], [], [], null, []];
+  let queries: { sql: string; values: unknown[] }[] = [];
+  let fixture: unknown[] = [[], null, []];
+  const userId = '00000000-0000-0000-0000-000000000001';
   try {
-    prisma.$queryRaw = ((strings: TemplateStringsArray) => {
-      queries.push(strings.join('?'));
+    prisma.$queryRaw = ((query: { sql: string; values: unknown[] }) => {
+      queries.push(query);
       return Promise.resolve([]);
     }) as typeof prisma.$queryRaw;
     prisma.lessonSession.findFirst = (() => Promise.resolve(null)) as typeof prisma.lessonSession.findFirst;
-    prisma.$transaction = (async (ops: unknown[]) => { assert.equal(ops.length, 5); return fixture; }) as typeof prisma.$transaction;
+    prisma.$transaction = (async (ops: unknown[], options: { isolationLevel: string }) => {
+      assert.equal(ops.length, 3);
+      assert.equal(options.isolationLevel, 'RepeatableRead');
+      return fixture;
+    }) as typeof prisma.$transaction;
     const service = new HomeService();
-    const empty = await service.getHome('00000000-0000-0000-0000-000000000001', new Date('2026-10-13T12:00:00Z'));
+    const now = new Date('2026-10-13T18:30:00Z');
+    const empty = await service.getHome(userId, now);
     assert.equal(empty.performance.accuracy, null);
     assert.equal(empty.resume, null);
     assert.equal(empty.ranked, null);
-    assert.equal(empty.badges.every(b => !b.unlocked), true);
-    assert.equal(queries.some(q => /home_source_events|question_attempts|COUNT\(|SUM\(/i.test(q)), false);
-    assert.equal(queries.filter(q => /home_days/.test(q)).length, 1);
+    assert.equal(empty.badges.every(b => !b.unlocked && b.progress === 0), true);
+    assert.equal(empty.activity.length, 28);
+    assert.equal(empty.today, '2026-10-14');
+    assert.equal(queries.length, 2);
+    // Dates are UTC boundaries of the 28 IST dates, including the final full day.
+    assert.deepEqual(queries[0].values, [userId, userId, userId, userId,
+      '2026-09-16T18:30:00.000Z', '2026-10-14T18:30:00.000Z']);
+    assert.equal(queries.some(q => /gamification\.home_/.test(q.sql)), false);
     queries = [];
-    fixture = [[{ difficulty: 'HARD', attempted: 1000000, correct: 500000, timed: 10, timeMs: 15000 }],
-      [{ date: '2026-10-13', attempted: 10, correct: 5 }], [{ badge_id: 'hard_10' }],
-      { roadmapStepId: 'step', lastActivityAt: new Date(), script: { title: 'Factors' }, roadmapStep: { topic: { name: 'Numbers' } } },
+    fixture = [[
+      { kind: 'difficulty', difficulty: 'HARD', date: null, attempted: 1000000, correct: 500000, timed: 10, timeMs: 15000 },
+      { kind: 'difficulty', difficulty: 'UNKNOWN', date: null, attempted: 2, correct: 1, timed: 0, timeMs: 0 },
+      { kind: 'day', difficulty: null, date: '2026-10-14', attempted: 10, correct: 5, timed: 1, timeMs: 5000 },
+    ], { roadmapStepId: 'step', lastActivityAt: new Date(), script: { title: 'Factors' }, roadmapStep: { topic: { name: 'Numbers' } } },
       [{ result: 'Win', correct: 8, questions: 10 }]];
-    const populated = await service.getHome('00000000-0000-0000-0000-000000000001');
+    const populated = await service.getHome(userId, now);
+    assert.equal(populated.performance.attempted, 1000002);
+    assert.equal(populated.performance.correct, 500001);
     assert.equal(populated.performance.accuracy, .5);
     assert.equal(populated.performance.averageSolveTimeMs, 1500);
+    assert.equal(populated.difficulty.length, 2);
+    assert.deepEqual(populated.activity.at(-1), { date: '2026-10-14', attempted: 10, correct: 5 });
     assert.equal(populated.resume?.title, 'Factors');
     assert.equal(populated.ranked?.result, 'Win');
-    assert.equal(populated.badges.find(b => b.id === 'hard_10')?.unlocked, true);
-    assert.equal(queries.length, 4);
+    assert.equal(populated.badges.every(b => b.unlocked && b.progress === b.target), true);
+    // Corrected/deleted answers must be reflected without stale projection/badge rows.
+    fixture = [[{ kind: 'difficulty', difficulty: 'HARD', date: null, attempted: 12, correct: 9, timed: 0, timeMs: 0 }], null, []];
+    const corrected = await service.getHome(userId, now);
+    assert.equal(corrected.badges.find(b => b.id === 'hard_10')?.unlocked, false);
+    assert.equal(corrected.badges.find(b => b.id === 'hard_10')?.progress, 9);
+    assert.equal(corrected.performance.averageSolveTimeMs, null);
   } finally {
     prisma.$queryRaw = originalRaw;
     prisma.lessonSession.findFirst = originalSession;

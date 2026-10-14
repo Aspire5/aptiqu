@@ -773,7 +773,7 @@ Follow this exact non-breaking deployment sequence on the live AptiQu VPS:
 ssh deploy@aptiqu-vps
 cd /var/www/aptiqu
 
-# 2. Create timestamped database backup before migration
+# 2. Create timestamped database backup before schema update
 pg_dump -U aptiqu_user -d aptiqu_prod -F c -b -v -f "/var/backups/aptiqu_pre_curriculum_$(date +%Y%m%d_%H%M%S).dump"
 
 # 3. Pull verified git release
@@ -782,7 +782,8 @@ git pull origin main
 # 4. Backend Deployment
 cd backend
 npm ci --production=false
-npx prisma migrate deploy
+npx prisma db push
+npx prisma generate
 npm run build
 pm2 reload aptiqu-backend --update-env
 

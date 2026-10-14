@@ -1111,7 +1111,7 @@ export interface IAiGateway {
 
 ## 19. Migration Strategy for Existing Aptiqu Codebase
 
-1. **Database Schema**: Add `"learning"` to the `schemas` array in `backend/prisma/schema.prisma`. Execute `npx prisma db push` or `npx prisma migrate dev --name init_learning_schema`. No existing tables in `auth`, `users`, or `gamification` are dropped or modified.
+1. **Database Schema**: Add `"learning"` to the `schemas` array in `backend/prisma/schema.prisma`. Execute `npx prisma db push` and `npx prisma generate`. No existing tables in `auth`, `users`, or `gamification` are dropped or modified.
 2. **Redis Setup**: Install `ioredis` and `@types/ioredis`. Configure Redis connection URL in `backend/.env` (`REDIS_URL=redis://127.0.0.1:6379`). Provide an in-memory fallback map if Redis is not locally provisioned during development.
 3. **Flutter Integration**: Add `lesson` feature directory under `lib/features/lesson/`. Mount lesson routes in `lib/core/routing/app_router.dart` (`/lesson/:slug`).
 

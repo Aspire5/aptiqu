@@ -623,7 +623,7 @@ Before launching to live users:
 - [ ] Admin login uses `crypto.timingSafeEqual()` and is rate-limited.
 - [ ] `XpService.awardXp` accepts optional transaction client, resolving nested transaction deadlocks.
 - [ ] `findMany` over entire PvP sets and question attempts replaced with SQL queries.
-- [ ] Justified foreign key indexes added to `schema.prisma` and applied via migration.
+- [ ] Justified foreign key indexes added to `schema.prisma` and applied manually via `npx prisma db push`.
 - [ ] Practice question shortage triggers asynchronous BullMQ background job instead of synchronous HTTP block.
 - [ ] Redis mutex locking uses unique UUID tokens with Lua verification.
 - [ ] Admin dashboard unlinking URLs fixed to prevent 404s.
