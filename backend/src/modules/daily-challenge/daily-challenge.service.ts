@@ -559,6 +559,8 @@ export class DailyChallengeService {
       };
 
       if (isComplete) {
+        // All reward transactions use progress -> stats lock order.
+        await XpService.getInstance().lockProgress(tx, userId);
         const stats = await tx.gameStats.findUnique({
           where: { userId },
         });

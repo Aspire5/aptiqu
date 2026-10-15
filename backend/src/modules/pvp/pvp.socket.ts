@@ -20,6 +20,7 @@ interface MatchState {
 
 export class PvpSocketServer {
   private static instance: PvpSocketServer;
+  private heartbeat?: NodeJS.Timeout;
   private wss: WebSocketServer | null = null;
   private matchmakingQueue: { userId: string; ws: ClientSocket }[] = [];
   private activeMatches = new Map<string, MatchState>();
@@ -33,7 +34,12 @@ export class PvpSocketServer {
   }
 
   public init(server: HttpServer) {
-    this.wss = new WebSocketServer({ server, path: '/ws/pvp' });
+    this.wss = new WebSocketServer({ noServer: true });
+
+    server.on('upgrade', (req, socket, head) => {
+      if (req.url?.split('?')[0] !== '/ws/pvp') return;
+      this.wss!.handleUpgrade(req, socket, head, ws => this.wss!.emit('connection', ws, req));
+    });
 
     this.wss.on('connection', (ws: ClientSocket, req) => {
       ws.isAlive = true;
@@ -120,7 +126,7 @@ export class PvpSocketServer {
     });
 
     // Heartbeat interval to clean up stale connections
-    setInterval(() => {
+    this.heartbeat = setInterval(() => {
       if (!this.wss) return;
       this.wss.clients.forEach((ws) => {
         const client = ws as ClientSocket;
@@ -131,6 +137,13 @@ export class PvpSocketServer {
     }, 15000);
 
     console.log('⚔️ Ranked PvP WebSocket Server initialized on path: /ws/pvp');
+  }
+
+  public async close() {
+    clearInterval(this.heartbeat);
+    for (const match of this.activeMatches.values()) clearTimeout(match.timerHandle);
+    for (const ws of this.wss?.clients ?? []) ws.close(1001, 'Server restarting');
+    this.wss?.close();
   }
 
   private send(ws: WebSocket | undefined, event: string, payload: any) {

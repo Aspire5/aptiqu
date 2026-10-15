@@ -1,4 +1,4 @@
-package com.example.aptiqu
+package com.aptiqu.app
 
 import io.flutter.embedding.android.FlutterActivity
 

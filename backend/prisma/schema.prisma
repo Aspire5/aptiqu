@@ -17,6 +17,12 @@ model User {
   createdAt              DateTime       @default(now()) @map("created_at")
   updatedAt              DateTime       @updatedAt @map("updated_at")
 
+  friendshipsLow         Friendship[] @relation("FriendLow")
+  friendshipsHigh        Friendship[] @relation("FriendHigh")
+  friendInvitesSent       Friendship[] @relation("FriendSender")
+  duelsRequested         FriendlyDuel[] @relation("DuelRequester")
+  duelsReceived          FriendlyDuel[] @relation("DuelRecipient")
+  duelSeat               FriendlyDuelSeat?
   profile                Profile?
   refreshTokens          RefreshToken[]
   gameStats              GameStats?
@@ -66,6 +72,7 @@ model Profile {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String    @unique @map("user_id") @db.Uuid
   firstName String    @map("first_name")
+  searchName String   @default("") @map("search_name")
   lastName  String    @map("last_name")
   dob       DateTime?
   gender    String?
@@ -77,6 +84,7 @@ model Profile {
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([searchName(ops: raw("text_pattern_ops")), userId])
   @@map("profiles")
   @@schema("users")
 }
@@ -493,6 +501,11 @@ model AiMessage {
 
 model PracticeSession {
   id              String                 @id @default(uuid()) @db.Uuid
+  isFriendlyDuel Boolean @default(false) @map("is_friendly_duel")
+  friendlyDuelId  String?                @map("friendly_duel_id") @db.Uuid
+  friendlyDuel    FriendlyDuel?          @relation(fields: [friendlyDuelId], references: [id], onDelete: SetNull)
+  timerEnabled    Boolean               @default(true) @map("timer_enabled")
+  questionStartedAt DateTime?           @map("question_started_at")
   userId          String                 @map("user_id") @db.Uuid
   subjectId       String                 @map("subject_id")
   topicId         String                 @map("topic_id")
@@ -519,6 +532,7 @@ model PracticeSession {
   @@index([userId, status])
   @@index([userId, createdAt(sort: Desc)])
   @@index([userId, isReplay, createdAt(sort: Desc)])
+  @@unique([friendlyDuelId, userId])
   @@map("practice_sessions")
   @@schema("learning")
 }
@@ -1154,4 +1168,77 @@ model Achievement {
   @@index([isActive, deletedAt, sortOrder, id])
   @@map("achievements")
   @@schema("gamification")
+}
+
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  REMOVED
+  @@schema("users")
+}
+model Friendship {
+  id        String @id @default(uuid()) @db.Uuid
+  lowId     String @map("low_id") @db.Uuid
+  highId    String @map("high_id") @db.Uuid
+  senderId  String @map("sender_id") @db.Uuid
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  low       User @relation("FriendLow", fields: [lowId], references: [id], onDelete: Cascade)
+  high      User @relation("FriendHigh", fields: [highId], references: [id], onDelete: Cascade)
+  sender    User @relation("FriendSender", fields: [senderId], references: [id], onDelete: Cascade)
+  duels     FriendlyDuel[]
+  @@unique([lowId, highId])
+  @@index([lowId, status, updatedAt, id])
+  @@index([highId, status, updatedAt, id])
+  @@map("friendships")
+  @@schema("users")
+}
+enum FriendlyDuelStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  REJECTED
+  CANCELLED
+  EXPIRED
+  ABANDONED
+  @@schema("learning")
+}
+model FriendlyDuel {
+  id           String @id @default(uuid()) @db.Uuid
+  requesterId  String @map("requester_id") @db.Uuid
+  recipientId  String @map("recipient_id") @db.Uuid
+  friendshipId String @map("friendship_id") @db.Uuid
+  requestKey   String @unique @map("request_key") @db.Uuid
+  status       FriendlyDuelStatus @default(PENDING)
+  smartPicks   Boolean @default(false) @map("smart_picks")
+  timerEnabled Boolean @default(true) @map("timer_enabled")
+  subtopicIds  String[] @map("subtopic_ids")
+  selectionNotes String[] @default([]) @map("selection_notes")
+  questionSnapshot Json? @map("question_snapshot")
+  createdAt    DateTime @default(now()) @map("created_at")
+  expiresAt    DateTime @default(dbgenerated("(CURRENT_TIMESTAMP + interval '60 seconds')")) @map("expires_at")
+  completedAt  DateTime? @map("completed_at")
+  matchExpiresAt DateTime? @map("match_expires_at")
+  requester    User @relation("DuelRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  recipient    User @relation("DuelRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  friendship   Friendship @relation(fields: [friendshipId], references: [id], onDelete: Cascade)
+  sessions     PracticeSession[]
+  seats        FriendlyDuelSeat[]
+  @@index([recipientId, status, expiresAt])
+  @@index([requesterId, status, createdAt])
+  @@index([status, expiresAt])
+  @@map("friendly_duels")
+  @@schema("learning")
+}
+model FriendlyDuelSeat {
+  userId String @id @map("user_id") @db.Uuid
+  duelId String @map("duel_id") @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  duel FriendlyDuel @relation(fields: [duelId], references: [id], onDelete: Cascade)
+  @@index([duelId])
+  @@map("friendly_duel_seats")
+  @@schema("learning")
 }

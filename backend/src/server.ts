@@ -1,3 +1,5 @@
+import { socialSocketServer } from './modules/social/social.socket';
+import { startSocialWorker } from './modules/social/social.worker';
 import http from 'http';
 import cron from 'node-cron';
 import { createApp } from './app';
@@ -18,7 +20,12 @@ async function bootstrap() {
   console.log('✅ Connected to PostgreSQL database (aptiqu_db)');
 
   // Initialize Ranked PvP WebSocket Server on the same HTTP server
+  server.on('upgrade', (req, socket) => {
+    if (!['/ws/pvp', '/ws/social'].includes(req.url?.split('?')[0] || '')) socket.destroy();
+  });
   pvpSocketServer.init(server);
+  socialSocketServer.init(server);
+  const stopSocialWorker = startSocialWorker();
 
   // Schedule Daily Streak Reset at 12:00 AM sharp IST (UTC+5:30)
   cron.schedule(
@@ -72,7 +79,12 @@ async function bootstrap() {
   // Graceful shutdown
   const shutdown = async () => {
     console.log('\n🛑 Gracefully shutting down Aptiqu Backend...');
-    server.close(async () => {
+    const closed = new Promise<void>(resolve => server.close(() => resolve()));
+    await socialSocketServer.close();
+    await pvpSocketServer.close();
+    await closed;
+    {
+      await stopSocialWorker();
       await contentGenWorker.close();
       await contentGenQueue.close();
       await bookIngestionWorker.close();
@@ -80,7 +92,7 @@ async function bootstrap() {
       await prisma.$disconnect();
       console.log('🔌 Database and Queues disconnected.');
       process.exit(0);
-    });
+    }
   };
 
   process.on('SIGINT', shutdown);

@@ -1,3 +1,6 @@
+import { duelsService } from '../../social/duels.service';
+import { lockUsers } from '../../social/friends.service';
+import { socialTransport } from '../../social/social.transport';
 import { prisma } from '../../../config/prisma';
 import { practiceSelectionService } from './practice-selection.service';
 import { XpService } from '../../xp/xp.service';
@@ -238,6 +241,7 @@ export class PracticeSessionService {
     const session = await db.practiceSession.findFirst({
       where: { id: sessionId, userId },
       include: {
+        friendlyDuel: { select: { questionSnapshot:true } },
         questions: {
           include: { question: true },
           orderBy: { sequence: 'asc' },
@@ -252,6 +256,7 @@ export class PracticeSessionService {
     // Sanitize question data so correct answer is NOT leaked to client before answer
     const sanitizedQuestions = session.questions.map((sq: any) => {
       const isAnswered = sq.isAnswered;
+      const q = session.friendlyDuel?.questionSnapshot?.[sq.questionId] ?? sq.question;
       return {
         id: sq.id,
         sequence: sq.sequence,
@@ -261,22 +266,22 @@ export class PracticeSessionService {
         responseTimeMs: sq.responseTimeMs,
         hintsRevealedCount: sq.hintsRevealedCount,
         question: {
-          id: sq.question.id,
-          prompt: sq.question.prompt,
-          options: sq.question.options,
-          difficulty: sq.question.difficulty,
-          estimatedTimeSeconds: sq.question.estimatedTimeSeconds,
-          calculationMode: sq.question.calculationMode,
-          hints: sq.question.hints,
-          pattern: sq.question.pattern,
-          pyq: sq.question.pyq,
-          alternativeExplanation: isAnswered ? sq.question.alternativeExplanation : undefined,
-          preferredSolution: isAnswered ? sq.question.preferredSolution : undefined,
-          preferredReason: isAnswered ? sq.question.preferredReason : undefined,
+          id: q.id,
+          prompt: q.prompt,
+          options: q.options,
+          difficulty: q.difficulty,
+          estimatedTimeSeconds: q.estimatedTimeSeconds,
+          calculationMode: q.calculationMode,
+          hints: q.hints,
+          pattern: q.pattern,
+          pyq: q.pyq,
+          alternativeExplanation: isAnswered ? q.alternativeExplanation : undefined,
+          preferredSolution: isAnswered ? q.preferredSolution : undefined,
+          preferredReason: isAnswered ? q.preferredReason : undefined,
           // Only reveal correct answer & explanation if user already answered
-          correctAnswer: isAnswered ? sq.question.correctAnswer : undefined,
-          explanation: isAnswered ? sq.question.explanation : undefined,
-          method: isAnswered ? sq.question.method : undefined,
+          correctAnswer: isAnswered ? q.correctAnswer : undefined,
+          explanation: isAnswered ? q.explanation : undefined,
+          method: isAnswered ? q.method : undefined,
         },
       };
     });
@@ -294,6 +299,9 @@ export class PracticeSessionService {
       totalTimeMs: session.totalTimeMs,
       xpAwarded: session.xpAwarded,
       isReplay: session.isReplay,
+      isFriendlyDuel: session.isFriendlyDuel,
+      friendlyDuelId: session.friendlyDuelId,
+      timerEnabled: session.timerEnabled,
       replaySourceType: session.replaySourceType,
       replaySourceId: session.replaySourceId,
       startedAt: session.startedAt,
@@ -318,6 +326,7 @@ export class PracticeSessionService {
     const session = await prisma.practiceSession.findFirst({
       where: { id: sessionId, userId },
       include: {
+        friendlyDuel: { select: { questionSnapshot:true } },
         questions: {
           include: { question: true },
           orderBy: { sequence: 'asc' },
@@ -348,7 +357,9 @@ export class PracticeSessionService {
     if (!Number.isFinite(responseTimeMs) || responseTimeMs < 0 || responseTimeMs > 86400000) {
       throw new Error('Invalid response time.');
     }
-    const question = sessionQuestion.question;
+    const deck = session.friendlyDuel?.questionSnapshot as Record<string, any> | undefined;
+    if (session.isFriendlyDuel && !deck?.[questionId]) throw new Error('This friendly duel deck is unavailable.');
+    const question = deck?.[questionId] ?? sessionQuestion.question;
     const option = selectedOptionId.trim().toUpperCase();
     if (option !== 'TIMEOUT' && !(question.options as any[]).some(o => o.id === option)) {
       throw new Error('Choose a valid option.');
@@ -356,22 +367,40 @@ export class PracticeSessionService {
     const isCorrect =
       selectedOptionId.trim().toUpperCase() === question.correctAnswer.trim().toUpperCase();
 
+    if (session.isFriendlyDuel && !session.friendlyDuelId) throw new Error('This friendly duel is no longer available.');
     // Perform database updates in a transaction
-    return await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
+      if (session.friendlyDuelId) {
+        const duel = await tx.friendlyDuel.findUnique({ where: { id: session.friendlyDuelId } });
+        if (!duel) throw new Error('Duel not found.');
+        await lockUsers(tx, [duel.requesterId, duel.recipientId]);
+        await tx.$queryRaw`SELECT id FROM learning.friendly_duels WHERE id=${duel.id}::uuid FOR UPDATE`;
+        const live = await tx.friendlyDuel.findUnique({ where: { id: duel.id } });
+        if (live?.status !== 'ACTIVE' || (live.matchExpiresAt && live.matchExpiresAt.getTime() <= Date.now())) throw new Error('This duel is no longer active.');
+      }
       // Serialize answers for this session and recheck after acquiring the lock.
       await tx.$queryRaw`SELECT id FROM learning.practice_sessions WHERE id = ${session.id}::uuid FOR UPDATE`;
       const lockedSession = await tx.practiceSession.findUnique({ where: { id: session.id } });
       if (lockedSession?.status !== 'ACTIVE') throw new Error('This session is no longer active.');
       const fresh = await tx.practiceSessionQuestion.findUnique({ where: { id: sessionQuestion.id } });
       if (fresh?.isAnswered) throw new Error('This question has already been answered.');
+      let recordedTime = responseTimeMs;
+      let recordedOption = selectedOptionId.trim().toUpperCase();
+      let recordedCorrect = isCorrect;
+      if (session.isFriendlyDuel) {
+        if (!lockedSession.questionStartedAt) throw new Error('Start the current question before answering.');
+        recordedTime = Math.max(0, Date.now() - lockedSession.questionStartedAt.getTime());
+        if (session.timerEnabled && recordedTime >= 60000) { recordedOption = 'TIMEOUT'; recordedCorrect = false; }
+        else if (recordedOption === 'TIMEOUT') throw new Error('The question timer has not expired.');
+      }
       // 1. Update PracticeSessionQuestion
       await tx.practiceSessionQuestion.update({
         where: { id: sessionQuestion.id },
         data: {
           isAnswered: true,
-          userSelectedOptionId: selectedOptionId.trim().toUpperCase(),
-          isCorrect,
-          responseTimeMs,
+          userSelectedOptionId: recordedOption,
+          isCorrect: recordedCorrect,
+          responseTimeMs: recordedTime,
           answeredAt: new Date(),
         },
       });
@@ -399,11 +428,11 @@ export class PracticeSessionService {
             where: { id: existingProg.id },
             data: {
               timesSeen: existingProg.timesSeen + 1,
-              timesCorrect: existingProg.timesCorrect + (isCorrect ? 1 : 0),
+              timesCorrect: existingProg.timesCorrect + (recordedCorrect ? 1 : 0),
               lastSeenAt: new Date(),
-              lastIsCorrect: isCorrect,
+              lastIsCorrect: recordedCorrect,
               avgResponseTimeMs: Math.round(
-                ((existingProg.avgResponseTimeMs ?? responseTimeMs) * existingProg.timesSeen + responseTimeMs) / (existingProg.timesSeen + 1)
+                ((existingProg.avgResponseTimeMs ?? recordedTime) * existingProg.timesSeen + recordedTime) / (existingProg.timesSeen + 1)
               ),
             },
           });
@@ -414,10 +443,10 @@ export class PracticeSessionService {
               questionId,
               subtopicId: question.subtopicId,
               timesSeen: 1,
-              timesCorrect: isCorrect ? 1 : 0,
+              timesCorrect: recordedCorrect ? 1 : 0,
               lastSeenAt: new Date(),
-              lastIsCorrect: isCorrect,
-              avgResponseTimeMs: responseTimeMs,
+              lastIsCorrect: recordedCorrect,
+              avgResponseTimeMs: recordedTime,
             },
           });
         }
@@ -439,7 +468,7 @@ export class PracticeSessionService {
 
       if (isComplete) {
         // Calculate XP for each correct question ONLY if NOT a replay
-        if (!session.isReplay) {
+        if (!session.isReplay && !session.isFriendlyDuel) {
           for (const sq of updatedQuestions) {
             if (sq.isCorrect) {
               const qXp = XpPolicy.calculateQuestionXp('PRACTICE', sq.question.difficulty);
@@ -484,12 +513,15 @@ export class PracticeSessionService {
             correctCount: newCorrectCount,
             totalTimeMs: newTotalTimeMs,
             lastActivityAt: new Date(),
+            questionStartedAt: null,
           },
         });
       }
+      if (session.friendlyDuelId && isComplete) await duelsService.finalizeInTransaction(tx, session.friendlyDuelId);
+      const finalSession = session.friendlyDuelId ? await tx.practiceSession.findUnique({ where: { id: session.id } }) : null;
 
       return {
-        isCorrect,
+        isCorrect: recordedCorrect,
         correctAnswer: question.correctAnswer,
         explanation: question.explanation,
         method: question.method,
@@ -499,9 +531,26 @@ export class PracticeSessionService {
         isComplete,
         totalAnswered: answeredCount,
         correctCount: newCorrectCount,
-        xpAwarded: totalXpToAward,
+        xpAwarded: finalSession?.xpAwarded ?? totalXpToAward,
         xpResult,
       };
+    });
+    if (session.friendlyDuelId) {
+      const duel = await prisma.friendlyDuel.findUnique({ where: { id: session.friendlyDuelId } });
+      if (duel?.status === 'COMPLETED' && duelsService.clearSchedule) await duelsService.clearSchedule(duel.id).catch(() => {});
+      if (duel) await socialTransport.notify([duel.requesterId, duel.recipientId], 'DUEL_CHANGED', duel.id);
+    }
+    return result;
+  }
+
+  async startFriendlyQuestion(sessionId: string, userId: string) {
+    return prisma.$transaction(async tx => {
+      await tx.$queryRaw`SELECT id FROM learning.practice_sessions WHERE id=${sessionId}::uuid AND user_id=${userId}::uuid FOR UPDATE`;
+      const session = await tx.practiceSession.findFirst({ where: { id: sessionId, userId, status: 'ACTIVE', isFriendlyDuel: true }, include: { friendlyDuel: true } });
+      if (!session || session.friendlyDuel?.status !== 'ACTIVE' || (session.friendlyDuel.matchExpiresAt && session.friendlyDuel.matchExpiresAt.getTime() <= Date.now())) throw new Error('This duel is no longer active.');
+      const started = session.questionStartedAt ?? new Date();
+      if (!session.questionStartedAt) await tx.practiceSession.update({ where: { id: sessionId }, data: { questionStartedAt: started } });
+      return { remainingMs: Math.max(0, 60000 - (Date.now() - started.getTime())), timerEnabled: session.timerEnabled };
     });
   }
 
@@ -518,6 +567,7 @@ export class PracticeSessionService {
       throw new Error(`Practice session "${sessionId}" not found.`);
     }
 
+    if (session.friendlyDuelId) { await duelsService.abandon(userId, session.friendlyDuelId); return { success: true, xpAwarded: session.xpAwarded }; }
     if (session.status === 'COMPLETED') {
       return { success: true, message: 'Session already completed.', xpAwarded: session.xpAwarded };
     }
@@ -544,6 +594,7 @@ export class PracticeSessionService {
     const original = await prisma.practiceSession.findFirst({
       where: { id: originalSessionId, userId },
       include: {
+        friendlyDuel: { select: { questionSnapshot:true } },
         questions: {
           orderBy: { sequence: 'asc' },
         },

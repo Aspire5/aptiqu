@@ -1,3 +1,4 @@
+import socialRoutes from './modules/social/social.routes';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import authRoutes from './modules/auth/auth.routes';
@@ -14,6 +15,7 @@ export function createApp(): Application {
 
   // Global Middlewares
   app.use(cors());
+  app.use('/api/v1/social', express.json({ limit: '80kb' }), express.urlencoded({ limit: '80kb', extended: false }));
   app.use(express.json({ limit: '150mb' }));
   app.use(express.urlencoded({ limit: '150mb', extended: true }));
 
@@ -45,6 +47,7 @@ export function createApp(): Application {
 
   // API v1 Routes
   app.use('/api/v1/auth', authRoutes);
+  app.use('/api/v1/social', socialRoutes);
   app.use('/api/v1/user', userRoutes);
   app.use('/api/v1/lessons', lessonRoutes);
   app.use('/api/v1/roadmaps', roadmapRoutes);

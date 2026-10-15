@@ -47,6 +47,7 @@ export class AuthService {
             profile: {
               create: {
                 firstName: googleUser.firstName,
+                searchName: `${googleUser.firstName} ${googleUser.lastName}`.normalize('NFKC').trim().toLowerCase(),
                 lastName: googleUser.lastName,
                 avatarUrl: googleUser.avatarUrl,
               },
@@ -146,6 +147,7 @@ export class AuthService {
       where: { userId },
       update: {
         firstName: data.firstName,
+        searchName: `${data.firstName} ${data.lastName}`.normalize('NFKC').trim().toLowerCase(),
         lastName: data.lastName,
         dob: dobDate,
         gender: data.gender,
@@ -156,6 +158,7 @@ export class AuthService {
       create: {
         userId,
         firstName: data.firstName,
+        searchName: `${data.firstName} ${data.lastName}`.normalize('NFKC').trim().toLowerCase(),
         lastName: data.lastName,
         dob: dobDate,
         gender: data.gender,

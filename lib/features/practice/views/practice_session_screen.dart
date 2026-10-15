@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/theme/aptiqu_colors.dart';
@@ -52,6 +53,34 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
     ),
     child: child,
   );
+  Widget _friendlyScoreHeader() => Obx(
+    () => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Row(
+        children: [
+          for (final score in controller.friendlyScores.take(2))
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    score['name'],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    '${score['correctCount']} / 10 correct',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -113,24 +142,69 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
               }),
             ],
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(4),
-              child: Obx(() {
-                final cur = controller.currentQuestionIndex.value + 1;
-                final total = controller.session.value.totalQuestions;
-                final progress = cur / total;
+              preferredSize: Size.fromHeight(
+                controller.session.value.isFriendlyDuel
+                    ? 4 + 48 * MediaQuery.textScalerOf(context).scale(1)
+                    : 4,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (controller.session.value.isFriendlyDuel)
+                    _friendlyScoreHeader(),
+                  Obx(() {
+                    final cur = controller.currentQuestionIndex.value + 1;
+                    final total = controller.session.value.totalQuestions;
+                    final progress = cur / total;
 
-                return LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: AptiquColors.surfaceContainerHigh,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    AptiquColors.primary,
-                  ),
-                  minHeight: 4,
-                );
-              }),
+                    return LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: AptiquColors.surfaceContainerHigh,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AptiquColors.primary,
+                      ),
+                      minHeight: 4,
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
           body: Obx(() {
+            if (controller.duelEnded.isNotEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        controller.duelEnded.value,
+                        textAlign: TextAlign.center,
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Return to Practice'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            if (controller.clockError.isNotEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(controller.clockError.value),
+                    TextButton(
+                      onPressed: () => controller.begin(reduceMotion: true),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              );
+            }
             if (controller.isCompleted.value) {
               return _entrance(
                 _buildCompletionView(context, controller),
@@ -597,7 +671,9 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
         controller.completionResult.value ?? controller.lastResult.value;
     final correct = res?.correctCount ?? controller.session.value.correctCount;
     final total = controller.session.value.totalQuestions;
-    final xpEarned = res?.xpAwarded ?? controller.session.value.xpAwarded;
+    final xpEarned = controller.session.value.isFriendlyDuel
+        ? controller.session.value.xpAwarded
+        : res?.xpAwarded ?? controller.session.value.xpAwarded;
 
     return Center(
       child: Padding(
@@ -635,6 +711,20 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                 color: AptiquColors.onSurfaceVariant,
               ),
             ),
+            if (controller.session.value.isFriendlyDuel) ...[
+              const SizedBox(height: 12),
+              const Text(
+                '10 XP each when both players finish. No Ranked rewards.',
+                textAlign: TextAlign.center,
+              ),
+              if (controller.session.value.friendlyDuelId != null)
+                TextButton(
+                  onPressed: () => context.push(
+                    '/friendly-duel/${controller.session.value.friendlyDuelId}',
+                  ),
+                  child: const Text('Duel score & rewards'),
+                ),
+            ],
             if (xpEarned > 0) ...[
               const SizedBox(height: 20),
               Container(

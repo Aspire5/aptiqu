@@ -1,3 +1,4 @@
+import '../../features/social/social_controller.dart';
 import 'package:get/get.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../network/dio_client.dart';
@@ -12,6 +13,8 @@ class InitialBinding extends Bindings {
 
     // 2. Global Authentication Controller
     Get.put<AuthController>(AuthController(), permanent: true);
+
+    Get.put<SocialController>(SocialController(), permanent: true);
 
     // 3. Global XP & Progression Controller
     Get.put<XpController>(XpController(), permanent: true);

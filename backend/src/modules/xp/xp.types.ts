@@ -1,7 +1,7 @@
 export type QuestionType = 'PRACTICE' | 'UNRANKED' | 'RANKED';
 export type QuestionDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
-export type XpSourceType =
+export type XpSourceType = 'FRIENDLY_DUEL'
   | 'SUBTOPIC_SCRIPT_COMPLETION'
   | 'TOPIC_COMPLETION'
   | 'QUESTION_COMPLETION'

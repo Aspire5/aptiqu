@@ -1,3 +1,5 @@
+import '../../social/social_controller.dart';
+import '../../auth/presentation/controllers/auth_controller.dart';
 import 'package:dio/dio.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -32,10 +34,68 @@ class PracticeSessionController extends GetxController {
 
   final RxInt remainingSeconds = 60.obs;
   final RxBool isReady = false.obs;
+  final clockError = ''.obs;
   final RxBool isLeaving = false.obs;
   final CancelToken _requests = CancelToken();
   Timer? _countdown;
   Timer? _readyTimer;
+  StreamSubscription? _duelEvents;
+  final duelEnded = ''.obs;
+  final friendlyScores = <Map<String, dynamic>>[].obs;
+  bool _duelSyncing = false, _duelSyncAgain = false;
+  Future<void> _syncDuel() async {
+    if (_duelSyncing) {
+      _duelSyncAgain = true;
+      return;
+    }
+    if (session.value.friendlyDuelId == null ||
+        isClosed ||
+        !Get.isRegistered<SocialController>()) {
+      return;
+    }
+    _duelSyncing = true;
+    try {
+      final d = await Get.find<SocialController>().api.get(
+        'duels/${session.value.friendlyDuelId}',
+      );
+      if (isClosed) return;
+      friendlyScores.assignAll([
+        for (final row in d['sessions'])
+          {
+            ...Map<String, dynamic>.from(row),
+            'name': row['userId'] == d['requester']['id']
+                ? d['requester']['name']
+                : d['recipient']['name'],
+          },
+      ]);
+      if ([
+        'ABANDONED',
+        'CANCELLED',
+        'EXPIRED',
+        'REJECTED',
+      ].contains(d['status'])) {
+        _countdown?.cancel();
+        duelEnded.value =
+            'This friendly duel ended before both players finished. No XP was awarded.';
+        isLeaving.value = true;
+      } else if (d['status'] == 'COMPLETED') {
+        final restored = await _repository.getSession(session.value.id);
+        if (isClosed) return;
+        session.value = restored;
+        if (Get.isRegistered<AuthController>()) {
+          await Get.find<AuthController>().fetchUserProfile();
+        }
+      }
+    } catch (_) {
+      /* Manual refresh/reopen recovers a missed live snapshot. */
+    } finally {
+      _duelSyncing = false;
+      if (_duelSyncAgain) {
+        _duelSyncAgain = false;
+        _syncDuel();
+      }
+    }
+  }
 
   void begin({bool reduceMotion = false}) {
     if (isReady.value || _readyTimer != null || isCompleted.value) return;
@@ -52,11 +112,29 @@ class PracticeSessionController extends GetxController {
     });
   }
 
-  void _startQuestionClock() {
+  int _timerBudgetMs = 60000;
+  Future<void> _startQuestionClock() async {
     _countdown?.cancel();
+    if (session.value.isFriendlyDuel) {
+      isReady.value = false;
+      clockError.value = '';
+      try {
+        _timerBudgetMs = await _repository.startFriendlyQuestion(
+          session.value.id,
+        );
+        if (isClosed || isLeaving.value) return;
+        isReady.value = true;
+      } catch (_) {
+        if (!isClosed) {
+          clockError.value =
+              'Could not start this duel question. Please retry.';
+        }
+        return;
+      }
+    }
     _stopwatch.reset();
     _stopwatch.start();
-    remainingSeconds.value = 60;
+    remainingSeconds.value = (_timerBudgetMs / 1000).ceil().clamp(0, 60);
     if (!session.value.timerEnabled) return;
     _runCountdown();
   }
@@ -67,7 +145,9 @@ class PracticeSessionController extends GetxController {
         _countdown?.cancel();
         return;
       }
-      final left = (60 - _stopwatch.elapsedMilliseconds ~/ 1000).clamp(0, 60);
+      final left =
+          ((_timerBudgetMs - _stopwatch.elapsedMilliseconds + 999) ~/ 1000)
+              .clamp(0, 60);
       if (remainingSeconds.value != left) remainingSeconds.value = left;
       if (left == 0) {
         _countdown?.cancel();
@@ -79,6 +159,7 @@ class PracticeSessionController extends GetxController {
 
   @override
   void onClose() {
+    _duelEvents?.cancel();
     _requests.cancel('Practice session closed');
     _readyTimer?.cancel();
     _countdown?.cancel();
@@ -92,6 +173,16 @@ class PracticeSessionController extends GetxController {
   void onInit() {
     super.onInit();
     session = Rx<PracticeSessionModel>(initialSession);
+    if (initialSession.isFriendlyDuel && Get.isRegistered<SocialController>()) {
+      _duelEvents = Get.find<SocialController>().events.stream.listen((event) {
+        if ((event['event'] == 'DUEL_CHANGED' &&
+                event['id'] == initialSession.friendlyDuelId) ||
+            event['event'] == 'RECONNECTED') {
+          _syncDuel();
+        }
+      });
+      _syncDuel();
+    }
     currentQuestionIndex.value = initialSession.currentIndex;
     if (initialSession.status == 'COMPLETED') isCompleted.value = true;
   }

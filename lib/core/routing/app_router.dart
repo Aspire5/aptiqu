@@ -1,3 +1,5 @@
+import '../../features/social/friends_screen.dart';
+import '../../features/social/duel_room_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -18,7 +20,8 @@ import 'app_routes.dart';
 class AppRouter {
   AppRouter._();
 
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -50,6 +53,17 @@ class AppRouter {
     },
     routes: [
       GoRoute(
+        path: '/friends',
+        builder: (context, state) => const FriendsScreen(),
+      ),
+      GoRoute(
+        path: '/friendly-duel/:id',
+        builder: (context, state) => DuelRoomScreen(
+          id: state.pathParameters['id']!,
+          play: state.uri.queryParameters['play'] == '1',
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.login,
         name: 'login',
         builder: (context, state) => const LoginScreen(),
@@ -74,7 +88,10 @@ class AppRouter {
             const begin = Offset(-1.0, 0.0);
             const end = Offset.zero;
             const curve = Curves.easeOutCubic;
-            final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            final tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
             return SlideTransition(
               position: animation.drive(tween),
               child: child,
@@ -103,9 +120,8 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.lessonStep,
         name: 'lessonStep',
-        builder: (context, state) => LessonFeedScreen(
-          roadmapStepId: state.pathParameters['stepId'],
-        ),
+        builder: (context, state) =>
+            LessonFeedScreen(roadmapStepId: state.pathParameters['stepId']),
       ),
       GoRoute(
         path: AppRoutes.practiceSession,

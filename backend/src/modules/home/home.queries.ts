@@ -23,12 +23,13 @@ export function homeSubmissions(userId?: string) {
       WHERE ${userId === undefined ? Prisma.sql`TRUE` : Prisma.sql`a.user_id = ${userId}::uuid`}
 
       UNION ALL
-      SELECT s.user_id, 'PRACTICE', a.answered_at, q.difficulty::text, COALESCE(a.is_correct::int, 0),
-        COALESCE((NOT s.is_replay AND a.is_correct AND a.response_time_ms > 0)::int, 0),
-        CASE WHEN NOT s.is_replay AND a.is_correct AND a.response_time_ms > 0
+      SELECT s.user_id, 'PRACTICE', a.answered_at, COALESCE(fd.question_snapshot->q.id::text->>'difficulty', q.difficulty::text), COALESCE(a.is_correct::int, 0),
+        COALESCE((NOT s.is_replay AND (NOT s.is_friendly_duel OR s.timer_enabled) AND a.is_correct AND a.response_time_ms > 0)::int, 0),
+        CASE WHEN NOT s.is_replay AND (NOT s.is_friendly_duel OR s.timer_enabled) AND a.is_correct AND a.response_time_ms > 0
           THEN a.response_time_ms ELSE 0 END
       FROM learning.practice_sessions s
       JOIN learning.practice_session_questions a ON a.session_id = s.id
+      LEFT JOIN learning.friendly_duels fd ON fd.id = s.friendly_duel_id
       JOIN learning.questions q ON q.id = a.question_id
       WHERE ${userId === undefined ? Prisma.sql`TRUE` : Prisma.sql`s.user_id = ${userId}::uuid`} AND a.is_answered
         AND a.answered_at IS NOT NULL AND a.user_selected_option_id IS NOT NULL

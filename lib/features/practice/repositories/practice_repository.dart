@@ -67,10 +67,19 @@ class PracticeRepository {
     if (response.statusCode == 200 && response.data['success'] == true) {
       return PracticeSessionModel.fromJson({
         ...response.data['data'] as Map<String, dynamic>,
-        'timerEnabled': timerEnabled,
+        'timerEnabled': response.data['data']['isFriendlyDuel'] == true
+            ? response.data['data']['timerEnabled'] == true
+            : timerEnabled,
       });
     }
     throw Exception(response.data['message'] ?? 'Failed to retrieve session');
+  }
+
+  Future<int> startFriendlyQuestion(String sessionId) async {
+    final response = await _client.dio.post(
+      '/practice/sessions/$sessionId/start-question',
+    );
+    return (response.data['data']['remainingMs'] as num).toInt();
   }
 
   Future<PracticeAnswerResultModel> submitAnswer({

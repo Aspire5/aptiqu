@@ -1,3 +1,4 @@
+import { lockUsers } from '../../social/friends.service';
 import { prisma } from '../../../config/prisma';
 import { pvpSetGenerationService } from '../../ai/services/pvp-set-generation.service';
 import { XpService } from '../../xp/xp.service';
@@ -40,6 +41,13 @@ export class PvpMatchService {
 
     // 2. Persist PvpMatch and PvpMatchPlayer
     const match = await prisma.$transaction(async (tx) => {
+      await lockUsers(tx, [player1Id, player2Id]);
+      if (await tx.friendlyDuelSeat.count({ where: { userId: { in: [player1Id, player2Id] } } })) {
+        throw new Error('Finish or cancel your friendly duel before starting Ranked.');
+      }
+      if (await tx.pvpMatchPlayer.count({ where: { userId: { in: [player1Id, player2Id] }, match: { status: { in: ['STARTING','IN_PROGRESS','QUESTION_ACTIVE','QUESTION_TRANSITION'] } } } })) {
+        throw new Error('One player already has an active Ranked match.');
+      }
       const createdMatch = await tx.pvpMatch.create({
         data: {
           questionSetId: questionSet.id,

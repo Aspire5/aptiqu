@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.aptiqu"
+    namespace = "com.aptiqu.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,8 +20,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.aptiqu"
+        // Stable store/Firebase identifier; independent of the website domain.
+        applicationId = "com.aptiqu.app"
         // You can update the following values to match your application needs.
         // Minimum SDK 23 (Android 6.0+) ensures modern TLS, hardware acceleration, and Play Services
         minSdk = flutter.minSdkVersion

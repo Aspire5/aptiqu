@@ -1,3 +1,6 @@
+import 'package:uuid/uuid.dart';
+import '../../social/friends_screen.dart';
+import '../../social/social_controller.dart';
 import 'dart:convert';
 import 'dart:async';
 import '../../../core/network/dio_client.dart';
@@ -27,6 +30,7 @@ class PracticeCatalogController extends GetxController {
   final RxString selectedTopicId = ''.obs;
   final RxString errorMessage = ''.obs;
 
+  final friendlyDuel = false.obs;
   final RxBool smartPicks = false.obs;
   final RxBool timerEnabled = false.obs;
   final RxBool showHistory = false.obs;
@@ -302,6 +306,32 @@ class PracticeCatalogController extends GetxController {
     if (isStartingSession.value || isReplaying.value || isClosed) return;
     isStartingSession.value = true;
     try {
+      if (friendlyDuel.value) {
+        if (selectionMode.value == PracticeSelectionMode.specific &&
+            selectedSubtopicIds.isEmpty) {
+          throw Exception('Select at least one subtopic for this duel.');
+        }
+        final ctx = AppRouter.navigatorKey.currentContext;
+        if (ctx == null) return;
+        final friend = await Navigator.of(ctx).push<Map<String, dynamic>>(
+          MaterialPageRoute(builder: (_) => const FriendsScreen(picker: true)),
+        );
+        if (friend == null || isClosed) return;
+        final social = Get.find<SocialController>();
+        final result = await social.api.post('duels', {
+          'targetId': friend['id'],
+          'requestKey': const Uuid().v4(),
+          'subtopicIds': selectionMode.value == PracticeSelectionMode.specific
+              ? selectedSubtopicIds.toList()
+              : <String>[],
+          'smartPicks': smartPicks.value,
+          'timerEnabled': timerEnabled.value,
+        });
+        if (isClosed) return;
+        await social.syncInbox();
+        await AppRouter.router.push('/friendly-duel/${result['id']}?play=1');
+        return;
+      }
       PracticeSessionModel session;
 
       if (selectionMode.value == PracticeSelectionMode.random) {
@@ -345,6 +375,18 @@ class PracticeCatalogController extends GetxController {
       await AppRouter.router.push(AppRoutes.practiceSession, extra: session);
       if (!isClosed) unawaited(fetchHistory());
     } catch (err, stack) {
+      if (friendlyDuel.value &&
+          Get.isRegistered<SocialController>() &&
+          !isClosed) {
+        final social = Get.find<SocialController>();
+        await social.syncInbox();
+        if (social.activeDuelId.isNotEmpty && !isClosed) {
+          await AppRouter.router.push(
+            '/friendly-duel/${social.activeDuelId.value}?play=1',
+          );
+          return;
+        }
+      }
       debugPrint('[Practice] startPracticeSession failed: $err\n$stack');
       _showNotice(
         'Session Failed',

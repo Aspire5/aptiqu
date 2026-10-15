@@ -199,6 +199,8 @@ class PracticeSessionModel {
   final int totalTimeMs;
   final int xpAwarded;
   final bool timerEnabled;
+  final bool isFriendlyDuel;
+  final String? friendlyDuelId;
   final bool isReplay;
   final String? replaySourceType;
   final String? replaySourceId;
@@ -217,6 +219,8 @@ class PracticeSessionModel {
     required this.totalTimeMs,
     required this.xpAwarded,
     this.timerEnabled = false,
+    this.isFriendlyDuel = false,
+    this.friendlyDuelId,
     this.isReplay = false,
     this.replaySourceType,
     this.replaySourceId,
@@ -254,6 +258,8 @@ class PracticeSessionModel {
       totalTimeMs: (json['totalTimeMs'] as num?)?.toInt() ?? 0,
       xpAwarded: (json['xpAwarded'] as num?)?.toInt() ?? 0,
       timerEnabled: json['timerEnabled'] == true,
+      isFriendlyDuel: json['isFriendlyDuel'] == true,
+      friendlyDuelId: json['friendlyDuelId'],
       isReplay: json['isReplay'] as bool? ?? false,
       replaySourceType: json['replaySourceType']?.toString(),
       replaySourceId: json['replaySourceId']?.toString(),

@@ -18,6 +18,13 @@ export class XpService {
     return XpService.instance;
   }
 
+  /** Acquire before mutating GameStats in transactions that also award XP. */
+  public async lockProgress(tx: Prisma.TransactionClient, userId: string): Promise<void> {
+    await tx.$executeRaw`INSERT INTO gamification.user_progress(user_id,total_xp,level,created_at,updated_at)
+      VALUES (${userId}::uuid,0,1,NOW() AT TIME ZONE 'UTC',NOW() AT TIME ZONE 'UTC') ON CONFLICT(user_id) DO NOTHING`;
+    await tx.$queryRaw`SELECT user_id FROM gamification.user_progress WHERE user_id=${userId}::uuid FOR UPDATE`;
+  }
+
   /**
    * Retrieves or initializes the user's progress.
    */
@@ -72,6 +79,9 @@ export class XpService {
     const numericAmount = Math.max(0, typeof amount === 'bigint' ? Number(amount) : amount);
 
     const executeAward = async (tx: Prisma.TransactionClient): Promise<AwardXpResult> => {
+        // Serialize progress and idempotency checks for every award to this user.
+        // This also protects friendly-duel awards racing ordinary Practice/lesson XP.
+        await this.lockProgress(tx, userId);
         // 1. Check if an XP event with this idempotency key already exists
         const existingEvent = await tx.xpEvent.findUnique({
           where: { idempotencyKey },

@@ -1,3 +1,4 @@
+import 'features/social/social_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,6 @@ void main() async {
     ),
   );
 
-
   // Initialize Global GetX Dependencies
   InitialBinding().dependencies();
 
@@ -42,6 +42,8 @@ class AptiquApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       darkTheme: AptiquTheme.darkTheme,
       routerConfig: AppRouter.router,
+      builder: (context, child) =>
+          SocialOverlay(child: child ?? const SizedBox.shrink()),
     );
   }
 }

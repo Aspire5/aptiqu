@@ -197,6 +197,16 @@ class PracticeCatalogView extends StatelessWidget {
                           Column(
                             children: [
                               SwitchListTile.adaptive(
+                                title: const Text('Friendly duel'),
+                                subtitle: const Text(
+                                  '1v1 with a friend · 10 XP each when both finish',
+                                ),
+                                value: c.friendlyDuel.value,
+                                onChanged: busy
+                                    ? null
+                                    : (value) => c.friendlyDuel.value = value,
+                              ),
+                              SwitchListTile.adaptive(
                                 activeThumbColor: AptiquColors.primary,
                                 activeTrackColor: AptiquColors.primaryContainer
                                     .withValues(alpha: .35),
@@ -206,8 +216,10 @@ class PracticeCatalogView extends StatelessWidget {
                                   color: AptiquColors.primary,
                                 ),
                                 title: const Text('Smart AI Picks'),
-                                subtitle: const Text(
-                                  'Focus on patterns you find difficult.',
+                                subtitle: Text(
+                                  c.friendlyDuel.value
+                                      ? '5 questions from each player’s weaker topics.'
+                                      : 'Focus on patterns you find difficult.',
                                 ),
                                 value: c.smartPicks.value,
                                 onChanged: busy
@@ -373,6 +385,8 @@ class PracticeCatalogView extends StatelessWidget {
                       label: Text(
                         busy
                             ? 'Preparing your session...'
+                            : c.friendlyDuel.value
+                            ? 'Invite a friend'
                             : 'Start Practice Session',
                       ),
                     ),

@@ -32,6 +32,7 @@ class HomeDashboardView extends StatelessWidget {
         },
         onResume: controller.resumeFromHome,
         onTopics: controller.selectTopicsTab,
+        onFriends: () => context.push('/friends'),
         onRanked: () => controller.selectedNavIndex.value = 3,
         onPractice: () => controller.selectedNavIndex.value = 2,
         onDaily: () => context.push(AppRoutes.dailyStreak).then((_) {
@@ -55,6 +56,7 @@ class HomeDashboardContent extends StatelessWidget {
   final VoidCallback onRanked;
   final VoidCallback onPractice;
   final VoidCallback onDaily;
+  final VoidCallback? onFriends;
   const HomeDashboardContent({
     super.key,
     this.data,
@@ -67,6 +69,7 @@ class HomeDashboardContent extends StatelessWidget {
     required this.onRanked,
     required this.onPractice,
     required this.onDaily,
+    this.onFriends,
   });
 
   @override
@@ -80,6 +83,15 @@ class HomeDashboardContent extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
         children: [
           _daily(),
+          if (onFriends != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: onFriends,
+                icon: const Icon(Icons.people_outline),
+                label: const Text('Friends'),
+              ),
+            ),
           const SizedBox(height: 16),
           if (d?.resume != null)
             _action(
