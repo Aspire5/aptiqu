@@ -639,37 +639,42 @@ class ActivityCalendar extends StatelessWidget {
           onTap: () => showModalBottomSheet<void>(
             context: context,
             backgroundColor: AptiquColors.surfaceContainerLow,
+            constraints: BoxConstraints.tightFor(
+              width: MediaQuery.sizeOf(context).width,
+            ),
             builder: (_) => SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      DateFormat('EEE, d MMM yyyy').format(date),
-                      style: AptiquTypography.headlineSm,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      day.attempted == 0
-                          ? 'No recorded question submissions.'
-                          : '${day.attempted} answers submitted\n${day.correct} correct',
-                      style: AptiquTypography.bodySm,
-                    ),
-                    if (day.dailyChallengeCompleted) ...[
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        DateFormat('EEE, d MMM yyyy').format(date),
+                        style: AptiquTypography.headlineSm,
+                      ),
                       const SizedBox(height: 12),
+                      Text(
+                        day.attempted == 0
+                            ? 'No recorded question submissions.'
+                            : '${day.attempted} answers submitted\n${day.correct} correct',
+                        style: AptiquTypography.bodySm,
+                      ),
+                      if (day.dailyChallengeCompleted) ...[
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Daily Challenge completed',
+                          style: TextStyle(color: AptiquColors.tertiary),
+                        ),
+                      ],
+                      const SizedBox(height: 8),
                       const Text(
-                        'Daily Challenge completed',
-                        style: TextStyle(color: AptiquColors.tertiary),
+                        'Asia/Kolkata · IST',
+                        style: TextStyle(color: AptiquColors.onSurfaceVariant),
                       ),
                     ],
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Asia/Kolkata · IST',
-                      style: TextStyle(color: AptiquColors.onSurfaceVariant),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -742,56 +747,131 @@ class YearActivityCalendar extends StatefulWidget {
 }
 
 class _YearActivityCalendarState extends State<YearActivityCalendar> {
-  late final ScrollController _scroll;
-  late double _monthHeight;
-  bool _initialized = false;
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_initialized) return;
-    _initialized = true;
-    _monthHeight =
-        410 +
-        (MediaQuery.textScalerOf(context).scale(14) - 14).clamp(0, 70) * 6;
-    _scroll = ScrollController(
-      initialScrollOffset:
-          (DateTime.parse(widget.today).month - 1) * _monthHeight,
+  ScrollController? _scroll;
+  late int _monthIndex = DateTime.parse(widget.today).month - 1;
+  List<double> _heights = [];
+  List<double> _starts = [];
+  double? _layoutWidth;
+  TextScaler? _layoutScaler;
+  static const _monthGap = 24.0;
+
+  // Mirror the calendar's actual text, grid and legend layout. This avoids
+  // reserving a sixth week (or large-text padding) in a five-week month.
+  double _height(BuildContext context, double width, int month) {
+    final scaler = MediaQuery.textScalerOf(context);
+    final direction = Directionality.of(context);
+    Size measure(String text, TextStyle style, double maxWidth) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: DefaultTextStyle.of(context).style.merge(style),
+        ),
+        textScaler: scaler,
+        textDirection: direction,
+      )..layout(maxWidth: maxWidth);
+      final size = painter.size;
+      painter.dispose();
+      return size;
+    }
+
+    final first = DateTime(2026, month);
+    final rows = ((first.weekday - 1 + DateTime(2026, month + 1, 0).day) / 7)
+        .ceil();
+    final title = measure(
+      DateFormat('MMMM yyyy').format(first),
+      AptiquTypography.bodySm.copyWith(fontWeight: FontWeight.w600),
+      width,
     );
+    final weekday = measure('Mo', const TextStyle(fontSize: 11), width / 7);
+    final legendStyle = AptiquTypography.bodySm.copyWith(fontSize: 11);
+    final challenge = measure(
+      'Daily Challenge completed',
+      legendStyle,
+      width - 21,
+    );
+    final today = measure('Today', legendStyle, width - 16);
+    final firstHeight = challenge.height > 17 ? challenge.height : 17.0;
+    final secondHeight = today.height > 12 ? today.height : 12.0;
+    final legendHeight = challenge.width + 21 + 14 + today.width + 16 <= width
+        ? (firstHeight > secondHeight ? firstHeight : secondHeight)
+        : firstHeight + 8 + secondHeight;
+    return (8 +
+            title.height +
+            12 +
+            weekday.height +
+            4 +
+            rows * 48 +
+            16 +
+            legendHeight)
+        .ceilToDouble();
+  }
+
+  void _onScroll() {
+    final offset = _scroll!.offset;
+    var index = 0;
+    while (index < 11 && offset >= _starts[index + 1] - .5) {
+      index++;
+    }
+    if (index != _monthIndex) setState(() => _monthIndex = index);
   }
 
   @override
   void dispose() {
-    _scroll.dispose();
+    _scroll?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final byDate = {for (final day in widget.days) day.date: day};
-    return SizedBox(
-      height: _monthHeight,
-      child: Scrollbar(
-        controller: _scroll,
-        child: ListView.builder(
-          controller: _scroll,
-          primary: false,
-          // Keep compatibility with Flutter versions before scrollCacheExtent.
-          // ignore: deprecated_member_use
-          cacheExtent: 0,
-          itemExtent: _monthHeight,
-          itemCount: 12,
-          itemBuilder: (context, index) {
-            final month = index + 1;
-            final days = List.generate(DateTime(2026, month + 1, 0).day, (i) {
-              final key = DateFormat(
-                'yyyy-MM-dd',
-              ).format(DateTime(2026, month, i + 1));
-              return byDate[key] ?? HomeActivityDay(key, 0, 0);
-            });
-            return ActivityCalendar(days: days, today: widget.today);
-          },
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scaler = MediaQuery.textScalerOf(context);
+        if (_layoutWidth != constraints.maxWidth || _layoutScaler != scaler) {
+          _layoutWidth = constraints.maxWidth;
+          _layoutScaler = scaler;
+          _heights = List.generate(
+            12,
+            (i) => _height(context, constraints.maxWidth, i + 1),
+          );
+          var offset = 0.0;
+          _starts = List.generate(12, (i) {
+            final start = offset;
+            offset += _heights[i] + _monthGap;
+            return start;
+          });
+        }
+        _scroll ??= ScrollController(initialScrollOffset: _starts[_monthIndex])
+          ..addListener(_onScroll);
+        return SizedBox(
+          height: _heights[_monthIndex],
+          child: Scrollbar(
+            controller: _scroll,
+            child: ListView.builder(
+              controller: _scroll,
+              primary: false,
+              // Keep compatibility with Flutter versions before scrollCacheExtent.
+              // ignore: deprecated_member_use
+              cacheExtent: 0,
+              itemExtentBuilder: (index, _) =>
+                  _heights[index] + (index == 11 ? 0 : _monthGap),
+              itemCount: 12,
+              itemBuilder: (context, index) {
+                final month = index + 1;
+                final days = List.generate(DateTime(2026, month + 1, 0).day, (
+                  i,
+                ) {
+                  final key = DateFormat(
+                    'yyyy-MM-dd',
+                  ).format(DateTime(2026, month, i + 1));
+                  return byDate[key] ?? HomeActivityDay(key, 0, 0);
+                });
+                return ActivityCalendar(days: days, today: widget.today);
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -235,6 +235,11 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.textContaining('Oct 2026'), findsOneWidget);
+    expect(tester.getSize(find.byType(BottomSheet)).width, 320);
+    await expectLater(
+      find.byType(BottomSheet),
+      matchesGoldenFile('goldens/home-day-details.png'),
+    );
     expect(tester.takeException(), isNull);
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();
@@ -284,6 +289,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('October 2026'), findsOneWidget);
       expect(find.text('31'), findsOneWidget);
+      final windowHeight = tester
+          .getSize(find.byType(YearActivityCalendar))
+          .height;
+      expect(windowHeight, lessThan(360));
+      expect(
+        tester.getBottomLeft(find.text('Today')).dy,
+        lessThanOrEqualTo(
+          tester.getBottomLeft(find.byType(YearActivityCalendar)).dy,
+        ),
+      );
       final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
       scroll.position.jumpTo(0);
       await tester.pumpAndSettle();
@@ -336,6 +351,67 @@ void main() {
     );
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'six-week month fits at large text and keeps inter-month spacing',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AptiquTheme.darkTheme,
+          home: Scaffold(
+            body: MediaQuery(
+              data: const MediaQueryData(textScaler: TextScaler.linear(1.5)),
+              child: Padding(
+                padding: const EdgeInsets.all(38),
+                child: YearActivityCalendar(
+                  days: const [],
+                  today: '2026-05-13',
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('May 2026'), findsOneWidget);
+      expect(find.text('31').hitTestable(), findsOneWidget);
+      expect(find.text('Today').hitTestable(), findsOneWidget);
+      expect(
+        tester.getBottomLeft(find.byType(YearActivityCalendar)).dy -
+            tester.getBottomLeft(find.text('Today')).dy,
+        lessThan(16),
+      );
+      expect(find.text('June 2026').hitTestable(), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'date sheet spans a wide screen instead of the Material width cap',
+    (tester) async {
+      tester.view.physicalSize = const Size(900, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AptiquTheme.darkTheme,
+          home: const Scaffold(
+            body: ActivityCalendar(days: [HomeActivityDay('2026-10-14', 9, 8)]),
+          ),
+        ),
+      );
+      await tester.tap(find.text('14'));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(BottomSheet)).width, 900);
+      expect(tester.getTopLeft(find.text('Wed, 14 Oct 2026')).dx, 24);
+      expect(find.text('9 answers submitted\n8 correct'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'achievement browser loads server pages and retries without duplicate entries',
     (tester) async {

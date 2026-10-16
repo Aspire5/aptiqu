@@ -40,10 +40,11 @@ use. Relationships are reloaded after writes and social change events.
 Consistency uses the existing Home aggregate query, changing the daily range to
 January 1 through today in IST. The response fills the complete year, including
 zero-valued future dates, so it is bounded at 365/366 daily records. No answer
-history is downloaded and no month-scroll requests are made. A fixed-height
-ListView.builder creates visible month widgets on demand and initially positions
-at the current month. Each month shows its first through last date. The window
-height accounts for six-week months and larger text. The launch UI has only the
+history is downloaded and no month-scroll requests are made. A ListView.builder
+creates visible month widgets on demand and initially positions at the current
+month. Each month shows its first through last date. Cached layout measurements
+fit the window to that month's text, week count and legend while keeping 24 px
+of spacing between months in the scroll list. The launch UI has only the
 non-interactive 2026 year chip. Calendar and friend date displays use IST.
 
 ## Tradeoffs and alternatives
@@ -74,12 +75,21 @@ backend bound SQL, search ordering/relation enrichment and year/leap-day totals.
 Backend tests stub Prisma/transport calls and use dummy environment values.
 The Home golden was regenerated and visually inspected.
 
-Final results: backend TypeScript build passed; 18 Home/social backend tests and
+Original implementation results: backend TypeScript build passed; 18 Home/social backend tests and
 16 focused Flutter tests passed. Full Flutter suite: 39 passed, one Practice
 golden mismatch. Replacing PracticeCatalogView temporarily with its HEAD version
 reproduced the identical 4.51% mismatch; its baseline was left unchanged. Static
 analysis reports only the existing lesson_feed_controller.dart:91 braces style
 lint. These checks do not establish production database latency or device FPS.
+
+Follow-up: date details now force the modal sheet to full screen width, including
+wide layouts, and stretch its content within 24 px padding. Google logout clears
+the SDK session as well as AptiQu tokens. Every explicit login resets cached
+Google identity before opening interactive sign-in, and repeated taps are guarded.
+A Google reset failure prevents cached-account reuse and leaves local logout
+working. Twenty targeted tests pass, including large-text six-week months, sheet
+width, cancellation, duplicate login taps and offline logout. The native Google
+account picker still needs a real-device check.
 
 References: [Flutter ListView.builder](https://api.flutter.dev/flutter/widgets/ListView/ListView.builder.html),
 [Prisma cursor/offset pagination](https://docs.prisma.io/docs/orm/v6/prisma-client/queries/pagination),

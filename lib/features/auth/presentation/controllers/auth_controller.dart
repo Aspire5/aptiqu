@@ -8,11 +8,16 @@ import '../../domain/models/user_model.dart';
 class AuthController extends GetxController {
   final DioClient dioClient = Get.find<DioClient>();
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId:
-        '365489251624-l0i9mk40qvujvemb36qqhcodgvc1a462.apps.googleusercontent.com',
-    scopes: ['email', 'profile'],
-  );
+  final GoogleSignIn _googleSignIn;
+
+  AuthController({GoogleSignIn? googleSignIn})
+    : _googleSignIn =
+          googleSignIn ??
+          GoogleSignIn(
+            serverClientId:
+                '365489251624-l0i9mk40qvujvemb36qqhcodgvc1a462.apps.googleusercontent.com',
+            scopes: ['email', 'profile'],
+          );
 
   final Rxn<UserModel> currentUser = Rxn<UserModel>();
   final RxBool isLoading = false.obs;
@@ -82,9 +87,13 @@ class AuthController extends GetxController {
 
   /// Sign In with Google OAuth (Real Google Sign-In SDK)
   Future<bool> signInWithGoogle() async {
+    if (isLoading.value) return false;
     isLoading.value = true;
     authErrorMessage.value = '';
     try {
+      // An explicit login should offer account selection, including after an
+      // earlier sign-out failed while the platform plugin was unavailable.
+      await _googleSignIn.signOut();
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
       if (account == null) {
         // User cancelled dialog
@@ -245,9 +254,18 @@ class AuthController extends GetxController {
     try {
       final refreshToken = await dioClient.getRefreshToken();
       if (refreshToken != null) {
-        await dioClient.dio.post('/auth/logout', data: {'refreshToken': refreshToken});
+        await dioClient.dio.post(
+          '/auth/logout',
+          data: {'refreshToken': refreshToken},
+        );
       }
     } catch (_) {}
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {
+      // Local app logout must still complete if Google sign-out fails. The next
+      // explicit login retries the reset before presenting account selection.
+    }
     await dioClient.clearTokens();
     currentUser.value = null;
     prefilledOnboarding.clear();
