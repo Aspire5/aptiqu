@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -119,11 +120,7 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
                       SizedBox(
                         width: 90,
                         height: 90,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3.5,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AptiquColors.tertiary),
-                          backgroundColor: AptiquColors.tertiary.withValues(alpha: 0.2),
-                        ),
+                        child: AppLoader(size: 90),
                       ),
                       const Icon(
                         Icons.local_fire_department_rounded,
@@ -172,7 +169,7 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
     return Obx(() {
       if (controller.isLoadingStatus.value) {
         return const Center(
-          child: CircularProgressIndicator(color: AptiquColors.tertiary),
+          child: AppLoader(),
         );
       }
 
@@ -684,7 +681,7 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
   Widget _buildHistoryTab(BuildContext context) {
     return Obx(() {
       if (controller.isLoadingHistory.value && controller.historyList.isEmpty) {
-        return const Center(child: CircularProgressIndicator(color: AptiquColors.tertiary));
+        return const Center(child: AppLoader());
       }
 
       if (controller.historyList.isEmpty) {

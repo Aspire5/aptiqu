@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/network/dio_client.dart';
 import 'achievement_browser.dart';
@@ -32,7 +33,6 @@ class HomeDashboardView extends StatelessWidget {
         },
         onResume: controller.resumeFromHome,
         onTopics: controller.selectTopicsTab,
-        onFriends: () => context.push('/friends'),
         onRanked: () => controller.selectedNavIndex.value = 3,
         onPractice: () => controller.selectedNavIndex.value = 2,
         onDaily: () => context.push(AppRoutes.dailyStreak).then((_) {
@@ -56,7 +56,6 @@ class HomeDashboardContent extends StatelessWidget {
   final VoidCallback onRanked;
   final VoidCallback onPractice;
   final VoidCallback onDaily;
-  final VoidCallback? onFriends;
   const HomeDashboardContent({
     super.key,
     this.data,
@@ -69,7 +68,6 @@ class HomeDashboardContent extends StatelessWidget {
     required this.onRanked,
     required this.onPractice,
     required this.onDaily,
-    this.onFriends,
   });
 
   @override
@@ -83,15 +81,6 @@ class HomeDashboardContent extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
         children: [
           _daily(),
-          if (onFriends != null)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: onFriends,
-                icon: const Icon(Icons.people_outline),
-                label: const Text('Friends'),
-              ),
-            ),
           const SizedBox(height: 16),
           if (d?.resume != null)
             _action(
@@ -109,13 +98,7 @@ class HomeDashboardContent extends StatelessWidget {
               icon: Icons.explore_outlined,
               onTap: onTopics,
             ),
-          if (loading) ...[
-            const SizedBox(height: 16),
-            const LinearProgressIndicator(
-              color: AptiquColors.primary,
-              backgroundColor: AptiquColors.outlineVariant,
-            ),
-          ],
+          Center(child: AppLoader(loading: loading)),
           if (error != null) ...[
             const SizedBox(height: 16),
             _card(
@@ -134,17 +117,37 @@ class HomeDashboardContent extends StatelessWidget {
           ],
           if (d != null) ...[
             const SizedBox(height: 28),
-            _heading('Your consistency', 'Learning activity · last 4 weeks'),
+            Row(
+              children: [
+                Expanded(
+                  child: _heading(
+                    'Your consistency',
+                    'Learning activity · scroll through the months',
+                  ),
+                ),
+                const Tooltip(
+                  message: 'Available year',
+                  child: Chip(
+                    label: Text('2026'),
+                    avatar: Icon(Icons.calendar_today, size: 16),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
             _card(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ActivityCalendar(
-                    days: d.activity.length > 28
-                        ? d.activity.sublist(d.activity.length - 28)
-                        : d.activity,
-                    today: d.today,
+                  YearActivityCalendar(
+                    days: d.activity,
+                    today:
+                        d.today ??
+                        DateFormat('yyyy-MM-dd').format(
+                          DateTime.now().toUtc().add(
+                            const Duration(hours: 5, minutes: 30),
+                          ),
+                        ),
                   ),
                   const SizedBox(height: 12),
                   _text(
@@ -501,7 +504,7 @@ class HomeDashboardContent extends StatelessWidget {
             : AptiquColors.outlineVariant,
       ),
     ),
-    child: child,
+    child: Material(type: MaterialType.transparency, child: child),
   );
   Widget _text(
     String text, {
@@ -720,6 +723,73 @@ class ActivityCalendar extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class YearActivityCalendar extends StatefulWidget {
+  final List<HomeActivityDay> days;
+  final String today;
+  const YearActivityCalendar({
+    super.key,
+    required this.days,
+    required this.today,
+  });
+  @override
+  State<YearActivityCalendar> createState() => _YearActivityCalendarState();
+}
+
+class _YearActivityCalendarState extends State<YearActivityCalendar> {
+  late final ScrollController _scroll;
+  late double _monthHeight;
+  bool _initialized = false;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialized) return;
+    _initialized = true;
+    _monthHeight =
+        410 +
+        (MediaQuery.textScalerOf(context).scale(14) - 14).clamp(0, 70) * 6;
+    _scroll = ScrollController(
+      initialScrollOffset:
+          (DateTime.parse(widget.today).month - 1) * _monthHeight,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final byDate = {for (final day in widget.days) day.date: day};
+    return SizedBox(
+      height: _monthHeight,
+      child: Scrollbar(
+        controller: _scroll,
+        child: ListView.builder(
+          controller: _scroll,
+          primary: false,
+          // Keep compatibility with Flutter versions before scrollCacheExtent.
+          // ignore: deprecated_member_use
+          cacheExtent: 0,
+          itemExtent: _monthHeight,
+          itemCount: 12,
+          itemBuilder: (context, index) {
+            final month = index + 1;
+            final days = List.generate(DateTime(2026, month + 1, 0).day, (i) {
+              final key = DateFormat(
+                'yyyy-MM-dd',
+              ).format(DateTime(2026, month, i + 1));
+              return byDate[key] ?? HomeActivityDay(key, 0, 0);
+            });
+            return ActivityCalendar(days: days, today: widget.today);
+          },
         ),
       ),
     );

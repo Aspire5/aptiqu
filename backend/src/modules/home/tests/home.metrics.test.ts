@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calendar, dateKey, performance } from '../home.metrics';
+import { calendar, yearCalendar, dateKey, performance } from '../home.metrics';
 import { prisma } from '../../../config/prisma';
 import { HomeService } from '../home.service';
 
@@ -53,12 +53,12 @@ test('Home derives its contract from aggregates, resume and latest match in one 
     assert.equal(empty.resume, null);
     assert.equal(empty.ranked, null);
     assert.equal(empty.badges.every(b => !b.unlocked && b.progress === 0), true);
-    assert.equal(empty.activity.length, 28);
+    assert.equal(empty.activity.length, 365);
     assert.equal(empty.today, '2026-10-14');
     assert.equal(queries.length, 3);
-    // Dates are UTC boundaries of the 28 IST dates, including the final full day.
+    // Dates are UTC boundaries of the current IST year to today, including the final full day.
     assert.deepEqual(queries[0].values, [userId, userId, userId, userId,
-      '2026-09-16T18:30:00.000Z', '2026-10-14T18:30:00.000Z']);
+      '2025-12-31T18:30:00.000Z', '2026-10-14T18:30:00.000Z']);
     assert.equal(queries.some(q => /gamification\.home_/.test(q.sql)), false);
     queries = [];
     fixture = [[
@@ -75,7 +75,7 @@ test('Home derives its contract from aggregates, resume and latest match in one 
     assert.equal(populated.performance.accuracy, .5);
     assert.equal(populated.performance.averageSolveTimeMs, 1500);
     assert.equal(populated.difficulty.length, 2);
-    assert.deepEqual(populated.activity.at(-1), { date: '2026-10-14', attempted: 10, correct: 5, dailyChallengeCompleted: true });
+    assert.deepEqual(populated.activity.find(d => d.date === '2026-10-14'), { date: '2026-10-14', attempted: 10, correct: 5, dailyChallengeCompleted: true });
     assert.equal(populated.resume?.title, 'Factors');
     assert.equal(populated.ranked?.result, 'Win');
     assert.equal(populated.badges.every(b => b.unlocked && b.progress === b.target), true);
@@ -92,4 +92,14 @@ test('Home derives its contract from aggregates, resume and latest match in one 
     prisma.$transaction = originalTransaction;
     prisma.achievement.findMany = originalDefinitions;
   }
+});
+
+test('year calendar includes whole months, leap day and zero-filled future dates', () => {
+  const days = yearCalendar('2024-03-01', [{date: '2024-02-29', attempted: 3, correct: 2}]);
+  assert.equal(days.length, 366);
+  assert.equal(days[0].date, '2024-01-01');
+  assert.equal(days.at(-1)?.date, '2024-12-31');
+  assert.equal(days.find(d => d.date === '2024-02-29')?.correct, 2);
+  assert.equal(days.at(-1)?.attempted, 0);
+  assert.equal(new Set(days.map(d => d.date)).size, 366);
 });

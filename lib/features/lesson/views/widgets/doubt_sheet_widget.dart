@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/aptiqu_colors.dart';
 import '../../../../core/theme/aptiqu_typography.dart';
@@ -152,7 +153,7 @@ class _DoubtSheetWidgetState extends State<DoubtSheetWidget> {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    child: AppLoader(),
                   )
                 : const Text('Ask Tutor'),
           ),

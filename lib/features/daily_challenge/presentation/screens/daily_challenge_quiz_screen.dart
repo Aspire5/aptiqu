@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -244,7 +245,7 @@ class DailyChallengeQuizScreen extends StatelessWidget {
                         ? const SizedBox(
                             width: 22,
                             height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.black),
+                            child: AppLoader(),
                           )
                         : Text(
                             'CONFIRM & REVEAL TRICK',

@@ -9,10 +9,7 @@ import '../controllers/home_controller.dart';
 class BottomNavZone extends StatelessWidget {
   final double height;
 
-  const BottomNavZone({
-    super.key,
-    required this.height,
-  });
+  const BottomNavZone({super.key, required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +20,11 @@ class BottomNavZone extends StatelessWidget {
 
       return Container(
         height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         decoration: BoxDecoration(
           color: AptiquColors.surfaceDim.withValues(alpha: 0.96),
           border: const Border(
-            top: BorderSide(
-              color: AptiquColors.outlineVariant,
-              width: 1.0,
-            ),
+            top: BorderSide(color: AptiquColors.outlineVariant, width: 1.0),
           ),
           boxShadow: [
             BoxShadow(
@@ -85,6 +79,16 @@ class BottomNavZone extends StatelessWidget {
                 controller.selectedNavIndex.value = 3;
               },
             ),
+            _buildNavItem(
+              index: 4,
+              selectedIndex: selectedIndex,
+              label: 'FRIENDS',
+              icon: Icons.people_rounded,
+              onTap: () {
+                controller.isFullScreen.value = false;
+                controller.selectedNavIndex.value = 4;
+              },
+            ),
           ],
         ),
       );
@@ -106,7 +110,7 @@ class BottomNavZone extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: SizedBox(
-        width: 68,
+        width: 60,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -116,7 +120,9 @@ class BottomNavZone extends StatelessWidget {
               width: 24,
               margin: const EdgeInsets.only(bottom: 4),
               decoration: BoxDecoration(
-                color: isActive ? AptiquColors.primaryContainer : Colors.transparent,
+                color: isActive
+                    ? AptiquColors.primaryContainer
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(2),
                 boxShadow: isActive ? AptiquColors.primaryGlow : null,
               ),
@@ -138,7 +144,9 @@ class BottomNavZone extends StatelessWidget {
                     boxShadow: isActive
                         ? [
                             BoxShadow(
-                              color: AptiquColors.primaryContainer.withValues(alpha: 0.3),
+                              color: AptiquColors.primaryContainer.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 10,
                             ),
                           ]

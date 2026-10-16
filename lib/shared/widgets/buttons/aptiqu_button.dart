@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
-import '../indicators/aptiqu_loading_indicator.dart';
+import '../indicators/app_loader.dart';
 
 enum AptiquButtonVariant { primary, secondary, outline, google }
 
@@ -163,7 +163,7 @@ class _AptiquButtonState extends State<AptiquButton> {
           decoration: decoration,
           child: Center(
             child: widget.isLoading
-                ? const AptiquLoadingIndicator(size: 20)
+                ? const AppLoader(size: 20)
                 : Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import '../../core/network/dio_client.dart';
 
@@ -7,8 +8,13 @@ class SocialApi {
   Future<Map<String, dynamic>> get(
     String path, [
     Map<String, dynamic>? query,
+    CancelToken? cancelToken,
   ]) async {
-    final r = await client.dio.get('/social/$path', queryParameters: query);
+    final r = await client.dio.get(
+      '/social/$path',
+      queryParameters: query,
+      cancelToken: cancelToken,
+    );
     return Map<String, dynamic>.from(r.data['data'] ?? {});
   }
 

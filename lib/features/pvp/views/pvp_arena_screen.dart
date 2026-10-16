@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/theme/aptiqu_colors.dart';
@@ -157,7 +158,7 @@ class PvpArenaScreen extends StatelessWidget {
                 // Question Body
                 Expanded(
                   child: q == null
-                      ? const Center(child: CircularProgressIndicator(color: AptiquColors.primary))
+                      ? const Center(child: AppLoader())
                       : SingleChildScrollView(
                           padding: const EdgeInsets.all(20),
                           child: Column(
@@ -295,7 +296,7 @@ class PvpArenaScreen extends StatelessWidget {
                                         const SizedBox(
                                           width: 14,
                                           height: 14,
-                                          child: CircularProgressIndicator(strokeWidth: 2, color: AptiquColors.primary),
+                                          child: AppLoader(),
                                         ),
                                         const SizedBox(width: 8),
                                         Text(

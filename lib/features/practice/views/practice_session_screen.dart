@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -225,14 +226,14 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                     SizedBox(height: 12),
                     Text('Ready for 10?'),
                     SizedBox(height: 16),
-                    SizedBox(width: 100, child: LinearProgressIndicator()),
+                    AppLoader(),
                   ],
                 ),
               );
             }
             final curQ = controller.currentSessionQuestion;
             if (curQ == null) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: AppLoader());
             }
 
             final question = curQ.question;
@@ -520,9 +521,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                             ),
                           ),
                           child: controller.isSubmitting.value
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
+                              ? const AppLoader()
                               : Text(
                                   lastRes != null
                                       ? (controller.currentQuestionIndex.value <

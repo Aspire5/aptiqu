@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/theme/aptiqu_colors.dart';
@@ -14,7 +15,7 @@ class PracticeCatalogView extends StatelessWidget {
         : Get.put(PracticeCatalogController());
     return Obx(() {
       if (c.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(child: AppLoader());
       }
       if (c.errorMessage.isNotEmpty) {
         return Center(
@@ -379,7 +380,7 @@ class PracticeCatalogView extends StatelessWidget {
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: AppLoader(),
                             )
                           : const Icon(Icons.play_arrow_rounded),
                       label: Text(
@@ -417,7 +418,7 @@ class PracticeCatalogView extends StatelessWidget {
     return Obx(() {
       if (controller.isLoadingHistory.value && controller.historyList.isEmpty) {
         return const Center(
-          child: CircularProgressIndicator(color: AptiquColors.primary),
+          child: AppLoader(),
         );
       }
 

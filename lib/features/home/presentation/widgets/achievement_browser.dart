@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/aptiqu_colors.dart';
 import '../../models/home_dashboard_model.dart';
@@ -98,7 +99,7 @@ class _AchievementBrowserState extends State<AchievementBrowser> {
                   ),
                   TextButton(onPressed: load, child: const Text('Retry')),
                 ],
-                if (loading) const Center(child: CircularProgressIndicator()),
+                if (loading) const Center(child: AppLoader()),
                 if (!loading && error == null && hasMore)
                   TextButton(onPressed: load, child: const Text('Load more')),
               ],

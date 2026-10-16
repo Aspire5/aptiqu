@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -207,7 +208,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
             padding: const EdgeInsets.all(20),
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
-              if (d == null) const Center(child: CircularProgressIndicator()),
+              if (d == null) const Center(child: AppLoader()),
               if (error != null) ...[
                 Text(error!, style: const TextStyle(color: AptiquColors.error)),
                 TextButton(onPressed: load, child: const Text('Retry')),

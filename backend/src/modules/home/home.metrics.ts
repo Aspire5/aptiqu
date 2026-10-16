@@ -17,3 +17,14 @@ export function calendar(today: string, stored: { date: string; attempted: numbe
     return byDate.get(day) ?? { date: day, attempted: 0, correct: 0 };
   });
 }
+
+// Bounded payload: at most 366 daily aggregates, never raw attempts.
+export function yearCalendar(today: string, stored: { date: string; attempted: number; correct: number }[]) {
+  const byDate = new Map(stored.map(d => [d.date, d]));
+  const year = Number(today.slice(0, 4));
+  const start = Date.UTC(year, 0, 1), end = Date.UTC(year + 1, 0, 1);
+  return Array.from({ length: (end - start) / 86400000 }, (_, i) => {
+    const date = new Date(start + i * 86400000).toISOString().slice(0, 10);
+    return byDate.get(date) ?? { date, attempted: 0, correct: 0 };
+  });
+}

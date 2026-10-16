@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -99,7 +100,7 @@ class _LessonFeedScreenState extends State<LessonFeedScreen> {
 
         if (status == FeedStatus.loading) {
           return const Center(
-            child: CircularProgressIndicator(color: AptiquColors.primary),
+            child: AppLoader(),
           );
         }
 

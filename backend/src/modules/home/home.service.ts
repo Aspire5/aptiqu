@@ -1,12 +1,12 @@
 import { achievementFactsQuery, AchievementFacts, achievementOrder, liveAchievementWhere, presentAchievements } from '../achievements/achievement.service';
 import { prisma } from '../../config/prisma';
-import { calendar, dateKey, performance } from './home.metrics';
+import { yearCalendar, dateKey, performance } from './home.metrics';
 import { homeStatsQuery, HomeStatsRow, latestHomeMatchQuery } from './home.queries';
 
 export class HomeService {
   async getHome(userId: string, now = new Date()) {
     const today = dateKey(now);
-    const start = new Date(new Date(`${today}T00:00:00Z`).getTime() - 27 * 86400000).toISOString().slice(0, 10);
+    const start = `${today.slice(0, 4)}-01-01`;
     const startUtc = new Date(`${start}T00:00:00+05:30`).toISOString();
     const endUtc = new Date(new Date(`${today}T00:00:00+05:30`).getTime() + 86400000).toISOString();
     const [stats, resume, lastMatch, definitions, facts] = await prisma.$transaction([
@@ -29,7 +29,7 @@ export class HomeService {
     return {
       timezone: 'Asia/Kolkata', today, performance: summary,
       difficulty: rows.map(r => ({ difficulty: r.difficulty, ...performance([r]) })),
-      activity: calendar(today, days).map(day => ({ ...day,
+      activity: yearCalendar(today, days).map(day => ({ ...day,
         dailyChallengeCompleted: facts[0].dailyDates.includes(day.date) })),
       resume: resume ? { stepId: resume.roadmapStepId, title: resume.script.title,
         topic: resume.roadmapStep?.topic.name, lastPlayedAt: resume.lastActivityAt } : null,

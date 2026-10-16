@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -29,6 +30,8 @@ class SocialAdapter implements HttpClientAdapter {
   String relation = 'NONE';
   int invites = 0;
   Map<String, dynamic>? lastBody;
+  final calls = <RequestOptions>[];
+  Completer<void>? slowSearch;
   @override
   void close({bool force = false}) {}
   @override
@@ -37,8 +40,24 @@ class SocialAdapter implements HttpClientAdapter {
     Stream<Uint8List>? requestStream,
     Future<void>? cancelFuture,
   ) async {
+    calls.add(options);
     final id = '00000000-0000-4000-8000-000000000002';
     Object? data = {};
+    if (options.path.endsWith('/friends')) {
+      data = {
+        'items': [
+          {
+            'id': id,
+            'name': 'My Friend',
+            'level': 2,
+            'relation': 'FRIEND',
+            'online': false,
+            'friendsSince': '2026-10-01T00:00:00Z',
+          },
+        ],
+        'nextCursor': options.queryParameters['cursor'] == null ? id : null,
+      };
+    }
     if (options.path.endsWith('/search')) {
       data = {
         'items': [
@@ -84,6 +103,7 @@ class SocialAdapter implements HttpClientAdapter {
         relation = 'INVITED';
       }
     }
+    if (options.queryParameters['q'] == 'slow') await slowSearch?.future;
     return ResponseBody.fromString(
       jsonEncode({'success': true, 'data': data}),
       200,
@@ -127,17 +147,59 @@ void main() {
   });
   tearDown(() => Get.reset());
   testWidgets(
+    'inline request, pagination reset, presence and stale search protection',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(theme: AptiquTheme.darkTheme, home: const FriendsScreen()),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Friends since 1 Oct 2026'), findsOneWidget);
+      Get.find<SocialController>().events.add({
+        'event': 'PRESENCE',
+        'items': [
+          {'id': '00000000-0000-4000-8000-000000000002', 'online': true},
+        ],
+      });
+      await tester.pumpAndSettle();
+      expect(find.text('Level 2 · Online'), findsOneWidget);
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+      expect(find.text('Page 2'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'bea@gmail.com');
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pumpAndSettle();
+      expect(adapter.calls.last.queryParameters['q'], 'bea@gmail.com');
+      await tester.tap(find.text('Send friend request'));
+      await tester.pumpAndSettle();
+      expect(adapter.invites, 1);
+      expect(find.text('Request sent'), findsOneWidget);
+      adapter.slowSearch = Completer<void>();
+      await tester.enterText(find.byType(TextField), 'slow');
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.enterText(find.byType(TextField), '');
+      await tester.pumpAndSettle();
+      expect(adapter.calls.last.path.endsWith('/friends'), true);
+      expect(adapter.calls.last.queryParameters.containsKey('cursor'), false);
+      expect(find.text('Page 1'), findsOneWidget);
+      adapter.slowSearch!.complete();
+      await tester.pumpAndSettle();
+      expect(find.text('My Friend'), findsOneWidget);
+      expect(find.text('Bea Learner'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'search, inspect profile and invite changes the button to Invited',
     (tester) async {
       await tester.pumpWidget(
         MaterialApp(theme: AptiquTheme.darkTheme, home: const FriendsScreen()),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Find learners'));
-      await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), 'bea');
       await tester.pump(const Duration(milliseconds: 400));
       await tester.pumpAndSettle();
+      expect(find.byType(SegmentedButton<bool>), findsNothing);
+      expect(find.text('Send friend request'), findsOneWidget);
       await tester.tap(find.text('Bea Learner'));
       await tester.pumpAndSettle();
       expect(find.text('Add friend'), findsOneWidget);

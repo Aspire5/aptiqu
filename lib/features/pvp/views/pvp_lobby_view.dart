@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/theme/aptiqu_colors.dart';
@@ -121,10 +122,7 @@ class PvpLobbyView extends StatelessWidget {
                               const SizedBox(
                                 width: 56,
                                 height: 56,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  valueColor: AlwaysStoppedAnimation<Color>(AptiquColors.primary),
-                                ),
+                                child: AppLoader(size: 56),
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -259,7 +257,7 @@ class PvpLobbyView extends StatelessWidget {
                           child: const SizedBox(
                             width: 24,
                             height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: AptiquColors.primary),
+                            child: AppLoader(),
                           ),
                         );
                       }

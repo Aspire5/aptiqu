@@ -1,3 +1,4 @@
+import { friendSearchQuery } from './friend-search';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../config/prisma';
 import { HomeService } from '../home/home.service';
@@ -30,23 +31,33 @@ export class FriendsService {
         { highId: user, low: { profile: { searchName: { startsWith: search } } } }] } : {}) },
       orderBy: { id: 'asc' }, take: 51, ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       include: { low: { select: publicUserSelect }, high: { select: publicUserSelect } } });
-    const items = rows.slice(0, 50).map(r => ({ ...publicUser(r.lowId === user ? r.high : r.low), friendshipId: r.id, relation: 'FRIEND' }));
+    const items = rows.slice(0, 50).map(r => ({ ...publicUser(r.lowId === user ? r.high : r.low), friendshipId: r.id, friendsSince: r.updatedAt.toISOString(), relation: 'FRIEND' }));
     const online = await socialTransport.presence(items.map(r => r.id));
     return { items: items.map((r, i) => ({ ...r, online: online[i].online })), nextCursor: rows.length > 50 ? items.at(-1)?.friendshipId : null };
   }
-  async search(user: string, query: string, cursor?: string) {
+  async search(user: string, query: string) {
     await socialTransport.limit(user, 'search', 60, 60);
-    const rows = await prisma.user.findMany({ where: { id: { not: user }, isRegistrationComplete: true,
-      profile: { searchName: { startsWith: query } } }, orderBy: { id: 'asc' }, take: 21,
-      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}), select: publicUserSelect });
-    const relations = await prisma.friendship.findMany({ where: { ...membership(user), OR: rows.length ?
-      [{ lowId: { in: rows.map(r => r.id) }, highId: user }, { highId: { in: rows.map(r => r.id) }, lowId: user }] : [{ id: '00000000-0000-0000-0000-000000000000' }] } });
-    const items = rows.slice(0, 20).map(r => {
-      const link = relations.find(f => f.lowId === r.id || f.highId === r.id);
-      return { ...publicUser(r), friendshipId: link?.id, relation: link?.status === 'ACCEPTED' ? 'FRIEND'
-        : link?.status === 'PENDING' ? link.senderId === user ? 'INVITED' : 'INCOMING' : 'NONE' };
+    const matches = await prisma.$queryRaw<{id: string}[]>(friendSearchQuery(user, query));
+    const ids = matches.map(r => r.id);
+    if (!ids.length) return { items: [], nextCursor: null };
+    const [rows, relations] = await prisma.$transaction([
+      prisma.user.findMany({ where: { id: { in: ids }, isRegistrationComplete: true }, select: publicUserSelect }),
+      prisma.friendship.findMany({ where: { OR: [
+        { lowId: user, highId: { in: ids } }, { highId: user, lowId: { in: ids } } ] } }),
+    ]);
+    const byId = new Map(rows.map(r => [r.id, r]));
+    const links = new Map(relations.map(r => [r.lowId === user ? r.highId : r.lowId, r]));
+    const friends = relations.filter(r => r.status === 'ACCEPTED').map(r => r.lowId === user ? r.highId : r.lowId);
+    const presence = new Map((await socialTransport.presence(friends)).map(r => [r.id, r.online]));
+    const items = ids.filter(id => byId.has(id)).map(id => {
+      const link = links.get(id);
+      return { ...publicUser(byId.get(id)), friendshipId: link?.id, friendshipVersion: link?.updatedAt.toISOString(),
+        friendsSince: link?.status === 'ACCEPTED' ? link.updatedAt.toISOString() : null,
+        online: link?.status === 'ACCEPTED' ? presence.get(id) ?? null : null,
+        relation: link?.status === 'ACCEPTED' ? 'FRIEND'
+          : link?.status === 'PENDING' ? link.senderId === user ? 'INVITED' : 'INCOMING' : 'NONE' };
     });
-    return { items, nextCursor: rows.length > 20 ? items.at(-1)?.id : null };
+    return { items, nextCursor: null };
   }
   async profile(user: string, target: string) {
     const found = await prisma.user.findFirst({ where: { id: target, isRegistrationComplete: true }, select: publicUserSelect });

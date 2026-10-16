@@ -131,6 +131,11 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byType(HomeDashboardView), findsOneWidget);
       expect(find.text('HOME'), findsOneWidget);
+      expect(find.text('FRIENDS'), findsOneWidget);
+      expect(
+        tester.getCenter(find.text('FRIENDS')).dx,
+        greaterThan(tester.getCenter(find.text('RANKED')).dx),
+      );
       expect(find.text('PLAY'), findsNothing);
       expect(tester.takeException(), isNull);
       await home.resumeFromHome(const HomeResume('step', 'Lesson', 'Topic'));

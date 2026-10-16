@@ -1,3 +1,5 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
+import '../../../social/friends_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
@@ -70,10 +72,11 @@ class HomeScreen extends StatelessWidget {
                           return const HomeDashboardView();
                         }
                         if (controller.isOpeningLesson.value) {
-                          return const Center(child: CircularProgressIndicator(color: AptiquColors.primary));
+                          return const Center(child: AppLoader());
                         }
                         return ChatPlaygroundZone(
-                          height: totalHeight -
+                          height:
+                              totalHeight -
                               (isFullScreen ? 0 : topZoneHeight) -
                               (isFullScreen ? 0 : bottomZoneHeight),
                         );
@@ -81,8 +84,10 @@ class HomeScreen extends StatelessWidget {
                         return _buildTopicsTab(context, isFullScreen);
                       } else if (currentTab == 2) {
                         return const PracticeCatalogView();
-                      } else {
+                      } else if (currentTab == 3) {
                         return const PvpLobbyView();
+                      } else {
+                        return const FriendsScreen();
                       }
                     }),
                   ),
@@ -132,9 +137,7 @@ class HomeScreen extends StatelessWidget {
       if (isLoading && learningMap == null) {
         return Container(
           color: AptiquColors.surfaceDim,
-          child: const Center(
-            child: CircularProgressIndicator(color: AptiquColors.primary),
-          ),
+          child: const Center(child: AppLoader()),
         );
       }
 
@@ -146,17 +149,25 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.cloud_off_outlined, color: Colors.amberAccent, size: 40),
+              const Icon(
+                Icons.cloud_off_outlined,
+                color: Colors.amberAccent,
+                size: 40,
+              ),
               const SizedBox(height: 12),
               Text(
                 'Failed to load curriculum map.',
-                style: AptiquTypography.headlineSm.copyWith(color: Colors.white),
+                style: AptiquTypography.headlineSm.copyWith(
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(height: 6),
               Text(
                 error,
                 textAlign: TextAlign.center,
-                style: AptiquTypography.bodySm.copyWith(color: AptiquColors.onSurfaceVariant),
+                style: AptiquTypography.bodySm.copyWith(
+                  color: AptiquColors.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
@@ -189,9 +200,7 @@ class HomeScreen extends StatelessWidget {
 
       return Container(
         color: AptiquColors.surfaceDim,
-        child: const Center(
-          child: CircularProgressIndicator(color: AptiquColors.primary),
-        ),
+        child: const Center(child: AppLoader()),
       );
     });
   }

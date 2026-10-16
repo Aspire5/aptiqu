@@ -59,7 +59,7 @@ export function homeSubmissions(userId?: string) {
 
 // Filter each source by user before joining. PostgreSQL aggregates submissions
 // once for lifetime difficulty metrics and the recent activity calendar; the API
-// receives at most four difficulty rows, 16 source/difficulty rows and 28 daily rows.
+// receives at most four difficulty rows, 16 source/difficulty rows and 366 daily rows.
 export function homeStatsQuery(userId: string, startUtc: string, endUtc: string) {
   return Prisma.sql`
     WITH submissions AS (${homeSubmissions(userId)}), normalized AS (

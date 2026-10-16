@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/aptiqu_colors.dart';
 import '../../core/theme/aptiqu_typography.dart';
@@ -47,7 +48,7 @@ class TutorThinkingBubble extends StatelessWidget {
                 const SizedBox(
                   width: 12,
                   height: 12,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: AptiquColors.secondary),
+                  child: AppLoader(),
                 ),
                 const SizedBox(width: 9),
                 Text('Thinking...', style: AptiquTypography.bodyMd.copyWith(

@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -194,7 +195,7 @@ void main() {
     await tester.tap(find.text('Daily Challenge'));
     await tester.pumpAndSettle();
     expect(openedDaily, true);
-    await tester.drag(find.byType(ListView), const Offset(0, 1200));
+    await tester.drag(find.byType(ListView).first, const Offset(0, 1200));
     await tester.pumpAndSettle();
     await expectLater(
       find.byType(Scaffold),
@@ -211,7 +212,19 @@ void main() {
       180,
       scrollable: find.byType(Scrollable).first,
     );
-    final day = fixture(populated: true).activity[42];
+    final day = fixture(populated: true).activity[50];
+    await tester.scrollUntilVisible(
+      find
+          .byWidgetPredicate(
+            (w) =>
+                w is Semantics &&
+                w.properties.label ==
+                    '${day.date}: ${day.attempted} submissions, ${day.correct} correct',
+          )
+          .hitTestable(),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(
       find.byWidgetPredicate(
         (w) =>
@@ -221,7 +234,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.textContaining('Sep 2026'), findsOneWidget);
+    expect(find.textContaining('Oct 2026'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();
@@ -242,7 +255,7 @@ void main() {
     await show(tester, loading: true);
     expect(find.text('125 XP'), findsNothing);
     expect(find.text('Daily Challenge'), findsOneWidget);
-    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(find.byType(AppLoader), findsOneWidget);
     var retried = false;
     await show(
       tester,
@@ -254,6 +267,34 @@ void main() {
     expect(retried, true);
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'year window starts at current month and scrolls to both year boundaries',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AptiquTheme.darkTheme,
+          home: Scaffold(
+            body: YearActivityCalendar(
+              days: fixture().activity,
+              today: '2026-10-13',
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('October 2026'), findsOneWidget);
+      expect(find.text('31'), findsOneWidget);
+      final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+      scroll.position.jumpTo(0);
+      await tester.pumpAndSettle();
+      expect(find.text('January 2026'), findsOneWidget);
+      scroll.position.jumpTo(scroll.position.maxScrollExtent);
+      await tester.pumpAndSettle();
+      expect(find.text('December 2026'), findsOneWidget);
+      expect(find.text('31'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('calendar labels months and marks only successful Daily Challenges', (
     tester,
   ) async {
@@ -263,9 +304,9 @@ void main() {
       180,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('September 2026'), findsOneWidget);
+    expect(find.text('September 2026').hitTestable(), findsNothing);
     expect(find.text('October 2026'), findsOneWidget);
-    expect(find.text('Mo'), findsNWidgets(2));
+    expect(find.text('Mo').hitTestable(), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(ActivityCalendar),

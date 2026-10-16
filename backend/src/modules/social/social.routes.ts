@@ -14,7 +14,7 @@ router.use(async (req: AuthenticatedRequest, res, next) => {
   } catch (error) { next(error); }
 });
 const uuid = z.string().uuid().transform(s => s.toLowerCase());
-const page = z.object({ cursor: uuid.optional(), q: z.string().trim().max(80).default('') });
+const page = z.object({ cursor: uuid.optional(), q: z.string().trim().max(254).default('') });
 const handle = (fn: (user: string, req: Request) => Promise<unknown>) => async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.userId) { res.status(401).json({ success: false }); return; }
@@ -25,7 +25,7 @@ const handle = (fn: (user: string, req: Request) => Promise<unknown>) => async (
   }
 };
 router.get('/friends', handle((u, r) => { const q = page.parse(r.query); return friendsService.list(u, q.cursor, q.q.normalize('NFKC').toLowerCase()); }));
-router.get('/search', handle((u, r) => { const q = page.parse(r.query); if (q.q.length < 2) return Promise.resolve({ items: [], nextCursor: null }); return friendsService.search(u, q.q.normalize('NFKC').toLowerCase(), q.cursor); }));
+router.get('/search', handle((u, r) => { const q = page.parse(r.query); if (q.q.length < 1) return Promise.resolve({ items: [], nextCursor: null }); return friendsService.search(u, q.q.normalize('NFKC').toLowerCase()); }));
 router.get('/profiles/:id', handle(async (u, r) => { await socialTransport.limit(u, 'profile', 60, 60); return friendsService.profile(u, uuid.parse(r.params.id)); }));
 router.post('/friends/:id/invite', handle((u, r) => friendsService.invite(u, uuid.parse(r.params.id))));
 router.delete('/friends/:id', handle((u, r) => friendsService.remove(u, uuid.parse(r.params.id))));

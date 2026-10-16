@@ -1,3 +1,4 @@
+import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -93,10 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(AptiquColors.primary),
-                  ),
+                  child: AppLoader(size: 18),
                 ),
               ),
             ),
