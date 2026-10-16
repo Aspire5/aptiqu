@@ -24,6 +24,18 @@ class SocialController extends GetxController with WidgetsBindingObserver {
       _connecting = false;
   int _generation = 0, _attempt = 0;
   List<String> _watched = [];
+
+  Future<void> respondToFriend(
+    Map<String, dynamic> person, {
+    required bool accept,
+  }) async {
+    await api.post('friend-invitations/${person['friendshipId']}/respond', {
+      'accept': accept,
+      'version': person['friendshipVersion'],
+    });
+    friendInvites.removeWhere((row) => row['id'] == person['friendshipId']);
+  }
+
   @override
   void onInit() {
     super.onInit();

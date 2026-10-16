@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,14 @@ import 'package:aptiqu/core/theme/aptiqu_theme.dart';
 import 'package:aptiqu/features/social/social_controller.dart';
 import 'package:aptiqu/features/social/friends_screen.dart';
 import 'package:aptiqu/features/social/social_overlay.dart';
+import 'package:aptiqu/features/social/friend_requests_screen.dart';
+import 'package:aptiqu/features/social/widgets/social_widgets.dart';
+import 'package:aptiqu/features/home/presentation/widgets/home_dashboard_view.dart';
+import 'package:aptiqu/features/social/widgets/learner_activity_window.dart';
+import 'package:aptiqu/features/home/presentation/widgets/bottom_nav_zone.dart';
+import 'package:aptiqu/features/home/presentation/controllers/home_controller.dart';
+import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
+import 'home_navigation_test.dart' show LocalHome, LocalAuth;
 import 'practice_catalog_test.dart' show TestFontManifest;
 
 class FakeSocial extends SocialController {
@@ -29,6 +36,9 @@ class FakeSocial extends SocialController {
 class SocialAdapter implements HttpClientAdapter {
   String relation = 'NONE';
   int invites = 0;
+  List<Map<String, dynamic>> requests = [];
+  bool failResponse = false;
+  bool populatedProfile = false;
   Map<String, dynamic>? lastBody;
   final calls = <RequestOptions>[];
   Completer<void>? slowSearch;
@@ -72,12 +82,18 @@ class SocialAdapter implements HttpClientAdapter {
         'nextCursor': null,
       };
     }
+    if (options.path.endsWith('/inbox')) {
+      data = {'friends': requests, 'duels': [], 'activeDuelId': null};
+    }
     if (options.path.contains('/profiles/')) {
       data = {
         'id': id,
         'name': 'Bea Learner',
         'level': 2,
         'avatarUrl': null,
+        'today': '2026-10-17',
+        'friendshipId': 'friend',
+        'friendshipVersion': '2026-10-14T00:00:00.000Z',
         'totalXp': 20,
         'highestStreak': 3,
         'currentStreak': 0,
@@ -85,25 +101,63 @@ class SocialAdapter implements HttpClientAdapter {
         'online': false,
         'relation': relation,
         'performance': {
-          'attempted': 0,
-          'correct': 0,
-          'accuracy': null,
-          'averageSolveTimeMs': null,
+          'attempted': populatedProfile ? 9 : 0,
+          'correct': populatedProfile ? 8 : 0,
+          'accuracy': populatedProfile ? 8 / 9 : null,
+          'averageSolveTimeMs': populatedProfile ? 1400 : null,
         },
-        'badges': [],
+        'badges': [
+          if (populatedProfile)
+            {
+              'title': 'A steady start',
+              'description': 'Build a learning habit, one day at a time.',
+              'unlocked': true,
+              'progress': 3,
+              'target': 3,
+            },
+        ],
         'activity': [],
-        'difficulty': [],
-        'ranked': null,
+        'difficulty': [
+          if (populatedProfile)
+            for (final difficulty in ['EASY', 'MEDIUM', 'HARD'])
+              {
+                'difficulty': difficulty,
+                'attempted': 3,
+                'correct': difficulty == 'HARD' ? 2 : 3,
+              },
+        ],
+        'ranked': populatedProfile ? {'result': 'Win', 'correct': 4} : null,
+      };
+    }
+    if (options.path.endsWith('/activity')) {
+      final month = options.queryParameters['month'] as String;
+      final date = DateTime.parse('$month-01');
+      data = {
+        'activity': [
+          for (var d = 1; d <= DateTime(date.year, date.month + 1, 0).day; d++)
+            {
+              'date': '$month-${d.toString().padLeft(2, '0')}',
+              'attempted': 0,
+              'correct': 0,
+            },
+        ],
       };
     }
     if (options.method == 'POST') {
       lastBody = Map<String, dynamic>.from(options.data);
+      if (options.path.endsWith('/respond')) {
+        if (failResponse) throw DioException(requestOptions: options);
+        requests.clear();
+        relation = lastBody!['accept'] == true ? 'FRIEND' : 'NONE';
+      }
       if (options.path.endsWith('/invite')) {
         invites++;
         relation = 'INVITED';
       }
     }
-    if (options.queryParameters['q'] == 'slow') await slowSearch?.future;
+    if (options.queryParameters['q'] == 'slow') {
+      await slowSearch?.future;
+    }
     return ResponseBody.fromString(
       jsonEncode({'success': true, 'data': data}),
       200,
@@ -146,6 +200,221 @@ void main() {
     Get.put<SocialController>(FakeSocial());
   });
   tearDown(() => Get.reset());
+
+  Map<String, dynamic> invitation() => {
+    'id': 'friend',
+    'version': '2026-10-14T00:00:00.000Z',
+    'sender': {
+      'id': '00000000-0000-4000-8000-000000000002',
+      'name': 'Bea Learner',
+      'level': 2,
+      'avatarUrl': null,
+    },
+  };
+
+  Future<void> phone(
+    WidgetTester tester,
+    Widget screen, {
+    double scale = 1,
+    double width = 390,
+  }) async {
+    tester.view.physicalSize = Size(width, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AptiquTheme.darkTheme,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(scale)),
+          child: child!,
+        ),
+        home: screen,
+      ),
+    );
+    await tester.runAsync(() async {
+      await GoogleFonts.pendingFonts();
+      final bytes = ByteData.sublistView(
+        File('test/fonts/Outfit.ttf').readAsBytesSync(),
+      );
+      await (FontLoader('Roboto')..addFont(Future.value(bytes))).load();
+      var directory = File(Platform.resolvedExecutable).parent;
+      for (var i = 0; i < 8; i++) {
+        final icons = File(
+          '${directory.path}/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+        );
+        if (icons.existsSync()) {
+          await (FontLoader('MaterialIcons')..addFont(
+                Future.value(ByteData.sublistView(icons.readAsBytesSync())),
+              ))
+              .load();
+          break;
+        }
+        directory = directory.parent;
+      }
+    });
+    await tester.pumpAndSettle();
+    await tester.runAsync(() => GoogleFonts.pendingFonts());
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('compact search and focused field render at phone width', (
+    tester,
+  ) async {
+    await phone(tester, const FriendsScreen());
+    await tester.enterText(find.byType(TextField), 'bea');
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).decoration!.labelText,
+      isNull,
+    );
+    expect(tester.getSize(find.byType(LearnerTile)).height, lessThan(110));
+    final semantics = tester.ensureSemantics();
+    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    semantics.dispose();
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('goldens/friends-search.png'),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'inbox lists learners; profile rejection updates the list and badge',
+    (tester) async {
+      adapter.requests = [invitation()];
+      adapter.relation = 'INCOMING';
+      final social = Get.find<SocialController>();
+      social.friendInvites.assignAll(adapter.requests);
+      await phone(tester, const FriendsScreen());
+      expect(find.byType(Badge), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('friend-requests-inbox')));
+      await tester.pumpAndSettle();
+      expect(find.byType(FriendRequestsScreen), findsOneWidget);
+      expect(find.byType(AlertDialog), findsNothing);
+      await expectLater(
+        find.byType(Scaffold).last,
+        matchesGoldenFile('goldens/friend-requests.png'),
+      );
+      adapter.populatedProfile = true;
+      await tester.tap(find.text('Bea Learner'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('accept-request')), findsOneWidget);
+      expect(find.byKey(const ValueKey('reject-request')), findsOneWidget);
+      await tester.runAsync(() => GoogleFonts.pendingFonts());
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byType(Scaffold).last,
+        matchesGoldenFile('goldens/learner-profile.png'),
+      );
+      await tester.tap(find.byKey(const ValueKey('reject-request')));
+      await tester.pumpAndSettle();
+      expect(adapter.lastBody, {
+        'accept': false,
+        'version': '2026-10-14T00:00:00.000Z',
+      });
+      expect(social.friendInvites, isEmpty);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.text('You’re all caught up'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'request failure stays actionable, then accept removes the tile',
+    (tester) async {
+      adapter.requests = [invitation()];
+      adapter.failResponse = true;
+      await phone(tester, const FriendRequestsScreen(), width: 320, scale: 1.5);
+      await tester.tap(find.byKey(const ValueKey('accept-request')));
+      await tester.pumpAndSettle();
+      expect(find.byType(LearnerTile), findsOneWidget);
+      expect(Get.find<SocialController>().friendInvites, hasLength(1));
+      adapter.failResponse = false;
+      await tester.tap(find.byKey(const ValueKey('accept-request')));
+      await tester.pumpAndSettle();
+      expect(adapter.lastBody!['accept'], true);
+      expect(find.byType(LearnerTile), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'profile fits large text and activity fetches visited months once',
+    (tester) async {
+      adapter.populatedProfile = true;
+      await phone(
+        tester,
+        const FriendProfileScreen(id: 'learner'),
+        width: 320,
+        scale: 1.5,
+      );
+      await tester.scrollUntilVisible(
+        find.byType(LearnerActivityWindow),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('October 2026'), findsOneWidget);
+      final calendar = find.descendant(
+        of: find.byType(YearActivityCalendar),
+        matching: find.byType(ListView),
+      );
+      await tester.drag(calendar, const Offset(0, 350));
+      await tester.pumpAndSettle();
+      expect(
+        adapter.calls.where(
+          (r) =>
+              r.path.endsWith('/activity') &&
+              r.queryParameters['month'] == '2026-09',
+        ),
+        hasLength(1),
+      );
+      await tester.drag(calendar, const Offset(0, -350));
+      await tester.pumpAndSettle();
+      await tester.drag(calendar, const Offset(0, 350));
+      await tester.pumpAndSettle();
+      expect(
+        adapter.calls.where(
+          (r) =>
+              r.path.endsWith('/activity') &&
+              r.queryParameters['month'] == '2026-09',
+        ),
+        hasLength(1),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('friends navigation dot reacts to pending requests', (
+    tester,
+  ) async {
+    Get.put<AuthController>(LocalAuth());
+    Get.put<HomeController>(LocalHome());
+    await phone(tester, const Scaffold(body: BottomNavZone(height: 84)));
+    final social = Get.find<SocialController>();
+    expect(
+      find.bySemanticsLabel('FRIENDS, pending friend requests'),
+      findsNothing,
+    );
+    social.friendInvites.assignAll([invitation()]);
+    await tester.pumpAndSettle();
+    expect(
+      find.bySemanticsLabel('FRIENDS, pending friend requests'),
+      findsOneWidget,
+    );
+    social.friendInvites.clear();
+    await tester.pumpAndSettle();
+    expect(
+      find.bySemanticsLabel('FRIENDS, pending friend requests'),
+      findsNothing,
+    );
+  });
   testWidgets(
     'inline request, pagination reset, presence and stale search protection',
     (tester) async {
@@ -162,14 +431,14 @@ void main() {
       });
       await tester.pumpAndSettle();
       expect(find.text('Level 2 · Online'), findsOneWidget);
-      await tester.tap(find.text('Next'));
+      await tester.tap(find.byKey(const ValueKey('next-friends-page')));
       await tester.pumpAndSettle();
-      expect(find.text('Page 2'), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
       await tester.enterText(find.byType(TextField), 'bea@gmail.com');
       await tester.pump(const Duration(milliseconds: 400));
       await tester.pumpAndSettle();
       expect(adapter.calls.last.queryParameters['q'], 'bea@gmail.com');
-      await tester.tap(find.text('Send friend request'));
+      await tester.tap(find.text('Add Friend'));
       await tester.pumpAndSettle();
       expect(adapter.invites, 1);
       expect(find.text('Request sent'), findsOneWidget);
@@ -180,7 +449,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(adapter.calls.last.path.endsWith('/friends'), true);
       expect(adapter.calls.last.queryParameters.containsKey('cursor'), false);
-      expect(find.text('Page 1'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
       adapter.slowSearch!.complete();
       await tester.pumpAndSettle();
       expect(find.text('My Friend'), findsOneWidget);
@@ -199,18 +468,20 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
       await tester.pumpAndSettle();
       expect(find.byType(SegmentedButton<bool>), findsNothing);
-      expect(find.text('Send friend request'), findsOneWidget);
+      expect(find.text('Add Friend'), findsOneWidget);
       await tester.tap(find.text('Bea Learner'));
       await tester.pumpAndSettle();
-      expect(find.text('Add friend'), findsOneWidget);
+      expect(find.text('Add Friend'), findsOneWidget);
       expect(find.text('No accuracy results yet'), findsOneWidget);
-      await tester.tap(find.text('Add friend'));
+      await tester.tap(find.text('Add Friend'));
       await tester.pumpAndSettle();
       expect(adapter.invites, 1);
-      expect(find.text('Invited'), findsOneWidget);
+      expect(find.text('Request sent'), findsOneWidget);
       expect(
         tester
-            .widget<FilledButton>(find.widgetWithText(FilledButton, 'Invited'))
+            .widget<SocialButton>(
+              find.widgetWithText(SocialButton, 'Request sent'),
+            )
             .onPressed,
         isNull,
       );

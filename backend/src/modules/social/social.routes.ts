@@ -27,13 +27,18 @@ const handle = (fn: (user: string, req: Request) => Promise<unknown>) => async (
 router.get('/friends', handle((u, r) => { const q = page.parse(r.query); return friendsService.list(u, q.cursor, q.q.normalize('NFKC').toLowerCase()); }));
 router.get('/search', handle((u, r) => { const q = page.parse(r.query); if (q.q.length < 1) return Promise.resolve({ items: [], nextCursor: null }); return friendsService.search(u, q.q.normalize('NFKC').toLowerCase()); }));
 router.get('/profiles/:id', handle(async (u, r) => { await socialTransport.limit(u, 'profile', 60, 60); return friendsService.profile(u, uuid.parse(r.params.id)); }));
+router.get('/profiles/:id/activity', handle(async (u, r) => {
+  await socialTransport.limit(u, 'profile', 60, 60);
+  const { month } = z.object({ month: z.string().regex(/^20\d{2}-(0[1-9]|1[0-2])$/) }).parse(r.query);
+  return friendsService.activity(uuid.parse(r.params.id), month);
+}));
 router.post('/friends/:id/invite', handle((u, r) => friendsService.invite(u, uuid.parse(r.params.id))));
 router.delete('/friends/:id', handle((u, r) => friendsService.remove(u, uuid.parse(r.params.id))));
 router.post('/friend-invitations/:id/respond', handle((u, r) => { const input = z.object({ accept: z.boolean(), version: z.string().datetime() }).strict().parse(r.body); return friendsService.respond(u, uuid.parse(r.params.id), input.accept, input.version); }));
 router.get('/inbox', handle(async u => {
   const [friends, duels, seats] = await prisma.$transaction([
     prisma.friendship.findMany({ where: { ...membership(u), status: 'PENDING', senderId: { not: u } },
-      include: { sender: { select: publicUserSelect } }, orderBy: { updatedAt: 'desc' }, take: 20 }),
+      include: { sender: { select: publicUserSelect } }, orderBy: { updatedAt: 'desc' }, take: 200 }),
     prisma.friendlyDuel.findMany({ where: { recipientId: u, status: 'PENDING', expiresAt: { gt: new Date() } },
       include: { requester: { select: publicUserSelect } }, orderBy: { expiresAt: 'asc' }, take: 1 }),
     prisma.friendlyDuelSeat.findUnique({ where: { userId: u } }),

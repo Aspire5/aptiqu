@@ -737,10 +737,12 @@ class ActivityCalendar extends StatelessWidget {
 class YearActivityCalendar extends StatefulWidget {
   final List<HomeActivityDay> days;
   final String today;
+  final Widget Function(BuildContext, int, List<HomeActivityDay>)? monthBuilder;
   const YearActivityCalendar({
     super.key,
     required this.days,
     required this.today,
+    this.monthBuilder,
   });
   @override
   State<YearActivityCalendar> createState() => _YearActivityCalendarState();
@@ -774,8 +776,9 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
       return size;
     }
 
-    final first = DateTime(2026, month);
-    final rows = ((first.weekday - 1 + DateTime(2026, month + 1, 0).day) / 7)
+    final year = DateTime.parse(widget.today).year;
+    final first = DateTime(year, month);
+    final rows = ((first.weekday - 1 + DateTime(year, month + 1, 0).day) / 7)
         .ceil();
     final title = measure(
       DateFormat('MMMM yyyy').format(first),
@@ -858,15 +861,17 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
               itemCount: 12,
               itemBuilder: (context, index) {
                 final month = index + 1;
-                final days = List.generate(DateTime(2026, month + 1, 0).day, (
+                final year = DateTime.parse(widget.today).year;
+                final days = List.generate(DateTime(year, month + 1, 0).day, (
                   i,
                 ) {
                   final key = DateFormat(
                     'yyyy-MM-dd',
-                  ).format(DateTime(2026, month, i + 1));
+                  ).format(DateTime(year, month, i + 1));
                   return byDate[key] ?? HomeActivityDay(key, 0, 0);
                 });
-                return ActivityCalendar(days: days, today: widget.today);
+                return widget.monthBuilder?.call(context, month, days) ??
+                    ActivityCalendar(days: days, today: widget.today);
               },
             ),
           ),

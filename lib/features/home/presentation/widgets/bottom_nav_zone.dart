@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../controllers/home_controller.dart';
+import '../../../social/social_controller.dart';
 
-/// ZONE 3: BOTTOM 12% SECTION - 4 OPTIONS NAVIGATION
-/// HOME, TOPICS, PRACTICE, RANKED
+/// Home, Topics, Practice, Ranked and Friends navigation.
 class BottomNavZone extends StatelessWidget {
   final double height;
 
@@ -84,6 +84,9 @@ class BottomNavZone extends StatelessWidget {
               selectedIndex: selectedIndex,
               label: 'FRIENDS',
               icon: Icons.people_rounded,
+              hasBadge:
+                  Get.isRegistered<SocialController>() &&
+                  Get.find<SocialController>().friendInvites.isNotEmpty,
               onTap: () {
                 controller.isFullScreen.value = false;
                 controller.selectedNavIndex.value = 4;
@@ -105,98 +108,106 @@ class BottomNavZone extends StatelessWidget {
   }) {
     final isActive = index == selectedIndex;
 
-    return InkWell(
+    return Semantics(
+      label: hasBadge ? '$label, pending friend requests' : label,
+      button: true,
+      selected: isActive,
+      excludeSemantics: true,
       onTap: onTap,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: SizedBox(
-        width: 60,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Glowing Top Active Indicator Bar
-            Container(
-              height: 2.5,
-              width: 24,
-              margin: const EdgeInsets.only(bottom: 4),
-              decoration: BoxDecoration(
-                color: isActive
-                    ? AptiquColors.primaryContainer
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(2),
-                boxShadow: isActive ? AptiquColors.primaryGlow : null,
-              ),
-            ),
-
-            // Icon Container with Cyber Pill Glow on Active
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  width: 38,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? AptiquColors.primaryContainer.withValues(alpha: 0.22)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: isActive
-                        ? [
-                            BoxShadow(
-                              color: AptiquColors.primaryContainer.withValues(
-                                alpha: 0.3,
-                              ),
-                              blurRadius: 10,
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 21,
-                    color: isActive
-                        ? AptiquColors.primary
-                        : AptiquColors.onSurfaceVariant,
-                  ),
+      child: InkWell(
+        onTap: onTap,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        child: SizedBox(
+          width: 60,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Glowing Top Active Indicator Bar
+              Container(
+                height: 2.5,
+                width: 24,
+                margin: const EdgeInsets.only(bottom: 4),
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? AptiquColors.primaryContainer
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(2),
+                  boxShadow: isActive ? AptiquColors.primaryGlow : null,
                 ),
+              ),
 
-                // Cyan Notification Dot on Ranked
-                if (hasBadge)
-                  Positioned(
-                    top: -1,
-                    right: 0,
-                    child: Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: AptiquColors.secondary,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AptiquColors.surfaceDim,
-                          width: 1.5,
-                        ),
-                        boxShadow: AptiquColors.secondaryGlow,
-                      ),
+              // Icon Container with Cyber Pill Glow on Active
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: 38,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? AptiquColors.primaryContainer.withValues(
+                              alpha: 0.22,
+                            )
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: isActive
+                          ? [
+                              BoxShadow(
+                                color: AptiquColors.primaryContainer.withValues(
+                                  alpha: 0.3,
+                                ),
+                                blurRadius: 10,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Icon(
+                      icon,
+                      size: 21,
+                      color: isActive
+                          ? AptiquColors.primary
+                          : AptiquColors.onSurfaceVariant,
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 3),
 
-            // Text Label
-            Text(
-              label,
-              style: AptiquTypography.labelCaps.copyWith(
-                fontSize: 9.5,
-                color: isActive
-                    ? AptiquColors.primary
-                    : AptiquColors.onSurfaceVariant,
-                fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                letterSpacing: 0.8,
+                  // Pending friend requests use a quiet red notification dot.
+                  if (hasBadge)
+                    Positioned(
+                      top: -1,
+                      right: 0,
+                      child: Container(
+                        width: 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          color: AptiquColors.error,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AptiquColors.surfaceDim,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 3),
+
+              // Text Label
+              Text(
+                label,
+                style: AptiquTypography.labelCaps.copyWith(
+                  fontSize: 9.5,
+                  color: isActive
+                      ? AptiquColors.primary
+                      : AptiquColors.onSurfaceVariant,
+                  fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

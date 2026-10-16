@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../../config/prisma';
 import { HomeService } from '../home/home.service';
 import { dateKey } from '../home/home.metrics';
+import { homeSubmissions } from '../home/home.queries';
 import { XpPolicy } from '../xp/xp.policy';
 import { socialError, socialTransport } from './social.transport';
 export function friendPair(a: string, b: string) {
@@ -67,7 +68,37 @@ export class FriendsService {
     return { ...publicUser(found), online: (await socialTransport.presence([target]))[0].online,
       friendshipId: relation?.id, friendshipVersion: relation?.updatedAt.toISOString(), relation: relation?.status === 'ACCEPTED' ? 'FRIEND' : relation?.status === 'PENDING'
         ? relation.senderId === user ? 'INVITED' : 'INCOMING' : 'NONE',
-      performance: home.performance, difficulty: home.difficulty, activity: home.activity, badges: home.badges, ranked: home.ranked };
+      today: home.today, performance: home.performance, difficulty: home.difficulty,
+      activity: home.activity.filter(day => day.date.startsWith(home.today.slice(0, 7))),
+      badges: home.badges, ranked: home.ranked };
+  }
+
+  async activity(target: string, month: string) {
+    const found = await prisma.user.findFirst({ where: { id: target, isRegistrationComplete: true }, select: { id: true } });
+    if (!found) throw socialError('Learner not found.', 404);
+    const start = `${month}-01`;
+    const first = new Date(`${start}T00:00:00+05:30`);
+    const [year, number] = month.split('-').map(Number);
+    const nextMonth = number === 12 ? `${year + 1}-01` : `${year}-${String(number + 1).padStart(2, '0')}`;
+    const next = new Date(`${nextMonth}-01T00:00:00+05:30`);
+    const [rows, challenges] = await prisma.$transaction([
+      prisma.$queryRaw<{ date: string; attempted: number; correct: number }[]>(Prisma.sql`
+        WITH submissions AS (${homeSubmissions(target)})
+        SELECT (happened_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Kolkata')::date::text AS date,
+          count(*)::float8 AS attempted, sum(correct)::float8 AS correct
+        FROM submissions
+        WHERE happened_at >= ${first.toISOString()}::timestamp AND happened_at < ${next.toISOString()}::timestamp
+        GROUP BY 1 ORDER BY 1`),
+      prisma.dailyChallengeParticipation.findMany({ where: { userId: target, status: 'COMPLETED',
+        dateString: { gte: start, lt: `${nextMonth}-01` } }, select: { dateString: true } }),
+    ]);
+    const byDate = new Map(rows.map(row => [row.date, row]));
+    const completed = new Set(challenges.map(row => row.dateString));
+    return { activity: Array.from({ length: new Date(Date.UTC(year, number, 0)).getUTCDate() }, (_, index) => {
+      const date = `${month}-${String(index + 1).padStart(2, '0')}`;
+      return { date, attempted: byDate.get(date)?.attempted ?? 0, correct: byDate.get(date)?.correct ?? 0,
+        dailyChallengeCompleted: completed.has(date) };
+    }) };
   }
   async invite(user: string, target: string) {
     const pair = friendPair(user, target);

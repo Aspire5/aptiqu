@@ -15,13 +15,12 @@ class SocialOverlay extends StatefulWidget {
 class _SocialOverlayState extends State<SocialOverlay> {
   final seen = <String>{};
   bool showing = false;
-  Worker? friendWorker, duelWorker;
+  Worker? duelWorker;
   late SocialController social;
   @override
   void initState() {
     super.initState();
     social = Get.find<SocialController>();
-    friendWorker = ever(social.friendInvites, (_) => prompt());
     duelWorker = ever(social.duelInvites, (_) => prompt());
     WidgetsBinding.instance.addPostFrameCallback((_) => prompt());
   }
@@ -31,10 +30,7 @@ class _SocialOverlayState extends State<SocialOverlay> {
     final duel = social.duelInvites
         .where((r) => !seen.contains(r['key'] ?? r['id']))
         .firstOrNull;
-    final friend = social.friendInvites
-        .where((r) => !seen.contains(r['key'] ?? r['id']))
-        .firstOrNull;
-    final item = duel ?? friend;
+    final item = duel;
     if (item == null) return;
     final ctx = AppRouter.navigatorKey.currentContext;
     if (ctx == null) return;
@@ -59,7 +55,6 @@ class _SocialOverlayState extends State<SocialOverlay> {
 
   @override
   void dispose() {
-    friendWorker?.dispose();
     duelWorker?.dispose();
     super.dispose();
   }

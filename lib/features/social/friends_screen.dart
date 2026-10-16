@@ -1,16 +1,21 @@
-import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
-import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
-import 'social_overlay.dart';
-import '../home/presentation/widgets/home_dashboard_view.dart';
 import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
 import '../../core/theme/aptiqu_colors.dart';
-import '../home/models/home_dashboard_model.dart';
+import '../../shared/widgets/indicators/app_loader.dart';
+import 'friend_profile_screen.dart';
+import 'friend_requests_screen.dart';
 import 'social_api.dart';
 import 'social_controller.dart';
+import 'widgets/friendship_actions.dart';
+import 'widgets/social_widgets.dart';
+
+export 'friend_profile_screen.dart';
 
 class FriendsScreen extends StatefulWidget {
   final bool picker;
@@ -28,7 +33,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
   String query = '', error = '';
   bool get discover => query.isNotEmpty && !widget.picker;
   bool loading = false;
-  final busyIds = <String>{};
   CancelToken? cancellation;
   final listScroll = ScrollController();
   int sequence = 0;
@@ -130,35 +134,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
     debounce = Timer(const Duration(milliseconds: 350), load);
   }
 
-  Future<void> requestFriend(Map<String, dynamic> person) async {
-    final id = person['id'] as String;
-    if (!busyIds.add(id)) return;
-    setState(() {});
-    try {
-      if (person['relation'] == 'INCOMING') {
-        await api.post('friend-invitations/${person['friendshipId']}/respond', {
-          'accept': true,
-          'version': person['friendshipVersion'],
-        });
-      } else {
-        await api.post('friends/$id/invite');
-      }
-      if (mounted) await load();
-      await social.syncInbox();
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not update this request. Please try again.'),
-          ),
-        );
-      }
-    } finally {
-      busyIds.remove(id);
-      if (mounted) setState(() {});
-    }
-  }
-
   String friendLabel(Map<String, dynamic> p) {
     final date = DateTime.tryParse(p['friendsSince'] ?? '');
     return date == null
@@ -180,16 +155,49 @@ class _FriendsScreenState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: AptiquColors.surfaceDim,
-    appBar: AppBar(title: Text(widget.picker ? 'Invite a friend' : 'Friends')),
+    appBar: AppBar(
+      title: Text(widget.picker ? 'Invite a friend' : 'Friends'),
+      actions: [
+        if (!widget.picker)
+          Obx(() {
+            final count = social.friendInvites.length;
+            return Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: IconButton(
+                key: const ValueKey('friend-requests-inbox'),
+                tooltip: count == 0
+                    ? 'Friend requests'
+                    : '$count pending friend requests',
+                icon: Badge(
+                  isLabelVisible: count > 0,
+                  backgroundColor: AptiquColors.error,
+                  label: Text(count > 99 ? '99+' : '$count'),
+                  child: const Icon(Icons.mail_outline_rounded),
+                ),
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const FriendRequestsScreen(),
+                    ),
+                  );
+                  if (mounted) load();
+                },
+              ),
+            );
+          }),
+      ],
+    ),
     body: Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: TextField(
+            key: const ValueKey('friend-search'),
             onChanged: search,
+            textInputAction: TextInputAction.search,
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              labelText: widget.picker
+              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: widget.picker
                   ? 'Search friends by name'
                   : 'Search by name or email',
             ),
@@ -208,27 +216,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     ),
                   ),
           ),
-        if (!widget.picker)
-          Obx(
-            () => social.friendInvites.isEmpty
-                ? const SizedBox.shrink()
-                : ListTile(
-                    title: Text(
-                      '${social.friendInvites.length} friend invitations',
-                    ),
-                    trailing: const Icon(Icons.mail_outline),
-                    onTap: () async {
-                      final invitation = social.friendInvites.first;
-                      await showDialog(
-                        context: context,
-                        builder: (_) =>
-                            SocialInvitationDialog(invitation: invitation),
-                      );
-                      await social.syncInbox();
-                    },
-                  ),
-          ),
-        Center(child: AppLoader(loading: loading)),
+        if (loading) const Center(child: AppLoader()),
         if (error.isNotEmpty)
           ListTile(
             title: Text(error),
@@ -236,100 +224,107 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
         Expanded(
           child: RefreshIndicator(
-            onRefresh: load,
-            child: ListView.builder(
+            onRefresh: () async {
+              await load();
+              await social.syncInbox();
+            },
+            child: CustomScrollView(
               controller: listScroll,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: items.isEmpty && !loading ? 1 : items.length,
-              itemBuilder: (_, index) {
-                if (items.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(
-                      discover
-                          ? 'No matching learners. Try another name or email.'
-                          : 'No friends yet. Search by name or email to find people.',
+              slivers: [
+                if (items.isEmpty && !loading && error.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: SocialEmptyState(
+                      icon: discover
+                          ? Icons.person_search_outlined
+                          : Icons.people_outline_rounded,
+                      title: discover
+                          ? 'No learners found'
+                          : 'Learn better together',
+                      message: discover
+                          ? 'Try another name or email.'
+                          : widget.picker
+                          ? 'Add friends to invite them to a duel.'
+                          : 'Find your people. Search for a name or email above.',
                     ),
-                  );
-                }
-                final p = items[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: p['avatarUrl'] == null
-                        ? null
-                        : NetworkImage(p['avatarUrl']),
-                    child: p['avatarUrl'] == null
-                        ? const Icon(Icons.person)
-                        : null,
                   ),
-                  title: Text(p['name']),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Level ${p['level']}${p['relation'] == 'FRIEND' ? ' · ${p['online'] == true
-                                  ? 'Online'
-                                  : p['online'] == false
-                                  ? 'Offline'
-                                  : 'Status unavailable'}' : ''}',
-                      ),
-                      if (p['relation'] == 'FRIEND') Text(friendLabel(p)),
-                      if (!widget.picker && p['relation'] != 'FRIEND')
-                        TextButton(
-                          onPressed:
-                              busyIds.contains(p['id']) ||
-                                  p['relation'] == 'INVITED'
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverList.builder(
+                    itemCount: items.length,
+                    itemBuilder: (_, index) {
+                      final p = items[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: LearnerTile(
+                          key: ValueKey(p['id']),
+                          person: p,
+                          detail: p['relation'] == 'FRIEND'
+                              ? friendLabel(p)
+                              : null,
+                          onTap: () => profile(p),
+                          actions: widget.picker
+                              ? SocialButton(
+                                  label: 'Invite',
+                                  onPressed: () => profile(p),
+                                )
+                              : p['relation'] == 'FRIEND'
                               ? null
-                              : () => requestFriend(p),
-                          child: Text(
-                            busyIds.contains(p['id'])
-                                ? 'Sending…'
-                                : p['relation'] == 'INVITED'
-                                ? 'Request sent'
-                                : p['relation'] == 'INCOMING'
-                                ? 'Accept request'
-                                : 'Send friend request',
-                          ),
+                              : FriendshipActions(person: p, onChanged: load),
                         ),
-                    ],
+                      );
+                    },
                   ),
-                  trailing: Icon(
-                    widget.picker
-                        ? Icons.person_add_alt_1
-                        : Icons.chevron_right,
-                  ),
-                  onTap: () => profile(p),
-                );
-              },
+                ),
+              ],
             ),
           ),
         ),
-        if (!discover)
+        if (!discover && (cursors.length > 1 || nextCursor != null))
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
+                IconButton(
+                  key: const ValueKey('previous-friends-page'),
+                  tooltip: 'Previous page',
                   onPressed: cursors.length > 1 && !loading
                       ? () {
                           cursors.removeLast();
-                          items = [];
+                          if (listScroll.hasClients) listScroll.jumpTo(0);
                           load();
                         }
                       : null,
-                  child: const Text('Previous'),
+                  icon: const Icon(Icons.chevron_left_rounded),
                 ),
-                Text('Page ${cursors.length}'),
-                TextButton(
+                Semantics(
+                  label: 'Page ${cursors.length}',
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: AptiquColors.surfaceContainerHigh,
+                    child: Text(
+                      '${cursors.length}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AptiquColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  key: const ValueKey('next-friends-page'),
+                  tooltip: 'Next page',
                   onPressed: nextCursor != null && !loading
                       ? () {
                           cursors.add(nextCursor);
-                          items = [];
+                          if (listScroll.hasClients) listScroll.jumpTo(0);
                           load();
                         }
                       : null,
-                  child: const Text('Next'),
+                  icon: const Icon(Icons.chevron_right_rounded),
                 ),
               ],
             ),
@@ -337,210 +332,4 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ],
     ),
   );
-}
-
-class FriendProfileScreen extends StatefulWidget {
-  final String id;
-  const FriendProfileScreen({super.key, required this.id});
-  @override
-  State<FriendProfileScreen> createState() => _FriendProfileScreenState();
-}
-
-class _FriendProfileScreenState extends State<FriendProfileScreen> {
-  final api = SocialApi();
-  Map<String, dynamic>? person;
-  String error = '';
-  StreamSubscription? profileEvents;
-  bool busy = false;
-  @override
-  void initState() {
-    super.initState();
-    load();
-    profileEvents = Get.find<SocialController>().events.stream.listen((event) {
-      if (event['event'] == 'INBOX_CHANGED' ||
-          event['event'] == 'RECONNECTED') {
-        load();
-      }
-      if (event['event'] == 'PRESENCE' && person != null && mounted) {
-        final row = (event['items'] as List)
-            .where((r) => r['id'] == widget.id)
-            .firstOrNull;
-        if (row != null) {
-          setState(() => person = {...person!, 'online': row['online']});
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    profileEvents?.cancel();
-    super.dispose();
-  }
-
-  Future<void> load() async {
-    try {
-      final p = await api.get('profiles/${widget.id}');
-      if (mounted) {
-        setState(() {
-          person = p;
-          error = '';
-        });
-        Get.find<SocialController>().watchFriends(
-          p['relation'] == 'FRIEND' ? [widget.id] : [],
-        );
-      }
-    } catch (_) {
-      if (mounted) setState(() => error = 'Could not load this profile.');
-    }
-  }
-
-  Future<void> action() async {
-    if (busy || person == null) return;
-    setState(() => busy = true);
-    try {
-      if (person!['relation'] == 'FRIEND') {
-        final remove = await showDialog<bool>(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Remove friend?'),
-            content: const Text('You can invite this learner again later.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Remove'),
-              ),
-            ],
-          ),
-        );
-        if (remove != true) return;
-        await api.removeFriend(widget.id);
-      } else if (person!['relation'] == 'INCOMING') {
-        await api.post(
-          'friend-invitations/${person!['friendshipId']}/respond',
-          {'accept': true, 'version': person!['friendshipVersion']},
-        );
-      } else {
-        await api.post('friends/${widget.id}/invite');
-      }
-      await load();
-      await Get.find<SocialController>().syncInbox();
-    } catch (_) {
-      if (mounted) {
-        setState(
-          () => error =
-              'Could not update this friendship. Please refresh and try again.',
-        );
-      }
-    } finally {
-      if (mounted) setState(() => busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final p = person;
-    return Scaffold(
-      backgroundColor: AptiquColors.surfaceDim,
-      appBar: AppBar(title: const Text('Learner profile')),
-      body: p == null
-          ? Center(
-              child: error.isEmpty
-                  ? const AppLoader()
-                  : TextButton(onPressed: load, child: Text(error)),
-            )
-          : ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  p['name'],
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                Text(
-                  'Level ${p['level']} · ${p['totalXp']} XP\nCurrent streak ${p['currentStreak']} days · Best ${p['highestStreak']} days\n${p['coins']} coins · ${p['online'] == true
-                      ? 'Online'
-                      : p['online'] == false
-                      ? 'Offline'
-                      : 'Status unavailable'}',
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: busy || p['relation'] == 'INVITED' ? null : action,
-                  child: Text(
-                    busy
-                        ? 'Updating…'
-                        : p['relation'] == 'FRIEND'
-                        ? 'Remove friend'
-                        : p['relation'] == 'INVITED'
-                        ? 'Invited'
-                        : p['relation'] == 'INCOMING'
-                        ? 'Accept invitation'
-                        : 'Add friend',
-                  ),
-                ),
-                if (error.isNotEmpty)
-                  Text(
-                    error,
-                    style: const TextStyle(color: AptiquColors.error),
-                  ),
-                const SizedBox(height: 24),
-                const Text('Performance'),
-                Text(
-                  '${p['performance']['correct']} correct / ${p['performance']['attempted']} submitted',
-                ),
-                Text(
-                  p['performance']['accuracy'] == null
-                      ? 'No accuracy results yet'
-                      : 'Accuracy ${(p['performance']['accuracy'] * 100).round()}%',
-                ),
-                Text(
-                  p['performance']['averageSolveTimeMs'] == null
-                      ? 'No timed results yet'
-                      : 'Average correct time ${(p['performance']['averageSolveTimeMs'] / 1000).toStringAsFixed(1)} seconds',
-                ),
-                const SizedBox(height: 20),
-                const Text('Learning activity'),
-                const SizedBox(height: 12),
-                ActivityCalendar(
-                  days: [
-                    for (final row in p['activity'])
-                      HomeActivityDay.fromJson(Map<String, dynamic>.from(row)),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text('By difficulty'),
-                for (final row in p['difficulty'])
-                  ListTile(
-                    title: Text(row['difficulty']),
-                    subtitle: Text(
-                      '${row['correct']} correct / ${row['attempted']} submitted',
-                    ),
-                  ),
-                const SizedBox(height: 20),
-                const Text('Achievements'),
-                for (final b in p['badges'])
-                  ListTile(
-                    title: Text(b['title']),
-                    subtitle: Text(b['description']),
-                    trailing: Text(
-                      b['unlocked'] == true
-                          ? 'Earned'
-                          : '${b['progress']} / ${b['target']}',
-                    ),
-                  ),
-                const SizedBox(height: 20),
-                const Text('Latest ranked match'),
-                Text(
-                  p['ranked'] == null
-                      ? 'No completed ranked matches'
-                      : '${p['ranked']['result']} · ${p['ranked']['correct']} correct',
-                ),
-              ],
-            ),
-    );
-  }
 }
