@@ -38,6 +38,10 @@ class AptiquColors {
   static const Color error = Color(0xFFEF4444);
   static const Color success = Color(0xFF10B981);
 
+  // Social identity accents used by profile and friend request avatars.
+  static const Color socialAvatarStart = Color(0xFFE11D48);
+  static const Color socialAvatarEnd = Color(0xFFFB7185);
+
   // Borders & Outlines
   static const Color outline = Color(0xFF3D445C);
   static const Color outlineVariant = Color(0xFF252B3D);

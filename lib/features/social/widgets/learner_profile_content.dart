@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/aptiqu_colors.dart';
 import '../../../core/theme/aptiqu_typography.dart';
+import 'learner_performance_card.dart';
+import 'social_profile_chrome.dart';
 import 'social_widgets.dart';
 
 class LearnerProfileContent extends StatelessWidget {
@@ -15,240 +17,74 @@ class LearnerProfileContent extends StatelessWidget {
   });
 
   Widget heading(String title) => Padding(
-    padding: const EdgeInsets.only(top: 24, bottom: 12),
+    padding: const EdgeInsets.fromLTRB(2, 24, 2, 12),
     child: Text(title, style: AptiquTypography.headlineSm),
   );
 
-  Widget metric(String value, String label, IconData icon, Color color) =>
-      SocialSurface(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 20, color: color),
-            const SizedBox(height: 10),
-            Text(value, style: AptiquTypography.headlineMd),
-            const SizedBox(height: 4),
-            Text(label, style: AptiquTypography.bodySm),
-          ],
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
-    final p = person;
-    final performance = Map<String, dynamic>.from(p['performance']);
-    final accuracy = performance['accuracy'] as num?;
-    final time = performance['averageSolveTimeMs'] as num?;
-    final badges = p['badges'] as List;
-    final ranked = p['ranked'];
+    final badges = person['badges'] as List;
+    final ranked = person['ranked'];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SocialSurface(
+          highlighted: true,
+          radius: 24,
+          padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  LearnerAvatar(person: p, radius: 36),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(p['name'], style: AptiquTypography.headlineMd),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Level ${p['level']} · ${p['totalXp']} XP',
-                          style: AptiquTypography.bodyMd.copyWith(
-                            color: AptiquColors.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          p['online'] == true
-                              ? 'Online now'
-                              : p['online'] == false
-                              ? 'Offline'
-                              : 'Status unavailable',
-                          style: AptiquTypography.bodySm,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              actions,
+              SocialIdentityHeader(person: person, profile: true),
+              const SizedBox(height: 22),
+              Align(alignment: Alignment.centerLeft, child: actions),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        LayoutBuilder(
-          builder: (context, constraints) => Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              for (final entry in [
-                (
-                  '${p['currentStreak']} days',
-                  'Current streak',
-                  Icons.local_fire_department_rounded,
-                  AptiquColors.tertiary,
-                ),
-                (
-                  '${p['highestStreak']} days',
-                  'Best streak',
-                  Icons.bolt_rounded,
-                  AptiquColors.secondary,
-                ),
-                (
-                  '${p['coins']}',
-                  'Coins',
-                  Icons.toll_rounded,
-                  AptiquColors.tertiary,
-                ),
-              ])
-                SizedBox(
-                  width: (constraints.maxWidth - 20) / 3,
-                  child: metric(entry.$1, entry.$2, entry.$3, entry.$4),
-                ),
-            ],
-          ),
-        ),
+        const SizedBox(height: 16),
+        _LearnerStats(person: person),
         heading('Performance'),
-        SocialSurface(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          accuracy == null
-                              ? 'N/A'
-                              : '${(accuracy * 100).round()}%',
-                          style: AptiquTypography.displayHero.copyWith(
-                            color: AptiquColors.secondary,
-                          ),
-                        ),
-                        Text('Accuracy', style: AptiquTypography.bodySm),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${performance['correct']} / ${performance['attempted']}',
-                          style: AptiquTypography.headlineMd,
-                        ),
-                        Text('Correct answers', style: AptiquTypography.bodySm),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.timer_outlined,
-                    size: 18,
-                    color: AptiquColors.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      time == null
-                          ? 'No timed results yet'
-                          : '${(time / 1000).toStringAsFixed(1)} sec · average correct answer',
-                      style: AptiquTypography.bodySm,
-                    ),
-                  ),
-                ],
-              ),
-              if (accuracy == null) ...[
-                const SizedBox(height: 8),
-                Text('No accuracy results yet', style: AptiquTypography.bodySm),
-              ],
-              if ((p['difficulty'] as List).isNotEmpty) ...[
-                const SizedBox(height: 20),
-                for (final row in p['difficulty'])
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${row['difficulty']}'
-                                    .toLowerCase()
-                                    .capitalizeLabel(),
-                                style: AptiquTypography.bodySm,
-                              ),
-                            ),
-                            Text(
-                              '${row['correct']} / ${row['attempted']} correct',
-                              style: AptiquTypography.bodySm,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: row['attempted'] == 0
-                                ? 0
-                                : (row['correct'] / row['attempted'])
-                                      .toDouble(),
-                            color: AptiquColors.primaryContainer,
-                            backgroundColor: AptiquColors.surfaceContainerHigh,
-                            minHeight: 4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ],
-          ),
-        ),
+        LearnerPerformanceCard(person: person),
         heading('Achievements'),
         if (badges.isEmpty)
           SocialSurface(
-            child: Text(
-              'Achievements will appear as this learner makes progress.',
-              style: AptiquTypography.bodySm,
+            radius: 20,
+            padding: const EdgeInsets.all(18),
+            child: Row(
+              children: [
+                const SocialIconPanel(
+                  icon: Icons.emoji_events_outlined,
+                  size: 40,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    'Achievements will appear as this learner makes progress.',
+                    style: AptiquTypography.bodySm.copyWith(height: 1.6),
+                  ),
+                ),
+              ],
             ),
           ),
         for (final badge in badges)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: 10),
             child: SocialSurface(
-              padding: const EdgeInsets.all(14),
+              radius: 20,
+              padding: const EdgeInsets.all(16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    badge['unlocked'] == true
+                  SocialIconPanel(
+                    icon: badge['unlocked'] == true
                         ? Icons.workspace_premium_rounded
                         : Icons.lock_outline_rounded,
-                    size: 26,
+                    size: 40,
                     color: badge['unlocked'] == true
                         ? AptiquColors.tertiary
                         : AptiquColors.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,12 +93,12 @@ class LearnerProfileContent extends StatelessWidget {
                           badge['title'],
                           style: AptiquTypography.titleSmall,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 5),
                         Text(
                           badge['description'],
-                          style: AptiquTypography.bodySm,
+                          style: AptiquTypography.bodySm.copyWith(height: 1.5),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 8),
                         Text(
                           badge['unlocked'] == true
                               ? 'Earned'
@@ -278,36 +114,121 @@ class LearnerProfileContent extends StatelessWidget {
               ),
             ),
           ),
-        heading('Latest ranked match'),
-        SocialSurface(
-          child: Row(
-            children: [
-              const Icon(
-                Icons.emoji_events_outlined,
-                color: AptiquColors.tertiary,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  ranked == null
-                      ? 'No completed ranked matches yet'
-                      : '${ranked['result']} · ${ranked['correct']} correct',
-                  style: AptiquTypography.bodyMd,
+        if (ranked != null) ...[
+          heading('Latest ranked match'),
+          SocialSurface(
+            radius: 20,
+            child: Row(
+              children: [
+                const SocialIconPanel(
+                  icon: Icons.emoji_events_outlined,
+                  color: AptiquColors.tertiary,
+                  size: 40,
                 ),
-              ),
-            ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    '${ranked['result']} · ${ranked['correct']} correct',
+                    style: AptiquTypography.bodyMd,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
         heading('Learning activity'),
         Text('Scroll through the months', style: AptiquTypography.bodySm),
         const SizedBox(height: 12),
-        SocialSurface(child: activity),
+        SocialSurface(radius: 20, child: activity),
       ],
     );
   }
 }
 
-extension on String {
-  String capitalizeLabel() =>
-      isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
+class _LearnerStats extends StatelessWidget {
+  final Map<String, dynamic> person;
+  const _LearnerStats({required this.person});
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final large = MediaQuery.textScalerOf(context).scale(12) > 16;
+      final stats = [
+        (
+          '${person['currentStreak']} days',
+          'Current streak',
+          Icons.local_fire_department_rounded,
+          AptiquColors.tertiary,
+        ),
+        (
+          '${person['highestStreak']} days',
+          'Best streak',
+          Icons.bolt_rounded,
+          AptiquColors.secondary,
+        ),
+        (
+          '${person['coins']}',
+          'Coins',
+          Icons.toll_rounded,
+          AptiquColors.tertiary,
+        ),
+      ];
+      return Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: [
+          for (final stat in stats)
+            SizedBox(
+              width: large
+                  ? constraints.maxWidth
+                  : (constraints.maxWidth - 20) / 3,
+              child: SocialSurface(
+                radius: 18,
+                padding: const EdgeInsets.all(14),
+                child: large
+                    ? Row(
+                        children: [
+                          SocialIconPanel(icon: stat.$3, color: stat.$4),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              stat.$2,
+                              style: AptiquTypography.bodySm,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              stat.$1,
+                              style: AptiquTypography.headlineSm,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SocialIconPanel(icon: stat.$3, color: stat.$4),
+                          const SizedBox(height: 12),
+                          Text(
+                            stat.$1,
+                            style: AptiquTypography.headlineSm.copyWith(
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            stat.$2,
+                            style: AptiquTypography.bodySm.copyWith(
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+        ],
+      );
+    },
+  );
 }

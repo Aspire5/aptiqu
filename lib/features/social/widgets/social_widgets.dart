@@ -7,10 +7,14 @@ import '../../../shared/widgets/buttons/aptiqu_button.dart';
 class SocialSurface extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
+  final bool highlighted;
+  final double radius;
   const SocialSurface({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(16),
+    this.highlighted = false,
+    this.radius = 16,
   });
 
   @override
@@ -18,8 +22,27 @@ class SocialSurface extends StatelessWidget {
     padding: padding,
     decoration: BoxDecoration(
       color: AptiquColors.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(16),
+      gradient: highlighted
+          ? const LinearGradient(
+              colors: [
+                AptiquColors.surfaceContainer,
+                AptiquColors.surfaceContainerLow,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+          : null,
+      borderRadius: BorderRadius.circular(radius),
       border: Border.all(color: AptiquColors.outlineVariant),
+      boxShadow: highlighted
+          ? [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: .18),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ]
+          : null,
     ),
     child: child,
   );
@@ -28,12 +51,88 @@ class SocialSurface extends StatelessWidget {
 class LearnerAvatar extends StatelessWidget {
   final Map<String, dynamic> person;
   final double radius;
-  const LearnerAvatar({super.key, required this.person, this.radius = 24});
+  final bool highlighted, squared, showPresence;
+  const LearnerAvatar({
+    super.key,
+    required this.person,
+    this.radius = 24,
+    this.highlighted = false,
+    this.squared = false,
+    this.showPresence = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final name = (person['name'] as String? ?? 'Learner').trim();
     final url = person['avatarUrl'] as String?;
+    if (highlighted) {
+      final fallback = Center(
+        child: Text(
+          name.isEmpty ? '?' : name.characters.first.toUpperCase(),
+          style: AptiquTypography.headlineMd.copyWith(
+            fontSize: radius * .85,
+            color: Colors.white,
+          ),
+        ),
+      );
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: radius * 2,
+            height: radius * 2,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  AptiquColors.socialAvatarStart,
+                  AptiquColors.socialAvatarEnd,
+                ],
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+              ),
+              borderRadius: BorderRadius.circular(squared ? 16 : radius),
+              border: Border.all(
+                color: AptiquColors.onSurface.withValues(alpha: .15),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AptiquColors.socialAvatarStart.withValues(alpha: .16),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: url == null || url.isEmpty
+                ? fallback
+                : Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => fallback,
+                  ),
+          ),
+          if (showPresence && person['online'] is bool)
+            Positioned(
+              right: -2,
+              bottom: -2,
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: person['online'] == true
+                      ? AptiquColors.success
+                      : AptiquColors.onSurfaceDisabled,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AptiquColors.surfaceContainerLow,
+                    width: 3,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      );
+    }
     return CircleAvatar(
       radius: radius,
       backgroundColor: AptiquColors.primaryContainer.withValues(alpha: .18),
@@ -53,12 +152,16 @@ class SocialButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final bool secondary, loading;
+  final bool expanded;
+  final IconData? icon;
   const SocialButton({
     super.key,
     required this.label,
     this.onPressed,
     this.secondary = false,
     this.loading = false,
+    this.expanded = false,
+    this.icon,
   });
 
   @override
@@ -70,8 +173,8 @@ class SocialButton extends StatelessWidget {
     child: ExcludeSemantics(
       child: Opacity(
         opacity: onPressed == null && !loading ? .65 : 1,
-        child: IntrinsicWidth(
-          child: AptiquButton(
+        child: _width(
+          AptiquButton(
             label: label,
             onPressed: onPressed,
             isLoading: loading,
@@ -80,11 +183,23 @@ class SocialButton extends StatelessWidget {
                 : AptiquButtonVariant.primary,
             borderRadius: BorderRadius.circular(12),
             fontSize: 13,
+            icon: icon == null
+                ? null
+                : Icon(
+                    icon,
+                    size: 16,
+                    color: secondary
+                        ? AptiquColors.onSurfaceVariant
+                        : Colors.white,
+                  ),
           ),
         ),
       ),
     ),
   );
+
+  Widget _width(Widget child) =>
+      expanded ? child : IntrinsicWidth(child: child);
 }
 
 class LearnerTile extends StatelessWidget {

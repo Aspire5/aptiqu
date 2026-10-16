@@ -19,6 +19,7 @@ import 'package:aptiqu/features/social/friend_requests_screen.dart';
 import 'package:aptiqu/features/social/widgets/social_widgets.dart';
 import 'package:aptiqu/features/home/presentation/widgets/home_dashboard_view.dart';
 import 'package:aptiqu/features/social/widgets/learner_activity_window.dart';
+import 'package:aptiqu/features/social/widgets/friend_request_card.dart';
 import 'package:aptiqu/features/home/presentation/widgets/bottom_nav_zone.dart';
 import 'package:aptiqu/features/home/presentation/controllers/home_controller.dart';
 import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
@@ -296,6 +297,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(FriendRequestsScreen), findsOneWidget);
       expect(find.byType(AlertDialog), findsNothing);
+      expect(find.text('1 pending'), findsOneWidget);
+      await tester.runAsync(() => GoogleFonts.pendingFonts());
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.byKey(const ValueKey('accept-request'))).width,
+        tester.getSize(find.byKey(const ValueKey('reject-request'))).width,
+      );
       await expectLater(
         find.byType(Scaffold).last,
         matchesGoldenFile('goldens/friend-requests.png'),
@@ -333,13 +341,13 @@ void main() {
       await phone(tester, const FriendRequestsScreen(), width: 320, scale: 1.5);
       await tester.tap(find.byKey(const ValueKey('accept-request')));
       await tester.pumpAndSettle();
-      expect(find.byType(LearnerTile), findsOneWidget);
+      expect(find.byType(FriendRequestCard), findsOneWidget);
       expect(Get.find<SocialController>().friendInvites, hasLength(1));
       adapter.failResponse = false;
       await tester.tap(find.byKey(const ValueKey('accept-request')));
       await tester.pumpAndSettle();
       expect(adapter.lastBody!['accept'], true);
-      expect(find.byType(LearnerTile), findsNothing);
+      expect(find.byType(FriendRequestCard), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
@@ -353,6 +361,10 @@ void main() {
         const FriendProfileScreen(id: 'learner'),
         width: 320,
         scale: 1.5,
+      );
+      await expectLater(
+        find.byType(Scaffold),
+        matchesGoldenFile('goldens/learner-profile-large.png'),
       );
       await tester.scrollUntilVisible(
         find.byType(LearnerActivityWindow),
@@ -386,6 +398,26 @@ void main() {
               r.queryParameters['month'] == '2026-09',
         ),
         hasLength(1),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'new learner profile has honest empty states and balanced request controls',
+    (tester) async {
+      adapter.relation = 'INCOMING';
+      await phone(tester, const FriendProfileScreen(id: 'learner'));
+      expect(find.text('N/A'), findsOneWidget);
+      expect(find.text('0 / 0'), findsOneWidget);
+      expect(find.text('No accuracy results yet'), findsOneWidget);
+      expect(
+        tester.getSize(find.byKey(const ValueKey('accept-request'))).width,
+        tester.getSize(find.byKey(const ValueKey('reject-request'))).width,
+      );
+      await expectLater(
+        find.byType(Scaffold),
+        matchesGoldenFile('goldens/learner-profile-empty.png'),
       );
       expect(tester.takeException(), isNull);
     },

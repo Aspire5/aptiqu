@@ -7,6 +7,10 @@ import 'friend_profile_screen.dart';
 import 'social_controller.dart';
 import 'widgets/friendship_actions.dart';
 import 'widgets/social_widgets.dart';
+import 'widgets/social_profile_chrome.dart';
+import 'widgets/friend_request_card.dart';
+import '../../core/theme/aptiqu_colors.dart';
+import '../../core/theme/aptiqu_typography.dart';
 
 class FriendRequestsScreen extends StatefulWidget {
   const FriendRequestsScreen({super.key});
@@ -63,7 +67,30 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Friend requests')),
+    appBar: SocialPageAppBar(
+      title: 'Friend requests',
+      trailing: Obx(() {
+        final count = social.friendInvites.length;
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+          decoration: BoxDecoration(
+            color: AptiquColors.primaryContainer.withValues(alpha: .12),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AptiquColors.primaryContainer.withValues(alpha: .25),
+            ),
+          ),
+          child: Text(
+            '$count pending',
+            style: AptiquTypography.bodySm.copyWith(
+              color: AptiquColors.primary,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+      }),
+    ),
     body: Column(
       children: [
         if (loading) const AppLoader(),
@@ -91,7 +118,7 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
                       ),
                     ),
                   SliverPadding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     sliver: SliverList.builder(
                       itemCount: invitations.length,
                       itemBuilder: (context, index) {
@@ -103,8 +130,8 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
                           'friendshipVersion': invitation['version'],
                         };
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: LearnerTile(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: FriendRequestCard(
                             key: ValueKey(invitation['id']),
                             person: person,
                             onTap: () async {
@@ -119,12 +146,42 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
                             actions: FriendshipActions(
                               person: person,
                               onChanged: load,
+                              fullWidth: true,
                             ),
                           ),
                         );
                       },
                     ),
                   ),
+                  if (invitations.isNotEmpty)
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                      sliver: SliverToBoxAdapter(
+                        child: SocialSurface(
+                          padding: const EdgeInsets.all(14),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.info_outline_rounded,
+                                size: 16,
+                                color: AptiquColors.primary,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Add friends to learn together and invite each other to friendly duels. Tap a learner to view their profile.',
+                                  style: AptiquTypography.bodySm.copyWith(
+                                    fontSize: 11,
+                                    height: 1.6,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             );

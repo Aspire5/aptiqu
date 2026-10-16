@@ -9,11 +9,13 @@ class FriendshipActions extends StatefulWidget {
   final Map<String, dynamic> person;
   final Future<void> Function() onChanged;
   final bool allowRemove;
+  final bool fullWidth;
   const FriendshipActions({
     super.key,
     required this.person,
     required this.onChanged,
     this.allowRemove = false,
+    this.fullWidth = false,
   });
 
   @override
@@ -79,24 +81,38 @@ class _FriendshipActionsState extends State<FriendshipActions> {
   Widget build(BuildContext context) {
     final relation = widget.person['relation'];
     if (relation == 'INCOMING') {
-      return Wrap(
-        spacing: 8,
-        runSpacing: 4,
-        children: [
-          SocialButton(
-            key: const ValueKey('accept-request'),
-            label: 'Accept',
-            loading: busy,
-            onPressed: busy ? null : update,
-          ),
-          SocialButton(
-            key: const ValueKey('reject-request'),
-            label: 'Reject',
-            secondary: true,
-            onPressed: busy ? null : () => update(accept: false),
-          ),
-        ],
+      final accept = SocialButton(
+        key: const ValueKey('accept-request'),
+        label: 'Accept',
+        icon: Icons.check_rounded,
+        expanded: widget.fullWidth,
+        loading: busy,
+        onPressed: busy ? null : update,
       );
+      final reject = SocialButton(
+        key: const ValueKey('reject-request'),
+        label: 'Reject',
+        icon: Icons.close_rounded,
+        expanded: widget.fullWidth,
+        secondary: true,
+        onPressed: busy ? null : () => update(accept: false),
+      );
+      if (widget.fullWidth) {
+        if (MediaQuery.textScalerOf(context).scale(13) > 21) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [accept, const SizedBox(height: 10), reject],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: accept),
+            const SizedBox(width: 12),
+            Expanded(child: reject),
+          ],
+        );
+      }
+      return Wrap(spacing: 8, runSpacing: 4, children: [accept, reject]);
     }
     return SocialButton(
       key: const ValueKey('friendship-action'),

@@ -9,6 +9,7 @@ import 'social_controller.dart';
 import 'widgets/friendship_actions.dart';
 import 'widgets/learner_profile_content.dart';
 import 'widgets/learner_activity_window.dart';
+import 'widgets/social_profile_chrome.dart';
 
 class FriendProfileScreen extends StatefulWidget {
   final String id;
@@ -78,7 +79,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
           DateTime.now().toUtc().add(const Duration(hours: 5, minutes: 30)),
         );
     return Scaffold(
-      appBar: AppBar(title: const Text('Learner profile')),
+      appBar: const SocialPageAppBar(title: 'Learner profile', centered: true),
       body: p == null
           ? Center(
               child: error == null
@@ -98,6 +99,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                     actions: FriendshipActions(
                       person: p,
                       allowRemove: true,
+                      fullWidth: true,
                       onChanged: load,
                     ),
                     activity: LearnerActivityWindow(
