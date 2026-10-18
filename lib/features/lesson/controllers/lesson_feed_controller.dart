@@ -7,6 +7,7 @@ import '../models/lesson_node_model.dart';
 import '../models/lesson_session_model.dart';
 import '../repositories/lesson_repository.dart';
 import '../../../core/progression/controllers/xp_controller.dart';
+import '../../home/presentation/controllers/home_controller.dart';
 
 enum FeedStatus { initial, loading, active, submitting, completed, error }
 
@@ -71,7 +72,9 @@ class LessonFeedController extends GetxController {
         // The lesson remains usable if local resume storage is unavailable.
       }
       if (generation != _feedGeneration) return;
-      status.value = session.isCompleted ? FeedStatus.completed : FeedStatus.active;
+      status.value = session.isCompleted
+          ? FeedStatus.completed
+          : FeedStatus.active;
     } catch (e) {
       if (generation != _feedGeneration) return;
       errorMessage.value = e.toString();
@@ -88,7 +91,9 @@ class LessonFeedController extends GetxController {
   }) async {
     if (status.value != FeedStatus.active ||
         sessionId == null ||
-        currentNode.value == null) return;
+        currentNode.value == null) {
+      return;
+    }
     status.value = FeedStatus.submitting;
     final generation = _feedGeneration;
 
@@ -128,10 +133,9 @@ class LessonFeedController extends GetxController {
       if (response.evaluation != null &&
           response.evaluation!.explanation != null &&
           response.evaluation!.explanation!.isNotEmpty) {
-        feedItems.add(FeedItem(
-          isUser: false,
-          text: response.evaluation!.explanation!,
-        ));
+        feedItems.add(
+          FeedItem(isUser: false, text: response.evaluation!.explanation!),
+        );
       }
 
       _applySession(response);
@@ -158,10 +162,12 @@ class LessonFeedController extends GetxController {
     } catch (e) {
       if (generation != _feedGeneration) return;
       feedItems.remove(thinking);
-      feedItems.add(FeedItem(
-        isUser: false,
-        text: 'Connection hiccup. Please try that action again.',
-      ));
+      feedItems.add(
+        FeedItem(
+          isUser: false,
+          text: 'Connection hiccup. Please try that action again.',
+        ),
+      );
       _scrollToBottom();
       status.value = FeedStatus.active;
     }
@@ -185,6 +191,9 @@ class LessonFeedController extends GetxController {
   }
 
   void _applySession(LessonSessionModel session) {
+    if (session.isCompleted && Get.isRegistered<HomeController>()) {
+      Get.find<HomeController>().refreshLearningProgress();
+    }
     sessionId = session.id;
     stateVersion = session.stateVersion;
     currentNode.value = session.currentNode;
@@ -196,11 +205,13 @@ class LessonFeedController extends GetxController {
     }
 
     // Add tutor message to feed
-    feedItems.add(FeedItem(
-      isUser: false,
-      text: session.currentNode.text,
-      node: session.currentNode,
-    ));
+    feedItems.add(
+      FeedItem(
+        isUser: false,
+        text: session.currentNode.text,
+        node: session.currentNode,
+      ),
+    );
 
     _scrollToBottom();
   }

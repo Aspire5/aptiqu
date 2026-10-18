@@ -313,6 +313,11 @@ export class LessonSessionService {
       });
     } else {
       // Resume existing session using its own scriptVersionId
+      session = await prisma.lessonSession.update({
+        where: { id: session.id },
+        data: { status: 'ACTIVE', lastActivityAt: new Date() },
+        include: { script: true },
+      });
       definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId, script.title);
       if (!definition) {
         const latestVer = await prisma.lessonScriptVersion.findFirst({
@@ -507,6 +512,11 @@ export class LessonSessionService {
           clientActionId,
           payload: { scriptSlug, scriptVersionId, roadmapStepId: effectiveRoadmapStepId },
         },
+      });
+    } else {
+      session = await prisma.lessonSession.update({
+        where: { id: session.id },
+        data: { status: 'ACTIVE', lastActivityAt: new Date() },
       });
     }
 
@@ -898,7 +908,7 @@ export class LessonSessionService {
 
   public async resumeSession(userId: string, sessionId: string) {
     return prisma.lessonSession.updateMany({
-      where: { id: sessionId, userId, status: 'PAUSED' },
+      where: { id: sessionId, userId, status: { in: ['ACTIVE', 'PAUSED'] } },
       data: { status: 'ACTIVE', lastActivityAt: new Date() },
     });
   }

@@ -1,3 +1,4 @@
+import { buildSubtopicProgress } from './learning-map-progress';
 import { prisma } from '../../../config/prisma';
 import { xpService } from '../../xp/xp.service';
 import { AwardXpResult } from '../../xp/xp.types';
@@ -425,7 +426,8 @@ export class RoadmapProgressionService {
 
     const completedSessions = await prisma.lessonSession.findMany({
       where: { userId, status: 'COMPLETED' },
-      select: { scriptId: true, roadmapStepId: true },
+      distinct: ['scriptId'],
+      select: { scriptId: true },
     });
     const completedScriptIds = new Set(completedSessions.map((cs) => cs.scriptId));
 
@@ -448,30 +450,17 @@ export class RoadmapProgressionService {
         let activeStepId: string | null = null;
 
         for (const step of subjectSteps) {
-          const assignments = step.scriptAssignments || [];
-          const stepSubtopicCount = (step.topic as any)?.subtopics?.length || 0;
-          totalSubtopics += Math.max(stepSubtopicCount, assignments.length);
-
-          if (assignments.length > 0) {
-            hasPlayableContent = true;
-            let stepCompleted = true;
-            for (const sa of assignments) {
-              if (completedScriptIds.has(sa.scriptId)) {
-                completedSubtopics++;
-              } else {
-                stepCompleted = false;
-              }
-            }
-            if (stepCompleted) {
-              completedTopics++;
-            } else if (!activeStepId) {
-              activeStepId = step.id;
-            }
-          }
+          const progress = buildSubtopicProgress(step.topic.subtopics, step.scriptAssignments, completedScriptIds);
+          totalSubtopics += progress.totalSubtopics;
+          completedSubtopics += progress.completedSubtopics;
+          hasPlayableContent ||= progress.hasPlayableContent;
+          if (progress.isCompleted) completedTopics++;
+          if (!activeStepId && progress.hasPlayableContent && !progress.isCompleted) activeStepId = step.id;
         }
 
         // If user has an active session in this subject, pick that step
-        const resumeStep = subjectSteps.find((s) => activeStepIds.has(s.id));
+        const recentSession = activeSessions.find(session => subjectSteps.some(step => step.id === session.roadmapStepId));
+        const resumeStep = subjectSteps.find(step => step.id === recentSession?.roadmapStepId);
         if (resumeStep) {
           activeStepId = resumeStep.id;
         } else if (!activeStepId && subjectSteps.length > 0) {
@@ -646,150 +635,47 @@ export class RoadmapProgressionService {
       },
     });
 
-    // Get user's step progress
-    const stepProgressList = await prisma.userRoadmapStepProgress.findMany({
-      where: {
-        userId,
-        roadmapId: roadmap.id,
-      },
-    });
-    const completedStepIds = new Set(
-      stepProgressList.filter((p) => p.status === 'COMPLETED').map((p) => p.roadmapStepId)
-    );
+    const playableStepIds = steps.filter(step => step.scriptAssignments.some(a =>
+      a.publishedVersionId || a.script.publishedVersionId
+    )).map(step => step.id);
+    const [activeSessions, completedSessions, lastPlayedSession] = await Promise.all([
+      prisma.lessonSession.findMany({
+        where: { userId, roadmapId: roadmap.id, status: { in: ['ACTIVE', 'PAUSED'] } },
+        select: { roadmapStepId: true },
+      }),
+      prisma.lessonSession.findMany({
+        where: { userId, status: 'COMPLETED' },
+        distinct: ['scriptId'],
+        select: { scriptId: true },
+      }),
+      prisma.lessonSession.findFirst({
+        where: {
+          userId,
+          roadmapId: roadmap.id,
+          roadmapStepId: { in: playableStepIds },
+          status: { in: ['ACTIVE', 'PAUSED', 'COMPLETED'] },
+        },
+        orderBy: [{ lastActivityAt: 'desc' }, { id: 'desc' }],
+        select: { roadmapStepId: true },
+      }),
+    ]);
+    const completedScriptIds = new Set(completedSessions.map(session => session.scriptId));
+    const inProgressStepIds = new Set(activeSessions.map(session => session.roadmapStepId));
 
-    // Get user's active/paused sessions for this roadmap
-    const activeSessions = await prisma.lessonSession.findMany({
-      where: {
-        userId,
-        roadmapId: roadmap.id,
-        status: { in: ['ACTIVE', 'PAUSED'] },
-      },
-    });
-    const inProgressStepIds = new Set(
-      activeSessions.filter((s) => s.roadmapStepId).map((s) => s.roadmapStepId as string)
-    );
-
-    // Also check sessions that were marked completed directly
-    const completedSessions = await prisma.lessonSession.findMany({
-      where: {
-        userId,
-        status: 'COMPLETED',
-      },
-      select: { scriptId: true, roadmapStepId: true },
-    });
-    const completedScriptIds = new Set(completedSessions.map((cs) => cs.scriptId));
-    for (const step of steps) {
-      const assignments = step.scriptAssignments || [];
-      if (assignments.length > 0 && assignments.every((sa) => completedScriptIds.has(sa.scriptId))) {
-        completedStepIds.add(step.id);
-      }
-    }
-
-    let activeStepId: string | null = null;
-    let foundFirstIncompletePublished = false;
+    // A returning learner focuses their most recently played topic, even when
+    // it is complete. A new learner starts at the first playable topic.
+    const activeStepId = lastPlayedSession?.roadmapStepId ?? playableStepIds[0] ?? null;
 
     const topicItems: LearningMapTopicItem[] = steps.map((step) => {
-      const topicSubtopics = (step.topic as any)?.subtopics || [];
-      const assignments = step.scriptAssignments || [];
-      const hasPublishedScript =
-        assignments.length > 0 &&
-        assignments.some((sa) => sa.publishedVersionId != null);
-
-      const firstScriptAssignment = assignments[0];
-      const hasSomeCompleted = assignments.some((sa) => completedScriptIds.has(sa.scriptId));
-      const hasActiveSession = inProgressStepIds.has(step.id);
-      const isStepFullyCompleted = completedStepIds.has(step.id);
-
-      let state: 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'COMING_SOON';
-
-      if (!hasPublishedScript) {
-        state = 'COMING_SOON';
-      } else if (isStepFullyCompleted) {
-        state = 'COMPLETED';
-      } else if (hasActiveSession || hasSomeCompleted) {
-        state = 'IN_PROGRESS';
-        if (!activeStepId) {
-          activeStepId = step.id;
-        }
-      } else {
-        state = 'AVAILABLE';
-        if (!activeStepId) {
-          activeStepId = step.id;
-        }
-      }
-
-      // Compute subtopics breakdown merging topic subtopics with script assignments
-      let subtopics: LearningMapSubtopicItem[] = [];
-      let totalSubtopics = 0;
-      let completedSubtopics = 0;
-
-      if (topicSubtopics.length > 0) {
-        totalSubtopics = topicSubtopics.length;
-
-        subtopics = topicSubtopics.map((st: any, idx: number) => {
-          const sa = assignments.find(
-            (a) =>
-              a.script?.subtopicId === st.id ||
-              a.script?.subtopicId === st.slug ||
-              a.script?.slug === st.slug ||
-              a.script?.slug === `script-${st.slug}` ||
-              a.sequence === st.sequence ||
-              a.sequence === (idx + 1)
-          ) || (idx < assignments.length && !assignments.some((a) => a.script?.subtopicId) ? assignments[idx] : null);
-
-          if (sa) {
-            const isDone = completedScriptIds.has(sa.scriptId);
-            if (isDone) completedSubtopics++;
-
-            // Any subtopic with a script is playable in any order
-            const isLocked = false;
-
-            return {
-              id: st.id || sa.id,
-              scriptAssignmentId: sa.id,
-              scriptId: sa.scriptId,
-              scriptSlug: sa.script.slug,
-              title: sa.script.title || st.name,
-              sequence: st.sequence ?? idx + 1,
-              isCompleted: isDone,
-              isLocked,
-              canReplay: isDone,
-            };
-          } else {
-            return {
-              id: st.id,
-              title: st.name,
-              sequence: st.sequence ?? idx + 1,
-              isCompleted: false,
-              isLocked: false,
-              canReplay: false,
-            };
-          }
-        });
-      } else if (assignments.length > 0) {
-        totalSubtopics = assignments.length;
-        subtopics = assignments.map((sa) => {
-          const isDone = completedScriptIds.has(sa.scriptId);
-          if (isDone) completedSubtopics++;
-          const isLocked = false;
-          return {
-            id: sa.id,
-            scriptId: sa.scriptId,
-            scriptSlug: sa.script.slug,
-            title: sa.script.title,
-            sequence: sa.sequence,
-            isCompleted: isDone,
-            isLocked,
-            canReplay: isDone,
-          };
-        });
-      }
-
-      if (totalSubtopics > 0 && completedSubtopics >= totalSubtopics) {
-        state = 'COMPLETED';
-      } else if (totalSubtopics > 1 && completedSubtopics < totalSubtopics && state === 'COMPLETED') {
-        state = 'IN_PROGRESS';
-      }
+      const progress = buildSubtopicProgress(step.topic.subtopics, step.scriptAssignments, completedScriptIds);
+      const { subtopics, totalSubtopics, completedSubtopics } = progress;
+      const hasPublishedScript = progress.hasPlayableContent;
+      const firstPlayableScriptId = subtopics.find(st => !st.isLocked)?.scriptId;
+      const firstScriptAssignment = step.scriptAssignments.find(a => a.scriptId === firstPlayableScriptId);
+      const state: LearningMapTopicItem['state'] = progress.isCompleted ? 'COMPLETED'
+        : !hasPublishedScript ? 'COMING_SOON'
+        : inProgressStepIds.has(step.id) || completedSubtopics > 0 ? 'IN_PROGRESS'
+        : 'AVAILABLE';
 
       return {
         roadmapStepId: step.id,

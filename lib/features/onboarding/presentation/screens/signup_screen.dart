@@ -26,7 +26,10 @@ class SignUpScreen extends StatelessWidget {
             children: [
               // Top Bar Header
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
                 child: Row(
                   children: [
                     Container(
@@ -63,7 +66,10 @@ class SignUpScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AptiquColors.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(12),
@@ -86,80 +92,13 @@ class SignUpScreen extends StatelessWidget {
               // Scrollable Form Body
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 18,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Gamified Welcome Callout
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AptiquColors.primaryContainer.withValues(alpha: 0.15),
-                              AptiquColors.surfaceContainer,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 44,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AptiquColors.primaryContainer.withValues(alpha: 0.2),
-                                border: Border.all(
-                                  color: AptiquColors.primaryContainer,
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.workspace_premium_rounded,
-                                color: AptiquColors.tertiary,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Unlock +250 Coins Starter Bonus',
-                                    style: AptiquTypography.bodyMd.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: AptiquColors.onSurface,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    'Tell Aero AI a bit about yourself to personalize your reasoning drills.',
-                                    style: AptiquTypography.bodySm.copyWith(
-                                      color: AptiquColors.onSurfaceVariant,
-                                      fontSize: 11.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 22),
-
                       // Error message banner if any
                       Obx(() {
                         if (controller.errorMessage.value.isEmpty) {
@@ -167,16 +106,24 @@ class SignUpScreen extends StatelessWidget {
                         }
                         return Container(
                           margin: const EdgeInsets.only(bottom: 16),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.redAccent.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.redAccent.withValues(alpha: 0.5)),
+                            border: Border.all(
+                              color: Colors.redAccent.withValues(alpha: 0.5),
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.error_outline_rounded,
-                                  color: Colors.redAccent, size: 18),
+                              const Icon(
+                                Icons.error_outline_rounded,
+                                color: Colors.redAccent,
+                                size: 18,
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
@@ -201,8 +148,11 @@ class SignUpScreen extends StatelessWidget {
                               controller: controller.firstNameController,
                               label: 'FIRST NAME *',
                               hintText: 'e.g. Alex',
-                              prefixIcon: const Icon(Icons.person_outline_rounded,
-                                  size: 18, color: AptiquColors.secondary),
+                              prefixIcon: const Icon(
+                                Icons.person_outline_rounded,
+                                size: 18,
+                                color: AptiquColors.secondary,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -211,8 +161,11 @@ class SignUpScreen extends StatelessWidget {
                               controller: controller.lastNameController,
                               label: 'SECOND NAME *',
                               hintText: 'e.g. Kumar',
-                              prefixIcon: const Icon(Icons.person_outline_rounded,
-                                  size: 18, color: AptiquColors.secondary),
+                              prefixIcon: const Icon(
+                                Icons.person_outline_rounded,
+                                size: 18,
+                                color: AptiquColors.secondary,
+                              ),
                             ),
                           ),
                         ],
@@ -231,7 +184,9 @@ class SignUpScreen extends StatelessWidget {
                           children: [
                             Text(
                               'DATE OF BIRTH *',
-                              style: AptiquTypography.labelCaps.copyWith(fontSize: 11),
+                              style: AptiquTypography.labelCaps.copyWith(
+                                fontSize: 11,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             InkWell(
@@ -239,20 +194,24 @@ class SignUpScreen extends StatelessWidget {
                                 final now = DateTime.now();
                                 final picked = await showDatePicker(
                                   context: context,
-                                  initialDate: selectedDate ?? DateTime(2003, 1, 1),
+                                  initialDate:
+                                      selectedDate ?? DateTime(2003, 1, 1),
                                   firstDate: DateTime(1960),
                                   lastDate: now,
                                   builder: (context, child) {
                                     return Theme(
                                       data: ThemeData.dark().copyWith(
                                         colorScheme: const ColorScheme.dark(
-                                          primary: AptiquColors.primaryContainer,
+                                          primary:
+                                              AptiquColors.primaryContainer,
                                           onPrimary: Colors.white,
-                                          surface: AptiquColors.surfaceContainer,
+                                          surface:
+                                              AptiquColors.surfaceContainer,
                                           onSurface: AptiquColors.onSurface,
                                         ),
                                         dialogTheme: const DialogThemeData(
-                                          backgroundColor: AptiquColors.surfaceContainer,
+                                          backgroundColor:
+                                              AptiquColors.surfaceContainer,
                                         ),
                                       ),
                                       child: child!,
@@ -265,11 +224,16 @@ class SignUpScreen extends StatelessWidget {
                               },
                               borderRadius: BorderRadius.circular(14),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AptiquColors.surfaceContainer,
                                   borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: AptiquColors.outlineVariant),
+                                  border: Border.all(
+                                    color: AptiquColors.outlineVariant,
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
@@ -286,7 +250,8 @@ class SignUpScreen extends StatelessWidget {
                                             : formattedDate,
                                         style: AptiquTypography.bodyMd.copyWith(
                                           color: formattedDate.isEmpty
-                                              ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.5)
+                                              ? AptiquColors.onSurfaceVariant
+                                                    .withValues(alpha: 0.5)
                                               : AptiquColors.onSurface,
                                         ),
                                       ),
@@ -310,11 +275,14 @@ class SignUpScreen extends StatelessWidget {
                         children: [
                           Text(
                             'GENDER *',
-                            style: AptiquTypography.labelCaps.copyWith(fontSize: 11),
+                            style: AptiquTypography.labelCaps.copyWith(
+                              fontSize: 11,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Obx(() {
-                            final currentGender = controller.selectedGender.value;
+                            final currentGender =
+                                controller.selectedGender.value;
                             return Wrap(
                               spacing: 8,
                               runSpacing: 8,
@@ -326,10 +294,13 @@ class SignUpScreen extends StatelessWidget {
                                   child: AnimatedContainer(
                                     duration: const Duration(milliseconds: 150),
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 10),
+                                      horizontal: 14,
+                                      vertical: 10,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: isSelected
-                                          ? AptiquColors.primaryContainer.withValues(alpha: 0.2)
+                                          ? AptiquColors.primaryContainer
+                                                .withValues(alpha: 0.2)
                                           : AptiquColors.surfaceContainer,
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
@@ -338,7 +309,9 @@ class SignUpScreen extends StatelessWidget {
                                             : AptiquColors.outlineVariant,
                                         width: isSelected ? 1.5 : 1.0,
                                       ),
-                                      boxShadow: isSelected ? AptiquColors.primaryGlow : null,
+                                      boxShadow: isSelected
+                                          ? AptiquColors.primaryGlow
+                                          : null,
                                     ),
                                     child: Text(
                                       gender,
@@ -346,7 +319,9 @@ class SignUpScreen extends StatelessWidget {
                                         color: isSelected
                                             ? Colors.white
                                             : AptiquColors.onSurfaceVariant,
-                                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                        fontWeight: isSelected
+                                            ? FontWeight.w700
+                                            : FontWeight.w500,
                                       ),
                                     ),
                                   ),
@@ -360,13 +335,16 @@ class SignUpScreen extends StatelessWidget {
 
                       // Religion
                       Obx(() {
-                        final currentReligion = controller.selectedReligion.value;
+                        final currentReligion =
+                            controller.selectedReligion.value;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'RELIGION / BELIEF *',
-                              style: AptiquTypography.labelCaps.copyWith(fontSize: 11),
+                              style: AptiquTypography.labelCaps.copyWith(
+                                fontSize: 11,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             InkWell(
@@ -375,15 +353,21 @@ class SignUpScreen extends StatelessWidget {
                                 title: 'Select Religion / Belief',
                                 items: controller.religions,
                                 selected: currentReligion,
-                                onSelected: (val) => controller.setReligion(val),
+                                onSelected: (val) =>
+                                    controller.setReligion(val),
                               ),
                               borderRadius: BorderRadius.circular(14),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AptiquColors.surfaceContainer,
                                   borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: AptiquColors.outlineVariant),
+                                  border: Border.all(
+                                    color: AptiquColors.outlineVariant,
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
@@ -400,7 +384,8 @@ class SignUpScreen extends StatelessWidget {
                                             : currentReligion,
                                         style: AptiquTypography.bodyMd.copyWith(
                                           color: currentReligion.isEmpty
-                                              ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.5)
+                                              ? AptiquColors.onSurfaceVariant
+                                                    .withValues(alpha: 0.5)
                                               : AptiquColors.onSurface,
                                         ),
                                       ),
@@ -426,7 +411,9 @@ class SignUpScreen extends StatelessWidget {
                           children: [
                             Text(
                               'COUNTRY *',
-                              style: AptiquTypography.labelCaps.copyWith(fontSize: 11),
+                              style: AptiquTypography.labelCaps.copyWith(
+                                fontSize: 11,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             InkWell(
@@ -439,11 +426,16 @@ class SignUpScreen extends StatelessWidget {
                               ),
                               borderRadius: BorderRadius.circular(14),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AptiquColors.surfaceContainer,
                                   borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: AptiquColors.outlineVariant),
+                                  border: Border.all(
+                                    color: AptiquColors.outlineVariant,
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
@@ -460,7 +452,8 @@ class SignUpScreen extends StatelessWidget {
                                             : currentCountry,
                                         style: AptiquTypography.bodyMd.copyWith(
                                           color: currentCountry.isEmpty
-                                              ? AptiquColors.onSurfaceVariant.withValues(alpha: 0.5)
+                                              ? AptiquColors.onSurfaceVariant
+                                                    .withValues(alpha: 0.5)
                                               : AptiquColors.onSurface,
                                         ),
                                       ),
@@ -485,8 +478,11 @@ class SignUpScreen extends StatelessWidget {
                           isLoading: controller.isLoading.value,
                           width: double.infinity,
                           height: 52,
-                          icon: const Icon(Icons.rocket_launch_rounded,
-                              size: 18, color: Colors.white),
+                          icon: const Icon(
+                            Icons.rocket_launch_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
                           onPressed: () async {
                             final success = await controller.submit();
                             if (success && context.mounted) {
@@ -551,8 +547,10 @@ class SignUpScreen extends StatelessWidget {
               Expanded(
                 child: ListView.separated(
                   itemCount: items.length,
-                  separatorBuilder: (_, __) =>
-                      const Divider(color: AptiquColors.outlineVariant, height: 1),
+                  separatorBuilder: (_, __) => const Divider(
+                    color: AptiquColors.outlineVariant,
+                    height: 1,
+                  ),
                   itemBuilder: (context, index) {
                     final item = items[index];
                     final isCurrent = item == selected;
@@ -565,12 +563,17 @@ class SignUpScreen extends StatelessWidget {
                           color: isCurrent
                               ? AptiquColors.primary
                               : AptiquColors.onSurface,
-                          fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: isCurrent
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                         ),
                       ),
                       trailing: isCurrent
-                          ? const Icon(Icons.check_circle_rounded,
-                              color: AptiquColors.secondary, size: 20)
+                          ? const Icon(
+                              Icons.check_circle_rounded,
+                              color: AptiquColors.secondary,
+                              size: 20,
+                            )
                           : null,
                       onTap: () {
                         onSelected(item);

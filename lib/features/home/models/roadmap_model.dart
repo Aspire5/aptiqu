@@ -41,8 +41,12 @@ class RoadmapSubjectSummary {
     return 0.0;
   }
 
-  factory RoadmapSubjectSummary.fromJson(Map<String, dynamic> json, {Map<String, dynamic>? progressMap}) {
-    final prog = progressMap ?? (json['progress'] as Map<String, dynamic>? ?? {});
+  factory RoadmapSubjectSummary.fromJson(
+    Map<String, dynamic> json, {
+    Map<String, dynamic>? progressMap,
+  }) {
+    final prog =
+        progressMap ?? (json['progress'] as Map<String, dynamic>? ?? {});
     return RoadmapSubjectSummary(
       id: json['id'] as String,
       slug: json['slug'] as String? ?? json['id'] as String,
@@ -86,16 +90,13 @@ class ActiveRoadmapModel {
     final subjects = rawSubjects.map((item) {
       final subjMap = item['subject'] as Map<String, dynamic>? ?? {};
       final progMap = item['progress'] as Map<String, dynamic>?;
-      return RoadmapSubjectSummary.fromJson(
-        {
-          'id': subjMap['id'] as String? ?? item['subjectId'] as String,
-          'slug': subjMap['slug'] as String? ?? subjMap['id'] as String? ?? '',
-          'name': subjMap['name'] as String? ?? 'Subject',
-          'description': subjMap['description'] as String?,
-          'sequence': item['sequence'] as int? ?? 1,
-        },
-        progressMap: progMap,
-      );
+      return RoadmapSubjectSummary.fromJson({
+        'id': subjMap['id'] as String? ?? item['subjectId'] as String,
+        'slug': subjMap['slug'] as String? ?? subjMap['id'] as String? ?? '',
+        'name': subjMap['name'] as String? ?? 'Subject',
+        'description': subjMap['description'] as String?,
+        'sequence': item['sequence'] as int? ?? 1,
+      }, progressMap: progMap);
     }).toList();
 
     return ActiveRoadmapModel(
@@ -157,7 +158,8 @@ class LearningMapTopicItemModel {
   final int teachingDepth;
   final String? subtopicId;
   final String? subtopicName;
-  final String state; // 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'COMING_SOON'
+  final String
+  state; // 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'COMING_SOON'
   final bool scriptAvailable;
   final String? scriptSlug;
   final String? scriptTitle;
@@ -211,8 +213,11 @@ class LearningMapTopicItemModel {
       scriptTitle: json['scriptTitle'] as String?,
       totalSubtopics: json['totalSubtopics'] as int? ?? 0,
       completedSubtopics: json['completedSubtopics'] as int? ?? 0,
-      subtopics: (json['subtopics'] as List<dynamic>?)
-              ?.map((s) => SubtopicItemModel.fromJson(s as Map<String, dynamic>))
+      subtopics:
+          (json['subtopics'] as List<dynamic>?)
+              ?.map(
+                (s) => SubtopicItemModel.fromJson(s as Map<String, dynamic>),
+              )
               .toList() ??
           [],
     );
@@ -244,6 +249,21 @@ class SubjectLearningMapModel {
     this.activeStepId,
   });
 
+  /// Prefer the server's latest played step. Older servers fall back to a
+  /// resumable lesson, then the first playable topic. Empty maps have no focus.
+  LearningMapTopicItemModel? get focusTopic {
+    final playable = topics.where(
+      (t) => t.scriptAvailable && !t.isLocked && !t.isComingSoon,
+    );
+    for (final topic in playable) {
+      if (topic.roadmapStepId == activeStepId) return topic;
+    }
+    for (final topic in playable) {
+      if (topic.isInProgress) return topic;
+    }
+    return playable.isEmpty ? null : playable.first;
+  }
+
   factory SubjectLearningMapModel.fromJson(Map<String, dynamic> json) {
     final roadmap = json['roadmap'] as Map<String, dynamic>? ?? {};
     final subject = json['subject'] as Map<String, dynamic>? ?? {};
@@ -251,7 +271,9 @@ class SubjectLearningMapModel {
     final rawTopics = json['topics'] as List<dynamic>? ?? [];
 
     final topicItems = rawTopics
-        .map((t) => LearningMapTopicItemModel.fromJson(t as Map<String, dynamic>))
+        .map(
+          (t) => LearningMapTopicItemModel.fromJson(t as Map<String, dynamic>),
+        )
         .toList();
 
     return SubjectLearningMapModel(

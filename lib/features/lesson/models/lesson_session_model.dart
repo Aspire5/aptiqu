@@ -99,7 +99,8 @@ class LessonHistoryItemModel {
           : null,
       evaluation: json['evaluation'] != null
           ? QuestionEvaluationModel.fromJson(
-              json['evaluation'] as Map<String, dynamic>)
+              json['evaluation'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
@@ -152,7 +153,9 @@ class ActiveLessonStateModel {
       hasActiveSession: json['hasActiveSession'] as bool? ?? false,
       roadmapStepId: json['roadmapStepId'] as String?,
       script: json['script'] != null
-          ? ActiveLessonScriptSummary.fromJson(json['script'] as Map<String, dynamic>)
+          ? ActiveLessonScriptSummary.fromJson(
+              json['script'] as Map<String, dynamic>,
+            )
           : null,
       session: json['session'] != null
           ? LessonSessionModel.fromJson(json['session'] as Map<String, dynamic>)
@@ -240,8 +243,10 @@ class LessonSessionModel {
       scriptTitle: json['scriptTitle'] as String?,
       status: json['status'] as String? ?? 'ACTIVE',
       stateVersion: json['stateVersion'] as int? ?? 1,
-      currentNode: LessonNodeModel.fromJson(json['currentNode'] as Map<String, dynamic>),
-      isCompleted: json['isCompleted'] as bool? ?? false,
+      currentNode: LessonNodeModel.fromJson(
+        json['currentNode'] as Map<String, dynamic>,
+      ),
+      isCompleted: json['isCompleted'] == true || json['status'] == 'COMPLETED',
       evaluation: parsedEval,
       next: parsedNext,
       history: parsedHistory,

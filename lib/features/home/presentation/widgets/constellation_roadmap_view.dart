@@ -16,7 +16,7 @@ import '../../../practice/controllers/practice_catalog_controller.dart';
 /// - Fullscreen mode with smooth animated slide/fade transitions
 /// - Bottom node preview sheet hidden by default, shown ONLY on node tap, dismissed on outside tap
 /// - Winding S-curve constellation path with glowing neon progress line
-/// - Gamified milestone nodes (Active Objective, Completed with 3 Stars, Ready/Unlocked, Boss Gate, Coming Soon)
+/// - Gamified milestone nodes (Active Objective, Completed lessons, Ready/Unlocked, Boss Gate, Coming Soon)
 class ConstellationRoadmapView extends StatefulWidget {
   final SubjectLearningMapModel learningMap;
   final List<RoadmapSubjectSummary> subjects;
@@ -42,7 +42,8 @@ class ConstellationRoadmapView extends StatefulWidget {
   });
 
   @override
-  State<ConstellationRoadmapView> createState() => _ConstellationRoadmapViewState();
+  State<ConstellationRoadmapView> createState() =>
+      _ConstellationRoadmapViewState();
 }
 
 class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
@@ -100,9 +101,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       final updated = widget.learningMap.topics.firstWhereOrNull(
         (t) => t.roadmapStepId == _inspectedTopic!.roadmapStepId,
       );
-      if (updated != null) {
-        _inspectedTopic = updated;
-      }
+      _inspectedTopic = updated ?? _getActiveOrFirstTopic();
+      if (updated == null) _isDockVisible = false;
     } else {
       _inspectedTopic = _getActiveOrFirstTopic();
     }
@@ -142,22 +142,13 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       );
     }
 
-    final activeStepId = widget.learningMap.activeStepId;
-    if (activeStepId != null) {
-      final match = topics.where((t) => t.roadmapStepId == activeStepId);
-      if (match.isNotEmpty) return match.first;
-    }
-
-    final available = topics.where((t) => t.isAvailable || t.isInProgress);
-    if (available.isNotEmpty) return available.first;
-
-    return topics.first;
+    return widget.learningMap.focusTopic ?? topics.first;
   }
 
   int _getActiveTopicIndex() {
     final active = _getActiveOrFirstTopic();
     final index = widget.learningMap.topics.indexOf(active);
-    return index >= 0 ? index : 0;
+    return widget.learningMap.focusTopic == null ? -1 : index;
   }
 
   /// Calculates node position (x, y) on the canvas using a winding S-curve
@@ -190,7 +181,11 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   }
 
   /// Creates a clean 2D Transformation Matrix (translation + scale) without deprecated APIs
-  Matrix4 _buildMatrix2D({required double tx, required double ty, required double scale}) {
+  Matrix4 _buildMatrix2D({
+    required double tx,
+    required double ty,
+    required double scale,
+  }) {
     final m = Matrix4.identity();
     m.setEntry(0, 0, scale);
     m.setEntry(1, 1, scale);
@@ -201,11 +196,19 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
   /// Triggers smooth cinematic zoom-in camera animation from zoomed-out to the target node
   void _animateCameraToActiveNode({bool instant = false}) {
-    if (_viewportSize == Size.zero || widget.learningMap.topics.isEmpty) return;
+    if (!mounted ||
+        _viewportSize == Size.zero ||
+        widget.learningMap.topics.isEmpty) {
+      return;
+    }
 
     final canvasWidth = max(_viewportSize.width, 420.0);
-    final targetIndex = _getActiveTopicIndex();
-    final targetOffset = _getNodePosition(targetIndex, widget.learningMap.topics.length, canvasWidth);
+    final targetIndex = max(0, _getActiveTopicIndex());
+    final targetOffset = _getNodePosition(
+      targetIndex,
+      widget.learningMap.topics.length,
+      canvasWidth,
+    );
 
     const double targetScale = 1.05;
     const double startScale = 0.52;
@@ -235,10 +238,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
     _transformationController.value = startMatrix;
 
-    _cameraAnimation = Matrix4Tween(
-      begin: startMatrix,
-      end: endMatrix,
-    ).animate(
+    _cameraAnimation = Matrix4Tween(begin: startMatrix, end: endMatrix).animate(
       CurvedAnimation(
         parent: _cameraAnimationController,
         curve: Curves.easeInOutCubic,
@@ -255,8 +255,14 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     if (_viewportSize == Size.zero) return;
 
     final canvasWidth = max(_viewportSize.width, 420.0);
-    final targetOffset = _getNodePosition(index, widget.learningMap.topics.length, canvasWidth);
-    final double currentScale = _transformationController.value.getMaxScaleOnAxis().clamp(0.8, 1.4);
+    final targetOffset = _getNodePosition(
+      index,
+      widget.learningMap.topics.length,
+      canvasWidth,
+    );
+    final double currentScale = _transformationController.value
+        .getMaxScaleOnAxis()
+        .clamp(0.8, 1.4);
 
     final double targetViewportX = _viewportSize.width / 2;
     final double targetViewportY = _viewportSize.height * 0.42;
@@ -267,15 +273,16 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       scale: currentScale,
     );
 
-    _cameraAnimation = Matrix4Tween(
-      begin: _transformationController.value,
-      end: targetMatrix,
-    ).animate(
-      CurvedAnimation(
-        parent: _cameraAnimationController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    _cameraAnimation =
+        Matrix4Tween(
+          begin: _transformationController.value,
+          end: targetMatrix,
+        ).animate(
+          CurvedAnimation(
+            parent: _cameraAnimationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _cameraAnimationController.reset();
     _cameraAnimationController.forward();
@@ -291,7 +298,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
         _viewportSize = Size(constraints.maxWidth, constraints.maxHeight);
 
         final canvasWidth = max(constraints.maxWidth, 420.0);
-        final canvasHeight = topPadding + (totalTopics * nodeSpacing) + bottomPadding;
+        final canvasHeight =
+            topPadding + (totalTopics * nodeSpacing) + bottomPadding;
 
         if (!_hasInitialZoomAnimated && totalTopics > 0) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -320,14 +328,17 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   AnimatedBuilder(
                     animation: _cameraAnimationController,
                     builder: (context, child) {
-                      if (_cameraAnimation != null && _cameraAnimationController.isAnimating) {
-                        _transformationController.value = _cameraAnimation!.value;
+                      if (_cameraAnimation != null &&
+                          _cameraAnimationController.isAnimating) {
+                        _transformationController.value =
+                            _cameraAnimation!.value;
                       }
                       return child!;
                     },
                     child: InteractiveViewer(
                       transformationController: _transformationController,
-                      constrained: false, // COMPLETE SCROLL FREEDOM ALL THE WAY DOWN
+                      constrained:
+                          false, // COMPLETE SCROLL FREEDOM ALL THE WAY DOWN
                       minScale: 0.35,
                       maxScale: 2.2,
                       boundaryMargin: const EdgeInsets.symmetric(
@@ -356,7 +367,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                                 child: CustomPaint(
                                   painter: _ConstellationPathPainter(
                                     nodePositions: nodePositions,
-                                    activeNodeIndex: activeIndex,
+                                    completedNodeIndices: {
+                                      for (var i = 0; i < topics.length; i++)
+                                        if (topics[i].isCompleted) i,
+                                    },
                                   ),
                                 ),
                               ),
@@ -368,8 +382,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                                   index: i,
                                   position: nodePositions[i],
                                   isActiveFocus: i == activeIndex,
-                                  isInspected: _inspectedTopic?.roadmapStepId == topics[i].roadmapStepId,
-                                  isBossGate: (i + 1) % 10 == 0 || i == totalTopics - 1,
+                                  isInspected:
+                                      _inspectedTopic?.roadmapStepId ==
+                                      topics[i].roadmapStepId,
                                 ),
                             ],
                           ),
@@ -432,11 +447,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   }
 
   Widget _buildFixedSubjectsBar() {
-    final completed = widget.learningMap.completedTopics;
-    final total = widget.learningMap.totalTopics;
-    // Total stars: 3 per topic
-    final progressStarsText = '$completed/${total * 3}';
-
+    final compact = MediaQuery.sizeOf(context).width < 480;
     return Container(
       height: 48.0,
       width: double.infinity,
@@ -444,10 +455,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       decoration: const BoxDecoration(
         color: AptiquColors.surfaceContainerHigh,
         border: Border(
-          bottom: BorderSide(
-            color: AptiquColors.outlineVariant,
-            width: 1.0,
-          ),
+          bottom: BorderSide(color: AptiquColors.outlineVariant, width: 1.0),
         ),
       ),
       child: SingleChildScrollView(
@@ -458,16 +466,22 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.hub_rounded, size: 14, color: AptiquColors.primary),
-                const SizedBox(width: 5),
-                Text(
-                  'SUBJECTS',
-                  style: AptiquTypography.labelCapsBold.copyWith(
-                    color: AptiquColors.primary,
-                    fontSize: 10,
-                    letterSpacing: 1.0,
-                  ),
+                const Icon(
+                  Icons.hub_rounded,
+                  size: 14,
+                  color: AptiquColors.primary,
                 ),
+                if (!compact) ...[
+                  const SizedBox(width: 5),
+                  Text(
+                    'SUBJECTS',
+                    style: AptiquTypography.labelCapsBold.copyWith(
+                      color: AptiquColors.primary,
+                      fontSize: 10,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ],
                 const SizedBox(width: 10),
                 Container(
                   width: 1,
@@ -481,6 +495,13 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             // Horizontal Subject Chips
             ...widget.subjects.map((subj) {
               final isSelected = subj.id == widget.selectedSubjectId;
+              final completed = isSelected
+                  ? widget.learningMap.completedTopics
+                  : subj.completedTopics;
+              final total = isSelected
+                  ? widget.learningMap.totalTopics
+                  : subj.totalTopics;
+              final progressText = '$completed/$total topics';
 
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
@@ -489,14 +510,21 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   onTap: () => widget.onSelectSubject(subj.id),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? AptiquColors.primaryContainer.withValues(alpha: 0.25)
+                          ? AptiquColors.primaryContainer.withValues(
+                              alpha: 0.25,
+                            )
                           : AptiquColors.surfaceContainer,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? AptiquColors.primary : AptiquColors.outlineVariant,
+                        color: isSelected
+                            ? AptiquColors.primary
+                            : AptiquColors.outlineVariant,
                         width: isSelected ? 1.4 : 1.0,
                       ),
                       boxShadow: isSelected ? AptiquColors.primaryGlow : null,
@@ -512,24 +540,46 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                               color: AptiquColors.secondary,
                               shape: BoxShape.circle,
                               boxShadow: [
-                                BoxShadow(color: AptiquColors.secondary, blurRadius: 4),
+                                BoxShadow(
+                                  color: AptiquColors.secondary,
+                                  blurRadius: 4,
+                                ),
                               ],
                             ),
                           ),
                           const SizedBox(width: 6),
                         ],
-                        Text(
-                          subj.name,
-                          style: AptiquTypography.bodySm.copyWith(
-                            fontSize: 12,
-                            color: isSelected ? Colors.white : AptiquColors.onSurfaceVariant,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        Tooltip(
+                          message: subj.name,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: compact
+                                  ? MediaQuery.sizeOf(context).width * .3
+                                  : 200,
+                            ),
+                            child: Text(
+                              subj.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AptiquTypography.bodySm.copyWith(
+                                fontSize: 12,
+                                color: isSelected
+                                    ? Colors.white
+                                    : AptiquColors.onSurfaceVariant,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ),
-                        if (isSelected) ...[
+                        ...[
                           const SizedBox(width: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: AptiquColors.surfaceContainerLowest,
                               borderRadius: BorderRadius.circular(8),
@@ -537,10 +587,14 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star_rounded, size: 11, color: AptiquColors.tertiary),
+                                const Icon(
+                                  Icons.menu_book_rounded,
+                                  size: 11,
+                                  color: AptiquColors.secondary,
+                                ),
                                 const SizedBox(width: 2),
                                 Text(
-                                  progressStarsText,
+                                  progressText,
                                   style: AptiquTypography.metricSm.copyWith(
                                     color: AptiquColors.tertiary,
                                     fontWeight: FontWeight.w700,
@@ -573,7 +627,6 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     required Offset position,
     required bool isActiveFocus,
     required bool isInspected,
-    required bool isBossGate,
   }) {
     return Positioned(
       left: position.dx - 130,
@@ -599,7 +652,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [AptiquColors.primaryContainer, AptiquColors.primaryDark],
+                    colors: [
+                      AptiquColors.primaryContainer,
+                      AptiquColors.primaryDark,
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: AptiquColors.primaryGlow,
@@ -607,7 +663,11 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.bolt_rounded, size: 12, color: Colors.white),
+                    const Icon(
+                      Icons.bolt_rounded,
+                      size: 12,
+                      color: Colors.white,
+                    ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
@@ -626,9 +686,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
               ),
 
             // Node Circle
-            if (isBossGate)
-              _buildBossNodeCircle(topic, isActiveFocus, isInspected)
-            else if (isActiveFocus)
+            if (isActiveFocus)
               _buildActiveFocusNodeCircle(topic)
             else if (topic.isCompleted)
               _buildCompletedNodeCircle(topic, isInspected)
@@ -656,15 +714,15 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                 color: isActiveFocus
                     ? AptiquColors.primary
                     : isInspected
-                        ? Colors.white
-                        : AptiquColors.onSurface,
+                    ? Colors.white
+                    : AptiquColors.onSurface,
               ),
             ),
 
             const SizedBox(height: 2),
 
             // Status Badge Pill
-            _buildNodeStatusBadge(topic, isActiveFocus, isBossGate),
+            _buildNodeStatusBadge(topic, isActiveFocus),
           ],
         ),
       ),
@@ -675,10 +733,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     return AnimatedBuilder(
       animation: _pulseAnimation,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _pulseAnimation.value,
-          child: child,
-        );
+        return Transform.scale(scale: _pulseAnimation.value, child: child);
       },
       child: Container(
         width: 66,
@@ -722,7 +777,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     );
   }
 
-  Widget _buildCompletedNodeCircle(LearningMapTopicItemModel topic, bool isInspected) {
+  Widget _buildCompletedNodeCircle(
+    LearningMapTopicItemModel topic,
+    bool isInspected,
+  ) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -733,7 +791,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             shape: BoxShape.circle,
             color: AptiquColors.surfaceContainerHigh,
             border: Border.all(
-              color: AptiquColors.secondary.withValues(alpha: isInspected ? 1.0 : 0.6),
+              color: AptiquColors.secondary.withValues(
+                alpha: isInspected ? 1.0 : 0.6,
+              ),
               width: isInspected ? 2.5 : 1.8,
             ),
             boxShadow: [
@@ -760,7 +820,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             decoration: BoxDecoration(
               color: AptiquColors.secondary,
               shape: BoxShape.circle,
-              border: Border.all(color: AptiquColors.surfaceContainerHigh, width: 1.5),
+              border: Border.all(
+                color: AptiquColors.surfaceContainerHigh,
+                width: 1.5,
+              ),
             ),
             child: const Icon(
               Icons.done_all_rounded,
@@ -773,7 +836,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     );
   }
 
-  Widget _buildReadyNodeCircle(LearningMapTopicItemModel topic, bool isInspected) {
+  Widget _buildReadyNodeCircle(
+    LearningMapTopicItemModel topic,
+    bool isInspected,
+  ) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -784,14 +850,16 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             shape: BoxShape.circle,
             color: AptiquColors.surfaceContainerHigh,
             border: Border.all(
-              color: isInspected ? AptiquColors.primary : AptiquColors.outlineVariant,
+              color: isInspected
+                  ? AptiquColors.primary
+                  : AptiquColors.outlineVariant,
               width: isInspected ? 2.0 : 1.4,
             ),
             boxShadow: isInspected ? AptiquColors.primaryGlow : null,
           ),
           child: const Center(
             child: Icon(
-              Icons.trending_up_rounded,
+              Icons.menu_book_rounded,
               color: AptiquColors.secondary,
               size: 24,
             ),
@@ -807,7 +875,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              'READY',
+              topic.isInProgress ? 'IN PROGRESS' : 'READY',
               style: AptiquTypography.labelCapsBold.copyWith(
                 fontSize: 7.5,
                 color: Colors.white,
@@ -819,7 +887,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     );
   }
 
-  Widget _buildLockedNodeCircle(LearningMapTopicItemModel topic, bool isInspected) {
+  Widget _buildLockedNodeCircle(
+    LearningMapTopicItemModel topic,
+    bool isInspected,
+  ) {
     return Container(
       width: 50,
       height: 50,
@@ -827,13 +898,17 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
         shape: BoxShape.circle,
         color: AptiquColors.surfaceContainerLow,
         border: Border.all(
-          color: isInspected ? AptiquColors.outline : AptiquColors.outlineVariant,
+          color: isInspected
+              ? AptiquColors.outline
+              : AptiquColors.outlineVariant,
           width: 1.2,
         ),
       ),
       child: Center(
         child: Icon(
-          topic.isComingSoon ? Icons.schedule_rounded : Icons.lock_outline_rounded,
+          topic.isComingSoon
+              ? Icons.schedule_rounded
+              : Icons.lock_outline_rounded,
           color: AptiquColors.onSurfaceVariant.withValues(alpha: 0.6),
           size: 22,
         ),
@@ -841,66 +916,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     );
   }
 
-  Widget _buildBossNodeCircle(LearningMapTopicItemModel topic, bool isActive, bool isInspected) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AptiquColors.surfaceContainerHigh,
-            border: Border.all(
-              color: AptiquColors.tertiaryContainer,
-              width: 2.0,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AptiquColors.tertiaryContainer.withValues(alpha: 0.45),
-                blurRadius: 16,
-              ),
-            ],
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.security_rounded,
-              color: AptiquColors.tertiary,
-              size: 30,
-            ),
-          ),
-        ),
-        Positioned(
-          top: -4,
-          right: -8,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: AptiquColors.tertiaryContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.shield_outlined, size: 10, color: Colors.white),
-                const SizedBox(width: 2),
-                Text(
-                  'BOSS',
-                  style: AptiquTypography.labelCapsBold.copyWith(
-                    color: Colors.white,
-                    fontSize: 8,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSubtopicsProgressPill(LearningMapTopicItemModel topic) {
-    final total = topic.totalSubtopics > 0 ? topic.totalSubtopics : 8;
+    final total = topic.totalSubtopics;
     final done = topic.completedSubtopics;
 
     return Container(
@@ -916,7 +933,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
         ),
       ),
       child: Text(
-        '$done/$total',
+        total == 0 ? 'Coming soon' : '$done/$total completed',
         style: AptiquTypography.labelCapsBold.copyWith(
           fontSize: 9.5,
           color: topic.isCompleted
@@ -931,21 +948,12 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   Widget _buildNodeStatusBadge(
     LearningMapTopicItemModel topic,
     bool isActiveFocus,
-    bool isBossGate,
   ) {
-    if (isBossGate) {
-      return Text(
-        'SECTOR BOSS GATE',
-        style: AptiquTypography.labelCapsBold.copyWith(
-          color: AptiquColors.tertiary,
-          fontSize: 9,
-        ),
-      );
-    }
-
     if (isActiveFocus) {
       return Text(
-        topic.isInProgress || topic.completedSubtopics > 0
+        topic.isCompleted
+            ? 'COMPLETED · REPLAY'
+            : topic.isInProgress || topic.completedSubtopics > 0
             ? 'CONTINUE TOPIC'
             : 'START TOPIC',
         style: AptiquTypography.labelCapsBold.copyWith(
@@ -1009,17 +1017,23 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
           backgroundColor: widget.isFullScreen
               ? AptiquColors.primaryContainer
               : AptiquColors.surfaceContainerHigh,
-          foregroundColor: widget.isFullScreen ? Colors.white : AptiquColors.secondary,
+          foregroundColor: widget.isFullScreen
+              ? Colors.white
+              : AptiquColors.secondary,
           elevation: 6,
           shape: CircleBorder(
             side: BorderSide(
-              color: widget.isFullScreen ? AptiquColors.primary : AptiquColors.outlineVariant,
+              color: widget.isFullScreen
+                  ? AptiquColors.primary
+                  : AptiquColors.outlineVariant,
             ),
           ),
           onPressed: widget.onToggleFullScreen,
           tooltip: widget.isFullScreen ? 'Exit Fullscreen' : 'Fullscreen Map',
           child: Icon(
-            widget.isFullScreen ? Icons.fullscreen_exit_rounded : Icons.fullscreen_rounded,
+            widget.isFullScreen
+                ? Icons.fullscreen_exit_rounded
+                : Icons.fullscreen_rounded,
             size: 20,
           ),
         ),
@@ -1095,7 +1109,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
   Widget _buildNodeDetailsDock(LearningMapTopicItemModel topic) {
     final isCompleted = topic.isCompleted;
-    final totalSubtopics = topic.totalSubtopics > 0 ? topic.totalSubtopics : 8;
+    final totalSubtopics = topic.totalSubtopics;
     final completedCount = topic.completedSubtopics;
 
     return Container(
@@ -1168,12 +1182,19 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 1,
+                          ),
                           decoration: BoxDecoration(
-                            color: AptiquColors.secondary.withValues(alpha: 0.15),
+                            color: AptiquColors.secondary.withValues(
+                              alpha: 0.15,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: AptiquColors.secondary.withValues(alpha: 0.3),
+                              color: AptiquColors.secondary.withValues(
+                                alpha: 0.3,
+                              ),
                               width: 0.8,
                             ),
                           ),
@@ -1209,7 +1230,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                 },
                 child: Container(
                   width: 28,
-                  height: 28,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: AptiquColors.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(14),
@@ -1241,7 +1262,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   height: 22,
                   margin: const EdgeInsets.only(top: 2),
                   decoration: BoxDecoration(
-                    color: AptiquColors.secondaryContainer.withValues(alpha: 0.25),
+                    color: AptiquColors.secondaryContainer.withValues(
+                      alpha: 0.25,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -1262,8 +1285,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                       ),
                       children: [
                         TextSpan(
-                          text: topic.description ??
-                              'Build the basic numerical fluency required to solve aptitude problems confidently and quickly without pencil and paper.',
+                          text:
+                              topic.description ??
+                              'Explore the subtopics below to learn and practise ${topic.topicName}.',
                           style: AptiquTypography.bodySm.copyWith(
                             color: AptiquColors.onSurfaceVariant,
                             fontSize: 11,
@@ -1314,12 +1338,19 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
               children: [
                 Expanded(
                   child: SizedBox(
-                    height: 40,
+                    height: 48,
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AptiquColors.secondary, width: 1.2),
-                        backgroundColor: AptiquColors.secondary.withValues(alpha: 0.12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        side: const BorderSide(
+                          color: AptiquColors.secondary,
+                          width: 1.2,
+                        ),
+                        backgroundColor: AptiquColors.secondary.withValues(
+                          alpha: 0.12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
@@ -1329,7 +1360,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                         });
 
                         // 2. Direct Practice session launch for this topic
-                        final practiceController = Get.isRegistered<PracticeCatalogController>()
+                        final practiceController =
+                            Get.isRegistered<PracticeCatalogController>()
                             ? Get.find<PracticeCatalogController>()
                             : Get.put(PracticeCatalogController());
 
@@ -1338,7 +1370,11 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                           topicId: topic.topicId,
                         );
                       },
-                      icon: const Icon(Icons.sports_esports_rounded, size: 16, color: AptiquColors.secondary),
+                      icon: const Icon(
+                        Icons.sports_esports_rounded,
+                        size: 16,
+                        color: AptiquColors.secondary,
+                      ),
                       label: Text(
                         'Practice Topic',
                         style: AptiquTypography.headlineSm.copyWith(
@@ -1353,12 +1389,18 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                 const SizedBox(width: 10),
                 Expanded(
                   child: SizedBox(
-                    height: 40,
+                    height: 48,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isCompleted ? AptiquColors.secondary : const Color(0xFF7C3AED),
-                        foregroundColor: isCompleted ? AptiquColors.onSecondary : Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        backgroundColor: isCompleted
+                            ? AptiquColors.secondary
+                            : const Color(0xFF7C3AED),
+                        foregroundColor: isCompleted
+                            ? AptiquColors.onSecondary
+                            : Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                         elevation: 2,
                         padding: EdgeInsets.zero,
                       ),
@@ -1368,9 +1410,18 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                         });
                         widget.onTopicTap(topic);
                       },
-                      icon: Icon(isCompleted ? Icons.replay_rounded : Icons.play_arrow_rounded, size: 17),
+                      icon: Icon(
+                        isCompleted
+                            ? Icons.replay_rounded
+                            : Icons.play_arrow_rounded,
+                        size: 17,
+                      ),
                       label: Text(
-                        isCompleted ? 'Replay Topic' : 'Play Topic',
+                        isCompleted
+                            ? 'Replay Topic'
+                            : topic.isInProgress
+                            ? 'Continue Topic'
+                            : 'Play Topic',
                         style: AptiquTypography.headlineSm.copyWith(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -1424,7 +1475,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   shape: BoxShape.circle,
                   color: isDone
                       ? AptiquColors.secondary.withValues(alpha: 0.15)
-                      : AptiquColors.surfaceContainerHighest.withValues(alpha: 0.4),
+                      : AptiquColors.surfaceContainerHighest.withValues(
+                          alpha: 0.4,
+                        ),
                 ),
                 child: Icon(
                   isDone
@@ -1453,44 +1506,59 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
           const SizedBox(height: 8),
 
           // Bottom Row: Status Indicator on Left, Practice + Start Buttons on Right
-          Row(
+          Wrap(
+            alignment: WrapAlignment.end,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
             children: [
-              const SizedBox(width: 30),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: isDone
                       ? AptiquColors.secondary.withValues(alpha: 0.12)
-                      : AptiquColors.surfaceContainerHighest.withValues(alpha: 0.35),
+                      : AptiquColors.surfaceContainerHighest.withValues(
+                          alpha: 0.35,
+                        ),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  isDone ? 'Completed' : 'Ready to play',
+                  isDone
+                      ? 'Completed'
+                      : subtopic.isLocked
+                      ? 'Coming soon'
+                      : 'Ready to play',
                   style: AptiquTypography.bodySm.copyWith(
                     fontSize: 10,
-                    color: isDone ? AptiquColors.secondary : AptiquColors.onSurfaceVariant,
+                    color: isDone
+                        ? AptiquColors.secondary
+                        : AptiquColors.onSurfaceVariant,
                     fontWeight: isDone ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
               ),
-              const Spacer(),
 
               // Action 1: Practice Drill Button for this specific subtopic
               SizedBox(
-                height: 28,
+                height: 44,
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
                       color: AptiquColors.secondary.withValues(alpha: 0.45),
                       width: 0.8,
                     ),
-                    backgroundColor: AptiquColors.secondaryContainer.withValues(alpha: 0.12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    backgroundColor: AptiquColors.secondaryContainer.withValues(
+                      alpha: 0.12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
                   onPressed: () {
                     setState(() => _isDockVisible = false);
-                    final practiceController = Get.isRegistered<PracticeCatalogController>()
+                    final practiceController =
+                        Get.isRegistered<PracticeCatalogController>()
                         ? Get.find<PracticeCatalogController>()
                         : Get.put(PracticeCatalogController());
                     practiceController.startPracticeSessionForTopic(
@@ -1499,7 +1567,11 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                       subtopicIds: [subtopic.id],
                     );
                   },
-                  icon: const Icon(Icons.sports_esports_rounded, size: 12, color: AptiquColors.secondary),
+                  icon: const Icon(
+                    Icons.sports_esports_rounded,
+                    size: 12,
+                    color: AptiquColors.secondary,
+                  ),
                   label: Text(
                     'Practice',
                     style: AptiquTypography.labelCapsBold.copyWith(
@@ -1510,11 +1582,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                 ),
               ),
 
-              const SizedBox(width: 6),
-
               // Action 2: Start / Replay Lesson Script
               SizedBox(
-                height: 28,
+                height: 44,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isDone
@@ -1523,35 +1593,50 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                     foregroundColor: Colors.white,
                     side: isDone
                         ? BorderSide(
-                            color: AptiquColors.outlineVariant.withValues(alpha: 0.6),
+                            color: AptiquColors.outlineVariant.withValues(
+                              alpha: 0.6,
+                            ),
                             width: 0.8,
                           )
                         : BorderSide.none,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     elevation: isDone ? 0 : 2,
                   ),
-                  onPressed: () {
-                    setState(() => _isDockVisible = false);
-                    final effectiveSlug = (subtopic.scriptSlug?.isNotEmpty == true)
-                        ? subtopic.scriptSlug
-                        : subtopic.id;
-                    controller.startSubtopicLesson(
-                      roadmapStepId: topic.roadmapStepId,
-                      scriptSlug: effectiveSlug,
-                      scriptTitle: subtopic.title,
-                      restart: true,
-                    );
-                  },
+                  onPressed: subtopic.isLocked
+                      ? null
+                      : () {
+                          setState(() => _isDockVisible = false);
+                          final effectiveSlug =
+                              (subtopic.scriptSlug?.isNotEmpty == true)
+                              ? subtopic.scriptSlug
+                              : subtopic.id;
+                          controller.startSubtopicLesson(
+                            roadmapStepId: topic.roadmapStepId,
+                            scriptSlug: effectiveSlug,
+                            scriptTitle: subtopic.title,
+                            restart: isDone,
+                          );
+                        },
                   icon: Icon(
                     isDone ? Icons.replay_rounded : Icons.play_arrow_rounded,
                     size: 13,
-                    color: isDone ? AptiquColors.onSurfaceVariant : Colors.white,
+                    color: isDone
+                        ? AptiquColors.onSurfaceVariant
+                        : Colors.white,
                   ),
                   label: Text(
-                    isDone ? 'Replay' : 'Start',
+                    isDone
+                        ? 'Replay'
+                        : subtopic.isLocked
+                        ? 'Soon'
+                        : 'Start',
                     style: AptiquTypography.labelCapsBold.copyWith(
-                      color: isDone ? AptiquColors.onSurfaceVariant : Colors.white,
+                      color: isDone
+                          ? AptiquColors.onSurfaceVariant
+                          : Colors.white,
                       fontSize: 9.5,
                     ),
                   ),
@@ -1571,11 +1656,11 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
 class _ConstellationPathPainter extends CustomPainter {
   final List<Offset> nodePositions;
-  final int activeNodeIndex;
+  final Set<int> completedNodeIndices;
 
   _ConstellationPathPainter({
     required this.nodePositions,
-    required this.activeNodeIndex,
+    required this.completedNodeIndices,
   });
 
   @override
@@ -1602,14 +1687,7 @@ class _ConstellationPathPainter extends CustomPainter {
       final midY = (p0.dy + p1.dy) / 2;
 
       // Cubic bezier curve for beautiful smooth S-curves
-      fullPath.cubicTo(
-        p0.dx,
-        midY,
-        p1.dx,
-        midY,
-        p1.dx,
-        p1.dy,
-      );
+      fullPath.cubicTo(p0.dx, midY, p1.dx, midY, p1.dx, p1.dy);
     }
 
     // 3. Dark background path track
@@ -1621,27 +1699,21 @@ class _ConstellationPathPainter extends CustomPainter {
 
     canvas.drawPath(fullPath, bgPaint);
 
-    // 4. Glowing Neon Cyan active progression path (up to active node)
-    final clampedActiveIdx = activeNodeIndex.clamp(0, nodePositions.length - 1);
-    if (clampedActiveIdx > 0) {
-      final activePath = Path();
-      activePath.moveTo(nodePositions.first.dx, nodePositions.first.dy);
-
-      for (int i = 0; i < clampedActiveIdx; i++) {
-        final p0 = nodePositions[i];
-        final p1 = nodePositions[i + 1];
-        final midY = (p0.dy + p1.dy) / 2;
-
-        activePath.cubicTo(
-          p0.dx,
-          midY,
-          p1.dx,
-          midY,
-          p1.dx,
-          p1.dy,
-        );
+    // Only connect completed neighbours. Playing a later topic does not
+    // imply the earlier topics have been completed.
+    final activePath = Path();
+    for (int i = 0; i < nodePositions.length - 1; i++) {
+      if (!completedNodeIndices.contains(i) ||
+          !completedNodeIndices.contains(i + 1)) {
+        continue;
       }
-
+      final p0 = nodePositions[i];
+      final p1 = nodePositions[i + 1];
+      final midY = (p0.dy + p1.dy) / 2;
+      activePath.moveTo(p0.dx, p0.dy);
+      activePath.cubicTo(p0.dx, midY, p1.dx, midY, p1.dx, p1.dy);
+    }
+    if (completedNodeIndices.isNotEmpty) {
       // Neon outer glow
       final glowPaint = Paint()
         ..color = AptiquColors.secondary.withValues(alpha: 0.4)
@@ -1665,7 +1737,13 @@ class _ConstellationPathPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ConstellationPathPainter oldDelegate) {
-    return oldDelegate.activeNodeIndex != activeNodeIndex ||
-        oldDelegate.nodePositions.length != nodePositions.length;
+    return oldDelegate.completedNodeIndices.length !=
+            completedNodeIndices.length ||
+        !oldDelegate.completedNodeIndices.containsAll(completedNodeIndices) ||
+        oldDelegate.nodePositions.length != nodePositions.length ||
+        !List.generate(
+          nodePositions.length,
+          (i) => oldDelegate.nodePositions[i] == nodePositions[i],
+        ).every((same) => same);
   }
 }

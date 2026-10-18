@@ -77,6 +77,8 @@ class HomeScreen extends StatelessWidget {
                         return ChatPlaygroundZone(
                           height:
                               totalHeight -
+                          height:
+                              totalHeight -
                               (isFullScreen ? 0 : topZoneHeight) -
                               (isFullScreen ? 0 : bottomZoneHeight),
                         );
@@ -129,10 +131,17 @@ class HomeScreen extends StatelessWidget {
     return Obx(() {
       final subjects = controller.subjects;
       final selectedSubjId = controller.selectedSubjectId.value;
-      final learningMap = controller.subjectLearningMap.value;
+      final cachedMap = controller.subjectLearningMap.value;
+      final learningMap = cachedMap?.subjectId == selectedSubjId
+          ? cachedMap
+          : null;
       final isLoading = controller.isLoadingMap.value;
       final error = controller.roadmapError.value;
       final cameraTrigger = controller.topicsTabTapCount.value;
+
+      if (subjects.isEmpty && controller.activeRoadmap.value != null) {
+        return const Center(child: Text('No subjects are available yet.'));
+      }
 
       if (isLoading && learningMap == null) {
         return Container(
@@ -154,9 +163,17 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.amberAccent,
                 size: 40,
               ),
+              const Icon(
+                Icons.cloud_off_outlined,
+                color: Colors.amberAccent,
+                size: 40,
+              ),
               const SizedBox(height: 12),
               Text(
                 'Failed to load curriculum map.',
+                style: AptiquTypography.headlineSm.copyWith(
+                  color: Colors.white,
+                ),
                 style: AptiquTypography.headlineSm.copyWith(
                   color: Colors.white,
                 ),
@@ -165,6 +182,9 @@ class HomeScreen extends StatelessWidget {
               Text(
                 error,
                 textAlign: TextAlign.center,
+                style: AptiquTypography.bodySm.copyWith(
+                  color: AptiquColors.onSurfaceVariant,
+                ),
                 style: AptiquTypography.bodySm.copyWith(
                   color: AptiquColors.onSurfaceVariant,
                 ),
@@ -185,16 +205,33 @@ class HomeScreen extends StatelessWidget {
       }
 
       if (learningMap != null) {
-        return ConstellationRoadmapView(
-          learningMap: learningMap,
-          subjects: subjects,
-          selectedSubjectId: selectedSubjId,
-          cameraTrigger: cameraTrigger,
-          isFullScreen: isFullScreen,
-          onToggleFullScreen: () => controller.toggleFullScreen(),
-          onSelectSubject: (subjId) => controller.selectSubject(subjId),
-          onTopicTap: (topic) => controller.onTopicTapped(context, topic),
-          onRefresh: () => controller.fetchActiveRoadmap(),
+        return Column(
+          children: [
+            if (isLoading) const LinearProgressIndicator(),
+            if (error != null)
+              MaterialBanner(
+                content: const Text('Progress could not be refreshed.'),
+                actions: [
+                  TextButton(
+                    onPressed: controller.fetchActiveRoadmap,
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            Expanded(
+              child: ConstellationRoadmapView(
+                learningMap: learningMap,
+                subjects: subjects,
+                selectedSubjectId: selectedSubjId,
+                cameraTrigger: cameraTrigger,
+                isFullScreen: isFullScreen,
+                onToggleFullScreen: () => controller.toggleFullScreen(),
+                onSelectSubject: (subjId) => controller.selectSubject(subjId),
+                onTopicTap: (topic) => controller.onTopicTapped(context, topic),
+                onRefresh: () => controller.fetchActiveRoadmap(),
+              ),
+            ),
+          ],
         );
       }
 

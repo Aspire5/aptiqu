@@ -178,6 +178,19 @@ void main() {
     expect(find.text('0%'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('consistency is the final Home section', (tester) async {
+    await show(tester, data: fixture(populated: true));
+    await tester.scrollUntilVisible(
+      find.text('Your consistency'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      tester.getTopLeft(find.text('Ranked')).dy,
+      lessThan(tester.getTopLeft(find.text('Your consistency')).dy),
+    );
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('resume and muted Daily Challenge use the existing actions', (
     tester,
   ) async {
@@ -212,27 +225,20 @@ void main() {
       180,
       scrollable: find.byType(Scrollable).first,
     );
-    final day = fixture(populated: true).activity[50];
+    final day = fixture(populated: true).activity[42];
+    final dayCell = find.byWidgetPredicate(
+      (w) =>
+          w is Semantics &&
+          w.properties.label ==
+              '${day.date}: ${day.attempted} submissions, ${day.correct} correct',
+    );
     await tester.scrollUntilVisible(
-      find
-          .byWidgetPredicate(
-            (w) =>
-                w is Semantics &&
-                w.properties.label ==
-                    '${day.date}: ${day.attempted} submissions, ${day.correct} correct',
-          )
-          .hitTestable(),
-      100,
+      dayCell.hitTestable(),
+      180,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(
-      find.byWidgetPredicate(
-        (w) =>
-            w is Semantics &&
-            w.properties.label ==
-                '${day.date}: ${day.attempted} submissions, ${day.correct} correct',
-      ),
-    );
+    await tester.pumpAndSettle();
+    await tester.tap(dayCell);
     await tester.pumpAndSettle();
     expect(find.textContaining('Oct 2026'), findsOneWidget);
     expect(tester.getSize(find.byType(BottomSheet)).width, 320);
@@ -245,7 +251,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('View difficulty details').hitTestable(),
-      180,
+      -180,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(find.text('View difficulty details'));

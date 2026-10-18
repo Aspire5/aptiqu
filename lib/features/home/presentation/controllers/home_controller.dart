@@ -112,7 +112,12 @@ class QuestionData {
     this.hasEvaluated = false,
     this.isUserCorrect,
     this.correctOptionId,
-  }) : xp = xp ?? QuestionInlineModel.calculateQuestionXp(questionType.name, difficultyLevel.name);
+  }) : xp =
+           xp ??
+           QuestionInlineModel.calculateQuestionXp(
+             questionType.name,
+             difficultyLevel.name,
+           );
 }
 
 class ChatMessageModel {
@@ -205,9 +210,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     isFullScreen.value = false;
     selectedNavIndex.value = 1;
     topicsTabTapCount.value++;
-    if (selectedSubjectId.isNotEmpty) {
-      fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
-    }
+    fetchActiveRoadmap();
   }
 
   void toggleFullScreen() {
@@ -226,6 +229,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       Rxn<SubjectLearningMapModel>();
   final RxBool isLoadingMap = false.obs;
   final RxnString roadmapError = RxnString();
+  int _mapRequestGeneration = 0;
+  int _roadmapRequestGeneration = 0;
+
+  /// Refresh server-confirmed progress after either lesson player completes.
+  Future<void> refreshLearningProgress() async {
+    await Future.wait([fetchActiveRoadmap(), fetchDashboard()]);
+    if (!isClosed &&
+        selectedNavIndex.value != 1 &&
+        selectedSubjectId.isNotEmpty) {
+      await fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+    }
+  }
 
   // Active Lesson Session State in the Home Playground
   final Rxn<LessonSessionModel> currentSession = Rxn<LessonSessionModel>();
@@ -270,9 +285,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> fetchActiveRoadmap() async {
+    final generation = ++_roadmapRequestGeneration;
     try {
       roadmapError.value = null;
       final roadmap = await roadmapRepo.getActiveRoadmap();
+      if (isClosed || generation != _roadmapRequestGeneration) return;
       activeRoadmap.value = roadmap;
       subjects.value = roadmap.subjects;
 
@@ -282,10 +299,19 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           selectedSubjectId.value = subjects.first.id;
         }
         if (selectedNavIndex.value == 1) {
-          await fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
+          await fetchSubjectMap(
+            selectedSubjectId.value,
+            updateLessonState: false,
+          );
         }
+      } else {
+        _mapRequestGeneration++;
+        selectedSubjectId.value = '';
+        subjectLearningMap.value = null;
+        isLoadingMap.value = false;
       }
     } catch (e) {
+      if (isClosed || generation != _roadmapRequestGeneration) return;
       roadmapError.value = e.toString();
     }
   }
@@ -295,21 +321,31 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     await fetchSubjectMap(subjectId, updateLessonState: false);
   }
 
-  Future<void> fetchSubjectMap(String subjectId, {bool updateLessonState = true}) async {
+  Future<void> fetchSubjectMap(
+    String subjectId, {
+    bool updateLessonState = true,
+  }) async {
     if (activeRoadmap.value == null) return;
+    final generation = ++_mapRequestGeneration;
+    final roadmapId = activeRoadmap.value!.id;
+    bool isCurrentRequest() =>
+        !isClosed &&
+        generation == _mapRequestGeneration &&
+        activeRoadmap.value?.id == roadmapId &&
+        selectedSubjectId.value == subjectId;
     try {
       isLoadingMap.value = true;
       roadmapError.value = null;
       final map = await roadmapRepo.getSubjectLearningMap(
-        roadmapId: activeRoadmap.value!.id,
+        roadmapId: roadmapId,
         subjectId: subjectId,
       );
+      if (!isCurrentRequest()) return;
       subjectLearningMap.value = map;
+      selectedSubjectId.value = map.subjectId;
 
       if (updateLessonState) {
-        final availableTopic = map.topics.firstWhereOrNull(
-          (t) => t.isAvailable || t.isInProgress,
-        );
+        final availableTopic = map.focusTopic;
         final stepId = availableTopic?.roadmapStepId;
         if (stepId == null) {
           roadmapError.value = 'No lessons available for this topic yet.';
@@ -321,9 +357,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         await loadLessonState(stepId);
       }
     } catch (e) {
+      if (!isCurrentRequest()) return;
       roadmapError.value = e.toString();
     } finally {
-      isLoadingMap.value = false;
+      if (!isClosed && generation == _mapRequestGeneration) {
+        isLoadingMap.value = false;
+      }
     }
   }
 
@@ -342,9 +381,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       if (state.hasActiveSession && state.session != null) {
         final session = state.session!;
-        if (session.status == 'PAUSED') {
-          await lessonRepo.resumeSession(session.id);
-        }
+        await lessonRepo.resumeSession(session.id);
         currentSession.value = session;
         isLessonActive.value = true;
         _clearConversation();
@@ -397,13 +434,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _clearConversation();
 
     final displayTitle = title ?? activeScriptTitle.value;
-    final cleanTitle =
-        displayTitle.isNotEmpty ? displayTitle : 'The Four Basics';
+    final cleanTitle = displayTitle.isNotEmpty
+        ? displayTitle
+        : 'The Four Basics';
     final subDesc = desc ?? 'Ready to jump into today\'s session?';
 
-    final auth = Get.isRegistered<AuthController>() ? Get.find<AuthController>() : null;
+    final auth = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>()
+        : null;
     final rawName = auth?.currentUser.value?.firstName.trim();
-    final greeting = (rawName != null && rawName.isNotEmpty) ? 'Hey $rawName' : 'Welcome to AptiQu';
+    final greeting = (rawName != null && rawName.isNotEmpty)
+        ? 'Hey $rawName'
+        : 'Welcome to AptiQu';
 
     messages.add(
       ChatMessageModel(
@@ -440,11 +482,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       final options = node.choiceOptions.isNotEmpty
           ? node.choiceOptions.map((o) => o.label).toList()
           : (node.inlineQuestion?.options.map((o) => o.label).toList() ??
-              ['Continue →']);
+                ['Continue →']);
       final optionIds = node.choiceOptions.isNotEmpty
           ? node.choiceOptions.map((o) => o.id).toList()
           : (node.inlineQuestion?.options.map((o) => o.id).toList() ??
-              ['opt_continue']);
+                ['opt_continue']);
 
       final qType = QuestionModeTypeExt.fromString(node.questionType);
       final diffLevel = QuestionDifficultyLevelExt.fromString(node.difficulty);
@@ -474,7 +516,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       hasContinueAction = true;
     }
 
-    final messageId = 'node_${node.id}_${DateTime.now().millisecondsSinceEpoch}';
+    final messageId =
+        'node_${node.id}_${DateTime.now().millisecondsSinceEpoch}';
     if (updateKey) {
       latestAiMessageKey = GlobalKey();
       targetedMessageId = messageId;
@@ -496,46 +539,50 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  void _addCompletionToPlayground(LessonSessionModel response, {bool updateKey = true}) {
+  void _addCompletionToPlayground(
+    LessonSessionModel response, {
+    bool updateKey = true,
+  }) {
+    refreshLearningProgress();
     final next = response.next;
-    final currentSubject = subjects.firstWhereOrNull((s) => s.id == selectedSubjectId.value);
+    final currentSubject = subjects.firstWhereOrNull(
+      (s) => s.id == selectedSubjectId.value,
+    );
     final currentSubjectName = currentSubject?.name ?? 'Subject';
 
     String completionTitle = 'SECTION COMPLETED';
     String completionDesc = 'Completed: ${activeScriptTitle.value}';
-    String aiCelebrationText = '🎉 Outstanding work! You have finished this section.';
+    String aiCelebrationText =
+        '🎉 Outstanding work! You have finished this section.';
     List<String> options = [];
 
     if (next != null && next.available && next.roadmapStepId != null) {
-      final isDifferentSubject = next.subjectId != null && next.subjectId != selectedSubjectId.value;
+      final isDifferentSubject =
+          next.subjectId != null && next.subjectId != selectedSubjectId.value;
 
       if (isDifferentSubject) {
         completionTitle = 'SUBJECT COMPLETED';
-        final nextSubjName = next.subjectName ?? next.topicName ?? 'Next Subject';
-        completionDesc = 'All topics in $currentSubjectName completed!\nUp next: $nextSubjName';
-        aiCelebrationText = '🏆 Incredible! You have completed all active topics in $currentSubjectName.';
-        options = [
-          'Continue Playing: $nextSubjName →',
-          'Back to Subjects',
-        ];
+        final nextSubjName =
+            next.subjectName ?? next.topicName ?? 'Next Subject';
+        completionDesc =
+            'All topics in $currentSubjectName completed!\nUp next: $nextSubjName';
+        aiCelebrationText =
+            '🏆 Incredible! You have completed all active topics in $currentSubjectName.';
+        options = ['Continue Playing: $nextSubjName →', 'Back to Subjects'];
       } else {
         final nextTopicTitle = next.topicName ?? 'Next Topic';
         final nextSecTitle = next.scriptTitle ?? nextTopicTitle;
         completionTitle = 'TOPIC SECTION COMPLETED';
         completionDesc = 'Up next: $nextSecTitle';
-        options = [
-          'Continue Playing: $nextSecTitle →',
-          'Back to Subjects',
-        ];
+        options = ['Continue Playing: $nextSecTitle →', 'Back to Subjects'];
       }
     } else {
       completionTitle = 'SUBJECT COMPLETED';
-      completionDesc = 'You have completed all available topics in $currentSubjectName!';
-      aiCelebrationText = '🏆 Mastered! You have completed all currently active topics in $currentSubjectName.';
-      options = [
-        'Back to Subjects',
-        'Explore Practice Arena',
-      ];
+      completionDesc =
+          'You have completed all available topics in $currentSubjectName!';
+      aiCelebrationText =
+          '🏆 Mastered! You have completed all currently active topics in $currentSubjectName.';
+      options = ['Back to Subjects', 'Explore Practice Arena'];
     }
 
     final messageId = 'completion_${DateTime.now().millisecondsSinceEpoch}';
@@ -659,7 +706,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       final next = currentSession.value?.next;
       if (next != null && next.available && next.roadmapStepId != null) {
-        if (next.subjectId != null && next.subjectId != selectedSubjectId.value) {
+        if (next.subjectId != null &&
+            next.subjectId != selectedSubjectId.value) {
           selectedSubjectId.value = next.subjectId!;
         }
         activeRoadmapStepId.value = next.roadmapStepId!;
@@ -767,9 +815,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       if (response.isCompleted) {
         _addCompletionToPlayground(response, updateKey: !hasExplanation);
-        if (selectedSubjectId.isNotEmpty) {
-          fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
-        }
       } else {
         _addNodeToPlayground(response.currentNode, updateKey: !hasExplanation);
       }
@@ -900,9 +945,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       if (response.isCompleted) {
         _addCompletionToPlayground(response, updateKey: !hasExplanation);
-        if (selectedSubjectId.isNotEmpty) {
-          fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
-        }
       } else {
         _addNodeToPlayground(response.currentNode, updateKey: !hasExplanation);
       }
@@ -932,7 +974,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     required String roadmapStepId,
     String? scriptSlug,
     String? scriptTitle,
-    bool restart = true,
+    bool restart = false,
   }) async {
     selectedNavIndex.value = 0; // Switch directly to Home tab
     showHomeDashboard.value = false;
@@ -958,7 +1000,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       }
       currentSession.value = session;
       isLessonActive.value = true;
-      activeScriptTitle.value = session.scriptTitle ?? (scriptTitle ?? 'Playing');
+      activeScriptTitle.value =
+          session.scriptTitle ?? (scriptTitle ?? 'Playing');
       _addNodeToPlayground(session.currentNode);
       if (selectedSubjectId.isNotEmpty) {
         fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
@@ -1058,9 +1101,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       if (response.isCompleted) {
         _addCompletionToPlayground(response, updateKey: !hasExplanation);
-        if (selectedSubjectId.isNotEmpty) {
-          fetchSubjectMap(selectedSubjectId.value, updateLessonState: false);
-        }
       } else {
         _addNodeToPlayground(response.currentNode, updateKey: !hasExplanation);
       }
@@ -1154,13 +1194,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       activeRoadmapStepId.value = topic.roadmapStepId;
       showHomeDashboard.value = false;
       selectedNavIndex.value = 0; // Go directly to Home playground!
-      final firstSubtopic =
-          topic.subtopics.isNotEmpty ? topic.subtopics.first : null;
       startSubtopicLesson(
         roadmapStepId: topic.roadmapStepId,
-        scriptSlug: firstSubtopic?.scriptSlug,
-        scriptTitle: firstSubtopic?.title ?? topic.topicName,
-        restart: true,
+        scriptTitle: topic.topicName,
+        restart: topic.isCompleted,
       );
     }
   }
@@ -1201,13 +1238,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   String _showThinking() {
     final id = 'thinking_${_uuid.v4()}';
-    messages.add(ChatMessageModel(
-      id: id,
-      sender: MessageSender.ai,
-      text: 'Thinking...',
-      time: '',
-      isThinking: true,
-    ));
+    messages.add(
+      ChatMessageModel(
+        id: id,
+        sender: MessageSender.ai,
+        text: 'Thinking...',
+        time: '',
+        isThinking: true,
+      ),
+    );
     _scrollToBottom();
     return id;
   }
@@ -1217,7 +1256,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<bool> _finishThinking(
-      String id, Stopwatch timer, int generation) async {
+    String id,
+    Stopwatch timer,
+    int generation,
+  ) async {
     final remaining = const Duration(milliseconds: 500) - timer.elapsed;
     if (remaining > Duration.zero) await Future.delayed(remaining);
     if (_conversationGeneration != generation ||
@@ -1242,8 +1284,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   String _getCurrentTime() {
     final now = DateTime.now();
-    final hour =
-        now.hour > 12 ? now.hour - 12 : (now.hour == 0 ? 12 : now.hour);
+    final hour = now.hour > 12
+        ? now.hour - 12
+        : (now.hour == 0 ? 12 : now.hour);
     final minute = now.minute.toString().padLeft(2, '0');
     final period = now.hour >= 12 ? 'PM' : 'AM';
     return '$hour:$minute $period';
@@ -1251,7 +1294,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && selectedNavIndex.value == 0 && showHomeDashboard.value) {
+    if (state == AppLifecycleState.resumed &&
+        selectedNavIndex.value == 0 &&
+        showHomeDashboard.value) {
       fetchDashboard();
       if (Get.isRegistered<AuthController>()) {
         Get.find<AuthController>().fetchUserProfile();

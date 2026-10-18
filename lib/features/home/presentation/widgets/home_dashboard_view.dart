@@ -117,47 +117,6 @@ class HomeDashboardContent extends StatelessWidget {
           ],
           if (d != null) ...[
             const SizedBox(height: 28),
-            Row(
-              children: [
-                Expanded(
-                  child: _heading(
-                    'Your consistency',
-                    'Learning activity · scroll through the months',
-                  ),
-                ),
-                const Tooltip(
-                  message: 'Available year',
-                  child: Chip(
-                    label: Text('2026'),
-                    avatar: Icon(Icons.calendar_today, size: 16),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  YearActivityCalendar(
-                    days: d.activity,
-                    today:
-                        d.today ??
-                        DateFormat('yyyy-MM-dd').format(
-                          DateTime.now().toUtc().add(
-                            const Duration(hours: 5, minutes: 30),
-                          ),
-                        ),
-                  ),
-                  const SizedBox(height: 12),
-                  _text(
-                    'More answers, more colour. Tap a date for details. All dates use IST.',
-                    size: 12,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 28),
             _heading(
               'Your performance',
               'Answers across lessons, practice and challenges',
@@ -214,6 +173,27 @@ class HomeDashboardContent extends StatelessWidget {
               icon: Icons.emoji_events_outlined,
               onTap: onRanked,
               primary: false,
+            ),
+            const SizedBox(height: 28),
+            _heading('Your consistency', 'Learning activity · last 4 weeks'),
+            const SizedBox(height: 12),
+            _card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ActivityCalendar(
+                    days: d.activity.length > 28
+                        ? d.activity.sublist(d.activity.length - 28)
+                        : d.activity,
+                    today: d.today,
+                  ),
+                  const SizedBox(height: 12),
+                  _text(
+                    'More answers, more colour. Tap a date for details. All dates use IST.',
+                    size: 12,
+                  ),
+                ],
+              ),
             ),
           ] else if (!loading && error == null) ...[
             const SizedBox(height: 16),
