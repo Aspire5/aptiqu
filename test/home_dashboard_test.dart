@@ -189,7 +189,32 @@ void main() {
       tester.getTopLeft(find.text('Ranked')).dy,
       lessThan(tester.getTopLeft(find.text('Your consistency')).dy),
     );
+    expect(find.text('2026'), findsOneWidget);
+    expect(find.byType(YearActivityCalendar), findsOneWidget);
+    expect(find.text('October 2026'), findsOneWidget);
+    expect(find.text('December 2026').hitTestable(), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('restored consistency opens at current month with fixed year', (
+    tester,
+  ) async {
+    await show(tester, data: fixture(populated: true));
+    await tester.scrollUntilVisible(
+      find.text('Your consistency'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(find.text('Your consistency'));
+    await tester.pumpAndSettle();
+    expect(find.text('2026'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.text('October 2026')).dy,
+      closeTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy, 1),
+    );
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('goldens/home-consistency-phone.png'),
+    );
   });
   testWidgets('resume and muted Daily Challenge use the existing actions', (
     tester,
@@ -225,7 +250,7 @@ void main() {
       180,
       scrollable: find.byType(Scrollable).first,
     );
-    final day = fixture(populated: true).activity[42];
+    final day = fixture(populated: true).activity[50];
     final dayCell = find.byWidgetPredicate(
       (w) =>
           w is Semantics &&
@@ -249,9 +274,14 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();
+    final homeScroll = tester.state<ScrollableState>(
+      find.byType(Scrollable).first,
+    );
+    homeScroll.position.jumpTo(0);
+    await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('View difficulty details').hitTestable(),
-      -180,
+      180,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(find.text('View difficulty details'));
@@ -313,6 +343,47 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('December 2026'), findsOneWidget);
       expect(find.text('31'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'month position survives refresh and resizing, then advances on month rollover',
+    (tester) async {
+      Widget calendar(String today, double width, double scale) => MaterialApp(
+        theme: AptiquTheme.darkTheme,
+        home: Scaffold(
+          body: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: SizedBox(
+              width: width,
+              child: YearActivityCalendar(
+                days: fixture().activity,
+                today: today,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpWidget(calendar('2026-10-13', 390, 1));
+      await tester.pumpAndSettle();
+      final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+      scroll.position.jumpTo(0);
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(calendar('2026-10-14', 390, 1));
+      await tester.pumpAndSettle();
+      expect(find.text('January 2026'), findsOneWidget);
+      await tester.pumpWidget(calendar('2026-10-14', 320, 1.5));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getTopLeft(find.text('January 2026')).dy,
+        closeTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy, 1),
+      );
+      await tester.pumpWidget(calendar('2026-11-01', 320, 1.5));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getTopLeft(find.text('November 2026')).dy,
+        closeTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy, 1),
+      );
       expect(tester.takeException(), isNull);
     },
   );

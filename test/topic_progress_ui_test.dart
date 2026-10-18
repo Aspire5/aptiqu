@@ -76,32 +76,32 @@ void main() {
           );
       Widget screen(bool completed) => MaterialApp(
         theme: AptiquTheme.darkTheme,
-        home: MediaQuery(
-          data: const MediaQueryData(
-            size: Size(320, 844),
-            textScaler: TextScaler.linear(1.3),
-          ),
-          child: Scaffold(
-            body: ConstellationRoadmapView(
-              learningMap: learningMap(
-                'math',
-                topics: [topic('Number System'), finalTopic(completed)],
-                active: 'last',
-              ),
-              subjects: [
-                RoadmapSubjectSummary(
-                  id: 'math',
-                  slug: 'math',
-                  name: 'Quantitative Aptitude',
-                  sequence: 1,
-                ),
-              ],
-              selectedSubjectId: 'math',
-              onSelectSubject: (_) {},
-              onTopicTap: (_) {},
-              onRefresh: () async {},
-              onToggleFullScreen: () {},
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: const TextScaler.linear(1.3)),
+          child: child!,
+        ),
+        home: Scaffold(
+          body: ConstellationRoadmapView(
+            learningMap: learningMap(
+              'math',
+              topics: [topic('Number System'), finalTopic(completed)],
+              active: 'last',
             ),
+            subjects: [
+              RoadmapSubjectSummary(
+                id: 'math',
+                slug: 'math',
+                name: 'Quantitative Aptitude',
+                sequence: 1,
+              ),
+            ],
+            selectedSubjectId: 'math',
+            onSelectSubject: (_) {},
+            onTopicTap: (_) {},
+            onRefresh: () async {},
+            onToggleFullScreen: () {},
           ),
         ),
       );
@@ -145,11 +145,13 @@ void main() {
       expect(find.text('1/2 topics'), findsOneWidget);
       expect(find.text('COMPLETED · REPLAY'), findsOneWidget);
       expect(find.text('Completed'), findsNWidgets(2));
-      expect(find.text('Replay'), findsNWidgets(2));
-      expect(find.text('Replay Topic'), findsOneWidget);
+      expect(find.text('Replay'), findsNWidgets(3));
+      expect(find.byType(BottomSheet), findsOneWidget);
+      expect(find.byType(DraggableScrollableSheet), findsOneWidget);
+      expect(find.text('Whole topic'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await expectLater(
-        find.byType(Scaffold),
+        find.byType(BottomSheet),
         matchesGoldenFile('goldens/topics-completed-phone.png'),
       );
     },

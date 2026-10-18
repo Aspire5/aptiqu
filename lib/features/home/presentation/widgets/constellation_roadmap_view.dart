@@ -5,6 +5,7 @@ import 'package:aptiqu/core/theme/aptiqu_colors.dart';
 import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../../models/roadmap_model.dart';
 import '../controllers/home_controller.dart';
+import 'topic_details_sheet.dart';
 import '../../../practice/controllers/practice_catalog_controller.dart';
 
 /// Cyberpunk Constellation Winding Roadmap View
@@ -14,7 +15,7 @@ import '../../../practice/controllers/practice_catalog_controller.dart';
 /// - Cinematic zoom-in camera animation focusing on the active user node upon tab open
 /// - Fixed minimal, non-transparent "Subjects" header with dynamic progress (e.g. 0/72)
 /// - Fullscreen mode with smooth animated slide/fade transitions
-/// - Bottom node preview sheet hidden by default, shown ONLY on node tap, dismissed on outside tap
+/// - Topic details open in a draggable modal bottom sheet
 /// - Winding S-curve constellation path with glowing neon progress line
 /// - Gamified milestone nodes (Active Objective, Completed lessons, Ready/Unlocked, Boss Gate, Coming Soon)
 class ConstellationRoadmapView extends StatefulWidget {
@@ -62,9 +63,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
-  // Docked inspected topic - HIDDEN BY DEFAULT!
+  // Inspected topic and live state for the modal bottom sheet.
   LearningMapTopicItemModel? _inspectedTopic;
-  bool _isDockVisible = false;
+  bool _isTopicSheetOpen = false;
+  final _sheetTopic = ValueNotifier<LearningMapTopicItemModel?>(null);
 
   // Viewport cached size
   Size _viewportSize = Size.zero;
@@ -89,9 +91,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    // Default inspected topic without opening the dock
+    // Default inspected topic without opening the sheet
     _inspectedTopic = _getActiveOrFirstTopic();
-    _isDockVisible = false;
   }
 
   @override
@@ -102,15 +103,25 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
         (t) => t.roadmapStepId == _inspectedTopic!.roadmapStepId,
       );
       _inspectedTopic = updated ?? _getActiveOrFirstTopic();
-      if (updated == null) _isDockVisible = false;
     } else {
       _inspectedTopic = _getActiveOrFirstTopic();
+    }
+
+    if (_isTopicSheetOpen) {
+      final updated =
+          oldWidget.learningMap.subjectId == widget.learningMap.subjectId
+          ? widget.learningMap.topics.firstWhereOrNull(
+              (t) => t.roadmapStepId == _sheetTopic.value?.roadmapStepId,
+            )
+          : null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _isTopicSheetOpen) _sheetTopic.value = updated;
+      });
     }
 
     if (oldWidget.learningMap.subjectId != widget.learningMap.subjectId ||
         oldWidget.cameraTrigger != widget.cameraTrigger) {
       _inspectedTopic = _getActiveOrFirstTopic();
-      _isDockVisible = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _animateCameraToActiveNode();
       });
@@ -122,6 +133,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     _transformationController.dispose();
     _cameraAnimationController.dispose();
     _pulseController.dispose();
+    _sheetTopic.dispose();
     super.dispose();
   }
 
@@ -348,14 +360,6 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                       clipBehavior: Clip.hardEdge,
                       child: GestureDetector(
                         behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          // Tapping anywhere on map canvas dismisses the bottom dock!
-                          if (_isDockVisible) {
-                            setState(() {
-                              _isDockVisible = false;
-                            });
-                          }
-                        },
                         child: SizedBox(
                           width: canvasWidth,
                           height: canvasHeight,
@@ -394,20 +398,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
                   ),
 
                   // 3. FLOATING HUD CONTROLS (Fullscreen, Re-center, Zoom In, Zoom Out)
-                  Positioned(
-                    right: 14,
-                    bottom: _isDockVisible ? 240 : 20,
-                    child: _buildHudControls(),
-                  ),
-
-                  // 4. FLOATING DOCKED INTERACTIVE CARD (ONLY visible when _isDockVisible is true)
-                  if (_isDockVisible && _inspectedTopic != null)
-                    Positioned(
-                      left: 14,
-                      right: 14,
-                      bottom: 12,
-                      child: _buildNodeDetailsDock(_inspectedTopic!),
-                    ),
+                  Positioned(right: 14, bottom: 20, child: _buildHudControls()),
                 ],
               ),
             ),
@@ -637,9 +628,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
         onTap: () {
           setState(() {
             _inspectedTopic = topic;
-            _isDockVisible = true;
           });
           _panCameraToNode(index);
+          _openTopicSheet(topic);
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1052,9 +1043,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             final active = _getActiveOrFirstTopic();
             setState(() {
               _inspectedTopic = active;
-              _isDockVisible = true;
             });
             _animateCameraToActiveNode();
+            if (widget.learningMap.focusTopic != null) _openTopicSheet(active);
           },
           tooltip: 'Focus Active Level',
           child: const Icon(Icons.my_location_rounded, size: 19),
@@ -1104,550 +1095,107 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   }
 
   // ===========================================================================
-  // FLOATING DOCKED INTERACTIVE CARD / NODE PREVIEW SHEET
+  // TOPIC DETAILS BOTTOM SHEET
   // ===========================================================================
 
-  Widget _buildNodeDetailsDock(LearningMapTopicItemModel topic) {
-    final isCompleted = topic.isCompleted;
-    final totalSubtopics = topic.totalSubtopics;
-    final completedCount = topic.completedSubtopics;
-
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.68,
+  Future<void> _openTopicSheet(LearningMapTopicItemModel topic) async {
+    if (_isTopicSheetOpen || !mounted) return;
+    final subjectId = widget.selectedSubjectId;
+    _isTopicSheetOpen = true;
+    _sheetTopic.value = topic;
+    final selection = await showModalBottomSheet<_TopicSheetSelection>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: AptiquColors.surfaceContainerLow,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainer.withValues(alpha: 0.98),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: AptiquColors.outlineVariant.withValues(alpha: 0.8),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.6),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Top pill indicator
-          Center(
-            child: Container(
-              width: 38,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AptiquColors.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Header: Icon + Topic Tag & Subtopic progress + Close button
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AptiquColors.primary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(
-                  Icons.percent_rounded,
-                  color: AptiquColors.primary,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'TOPIC ${topic.sequence.toString().padLeft(2, '0')}',
-                          style: AptiquTypography.labelCapsBold.copyWith(
-                            color: AptiquColors.secondary,
-                            fontSize: 10,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AptiquColors.secondary.withValues(
-                              alpha: 0.15,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: AptiquColors.secondary.withValues(
-                                alpha: 0.3,
-                              ),
-                              width: 0.8,
+      clipBehavior: Clip.antiAlias,
+      constraints: const BoxConstraints(maxWidth: 640),
+      builder: (sheetContext) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: .78,
+        minChildSize: .4,
+        maxChildSize: .94,
+        builder: (_, scrollController) =>
+            ValueListenableBuilder<LearningMapTopicItemModel?>(
+              valueListenable: _sheetTopic,
+              builder: (_, current, __) => current == null
+                  ? const Center(
+                      child: Text('This topic is no longer available.'),
+                    )
+                  : TopicDetailsSheet(
+                      topic: current,
+                      scrollController: scrollController,
+                      onPracticeTopic: () => Navigator.of(
+                        sheetContext,
+                      ).pop(const _TopicSheetSelection(practice: true)),
+                      onPlayTopic: () => Navigator.of(
+                        sheetContext,
+                      ).pop(const _TopicSheetSelection(practice: false)),
+                      onPracticeSubtopic: (subtopic) =>
+                          Navigator.of(sheetContext).pop(
+                            _TopicSheetSelection(
+                              practice: true,
+                              subtopicId: subtopic.id,
                             ),
                           ),
-                          child: Text(
-                            '$completedCount/$totalSubtopics',
-                            style: AptiquTypography.labelCapsBold.copyWith(
-                              color: AptiquColors.secondary,
-                              fontSize: 9.5,
+                      onPlaySubtopic: (subtopic) =>
+                          Navigator.of(sheetContext).pop(
+                            _TopicSheetSelection(
+                              practice: false,
+                              subtopicId: subtopic.id,
                             ),
                           ),
-                        ),
-                      ],
                     ),
-                    const SizedBox(height: 3),
-                    Text(
-                      topic.topicName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AptiquTypography.headlineSm.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _isDockVisible = false;
-                  });
-                },
-                child: Container(
-                  width: 28,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: AptiquColors.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    size: 16,
-                    color: AptiquColors.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 8),
-
-          // Insight capsule with full readable text (no ellipsis)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: BoxDecoration(
-              color: AptiquColors.surfaceContainerHigh.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 22,
-                  height: 22,
-                  margin: const EdgeInsets.only(top: 2),
-                  decoration: BoxDecoration(
-                    color: AptiquColors.secondaryContainer.withValues(
-                      alpha: 0.25,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.lightbulb_outline_rounded,
-                    size: 13,
-                    color: AptiquColors.secondary,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      text: 'Insight: ',
-                      style: AptiquTypography.bodySm.copyWith(
-                        color: AptiquColors.secondary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                      children: [
-                        TextSpan(
-                          text:
-                              topic.description ??
-                              'Explore the subtopics below to learn and practise ${topic.topicName}.',
-                          style: AptiquTypography.bodySm.copyWith(
-                            color: AptiquColors.onSurfaceVariant,
-                            fontSize: 11,
-                            height: 1.35,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          // Scrollable Subtopics List
-          Flexible(
-            child: topic.subtopics.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Center(
-                      child: Text(
-                        'Content for this topic is being finalized.',
-                        style: AptiquTypography.bodySm.copyWith(
-                          color: AptiquColors.onSurfaceVariant,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  )
-                : ListView.separated(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    itemCount: topic.subtopics.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 6),
-                    itemBuilder: (context, index) {
-                      final subtopic = topic.subtopics[index];
-                      return _buildSubtopicRowItem(context, topic, subtopic);
-                    },
-                  ),
-          ),
-
-          // Topic level actions (Practice & Play/Replay)
-          if (isCompleted || topic.scriptAvailable) ...[
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 48,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: AptiquColors.secondary,
-                          width: 1.2,
-                        ),
-                        backgroundColor: AptiquColors.secondary.withValues(
-                          alpha: 0.12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () {
-                        // 1. Close the topic details dock (DO NOT call Navigator.pop!)
-                        setState(() {
-                          _isDockVisible = false;
-                        });
-
-                        // 2. Direct Practice session launch for this topic
-                        final practiceController =
-                            Get.isRegistered<PracticeCatalogController>()
-                            ? Get.find<PracticeCatalogController>()
-                            : Get.put(PracticeCatalogController());
-
-                        practiceController.startPracticeSessionForTopic(
-                          subjectId: widget.selectedSubjectId,
-                          topicId: topic.topicId,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.sports_esports_rounded,
-                        size: 16,
-                        color: AptiquColors.secondary,
-                      ),
-                      label: Text(
-                        'Practice Topic',
-                        style: AptiquTypography.headlineSm.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: SizedBox(
-                    height: 48,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isCompleted
-                            ? AptiquColors.secondary
-                            : const Color(0xFF7C3AED),
-                        foregroundColor: isCompleted
-                            ? AptiquColors.onSecondary
-                            : Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 2,
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isDockVisible = false;
-                        });
-                        widget.onTopicTap(topic);
-                      },
-                      icon: Icon(
-                        isCompleted
-                            ? Icons.replay_rounded
-                            : Icons.play_arrow_rounded,
-                        size: 17,
-                      ),
-                      label: Text(
-                        isCompleted
-                            ? 'Replay Topic'
-                            : topic.isInProgress
-                            ? 'Continue Topic'
-                            : 'Play Topic',
-                        style: AptiquTypography.headlineSm.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ],
       ),
     );
-  }
-
-  Widget _buildSubtopicRowItem(
-    BuildContext context,
-    LearningMapTopicItemModel topic,
-    SubtopicItemModel subtopic,
-  ) {
-    final controller = Get.find<HomeController>();
-    final isDone = subtopic.isCompleted;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: isDone
-            ? AptiquColors.secondaryContainer.withValues(alpha: 0.08)
-            : AptiquColors.surfaceContainerHigh.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDone
-              ? AptiquColors.secondary.withValues(alpha: 0.35)
-              : AptiquColors.outlineVariant.withValues(alpha: 0.4),
-          width: 0.8,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Top Row: Status Icon + Full Subtopic Title (not ellipsed)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 22,
-                height: 22,
-                margin: const EdgeInsets.only(top: 1),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isDone
-                      ? AptiquColors.secondary.withValues(alpha: 0.15)
-                      : AptiquColors.surfaceContainerHighest.withValues(
-                          alpha: 0.4,
-                        ),
-                ),
-                child: Icon(
-                  isDone
-                      ? Icons.check_circle_outline_rounded
-                      : Icons.play_circle_outline_rounded,
-                  size: 14,
-                  color: isDone
-                      ? AptiquColors.secondary
-                      : AptiquColors.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  subtopic.title,
-                  style: AptiquTypography.bodyMd.copyWith(
-                    fontSize: 12.5,
-                    fontWeight: isDone ? FontWeight.w600 : FontWeight.w700,
-                    color: Colors.white,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-
-          // Bottom Row: Status Indicator on Left, Practice + Start Buttons on Right
-          Wrap(
-            alignment: WrapAlignment.end,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: isDone
-                      ? AptiquColors.secondary.withValues(alpha: 0.12)
-                      : AptiquColors.surfaceContainerHighest.withValues(
-                          alpha: 0.35,
-                        ),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  isDone
-                      ? 'Completed'
-                      : subtopic.isLocked
-                      ? 'Coming soon'
-                      : 'Ready to play',
-                  style: AptiquTypography.bodySm.copyWith(
-                    fontSize: 10,
-                    color: isDone
-                        ? AptiquColors.secondary
-                        : AptiquColors.onSurfaceVariant,
-                    fontWeight: isDone ? FontWeight.w600 : FontWeight.w500,
-                  ),
-                ),
-              ),
-
-              // Action 1: Practice Drill Button for this specific subtopic
-              SizedBox(
-                height: 44,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      color: AptiquColors.secondary.withValues(alpha: 0.45),
-                      width: 0.8,
-                    ),
-                    backgroundColor: AptiquColors.secondaryContainer.withValues(
-                      alpha: 0.12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                  onPressed: () {
-                    setState(() => _isDockVisible = false);
-                    final practiceController =
-                        Get.isRegistered<PracticeCatalogController>()
-                        ? Get.find<PracticeCatalogController>()
-                        : Get.put(PracticeCatalogController());
-                    practiceController.startPracticeSessionForTopic(
-                      subjectId: widget.selectedSubjectId,
-                      topicId: topic.topicId,
-                      subtopicIds: [subtopic.id],
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.sports_esports_rounded,
-                    size: 12,
-                    color: AptiquColors.secondary,
-                  ),
-                  label: Text(
-                    'Practice',
-                    style: AptiquTypography.labelCapsBold.copyWith(
-                      color: AptiquColors.secondary,
-                      fontSize: 9.5,
-                    ),
-                  ),
-                ),
-              ),
-
-              // Action 2: Start / Replay Lesson Script
-              SizedBox(
-                height: 44,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isDone
-                        ? AptiquColors.surfaceContainerHigh
-                        : const Color(0xFF7C3AED),
-                    foregroundColor: Colors.white,
-                    side: isDone
-                        ? BorderSide(
-                            color: AptiquColors.outlineVariant.withValues(
-                              alpha: 0.6,
-                            ),
-                            width: 0.8,
-                          )
-                        : BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    elevation: isDone ? 0 : 2,
-                  ),
-                  onPressed: subtopic.isLocked
-                      ? null
-                      : () {
-                          setState(() => _isDockVisible = false);
-                          final effectiveSlug =
-                              (subtopic.scriptSlug?.isNotEmpty == true)
-                              ? subtopic.scriptSlug
-                              : subtopic.id;
-                          controller.startSubtopicLesson(
-                            roadmapStepId: topic.roadmapStepId,
-                            scriptSlug: effectiveSlug,
-                            scriptTitle: subtopic.title,
-                            restart: isDone,
-                          );
-                        },
-                  icon: Icon(
-                    isDone ? Icons.replay_rounded : Icons.play_arrow_rounded,
-                    size: 13,
-                    color: isDone
-                        ? AptiquColors.onSurfaceVariant
-                        : Colors.white,
-                  ),
-                  label: Text(
-                    isDone
-                        ? 'Replay'
-                        : subtopic.isLocked
-                        ? 'Soon'
-                        : 'Start',
-                    style: AptiquTypography.labelCapsBold.copyWith(
-                      color: isDone
-                          ? AptiquColors.onSurfaceVariant
-                          : Colors.white,
-                      fontSize: 9.5,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    _isTopicSheetOpen = false;
+    if (!mounted ||
+        selection == null ||
+        widget.selectedSubjectId != subjectId) {
+      return;
+    }
+    final current = _sheetTopic.value;
+    if (current == null) return;
+    final subtopic = current.subtopics.firstWhereOrNull(
+      (st) => st.id == selection.subtopicId,
     );
+    if (selection.subtopicId != null && subtopic == null) return;
+    if (selection.practice) {
+      final practiceController = Get.isRegistered<PracticeCatalogController>()
+          ? Get.find<PracticeCatalogController>()
+          : Get.put(PracticeCatalogController());
+      practiceController.startPracticeSessionForTopic(
+        subjectId: subjectId,
+        topicId: current.topicId,
+        subtopicIds: subtopic == null ? null : [subtopic.id],
+      );
+    } else if (subtopic != null) {
+      if (subtopic.isLocked) return;
+      Get.find<HomeController>().startSubtopicLesson(
+        roadmapStepId: current.roadmapStepId,
+        scriptSlug: subtopic.scriptSlug?.isNotEmpty == true
+            ? subtopic.scriptSlug
+            : subtopic.id,
+        scriptTitle: subtopic.title,
+        restart: subtopic.isCompleted,
+      );
+    } else if (current.scriptAvailable &&
+        !current.isLocked &&
+        !current.isComingSoon) {
+      widget.onTopicTap(current);
+    }
   }
+}
+
+class _TopicSheetSelection {
+  final bool practice;
+  final String? subtopicId;
+  const _TopicSheetSelection({required this.practice, this.subtopicId});
 }
 
 // =============================================================================

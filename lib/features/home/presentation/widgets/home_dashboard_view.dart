@@ -73,6 +73,11 @@ class HomeDashboardContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final d = data;
+    final today =
+        d?.today ??
+        DateFormat('yyyy-MM-dd').format(
+          DateTime.now().toUtc().add(const Duration(hours: 5, minutes: 30)),
+        );
     return RefreshIndicator(
       color: AptiquColors.primary,
       onRefresh: onRefresh,
@@ -175,18 +180,30 @@ class HomeDashboardContent extends StatelessWidget {
               primary: false,
             ),
             const SizedBox(height: 28),
-            _heading('Your consistency', 'Learning activity · last 4 weeks'),
+            Row(
+              children: [
+                Expanded(
+                  child: _heading(
+                    'Your consistency',
+                    'Learning activity · scroll through the months',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Tooltip(
+                  message: 'Current year only',
+                  child: Chip(
+                    label: Text(today.substring(0, 4)),
+                    avatar: const Icon(Icons.calendar_today_outlined, size: 14),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
             _card(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ActivityCalendar(
-                    days: d.activity.length > 28
-                        ? d.activity.sublist(d.activity.length - 28)
-                        : d.activity,
-                    today: d.today,
-                  ),
+                  YearActivityCalendar(days: d.activity, today: today),
                   const SizedBox(height: 12),
                   _text(
                     'More answers, more colour. Tap a date for details. All dates use IST.',
@@ -737,6 +754,15 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
   TextScaler? _layoutScaler;
   static const _monthGap = 24.0;
 
+  @override
+  void didUpdateWidget(covariant YearActivityCalendar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.today.substring(0, 7) != widget.today.substring(0, 7)) {
+      _monthIndex = DateTime.parse(widget.today).month - 1;
+      _layoutWidth = null;
+    }
+  }
+
   // Mirror the calendar's actual text, grid and legend layout. This avoids
   // reserving a sixth week (or large-text padding) in a five-week month.
   double _height(BuildContext context, double width, int month) {
@@ -811,6 +837,7 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
       builder: (context, constraints) {
         final scaler = MediaQuery.textScalerOf(context);
         if (_layoutWidth != constraints.maxWidth || _layoutScaler != scaler) {
+          final monthToKeep = _monthIndex;
           _layoutWidth = constraints.maxWidth;
           _layoutScaler = scaler;
           _heights = List.generate(
@@ -823,6 +850,18 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
             offset += _heights[i] + _monthGap;
             return start;
           });
+          if (_scroll != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted && _scroll!.hasClients) {
+                _scroll!.jumpTo(
+                  _starts[monthToKeep].clamp(
+                    0.0,
+                    _scroll!.position.maxScrollExtent,
+                  ),
+                );
+              }
+            });
+          }
         }
         _scroll ??= ScrollController(initialScrollOffset: _starts[_monthIndex])
           ..addListener(_onScroll);

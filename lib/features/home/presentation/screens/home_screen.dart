@@ -77,8 +77,6 @@ class HomeScreen extends StatelessWidget {
                         return ChatPlaygroundZone(
                           height:
                               totalHeight -
-                          height:
-                              totalHeight -
                               (isFullScreen ? 0 : topZoneHeight) -
                               (isFullScreen ? 0 : bottomZoneHeight),
                         );
@@ -163,17 +161,9 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.amberAccent,
                 size: 40,
               ),
-              const Icon(
-                Icons.cloud_off_outlined,
-                color: Colors.amberAccent,
-                size: 40,
-              ),
               const SizedBox(height: 12),
               Text(
                 'Failed to load curriculum map.',
-                style: AptiquTypography.headlineSm.copyWith(
-                  color: Colors.white,
-                ),
                 style: AptiquTypography.headlineSm.copyWith(
                   color: Colors.white,
                 ),
@@ -182,9 +172,6 @@ class HomeScreen extends StatelessWidget {
               Text(
                 error,
                 textAlign: TextAlign.center,
-                style: AptiquTypography.bodySm.copyWith(
-                  color: AptiquColors.onSurfaceVariant,
-                ),
                 style: AptiquTypography.bodySm.copyWith(
                   color: AptiquColors.onSurfaceVariant,
                 ),
