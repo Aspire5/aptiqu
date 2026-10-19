@@ -1,3 +1,4 @@
+import '../../features/pvp/ranked/ranked_browser_screen.dart';
 import '../../features/social/friends_screen.dart';
 import '../../features/social/duel_room_screen.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,16 @@ class AppRouter {
       return null;
     },
     routes: [
+      GoRoute(
+        path: AppRoutes.rankedLeaderboard,
+        builder: (context, state) => RankedBrowserScreen(
+          initialSeason: state.uri.queryParameters['seasonId'],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.rankedSeasons,
+        builder: (context, state) => const RankedBrowserScreen(seasons: true),
+      ),
       GoRoute(
         path: '/friends',
         builder: (context, state) => const FriendsScreen(),
@@ -204,6 +215,7 @@ class AppRouter {
             matchId: extra['matchId'] as String,
             initialPlayersData: extra['initialPlayersData'] as List<dynamic>,
             totalQuestions: extra['totalQuestions'] as int,
+            resume: extra['resume'] == true,
           );
         },
       ),

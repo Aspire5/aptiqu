@@ -12,4 +12,6 @@ class AppRoutes {
   static const String lessonStep = '/lesson-step/:stepId';
   static const String practiceSession = '/practice-session';
   static const String pvpArena = '/pvp-arena';
+  static const String rankedLeaderboard = '/ranked/leaderboard';
+  static const String rankedSeasons = '/ranked/seasons';
 }

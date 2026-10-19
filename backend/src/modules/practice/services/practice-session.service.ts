@@ -1,3 +1,4 @@
+import { matchQuestions } from '../../pvp/ranked/ranked-questions';
 import { duelsService } from '../../social/duels.service';
 import { lockUsers } from '../../social/friends.service';
 import { socialTransport } from '../../social/social.transport';
@@ -236,6 +237,31 @@ export class PracticeSessionService {
   /**
    * Retrieves an active practice session and securely masks correct answers for unanswered questions.
    */
+  private async assertReplaySourceAvailable(session: { replaySourceType?: string | null; replaySourceId?: string | null }, userId: string, db: any = prisma) {
+    const seen = new Set<string>();
+    let source = session;
+    // Include replay-of-replay chains created before this guard existed.
+    for (let depth = 0; depth < 32; depth++) {
+      if (!source.replaySourceType) return;
+      const id = source.replaySourceId;
+      const key = `${source.replaySourceType}:${id}`;
+      if (!id || seen.has(key)) throw new Error('This replay source is unavailable.');
+      seen.add(key);
+      if (source.replaySourceType === 'PVP') {
+        const match = await db.pvpMatch.findUnique({ where: { id }, select: { status: true, ratingMode: true, questionSnapshot: true, settlement: { select: { disposition: true } }, players: { select: { userId: true } } } });
+        if (!match || match.status !== 'COMPLETED' || !match.players.some((p: { userId: string }) => p.userId === userId)) {
+          throw new Error('Finish the Ranked match before opening its Practice replay.');
+        }
+        if (match.ratingMode === 'RATED' && match.settlement?.disposition !== 'RATED') throw new Error('The Ranked result is still finalizing. Please retry.');
+        return match.questionSnapshot ? Object.fromEntries(matchQuestions({ ...match, questionSet: { setQuestions: [] } }).map(q => [q.id, q])) : undefined;
+      }
+      if (source.replaySourceType !== 'PRACTICE') throw new Error('This replay source is unavailable.');
+      source = await db.practiceSession.findFirst({ where: { id, userId }, select: { replaySourceType: true, replaySourceId: true } });
+      if (!source) throw new Error('This replay source is unavailable.');
+    }
+    throw new Error('This replay source chain is too long.');
+  }
+
   public async getSession(sessionId: string, userId: string, txClient?: any) {
     const db = txClient || prisma;
     const session = await db.practiceSession.findFirst({
@@ -252,11 +278,13 @@ export class PracticeSessionService {
     if (!session) {
       throw new Error(`Practice session "${sessionId}" not found.`);
     }
+    const rankedReplay = await this.assertReplaySourceAvailable(session, userId, db);
 
     // Sanitize question data so correct answer is NOT leaked to client before answer
     const sanitizedQuestions = session.questions.map((sq: any) => {
       const isAnswered = sq.isAnswered;
-      const q = session.friendlyDuel?.questionSnapshot?.[sq.questionId] ?? sq.question;
+      const q = rankedReplay?.[sq.questionId] ?? session.friendlyDuel?.questionSnapshot?.[sq.questionId] ?? sq.question;
+      if (rankedReplay && !rankedReplay[sq.questionId]) throw new Error('This replay question is unavailable.');
       return {
         id: sq.id,
         sequence: sq.sequence,
@@ -337,6 +365,7 @@ export class PracticeSessionService {
     if (!session) {
       throw new Error(`Practice session "${sessionId}" not found.`);
     }
+    const rankedReplay = await this.assertReplaySourceAvailable(session, userId);
 
     if (session.status !== 'ACTIVE') {
       throw new Error(`Session is already ${session.status}. No further answers accepted.`);
@@ -359,7 +388,8 @@ export class PracticeSessionService {
     }
     const deck = session.friendlyDuel?.questionSnapshot as Record<string, any> | undefined;
     if (session.isFriendlyDuel && !deck?.[questionId]) throw new Error('This friendly duel deck is unavailable.');
-    const question = deck?.[questionId] ?? sessionQuestion.question;
+    if (rankedReplay && !rankedReplay[questionId]) throw new Error('This replay question is unavailable.');
+    const question = rankedReplay?.[questionId] ?? deck?.[questionId] ?? sessionQuestion.question;
     const option = selectedOptionId.trim().toUpperCase();
     if (option !== 'TIMEOUT' && !(question.options as any[]).some(o => o.id === option)) {
       throw new Error('Choose a valid option.');
@@ -604,6 +634,7 @@ export class PracticeSessionService {
     if (!original) {
       throw new Error(`Practice session "${originalSessionId}" not found for replay.`);
     }
+    await this.assertReplaySourceAvailable(original, userId);
 
     if (original.questions.length !== 10) throw new Error('This older session does not contain 10 questions. Start a new session.');
     return await prisma.$transaction(async (tx) => {
@@ -649,6 +680,7 @@ export class PracticeSessionService {
       where: { id: matchId },
       include: {
         players: { select: { userId: true } },
+        settlement: { select: { disposition: true } },
         questionSet: {
           include: {
             setQuestions: {
@@ -665,12 +697,15 @@ export class PracticeSessionService {
     }
 
     if (!match.players.some(player => player.userId === userId)) throw new Error('You can only replay your own matches.');
-    const setQuestions = match.questionSet.setQuestions;
+    if (match.status !== 'COMPLETED') throw new Error('Finish the Ranked match before opening its Practice replay.');
+    if (match.ratingMode === 'RATED' && match.settlement?.disposition !== 'RATED') throw new Error('The Ranked result is still finalizing. Please retry.');
+    const frozen = match.questionSnapshot ? matchQuestions(match) : null;
+    const setQuestions = frozen ? frozen.map(question => ({ questionId: question.id, question })) : match.questionSet.setQuestions;
     if (setQuestions.length !== 10) {
       throw new Error('A replay requires a complete 10-question set.');
     }
 
-    const firstQuestion = setQuestions[0].question;
+    const firstQuestion = frozen ? await prisma.question.findUniqueOrThrow({ where: { id: frozen[0].id } }) : match.questionSet.setQuestions[0].question;
 
     return await prisma.$transaction(async (tx) => {
       const replaySession = await tx.practiceSession.create({

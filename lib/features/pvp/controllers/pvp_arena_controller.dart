@@ -1,8 +1,11 @@
+import '../ranked/ranked_models.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import '../services/pvp_socket_service.dart';
 import '../models/pvp_models.dart';
 import '../../../core/progression/controllers/xp_controller.dart';
+import '../../../core/progression/models/xp_models.dart';
+import '../../../core/network/dio_client.dart';
 import '../../../features/auth/presentation/controllers/auth_controller.dart';
 
 class PvpArenaController extends GetxController {
@@ -21,6 +24,11 @@ class PvpArenaController extends GetxController {
   StreamSubscription? _sub;
   Timer? _recoveryTimer;
   final isRecovering = false.obs, recoveredCompletion = false.obs;
+  final isMatchVoided = false.obs;
+  final ratingChange = Rxn<RankedChange>();
+  final ratingDisposition = 'LEGACY_UNRATED'.obs;
+  final settledAt = Rxn<DateTime>();
+  int _stateVersion = -1;
   final connectionError = ''.obs;
 
   final RxInt currentQuestionIndex = 0.obs;
@@ -81,6 +89,22 @@ class PvpArenaController extends GetxController {
     _sub = _socketService.eventStream.listen((event) {
       final eventName = event['event'] as String?;
       final data = event['data'] as Map<String, dynamic>? ?? {};
+      if (isClosed ||
+          (data['matchId'] != null && data['matchId'] != matchId) ||
+          (Get.isRegistered<AuthController>() &&
+              Get.find<AuthController>().currentUser.value?.id !=
+                  currentUserId)) {
+        return;
+      }
+      final version = data['stateVersion'];
+      if (version is num) {
+        if (version.toInt() < _stateVersion) return;
+        _stateVersion = version.toInt();
+      }
+      if (isMatchVoided.value ||
+          (isMatchCompleted.value && eventName != 'MATCH_COMPLETED')) {
+        return;
+      }
 
       switch (eventName) {
         case 'QUESTION_STARTED':
@@ -89,8 +113,16 @@ class PvpArenaController extends GetxController {
           break;
 
         case 'ANSWER_ACCEPTED':
+          if (isRoundEnded.value) return;
+          if (data['questionIndex'] != null &&
+              data['questionIndex'] != currentQuestionIndex.value) {
+            return;
+          }
           // Answer acknowledged by server
           hasSubmittedAnswer.value = true;
+          if (data.containsKey('selectedOptionId')) {
+            selectedOptionId.value = data['selectedOptionId']?.toString() ?? '';
+          }
           break;
 
         case 'QUESTION_ENDED':
@@ -121,6 +153,12 @@ class PvpArenaController extends GetxController {
   }
 
   void _handleQuestionStarted(Map<String, dynamic> data) {
+    final index = data['questionIndex'] as int? ?? 0;
+    if (index < currentQuestionIndex.value ||
+        (index == currentQuestionIndex.value &&
+            currentQuestion.value != null)) {
+      return;
+    }
     isRoundEnded.value = false;
     hasSubmittedAnswer.value = false;
     selectedOptionId.value = '';
@@ -152,6 +190,10 @@ class PvpArenaController extends GetxController {
   }
 
   void _handleQuestionEnded(Map<String, dynamic> data) {
+    if (data['questionIndex'] != null &&
+        data['questionIndex'] != currentQuestionIndex.value) {
+      return;
+    }
     _countdownTimer?.cancel();
     _questionStopwatch.stop();
     isRoundEnded.value = true;
@@ -172,6 +214,20 @@ class PvpArenaController extends GetxController {
   }
 
   void _handleMatchCompleted(Map<String, dynamic> data) {
+    if (isMatchCompleted.value) return;
+    if (data['ratingMode'] == 'RATED' && data['disposition'] != 'RATED') {
+      connectionError.value =
+          'Result updating. Refresh match to check the recorded result.';
+      return;
+    }
+    ratingDisposition.value =
+        data['disposition']?.toString() ?? 'LEGACY_UNRATED';
+    final rawRating = data['rating'];
+    if (rawRating is Map && rawRating['userId'] == currentUserId) {
+      ratingChange.value = RankedChange.parse(rawRating);
+    }
+    settledAt.value = DateTime.tryParse(data['settledAt']?.toString() ?? '');
+    recoveredCompletion.value = false;
     _countdownTimer?.cancel();
     _questionStopwatch.stop();
     isMatchCompleted.value = true;
@@ -194,15 +250,40 @@ class PvpArenaController extends GetxController {
       }
     }
 
-    // Synchronize XP with global controller
-    if (xpAwarded.value > 0 && Get.isRegistered<XpController>()) {
-      final curXp = XpController.to.progress.value;
-      XpController.to.handleXpUpdate(
-        xp: curXp.copyWith(
-          earned: xpAwarded.value,
-          total: curXp.total + xpAwarded.value,
-        ),
-      );
+    // Absolute server progress is safe across duplicate events/controller rebuilds.
+    // Older servers lack this block: refresh progression instead of adding XP locally.
+    if (Get.isRegistered<XpController>()) {
+      final xp = data['xp'];
+      if (xp is Map) {
+        _applyXp(Map<String, dynamic>.from(xp));
+      } else {
+        unawaited(_refreshXp());
+      }
+    }
+  }
+
+  void _applyXp(Map<String, dynamic> data) {
+    if (!Get.isRegistered<XpController>()) return;
+    final xp = XpProgressModel.fromJson(data);
+    if (xp.total < XpController.to.progress.value.total) return;
+    XpController.to.handleXpUpdate(xp: xp);
+  }
+
+  Future<void> _refreshXp() async {
+    if (!Get.isRegistered<DioClient>()) return;
+    try {
+      final response = await Get.find<DioClient>().dio.get('/user/progress');
+      if (isClosed ||
+          (Get.isRegistered<AuthController>() &&
+              Get.find<AuthController>().currentUser.value?.id !=
+                  currentUserId)) {
+        return;
+      }
+      if (response.data['success'] == true && response.data['data'] is Map) {
+        _applyXp(Map<String, dynamic>.from(response.data['data'] as Map));
+      }
+    } catch (_) {
+      // The recorded award remains visible; the next profile refresh can sync XP.
     }
   }
 
@@ -273,6 +354,28 @@ class PvpArenaController extends GetxController {
   }
 
   void _restoreSnapshot(Map<String, dynamic> data) {
+    if (data['status'] == 'CANCELLED' &&
+        data['outcomeReason'] == 'SYSTEM_VOID') {
+      _finishRecovery();
+      _countdownTimer?.cancel();
+      _questionStopwatch.stop();
+      isRoundEnded.value = true;
+      isMatchVoided.value = true;
+      recoveredCompletion.value = true;
+      return;
+    }
+    final snapshotIndex =
+        (data['currentQuestionIndex'] as num?)?.toInt() ??
+        currentQuestionIndex.value;
+    if (data['status'] != 'COMPLETED' &&
+        (snapshotIndex < currentQuestionIndex.value ||
+            (snapshotIndex == currentQuestionIndex.value &&
+                currentQuestion.value != null &&
+                (data['status'] == 'STARTING' ||
+                    (roundCorrectAnswer.isNotEmpty &&
+                        data['status'] == 'QUESTION_ACTIVE'))))) {
+      return;
+    }
     _finishRecovery();
     _countdownTimer?.cancel();
     for (final player in data['players'] as List? ?? []) {
@@ -282,10 +385,14 @@ class PvpArenaController extends GetxController {
         opponentScore.value = (player['score'] as num?)?.toInt() ?? 0;
       }
     }
-    // Reconnection does not return winner/reward fields. History remains authoritative.
     if (data['status'] == 'COMPLETED') {
       _questionStopwatch.stop();
-      recoveredCompletion.value = true;
+      if (data.containsKey('winnerId') && data.containsKey('isTie')) {
+        _handleMatchCompleted(data);
+      } else {
+        // Backward compatibility with old, incomplete reconnect snapshots.
+        recoveredCompletion.value = true;
+      }
       return;
     }
     final nextIndex =
@@ -299,6 +406,16 @@ class PvpArenaController extends GetxController {
       hasSubmittedAnswer.value = false;
     }
     currentQuestionIndex.value = nextIndex;
+    if (data.containsKey('ownAnswer') &&
+        (data['ownAnswer'] is Map ||
+            !sameQuestion ||
+            !hasSubmittedAnswer.value)) {
+      final own = data['ownAnswer'];
+      hasSubmittedAnswer.value = own is Map;
+      selectedOptionId.value = own is Map
+          ? own['selectedOptionId']?.toString() ?? ''
+          : '';
+    }
     final question = data['question'];
     currentQuestion.value = question is Map && data['status'] != 'STARTING'
         ? PvpQuestionDataModel.fromJson(Map<String, dynamic>.from(question))
@@ -312,6 +429,8 @@ class PvpArenaController extends GetxController {
     isRoundEnded.value =
         data['status'] != 'QUESTION_ACTIVE' || remainingMs <= 0;
     if (isRoundEnded.value) _questionStopwatch.stop();
+    final round = data['roundResult'];
+    if (round is Map) _handleQuestionEnded(Map<String, dynamic>.from(round));
     if (!isRoundEnded.value) {
       if (!sameQuestion) {
         _responseTimeOffsetMs = (60000 - remainingMs).clamp(0, 60000);

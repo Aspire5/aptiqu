@@ -1,6 +1,6 @@
 # Phase G — final QA coverage and release limits
 
-Authorization: `APPROVE PHASE F`. This report supplements the preserved original audit/plan; their reference checklists are not rewritten. A–F approvals and the saved composition preferences remain in force. **Automated UI checks and a debug build are not release approval.**
+Authorization: `APPROVE PHASE F`. This report supplements the preserved original audit/plan; their reference checklists are not rewritten. A–F approvals and the saved composition preferences remain in force. **The user subsequently marked Phase G completed and manually approved, requested no release, and explicitly deferred the unresolved Ranked outage/exit policy.** Fixture evidence and the agent’s native verification limitations remain recorded accurately; completion is no longer awaiting approval.
 
 ## Automated envelope
 
@@ -28,7 +28,7 @@ All rows receive the G envelope above. The state coverage column identifies addi
 | S07 PracticeCatalogView history | D: loading/error/empty/cache/page retry, paging, replay guard, labels | Live history/replay values require account data |
 | S08 PracticeSessionScreen | `practice_session_test`, D/E: timed/untimed/replay/friendly, clock failure, selection/submission/error/retry, hints, Book/Alternative/preferred reason, result/abandon | Device timer/background and server reward acceptance outstanding |
 | S09 PvpLobbyView | E: idle/queue/cancel/connecting races, history empty/error/populated/retry/replay busy | Live matchmaking/multi-device required |
-| S10 PvpArenaScreen | E: waiting, supplied question/lock/round/result, loss/tie/AFK, connection loss/reconnect and recovered completion, invalid entry | **Permanent-outage exit remains unsupported; release blocker UX-08** |
+| S10 PvpArenaScreen | E: waiting, supplied question/lock/round/result, loss/tie/AFK, connection loss/reconnect and recovered completion, invalid entry | **Permanent-outage exit remains unsupported; UX-08 is explicitly deferred by the user** |
 | S11 ProfileScreen | B/C/G, `xp_level_system_test`: identity/avatar fallback, missing/cached/error stats, appearance save/failure/retry, version, logout confirm | Real native storage/relaunch, screen reader and logout acceptance outstanding |
 | S12 DailyStreakHubScreen | D/G: loading/error/eligible/resume/completed, history/error/paging, preparation/failure/busy | Live daily participation/rewards not generated |
 | S13 DailyChallengeQuizScreen | D/F/G: missing session, options/timeout/selected/submitting/feedback, long methods/Next/completion/exit, invitation toolbar, guarded notices | Native lifecycle and live server deadline acceptance outstanding |
@@ -76,7 +76,7 @@ Both-theme small-portrait and short-landscape/2× coverage is supplied by B/C/D/
 | UX-04 targets | Project 48 px native minimum controls, calendar day list, measured target/label guidelines on normal G fixtures, A–F explicit bounds at 2× | Native touch/assistive-tech pass outstanding; targets do not expand invisibly over neighbors |
 | UX-05 semantics/focus | Native options/actions, selection/locked state, icon labels, keyboard/focus/announcement fixtures; G normal 18-view label/target checks | **TalkBack/VoiceOver completion remains unverified** |
 | UX-06/07 layout/modal safety | Complete G size/scale envelope, long content and scroll passes; prior keyboard/mounted-disposal fixtures; new short TopicDetailsSheet regression fixed | Native rotation/keyboard/safe-area session outstanding |
-| UX-08 Ranked recovery | E waiting/connection/retry/refresh and honest recovered-result handling; no fabricated rewards | **OPEN P1 / release-blocking:** no supported permanent-outage Leave/Forfeit operation or sufficient recovered result payload. Separate product/server approval needed |
+| UX-08 Ranked recovery | E waiting/connection/retry/refresh and honest recovered-result handling; no fabricated rewards | **OPEN P1 / user-deferred:** no supported permanent-outage Leave/Forfeit operation or sufficient recovered result payload. Separate product/server approval needed |
 | UX-09 navigation | Auth/onboarding guards, safe extras/invalid route fallbacks, alias IDs, F route ownership and G readable unknown-route Home recovery | Native back/entry acceptance outstanding |
 | UX-10 states | Initial failure stops loading; cached/stale content and operation-specific retry; guarded duplicate requests/submissions; suites above | Live network/service acceptance outstanding |
 | UX-11/12/13/14/15 | Approved type hierarchy, readable selected/feedback states, session progress, navigation and method presentation implemented A–F; original callbacks/IDs/order/timers preserved | Inspect actual account content as in manual guide |
@@ -106,4 +106,4 @@ Font assets are the same verified static files already used by the approved fixt
 
 ## Final gate
 
-Implementation/automated QA can be reviewed now. Native acceptance, the open Ranked recovery policy and explicit human release approval remain outstanding. Terms/Privacy URLs remain deferred by the user's instruction; they are not invented or activated. Tutor/Voice/Scan remain disclosed unavailable capabilities. Wider web/desktop shipping scope is unconfirmed; tablet is a fixture sanity pass, not iPad release certification.
+Phase G is completed and manually approved. The user requested no release and explicitly left the Ranked recovery policy unresolved. The historical native-verification limitations above remain evidence limits, not a pending G approval gate. Any future release assessment is separately scoped. Terms/Privacy URLs remain deferred by the user's instruction; they are not invented or activated. Tutor/Voice/Scan remain disclosed unavailable capabilities. Wider web/desktop shipping scope is unconfirmed; tablet is a fixture sanity pass, not iPad release certification.

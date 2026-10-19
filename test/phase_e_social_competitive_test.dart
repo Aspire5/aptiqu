@@ -1257,6 +1257,7 @@ void main() {
     await start;
     expect(socket.joins, 0);
     expect(c.isInQueue.value, isFalse);
+    await flush(tester);
     Get.delete<PvpLobbyController>();
   });
   testWidgets(
@@ -1278,6 +1279,7 @@ void main() {
       await tester.runAsync(c.fetchHistory);
       expect(c.matchHistory.length, 2);
       expect(c.historyError.isNotEmpty, isTrue);
+      await flush(tester);
       Get.delete<PvpLobbyController>();
     },
   );

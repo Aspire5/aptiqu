@@ -26,8 +26,12 @@ Wrap whole controls and labels where practical. Retain all names, emails, requir
 
 ## Current scope and approval
 
-Phase C revision was explicitly approved on 19 October 2026 with `APPROVE PHASE C, proceed with next.` Phase D was explicitly approved with `APPROVE PHASE D`. Phase E was explicitly approved with `APPROVE PHASE E`. Phase F was explicitly approved with `APPROVE PHASE F`. Phase G implementation and automated QA are complete. Final manual verification, native device acceptance, resolution of the documented Ranked recovery dependency, and explicit release approval remain required. No release is authorized by phase approval. Preserve working validation requirements, navigation, appearance persistence, APIs and learning logic.
+Phase C revision was explicitly approved on 19 October 2026 with `APPROVE PHASE C, proceed with next.` Phase D was explicitly approved with `APPROVE PHASE D`. Phase E was explicitly approved with `APPROVE PHASE E`. Phase F was explicitly approved with `APPROVE PHASE F`. Phase G is completed and manually approved by the user. The user requested no release and explicitly left the Ranked outage/exit policy unresolved. Earlier automated/native evidence limitations remain recorded; they do not reopen the approved phase. Preserve working validation requirements, navigation, appearance persistence, APIs and learning logic.
 
 Login's only requested change in this revision is removal of **“These links are not available yet.”** Everything else on Login stays unchanged; missing Terms/Privacy destinations must not become misleading active links.
 
 At each handoff, show actual light/dark rendered evidence and precise manual-review steps. Record important adaptations from the references and await explicit approval before another phase.
+
+## Canonical reference and future work
+
+`docs/FRONTEND_DESIGN_SYSTEM.md` is the current, implementation-grounded frontend handbook. This document retains the approved revision feedback as provenance. Its palettes/type/composition are the ordinary default, not a prohibition on a legitimate future redesign. Explicit current user requirements take precedence over historical aesthetic preferences; protect accessibility and relevant behavior, explain significant departures, and update the handbook when a lasting convention changes. The completed phase approval gates are not automatic approval requirements for every future frontend task.

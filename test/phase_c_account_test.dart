@@ -197,10 +197,13 @@ void main() {
     await loadProductionFontFixtures(tester);
     await tester.runAsync(() async {
       final context = tester.element(find.byKey(const ValueKey('capture-c')));
-      await precacheImage(
-        const AssetImage('assets/images/small_logo.jpeg'),
-        context,
-      );
+      for (final asset in [
+        'assets/images/login/aptiqu_onboarding_learn.webp',
+        'assets/images/login/aptiqu_onboarding_practice.webp',
+        'assets/images/login/aptiqu_onboarding_compete.webp',
+      ]) {
+        await precacheImage(AssetImage(asset), context);
+      }
       await precacheImage(
         const AssetImage('assets/images/google_g.png'),
         context,

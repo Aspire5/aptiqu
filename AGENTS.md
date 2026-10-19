@@ -72,3 +72,10 @@
 - Preserve the approved palette, typography, font sizes and design tokens. Prefer purposeful rows, compact groups, task-appropriate controls and visual hierarchy over automatic vertical stacking, repeated cards and explanatory prose.
 - Adapt to real content, width and enlarged text while preserving readable controls and 48 px touch targets. Reference designs guide composition, not a replacement visual system.
 - Implement only the explicitly authorized phase or revision, then stop for manual approval. Saved preferences do not authorize future phases.
+
+## Permanent frontend design handbook — Flutter UI tasks only
+- When designing, creating, modifying or reviewing Flutter frontend UI, read the relevant sections of `docs/FRONTEND_DESIGN_SYSTEM.md`, then inspect the actual theme/widgets and their callers. That handbook is the canonical current frontend reference; the old audit/plan are historical proposals.
+- Check suitable existing components before adding a reusable widget. Use the approved theme/type roles and content-driven composition by default, while protecting accessibility and relevant behavior/data contracts.
+- Explicit current user requirements take precedence over historical aesthetic preferences. Legitimate improvements and authorized redesigns are welcome; explain significant departures and update the handbook when a lasting convention changes.
+- Phase G is completed and manually approved. No release is requested; the Ranked outage/exit policy remains unresolved by explicit user choice. The earlier phase gates govern that phased revamp, not every future frontend fix. Follow any approval boundary established by the current task.
+- This frontend reading requirement does not apply to unrelated backend or educational-content tasks. Keep all existing instructions above intact.

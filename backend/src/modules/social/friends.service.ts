@@ -11,9 +11,8 @@ export function friendPair(a: string, b: string) {
   if (a === b) throw socialError('You cannot add or invite yourself.');
   return a < b ? { lowId: a, highId: b } : { lowId: b, highId: a };
 }
-export async function lockUsers(tx: Prisma.TransactionClient, ids: string[]) {
-  await tx.$queryRaw(Prisma.sql`SELECT id FROM auth.users WHERE id IN (${Prisma.join([...new Set(ids)].sort().map(id => Prisma.sql`${id}::uuid`))}) ORDER BY id FOR UPDATE`);
-}
+export { lockUsers } from './user-lock';
+import { lockUsers } from './user-lock';
 export const publicUserSelect = { id: true, profile: { select: { firstName: true, lastName: true, avatarUrl: true } },
   progress: { select: { totalXp: true } }, gameStats: { select: { highestStreak: true, streak: true, lastDailyDate: true, coins: true } } };
 export function publicUser(user: any) {

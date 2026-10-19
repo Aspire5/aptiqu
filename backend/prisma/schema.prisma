@@ -45,6 +45,7 @@ model User {
   pvpMatchParticipations PvpMatchPlayer[]
   pvpMatchAnswers        PvpMatchAnswer[]
   pvpSetHistory          PvpPlayerSetHistory[]
+  rankedSeasons          RankedPlayerSeason[]
 
   // Daily Challenge relations
   dailyChallengeParticipations DailyChallengeParticipation[]
@@ -636,12 +637,28 @@ model PvpMatch {
   endedAt                  DateTime?      @map("ended_at")
   createdAt                DateTime       @default(now()) @map("created_at")
 
+  seasonId                 String? @map("season_id") @db.VarChar(7)
+  ratingMode               RankedRatingMode @default(LEGACY_UNRATED) @map("rating_mode")
+  seasonAssignedAt         DateTime? @map("season_assigned_at") @db.Timestamptz(3)
+  outcomeReason            String? @map("outcome_reason") @db.VarChar(32)
+  stateVersion             Int @default(0) @map("state_version")
+  transitionDeadline       DateTime? @map("transition_deadline") @db.Timestamptz(3)
+  hardExpiresAt            DateTime? @map("hard_expires_at") @db.Timestamptz(3)
+  questionSnapshot         Json? @map("question_snapshot") @db.JsonB
+  season                   RankedSeason? @relation(fields: [seasonId], references: [id], onDelete: Restrict)
+  settlement               RankedMatchSettlement?
+  lastStandings            RankedPlayerSeason[] @relation("LastRatedMatch")
+
   questionSet              PvpQuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Restrict)
   winner                   User?          @relation("PvpMatchWinner", fields: [winnerId], references: [id], onDelete: SetNull)
   players                  PvpMatchPlayer[]
   answers                  PvpMatchAnswer[]
 
   @@index([status, createdAt])
+  @@index([seasonId, status, id])
+  @@index([status, currentQuestionDeadline])
+  @@index([status, transitionDeadline])
+  @@index([status, hardExpiresAt])
   @@map("pvp_matches")
   @@schema("learning")
 }
@@ -656,9 +673,13 @@ model PvpMatchPlayer {
   xpAwarded           Int                 @default(0) @map("xp_awarded")
   connectionStatus    PvpConnectionStatus @default(CONNECTED) @map("connection_status")
   joinedAt            DateTime            @default(now()) @map("joined_at")
+  disconnectedAt      DateTime? @map("disconnected_at") @db.Timestamptz(3)
 
   match               PvpMatch            @relation(fields: [matchId], references: [id], onDelete: Cascade)
   user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  ratingChanges       RankedRatingChange[]
+  participantAnswers  PvpMatchAnswer[] @relation("AnswerParticipant")
 
   @@unique([matchId, userId])
   @@index([userId, joinedAt(sort: Desc)])
@@ -682,6 +703,8 @@ model PvpMatchAnswer {
   match               PvpMatch  @relation(fields: [matchId], references: [id], onDelete: Cascade)
   user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   question            Question  @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  participant         PvpMatchPlayer @relation("AnswerParticipant", fields: [matchId, userId], references: [matchId, userId], onDelete: Cascade)
 
   @@unique([matchId, userId, questionIndex])
   @@index([matchId, questionIndex])
@@ -1240,5 +1263,146 @@ model FriendlyDuelSeat {
   duel FriendlyDuel @relation(fields: [duelId], references: [id], onDelete: Cascade)
   @@index([duelId])
   @@map("friendly_duel_seats")
+  @@schema("learning")
+}
+
+// Ranked v1: additive source changes only; see prisma/changes/README.md.
+enum RankedRatingMode {
+  LEGACY_UNRATED
+  RATED
+  @@schema("learning")
+}
+enum RankedSeasonState {
+  OPEN
+  FINALIZING
+  FINALIZED
+  @@schema("learning")
+}
+enum RankedDisposition {
+  RATED
+  VOID
+  LEGACY_UNRATED
+  @@schema("learning")
+}
+enum RankedLeague {
+  UNRANKED
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+  @@schema("learning")
+}
+model RankedPolicy {
+  id String @id @db.VarChar(64)
+  eloVersion String @map("elo_version") @db.VarChar(32)
+  leagueVersion String @map("league_version") @db.VarChar(32)
+  outcomeVersion String @map("outcome_version") @db.VarChar(32)
+  config Json @db.JsonB
+  configHash String @unique @map("config_hash") @db.Char(64)
+  approvedAt DateTime? @map("approved_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  seasons RankedSeason[]
+  settlements RankedMatchSettlement[]
+  @@map("ranked_policies")
+  @@schema("learning")
+}
+model RankedSeason {
+  id String @id @db.VarChar(7)
+  timezone String @default("Asia/Kolkata") @db.VarChar(32)
+  startsAt DateTime @unique @map("starts_at") @db.Timestamptz(3)
+  endsAt DateTime @unique @map("ends_at") @db.Timestamptz(3)
+  policyId String @map("policy_id") @db.VarChar(64)
+  settlementState RankedSeasonState @default(OPEN) @map("settlement_state")
+  eligibleCount Int? @map("eligible_count")
+  finalizedAt DateTime? @map("finalized_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  policy RankedPolicy @relation(fields: [policyId], references: [id], onDelete: Restrict)
+  players RankedPlayerSeason[]
+  matches PvpMatch[]
+  settlements RankedMatchSettlement[]
+  @@index([settlementState, endsAt])
+  @@map("ranked_seasons")
+  @@schema("learning")
+}
+model RankedPlayerSeason {
+  seasonId String @map("season_id") @db.VarChar(7)
+  userId String @map("user_id") @db.Uuid
+  seedSourceSeasonId String? @map("seed_source_season_id") @db.VarChar(7)
+  seedRating Int @map("seed_rating")
+  rating Int
+  peakRating Int @map("peak_rating")
+  qualifiedPeakRating Int? @map("qualified_peak_rating")
+  careerRatedBefore Int @map("career_rated_before")
+  placementsRequired Int @map("placements_required")
+  played Int @default(0)
+  wins Int @default(0)
+  losses Int @default(0)
+  draws Int @default(0)
+  qualifiedAt DateTime? @map("qualified_at") @db.Timestamptz(3)
+  version Int @default(0)
+  lastMatchId String? @map("last_match_id") @db.Uuid
+  lastPlayedAt DateTime? @map("last_played_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  finalRating Int? @map("final_rating")
+  finalPeakRating Int? @map("final_peak_rating")
+  finalLeague RankedLeague? @map("final_league")
+  finalPosition Int? @map("final_position")
+  finalizedAt DateTime? @map("finalized_at") @db.Timestamptz(3)
+  season RankedSeason @relation(fields: [seasonId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  seedSource RankedPlayerSeason? @relation("RankedSeed", fields: [seedSourceSeasonId, userId], references: [seasonId, userId], onDelete: Restrict)
+  seededSeasons RankedPlayerSeason[] @relation("RankedSeed")
+  lastMatch PvpMatch? @relation("LastRatedMatch", fields: [lastMatchId], references: [id], onDelete: Restrict)
+  changes RankedRatingChange[]
+  @@id([seasonId, userId])
+  @@index([userId, seasonId(sort: Desc)])
+  @@map("ranked_player_seasons")
+  @@schema("learning")
+}
+model RankedMatchSettlement {
+  matchId String @id @map("match_id") @db.Uuid
+  seasonId String? @map("season_id") @db.VarChar(7)
+  policyId String? @map("policy_id") @db.VarChar(64)
+  disposition RankedDisposition
+  outcomeHash String @map("outcome_hash") @db.Char(64)
+  resultSchemaVersion Int @default(1) @map("result_schema_version")
+  resultSnapshot Json @map("result_snapshot") @db.JsonB
+  settledAt DateTime @map("settled_at") @db.Timestamptz(3)
+  match PvpMatch @relation(fields: [matchId], references: [id], onDelete: Restrict)
+  season RankedSeason? @relation(fields: [seasonId], references: [id], onDelete: Restrict)
+  policy RankedPolicy? @relation(fields: [policyId], references: [id], onDelete: Restrict)
+  changes RankedRatingChange[]
+  @@index([seasonId, settledAt])
+  @@map("ranked_match_settlements")
+  @@schema("learning")
+}
+model RankedRatingChange {
+  id String @id @default(uuid()) @db.Uuid
+  matchId String @map("match_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  seasonId String @map("season_id") @db.VarChar(7)
+  opponentId String @map("opponent_id") @db.Uuid
+  ratingBefore Int @map("rating_before")
+  opponentRatingBefore Int @map("opponent_rating_before")
+  delta Int
+  ratingAfter Int @map("rating_after")
+  score Decimal @db.Decimal(2, 1)
+  expectedScore Decimal @map("expected_score") @db.Decimal(12, 10)
+  kFactor Int @map("k_factor")
+  careerCountBefore Int @map("career_count_before")
+  seasonVersionAfter Int @map("season_version_after")
+  leagueBefore RankedLeague @map("league_before")
+  leagueAfter RankedLeague @map("league_after")
+  changeKind String @map("change_kind") @db.VarChar(32)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  settlement RankedMatchSettlement @relation(fields: [matchId], references: [matchId], onDelete: Restrict)
+  participant PvpMatchPlayer @relation(fields: [matchId, userId], references: [matchId, userId], onDelete: Restrict)
+  standing RankedPlayerSeason @relation(fields: [seasonId, userId], references: [seasonId, userId], onDelete: Restrict)
+  @@unique([matchId, userId])
+  @@unique([seasonId, userId, seasonVersionAfter])
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
+  @@map("ranked_rating_changes")
   @@schema("learning")
 }

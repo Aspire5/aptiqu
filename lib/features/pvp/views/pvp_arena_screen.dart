@@ -1,3 +1,4 @@
+import '../ranked/ranked_result.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -14,11 +15,13 @@ class PvpArenaScreen extends StatefulWidget {
   final String matchId;
   final List<dynamic> initialPlayersData;
   final int totalQuestions;
+  final bool resume;
   const PvpArenaScreen({
     super.key,
     required this.matchId,
     required this.initialPlayersData,
     required this.totalQuestions,
+    this.resume = false,
   });
   @override
   State<PvpArenaScreen> createState() => _PvpArenaScreenState();
@@ -37,6 +40,11 @@ class _PvpArenaScreenState extends State<PvpArenaScreen> {
         totalQuestions: widget.totalQuestions,
       ),
     );
+    if (widget.resume) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) c.recoverConnection();
+      });
+    }
   }
 
   @override
@@ -322,7 +330,9 @@ class _PvpArenaScreenState extends State<PvpArenaScreen> {
     ),
     const SizedBox(height: 16),
     Text(
-      c.recoveredCompletion.value
+      c.isMatchVoided.value
+          ? 'Match cancelled'
+          : c.recoveredCompletion.value
           ? 'Match finished'
           : c.isTie.value
           ? 'Draw'
@@ -335,10 +345,27 @@ class _PvpArenaScreenState extends State<PvpArenaScreen> {
     const SizedBox(height: 20),
     if (c.recoveredCompletion.value)
       Text(
-        'Your match has finished. View its recorded result and rewards in Recent matches on Ranked.',
+        c.isMatchVoided.value
+            ? 'A server interruption ended this match. No Elo or XP was awarded.'
+            : 'Your match has finished. View its recorded result and rewards in Recent matches on Ranked.',
         style: context.type.bodyLarge,
       )
     else ...[
+      if (c.ratingChange.value != null) ...[
+        RankedResultView(
+          key: ValueKey(c.ratingChange.value!.eventId),
+          change: c.ratingChange.value!,
+          owner: c.currentUserId ?? '',
+          settledAt: c.settledAt.value,
+        ),
+        const SizedBox(height: 16),
+      ] else
+        Text(
+          c.ratingDisposition.value == 'RATED'
+              ? 'Recorded Elo unavailable. Refresh Ranked to check your standing.'
+              : 'Unrated match · No Elo change',
+          style: context.type.bodyMedium,
+        ),
       SessionMetrics(
         items: [(label: 'XP awarded', value: '${c.xpAwarded.value}')],
       ),

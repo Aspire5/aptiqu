@@ -1,3 +1,4 @@
+import { rankedQueryService } from '../pvp/ranked/ranked-query.service';
 import { prisma } from '../../config/prisma';
 import { xpService } from '../xp/xp.service';
 import { dailyChallengeService } from '../daily-challenge/daily-challenge.service';
@@ -62,6 +63,7 @@ export class UserService {
         timeRemainingMs: streakSync.msUntilMidnight,
         expiresAt: streakSync.expiresAt,
       },
+      rankedLeague: await rankedQueryService.compact(userId),
       stats: includeStats ? await this.getUserStats(userId) : undefined,
     };
   }

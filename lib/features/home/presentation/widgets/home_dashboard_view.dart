@@ -1,3 +1,4 @@
+import '../../../pvp/ranked/ranked_widgets.dart';
 import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
@@ -190,19 +191,26 @@ class HomeDashboardContent extends StatelessWidget {
               'Test your skills against another learner',
             ),
             const SizedBox(height: 12),
-            _action(
-              context,
-              title: d.ranked == null
-                  ? 'Ready for your first match?'
-                  : 'Last match · ${d.ranked!.result}',
-              subtitle: d.ranked == null
-                  ? 'Play a match to start your competitive journey.'
-                  : '${d.ranked!.correct} of ${d.ranked!.questions} answers correct',
-              label: 'Open Ranked',
-              icon: Icons.emoji_events_outlined,
-              onTap: onRanked,
-              primary: false,
-            ),
+            if (d.rankedLeague == null)
+              _action(
+                context,
+                title: d.ranked == null
+                    ? 'Ready for your first match?'
+                    : 'Last match · ${d.ranked!.result}',
+                subtitle: d.ranked == null
+                    ? 'Play a match to start your competitive journey.'
+                    : '${d.ranked!.correct} of ${d.ranked!.questions} answers correct',
+                label: 'Open Ranked',
+                icon: Icons.emoji_events_outlined,
+                onTap: onRanked,
+                primary: false,
+              )
+            else
+              RankedSectionView(
+                section: d.rankedLeague,
+                onOpen: onRanked,
+                onRetry: onRefresh,
+              ),
             const SizedBox(height: 24),
             Row(
               children: [

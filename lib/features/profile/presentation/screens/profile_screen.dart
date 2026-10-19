@@ -1,3 +1,4 @@
+import '../../../pvp/ranked/ranked_widgets.dart';
 import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -216,6 +217,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     const AppearanceSetting(),
+                    const SizedBox(height: 24),
+                    _buildSectionHeader(context, 'Ranked this season'),
+                    RankedSectionView(
+                      section: user?.rankedLeague,
+                      expanded: true,
+                      openLabel: 'Leaderboard',
+                      onRetry: _fetchFreshProfileAndStats,
+                      onOpen: () => context.push(AppRoutes.rankedLeaderboard),
+                      onHistory: () => context.push(AppRoutes.rankedSeasons),
+                    ),
                     const SizedBox(height: 24),
                     _buildProgressGroup(
                       context,

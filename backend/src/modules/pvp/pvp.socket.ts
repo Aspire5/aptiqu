@@ -1,279 +1,342 @@
+import { randomUUID } from 'node:crypto';
+import { rankedRuntime } from './ranked/ranked-runtime';
+import { rankedEligibilityService } from './ranked/ranked-eligibility.service';
+import { RedisRankedQueue } from './ranked/ranked-queue';
+import { RankedRateLimit } from './ranked/ranked-rate-limit';
+import { QueueClaim } from './ranked/ranked-matchmaking-policy';
 import { Server as HttpServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { verifyAccessToken } from '../../utils/jwt';
 import { pvpMatchService } from './services/pvp-match.service';
+import { matchQuestions } from './ranked/ranked-questions';
 import { TIME_CONFIG } from '../../config/inventory.config';
 import { redisService } from '../lesson/services/redis.service';
+import { PvpError } from './pvp.errors';
+import { PvpMessage, pvpMessageSchema } from './pvp.protocol';
+import { PvpInternalMatch, publicQuestion, roundFeedback, serializeMatch } from './pvp.dto';
 
-interface ClientSocket extends WebSocket {
-  userId?: string;
-  matchId?: string;
-  isAlive?: boolean;
-}
-
-interface MatchState {
-  matchId: string;
-  players: string[];
-  currentQuestionIndex: number;
-  timerHandle?: NodeJS.Timeout;
-}
+interface ClientSocket extends WebSocket { userId?: string; matchId?: string; isAlive?: boolean; queueToken?: string }
+interface MatchState { matchId: string; players: string[]; currentQuestionIndex: number; timerHandle?: NodeJS.Timeout }
 
 export class PvpSocketServer {
   private static instance: PvpSocketServer;
   private heartbeat?: NodeJS.Timeout;
+  private queueTimer?: NodeJS.Timeout;
+  private searching = false;
+  private refreshingQueue = false;
+  private closed = false;
+  private queueIntents = new Map<string, number>();
+  private queueOwners = new Map<string, string>();
+  private claiming = new Map<string, string>();
+  private queueBudget = new RankedRateLimit(6, 10000);
+  private rankedQueue = new RedisRankedQueue(() => redisService.getIsConnected() ? redisService.getClient() : null);
+  private queueWork = new Set<Promise<void>>();
+
   private wss: WebSocketServer | null = null;
   private matchmakingQueue: { userId: string; ws: ClientSocket }[] = [];
   private activeMatches = new Map<string, MatchState>();
   private userSockets = new Map<string, ClientSocket>();
+  private connectionUpdates = new Map<string, Promise<void>>();
 
   public static getInstance(): PvpSocketServer {
-    if (!PvpSocketServer.instance) {
-      PvpSocketServer.instance = new PvpSocketServer();
-    }
-    return PvpSocketServer.instance;
+    return PvpSocketServer.instance ??= new PvpSocketServer();
+  }
+
+  private bindSocket(ws: ClientSocket, userId: string) {
+    if (ws.userId) throw new PvpError('This connection is already authenticated.', 'ALREADY_AUTHENTICATED', 400);
+    const previous = this.userSockets.get(userId);
+    if (previous) this.bumpQueueIntent(userId);
+    ws.queueToken = previous?.queueToken;
+    ws.userId = userId;
+    this.userSockets.set(userId, ws);
+    this.matchmakingQueue = this.matchmakingQueue.map(entry => entry.userId === userId ? { userId, ws } : entry);
+    if (previous && previous !== ws) previous.close(4000, 'Connection replaced');
+  }
+
+  private async updateConnection(userId: string, work: () => Promise<void>) {
+    const task = (this.connectionUpdates.get(userId) ?? Promise.resolve()).catch(() => {}).then(work);
+    this.connectionUpdates.set(userId, task);
+    try { await task; }
+    finally { if (this.connectionUpdates.get(userId) === task) this.connectionUpdates.delete(userId); }
   }
 
   public init(server: HttpServer) {
-    this.wss = new WebSocketServer({ noServer: true });
-
+    this.wss = new WebSocketServer({ noServer: true, maxPayload: 8192 });
     server.on('upgrade', (req, socket, head) => {
       if (req.url?.split('?')[0] !== '/ws/pvp') return;
       this.wss!.handleUpgrade(req, socket, head, ws => this.wss!.emit('connection', ws, req));
     });
-
     this.wss.on('connection', (ws: ClientSocket, req) => {
       ws.isAlive = true;
-
-      let authTimeout: NodeJS.Timeout | null = null;
-
-      // Extract and verify JWT token from query string (?token=...) if provided
+      let authTimeout: NodeJS.Timeout | undefined;
       try {
-        const url = new URL(req.url || '', `http://${req.headers.host}`);
-        const token = url.searchParams.get('token');
-        if (token) {
-          const payload = verifyAccessToken(token);
-          ws.userId = payload.userId;
-          this.userSockets.set(payload.userId, ws);
-        } else {
-          // Allow up to 3 seconds for client to send AUTH_INIT message frame
-          authTimeout = setTimeout(() => {
-            if (!ws.userId) {
-              ws.close(4001, 'Authentication timeout: AUTH_INIT frame required within 3s');
-            }
-          }, 3000);
-        }
-      } catch {
-        ws.close(4003, 'Invalid or expired authentication token');
-        return;
-      }
-
-      ws.on('pong', () => {
-        ws.isAlive = true;
-      });
-
-      ws.on('message', async (data) => {
+        const token = new URL(req.url || '', `http://${req.headers.host}`).searchParams.get('token');
+        if (token) this.bindSocket(ws, verifyAccessToken(token).userId);
+        else authTimeout = setTimeout(() => { if (!ws.userId) ws.close(4001, 'Authentication timeout'); }, 3000);
+      } catch { ws.close(4003, 'Invalid or expired authentication token'); return; }
+      ws.on('pong', () => { ws.isAlive = true; });
+      ws.on('message', async raw => {
+        const receivedAt = new Date(); // Trusted ingress time; never a payload field.
         try {
-          const message = JSON.parse(data.toString());
-
-          // Handle AUTH_INIT handshake frame
+          const parsed = pvpMessageSchema.safeParse(JSON.parse(raw.toString()));
+          if (!parsed.success) throw new PvpError('Invalid message payload.', 'INVALID_MESSAGE', 400);
+          const message = parsed.data;
           if (message.type === 'AUTH_INIT') {
-            if (authTimeout) clearTimeout(authTimeout);
-            const token = message.payload?.token;
-            if (!token) {
-              ws.close(4001, 'Authentication token required in AUTH_INIT');
-              return;
-            }
-            try {
-              const payload = verifyAccessToken(token);
-              ws.userId = payload.userId;
-              this.userSockets.set(payload.userId, ws);
-              this.send(ws, 'AUTH_SUCCESS', { userId: payload.userId });
-              return;
-            } catch {
-              ws.close(4003, 'Invalid or expired authentication token');
-              return;
-            }
-          }
-
-          if (!ws.userId) {
-            this.send(ws, 'ERROR', { message: 'Authentication required', code: 'UNAUTHORIZED' });
+            if (ws.userId) throw new PvpError('This connection is already authenticated.', 'ALREADY_AUTHENTICATED', 400);
+            try { this.bindSocket(ws, verifyAccessToken(message.payload.token).userId); }
+            catch { ws.close(4003, 'Invalid or expired authentication token'); return; }
+            clearTimeout(authTimeout);
+            this.send(ws, 'AUTH_SUCCESS', { userId: ws.userId });
             return;
           }
-
-          await this.handleMessage(ws, message);
-        } catch (err: any) {
-          this.send(ws, 'ERROR', { message: err.message || 'Invalid message payload' });
+          if (!ws.userId) throw new PvpError('Authentication required.', 'UNAUTHORIZED', 401);
+          if (this.userSockets.get(ws.userId) !== ws) throw new PvpError('Connection replaced. Reconnect to continue.', 'STALE_CONNECTION', 401);
+          await this.handleMessage(ws, message, receivedAt);
+        } catch (error) {
+          const known = error instanceof PvpError;
+          this.send(ws, 'ERROR', { message: known ? error.message : 'Could not process this update. Please retry.', code: known ? error.code : 'MATCH_UPDATE_FAILED', retryAfterSeconds: known ? error.retryAfterSeconds : undefined });
         }
       });
-
       ws.on('close', () => {
-        if (authTimeout) clearTimeout(authTimeout);
-        if (ws.userId) {
-          this.userSockets.delete(ws.userId);
-          const redis = redisService.getClient();
-          if (redis && redisService.getIsConnected()) {
-            redis.zrem('pvp:matchmaking', ws.userId).catch(() => {});
-          }
-          // Remove from matchmaking queue if present
-          this.matchmakingQueue = this.matchmakingQueue.filter((m) => m.userId !== ws.userId);
-
-          // Mark player connection status in match if in a match
-          if (ws.matchId) {
-            pvpMatchService.setPlayerConnection(ws.matchId, ws.userId, 'DISCONNECTED').catch(() => {});
-          }
-        }
+        clearTimeout(authTimeout);
+        const userId = ws.userId;
+        if (!userId || this.userSockets.get(userId) !== ws) return;
+        this.userSockets.delete(userId);
+        this.bumpQueueIntent(userId);
+        const ticket = this.queueOwners.get(userId);
+        this.queueOwners.delete(userId);
+        if (ticket) void this.rankedQueue.cancel(userId, ticket).catch(() => {});
+        this.matchmakingQueue = this.matchmakingQueue.filter(entry => entry.ws !== ws);
+        const redis = redisService.getClient();
+        if (!ticket && redis && redisService.getIsConnected()) void redis.zrem('pvp:matchmaking', userId).catch(() => {});
+        if (ws.matchId) void this.updateConnection(userId, async () => {
+          if (!this.userSockets.has(userId)) await pvpMatchService.setPlayerConnection(ws.matchId!, userId, 'DISCONNECTED');
+        }).catch(() => {});
       });
     });
-
-    // Heartbeat interval to clean up stale connections
+    this.closed = false;
+    this.queueTimer = setInterval(() => {
+      if (rankedRuntime().skillMatchmaking) this.trackQueueWork(this.searchRanked());
+    }, 1000);
     this.heartbeat = setInterval(() => {
-      if (!this.wss) return;
-      this.wss.clients.forEach((ws) => {
-        const client = ws as ClientSocket;
-        if (!client.isAlive) return client.terminate();
-        client.isAlive = false;
-        client.ping();
-      });
+      if (this.queueOwners.size) this.trackQueueWork(this.refreshQueue());
+      for (const socket of this.wss?.clients ?? []) {
+        const ws = socket as ClientSocket;
+        if (!ws.isAlive) { ws.terminate(); continue; }
+        ws.isAlive = false;
+        ws.ping();
+      }
     }, 15000);
-
-    console.log('⚔️ Ranked PvP WebSocket Server initialized on path: /ws/pvp');
   }
 
   public async close() {
+    this.closed = true;
+    clearInterval(this.queueTimer);
     clearInterval(this.heartbeat);
+    for (const [userId, token] of this.queueOwners) {
+      try { await this.rankedQueue.cancel(userId, token); } catch { break; }
+    }
+    this.queueOwners.clear();
+    await Promise.allSettled([...this.queueWork]);
     for (const match of this.activeMatches.values()) clearTimeout(match.timerHandle);
     for (const ws of this.wss?.clients ?? []) ws.close(1001, 'Server restarting');
     this.wss?.close();
   }
 
-  private send(ws: WebSocket | undefined, event: string, payload: any) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ event, data: payload, timestamp: new Date().toISOString() }));
-    }
+  private send(ws: WebSocket | undefined, event: string, data: unknown) {
+    if (ws?.readyState !== WebSocket.OPEN) return;
+    try { ws.send(JSON.stringify({ event, data, timestamp: new Date().toISOString() })); }
+    catch { /* Socket delivery is optional; committed results remain retrievable. */ }
   }
 
-  private broadcastToMatch(matchId: string, event: string, payload: any) {
-    const match = this.activeMatches.get(matchId);
-    if (!match) return;
-
-    for (const userId of match.players) {
-      const socket = this.userSockets.get(userId);
-      this.send(socket, event, payload);
-    }
+  private broadcastToMatch(matchId: string, event: string, payload: unknown) {
+    for (const user of this.activeMatches.get(matchId)?.players ?? []) this.send(this.userSockets.get(user), event, payload);
   }
 
-  private async handleMessage(ws: ClientSocket, message: { type: string; payload?: any }) {
-    const { type, payload } = message;
-    const userId = ws.userId;
-    if (!userId) return;
+  private matchError(matchId: string, error: unknown) {
+    this.broadcastToMatch(matchId, 'ERROR', { matchId, code: 'MATCH_UPDATE_FAILED', message: 'Match update unavailable. Try Refresh match.' });
+    console.error('[PvP] Match update failed', matchId, error instanceof PvpError ? error.code : 'INTERNAL_ERROR');
+    // Persisted due work is retried by the recovery worker; no guessed outcome.
+  }
 
-    switch (type) {
+  private async handleMessage(ws: ClientSocket, message: PvpMessage, receivedAt = new Date()) {
+    const userId = ws.userId!;
+    switch (message.type) {
       case 'JOIN_MATCHMAKING': {
-        this.userSockets.set(userId, ws);
-        const redis = redisService.getClient();
-        if (redis && redisService.getIsConnected()) {
-          await redis.zadd('pvp:matchmaking', Date.now(), userId);
+        if (this.closed) throw new PvpError('Server is restarting. Please retry.', 'ADMISSION_PAUSED', 503);
+        this.queueBudget.take(userId);
+        const intent = this.bumpQueueIntent(userId);
+        if (this.claiming.has(userId)) { this.send(ws, 'QUEUE_STATUS', { status: 'PAIRING' }); break; }
+        const candidate = await rankedEligibilityService.inspect(userId, message.payload?.rankedCapability ?? 0);
+        if (this.userSockets.get(userId) !== ws || this.queueIntents.get(userId) !== intent || this.closed) return;
+        if (this.claiming.has(userId)) { this.send(ws, 'QUEUE_STATUS', { status: 'PAIRING' }); break; }
+        if (rankedRuntime().skillMatchmaking) {
+          const token = randomUUID();
+          ws.queueToken = token;
+          const reply = await this.rankedQueue.join(candidate, token);
+          if (this.userSockets.get(userId) !== ws || this.queueIntents.get(userId) !== intent) {
+            await this.rankedQueue.cancel(userId, token).catch(() => {}); return;
+          }
+          const ownerToken = reply.entry?.token ?? token;
+          ws.queueToken = ownerToken;
+          this.queueOwners.set(userId, ownerToken);
+          this.send(ws, 'QUEUE_STATUS', this.rankedQueue.status(reply));
+          this.trackQueueWork(this.searchRanked());
         } else {
-          // Local fallback
-          this.matchmakingQueue = this.matchmakingQueue.filter(
-            (m) => m.ws && m.ws.readyState === WebSocket.OPEN
-          );
-          const existingIdx = this.matchmakingQueue.findIndex((m) => m.userId === userId);
-          if (existingIdx >= 0) {
-            this.matchmakingQueue[existingIdx] = { userId, ws };
-          } else {
-            this.matchmakingQueue.push({ userId, ws });
+          const redis = redisService.getClient();
+          if (redis && redisService.getIsConnected()) await redis.zadd('pvp:matchmaking', Date.now(), userId);
+          else {
+            this.matchmakingQueue = this.matchmakingQueue.filter(entry => entry.ws.readyState === WebSocket.OPEN);
+            if (!this.matchmakingQueue.some(entry => entry.userId === userId)) this.matchmakingQueue.push({ userId, ws });
           }
+          if (this.userSockets.get(userId) !== ws || this.queueIntents.get(userId) !== intent || this.closed) return;
+          this.send(ws, 'QUEUE_STATUS', { status: 'WAITING_FOR_OPPONENT' });
+          const work = this.tryPairPlayers(); this.trackQueueWork(work); await work;
         }
-
-        this.send(ws, 'QUEUE_STATUS', { status: 'WAITING_FOR_OPPONENT' });
-        this.tryPairPlayers();
         break;
       }
-
       case 'LEAVE_MATCHMAKING': {
-        const redis = redisService.getClient();
-        if (redis && redisService.getIsConnected()) {
-          await redis.zrem('pvp:matchmaking', userId);
+        this.queueBudget.take(userId);
+        this.bumpQueueIntent(userId);
+        if (this.claiming.has(userId)) { this.send(ws, 'QUEUE_STATUS', { status: 'PAIRING' }); break; }
+        const token = this.queueOwners.get(userId);
+        if (token) {
+          const reply = await this.rankedQueue.cancel(userId, token);
+          if (this.userSockets.get(userId) !== ws) return;
+          if (reply.status !== 'PAIRING' && this.queueOwners.get(userId) === token) this.queueOwners.delete(userId);
+          this.send(ws, 'QUEUE_STATUS', this.rankedQueue.status(reply));
+        } else {
+          const redis = redisService.getClient();
+          if (redis && redisService.getIsConnected()) await redis.zrem('pvp:matchmaking', userId);
+          this.matchmakingQueue = this.matchmakingQueue.filter(entry => entry.userId !== userId);
+          this.send(ws, 'QUEUE_STATUS', { status: 'LEFT_QUEUE' });
         }
-        this.matchmakingQueue = this.matchmakingQueue.filter((m) => m.userId !== userId);
-        this.send(ws, 'QUEUE_STATUS', { status: 'LEFT_QUEUE' });
         break;
       }
-
       case 'SUBMIT_ANSWER': {
-        const { matchId, questionIndex, selectedOptionId, responseTimeMs } = payload || {};
-        if (!matchId || typeof questionIndex !== 'number') return;
-
-        const result = await pvpMatchService.submitAnswer({
-          matchId,
-          userId,
-          questionIndex,
-          selectedOptionId: selectedOptionId || null,
-          responseTimeMs: typeof responseTimeMs === 'number' ? responseTimeMs : 60000,
+        const { matchId, questionIndex, selectedOptionId } = message.payload;
+        const result = await pvpMatchService.submitAnswer({ matchId, userId, questionIndex, selectedOptionId, receivedAt });
+        this.send(ws, 'ANSWER_ACCEPTED', { matchId, questionIndex, stateVersion: result.stateVersion,
+          selectedOptionId: result.answer.selectedOptionId, acceptedAt: result.answer.serverReceivedAt,
         });
-
-        // Acknowledge answer to submitting player
-        this.send(ws, 'ANSWER_ACCEPTED', {
-          questionIndex,
-          isCorrect: result.isCorrect,
-          correctAnswer: result.correctAnswer,
-        });
-
-        // If both players answered before deadline, end question early
-        if (result.bothAnswered) {
-          const matchState = this.activeMatches.get(matchId);
-          if (matchState && matchState.timerHandle) {
-            clearTimeout(matchState.timerHandle);
-            matchState.timerHandle = undefined;
-            await this.endQuestionRound(matchId, questionIndex);
-          }
-        }
+        if (result.bothAnswered) await this.endQuestionRound(matchId, questionIndex);
         break;
       }
-
       case 'RECONNECT_MATCH': {
-        const { matchId } = payload || {};
-        if (!matchId) return;
-
-        const match = await pvpMatchService.getMatchDetails(matchId);
-        ws.matchId = matchId;
-        this.userSockets.set(userId, ws);
-        await pvpMatchService.setPlayerConnection(matchId, userId, 'CONNECTED');
-
-        const remainingMs = match.currentQuestionDeadline
-          ? Math.max(0, match.currentQuestionDeadline.getTime() - Date.now())
-          : 0;
-
-        const currentQ = match.questionSet.setQuestions[match.currentQuestionIndex];
-
-        this.send(ws, 'MATCH_RECONNECTED', {
-          matchId: match.id,
-          status: match.status,
-          currentQuestionIndex: match.currentQuestionIndex,
-          remainingMs,
-          question: currentQ
-            ? {
-                prompt: currentQ.question.prompt,
-                options: currentQ.question.options,
-                pattern: currentQ.question.pattern,
-                difficulty: currentQ.question.difficulty,
-              }
-            : null,
-          players: match.players.map((p) => ({
-            userId: p.userId,
-            score: p.score,
-          })),
+        const { matchId } = message.payload;
+        // Service validates membership before any connection mutation or snapshot disclosure.
+        await this.updateConnection(userId, async () => {
+          if (this.userSockets.get(userId) === ws) await pvpMatchService.setPlayerConnection(matchId, userId, 'CONNECTED');
         });
+        const snapshot = await pvpMatchService.getMatchSnapshot(matchId, userId);
+        if (this.userSockets.get(userId) !== ws) return;
+        ws.matchId = matchId;
+        this.send(ws, 'MATCH_RECONNECTED', snapshot);
+        if (!['COMPLETED', 'CANCELLED'].includes(snapshot.status)) await this.publishRecovered(await pvpMatchService.getMatchDetails(matchId));
         break;
       }
     }
   }
 
-  /**
-   * Pairs two players in the matchmaking queue and launches their match.
-   */
+  private bumpQueueIntent(userId: string) {
+    const version = (this.queueIntents.get(userId) ?? 0) + 1;
+    this.queueIntents.set(userId, version);
+    // Connected/queued users retain their fence. Remove unrelated old entries.
+    if (this.queueIntents.size > 10000) for (const id of this.queueIntents.keys()) {
+      if (!this.userSockets.has(id) && !this.claiming.has(id) && !this.queueOwners.has(id)) this.queueIntents.delete(id);
+      if (this.queueIntents.size <= 10000) break;
+    }
+    return version;
+  }
+  private trackQueueWork(work: Promise<void>) {
+    const tracked = work.catch(() => {}).finally(() => this.queueWork.delete(tracked));
+    this.queueWork.add(tracked);
+  }
+  private async refreshQueue() {
+    if (this.closed || this.refreshingQueue) return;
+    this.refreshingQueue = true;
+    try {
+      for (const [userId, token] of this.queueOwners) {
+        if (this.claiming.has(userId)) continue;
+        const ws = this.userSockets.get(userId);
+        try {
+          if (!rankedRuntime().skillMatchmaking || rankedRuntime().drain) {
+            await this.rankedQueue.cancel(userId, token);
+            if (this.queueOwners.get(userId) === token) this.queueOwners.delete(userId);
+            this.send(ws, 'ERROR', { code: 'ADMISSION_PAUSED', message: 'Match search is paused. Please retry later.' });
+            continue;
+          }
+          const reply = await this.rankedQueue.touch(userId, token);
+          if (this.queueOwners.get(userId) !== token) continue;
+          if (reply.status === 'EXPIRED') { this.queueOwners.delete(userId); this.send(ws, 'ERROR', { code: 'QUEUE_EXPIRED', message: 'Search expired. Please find a match again.' }); }
+          else this.send(ws, 'QUEUE_STATUS', this.rankedQueue.status(reply));
+        } catch {
+          // Bound outage work to one failed operation. In-flight claims retain
+          // their own lease/outcome; only still-searching tickets are fenced.
+          for (const id of this.queueOwners.keys()) if (!this.claiming.has(id)) {
+            this.queueOwners.delete(id);
+            this.send(this.userSockets.get(id), 'ERROR', { code: 'QUEUE_UNAVAILABLE', message: 'Match search unavailable. Please retry.' });
+          }
+          break;
+        }
+      }
+    } finally { this.refreshingQueue = false; }
+  }
+  private async searchRanked() {
+    if (this.closed || this.searching || !rankedRuntime().skillMatchmaking || rankedRuntime().drain) return;
+    this.searching = true;
+    try {
+      for (let count = 0; count < 4 && !this.closed; count++) {
+        const claim = await this.rankedQueue.claim();
+        if (!claim) break;
+        await this.admitClaim(claim);
+      }
+    } finally { this.searching = false; }
+  }
+  private async admitClaim(claim: QueueClaim) {
+    const entries = [claim.a, claim.b];
+    for (const e of entries) this.claiming.set(e.userId, claim.id);
+    let valid = true;
+    let leaseUntil = Date.now() + 115000;
+    const renewal = setInterval(() => {
+      this.trackQueueWork(this.rankedQueue.renew(claim).then(renewed => {
+        if (!renewed) valid = false;
+        else leaseUntil = Date.now() + 115000;
+      }).catch(() => { valid = false; }));
+    }, 15000);
+    try {
+      if (entries.some(e => this.queueOwners.get(e.userId) !== e.token || this.userSockets.get(e.userId)?.readyState !== WebSocket.OPEN)) throw new PvpError('Search expired. Please retry.', 'QUEUE_STALE');
+      for (const e of entries) this.send(this.userSockets.get(e.userId), 'QUEUE_STATUS', { status: 'PAIRING' });
+      const match = await pvpMatchService.createMatch(claim.a.userId, claim.b.userId, { ...claim, isActive: () => valid && !this.closed && Date.now() < leaseUntil });
+      // After commit, transport/Redis errors must never hide or undo the match.
+      await this.rankedQueue.finish(claim).catch(() => {});
+      for (const e of entries) {
+        if (this.queueOwners.get(e.userId) === e.token) this.queueOwners.delete(e.userId);
+        const ws = this.userSockets.get(e.userId); if (ws) ws.matchId = match.id;
+      }
+      if (match.status === 'COMPLETED' || match.status === 'CANCELLED') { await this.publishRecovered(match); return; }
+      this.activeMatches.set(match.id, { matchId: match.id, players: entries.map(e => e.userId), currentQuestionIndex: match.currentQuestionIndex });
+      this.broadcastToMatch(match.id, 'MATCH_FOUND', {
+        matchId: match.id, seasonId: match.seasonId, policyId: claim.a.policyId, ratingMode: match.ratingMode,
+        admittedAt: match.seasonAssignedAt?.toISOString() ?? null, totalQuestions: match.totalQuestions,
+        players: match.players.map(p => ({ userId: p.userId, firstName: p.user.profile?.firstName || 'Learner', avatarUrl: p.user.profile?.avatarUrl ?? null, league: entries.find(e => e.userId === p.userId)?.league ?? 'UNRANKED' })),
+      });
+      await this.publishRecovered(match);
+    } catch (error) {
+      await this.rankedQueue.finish(claim).catch(() => {});
+      for (const e of entries) {
+        if (this.queueOwners.get(e.userId) === e.token) this.queueOwners.delete(e.userId);
+        this.send(this.userSockets.get(e.userId), 'ERROR', { code: error instanceof PvpError ? error.code : 'MATCH_INITIALIZATION_FAILED',
+          message: error instanceof PvpError ? error.message : 'Match update unavailable. Refresh Ranked to resume a match or search again.' });
+      }
+    } finally {
+      valid = false; clearInterval(renewal);
+      for (const e of entries) if (this.claiming.get(e.userId) === claim.id) this.claiming.delete(e.userId);
+    }
+  }
+
   private async tryPairPlayers() {
+    if (this.closed) return;
     let player1Id: string | null = null;
     let player2Id: string | null = null;
 
@@ -304,8 +367,11 @@ export class PvpSocketServer {
     }
 
     if (!player1Id || !player2Id) return;
+    const claimId = randomUUID();
+    this.claiming.set(player1Id, claimId); this.claiming.set(player2Id, claimId);
 
     try {
+      if (this.userSockets.get(player1Id)?.readyState !== WebSocket.OPEN || this.userSockets.get(player2Id)?.readyState !== WebSocket.OPEN) throw new PvpError('Search again.', 'QUEUE_STALE');
       const match = await pvpMatchService.createMatch(player1Id, player2Id);
 
       const ws1 = this.userSockets.get(player1Id);
@@ -322,7 +388,7 @@ export class PvpSocketServer {
 
       // Broadcast MATCH_FOUND
       this.broadcastToMatch(match.id, 'MATCH_FOUND', {
-        matchId: match.id,
+        matchId: match.id, seasonId: match.seasonId, ratingMode: match.ratingMode, policyId: null,
         players: match.players.map((p: any) => ({
           userId: p.userId,
           firstName: p.user?.profile?.firstName || 'Aptiqu Warrior',
@@ -332,125 +398,120 @@ export class PvpSocketServer {
       });
 
       // Start Question 1 after 3s ready countdown
-      setTimeout(() => {
-        this.startQuestionRound(match.id, 0);
+      const state = this.activeMatches.get(match.id)!;
+      state.timerHandle = setTimeout(() => {
+        if (this.activeMatches.get(match.id) === state) void this.startQuestionRound(match.id, 0).catch(error => this.matchError(match.id, error));
       }, 3000);
     } catch (err: any) {
       const ws1 = this.userSockets.get(player1Id);
       const ws2 = this.userSockets.get(player2Id);
-      if (ws1) this.send(ws1, 'ERROR', { message: 'Failed to initialize match: ' + err.message });
-      if (ws2) this.send(ws2, 'ERROR', { message: 'Failed to initialize match: ' + err.message });
+      if (ws1) this.send(ws1, 'ERROR', { message: 'Could not start this match. Please retry.', code: 'MATCH_INITIALIZATION_FAILED' });
+      if (ws2) this.send(ws2, 'ERROR', { message: 'Could not start this match. Please retry.', code: 'MATCH_INITIALIZATION_FAILED' });
+    } finally {
+      if (this.claiming.get(player1Id) === claimId) this.claiming.delete(player1Id);
+      if (this.claiming.get(player2Id) === claimId) this.claiming.delete(player2Id);
     }
   }
 
-  /**
-   * Starts a question round with server-authoritative 60s timer.
-   */
   private async startQuestionRound(matchId: string, questionIndex: number) {
-    const matchState = this.activeMatches.get(matchId);
-    if (!matchState) return;
-
-    matchState.currentQuestionIndex = questionIndex;
-
+    const state = this.activeMatches.get(matchId);
+    if (!state) return;
     const match = await pvpMatchService.startQuestionRound(matchId, questionIndex);
-    const setQuestion = (await pvpMatchService.getMatchDetails(matchId)).questionSet.setQuestions[
-      questionIndex
-    ];
+    if (!match || this.activeMatches.get(matchId) !== state) return;
+    state.currentQuestionIndex = questionIndex;
+    const question = matchQuestions(match)[questionIndex];
+    if (!question) throw new PvpError('Question unavailable.', 'QUESTION_UNAVAILABLE');
+    this.broadcastToMatch(matchId, 'QUESTION_STARTED', {
+      matchId, questionIndex, stateVersion: match.stateVersion, totalQuestions: match.totalQuestions,
+      durationSeconds: TIME_CONFIG.PVP_FIXED_SECONDS,
+      deadline: match.currentQuestionDeadline?.toISOString(), serverNow: new Date().toISOString(),
+      question: publicQuestion(question),
+    });
+    clearTimeout(state.timerHandle);
+    state.timerHandle = setTimeout(() => {
+      if (this.activeMatches.get(matchId) === state) void this.endQuestionRound(matchId, questionIndex).catch(error => this.matchError(matchId, error));
+    }, Math.max(0, match.currentQuestionDeadline!.getTime() - Date.now()) + 1);
+  }
 
-    if (!setQuestion) {
-      await this.completeMatch(matchId);
+  private async endQuestionRound(matchId: string, questionIndex: number) {
+    const state = this.activeMatches.get(matchId);
+    if (!state || state.currentQuestionIndex !== questionIndex) return;
+    const match = await pvpMatchService.closeQuestionRound(matchId, questionIndex);
+    if (!match || this.activeMatches.get(matchId) !== state) return;
+    clearTimeout(state.timerHandle);
+    this.broadcastToMatch(matchId, 'QUESTION_ENDED', roundFeedback(match, questionIndex));
+    state.timerHandle = setTimeout(() => {
+      if (this.activeMatches.get(matchId) !== state || state.currentQuestionIndex !== questionIndex) return;
+      const work = questionIndex + 1 < match.totalQuestions
+        ? this.startQuestionRound(matchId, questionIndex + 1) : this.completeMatch(matchId);
+      void work.catch(error => this.matchError(matchId, error));
+    }, Math.max(0, (match.transitionDeadline?.getTime() ?? Date.now() + 3000) - Date.now()) + 1);
+  }
+
+  /** Rebuild the routing/timer cache from committed database state. The cache
+   * never owns the outcome; a restart does not grant a fresh round deadline. */
+  public async publishRecovered(match: PvpInternalMatch) {
+    let state = this.activeMatches.get(match.id);
+    if (match.status === 'COMPLETED') {
+      if (!state) this.activeMatches.set(match.id, { matchId: match.id, players: match.players.map(p => p.userId), currentQuestionIndex: match.currentQuestionIndex });
+      await this.completeMatch(match.id);
       return;
     }
-
-    // Broadcast QUESTION_STARTED
-    this.broadcastToMatch(matchId, 'QUESTION_STARTED', {
-      matchId,
-      questionIndex,
-      totalQuestions: match.totalQuestions,
-      durationSeconds: TIME_CONFIG.PVP_FIXED_SECONDS,
-      deadline: match.currentQuestionDeadline?.toISOString(),
-      question: {
-        id: setQuestion.question.id,
-        prompt: setQuestion.question.prompt,
-        options: setQuestion.question.options,
-        difficulty: setQuestion.question.difficulty,
-        pattern: setQuestion.question.pattern,
-      },
-    });
-
-    // Schedule 60s hard deadline timeout
-    matchState.timerHandle = setTimeout(async () => {
-      await this.endQuestionRound(matchId, questionIndex);
-    }, TIME_CONFIG.PVP_FIXED_SECONDS * 1000);
-  }
-
-  /**
-   * Ends question round, broadcasts results, and transitions to next question.
-   */
-  private async endQuestionRound(matchId: string, questionIndex: number) {
-    const matchState = this.activeMatches.get(matchId);
-    if (!matchState) return;
-
-    const match = await pvpMatchService.getMatchDetails(matchId);
-    const setQuestion = match.questionSet.setQuestions[questionIndex];
-
-    const answers = match.answers.filter((a) => a.questionIndex === questionIndex);
-
-    // Broadcast QUESTION_ENDED
-    this.broadcastToMatch(matchId, 'QUESTION_ENDED', {
-      questionIndex,
-      correctAnswer: setQuestion.question.correctAnswer,
-      explanation: setQuestion.question.explanation,
-      method: setQuestion.question.method,
-      scores: match.players.map((p) => {
-        const playerAns = answers.find((a) => a.userId === p.userId);
-        return {
-          userId: p.userId,
-          score: p.score,
-          selectedOptionId: playerAns?.selectedOptionId || null,
-          isCorrect: playerAns?.isCorrect || false,
-          isLate: playerAns?.isLate || false,
-        };
-      }),
-    });
-
-    // 3-second transition to next question or completion
-    setTimeout(async () => {
-      const nextIndex = questionIndex + 1;
-      if (nextIndex < match.totalQuestions) {
-        await this.startQuestionRound(matchId, nextIndex);
-      } else {
-        await this.completeMatch(matchId);
+    if (match.status === 'CANCELLED') {
+      for (const p of match.players) {
+        this.send(this.userSockets.get(p.userId), 'MATCH_RECONNECTED', serializeMatch(match, p.userId, new Date()));
+        this.send(this.userSockets.get(p.userId), 'ERROR', { matchId: match.id, code: 'MATCH_VOIDED', message: 'A server interruption ended this match. No Elo or XP was awarded. You can return to Ranked.' });
       }
-    }, 3000);
+      clearTimeout(state?.timerHandle);
+      this.activeMatches.delete(match.id);
+      return;
+    }
+    if (!state) {
+      state = { matchId: match.id, players: match.players.map(p => p.userId), currentQuestionIndex: match.currentQuestionIndex };
+      this.activeMatches.set(match.id, state);
+    }
+    clearTimeout(state.timerHandle);
+    state.currentQuestionIndex = match.currentQuestionIndex;
+    const cached = state;
+    if (match.status === 'QUESTION_ACTIVE') {
+      this.broadcastToMatch(match.id, 'QUESTION_STARTED', {
+        matchId: match.id, questionIndex: match.currentQuestionIndex, stateVersion: match.stateVersion, totalQuestions: match.totalQuestions,
+        durationSeconds: Math.ceil(Math.max(0, +match.currentQuestionDeadline! - Date.now()) / 1000),
+        deadline: match.currentQuestionDeadline?.toISOString(), serverNow: new Date().toISOString(),
+        question: publicQuestion(matchQuestions(match)[match.currentQuestionIndex]),
+      });
+      state.timerHandle = setTimeout(() => {
+        if (this.activeMatches.get(match.id) === cached) void this.endQuestionRound(match.id, match.currentQuestionIndex).catch(error => this.matchError(match.id, error));
+      }, Math.max(0, +match.currentQuestionDeadline! - Date.now()) + 1);
+    } else if (match.status === 'STARTING' || match.status === 'QUESTION_TRANSITION') {
+      if (match.status === 'QUESTION_TRANSITION') this.broadcastToMatch(match.id, 'QUESTION_ENDED', roundFeedback(match, match.currentQuestionIndex));
+      state.timerHandle = setTimeout(() => {
+        if (this.activeMatches.get(match.id) !== cached) return;
+        const work = match.status === 'QUESTION_TRANSITION' && match.currentQuestionIndex === match.totalQuestions - 1
+          ? this.completeMatch(match.id) : this.startQuestionRound(match.id, match.status === 'STARTING' ? 0 : match.currentQuestionIndex + 1);
+        void work.catch(error => this.matchError(match.id, error));
+      }, Math.max(0, +(match.transitionDeadline ?? new Date()) - Date.now()) + 1);
+    }
   }
 
-  /**
-   * Completes the match, computes winner, awards XP, and broadcasts MATCH_COMPLETED.
-   * If one player went AFK, the active player completes the script and wins cleanly.
-   */
   private async completeMatch(matchId: string) {
+    const state = this.activeMatches.get(matchId);
+    if (!state) return;
     const finalized = await pvpMatchService.finalizeMatch(matchId);
-    const matchState = this.activeMatches.get(matchId);
-    if (matchState?.timerHandle) {
-      clearTimeout(matchState.timerHandle);
+    if (this.activeMatches.get(matchId) !== state) return;
+    // Capture recipients before cleanup; send individualized absolute XP snapshots.
+    const results = await Promise.allSettled(state.players.map(userId => pvpMatchService.getMatchSnapshot(matchId, userId)));
+    if (this.activeMatches.get(matchId) !== state) return;
+    for (let i = 0; i < state.players.length; i++) {
+      const result = results[i];
+      // Outcome already committed: a subsequent XP-read failure must not hide it
+      // or leak the active map. The client can refresh absolute XP separately.
+      const data = result.status === 'fulfilled' ? result.value
+        : { ...serializeMatch(finalized, state.players[i], new Date()), xp: null };
+      this.send(this.userSockets.get(state.players[i]), 'MATCH_COMPLETED', data);
     }
+    clearTimeout(state.timerHandle);
     this.activeMatches.delete(matchId);
-
-    this.broadcastToMatch(matchId, 'MATCH_COMPLETED', {
-      matchId: finalized.id,
-      winnerId: finalized.winnerId,
-      isTie: finalized.isTie,
-      players: finalized.players.map((p) => ({
-        userId: p.userId,
-        firstName: p.user?.profile?.firstName || 'Warrior',
-        score: p.score,
-        totalResponseTimeMs: p.totalResponseTimeMs,
-        isWinner: p.isWinner,
-        xpAwarded: p.xpAwarded,
-        isAfk: p.connectionStatus === 'DISCONNECTED',
-      })),
-    });
   }
 }
 

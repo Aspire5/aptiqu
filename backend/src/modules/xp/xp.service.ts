@@ -223,6 +223,9 @@ export class XpService {
         return await executeAward(tx);
       });
     } catch (err: any) {
+      // A caller-owned transaction must roll back on failure. Do not read outside
+      // an aborted transaction or turn its unique-constraint error into success.
+      if (txClient) throw err;
       if (err?.code === 'P2002') {
         // Race condition safely caught: another simultaneous request committed this idempotency key
         const progress = await prisma.userProgress.findUnique({

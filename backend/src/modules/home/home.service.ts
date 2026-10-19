@@ -1,4 +1,5 @@
 import { achievementFactsQuery, AchievementFacts, achievementOrder, liveAchievementWhere, presentAchievements } from '../achievements/achievement.service';
+import { rankedQueryService } from '../pvp/ranked/ranked-query.service';
 import { prisma } from '../../config/prisma';
 import { yearCalendar, dateKey, performance } from './home.metrics';
 import { homeStatsQuery, HomeStatsRow, latestHomeMatchQuery } from './home.queries';
@@ -35,6 +36,7 @@ export class HomeService {
         topic: resume.roadmapStep?.topic.name, lastPlayedAt: resume.lastActivityAt } : null,
       badges: presentAchievements(definitions, stats, facts[0]),
       ranked: lastMatch[0] ?? null,
+      rankedLeague: await rankedQueryService.compact(userId),
     };
   }
 }

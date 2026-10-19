@@ -2,7 +2,8 @@
 
 ## Current checkpoint
 
-- **Phase G — Final Quality Assurance and Cleanup: IMPLEMENTATION AND AUTOMATED QA COMPLETE; AWAITING FINAL MANUAL VERIFICATION AND EXPLICIT RELEASE APPROVAL.**
+- **Phase G — Final Quality Assurance and Cleanup: COMPLETED AND MANUALLY APPROVED by the user.**
+- The user explicitly requested no release and chose to leave the Ranked outage/exit policy unresolved. That deferred issue does not reopen G or block the separately authorized documentation task. No release was performed.
 - **Phase F: APPROVED** by the user with `APPROVE PHASE F`. This authorizes G only; release requires separate final approval.
 - **Phase E: APPROVED** by the user with `APPROVE PHASE E`. That checkpoint authorized F; F approval subsequently authorized G.
 - **Phase D: APPROVED** by the user with `APPROVE PHASE D`. Later approvals are recorded above.
@@ -12,13 +13,13 @@
 - Phase B approval is explicit in the conversation: **`APPROVE PHASE B`**. This authorized C, not D–G. No individual device-check outcomes were supplied with approval.
 - During C the user approved the legal UI with destinations deferred: “yes add the ui, i'll set the links later.” Missing policy URLs no longer require clarification for this implementation checkpoint.
 - The initial Phase C handoff was **not approved**. The user requested **`REVISE PHASE C`** with screenshots, Stitch HTML and composition preferences; that revision was subsequently explicitly approved before D started.
-- Current G scope is implemented and automatically verified. Native Android/iOS acceptance and the existing Ranked permanent-outage recovery/exit policy remain release blockers. No release is authorized or performed. F remains approved and preserved.
+- Current G scope is completed and approved. The user’s approval is recorded separately from the agent’s fixture/native verification evidence below. Ranked recovery remains a known deferred limitation; no release is in scope. F remains approved and preserved.
 - Completed E scope: Friends/picker, requests, learner profiles, friendly duel rooms, Ranked lobby/arena and scoped confirmations/recovery. Preserve supported social/match operations, timers, IDs, scoring and rewards.
 - The existing audit and revamp plan are preserved as reference documents, including their original proposal status.
 
 ## Phase G — Final Quality Assurance and Cleanup — 19 October 2026
 
-Explicit authorization: **`APPROVE PHASE F`**. This authorizes final UI QA/cleanup, not release. The saved palette, families, sizes and composition preferences remain in force. G is ready for human manual review; native acceptance and the open Ranked policy remain required before release.
+Explicit authorization: **`APPROVE PHASE F`**. This authorizes final UI QA/cleanup, not release. The saved palette, families, sizes and composition preferences remain in force. G was subsequently manually approved by the user, who requested no release and explicitly deferred the Ranked outage/exit policy. The historical verification limitations below remain factual; they are not a pending G approval gate.
 
 | Surface / work | Implemented result | Preservation / coverage |
 |---|---|---|
@@ -43,13 +44,17 @@ Explicit authorization: **`APPROVE PHASE F`**. This authorizes final UI QA/clean
 - A–F PNGs remain unchanged: A 13, B 12, C 16, C revision 32, D 60, E 103, F 84. No backend/database/VPS/migration, models, authored content, lesson operations, scoring/reward rules, endpoint/payload, match policy or friendship-version change entered G.
 - Final logs: `/private/tmp/aptiqu_phase_g_final_tests.log`, `aptiqu_phase_g_final_analysis.log`, `aptiqu_phase_g_final_apk.log`. Font source/APK hash verification is persisted in the scope record.
 
-### Final human gate and unresolved release acceptance
+### Approval outcome and retained verification limits
 
 - [Exact Phase G manual steps](UI_UX_PHASE_G_REVIEW.md) and [every S01–S18/O01–O22 plus UX-01–UX-24 acceptance status](UI_UX_PHASE_G_COVERAGE.md) are saved. Device discovery found **no authorized devices**. No install, authenticated live answer/social/match/reward event, real Google provider session, native TalkBack/VoiceOver, OS lifecycle/orientation or iOS/release acceptance was performed by the agent.
 - **UX-08 remains an open P1 release dependency:** the existing Ranked service has no supported permanent-outage Leave/Forfeit operation, and reconnect does not supply a full winner/reward/answer acknowledgement result. E's honest waiting/refresh/recovered-history UI is preserved. Separate product/server authorization is needed; no unsupported operation/reward was invented.
 - Native Android/iOS screen-reader, keyboard, bars, orientation and two-device server/lifecycle acceptance remain required. Tablet is a fixture sanity check; web/desktop shipping scope is not assumed.
 - Terms/Privacy destinations remain disabled and explicitly deferred by the user's instruction. Tutor/Voice/Scan remain disclosed unavailable capabilities; no integrations were added.
-- **Stop for final manual verification and explicit release approval. No deployment, release, commit or PR was performed. Approval of F, passing tests and a debug APK do not authorize release.**
+- **Phase G is completed and manually approved. No deployment/release is requested or performed. The Ranked outage/exit policy is explicitly left unresolved. Any future release or deferred-policy work has its own scope; this is not a pending G approval request.**
+
+## Permanent frontend handbook — documentation follow-up
+
+The user approved G and requested a portable reference and AI guardrails, with no release or further UI implementation. `docs/FRONTEND_DESIGN_SYSTEM.md` documents the actual post-G theme, typography, architecture, components, composition preferences and known limits. Root `AGENTS.md` retains its original contents and gains a scoped handbook pointer; `CLAUDE.md`, `.github/copilot-instructions.md` and `.cursor/rules/flutter-ui.mdc` supply small compatibility pointers. No application, asset, dependency or test implementation changes are part of this follow-up.
 
 ## Phase F — Routed Lessons and Global UI — 19 October 2026
 

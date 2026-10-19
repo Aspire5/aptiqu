@@ -1,3 +1,5 @@
+import '../../pvp/ranked/ranked_models.dart';
+
 class HomePerformance {
   final int attempted;
   final int correct;
@@ -88,6 +90,7 @@ class HomeDashboardModel {
   final List<HomeBadge> badges;
   final HomeResume? resume;
   final HomeRanked? ranked;
+  final RankedSection? rankedLeague;
   const HomeDashboardModel({
     this.today,
     required this.performance,
@@ -96,6 +99,7 @@ class HomeDashboardModel {
     required this.badges,
     this.resume,
     this.ranked,
+    this.rankedLeague,
   });
   factory HomeDashboardModel.fromJson(Map<String, dynamic> j) =>
       HomeDashboardModel(
@@ -111,5 +115,6 @@ class HomeDashboardModel {
         badges: [for (final row in j['badges']) HomeBadge.fromJson(row)],
         resume: j['resume'] == null ? null : HomeResume.fromJson(j['resume']),
         ranked: j['ranked'] == null ? null : HomeRanked.fromJson(j['ranked']),
+        rankedLeague: RankedSection.parse(j['rankedLeague']),
       );
 }

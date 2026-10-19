@@ -1,11 +1,16 @@
+const { loader } = require('../../pvp/tests/pvp-test-fixture.cjs');
 const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');const ts=require('typescript');
-function setup({answered=false}={}){
+function setup({answered=false,replaySourceType,replaySourceId,matchStatus='COMPLETED',parent,questionSnapshot,ratingMode,disposition}={}){
  const questions=Array.from({length:10},(_,i)=>({id:'sq'+i,questionId:'q'+i,isAnswered:i===0&&answered,isCorrect:false,responseTimeMs:null,question:{id:'q'+i,prompt:'Add 2 and 2',options:[{id:'A',text:'3'},{id:'B',text:'4'},{id:'C',text:'5'},{id:'D',text:'6'}],correctAnswer:'B',explanation:'2 + 2 = 4.',method:'Add.',alternativeExplanation:'Check 4 - 2 = 2.',preferredSolution:'BOOK',preferredReason:'Simple addition.',hints:[],subtopicId:'s1',difficulty:'EASY'}}));
- const session={id:'session',userId:'user',status:'ACTIVE',currentIndex:0,totalQuestions:10,questions,isReplay:true,totalTimeMs:0,correctCount:0};
- const writes=[], lookups=[];let transactions=0;
+ const session={id:'session',userId:'user',status:'ACTIVE',currentIndex:0,totalQuestions:10,questions,isReplay:true,totalTimeMs:0,correctCount:0,replaySourceType,replaySourceId};
+ const writes=[], lookups=[];let transactions=0,createdSession;
  const tx={$queryRaw:async()=>[],practiceSession:{findUnique:async()=>session,update:async args=>{writes.push(args);return session}},practiceSessionQuestion:{findUnique:async()=>({isAnswered:answered}),update:async args=>{Object.assign(questions[0],args.data);return questions[0]},findMany:async()=>questions}};
- const prisma={practiceSession:{findFirst:async args=>{lookups.push(args);return args.where.userId==='other'?null:session}},$transaction:async fn=>{transactions++;return fn(tx)}};
- const deps={'../../../config/prisma':{prisma},'./practice-selection.service':{practiceSelectionService:{}},'../../xp/xp.service':{XpService:{}},'../../xp/xp.policy':{XpPolicy:{}}};
+ const pvpMatch={findUnique:async()=>({id:'match',status:matchStatus,questionSnapshot,ratingMode,settlement:disposition?{disposition}:null,players:[{userId:'user'}],questionSet:{setQuestions:questions.map(q=>({question:q.question,questionId:q.questionId}))}})};
+ const prisma={pvpMatch,practiceSession:{findFirst:async args=>{lookups.push(args);return args.where.userId==='other'?null:args.where.id==='parent'?parent:args.where.id===createdSession?.id?createdSession:session}},$transaction:async fn=>{transactions++;return fn(tx)}};
+ tx.pvpMatch=pvpMatch;tx.practiceSession.findFirst=prisma.practiceSession.findFirst;
+ tx.practiceSession.create=async({data})=>{writes.push({kind:'createReplay',data});return createdSession={...session,...data,id:'created-replay'}};
+ tx.practiceSessionQuestion.create=async({data})=>({id:'created-question',...data});
+ const deps={'../../pvp/ranked/ranked-questions':loader({})(path.join(__dirname,'../../pvp/ranked/ranked-questions.ts')),'../../../config/prisma':{prisma},'./practice-selection.service':{practiceSelectionService:{}},'../../xp/xp.service':{XpService:{}},'../../xp/xp.policy':{XpPolicy:{}}};
  const code=ts.transpileModule(fs.readFileSync(path.join(__dirname,'../services/practice-session.service.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const exports={};vm.runInNewContext(code,{exports,require:id=>deps[id],console,Date,Set,Math});
  return {service:exports.practiceSessionService,session,writes,lookups,transactions:()=>transactions};
 }
@@ -23,4 +28,40 @@ test('invalid options, time, out-of-order and duplicate answers cannot mutate pr
 });
 test('practice replay is scoped to its owner before any writes',async()=>{
  const s=setup();await assert.rejects(()=>s.service.replayPracticeSession('other','session'),/not found for replay/);assert.equal(s.lookups[0].where.userId,'other');assert.equal(s.transactions(),0);
+});
+test('unfinished PvP cannot create, read, answer or clone a premature replay',async()=>{
+ for(const method of ['getSession','submitAnswer','replayPracticeSession','replayPvpMatch']){
+  const s=setup({replaySourceType:'PVP',replaySourceId:'match',matchStatus:'QUESTION_ACTIVE'});
+  const action=method==='submitAnswer'?()=>s.service.submitAnswer(params):method==='getSession'?()=>s.service.getSession('session','user'):()=>s.service[method]('user',method==='replayPvpMatch'?'match':'session');
+  await assert.rejects(action,/Finish the Ranked match/);assert.equal(s.transactions(),0);
+ }
+});
+test('replay-of-replay lineage cannot bypass live PvP restriction and completed replay access remains valid',async()=>{
+ const s=setup({replaySourceType:'PRACTICE',replaySourceId:'parent',parent:{replaySourceType:'PVP',replaySourceId:'match'},matchStatus:'QUESTION_ACTIVE'});
+ await assert.rejects(()=>s.service.getSession('session','user'),/Finish the Ranked match/);
+ const complete=setup({replaySourceType:'PVP',replaySourceId:'match',matchStatus:'COMPLETED'});
+ const result=await complete.service.getSession('session','user');assert.equal(result.questions.length,10);
+ const answer=await complete.service.submitAnswer(params);assert.equal(answer.xpAwarded,0);
+});
+test('a completed PvP source still creates the existing untimed zero-reward Practice replay',async()=>{
+ const s=setup();const result=await s.service.replayPvpMatch('user','match');
+ assert.equal(result.id,'created-replay');assert.equal(result.isReplay,true);assert.equal(result.replaySourceType,'PVP');assert.equal(result.replaySourceId,'match');assert.equal(result.xpAwarded,0);assert.equal(result.questions.length,10);assert.equal(result.questions[0].question.correctAnswer,undefined);
+ assert.equal(s.writes[0].data.xpAwarded,0);
+});
+
+test('completed Ranked replay and replay ancestry use frozen prompts/options/answers after catalog edits',async()=>{
+ const snapshot={version:1,questions:Array.from({length:10},(_,i)=>({id:'q'+i,prompt:'Frozen question',pattern:null,pyq:null,difficulty:'EASY',options:[{id:'A',text:'Old A'},{id:'B',text:'Old B'}],correctAnswer:'A',explanation:'Frozen explanation',method:'Frozen method'}))};
+ const s=setup({questionSnapshot:snapshot,replaySourceType:'PRACTICE',replaySourceId:'parent',parent:{replaySourceType:'PVP',replaySourceId:'match'}});
+ const view=await s.service.getSession('session','user');
+ assert.equal(view.questions[0].question.prompt,'Frozen question');
+ assert.equal(view.questions[0].question.correctAnswer,undefined);
+ const result=await s.service.submitAnswer({...params,selectedOptionId:'A',responseTimeMs:500});
+ assert.equal(result.isCorrect,true);assert.equal(result.correctAnswer,'A');assert.equal(result.explanation,'Frozen explanation');assert.equal(result.xpAwarded,0);
+});
+
+test('completed-looking rated matches without committed settlement cannot create or open replays',async()=>{
+ const s=setup({replaySourceType:'PVP',replaySourceId:'match',ratingMode:'RATED'});
+ await assert.rejects(()=>s.service.getSession('session','user'),/still finalizing/);
+ await assert.rejects(()=>s.service.replayPvpMatch('user','match'),/still finalizing/);
+ assert.equal(s.transactions(),0);
 });

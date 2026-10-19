@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
@@ -157,23 +158,35 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxBool isLoadingDashboard = false.obs;
   final RxBool isOpeningLesson = false.obs;
   final RxnString dashboardError = RxnString();
+  Worker? _dashboardAccountWorker;
+  int _dashboardGeneration = 0;
+  String? _dashboardAccountId;
 
   Future<void> fetchDashboard() async {
     if (isLoadingDashboard.value) return;
+    final generation = ++_dashboardGeneration;
+    final accountId = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>().currentUser.value?.id
+        : null;
+    bool owned() =>
+        !isClosed &&
+        generation == _dashboardGeneration &&
+        (!Get.isRegistered<AuthController>() ||
+            Get.find<AuthController>().currentUser.value?.id == accountId);
     isLoadingDashboard.value = true;
     dashboardError.value = null;
     try {
       final response = await Get.find<DioClient>().dio.get('/user/home');
-      if (!isClosed) {
+      if (owned()) {
         dashboard.value = HomeDashboardModel.fromJson(response.data['data']);
       }
     } catch (_) {
-      if (!isClosed) {
+      if (owned()) {
         dashboardError.value =
             'Your progress could not be refreshed. Try again.';
       }
     } finally {
-      if (!isClosed) isLoadingDashboard.value = false;
+      if (owned()) isLoadingDashboard.value = false;
     }
   }
 
@@ -274,6 +287,20 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() {
     super.onInit();
+    if (Get.isRegistered<AuthController>()) {
+      final auth = Get.find<AuthController>();
+      _dashboardAccountId = auth.currentUser.value?.id;
+      _dashboardAccountWorker = ever(auth.currentUser, (_) {
+        final next = auth.currentUser.value?.id;
+        if (next == _dashboardAccountId) return;
+        _dashboardAccountId = next;
+        ++_dashboardGeneration;
+        dashboard.value = null;
+        isLoadingDashboard.value = false;
+        dashboardError.value = null;
+        if (next != null) unawaited(fetchDashboard());
+      });
+    }
     WidgetsBinding.instance.addObserver(this);
     _loadInitialConversation();
     fetchActiveRoadmap();
@@ -1304,6 +1331,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onClose() {
+    _dashboardAccountWorker?.dispose();
+    ++_dashboardGeneration;
     WidgetsBinding.instance.removeObserver(this);
     _conversationGeneration++;
     scrollController.dispose();

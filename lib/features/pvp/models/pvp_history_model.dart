@@ -1,3 +1,5 @@
+import '../ranked/ranked_models.dart';
+
 class PvpOpponentModel {
   final String? userId;
   final String name;
@@ -33,6 +35,18 @@ class PvpMatchHistoryItemModel {
   final String status;
   final int avgResponseTimeMs;
   final PvpOpponentModel opponent;
+  final String? seasonId, disposition;
+  final RankedChange? rating;
+  bool get voided => status == 'CANCELLED' && disposition == 'VOID';
+  String get ratingLabel => rating != null
+      ? '${signedElo(rating!.delta)} Elo'
+      : voided
+      ? 'Void · No Elo or XP'
+      : disposition == 'PENDING'
+      ? 'Result pending'
+      : disposition == 'RATED'
+      ? 'Recorded Elo unavailable'
+      : 'Unrated';
 
   const PvpMatchHistoryItemModel({
     required this.matchId,
@@ -46,11 +60,20 @@ class PvpMatchHistoryItemModel {
     required this.status,
     required this.avgResponseTimeMs,
     required this.opponent,
+    this.seasonId,
+    this.disposition,
+    this.rating,
   });
 
   factory PvpMatchHistoryItemModel.fromJson(Map<String, dynamic> json) {
     return PvpMatchHistoryItemModel(
       matchId: json['matchId']?.toString() ?? '',
+      seasonId: json['seasonId'] as String?,
+      disposition: json['disposition'] as String?,
+      rating: RankedChange.parse(
+        json['rating'],
+        season: json['seasonId'] as String?,
+      ),
       score: (json['score'] as num?)?.toInt() ?? 0,
       opponentScore: (json['opponentScore'] as num?)?.toInt() ?? 0,
       totalQuestions: (json['totalQuestions'] as num?)?.toInt() ?? 10,

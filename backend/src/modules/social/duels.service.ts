@@ -44,7 +44,7 @@ export class DuelsService {
       await lockUsers(tx, [userId, targetId]);
       const retry = await tx.friendlyDuel.findUnique({ where: { requestKey: input.requestKey } });
       if (retry) return retry;
-      if (await tx.pvpMatchPlayer.count({ where: { userId: { in: [userId, targetId] }, match: { status: { in: ['STARTING','IN_PROGRESS','QUESTION_ACTIVE','QUESTION_TRANSITION'] } } } })) throw socialError('One of you is playing Ranked. Please try later.', 409);
+      if (await tx.pvpMatchPlayer.count({ where: { userId: { in: [userId, targetId] }, match: { OR: [{ status: { in: ['STARTING','IN_PROGRESS','QUESTION_ACTIVE','QUESTION_TRANSITION'] } }, { ratingMode: 'RATED', settlement: null }] } } })) throw socialError('One of you is playing Ranked. Please try later.', 409);
       const friendship = await tx.friendship.findUnique({ where: { lowId_highId: pair } });
       if (friendship?.status !== 'ACCEPTED') throw socialError('Only friends can be invited to a duel.', 403);
       // Release expired reservations under the same pair locks. Database seats

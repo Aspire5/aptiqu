@@ -5,6 +5,7 @@ import cron from 'node-cron';
 import { createApp } from './app';
 import { ENV } from './config/env';
 import { prisma } from './config/prisma';
+import { startRankedWorker } from './modules/pvp/ranked/ranked-worker';
 import { pvpSocketServer } from './modules/pvp/pvp.socket';
 import { dailyChallengeService } from './modules/daily-challenge/daily-challenge.service';
 import { contentGenQueue, contentGenWorker } from './queues/content-generation.queue';
@@ -26,6 +27,7 @@ async function bootstrap() {
   pvpSocketServer.init(server);
   socialSocketServer.init(server);
   const stopSocialWorker = startSocialWorker();
+  const stopRankedWorker = startRankedWorker();
 
   // Schedule Daily Streak Reset at 12:00 AM sharp IST (UTC+5:30)
   cron.schedule(
@@ -81,6 +83,7 @@ async function bootstrap() {
     console.log('\n🛑 Gracefully shutting down Aptiqu Backend...');
     const closed = new Promise<void>(resolve => server.close(() => resolve()));
     await socialSocketServer.close();
+    await stopRankedWorker();
     await pvpSocketServer.close();
     await closed;
     {

@@ -1,3 +1,5 @@
+import '../../../pvp/ranked/ranked_models.dart';
+
 /// Aptiqu User Domain Model
 /// Consistent with backend multi-schema database models.
 class UserModel {
@@ -24,6 +26,7 @@ class UserModel {
   final int dailyChallengeTimeRemainingMs;
   final String? dailyChallengeExpiresAt;
   final UserStatsModel? stats;
+  final RankedSection? rankedLeague;
 
   const UserModel({
     required this.id,
@@ -49,6 +52,7 @@ class UserModel {
     this.dailyChallengeTimeRemainingMs = 0,
     this.dailyChallengeExpiresAt,
     this.stats,
+    this.rankedLeague,
   });
 
   UserModel copyWith({
@@ -75,6 +79,7 @@ class UserModel {
     int? dailyChallengeTimeRemainingMs,
     String? dailyChallengeExpiresAt,
     UserStatsModel? stats,
+    RankedSection? rankedLeague,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -105,6 +110,7 @@ class UserModel {
       dailyChallengeExpiresAt:
           dailyChallengeExpiresAt ?? this.dailyChallengeExpiresAt,
       stats: stats ?? this.stats,
+      rankedLeague: rankedLeague ?? this.rankedLeague,
     );
   }
 
@@ -120,7 +126,8 @@ class UserModel {
       country: json['country'] ?? '',
       avatarUrl: json['avatarUrl'] ?? '',
       level: (json['level'] as num?)?.toInt() ?? 1,
-      totalXp: (json['totalXp'] as num?)?.toInt() ??
+      totalXp:
+          (json['totalXp'] as num?)?.toInt() ??
           (json['xp']?['total'] as num?)?.toInt() ??
           0,
       xpIntoCurrentLevel:
@@ -131,7 +138,8 @@ class UserModel {
           (json['xpRequiredForNextLevel'] as num?)?.toInt() ??
           (json['xp']?['xpRequiredForNextLevel'] as num?)?.toInt() ??
           20,
-      progress: (json['progress'] as num?)?.toDouble() ??
+      progress:
+          (json['progress'] as num?)?.toDouble() ??
           (json['xp']?['progress'] as num?)?.toDouble() ??
           0.0,
       // Streak from backend (format as 'Xd' for UI display)
@@ -147,16 +155,18 @@ class UserModel {
       coins: json['coins'] ?? 0,
       highestStreak: (json['highestStreak'] as num?)?.toInt() ?? 0,
       isRegistrationComplete: json['isRegistrationComplete'] ?? false,
-      dailyChallengeDue: json['dailyChallengeDue'] ??
+      dailyChallengeDue:
+          json['dailyChallengeDue'] ??
           json['dailyChallenge']?['isDue'] ??
           false,
-      dailyChallengeCompleted: json['dailyChallengeCompleted'] ??
+      dailyChallengeCompleted:
+          json['dailyChallengeCompleted'] ??
           json['dailyChallenge']?['isCompletedToday'] ??
           false,
       dailyChallengeTimeRemainingMs:
           (json['dailyChallenge']?['timeRemainingMs'] as num?)?.toInt() ?? 0,
-      dailyChallengeExpiresAt:
-          json['dailyChallenge']?['expiresAt']?.toString(),
+      dailyChallengeExpiresAt: json['dailyChallenge']?['expiresAt']?.toString(),
+      rankedLeague: RankedSection.parse(json['rankedLeague']),
       stats: json['stats'] != null
           ? UserStatsModel.fromJson(json['stats'] as Map<String, dynamic>)
           : null,
@@ -230,11 +240,14 @@ class QuestionStatsModel {
     if (json == null) return const QuestionStatsModel();
     return QuestionStatsModel(
       easy: QuestionDifficultyStatsModel.fromJson(
-          json['easy'] as Map<String, dynamic>?),
+        json['easy'] as Map<String, dynamic>?,
+      ),
       medium: QuestionDifficultyStatsModel.fromJson(
-          json['medium'] as Map<String, dynamic>?),
+        json['medium'] as Map<String, dynamic>?,
+      ),
       hard: QuestionDifficultyStatsModel.fromJson(
-          json['hard'] as Map<String, dynamic>?),
+        json['hard'] as Map<String, dynamic>?,
+      ),
     );
   }
 }
@@ -252,8 +265,9 @@ class UserStatsModel {
     if (json == null) return const UserStatsModel();
     return UserStatsModel(
       topics: TopicStatsModel.fromJson(json['topics'] as Map<String, dynamic>?),
-      questions:
-          QuestionStatsModel.fromJson(json['questions'] as Map<String, dynamic>?),
+      questions: QuestionStatsModel.fromJson(
+        json['questions'] as Map<String, dynamic>?,
+      ),
     );
   }
 }

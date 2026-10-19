@@ -1,7 +1,11 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { pvpMatchService } from './services/pvp-match.service';
-import { prisma } from '../../config/prisma';
+import { rankedHistoryService } from './ranked/ranked-history.service';
+import { rankedResponse, rankedOwner } from './ranked/ranked.controller';
+import { seasonKey, boundedInteger } from './ranked/ranked-cursor';
+import { z } from 'zod';
+import { PvpError } from './pvp.errors';
 
 export class PvpController {
   /**
@@ -12,22 +16,16 @@ export class PvpController {
     const userId = req.userId;
 
     try {
-      const match = await pvpMatchService.getMatchDetails(matchId);
-      const isParticipant = match.players?.some((p: any) => p.userId === userId);
-      if (!isParticipant) {
-        res.status(403).json({
-          success: false,
-          message: 'Access denied: You are not a participant in this match',
-          code: 'FORBIDDEN_MATCH_ACCESS',
-        });
-        return;
-      }
+      if (!userId) throw new PvpError('Unauthorized.', 'UNAUTHORIZED', 401);
+      if (!z.string().uuid().safeParse(matchId).success) throw new PvpError('Invalid match ID.', 'INVALID_MATCH_ID', 400);
+      const match = await pvpMatchService.getMatchSnapshot(matchId, userId);
+      res.setHeader('Cache-Control', 'private, no-store');
       res.status(200).json({ success: true, data: match });
     } catch (err: any) {
-      res.status(404).json({
+      res.status(err instanceof PvpError ? err.status : 503).json({
         success: false,
-        message: err.message || 'Match not found',
-        code: 'MATCH_NOT_FOUND',
+        message: err instanceof PvpError ? err.message : 'Match temporarily unavailable. Please retry.',
+        code: err instanceof PvpError ? err.code : 'MATCH_UNAVAILABLE',
       });
     }
   }
@@ -37,100 +35,14 @@ export class PvpController {
    * Retrieves paginated actual PvP match history with opponent details, score comparison, and stats.
    */
   public static async getPlayerHistory(req: AuthenticatedRequest, res: Response) {
-    const userId = req.userId;
-    if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
-    }
-
-    const page = parseInt(req.query.page as string, 10) || 1;
-    const limit = parseInt(req.query.limit as string, 10) || 10;
-    const skip = (page - 1) * limit;
-
-    try {
-      const [participations, totalCount] = await Promise.all([
-        prisma.pvpMatchPlayer.findMany({
-          where: {
-            userId,
-            match: { status: 'COMPLETED' },
-          },
-          include: {
-            match: {
-              include: {
-                players: {
-                  include: {
-                    user: {
-                      include: {
-                        profile: true,
-                        gameStats: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          orderBy: { joinedAt: 'desc' },
-          skip,
-          take: limit,
-        }),
-        prisma.pvpMatchPlayer.count({
-          where: {
-            userId,
-            match: { status: 'COMPLETED' },
-          },
-        }),
-      ]);
-
-      const history = participations.map((p) => {
-        const opponentPlayer = p.match.players.find((op) => op.userId !== userId);
-        const opponentProfile = opponentPlayer?.user?.profile;
-        const opponentStats = opponentPlayer?.user?.gameStats;
-
-        const opponentName = opponentProfile
-          ? `${opponentProfile.firstName} ${opponentProfile.lastName}`.trim()
-          : 'Opponent';
-
-        const avgResponseTimeMs =
-          p.score > 0 || p.totalResponseTimeMs > 0
-            ? Math.round(p.totalResponseTimeMs / p.match.totalQuestions)
-            : 0;
-
-        return {
-          matchId: p.matchId,
-          score: p.score,
-          opponentScore: opponentPlayer?.score ?? 0,
-          totalQuestions: p.match.totalQuestions,
-          isWinner: p.isWinner,
-          isTie: p.match.isTie,
-          xpAwarded: p.xpAwarded,
-          joinedAt: p.joinedAt,
-          status: p.match.status,
-          avgResponseTimeMs,
-          opponent: {
-            userId: opponentPlayer?.userId,
-            name: opponentName,
-            avatarUrl: opponentProfile?.avatarUrl,
-            level: opponentStats?.level ?? 1,
-          },
-        };
-      });
-
-      res.status(200).json({
-        success: true,
-        data: {
-          history,
-          pagination: {
-            page,
-            limit,
-            totalCount,
-            totalPages: Math.ceil(totalCount / limit),
-          },
-        },
-      });
-    } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
-    }
+    return rankedResponse(res, () => {
+      const userId = rankedOwner(req);
+      const query = z.object({ page: boundedInteger(1, 1000),
+        limit: boundedInteger(10, 50), seasonId: seasonKey.optional(),
+        includeVoids: z.enum(['0','1']).optional(),
+      }).strict().refine(q => (q.page - 1) * q.limit <= 10000, 'History offset exceeds limit.').parse(req.query);
+      return rankedHistoryService.history(userId, { ...query, includeVoids: query.includeVoids === '1' });
+    });
   }
 
   /**
@@ -148,6 +60,7 @@ export class PvpController {
     }
 
     try {
+      if (!z.string().uuid().safeParse(matchId).success) throw new PvpError('Invalid match ID.', 'INVALID_MATCH_ID', 400);
       const { practiceSessionService } = await import(
         '../practice/services/practice-session.service'
       );
@@ -157,11 +70,16 @@ export class PvpController {
         success: true,
         data: practiceSession,
       });
-    } catch (err: any) {
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to replay PvP match in practice mode.',
-      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '';
+      const known = err instanceof PvpError ? err : message.startsWith('Finish the Ranked match')
+        ? new PvpError('Finish the Ranked match before replaying it.', 'MATCH_NOT_FINISHED')
+        : message.startsWith('The Ranked result is still finalizing') ? new PvpError('The result is still finalizing. Please retry.', 'RESULT_PENDING')
+        : message === 'You can only replay your own matches.' ? new PvpError(message, 'FORBIDDEN_MATCH_ACCESS', 403)
+        : message.includes('not found for replay') ? new PvpError('Match not found.', 'MATCH_NOT_FOUND', 404) : null;
+      if (!known) res.setHeader('Retry-After', '5');
+      res.status(known?.status ?? 503).json({ success: false, code: known?.code ?? 'REPLAY_UNAVAILABLE',
+        message: known?.message ?? 'Replay temporarily unavailable. Please retry.' });
     }
   }
 }

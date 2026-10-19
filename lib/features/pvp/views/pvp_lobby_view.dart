@@ -1,3 +1,7 @@
+import '../ranked/ranked_models.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/routing/app_routes.dart';
+import '../ranked/ranked_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/theme/appearance_theme.dart';
@@ -20,47 +24,67 @@ class PvpLobbyView extends StatelessWidget {
         () => ColoredBox(
           color: Theme.of(context).scaffoldBackgroundColor,
           child: RefreshIndicator(
-            onRefresh: c.fetchHistory,
+            onRefresh: c.refreshRanked,
             child: ListView(
               key: const PageStorageKey('ranked-lobby'),
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(16),
               children: [
-                Text('Ranked', style: context.type.titleLarge),
-                const SizedBox(height: 16),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.emoji_events_outlined,
-                      color: context.status.warning,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Head-to-head practice',
-                            style: context.type.titleMedium,
-                          ),
-                          Text(
-                            '10 questions · 60 seconds each',
-                            style: context.type.bodyMedium?.copyWith(
-                              color: context.colors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: Text('Ranked', style: context.type.titleLarge),
+                    ),
+                    IconButton(
+                      tooltip: 'Leaderboard',
+                      onPressed: () =>
+                          context.push(AppRoutes.rankedLeaderboard),
+                      icon: const Icon(Icons.leaderboard_outlined),
+                    ),
+                    IconButton(
+                      tooltip: 'Season history',
+                      onPressed: () => context.push(AppRoutes.rankedSeasons),
+                      icon: const Icon(Icons.history_rounded),
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+                if (c.summary.value != null)
+                  RankedStandingView(
+                    summary: c.summary.value!,
+                    showStats: false,
+                  )
+                else if (c.isLoadingStanding.value)
+                  const LinearProgressIndicator()
+                else
+                  Text(
+                    c.standingStatus.value == 'DISABLED'
+                        ? 'Leagues are not available yet'
+                        : '10 questions · 60 seconds each',
+                    style: context.type.bodyMedium,
+                  ),
+                if (c.standingError.isNotEmpty)
+                  SessionNotice(
+                    message: c.standingError.value,
+                    onRetry: c.fetchSummary,
+                  ),
                 const SizedBox(height: 16),
                 if (c.isOpeningMatch.value)
                   const AppStateView(
                     title: 'Match found. Opening…',
                     loading: true,
+                  )
+                else if (c.summary.value?.activeMatchId != null)
+                  AptiquButton(
+                    label: c.summary.value?.recoveryState == 'RESULT_PENDING'
+                        ? 'Check pending result'
+                        : 'Resume match',
+                    onPressed: c.resumeMatch,
+                  )
+                else if (c.queueUncertain.value)
+                  AptiquButton.outline(
+                    label: 'Check for an existing match',
+                    onPressed: c.fetchSummary,
                   )
                 else if (c.isInQueue.value || c.isCancelling.value)
                   SocialSurface(
@@ -79,13 +103,20 @@ class PvpLobbyView extends StatelessWidget {
                           '${c.secondsInQueue.value}s in queue',
                           style: context.type.bodyLarge,
                         ),
+                        if (c.searchExpanded.value)
+                          Text(
+                            'Search widened to include more ratings',
+                            style: context.type.bodyMedium,
+                          ),
                         const SizedBox(height: 16),
                         AptiquButton.outline(
-                          label: c.isCancelling.value
+                          label: c.isPairing.value
+                              ? 'Preparing match…'
+                              : c.isCancelling.value
                               ? 'Cancelling…'
                               : 'Cancel matchmaking',
                           isLoading: c.isCancelling.value,
-                          onPressed: c.isCancelling.value
+                          onPressed: c.isCancelling.value || c.isPairing.value
                               ? null
                               : c.cancelMatchmaking,
                         ),
@@ -103,6 +134,18 @@ class PvpLobbyView extends StatelessWidget {
                         ? null
                         : c.startMatchmaking,
                   ),
+                if (c.summary.value != null &&
+                    !c.summary.value!.ratedAdmission &&
+                    !c.isInQueue.value)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      c.summary.value!.admissionPaused
+                          ? 'Match search is paused.'
+                          : 'Rated matches are not open yet.',
+                      style: context.type.bodySmall,
+                    ),
+                  ),
                 if (c.queueError.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
@@ -116,14 +159,41 @@ class PvpLobbyView extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (c.summary.value != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: SessionMetrics(
+                      items: [
+                        (
+                          label: 'Wins',
+                          value: '${c.summary.value!.standing.wins}',
+                        ),
+                        (
+                          label: 'Losses',
+                          value: '${c.summary.value!.standing.losses}',
+                        ),
+                        (
+                          label: 'Draws',
+                          value: '${c.summary.value!.standing.draws}',
+                        ),
+                        (
+                          label: 'Season peak',
+                          value: c.summary.value!.standing.peakRating == null
+                              ? 'Not qualified yet'
+                              : '${c.summary.value!.standing.peakRating} Elo',
+                        ),
+                      ],
+                    ),
+                  ),
                 const SizedBox(height: 12),
                 Text(
-                  'Winner earns a 100 XP victory bonus. Earlier correct answers have the tie-breaker advantage.',
+                  'More correct answers wins. Equal scores use total server-timed response duration.',
                   style: context.type.bodyMedium?.copyWith(
                     color: context.colors.onSurfaceVariant,
                   ),
                 ),
                 ExpansionTile(
+                  key: const PageStorageKey('ranked-match-rules'),
                   tilePadding: EdgeInsets.zero,
                   title: const Text('Match rules'),
                   children: [
@@ -132,7 +202,7 @@ class PvpLobbyView extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          '10 questions from the live curriculum.\n60 seconds for each question.\nTap an option to submit immediately.\nThe first correct answer has the tie-breaker advantage.\nThe winner receives a 100 XP victory bonus.',
+                          '10 questions from the live curriculum.\n60 seconds for each question.\nTap an option to submit immediately.\nEqual scores use lower total server-timed response duration. Exact ties draw.\nThe winner receives a 100 XP victory bonus.\nElo depends on the result and opponent rating. XP is separate.\nComplete placements each month to earn a league. Ratings carry forward; seasons follow IST.\nGlobal positions include qualified players only.',
                           style: context.type.bodyLarge,
                         ),
                       ),
@@ -201,7 +271,9 @@ class PvpLobbyView extends StatelessWidget {
                                     : context.colors.onSurfaceVariant,
                               ),
                               Text(
-                                match.isTie
+                                match.voided
+                                    ? 'Match cancelled'
+                                    : match.isTie
                                     ? 'Draw'
                                     : match.isWinner
                                     ? 'Victory'
@@ -209,7 +281,7 @@ class PvpLobbyView extends StatelessWidget {
                                 style: context.type.titleSmall,
                               ),
                               Text(
-                                '${match.xpAwarded} XP awarded',
+                                '${match.xpAwarded} XP awarded · ${match.ratingLabel}',
                                 style: context.type.bodyMedium,
                               ),
                             ],
@@ -234,6 +306,14 @@ class PvpLobbyView extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 12),
+                          if (match.seasonId != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                seasonLabel(match.seasonId!),
+                                style: context.type.bodySmall,
+                              ),
+                            ),
                           SessionMetrics(
                             items: [
                               (
@@ -263,7 +343,9 @@ class PvpLobbyView extends StatelessWidget {
                               ),
                               OutlinedButton.icon(
                                 onPressed:
-                                    c.isReplayingMatch.value ||
+                                    match.voided ||
+                                        match.disposition == 'PENDING' ||
+                                        c.isReplayingMatch.value ||
                                         c.isInQueue.value ||
                                         c.isOpeningMatch.value ||
                                         c.isCancelling.value
@@ -280,6 +362,16 @@ class PvpLobbyView extends StatelessWidget {
                       ),
                     ),
                 ],
+                if (c.hasMoreHistory.value)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: OutlinedButton(
+                      onPressed: c.isLoadingHistory.value
+                          ? null
+                          : () => c.fetchHistory(more: true),
+                      child: const Text('Load more matches'),
+                    ),
+                  ),
               ],
             ),
           ),

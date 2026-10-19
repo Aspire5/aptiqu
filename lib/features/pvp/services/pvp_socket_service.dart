@@ -1,3 +1,4 @@
+import '../../auth/presentation/controllers/auth_controller.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,11 @@ class PvpSocketService {
 
   WebSocketChannel? _channel;
   Future<void>? _connecting;
+  int _generation = 0;
+  String? _connectionOwner;
+  String? get _account => Get.isRegistered<AuthController>()
+      ? Get.find<AuthController>().currentUser.value?.id
+      : null;
   final StreamController<Map<String, dynamic>> _eventController =
       StreamController<Map<String, dynamic>>.broadcast();
 
@@ -20,15 +26,27 @@ class PvpSocketService {
   bool isAuthenticated = false;
 
   Future<void> connect() {
+    if (_connectionOwner != _account) disconnect();
+    _connectionOwner = _account;
     if (isConnected && _channel != null) return Future.value();
-    // The lobby opens a connection before Find match can request the same one.
-    return _connecting ??= _connect().whenComplete(() => _connecting = null);
+    final pending = _connecting;
+    if (pending != null) return pending;
+    late final Future<void> work;
+    work = _connect().whenComplete(() {
+      if (identical(_connecting, work)) _connecting = null;
+    });
+    _connecting = work;
+    return work;
   }
 
   Future<void> _connect() async {
+    final generation = ++_generation;
+    final account = _account;
+    bool owned() => generation == _generation && account == _account;
     try {
       final dioClient = Get.find<DioClient>();
       final token = await dioClient.getAccessToken();
+      if (!owned()) return;
       if (token == null || token.isEmpty) {
         debugPrint('[PvP Socket] Cannot connect: No access token');
         _connectionLost(
@@ -58,7 +76,7 @@ class PvpSocketService {
         (data) {
           try {
             final parsed = jsonDecode(data.toString()) as Map<String, dynamic>;
-            if (!identical(_channel, channel)) return;
+            if (!owned() || !identical(_channel, channel)) return;
             if (parsed['event'] == 'AUTH_SUCCESS') isAuthenticated = true;
             _eventController.add(parsed);
           } catch (e) {
@@ -67,18 +85,19 @@ class PvpSocketService {
         },
         onError: (err) {
           debugPrint('[PvP Socket] Stream Error: $err');
-          if (identical(_channel, channel)) {
+          if (owned() && identical(_channel, channel)) {
             _connectionLost('Ranked connection interrupted.');
           }
         },
         onDone: () {
           debugPrint('[PvP Socket] Connection closed');
-          if (identical(_channel, channel)) {
+          if (owned() && identical(_channel, channel)) {
             _connectionLost('Ranked connection interrupted.');
           }
         },
       );
     } catch (err) {
+      if (!owned()) return;
       debugPrint('[PvP Socket] Connection Failed: $err');
       _connectionLost('Could not connect to Ranked. Please try again.');
     }
@@ -95,17 +114,19 @@ class PvpSocketService {
   }
 
   void send(String type, [Map<String, dynamic>? payload]) {
-    if (_channel != null && isConnected) {
+    if (_channel != null && isConnected && _connectionOwner == _account) {
       final msg = jsonEncode({'type': type, 'payload': payload ?? {}});
       _channel!.sink.add(msg);
     }
   }
 
   Future<void> joinMatchmaking() async {
+    final account = _account;
     if (!isConnected || _channel == null) {
       await connect();
     }
-    send('JOIN_MATCHMAKING');
+    if (account != _account) return;
+    send('JOIN_MATCHMAKING', {'rankedCapability': 1});
   }
 
   void leaveMatchmaking() {
@@ -131,6 +152,8 @@ class PvpSocketService {
   }
 
   void disconnect() {
+    ++_generation;
+    _connecting = null;
     _channel?.sink.close();
     _channel = null;
     isConnected = false;
