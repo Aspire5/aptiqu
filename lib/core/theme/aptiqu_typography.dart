@@ -1,119 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'aptiqu_colors.dart';
 
-/// Aptiqu Design System Typography
-/// Using Outfit (Headlines), Plus Jakarta Sans (Body), and Space Grotesk (Metrics & Caps).
+/// Approved Outfit headings and Plus Jakarta Sans reading roles.
 class AptiquTypography {
   AptiquTypography._();
 
-  // Display & Headlines (Outfit)
-  static TextStyle displayHero = GoogleFonts.outfit(
-    fontSize: 28,
-    fontWeight: FontWeight.w800,
-    color: AptiquColors.onSurface,
-    letterSpacing: -0.5,
-  );
-
-  static TextStyle headlineMd = GoogleFonts.outfit(
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-    color: AptiquColors.onSurface,
-    letterSpacing: -0.3,
-  );
-
-  static TextStyle headlineSm = GoogleFonts.outfit(
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    color: AptiquColors.onSurface,
-    letterSpacing: -0.2,
-  );
-
-  // Body Text (Plus Jakarta Sans)
-  static TextStyle bodyLg = GoogleFonts.plusJakartaSans(
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
-    color: AptiquColors.onSurface,
-    height: 1.5,
-  );
-
-  static TextStyle bodyMd = GoogleFonts.plusJakartaSans(
-    fontSize: 13.5,
-    fontWeight: FontWeight.w500,
-    color: AptiquColors.onSurface,
-    height: 1.45,
-  );
-
-  static TextStyle bodySm = GoogleFonts.plusJakartaSans(
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: AptiquColors.onSurfaceVariant,
-    height: 1.4,
-  );
-
-  // Metrics, Numbers & Counters (Space Grotesk)
-  static TextStyle metricLg = GoogleFonts.spaceGrotesk(
-    fontSize: 18,
-    fontWeight: FontWeight.w700,
-    color: AptiquColors.onSurface,
-    letterSpacing: 0.2,
-  );
-
-  static TextStyle metricMd = GoogleFonts.spaceGrotesk(
-    fontSize: 13,
-    fontWeight: FontWeight.w700,
-    color: AptiquColors.onSurface,
-    letterSpacing: 0.1,
-  );
-
-  static TextStyle metricSm = GoogleFonts.spaceGrotesk(
-    fontSize: 10,
-    fontWeight: FontWeight.w600,
-    color: AptiquColors.onSurfaceVariant,
-  );
-
-  // Labels & Chips (Space Grotesk Uppercase)
-  static TextStyle labelCaps = GoogleFonts.spaceGrotesk(
-    fontSize: 10,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.8,
-    color: AptiquColors.onSurfaceVariant,
-  );
-
-  static TextStyle labelCapsBold = GoogleFonts.spaceGrotesk(
-    fontSize: 11,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.9,
-    color: AptiquColors.primary,
-  );
-
-  // Material 3 Compatible Getters
-  static TextStyle get headlineLarge => displayHero;
-  static TextStyle get headlineMedium => headlineMd;
-  static TextStyle get headlineSmall => headlineSm;
-  static TextStyle get titleLarge => headlineMd;
-  static TextStyle get titleMedium => headlineSm;
-  static TextStyle get titleSmall => GoogleFonts.outfit(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AptiquColors.onSurface,
-      );
-  static TextStyle get bodyLarge => bodyLg;
-  static TextStyle get bodyMedium => bodyMd;
-  static TextStyle get bodySmall => bodySm;
-  static TextStyle get labelLarge => GoogleFonts.spaceGrotesk(
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
-        color: AptiquColors.onSurface,
-      );
-  static TextStyle get labelMedium => GoogleFonts.spaceGrotesk(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AptiquColors.onSurfaceVariant,
-      );
-  static TextStyle get labelSmall => GoogleFonts.spaceGrotesk(
-        fontSize: 10,
-        fontWeight: FontWeight.w600,
-        color: AptiquColors.onSurfaceVariant,
-      );
+  /// Color-free roles inherit the active theme and button foreground.
+  static TextTheme get textTheme {
+    TextStyle title(double size, FontWeight weight, double height) =>
+        GoogleFonts.outfit(fontSize: size, fontWeight: weight, height: height);
+    TextStyle body(double size, FontWeight weight, double height) =>
+        GoogleFonts.plusJakartaSans(
+          fontSize: size,
+          fontWeight: weight,
+          height: height,
+        );
+    return TextTheme(
+      displaySmall: title(28, FontWeight.w700, 1.2),
+      headlineSmall: title(22, FontWeight.w700, 1.25),
+      titleLarge: title(22, FontWeight.w700, 1.25),
+      titleMedium: title(18, FontWeight.w600, 1.3),
+      titleSmall: title(16, FontWeight.w600, 1.35),
+      bodyLarge: body(16, FontWeight.w400, 1.5),
+      bodyMedium: body(14, FontWeight.w400, 1.45),
+      bodySmall: body(12, FontWeight.w400, 1.4),
+      labelLarge: body(14, FontWeight.w600, 1.3),
+      labelMedium: body(12, FontWeight.w500, 1.4),
+      labelSmall: body(12, FontWeight.w500, 1.4),
+    );
+  }
 }

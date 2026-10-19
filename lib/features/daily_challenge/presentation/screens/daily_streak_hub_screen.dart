@@ -1,329 +1,182 @@
-import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
-import '../../../../core/theme/aptiqu_typography.dart';
+import '../../../../core/theme/appearance_theme.dart';
+import '../../../../core/theme/aptiqu_tokens.dart';
+import '../../../../shared/widgets/buttons/aptiqu_button.dart';
+import '../../../../shared/widgets/feedback/app_state_view.dart';
+import '../../../../shared/widgets/questions/question_presentation.dart';
+import '../../../../shared/widgets/sheets/app_sheet.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../controllers/daily_challenge_controller.dart';
 import '../../models/daily_challenge_models.dart';
 
 class DailyStreakHubScreen extends StatefulWidget {
   const DailyStreakHubScreen({super.key});
-
   @override
   State<DailyStreakHubScreen> createState() => _DailyStreakHubScreenState();
 }
 
 class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
-  final DailyChallengeController controller = Get.put(DailyChallengeController());
-
+  final DailyChallengeController controller =
+      Get.isRegistered<DailyChallengeController>()
+      ? Get.find<DailyChallengeController>()
+      : Get.put(DailyChallengeController());
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AptiquColors.surfaceDim,
-      appBar: AppBar(
-        backgroundColor: AptiquColors.surfaceDim,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AptiquColors.onSurface, size: 20),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Daily Streak Arena',
-          style: AptiquTypography.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AptiquColors.onSurface,
-          ),
-        ),
-        actions: [
-          // History Button
-          InkWell(
-            onTap: () => _showHistoryModal(context),
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AptiquColors.outlineVariant),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.history_rounded, color: AptiquColors.primary, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    'History',
-                    style: AptiquTypography.labelCaps.copyWith(
-                      color: AptiquColors.onSurface,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+  Widget build(BuildContext context) => AppearanceTheme(
+    builder: (context) => Obx(
+      () => PopScope(
+        canPop: !controller.isStarting.value,
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: (MediaQuery.textScalerOf(context).scale(18) * 2.4)
+                .clamp(56.0, double.infinity),
+            leading: IconButton(
+              tooltip: 'Back',
+              onPressed: controller.isStarting.value
+                  ? null
+                  : () => context.pop(),
+              icon: const Icon(Icons.arrow_back_rounded),
             ),
+            title: const Text('Daily challenge'),
+            actions: [
+              IconButton(
+                tooltip: 'Daily history',
+                onPressed: controller.isStarting.value
+                    ? null
+                    : () => _history(context),
+                icon: const Icon(Icons.history_rounded),
+              ),
+            ],
           ),
-          const SizedBox(width: 8),
-
-          // Coins Display
-          Obx(() {
-            final auth = Get.find<AuthController>();
-            final coins = auth.currentUser.value?.coins ?? 0;
-            return Container(
-              margin: const EdgeInsets.only(right: 16),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AptiquColors.outlineVariant),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.monetization_on_rounded, color: AptiquColors.tertiary, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    '$coins',
-                    style: AptiquTypography.labelCaps.copyWith(
-                      color: AptiquColors.onSurface,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
+          body: SafeArea(top: false, child: _overview(context)),
+        ),
       ),
-      body: Stack(
-        children: [
-          _buildOverviewTab(context),
+    ),
+  );
 
-          // FULL-SCREEN BLOCKING MODAL OVERLAY (Ensures user UI is blocked during AI generation)
-          Obx(() {
-            if (!controller.isStarting.value) return const SizedBox.shrink();
-
-            return Container(
-              color: Colors.black.withValues(alpha: 0.85),
-              width: double.infinity,
-              height: double.infinity,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Animated Circular Pulse
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width: 90,
-                        height: 90,
-                        child: AppLoader(size: 90),
-                      ),
-                      const Icon(
-                        Icons.local_fire_department_rounded,
-                        color: AptiquColors.tertiary,
-                        size: 42,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  Text(
-                    'INITIALIZING DAILY CHALLENGE',
-                    style: AptiquTypography.labelCaps.copyWith(
-                      color: AptiquColors.tertiary,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Obx(() => Text(
-                        controller.startLoadingMessage.value,
-                        textAlign: TextAlign.center,
-                        style: AptiquTypography.bodyMedium.copyWith(
-                          color: AptiquColors.onSurface,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Please hold tight while Gemini AI prepares your unique trick question script...',
-                    textAlign: TextAlign.center,
-                    style: AptiquTypography.bodySmall.copyWith(
-                      color: AptiquColors.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOverviewTab(BuildContext context) {
-    return Obx(() {
-      if (controller.isLoadingStatus.value) {
-        return const Center(
-          child: AppLoader(),
-        );
-      }
-
-      if (controller.statusErrorMessage.isNotEmpty) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.error_outline_rounded, color: AptiquColors.error, size: 40),
-                const SizedBox(height: 12),
-                Text(
-                  controller.statusErrorMessage.value,
-                  style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.error),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: controller.fetchStatus,
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
+  Widget _overview(BuildContext context) {
+    if (controller.isStarting.value) {
+      return Center(
+        child: SingleChildScrollView(
+          child: AppStateView(
+            title: 'Preparing your daily challenge',
+            message: controller.startLoadingMessage.value,
+            loading: true,
           ),
-        );
-      }
-
-      final status = controller.status.value;
-      if (status == null) return const SizedBox.shrink();
-
-      return SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 1. Hero Streak Banner Card
-            _buildHeroStreakCard(status),
-
-            const SizedBox(height: 16),
-
-            // 2. Action / Due State Card
-            _buildActionStateCard(context, status),
-
-            const SizedBox(height: 16),
-
-            // 3. Logic & Rules Showcase Card
-            _buildRulesShowcaseCard(status),
-          ],
         ),
       );
-    });
-  }
-
-  Widget _buildHeroStreakCard(DailyChallengeStatusModel status) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xFF2A1608),
-            AptiquColors.surfaceContainerLowest,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    }
+    final status = controller.status.value;
+    if (controller.isLoadingStatus.value && status == null) {
+      return const Center(
+        child: AppStateView(title: 'Loading daily challenge', loading: true),
+      );
+    }
+    if (status == null) {
+      return SingleChildScrollView(
+        child: AppStateView(
+          title: controller.statusErrorMessage.isNotEmpty
+              ? 'Could not load the challenge'
+              : 'Daily challenge unavailable',
+          message: controller.statusErrorMessage.value,
+          actionLabel: 'Retry',
+          onAction: controller.fetchStatus,
         ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AptiquColors.tertiary.withValues(alpha: 0.5),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AptiquColors.tertiary.withValues(alpha: 0.15),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
+      );
+    }
+    final auth = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>()
+        : null;
+    return RefreshIndicator(
+      onRefresh: controller.fetchStatus,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          if (controller.isLoadingStatus.value) const LinearProgressIndicator(),
+          if (controller.statusErrorMessage.isNotEmpty)
+            SessionNotice(
+              message: controller.statusErrorMessage.value,
+              onRetry: controller.fetchStatus,
+            ),
+          _availability(context, status),
+          const SizedBox(height: 24),
+          Material(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'CURRENT STREAK',
-                    style: AptiquTypography.labelCaps.copyWith(
-                      color: AptiquColors.tertiary,
-                      letterSpacing: 1.2,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${status.streak}',
-                        style: AptiquTypography.headlineLarge.copyWith(
-                          color: AptiquColors.onSurface,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 42,
-                        ),
+                      Icon(
+                        Icons.local_fire_department_outlined,
+                        color: context.status.warning,
+                        size: 28,
                       ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'DAYS',
-                        style: AptiquTypography.titleSmall.copyWith(
-                          color: AptiquColors.tertiary,
-                          fontWeight: FontWeight.bold,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          '${status.streak} day streak',
+                          style: context.type.headlineSmall,
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
+                  SessionMetrics(
+                    items: [
+                      (
+                        label: 'Best streak',
+                        value: '${status.highestStreak} days',
+                      ),
+                      (
+                        label: 'Average speed',
+                        value: controller.userOverallAvgTimeMs.value > 0
+                            ? '${(controller.userOverallAvgTimeMs.value / 1000).toStringAsFixed(1)}s'
+                            : 'Unavailable',
+                      ),
+                      if (auth?.currentUser.value != null)
+                        (
+                          label: 'Coins',
+                          value: '${auth!.currentUser.value!.coins}',
+                        ),
+                    ],
+                  ),
                 ],
               ),
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AptiquColors.tertiary.withValues(alpha: 0.15),
-                  border: Border.all(color: AptiquColors.tertiary.withValues(alpha: 0.4)),
-                ),
-                child: const Icon(
-                  Icons.local_fire_department_rounded,
-                  color: AptiquColors.tertiary,
-                  size: 38,
-                ),
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: 16),
-          const Divider(color: AptiquColors.outlineVariant, height: 1),
-          const SizedBox(height: 14),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          const SizedBox(height: 24),
+          Text('How it works', style: context.type.titleSmall),
+          const SizedBox(height: 12),
+          Text(
+            'Answer every question correctly to increase your streak and earn rewards. Each question has a 60-second limit. No hints.',
+            style: context.type.bodyLarge,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'The daily cycle ends at midnight IST (UTC+5:30). Review both available methods after answering.',
+            style: context.type.bodyMedium?.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: const EdgeInsets.only(bottom: 16),
+            title: const Text('Tiers and daily questions'),
             children: [
-              _buildStatPill(
-                icon: Icons.military_tech_rounded,
-                label: 'BEST STREAK',
-                value: '${status.highestStreak} Days',
-              ),
-              Container(width: 1, height: 28, color: AptiquColors.outlineVariant),
-              _buildStatPill(
-                icon: Icons.speed_rounded,
-                label: 'AVG SPEED',
-                value: controller.userOverallAvgTimeMs.value > 0
-                    ? '${(controller.userOverallAvgTimeMs.value / 1000).toStringAsFixed(1)}s'
-                    : 'N/A',
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '0–9 days: 1 Easy question\n10–99 days: 1 Easy + 1 Medium\n100+ days: 1 Easy + 1 Medium + 1 Hard\n\nEveryone in your tier receives the same daily questions.',
+                  style: context.type.bodyLarge,
+                ),
               ),
             ],
           ),
@@ -332,484 +185,167 @@ class _DailyStreakHubScreenState extends State<DailyStreakHubScreen> {
     );
   }
 
-  Widget _buildStatPill({required IconData icon, required String label, required String value}) {
-    return Row(
+  Widget _availability(BuildContext context, DailyChallengeStatusModel status) {
+    final resume = status.todayParticipation?.status == 'IN_PROGRESS';
+    final failed =
+        status.todayParticipation?.status == 'FAILED' ||
+        status.todayParticipation?.status == 'ABANDONED';
+    final finished = status.isCompletedToday || !status.canAttempt;
+    final hours = status.msUntilMidnight ~/ 3600000;
+    final minutes = status.msUntilMidnight % 3600000 ~/ 60000;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Icon(icon, color: AptiquColors.secondary, size: 18),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: AptiquTypography.labelCaps.copyWith(
-                color: AptiquColors.onSurfaceVariant,
-                fontSize: 9,
-              ),
-            ),
-            Text(
-              value,
-              style: AptiquTypography.bodySmall.copyWith(
-                color: AptiquColors.onSurface,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        Text(
+          finished
+              ? failed
+                    ? 'Today’s attempt is finished'
+                    : status.isCompletedToday
+                    ? 'Completed for today'
+                    : 'Challenge unavailable'
+              : resume
+              ? 'Continue today’s challenge'
+              : 'Ready for today?',
+          style: context.type.headlineSmall,
         ),
+        const SizedBox(height: 8),
+        Text(
+          finished
+              ? failed
+                    ? 'All questions must be correct to keep the streak and earn rewards.'
+                    : status.isCompletedToday
+                    ? 'Your result has been recorded.'
+                    : 'You cannot start another attempt right now.'
+              : '${status.tierTitle} · ${status.questionCount} ${status.questionCount == 1 ? 'question' : 'questions'}',
+          style: context.type.bodyLarge,
+        ),
+        const SizedBox(height: 16),
+        if (finished)
+          Text(
+            'Next daily cycle in ${hours}h ${minutes}m',
+            style: context.type.bodyMedium,
+          )
+        else
+          AptiquButton(
+            label: resume ? 'Resume challenge' : 'Start daily challenge',
+            icon: Icon(resume ? Icons.play_arrow_rounded : Icons.bolt_rounded),
+            onPressed: status.canAttempt && !controller.isLoadingStatus.value
+                ? () => controller.startDailyChallenge(context)
+                : null,
+          ),
+        if (controller.startError.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Semantics(
+            liveRegion: true,
+            child: Text(
+              controller.startError.value,
+              style: context.type.bodyMedium?.copyWith(
+                color: context.colors.error,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  void _showHistoryModal(BuildContext context) {
+  void _history(BuildContext context) {
     controller.fetchHistory(refresh: true);
-    showModalBottomSheet(
+    showAppSheet<void>(
       context: context,
-      backgroundColor: AptiquColors.surfaceDim,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.75,
-          minChildSize: 0.4,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (_, scrollController) {
-            return Column(
-              children: [
-                const SizedBox(height: 12),
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AptiquColors.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.history_rounded, color: AptiquColors.primary, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Streak Logs & History',
-                        style: AptiquTypography.titleMedium.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AptiquColors.onSurface,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.close_rounded, color: AptiquColors.onSurfaceVariant, size: 20),
-                        onPressed: () => Navigator.of(ctx).pop(),
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(color: AptiquColors.outlineVariant, height: 1),
-                Expanded(child: _buildHistoryTab(context)),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildActionStateCard(BuildContext context, DailyChallengeStatusModel status) {
-    if (status.isCompletedToday) {
-      final hours = status.msUntilMidnight ~/ (1000 * 60 * 60);
-      final minutes = (status.msUntilMidnight % (1000 * 60 * 60)) ~/ (1000 * 60);
-      final isFailed = status.todayParticipation?.status == 'FAILED';
-      final statusColor = isFailed ? Colors.redAccent : Colors.green;
-
-      return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AptiquColors.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: statusColor.withValues(alpha: 0.5)),
-        ),
-        child: Column(
+      title: 'Daily history',
+      builder: (context) => Obx(() {
+        if (controller.isLoadingHistory.value &&
+            controller.historyList.isEmpty) {
+          return const AppStateView(
+            title: 'Loading daily history',
+            loading: true,
+          );
+        }
+        if (controller.historyList.isEmpty) {
+          return AppStateView(
+            title: controller.historyError.isNotEmpty
+                ? 'Could not load history'
+                : 'No daily history yet',
+            message: controller.historyError.isNotEmpty
+                ? controller.historyError.value
+                : 'Your daily attempts will appear here.',
+            actionLabel: controller.historyError.isNotEmpty ? 'Retry' : null,
+            onAction: controller.historyError.isNotEmpty
+                ? () => controller.fetchHistory(refresh: true)
+                : null,
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isFailed ? Icons.cancel_outlined : Icons.check_circle_rounded,
-                    color: statusColor,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isFailed ? 'Attempt Finished for Today' : 'Completed for Today!',
-                        style: AptiquTypography.titleSmall.copyWith(
-                          color: AptiquColors.onSurface,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        isFailed
-                            ? 'Streak reset to 0. All questions must be answered correctly.'
-                            : 'Your streak is safely locked for the next cycle.',
-                        style: AptiquTypography.bodySmall.copyWith(
-                          color: AptiquColors.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(10),
+            if (controller.historyError.isNotEmpty)
+              SessionNotice(
+                message: 'History could not be refreshed',
+                onRetry: () => controller.fetchHistory(refresh: true),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.timer_outlined, color: AptiquColors.primary, size: 16),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Next challenge unlocks in: ${hours}h ${minutes}m',
-                    style: AptiquTypography.labelCaps.copyWith(
-                      color: AptiquColors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Due State: Big Start Button
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AptiquColors.tertiary.withValues(alpha: 0.6)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AptiquColors.tertiary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.bolt_rounded, color: AptiquColors.tertiary, size: 24),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
+            if (controller.isLoadingHistory.value)
+              const LinearProgressIndicator(),
+            for (final item in controller.historyList) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'Daily Challenge is Due!',
-                      style: AptiquTypography.titleSmall.copyWith(
-                        color: AptiquColors.onSurface,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      spacing: 16,
+                      runSpacing: 8,
+                      children: [
+                        Text(item.dateString, style: context.type.titleSmall),
+                        Text(
+                          _statusLabel(item.status),
+                          style: context.type.bodyMedium,
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${status.tierTitle} · ${status.questionCount} Question(s)',
-                      style: AptiquTypography.bodySmall.copyWith(
-                        color: AptiquColors.tertiary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    const SizedBox(height: 12),
+                    SessionMetrics(
+                      items: [
+                        (
+                          label: 'Correct',
+                          value: '${item.correctCount}/${item.totalQuestions}',
+                        ),
+                        (
+                          label: 'Average time',
+                          value:
+                              '${(item.avgTimeMs / 1000).toStringAsFixed(1)}s',
+                        ),
+                        (label: 'XP awarded', value: '${item.xpAwarded}'),
+                        (label: 'Coins awarded', value: '${item.coinsAwarded}'),
+                      ],
                     ),
                   ],
                 ),
               ),
+              const Divider(height: 1),
             ],
-          ),
-          const SizedBox(height: 18),
-          ElevatedButton(
-            onPressed: () => controller.startDailyChallenge(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.buttonDarkBg,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: AptiquColors.tertiary.withValues(alpha: 0.5),
-                  width: 1.2,
-                ),
-              ),
-              elevation: 0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 22),
-                const SizedBox(width: 8),
-                Text(
-                  'START DAILY CHALLENGE',
-                  style: AptiquTypography.labelCaps.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRulesShowcaseCard(DailyChallengeStatusModel status) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AptiquColors.outlineVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.info_outline_rounded, color: AptiquColors.primary, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                'How Daily Streak Works',
-                style: AptiquTypography.titleSmall.copyWith(
-                  color: AptiquColors.onSurface,
-                  fontWeight: FontWeight.bold,
-                ),
+            if (controller.historyPage.value <
+                controller.historyTotalPages.value) ...[
+              const SizedBox(height: 16),
+              OutlinedButton(
+                onPressed: controller.isLoadingHistory.value
+                    ? null
+                    : () => controller.fetchHistory(loadMore: true),
+                child: const Text('Load more'),
               ),
             ],
-          ),
-          const SizedBox(height: 14),
-          _buildRuleRow(
-            icon: Icons.layers_outlined,
-            title: 'Tier-Based Challenge Script',
-            desc:
-                '• 0–9 Days: 1 Easy Question\n• 10–99 Days: 2 Questions (1 Easy, 1 Medium)\n• 100+ Days: 3 Questions (1 Easy, 1 Medium, 1 Hard)',
-          ),
-          const SizedBox(height: 12),
-          _buildRuleRow(
-            icon: Icons.timer_outlined,
-            title: 'Fixed 60-Second Timer',
-            desc:
-                'Every question has a strict 60-second limit. Each question has an aptitude shortcut trick solvable within the time limit.',
-          ),
-          const SizedBox(height: 12),
-          _buildRuleRow(
-            icon: Icons.visibility_off_outlined,
-            title: 'Zero Hints Allowed',
-            desc: 'No hints are provided during the challenge to test genuine quick-thinking.',
-          ),
-          const SizedBox(height: 12),
-          _buildRuleRow(
-            icon: Icons.psychology_outlined,
-            title: 'Post-Answer Explanation & Tricks',
-            desc:
-                'Instantly review the mathematical shortcut after each question to learn and level up your speed.',
-          ),
-          const SizedBox(height: 12),
-          _buildRuleRow(
-            icon: Icons.public_rounded,
-            title: 'Global Daily Question',
-            desc: 'All aspirants in your tier receive the exact same AI-crafted script for 24 hours.',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRuleRow({required IconData icon, required String title, required String desc}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, color: AptiquColors.primary, size: 18),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: AptiquTypography.bodySmall.copyWith(
-                  color: AptiquColors.onSurface,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                desc,
-                style: AptiquTypography.bodySmall.copyWith(
-                  color: AptiquColors.onSurfaceVariant,
-                  fontSize: 11.5,
-                  height: 1.35,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildHistoryTab(BuildContext context) {
-    return Obx(() {
-      if (controller.isLoadingHistory.value && controller.historyList.isEmpty) {
-        return const Center(child: AppLoader());
-      }
-
-      if (controller.historyList.isEmpty) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.history_toggle_off_rounded, color: AptiquColors.onSurfaceVariant, size: 48),
-              const SizedBox(height: 12),
-              Text(
-                'No Daily Challenge History Yet',
-                style: AptiquTypography.bodyMedium.copyWith(color: AptiquColors.onSurfaceVariant),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Complete today\'s challenge to build your streak log!',
-                style: AptiquTypography.bodySmall.copyWith(color: AptiquColors.outline),
-              ),
-            ],
-          ),
+          ],
         );
-      }
-
-      return RefreshIndicator(
-        onRefresh: () => controller.fetchHistory(refresh: true),
-        color: AptiquColors.tertiary,
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemCount: controller.historyList.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final item = controller.historyList[index];
-            final isCompleted = item.status == 'COMPLETED';
-
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: isCompleted
-                      ? Colors.green.withValues(alpha: 0.3)
-                      : AptiquColors.outlineVariant,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        item.dateString,
-                        style: AptiquTypography.labelCaps.copyWith(
-                          color: AptiquColors.onSurfaceVariant,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: isCompleted
-                              ? Colors.green.withValues(alpha: 0.15)
-                              : Colors.red.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          item.status,
-                          style: AptiquTypography.labelCaps.copyWith(
-                            color: isCompleted ? Colors.green : Colors.red,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.check_circle_outline_rounded, color: AptiquColors.primary, size: 16),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Score: ${item.correctCount}/${item.totalQuestions}',
-                            style: AptiquTypography.bodySmall.copyWith(
-                              color: AptiquColors.onSurface,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.timer_outlined, color: AptiquColors.secondary, size: 16),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Avg: ${(item.avgTimeMs / 1000).toStringAsFixed(1)}s',
-                            style: AptiquTypography.bodySmall.copyWith(
-                              color: AptiquColors.onSurface,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (item.xpAwarded > 0)
-                        Row(
-                          children: [
-                            const Icon(Icons.bolt_rounded, color: AptiquColors.tertiary, size: 16),
-                            const SizedBox(width: 2),
-                            Text(
-                              '+${item.xpAwarded} XP',
-                              style: AptiquTypography.bodySmall.copyWith(
-                                color: AptiquColors.tertiary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      );
-    });
+      }),
+    );
   }
+
+  String _statusLabel(String status) => switch (status) {
+    'COMPLETED' => 'Completed',
+    'FAILED' => 'Unsuccessful',
+    'ABANDONED' => 'Abandoned',
+    'IN_PROGRESS' => 'In progress',
+    _ => status,
+  };
 }

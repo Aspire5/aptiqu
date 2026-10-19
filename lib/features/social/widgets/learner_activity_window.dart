@@ -50,7 +50,9 @@ class _LearnerActivityWindowState extends State<LearnerActivityWindow> {
           if (snapshot.hasError) {
             return Center(
               child: TextButton.icon(
-                onPressed: () => setState(() => months.remove(key)),
+                onPressed: () => setState(() {
+                  months.remove(key);
+                }),
                 icon: const Icon(Icons.refresh),
                 label: const Text('Could not load this month. Retry'),
               ),

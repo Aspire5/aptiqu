@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 
 import '../social_controller.dart';
 import 'social_widgets.dart';
+import '../../../core/theme/appearance_theme.dart';
+import '../../../core/theme/aptiqu_tokens.dart';
+import '../../../shared/widgets/layout/text_fit.dart';
 
 /// One friendship control for search results, requests and learner profiles.
 class FriendshipActions extends StatefulWidget {
@@ -23,31 +26,39 @@ class FriendshipActions extends StatefulWidget {
 }
 
 class _FriendshipActionsState extends State<FriendshipActions> {
-  bool busy = false;
+  bool busy = false, confirming = false;
 
   Future<void> update({bool accept = true}) async {
-    if (busy) return;
+    if (busy || confirming) return;
     final social = Get.find<SocialController>();
     final person = widget.person;
     final relation = person['relation'];
     if (relation == 'FRIEND') {
+      confirming = true;
       final remove = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Remove friend?'),
-          content: Text('Remove ${person['name']} from your friends?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Remove'),
-            ),
-          ],
+        builder: (_) => AppearanceTheme(
+          builder: (context) => AlertDialog(
+            scrollable: true,
+            title: const Text('Remove friend?'),
+            content: Text('Remove ${person['name']} from your friends?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: TextButton.styleFrom(
+                  foregroundColor: context.colors.error,
+                ),
+                child: const Text('Remove'),
+              ),
+            ],
+          ),
         ),
       );
+      confirming = false;
       if (remove != true || !mounted) return;
     }
     setState(() => busy = true);
@@ -98,18 +109,25 @@ class _FriendshipActionsState extends State<FriendshipActions> {
         onPressed: busy ? null : () => update(accept: false),
       );
       if (widget.fullWidth) {
-        if (MediaQuery.textScalerOf(context).scale(13) > 21) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [accept, const SizedBox(height: 10), reject],
-          );
-        }
-        return Row(
-          children: [
-            Expanded(child: accept),
-            const SizedBox(width: 12),
-            Expanded(child: reject),
-          ],
+        return LayoutBuilder(
+          builder: (context, box) {
+            final width = (box.maxWidth - 12) / 2 - 60;
+            final inline =
+                textFits(context, 'Accept', context.type.labelLarge!, width) &&
+                textFits(context, 'Reject', context.type.labelLarge!, width);
+            return inline
+                ? Row(
+                    children: [
+                      Expanded(child: accept),
+                      const SizedBox(width: 12),
+                      Expanded(child: reject),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [accept, const SizedBox(height: 12), reject],
+                  );
+          },
         );
       }
       return Wrap(spacing: 8, runSpacing: 4, children: [accept, reject]);

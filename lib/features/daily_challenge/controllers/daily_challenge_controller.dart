@@ -8,30 +8,39 @@ import '../models/daily_challenge_models.dart';
 import '../repositories/daily_challenge_repository.dart';
 
 class DailyChallengeController extends GetxController {
-  final DailyChallengeRepository _repository = DailyChallengeRepository();
+  final DailyChallengeRepository _repository;
+  DailyChallengeController({DailyChallengeRepository? repository})
+    : _repository = repository ?? DailyChallengeRepository();
 
   // Status observables
-  final Rxn<DailyChallengeStatusModel> status = Rxn<DailyChallengeStatusModel>();
+  final Rxn<DailyChallengeStatusModel> status =
+      Rxn<DailyChallengeStatusModel>();
   final RxBool isLoadingStatus = true.obs;
   final RxString statusErrorMessage = ''.obs;
 
   // Starting / Blocking State (ensuring user UI is properly blocked during AI generation)
   final RxBool isStarting = false.obs;
-  final RxString startLoadingMessage = 'Synthesizing Today\'s Challenge...'.obs;
+  final RxString startError = ''.obs;
+  final RxString answerError = ''.obs;
+  final RxString startLoadingMessage = 'Preparing today’s challenge…'.obs;
 
   // Active Quiz Observables
-  final Rxn<DailyChallengeSessionModel> activeSession = Rxn<DailyChallengeSessionModel>();
+  final Rxn<DailyChallengeSessionModel> activeSession =
+      Rxn<DailyChallengeSessionModel>();
   final RxInt currentQuestionIndex = 0.obs;
   final RxInt secondsRemaining = 60.obs;
   final RxnString selectedOptionId = RxnString();
   final RxBool isSubmitting = false.obs;
-  final Rxn<DailyChallengeAnswerResultModel> lastAnswerResult = Rxn<DailyChallengeAnswerResultModel>();
+  final Rxn<DailyChallengeAnswerResultModel> lastAnswerResult =
+      Rxn<DailyChallengeAnswerResultModel>();
   final RxBool showExplanation = false.obs;
   final RxBool isCompleted = false.obs;
 
   // History Observables
-  final RxList<DailyHistoryItemModel> historyList = <DailyHistoryItemModel>[].obs;
+  final RxList<DailyHistoryItemModel> historyList =
+      <DailyHistoryItemModel>[].obs;
   final RxBool isLoadingHistory = false.obs;
+  final RxString historyError = ''.obs;
   final RxInt historyPage = 1.obs;
   final RxInt historyTotalPages = 1.obs;
   final RxInt userHighestStreak = 0.obs;
@@ -71,12 +80,19 @@ class DailyChallengeController extends GetxController {
   }
 
   /// Fetches user history of daily challenges
-  Future<void> fetchHistory({bool refresh = false}) async {
-    if (refresh) historyPage.value = 1;
+  Future<void> fetchHistory({
+    bool refresh = false,
+    bool loadMore = false,
+  }) async {
+    if (isLoadingHistory.value || isClosed) return;
+    final page = loadMore ? historyPage.value + 1 : 1;
     isLoadingHistory.value = true;
+    historyError.value = '';
     try {
-      final res = await _repository.getHistory(page: historyPage.value, limit: 10);
-      if (refresh) {
+      final res = await _repository.getHistory(page: page, limit: 10);
+      if (isClosed) return;
+      historyPage.value = res.page;
+      if (!loadMore) {
         historyList.assignAll(res.history);
       } else {
         historyList.addAll(res.history);
@@ -85,6 +101,9 @@ class DailyChallengeController extends GetxController {
       userHighestStreak.value = res.highestStreak;
       userOverallAvgTimeMs.value = res.overallAvgTimeMs;
     } catch (e) {
+      if (!isClosed) {
+        historyError.value = 'History could not be loaded. Please try again.';
+      }
       debugPrint('[DailyChallengeController] fetchHistory error: $e');
     } finally {
       isLoadingHistory.value = false;
@@ -94,12 +113,15 @@ class DailyChallengeController extends GetxController {
   /// Starts or resumes today's daily challenge.
   /// Shows a blocking, informative modal while Gemini synthesizes the script.
   Future<void> startDailyChallenge(BuildContext context) async {
+    if (isStarting.value || isClosed) return;
+    startError.value = '';
     if (status.value?.canAttempt == false) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('You have already conquered today\'s challenge! Next challenge unlocks at 12:00 AM IST.'),
-            backgroundColor: Color(0xFF1E293B),
+            content: Text(
+              'You cannot start another attempt today. The next daily cycle begins at midnight IST (UTC+5:30).',
+            ),
             duration: Duration(seconds: 3),
           ),
         );
@@ -133,32 +155,28 @@ class DailyChallengeController extends GetxController {
       _stopLoadingMessageTimer();
       isStarting.value = false;
       final rawMsg = e.toString().replaceAll('Exception: ', '').trim();
+      startError.value = rawMsg.isNotEmpty
+          ? rawMsg
+          : 'Failed to start daily challenge. Please try again.';
       debugPrint('[DailyChallenge] startDailyChallenge error: $rawMsg');
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(rawMsg.isNotEmpty ? rawMsg : 'Failed to start daily challenge. Please try again.'),
-            backgroundColor: const Color(0xFFDC2626),
-            duration: const Duration(seconds: 4),
-          ),
-        );
-      }
     }
   }
 
   void _startLoadingMessageCycler() {
     final messages = [
-      'Consulting AI Aptitude Master...',
-      'Synthesizing Brand-New Trick Questions...',
-      'Calibrating 60-Second Shortcut Curves...',
-      'Locking In Today\'s Authoritative Script...',
-      'Preparing Your Challenge Arena...',
+      'Preparing today’s questions…',
+      'Your challenge is still being prepared…',
+      'Getting your daily questions ready…',
+      'Preparing today’s challenge…',
+      'This can take a moment…',
     ];
     int idx = 0;
     startLoadingMessage.value = messages[0];
 
     _loadingMessageTimer?.cancel();
-    _loadingMessageTimer = Timer.periodic(const Duration(milliseconds: 3200), (_) {
+    _loadingMessageTimer = Timer.periodic(const Duration(milliseconds: 3200), (
+      _,
+    ) {
       idx = (idx + 1) % messages.length;
       startLoadingMessage.value = messages[idx];
     });
@@ -209,7 +227,6 @@ class DailyChallengeController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please select an option before submitting.'),
-            backgroundColor: Color(0xFF1E293B),
             duration: Duration(seconds: 2),
           ),
         );
@@ -219,8 +236,10 @@ class DailyChallengeController extends GetxController {
 
     _stopTimer();
     isSubmitting.value = true;
+    answerError.value = '';
 
-    final elapsedMs = DateTime.now().millisecondsSinceEpoch - _questionStartTimeMs;
+    final elapsedMs =
+        DateTime.now().millisecondsSinceEpoch - _questionStartTimeMs;
     final clampedTimeMs = elapsedMs.clamp(1000, 60000);
 
     try {
@@ -246,16 +265,10 @@ class DailyChallengeController extends GetxController {
       }
     } catch (e) {
       final rawMsg = e.toString().replaceAll('Exception: ', '').trim();
+      answerError.value = rawMsg.isNotEmpty
+          ? rawMsg
+          : 'Failed to submit answer. Please try again.';
       debugPrint('[DailyChallenge] submitAnswer error: $rawMsg');
-      if (context != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(rawMsg.isNotEmpty ? rawMsg : 'Failed to submit answer. Please try again.'),
-            backgroundColor: const Color(0xFFDC2626),
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
     } finally {
       isSubmitting.value = false;
     }

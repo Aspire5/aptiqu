@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
-import '../../../../core/theme/aptiqu_typography.dart';
+import '../../../../core/theme/aptiqu_tokens.dart';
+import '../../../../shared/widgets/layout/text_fit.dart';
 import '../../models/roadmap_model.dart';
+import '../../../../shared/widgets/sheets/app_sheet.dart';
 
 /// Presentation only: the caller dismisses the sheet before launching an action.
 class TopicDetailsSheet extends StatelessWidget {
@@ -26,125 +27,124 @@ class TopicDetailsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final playable =
         topic.scriptAvailable && !topic.isLocked && !topic.isComingSoon;
-    return Column(
-      children: [
-        Expanded(
-          child: ListView(
-            controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'TOPIC ${topic.sequence.toString().padLeft(2, '0')}',
-                      style: AptiquTypography.labelCapsBold.copyWith(
-                        fontSize: 11,
-                        color: AptiquColors.secondary,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Close topic details',
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close_rounded, size: 20),
-                    color: AptiquColors.onSurfaceVariant,
-                  ),
-                ],
-              ),
-              Text(
-                topic.topicName,
-                style: AptiquTypography.headlineSm.copyWith(
-                  fontSize: 21,
-                  height: 1.25,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '${topic.completedSubtopics} of ${topic.totalSubtopics} subtopics completed',
-                style: AptiquTypography.bodySm.copyWith(
-                  color: AptiquColors.secondary,
-                  fontSize: 12,
-                ),
-              ),
-              if (topic.description?.trim().isNotEmpty == true) ...[
-                const SizedBox(height: 12),
-                Text(
-                  topic.description!,
-                  style: AptiquTypography.bodySm.copyWith(
-                    color: AptiquColors.onSurfaceVariant,
-                    height: 1.5,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-              const SizedBox(height: 24),
-              Text(
-                'Subtopics',
-                style: AptiquTypography.bodyMd.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (topic.subtopics.isEmpty)
-                Text(
-                  'Lessons for this topic are coming soon.',
-                  style: AptiquTypography.bodySm.copyWith(
-                    color: AptiquColors.onSurfaceVariant,
-                  ),
-                ),
-              for (final subtopic in topic.subtopics) ...[
-                _SubtopicCard(
-                  subtopic: subtopic,
-                  onPractice: () => onPracticeSubtopic(subtopic),
-                  onPlay: () => onPlaySubtopic(subtopic),
-                ),
-                const SizedBox(height: 12),
-              ],
-            ],
-          ),
-        ),
-        if (playable)
-          Container(
-            decoration: const BoxDecoration(
-              color: AptiquColors.surfaceContainerLow,
-              border: Border(
-                top: BorderSide(color: AptiquColors.outlineVariant),
-              ),
+    return LayoutBuilder(
+      builder: (context, box) {
+        // Keep a useful reading viewport when enlarged controls consume the sheet.
+        final compact =
+            box.maxHeight < 184 * MediaQuery.textScalerOf(context).scale(1);
+        return Column(
+          children: [
+            AppSheetHeader(
+              title: 'TOPIC ${topic.sequence.toString().padLeft(2, '0')}',
+              closeLabel: 'Close topic details',
             ),
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 children: [
                   Text(
-                    'Whole topic',
-                    style: AptiquTypography.bodySm.copyWith(
-                      fontSize: 11,
-                      color: AptiquColors.onSurfaceVariant,
+                    topic.topicName,
+                    style: context.type.titleLarge!.copyWith(
+                      fontSize: 21,
+                      height: 1.25,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TopicActionButtons(
-                    key: const ValueKey('topic-actions'),
-                    onPractice: onPracticeTopic,
-                    onPlay: onPlayTopic,
-                    playLabel: topic.isCompleted
-                        ? 'Replay'
-                        : topic.isInProgress
-                        ? 'Continue'
-                        : 'Start',
+                  Text(
+                    '${topic.completedSubtopics} of ${topic.totalSubtopics} subtopics completed',
+                    style: context.type.bodyMedium!.copyWith(
+                      color: context.colors.secondary,
+                      fontSize: 12,
+                    ),
                   ),
+                  if (topic.description?.trim().isNotEmpty == true) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      topic.description!,
+                      style: context.type.bodyMedium!.copyWith(
+                        color: context.colors.onSurfaceVariant,
+                        height: 1.5,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  Text(
+                    'Subtopics',
+                    style: context.type.titleSmall!.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (topic.subtopics.isEmpty)
+                    Text(
+                      'Lessons for this topic are coming soon.',
+                      style: context.type.bodyMedium!.copyWith(
+                        color: context.colors.onSurfaceVariant,
+                      ),
+                    ),
+                  for (final subtopic in topic.subtopics) ...[
+                    _SubtopicCard(
+                      subtopic: subtopic,
+                      onPractice: () => onPracticeSubtopic(subtopic),
+                      onPlay: () => onPlaySubtopic(subtopic),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (playable && compact)
+                    _topicActions(context, embedded: true),
                 ],
               ),
             ),
-          ),
-      ],
+            if (playable && !compact) _topicActions(context),
+          ],
+        );
+      },
     );
   }
+
+  Widget _topicActions(BuildContext context, {bool embedded = false}) =>
+      Container(
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.outlineVariant)),
+        ),
+        padding: EdgeInsets.fromLTRB(
+          embedded ? 0 : 20,
+          12,
+          embedded ? 0 : 20,
+          12,
+        ),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Whole topic',
+                style: context.type.bodyMedium!.copyWith(
+                  fontSize: 12,
+                  color: context.colors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TopicActionButtons(
+                key: const ValueKey('topic-actions'),
+                onPractice: onPracticeTopic,
+                onPlay: onPlayTopic,
+                playLabel: topic.isCompleted
+                    ? 'Replay'
+                    : topic.isInProgress
+                    ? 'Continue'
+                    : 'Start',
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class _SubtopicCard extends StatelessWidget {
@@ -164,12 +164,12 @@ class _SubtopicCard extends StatelessWidget {
       key: ValueKey('subtopic-${subtopic.id}'),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(14),
+        color: context.colors.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: done
-              ? AptiquColors.secondary.withValues(alpha: .3)
-              : AptiquColors.outlineVariant,
+              ? context.colors.secondary.withValues(alpha: .3)
+              : context.colors.outlineVariant,
         ),
       ),
       child: Column(
@@ -184,16 +184,16 @@ class _SubtopicCard extends StatelessWidget {
                   done ? Icons.check_circle_rounded : Icons.menu_book_outlined,
                   size: 18,
                   color: done
-                      ? AptiquColors.secondary
-                      : AptiquColors.onSurfaceVariant,
+                      ? context.colors.secondary
+                      : context.colors.onSurfaceVariant,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   subtopic.title,
-                  style: AptiquTypography.bodyMd.copyWith(
-                    fontSize: 14,
+                  style: context.type.titleSmall!.copyWith(
+                    fontSize: 16,
                     height: 1.35,
                     fontWeight: FontWeight.w600,
                   ),
@@ -208,11 +208,11 @@ class _SubtopicCard extends StatelessWidget {
                 : subtopic.isLocked
                 ? 'Coming soon'
                 : 'Ready to learn',
-            style: AptiquTypography.bodySm.copyWith(
-              fontSize: 11,
+            style: context.type.bodyMedium!.copyWith(
+              fontSize: 12,
               color: done
-                  ? AptiquColors.secondary
-                  : AptiquColors.onSurfaceVariant,
+                  ? context.colors.secondary
+                  : context.colors.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 12),
@@ -245,61 +245,32 @@ class TopicActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = AptiquTypography.bodySm.copyWith(
-      fontSize: 12,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0,
-      height: 1.2,
+    final practice = OutlinedButton(
+      onPressed: onPractice,
+      child: const Text('Practice'),
     );
-    final style = ButtonStyle(
-      minimumSize: const WidgetStatePropertyAll(Size(0, 44)),
-      padding: const WidgetStatePropertyAll(
-        EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      ),
-      shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-      textStyle: WidgetStatePropertyAll(textStyle),
-      elevation: const WidgetStatePropertyAll(0),
-      visualDensity: VisualDensity.standard,
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    );
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            style: style.copyWith(
-              foregroundColor: const WidgetStatePropertyAll(
-                AptiquColors.secondary,
-              ),
-              side: WidgetStatePropertyAll(
-                BorderSide(color: AptiquColors.secondary.withValues(alpha: .5)),
-              ),
-            ),
-            onPressed: onPractice,
-            child: const Text('Practice'),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: FilledButton(
-            style: style.copyWith(
-              foregroundColor: WidgetStateProperty.resolveWith(
-                (states) => states.contains(WidgetState.disabled)
-                    ? AptiquColors.onSurfaceVariant
-                    : Colors.white,
-              ),
-              backgroundColor: WidgetStateProperty.resolveWith(
-                (states) => states.contains(WidgetState.disabled)
-                    ? AptiquColors.surfaceContainerHighest
-                    : AptiquColors.primaryContainer,
-              ),
-            ),
-            onPressed: onPlay,
-            child: Text(playLabel),
-          ),
-        ),
-      ],
+    final play = FilledButton(onPressed: onPlay, child: Text(playLabel));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final labelWidth = (constraints.maxWidth - 12) / 2 - 32;
+        final fits = ['Practice', playLabel].every(
+          (label) =>
+              textFits(context, label, context.type.labelLarge!, labelWidth),
+        );
+        if (!fits) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [practice, const SizedBox(height: 12), play],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: practice),
+            const SizedBox(width: 12),
+            Expanded(child: play),
+          ],
+        );
+      },
     );
   }
 }

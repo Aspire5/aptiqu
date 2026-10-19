@@ -1,764 +1,414 @@
-import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
-import '../../../../core/theme/aptiqu_typography.dart';
+import '../../../../core/theme/appearance_theme.dart';
+import '../../../../core/theme/aptiqu_tokens.dart';
+import '../../../../core/presentation/global_overlay_gate.dart';
+import '../../../../core/routing/app_router.dart';
+import '../../../../shared/widgets/buttons/aptiqu_button.dart';
+import '../../../../shared/widgets/feedback/app_state_view.dart';
+import '../../../../shared/widgets/questions/question_presentation.dart';
 import '../../controllers/daily_challenge_controller.dart';
 import '../../models/daily_challenge_models.dart';
 
-class DailyChallengeQuizScreen extends StatelessWidget {
+class DailyChallengeQuizScreen extends StatefulWidget {
   const DailyChallengeQuizScreen({super.key});
+  @override
+  State<DailyChallengeQuizScreen> createState() =>
+      _DailyChallengeQuizScreenState();
+}
+
+class _DailyChallengeQuizScreenState extends State<DailyChallengeQuizScreen> {
+  final controller = Get.isRegistered<DailyChallengeController>()
+      ? Get.find<DailyChallengeController>()
+      : Get.put(DailyChallengeController());
+  bool _dialogOpen = false;
+  bool _advancing = false;
+  double _toolbarHeight(BuildContext context) {
+    final text =
+        TextPainter(
+          text: TextSpan(
+            text: 'Daily challenge',
+            style: context.type.titleLarge,
+          ),
+          textScaler: MediaQuery.textScalerOf(context),
+          textDirection: Directionality.of(context),
+        )..layout(
+          maxWidth: (MediaQuery.sizeOf(context).width - 136).clamp(
+            1.0,
+            double.infinity,
+          ),
+        );
+    final height = (text.height + 16).clamp(56.0, double.infinity);
+    text.dispose();
+    return height;
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<DailyChallengeController>();
-
-    return PopScope(
+  Widget build(BuildContext context) => AppearanceTheme(
+    builder: (context) => PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _showExitConfirmationDialog(context, controller);
+        if (!didPop) _confirmExit(context);
       },
       child: Scaffold(
-        backgroundColor: AptiquColors.surfaceDim,
         appBar: AppBar(
-          backgroundColor: AptiquColors.surfaceDim,
-          elevation: 0,
+          toolbarHeight: _toolbarHeight(context),
           leading: IconButton(
-            icon: const Icon(Icons.close_rounded, color: AptiquColors.onSurface),
-            onPressed: () => _showExitConfirmationDialog(context, controller),
+            tooltip: 'Leave daily challenge',
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () => _confirmExit(context),
           ),
-          title: Obx(() {
+          title: const Text('Daily challenge'),
+          actions: [GlobalInvitationAction(gate: AppRouter.overlayGate)],
+        ),
+        body: SafeArea(
+          top: false,
+          child: Obx(() {
             final session = controller.activeSession.value;
-            if (session == null) return const Text('Daily Challenge');
-            final current = controller.currentQuestionIndex.value + 1;
-            final total = session.totalQuestions;
-            return Text(
-              'Question $current of $total',
-              style: AptiquTypography.titleMedium.copyWith(
-                color: AptiquColors.onSurface,
-                fontWeight: FontWeight.bold,
+            final index = controller.currentQuestionIndex.value;
+            if (session == null ||
+                session.questions.isEmpty ||
+                index < 0 ||
+                index >= session.questions.length) {
+              return SingleChildScrollView(
+                child: AppStateView(
+                  title: 'No active questions',
+                  message:
+                      'Return to the daily challenge to start or resume an attempt.',
+                  actionLabel: 'Return to daily challenge',
+                  onAction: () => _returnToHub(context),
+                ),
+              );
+            }
+            final q = session.questions[index];
+            final feedback =
+                controller.showExplanation.value &&
+                controller.lastAnswerResult.value != null;
+            final busy = controller.isSubmitting.value;
+            final selected = controller.selectedOptionId.value;
+            final seconds = controller.secondsRemaining.value;
+            final answerError = controller.answerError.value;
+            return LayoutBuilder(
+              builder: (context, box) => Stack(
+                children: [
+                  ExcludeSemantics(
+                    excluding: feedback,
+                    child: ExcludeFocus(
+                      excluding: feedback,
+                      child: IgnorePointer(
+                        ignoring: feedback,
+                        child: Column(
+                          children: [
+                            LinearProgressIndicator(
+                              value: session.totalQuestions > 0
+                                  ? ((index + 1) / session.totalQuestions)
+                                        .clamp(0.0, 1.0)
+                                  : 0,
+                              semanticsLabel: 'Daily challenge progress',
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                key: ValueKey('daily-question-${q.id}'),
+                                padding: const EdgeInsets.all(16),
+                                child: Center(
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      maxWidth: 720,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Wrap(
+                                          spacing: 16,
+                                          runSpacing: 8,
+                                          alignment: WrapAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Question ${index + 1} of ${session.totalQuestions}',
+                                              style: context.type.titleSmall,
+                                            ),
+                                            Semantics(
+                                              label:
+                                                  '$seconds seconds remaining',
+                                              child: ExcludeSemantics(
+                                                child: Text(
+                                                  '${seconds}s remaining',
+                                                  style: context.type.bodyMedium
+                                                      ?.copyWith(
+                                                        color:
+                                                            controller
+                                                                    .secondsRemaining
+                                                                    .value <=
+                                                                15
+                                                            ? context
+                                                                  .colors
+                                                                  .error
+                                                            : context
+                                                                  .colors
+                                                                  .primary,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 16),
+                                        QuestionMetadata(
+                                          difficulty: q.difficulty,
+                                          mode: '60 seconds · No hints',
+                                          source: q.pyq,
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Text(
+                                          q.prompt,
+                                          style: context.type.bodyLarge,
+                                        ),
+                                        const SizedBox(height: 24),
+                                        for (final option in q.options)
+                                          AnswerOption(
+                                            id: option.id,
+                                            text: option.text,
+                                            selected: selected == option.id,
+                                            onPressed: busy || feedback
+                                                ? null
+                                                : () => controller.selectOption(
+                                                    option.id,
+                                                  ),
+                                          ),
+                                        if (answerError.isNotEmpty)
+                                          Semantics(
+                                            liveRegion: true,
+                                            child: Text(
+                                              answerError,
+                                              style: context.type.bodyMedium
+                                                  ?.copyWith(
+                                                    color: context.colors.error,
+                                                  ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: AptiquButton(
+                                  label: busy
+                                      ? 'Submitting answer…'
+                                      : answerError.isNotEmpty
+                                      ? 'Retry answer'
+                                      : 'Confirm answer',
+                                  isLoading: busy,
+                                  onPressed:
+                                      selected != null && !busy && !feedback
+                                      ? () => controller.submitAnswer(context)
+                                      : null,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (feedback)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: 760,
+                          maxHeight: box.maxHeight < 400
+                              ? box.maxHeight
+                              : box.maxHeight * .9,
+                        ),
+                        child: _explanation(
+                          context,
+                          controller.lastAnswerResult.value!,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             );
           }),
-          actions: [
-            // 60-Second Radial Countdown Timer
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Obx(() {
-                final seconds = controller.secondsRemaining.value;
-                final progress = seconds / 60.0;
-
-                Color timerColor = AptiquColors.primary;
-                if (seconds <= 15) {
-                  timerColor = AptiquColors.error;
-                } else if (seconds <= 30) {
-                  timerColor = AptiquColors.tertiary;
-                }
-
-                return Row(
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 38,
-                          height: 38,
-                          child: CircularProgressIndicator(
-                            value: progress,
-                            strokeWidth: 3,
-                            backgroundColor: AptiquColors.surfaceContainerHigh,
-                            valueColor: AlwaysStoppedAnimation<Color>(timerColor),
-                          ),
-                        ),
-                        Text(
-                          '$seconds',
-                          style: AptiquTypography.labelCaps.copyWith(
-                            color: timerColor,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              }),
-            ),
-          ],
         ),
-        body: Obx(() {
-          final session = controller.activeSession.value;
-          if (session == null || session.questions.isEmpty) {
-            return const Center(child: Text('No active questions.'));
-          }
-
-          final question = session.questions[controller.currentQuestionIndex.value];
-          final isSubmitting = controller.isSubmitting.value;
-
-          return Column(
-            children: [
-              // Linear Progress Indicator
-              LinearProgressIndicator(
-                value: (controller.currentQuestionIndex.value + 1) / session.totalQuestions,
-                backgroundColor: AptiquColors.surfaceContainerHigh,
-                valueColor: const AlwaysStoppedAnimation<Color>(AptiquColors.tertiary),
-                minHeight: 3,
-              ),
-
-              // Scrollable Question & Options Body
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Badge Row
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: _getDifficultyColor(question.difficulty).withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: _getDifficultyColor(question.difficulty).withValues(alpha: 0.4),
-                              ),
-                            ),
-                            child: Text(
-                              question.difficulty,
-                              style: AptiquTypography.labelCaps.copyWith(
-                                color: _getDifficultyColor(question.difficulty),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AptiquColors.surfaceContainerHigh,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.flash_on_rounded, color: AptiquColors.tertiary, size: 13),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'SPEED TRICK (<60s)',
-                                  style: AptiquTypography.labelCaps.copyWith(
-                                    color: AptiquColors.onSurfaceVariant,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // Question Prompt Card
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AptiquColors.surfaceContainerLowest,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AptiquColors.outlineVariant),
-                        ),
-                        child: Text(
-                          question.prompt,
-                          style: AptiquTypography.bodyLarge.copyWith(
-                            color: AptiquColors.onSurface,
-                            fontWeight: FontWeight.w600,
-                            height: 1.45,
-                          ),
-                        ),
-                      ),
-                      if (question.pyq != null && question.pyq!.trim().isNotEmpty) ...[
-                        const SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFEF3C7),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFFDE68A)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('🏛️ ', style: TextStyle(fontSize: 12)),
-                              Flexible(
-                                child: Text(
-                                  question.pyq!,
-                                  style: AptiquTypography.labelSmall.copyWith(
-                                    color: const Color(0xFF92400E),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 24),
-
-                      // Options List
-                      ...question.options.map((opt) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _buildOptionTile(controller, opt.id, opt.text),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Bottom Action Bar
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-                decoration: const BoxDecoration(
-                  color: AptiquColors.surfaceDim,
-                  border: Border(top: BorderSide(color: AptiquColors.outlineVariant, width: 0.5)),
-                ),
-                child: Obx(() {
-                  final hasSelected = controller.selectedOptionId.value != null;
-                  return ElevatedButton(
-                    onPressed: hasSelected && !isSubmitting
-                        ? () => controller.submitAnswer(context)
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AptiquColors.tertiary,
-                      disabledBackgroundColor: AptiquColors.surfaceContainerHigh,
-                      foregroundColor: Colors.black,
-                      disabledForegroundColor: AptiquColors.outline,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: isSubmitting
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: AppLoader(),
-                          )
-                        : Text(
-                            'CONFIRM & REVEAL TRICK',
-                            style: AptiquTypography.labelCaps.copyWith(
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1.0,
-                              fontSize: 13,
-                              color: hasSelected ? Colors.black : AptiquColors.outline,
-                            ),
-                          ),
-                  );
-                }),
-              ),
-            ],
-          );
-        }),
-        bottomSheet: Obx(() {
-          if (!controller.showExplanation.value) return const SizedBox.shrink();
-          final result = controller.lastAnswerResult.value;
-          if (result == null) return const SizedBox.shrink();
-
-          return _buildExplanationSheet(context, controller, result);
-        }),
       ),
-    );
-  }
+    ),
+  );
 
-  Widget _buildOptionTile(DailyChallengeController controller, String optionId, String text) {
-    return Obx(() {
-      final isSelected = controller.selectedOptionId.value == optionId;
-
-      return InkWell(
-        onTap: () => controller.selectOption(optionId),
-        borderRadius: BorderRadius.circular(14),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AptiquColors.tertiary.withValues(alpha: 0.15)
-                : AptiquColors.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: isSelected
-                  ? AptiquColors.tertiary
-                  : AptiquColors.outlineVariant,
-              width: isSelected ? 1.8 : 1.0,
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected ? AptiquColors.tertiary : AptiquColors.surfaceContainerHigh,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  optionId,
-                  style: AptiquTypography.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isSelected ? Colors.black : AptiquColors.onSurface,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  text,
-                  style: AptiquTypography.bodyMedium.copyWith(
-                    color: isSelected ? AptiquColors.onSurface : AptiquColors.onSurfaceVariant,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-
-  Widget _buildExplanationSheet(
+  /// Persistent feedback uses the actual body constraints, excluding app/system bars.
+  Widget _explanation(
     BuildContext context,
-    DailyChallengeController controller,
     DailyChallengeAnswerResultModel result,
-  ) {
-    final isCorrect = result.isCorrect;
-
-    return Container(
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.72),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainerLowest,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border.all(color: AptiquColors.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.6),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Result Header Pill
-          Row(
-            children: [
-              Icon(
-                isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                color: isCorrect ? Colors.green : Colors.red,
-                size: 28,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                isCorrect ? 'Correct! Trick Solved.' : 'Incorrect or Timed Out',
-                style: AptiquTypography.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isCorrect ? Colors.green : Colors.red,
+  ) => Material(
+    elevation: 8,
+    color: context.colors.surface,
+    shape: RoundedRectangleBorder(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      side: BorderSide(color: context.colors.outlineVariant),
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            key: ValueKey('daily-feedback-${result.sequence}'),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AnswerFeedback(
+                  isCorrect: result.isCorrect,
+                  correctAnswer: result.correctAnswer,
+                  mayBeTimeout: true,
                 ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AptiquColors.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(8),
+                const Divider(height: 32),
+                QuestionSolutions(
+                  explanation: result.explanation,
+                  method: result.method,
+                  alternativeExplanation: result.alternativeExplanation,
+                  preferredSolution: result.preferredSolution,
+                  preferredReason: result.preferredReason,
                 ),
-                child: Text(
-                  'Ans: ${result.correctAnswer}',
-                  style: AptiquTypography.labelCaps.copyWith(
-                    color: AptiquColors.tertiary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 18),
-
-          const SizedBox(height: 14),
-
-          // Dual Solutions (Book Method + Alternative Speed Shortcut)
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Solution 1: Book Method
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AptiquColors.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: result.preferredSolution == 'BOOK' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
-                        width: result.preferredSolution == 'BOOK' ? 1.5 : 1,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '📖 Book Method',
-                              style: AptiquTypography.labelMedium.copyWith(
-                                color: AptiquColors.onSurface,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            if (result.preferredSolution == 'BOOK')
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF10B981).withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'AI Preferred',
-                                      style: AptiquTypography.labelSmall.copyWith(
-                                        color: const Color(0xFF10B981),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                        if (result.method.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Formula / Method: ${result.method}',
-                            style: AptiquTypography.bodySmall.copyWith(
-                              color: const Color(0xFF38BDF8),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 6),
-                        Text(
-                          result.explanation.isNotEmpty ? result.explanation : 'Standard textbook derivation.',
-                          style: AptiquTypography.bodySmall.copyWith(
-                            color: AptiquColors.onSurface,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Solution 2: Alternative Speed Shortcut (if available)
-                  if (result.alternativeExplanation != null && result.alternativeExplanation!.trim().isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AptiquColors.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: result.preferredSolution == 'ALTERNATIVE' ? const Color(0xFF10B981) : AptiquColors.outlineVariant,
-                          width: result.preferredSolution == 'ALTERNATIVE' ? 1.5 : 1,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '⚡ Alternative Speed Shortcut',
-                                style: AptiquTypography.labelMedium.copyWith(
-                                  color: AptiquColors.onSurface,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              if (result.preferredSolution == 'ALTERNATIVE')
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF10B981).withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(Icons.auto_awesome, color: Color(0xFF10B981), size: 12),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'AI Preferred',
-                                        style: AptiquTypography.labelSmall.copyWith(
-                                          color: const Color(0xFF10B981),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            result.alternativeExplanation!,
-                            style: AptiquTypography.bodySmall.copyWith(
-                              color: AptiquColors.onSurface,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  // Reason for AI preference
-                  if (result.preferredReason != null && result.preferredReason!.trim().isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFECFDF5),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFA7F3D0)),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.info_outline, color: Color(0xFF047857), size: 16),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              'Why Preferred: ${result.preferredReason}',
-                              style: AptiquTypography.labelSmall.copyWith(
-                                color: const Color(0xFF065F46),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+              ],
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          // Action Button
-          ElevatedButton(
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: AptiquButton(
+            label: result.isComplete ? 'View result' : 'Next question',
             onPressed: () {
+              if (_dialogOpen || _advancing) return;
               if (result.isComplete) {
-                _showCompletionModal(context, controller, result);
+                _completion(context, result);
               } else {
+                _advancing = true;
                 controller.proceedNext(context);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _advancing = false;
+                });
               }
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            child: Text(
-              result.isComplete ? 'FINISH & CLAIM REWARDS' : 'NEXT QUESTION',
-              style: AptiquTypography.labelCaps.copyWith(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.0,
-                color: Colors.white,
-              ),
-            ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 
-  void _showCompletionModal(
+  Future<void> _completion(
     BuildContext context,
-    DailyChallengeController controller,
     DailyChallengeAnswerResultModel result,
-  ) {
-    final isSuccess = result.streakIncremented;
-
-    showDialog(
+  ) async {
+    if (_dialogOpen) return;
+    _dialogOpen = true;
+    await showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AptiquColors.surfaceContainerLowest,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: isSuccess ? AptiquColors.tertiary : Colors.redAccent.withValues(alpha: 0.6),
-            width: 1.5,
-          ),
-        ),
-        title: Column(
-          children: [
-            Icon(
-              isSuccess ? Icons.local_fire_department_rounded : Icons.cancel_outlined,
-              color: isSuccess ? AptiquColors.tertiary : Colors.redAccent,
-              size: 54,
+      builder: (_) => AppearanceTheme(
+        builder: (context) => PopScope(
+          canPop: false,
+          child: AlertDialog(
+            scrollable: true,
+            title: Text(
+              result.streakIncremented
+                  ? 'Daily challenge complete'
+                  : 'Attempt finished',
             ),
-            const SizedBox(height: 12),
-            Text(
-              isSuccess ? 'Daily Challenge Complete!' : 'Challenge Incomplete',
-              style: AptiquTypography.titleMedium.copyWith(
-                fontWeight: FontWeight.w900,
-                color: AptiquColors.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              isSuccess ? 'Streak Increased to' : 'Streak Status',
-              style: AptiquTypography.bodySmall.copyWith(color: AptiquColors.onSurfaceVariant),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              isSuccess ? '${result.streak} DAYS' : '0 DAYS',
-              style: AptiquTypography.headlineLarge.copyWith(
-                color: isSuccess ? AptiquColors.tertiary : Colors.redAccent,
-                fontWeight: FontWeight.w900,
-                fontSize: 34,
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (isSuccess) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildRewardBadge(Icons.bolt_rounded, '+${result.xpAwarded} XP', AptiquColors.primary),
-                  _buildRewardBadge(Icons.monetization_on_rounded, '+${result.coinsAwarded} Coins', AptiquColors.tertiary),
-                ],
-              ),
-            ] else ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.redAccent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  result.streakIncremented
+                      ? Icons.local_fire_department_outlined
+                      : Icons.info_outline,
+                  color: result.streakIncremented
+                      ? context.status.success
+                      : context.colors.onSurfaceVariant,
+                  size: 36,
                 ),
-                child: Text(
-                  'All questions must be answered correctly to maintain your daily streak and earn rewards. Streak has reset to 0.',
-                  style: AptiquTypography.bodySmall.copyWith(
-                    color: AptiquColors.onSurface,
-                    fontSize: 12,
-                    height: 1.35,
-                  ),
-                  textAlign: TextAlign.center,
+                const SizedBox(height: 16),
+                SessionMetrics(
+                  items: [
+                    (
+                      label: 'Correct',
+                      value: '${result.correctCount}/${result.totalQuestions}',
+                    ),
+                    (label: 'Current streak', value: '${result.streak} days'),
+                    (label: 'XP awarded', value: '${result.xpAwarded}'),
+                    (label: 'Coins awarded', value: '${result.coinsAwarded}'),
+                  ],
                 ),
+                const SizedBox(height: 16),
+                Text(
+                  result.streakIncremented
+                      ? 'Your streak increased. Your rewards have been recorded.'
+                      : 'Every question must be correct to increase your streak and earn rewards.',
+                  style: context.type.bodyLarge,
+                ),
+              ],
+            ),
+            actions: [
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Return to daily challenge'),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+    _dialogOpen = false;
+    if (context.mounted) _returnToHub(context);
+  }
+
+  Future<void> _confirmExit(BuildContext context) async {
+    if (_dialogOpen) return;
+    _dialogOpen = true;
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (_) => AppearanceTheme(
+        builder: (context) => AlertDialog(
+          scrollable: true,
+          title: const Text('Leave daily challenge?'),
+          content: const Text(
+            'Your attempt stays open until midnight IST (UTC+5:30). The current timer continues while you are away. Return before the daily cycle ends to resume any remaining questions.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Stay'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Leave'),
+            ),
           ],
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(ctx).pop(); // Close dialog
-              context.pop(); // Pop quiz screen back to hub
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isSuccess ? AptiquColors.tertiary : AptiquColors.surfaceContainerHigh,
-              foregroundColor: isSuccess ? Colors.black : AptiquColors.onSurface,
-              minimumSize: const Size(double.infinity, 44),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: const Text('BACK TO ARENA', style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ],
       ),
     );
+    _dialogOpen = false;
+    if (leave == true && context.mounted) _returnToHub(context);
   }
 
-  Widget _buildRewardBadge(IconData icon, String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 18),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: AptiquTypography.labelCaps.copyWith(color: color, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showExitConfirmationDialog(BuildContext context, DailyChallengeController controller) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AptiquColors.surfaceContainerLowest,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Abandon Challenge?'),
-        content: const Text(
-          'Leaving now will leave this question unanswered. You can resume before midnight UTC to complete your streak.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('STAY'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context.pop();
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AptiquColors.error),
-            child: const Text('LEAVE'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _getDifficultyColor(String diff) {
-    switch (diff.toUpperCase()) {
-      case 'HARD':
-        return Colors.red;
-      case 'MEDIUM':
-        return Colors.orange;
-      case 'EASY':
-      default:
-        return Colors.green;
+  void _returnToHub(BuildContext context) {
+    controller.fetchStatus();
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/daily-streak');
     }
   }
 }

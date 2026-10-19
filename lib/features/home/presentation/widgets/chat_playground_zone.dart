@@ -1,235 +1,123 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:aptiqu/core/theme/aptiqu_colors.dart';
-import 'package:aptiqu/core/theme/aptiqu_typography.dart';
-import 'package:aptiqu/shared/widgets/background/cyber_ambient_background.dart';
+import 'package:aptiqu/core/theme/aptiqu_tokens.dart';
 import 'package:aptiqu/shared/widgets/tutor_thinking_bubble.dart';
 import '../controllers/home_controller.dart';
 import 'question_container_widget.dart';
 
-/// ZONE 2: CENTER 76% SECTION - CONVERSATIONAL AI PLAYGROUND
-/// The AI naturally leads the conversation and embeds question/input controls
-/// directly into the dialogue stream. Persistent buttons are removed.
+/// The existing embedded conversation, with reading-focused pilot presentation.
 class ChatPlaygroundZone extends StatelessWidget {
   final double height;
-
-  const ChatPlaygroundZone({
-    super.key,
-    required this.height,
-  });
+  const ChatPlaygroundZone({super.key, required this.height});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
-
-    return SizedBox(
-      height: height,
-      child: CyberAmbientBackground(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
-          child: Column(
-            children: [
-              // Floating Playing Header Bar with Exit/Pause
-              _buildPlayingHeaderBar(context, controller),
-
-              // Scrollable Chat Messages Area
-              Expanded(
-                child: Obx(() {
-                  return ListView.builder(
-                    controller: controller.scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: controller.messages.length,
-                    itemBuilder: (context, index) {
-                      final msg = controller.messages[index];
-
-                      // 1. Topic Heading Divider
-                      if (msg.isTopicDivider) {
-                        return _buildTopicDivider(msg.topicTitle ?? 'TOPIC');
-                      }
-
-                      final isTargeted = msg.id == controller.targetedMessageId ||
-                          (controller.targetedMessageId == null &&
-                              index == controller.messages.length - 1);
-
-                      // 2. AI Message Bubble
-                      if (msg.sender == MessageSender.ai) {
-                        return KeyedSubtree(
-                          key: isTargeted
-                              ? controller.latestAiMessageKey
-                              : ValueKey(msg.id),
-                          child: _buildAiMessageItem(context, controller, msg),
-                        );
-                      }
-
-                      // 3. User Message Bubble
-                      return KeyedSubtree(
-                        key: ValueKey(msg.id),
-                        child: _buildUserMessageItem(msg),
-                      );
-                    },
-                  );
-                }),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Floating Playing header bar matching the Topics screen subjects header style
-  Widget _buildPlayingHeaderBar(BuildContext context, HomeController controller) {
     return Obx(() {
-      final currentSubtopic = controller.activeScriptTitle.value.isNotEmpty &&
-              controller.activeScriptTitle.value != 'Playing'
-          ? controller.activeScriptTitle.value
-          : (controller.currentSession.value?.scriptTitle ??
-              controller.subjectLearningMap.value?.subjectName ??
-              'Lesson');
-
-      return Container(
-        height: 46.0,
-        width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-        decoration: BoxDecoration(
-          color: AptiquColors.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AptiquColors.outlineVariant,
-            width: 1.0,
-          ),
-        ),
-        child: Row(
-          children: [
-            // Left icon: Matching bottom nav play icon
-            const Icon(
-              Icons.play_circle_filled_rounded,
-              size: 16,
-              color: AptiquColors.primary,
-            ),
-            const SizedBox(width: 6),
-
-            // "PLAYING" label
-            Text(
-              'PLAYING',
-              style: AptiquTypography.labelCapsBold.copyWith(
-                color: AptiquColors.primary,
-                fontSize: 10,
-                letterSpacing: 1.0,
-              ),
-            ),
-            const SizedBox(width: 10),
-
-            // Vertical divider
-            Container(
-              width: 1,
-              height: 16,
-              color: AptiquColors.outlineVariant,
-            ),
-            const SizedBox(width: 10),
-
-            // Subtopic name being played
-            Expanded(
-              child: Text(
-                currentSubtopic,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AptiquTypography.bodySmall.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.5,
-                ),
-              ),
-            ),
-
-            const SizedBox(width: 8),
-
-            // Circular Red 'X' Exit Button on top right
-            InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () => controller.exitToHome(),
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AptiquColors.error.withValues(alpha: 0.16),
-                  border: Border.all(
-                    color: AptiquColors.error.withValues(alpha: 0.5),
-                    width: 1.0,
-                  ),
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.close_rounded,
-                    size: 14,
-                    color: AptiquColors.error,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  /// Topic Divider acting as a heading with topic name at center
-  Widget _buildTopicDivider(String topicTitle) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 18.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 1,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    AptiquColors.outlineVariant.withValues(alpha: 0.8),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 220),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: AptiquColors.primaryContainer.withValues(alpha: 0.4),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AptiquColors.primaryContainer.withValues(alpha: 0.15),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+      final title = controller.activeScriptTitle.value;
+      final lessonTitle = title.isNotEmpty && title != 'Playing'
+          ? title
+          : controller.currentSession.value?.scriptTitle ?? 'Lesson';
+      final fullscreen = controller.isFullScreen.value;
+      final compact = height < 240 * MediaQuery.textScalerOf(context).scale(1);
+      return SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
                 children: [
-                  const Icon(
-                    Icons.school_rounded,
-                    size: 13,
-                    color: AptiquColors.secondary,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (!compact && lessonTitle != 'Lesson')
+                                Text(
+                                  'Lesson',
+                                  style: context.type.labelMedium!.copyWith(
+                                    color: context.colors.primary,
+                                  ),
+                                ),
+                              Text(
+                                compact ? 'Lesson' : lessonTitle,
+                                style: context.type.titleMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: fullscreen
+                              ? 'Exit fullscreen lesson'
+                              : 'Fullscreen lesson',
+                          onPressed: controller.toggleFullScreen,
+                          icon: Icon(
+                            fullscreen
+                                ? Icons.fullscreen_exit_rounded
+                                : Icons.fullscreen_rounded,
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Close lesson',
+                          onPressed: controller.exitToHome,
+                          icon: const Icon(Icons.close_rounded),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      topicTitle,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: AptiquTypography.labelCapsBold.copyWith(
-                        fontSize: 10,
-                        color: AptiquColors.secondary,
-                        letterSpacing: 1.0,
+                  Expanded(
+                    child: Obx(
+                      () => ListView.builder(
+                        key: const ValueKey('embedded-conversation'),
+                        controller: controller.scrollController,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        // A stable title slot keeps message indexes unchanged when
+                        // fullscreen or text scaling changes the header layout.
+                        itemCount: controller.messages.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return compact && lessonTitle != 'Lesson'
+                                ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: Semantics(
+                                      header: true,
+                                      child: Text(
+                                        lessonTitle,
+                                        style: context.type.titleMedium,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink();
+                          }
+                          final messageIndex = index - 1;
+                          final msg = controller.messages[messageIndex];
+                          if (msg.isTopicDivider) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                msg.topicTitle ?? 'Topic',
+                                style: context.type.titleMedium,
+                              ),
+                            );
+                          }
+                          final targeted =
+                              msg.id == controller.targetedMessageId ||
+                              (controller.targetedMessageId == null &&
+                                  messageIndex ==
+                                      controller.messages.length - 1);
+                          return KeyedSubtree(
+                            key: msg.sender == MessageSender.ai && targeted
+                                ? controller.latestAiMessageKey
+                                : ValueKey(msg.id),
+                            child: msg.sender == MessageSender.ai
+                                ? _ai(context, controller, msg)
+                                : _user(context, msg),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -237,278 +125,123 @@ class ChatPlaygroundZone extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Container(
-              height: 1,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AptiquColors.outlineVariant.withValues(alpha: 0.8),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
-  /// AI Tutor Message Bubble (Left Aligned with Mascot Avatar & AptiQu branding)
-  Widget _buildAiMessageItem(
+  Widget _ai(
     BuildContext context,
     HomeController controller,
     ChatMessageModel msg,
   ) {
     if (msg.isThinking) return const TutorThinkingBubble(horizontalPadding: 0);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // AI Mascot Head Icon
           Container(
-            width: 36,
-            height: 36,
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AptiquColors.surface,
-              border: Border.all(
-                color: AptiquColors.primaryContainer.withValues(alpha: 0.8),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AptiquColors.primaryContainer.withValues(alpha: 0.4),
-                  blurRadius: 12,
-                ),
-              ],
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.school_rounded,
-                size: 20,
-                color: AptiquColors.secondary,
+              color: context.colors.surface,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(4),
+                topRight: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
               ),
             ),
-          ),
-          const SizedBox(width: 10),
-
-          // Message & Dynamic Question Container
-          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Text Bubble Container
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AptiquColors.surfaceContainer.withValues(alpha: 0.95),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(4),
-                      topRight: Radius.circular(18),
-                      bottomLeft: Radius.circular(18),
-                      bottomRight: Radius.circular(18),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.school_outlined,
+                      size: 18,
+                      color: context.colors.primary,
                     ),
-                    border: Border.all(
-                      color: AptiquColors.outlineVariant.withValues(alpha: 0.8),
+                    const SizedBox(width: 8),
+                    Text(
+                      'AptiQu',
+                      style: context.type.labelMedium!.copyWith(
+                        color: context.colors.primary,
+                      ),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+                    const Spacer(),
+                    Text(
+                      msg.time,
+                      style: context.type.bodySmall!.copyWith(
+                        color: context.colors.onSurfaceVariant,
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // AI Header: Dot + AptiQu Name + Timestamp
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: AptiquColors.secondary,
-                                  shape: BoxShape.circle,
-                                  boxShadow: AptiquColors.secondaryGlow,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                'AptiQu', // Updated as requested: instead of AERO AI TUTOR
-                                style: AptiquTypography.labelCapsBold.copyWith(
-                                  fontSize: 10.5,
-                                  color: AptiquColors.secondary,
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Flexible(
-                            child: Text(
-                              msg.time,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: AptiquTypography.metricSm.copyWith(
-                                fontSize: 10,
-                                color: AptiquColors.onSurfaceVariant
-                                    .withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        msg.text,
-                        style: AptiquTypography.bodyMd.copyWith(
-                          fontSize: 13.5,
-                          height: 1.45,
-                          color: AptiquColors.onSurface,
-                        ),
-                      ),
-                      // Embedded Continue Button directly within the same message bubble
-                      if (msg.hasContinueAction && !msg.isContinueCompleted) ...[
-                        const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 42,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AptiquColors.buttonDarkBg,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(
-                                  color: AptiquColors.buttonDarkBorder,
-                                  width: 1.2,
-                                ),
-                              ),
-                              elevation: 2,
-                              padding: EdgeInsets.zero,
-                            ),
-                            onPressed: controller.isSubmittingAction.value
-                                ? null
-                                : () => controller.handleContinueAction(msg.id),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Continue',
-                                  style: AptiquTypography.headlineSm.copyWith(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                const Icon(
-                                  Icons.arrow_forward_rounded,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-
-                // Dynamic Interactive Question Container (One unified widget for select, text, voice, scan)
-                if (msg.question != null) ...[
-                  QuestionContainerWidget(
-                    messageId: msg.id,
-                    question: msg.question!,
-                    controller: controller,
+                const SizedBox(height: 12),
+                Text(msg.text, style: context.type.bodyLarge),
+                if (msg.hasContinueAction && !msg.isContinueCompleted) ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: controller.isSubmittingAction.value
+                          ? null
+                          : () => controller.handleContinueAction(msg.id),
+                      icon: const Icon(Icons.arrow_forward_rounded, size: 20),
+                      label: const Text('Continue'),
+                    ),
                   ),
                 ],
-
-                /*
-                // =========================================================================
-                // COMMENTED OUT: Old hardcoded speed deduction teaser container
-                // =========================================================================
-                // _buildOldSpeedDeductionTeaserCard(context, controller, msg),
-                */
               ],
             ),
           ),
+          if (msg.question != null)
+            QuestionContainerWidget(
+              messageId: msg.id,
+              question: msg.question!,
+              controller: controller,
+            ),
         ],
       ),
     );
   }
 
-  /// User Message Bubble (Right Aligned, Gradient, No Avatar)
-  Widget _buildUserMessageItem(ChatMessageModel msg) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0, left: 40.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AptiquColors.primaryContainer, AptiquColors.primaryDark],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(18),
-              topRight: Radius.circular(4),
-              bottomLeft: Radius.circular(18),
-              bottomRight: Radius.circular(18),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AptiquColors.primaryContainer.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                msg.text,
-                style: AptiquTypography.bodyMd.copyWith(
-                  color: Colors.white,
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 3),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    msg.time,
-                    style: AptiquTypography.metricSm.copyWith(
-                      color: AptiquColors.primary.withValues(alpha: 0.8),
-                      fontSize: 9.5,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.done_all_rounded,
-                    size: 13,
-                    color: AptiquColors.primary,
-                  ),
-                ],
-              ),
-            ],
+  Widget _user(BuildContext context, ChatMessageModel msg) => Padding(
+    padding: const EdgeInsets.only(bottom: 12, left: 32),
+    child: Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: context.colors.primaryContainer,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(4),
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
           ),
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              msg.text,
+              style: context.type.bodyLarge!.copyWith(
+                color: context.colors.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              msg.time,
+              style: context.type.bodySmall!.copyWith(
+                color: context.colors.onPrimaryContainer,
+              ),
+            ),
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
 }

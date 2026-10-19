@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:aptiqu/core/theme/aptiqu_colors.dart';
-import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../controllers/home_controller.dart';
 import '../../../social/social_controller.dart';
 
@@ -10,6 +8,42 @@ class BottomNavZone extends StatelessWidget {
   final double height;
 
   const BottomNavZone({super.key, required this.height});
+
+  static const labels = ['Home', 'Topics', 'Practice', 'Ranked', 'Friends'];
+  static bool _twoRows(BuildContext context, double width) {
+    if (MediaQuery.textScalerOf(context).scale(12) <= 18) return false;
+    final style = Theme.of(
+      context,
+    ).textTheme.labelMedium!.copyWith(fontSize: 12, letterSpacing: 0);
+    return labels.any((label) {
+      final painter = TextPainter(
+        text: TextSpan(text: label, style: style),
+        textScaler: MediaQuery.textScalerOf(context),
+        textDirection: Directionality.of(context),
+      )..layout();
+      final exceeds = painter.width > width / 5;
+      painter.dispose();
+      return exceeds;
+    });
+  }
+
+  static double preferredHeight(BuildContext context, double width) {
+    final style = Theme.of(
+      context,
+    ).textTheme.labelMedium!.copyWith(fontSize: 12, letterSpacing: 0);
+    final twoRows = _twoRows(context, width);
+    var labelHeight = 0.0;
+    for (final label in labels) {
+      final painter = TextPainter(
+        text: TextSpan(text: label, style: style),
+        textScaler: MediaQuery.textScalerOf(context),
+        textDirection: Directionality.of(context),
+      )..layout(maxWidth: width / (twoRows ? 3 : 5));
+      if (painter.height > labelHeight) labelHeight = painter.height;
+      painter.dispose();
+    }
+    return ((labelHeight + 52) * (twoRows ? 2 : 1)).clamp(72, double.infinity);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,85 +54,111 @@ class BottomNavZone extends StatelessWidget {
 
       return Container(
         height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         decoration: BoxDecoration(
-          color: AptiquColors.surfaceDim.withValues(alpha: 0.96),
-          border: const Border(
-            top: BorderSide(color: AptiquColors.outlineVariant, width: 1.0),
+          color: Theme.of(context).colorScheme.surface,
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.5),
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            // 1. HOME
-            _buildNavItem(
-              index: 0,
-              selectedIndex: selectedIndex,
-              label: 'HOME',
-              icon: Icons.home_rounded,
-              onTap: () => controller.selectHomeTab(),
-            ),
+        child: _navigationLayout(context, [
+          // 1. HOME
+          _buildNavItem(
+            context,
+            index: 0,
+            selectedIndex: selectedIndex,
+            label: 'Home',
+            icon: Icons.home_rounded,
+            onTap: () => controller.selectHomeTab(),
+          ),
 
-            // 2. TOPICS
-            _buildNavItem(
-              index: 1,
-              selectedIndex: selectedIndex,
-              label: 'TOPICS',
-              icon: Icons.hub_rounded,
-              onTap: () => controller.selectTopicsTab(),
-            ),
+          // 2. TOPICS
+          _buildNavItem(
+            context,
+            index: 1,
+            selectedIndex: selectedIndex,
+            label: 'Topics',
+            icon: Icons.hub_rounded,
+            onTap: () => controller.selectTopicsTab(),
+          ),
 
-            // 3. PRACTICE
-            _buildNavItem(
-              index: 2,
-              selectedIndex: selectedIndex,
-              label: 'PRACTICE',
-              icon: Icons.sports_esports_rounded,
-              onTap: () {
-                controller.isFullScreen.value = false;
-                controller.selectedNavIndex.value = 2;
-              },
-            ),
+          // 3. PRACTICE
+          _buildNavItem(
+            context,
+            index: 2,
+            selectedIndex: selectedIndex,
+            label: 'Practice',
+            icon: Icons.sports_esports_rounded,
+            onTap: () {
+              controller.isFullScreen.value = false;
+              controller.selectedNavIndex.value = 2;
+            },
+          ),
 
-            // 4. RANKED (with cyan notification badge)
-            _buildNavItem(
-              index: 3,
-              selectedIndex: selectedIndex,
-              label: 'RANKED',
-              icon: Icons.emoji_events_rounded,
-              hasBadge: false,
-              onTap: () {
-                controller.isFullScreen.value = false;
-                controller.selectedNavIndex.value = 3;
-              },
-            ),
-            _buildNavItem(
-              index: 4,
-              selectedIndex: selectedIndex,
-              label: 'FRIENDS',
-              icon: Icons.people_rounded,
-              hasBadge:
-                  Get.isRegistered<SocialController>() &&
-                  Get.find<SocialController>().friendInvites.isNotEmpty,
-              onTap: () {
-                controller.isFullScreen.value = false;
-                controller.selectedNavIndex.value = 4;
-              },
-            ),
-          ],
-        ),
+          // 4. RANKED (with cyan notification badge)
+          _buildNavItem(
+            context,
+            index: 3,
+            selectedIndex: selectedIndex,
+            label: 'Ranked',
+            icon: Icons.emoji_events_rounded,
+            hasBadge: false,
+            onTap: () {
+              controller.isFullScreen.value = false;
+              controller.selectedNavIndex.value = 3;
+            },
+          ),
+          _buildNavItem(
+            context,
+            index: 4,
+            selectedIndex: selectedIndex,
+            label: 'Friends',
+            icon: Icons.people_rounded,
+            hasBadge:
+                Get.isRegistered<SocialController>() &&
+                Get.find<SocialController>().friendInvites.isNotEmpty,
+            onTap: () {
+              controller.isFullScreen.value = false;
+              controller.selectedNavIndex.value = 4;
+            },
+          ),
+        ]),
       );
     });
   }
 
-  Widget _buildNavItem({
+  Widget _navigationLayout(BuildContext context, List<Widget> items) =>
+      LayoutBuilder(
+        builder: (context, constraints) {
+          if (_twoRows(context, constraints.maxWidth)) {
+            return Column(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      for (final item in items.take(3)) Expanded(child: item),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      for (final item in items.skip(3)) Expanded(child: item),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }
+          return Row(
+            children: [for (final item in items) Expanded(child: item)],
+          );
+        },
+      );
+
+  Widget _buildNavItem(
+    BuildContext context, {
     required int index,
     required int selectedIndex,
     required String label,
@@ -106,108 +166,47 @@ class BottomNavZone extends StatelessWidget {
     required VoidCallback onTap,
     bool hasBadge = false,
   }) {
-    final isActive = index == selectedIndex;
-
+    final active = index == selectedIndex;
+    final colors = Theme.of(context).colorScheme;
     return Semantics(
       label: hasBadge ? '$label, pending friend requests' : label,
       button: true,
-      selected: isActive,
+      selected: active,
       excludeSemantics: true,
       onTap: onTap,
       child: InkWell(
         onTap: onTap,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        child: SizedBox(
-          width: 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Glowing Top Active Indicator Bar
-              Container(
-                height: 2.5,
-                width: 24,
-                margin: const EdgeInsets.only(bottom: 4),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? AptiquColors.primaryContainer
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(2),
-                  boxShadow: isActive ? AptiquColors.primaryGlow : null,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: active ? colors.primaryContainer : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Badge(
+                isLabelVisible: hasBadge,
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: active
+                      ? colors.onPrimaryContainer
+                      : colors.onSurfaceVariant,
                 ),
               ),
-
-              // Icon Container with Cyber Pill Glow on Active
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    width: 38,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? AptiquColors.primaryContainer.withValues(
-                              alpha: 0.22,
-                            )
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: isActive
-                          ? [
-                              BoxShadow(
-                                color: AptiquColors.primaryContainer.withValues(
-                                  alpha: 0.3,
-                                ),
-                                blurRadius: 10,
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Icon(
-                      icon,
-                      size: 21,
-                      color: isActive
-                          ? AptiquColors.primary
-                          : AptiquColors.onSurfaceVariant,
-                    ),
-                  ),
-
-                  // Pending friend requests use a quiet red notification dot.
-                  if (hasBadge)
-                    Positioned(
-                      top: -1,
-                      right: 0,
-                      child: Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                          color: AptiquColors.error,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AptiquColors.surfaceDim,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                fontSize: 12,
+                letterSpacing: 0,
+                color: active ? colors.primary : colors.onSurfaceVariant,
               ),
-              const SizedBox(height: 3),
-
-              // Text Label
-              Text(
-                label,
-                style: AptiquTypography.labelCaps.copyWith(
-                  fontSize: 9.5,
-                  color: isActive
-                      ? AptiquColors.primary
-                      : AptiquColors.onSurfaceVariant,
-                  fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

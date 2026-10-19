@@ -129,8 +129,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 1000));
 
       // 1. Verify Fixed Minimal Subjects Bar
-      expect(find.text('SUBJECTS'), findsOneWidget);
-      expect(find.text('Quantitative Aptitude'), findsOneWidget);
+      expect(find.byType(ChoiceChip), findsOneWidget);
+      expect(find.textContaining('Quantitative Aptitude'), findsOneWidget);
 
       // 2. Verify Topics are rendered
       expect(find.text('Basic Ratios'), findsOneWidget);
@@ -151,9 +151,16 @@ void main() {
       expect(find.text('Start'), findsNWidgets(2));
 
       expect(find.byType(BottomSheet), findsOneWidget);
-      await tester.tap(find.byTooltip('Close topic details'));
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const ValueKey('topic-actions')),
+          matching: find.text('Start'),
+        ),
+      );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 350));
+
+      expect(tappedTopic?.roadmapStepId, 'ga-qa-02');
 
       // 6. Tap completed topic to inspect Replay Topic button
       await tester.tap(find.text('Basic Ratios'));
@@ -176,6 +183,25 @@ void main() {
       expect(find.byIcon(Icons.fullscreen_rounded), findsOneWidget);
       await tester.tap(find.byIcon(Icons.fullscreen_rounded));
       expect(fullscreenToggled, isTrue);
+
+      // The retired card's unavailable state is checked on the real map/list.
+      await tester.tap(find.text('List'));
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.ensureVisible(find.text('Profit & Loss Formulas'));
+      await tester.tap(find.text('Profit & Loss Formulas'));
+      await tester.pump(const Duration(milliseconds: 350));
+      expect(
+        find.text('Lessons for this topic are coming soon.'),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('topic-actions')),
+          matching: find.text('Start'),
+        ),
+        findsNothing,
+      );
+      expect(tappedTopic?.roadmapStepId, 'ga-qa-01');
     },
   );
 }

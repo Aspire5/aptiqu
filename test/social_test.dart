@@ -1,15 +1,13 @@
+import 'package:aptiqu/core/theme/appearance_controller.dart';
+import 'support/presentation_fonts.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-// ignore: implementation_imports
-import 'package:google_fonts/src/google_fonts_base.dart' as font_test;
 import 'package:aptiqu/core/network/dio_client.dart';
 import 'package:aptiqu/core/theme/aptiqu_theme.dart';
 import 'package:aptiqu/features/social/social_controller.dart';
@@ -24,7 +22,6 @@ import 'package:aptiqu/features/home/presentation/widgets/bottom_nav_zone.dart';
 import 'package:aptiqu/features/home/presentation/controllers/home_controller.dart';
 import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
 import 'home_navigation_test.dart' show LocalHome, LocalAuth;
-import 'practice_catalog_test.dart' show TestFontManifest;
 
 class FakeSocial extends SocialController {
   @override
@@ -184,16 +181,8 @@ void main() {
   setUp(() {
     Get.testMode = true;
     FlutterSecureStorage.setMockInitialValues({});
-    GoogleFonts.config.allowRuntimeFetching = false;
-    font_test.assetManifest = TestFontManifest();
-    final bytes = File('test/fonts/Outfit.ttf').readAsBytesSync();
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMessageHandler('flutter/assets', (message) async {
-          final key = utf8.decode(message!.buffer.asUint8List());
-          return key.startsWith('test/fonts/')
-              ? ByteData.sublistView(bytes)
-              : null;
-        });
+    useProductionFontFixtures();
+    Get.put(AppearanceController()).mode.value = ThemeMode.dark;
     final client = DioClient(baseUrl: 'http://fixture.invalid/api/v1');
     adapter = SocialAdapter();
     client.dio.httpClientAdapter = adapter;
@@ -235,29 +224,9 @@ void main() {
         home: screen,
       ),
     );
-    await tester.runAsync(() async {
-      await GoogleFonts.pendingFonts();
-      final bytes = ByteData.sublistView(
-        File('test/fonts/Outfit.ttf').readAsBytesSync(),
-      );
-      await (FontLoader('Roboto')..addFont(Future.value(bytes))).load();
-      var directory = File(Platform.resolvedExecutable).parent;
-      for (var i = 0; i < 8; i++) {
-        final icons = File(
-          '${directory.path}/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
-        );
-        if (icons.existsSync()) {
-          await (FontLoader('MaterialIcons')..addFont(
-                Future.value(ByteData.sublistView(icons.readAsBytesSync())),
-              ))
-              .load();
-          break;
-        }
-        directory = directory.parent;
-      }
-    });
+    await loadProductionFontFixtures(tester);
     await tester.pumpAndSettle();
-    await tester.runAsync(() => GoogleFonts.pendingFonts());
+    await loadProductionFontFixtures(tester);
     await tester.pumpAndSettle();
   }
 
@@ -270,7 +239,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       tester.widget<TextField>(find.byType(TextField)).decoration!.labelText,
-      isNull,
+      'Search learners',
     );
     expect(tester.getSize(find.byType(LearnerTile)).height, lessThan(110));
     final semantics = tester.ensureSemantics();
@@ -298,7 +267,7 @@ void main() {
       expect(find.byType(FriendRequestsScreen), findsOneWidget);
       expect(find.byType(AlertDialog), findsNothing);
       expect(find.text('1 pending'), findsOneWidget);
-      await tester.runAsync(() => GoogleFonts.pendingFonts());
+      await loadProductionFontFixtures(tester);
       await tester.pumpAndSettle();
       expect(
         tester.getSize(find.byKey(const ValueKey('accept-request'))).width,
@@ -313,7 +282,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('accept-request')), findsOneWidget);
       expect(find.byKey(const ValueKey('reject-request')), findsOneWidget);
-      await tester.runAsync(() => GoogleFonts.pendingFonts());
+      await loadProductionFontFixtures(tester);
       await tester.pumpAndSettle();
       await expectLater(
         find.byType(Scaffold).last,
@@ -431,19 +400,19 @@ void main() {
     await phone(tester, const Scaffold(body: BottomNavZone(height: 84)));
     final social = Get.find<SocialController>();
     expect(
-      find.bySemanticsLabel('FRIENDS, pending friend requests'),
+      find.bySemanticsLabel('Friends, pending friend requests'),
       findsNothing,
     );
     social.friendInvites.assignAll([invitation()]);
     await tester.pumpAndSettle();
     expect(
-      find.bySemanticsLabel('FRIENDS, pending friend requests'),
+      find.bySemanticsLabel('Friends, pending friend requests'),
       findsOneWidget,
     );
     social.friendInvites.clear();
     await tester.pumpAndSettle();
     expect(
-      find.bySemanticsLabel('FRIENDS, pending friend requests'),
+      find.bySemanticsLabel('Friends, pending friend requests'),
       findsNothing,
     );
   });
@@ -596,7 +565,7 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       await tester.pumpAndSettle();
       expect(result, false);
-      expect(find.text('Aptitude duel'), findsNothing);
+      expect(find.text('Duel invitation'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

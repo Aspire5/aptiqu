@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../shared/widgets/indicators/app_loader.dart';
+import '../../core/theme/appearance_theme.dart';
+import '../../shared/widgets/feedback/app_state_view.dart';
+import '../../shared/widgets/questions/question_presentation.dart';
 import '../home/models/home_dashboard_model.dart';
 import 'social_api.dart';
 import 'social_controller.dart';
@@ -78,45 +80,58 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
         DateFormat('yyyy-MM-dd').format(
           DateTime.now().toUtc().add(const Duration(hours: 5, minutes: 30)),
         );
-    return Scaffold(
-      appBar: const SocialPageAppBar(title: 'Learner profile', centered: true),
-      body: p == null
-          ? Center(
-              child: error == null
-                  ? const AppLoader()
-                  : TextButton(onPressed: load, child: Text('$error Retry')),
-            )
-          : RefreshIndicator(
-              onRefresh: load,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  if (error != null)
-                    TextButton(onPressed: load, child: Text('$error Retry')),
-                  LearnerProfileContent(
-                    person: p,
-                    actions: FriendshipActions(
+    return AppearanceTheme(
+      builder: (context) => Scaffold(
+        appBar: SocialPageAppBar(
+          title: 'Learner profile',
+          toolbarHeight: SocialPageAppBar.height(
+            context,
+            title: 'Learner profile',
+          ),
+        ),
+        body: p == null
+            ? SingleChildScrollView(
+                child: AppStateView(
+                  title: error == null
+                      ? 'Loading learner profile'
+                      : 'Could not load this profile',
+                  loading: error == null,
+                  actionLabel: error == null ? null : 'Retry',
+                  onAction: error == null ? null : load,
+                ),
+              )
+            : RefreshIndicator(
+                onRefresh: load,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    if (error != null)
+                      SessionNotice(message: error!, onRetry: load),
+                    LearnerProfileContent(
                       person: p,
-                      allowRemove: true,
-                      fullWidth: true,
-                      onChanged: load,
+                      actions: FriendshipActions(
+                        person: p,
+                        allowRemove: true,
+                        fullWidth: true,
+                        onChanged: load,
+                      ),
+                      activity: LearnerActivityWindow(
+                        key: ValueKey('${widget.id}:$today'),
+                        id: widget.id,
+                        today: today,
+                        days: [
+                          for (final row in p['activity'])
+                            HomeActivityDay.fromJson(
+                              Map<String, dynamic>.from(row),
+                            ),
+                        ],
+                      ),
                     ),
-                    activity: LearnerActivityWindow(
-                      key: ValueKey('${widget.id}:$today'),
-                      id: widget.id,
-                      today: today,
-                      days: [
-                        for (final row in p['activity'])
-                          HomeActivityDay.fromJson(
-                            Map<String, dynamic>.from(row),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

@@ -1,8 +1,10 @@
-import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/theme/aptiqu_colors.dart';
-import '../../../core/theme/aptiqu_typography.dart';
+import '../../../core/theme/aptiqu_tokens.dart';
+import '../../../shared/widgets/buttons/aptiqu_button.dart';
+import '../../../shared/widgets/feedback/app_state_view.dart';
+import '../../../shared/widgets/layout/text_fit.dart';
+import '../../../shared/widgets/questions/question_presentation.dart';
 import '../controllers/practice_catalog_controller.dart';
 
 class PracticeCatalogView extends StatelessWidget {
@@ -13,688 +15,519 @@ class PracticeCatalogView extends StatelessWidget {
     final c = Get.isRegistered<PracticeCatalogController>()
         ? Get.find<PracticeCatalogController>()
         : Get.put(PracticeCatalogController());
-    return Obx(() {
-      if (c.isLoading.value) {
-        return const Center(child: AppLoader());
-      }
-      if (c.errorMessage.isNotEmpty) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+    return LayoutBuilder(
+      builder: (context, box) => Obx(() {
+        final history = c.showHistory.value;
+        final busy = c.isStartingSession.value || c.isReplaying.value;
+        final custom = c.selectionMode.value == PracticeSelectionMode.specific;
+        final compact =
+            box.maxHeight < 240 * MediaQuery.textScalerOf(context).scale(1);
+        final header = _header(context, c, history, busy);
+        final action = !history && !c.isLoading.value && c.errorMessage.isEmpty
+            ? _action(context, c, busy, custom)
+            : null;
+        return PopScope(
+          canPop: !history,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && history) {
+              c.showHistory.value = false;
+            }
+          },
+          child: ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(c.errorMessage.value, textAlign: TextAlign.center),
-                TextButton(
-                  onPressed: c.fetchLiveTopics,
-                  child: const Text('Try again'),
+                if (!compact) header,
+                Expanded(
+                  child: history
+                      ? _history(context, c, header: compact ? header : null)
+                      : _setup(
+                          context,
+                          c,
+                          busy,
+                          custom,
+                          header: compact ? header : null,
+                          action: compact ? action : null,
+                        ),
                 ),
+                if (!compact && action != null) action,
               ],
             ),
           ),
         );
-      }
-      final custom = c.selectionMode.value == PracticeSelectionMode.specific;
-      final busy = c.isStartingSession.value || c.isReplaying.value;
-      return ColoredBox(
-        color: AptiquColors.surfaceDim,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Row(
-                children: [
-                  if (c.showHistory.value)
-                    IconButton(
-                      tooltip: 'Back to practice',
-                      onPressed: () => c.showHistory.value = false,
-                      icon: const Icon(Icons.arrow_back_rounded),
-                    ),
-                  const Icon(Icons.bolt_rounded, color: AptiquColors.primary),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      c.showHistory.value
-                          ? 'History & Replays'
-                          : 'Practice Session',
-                      style: AptiquTypography.titleMedium,
-                    ),
-                  ),
-                  if (!c.showHistory.value)
-                    IconButton(
-                      tooltip: 'History & replays',
-                      onPressed: busy
-                          ? null
-                          : () {
-                              c.showHistory.value = true;
-                              c.fetchHistory();
-                            },
-                      icon: const Icon(Icons.history_rounded),
-                    ),
-                ],
-              ),
-            ),
-            if (!c.showHistory.value)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SegmentedButton<PracticeSelectionMode>(
-                    showSelectedIcon: false,
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.resolveWith(
-                        (states) => states.contains(WidgetState.selected)
-                            ? AptiquColors.surfaceContainerHigh
-                            : AptiquColors.surfaceContainerLowest,
-                      ),
-                      foregroundColor: const WidgetStatePropertyAll(
-                        AptiquColors.onSurface,
-                      ),
-                      side: const WidgetStatePropertyAll(
-                        BorderSide(color: AptiquColors.outlineVariant),
-                      ),
-                    ),
-                    segments: const [
-                      ButtonSegment(
-                        value: PracticeSelectionMode.random,
-                        icon: Icon(Icons.shuffle_rounded),
-                        label: Text('Random'),
-                      ),
-                      ButtonSegment(
-                        value: PracticeSelectionMode.specific,
-                        icon: Icon(Icons.tune_rounded),
-                        label: Text('Custom'),
-                      ),
-                    ],
-                    selected: {c.selectionMode.value},
-                    onSelectionChanged: busy
-                        ? null
-                        : (value) => c.selectionMode.value = value.first,
-                  ),
-                ),
-              ),
-            Expanded(
-              child: c.showHistory.value
-                  ? _buildHistoryMode(context, c)
-                  : ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
-                        _card(
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: AptiquColors.primary.withValues(
-                                        alpha: .12,
-                                      ),
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Icon(
-                                      custom
-                                          ? Icons.track_changes_rounded
-                                          : Icons.shuffle_rounded,
-                                      color: AptiquColors.primary,
-                                      size: 32,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '10 questions. One session.',
-                                          style: AptiquTypography.titleMedium,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          custom
-                                              ? 'Build your own mix.'
-                                              : 'Any topic. Any difficulty.',
-                                          style: AptiquTypography.bodySmall,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (!custom) const SizedBox(height: 18),
-                              if (!custom)
-                                Wrap(
-                                  spacing: 5,
-                                  runSpacing: 5,
-                                  children: List.generate(
-                                    10,
-                                    (i) => Container(
-                                      width: 20,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        color: AptiquColors.primary.withValues(
-                                          alpha: .25,
-                                        ),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              if (!custom) const SizedBox(height: 12),
-                              if (!custom)
-                                Text(
-                                  'Fresh questions first. A new chance to improve.',
-                                  style: AptiquTypography.bodySmall.copyWith(
-                                    color: AptiquColors.onSurfaceVariant,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        _card(
-                          Column(
-                            children: [
-                              SwitchListTile.adaptive(
-                                title: const Text('Friendly duel'),
-                                subtitle: const Text(
-                                  '1v1 with a friend · 10 XP each when both finish',
-                                ),
-                                value: c.friendlyDuel.value,
-                                onChanged: busy
-                                    ? null
-                                    : (value) => c.friendlyDuel.value = value,
-                              ),
-                              SwitchListTile.adaptive(
-                                activeThumbColor: AptiquColors.primary,
-                                activeTrackColor: AptiquColors.primaryContainer
-                                    .withValues(alpha: .35),
-                                contentPadding: EdgeInsets.zero,
-                                secondary: const Icon(
-                                  Icons.auto_awesome_rounded,
-                                  color: AptiquColors.primary,
-                                ),
-                                title: const Text('Smart AI Picks'),
-                                subtitle: Text(
-                                  c.friendlyDuel.value
-                                      ? '5 questions from each player’s weaker topics.'
-                                      : 'Focus on patterns you find difficult.',
-                                ),
-                                value: c.smartPicks.value,
-                                onChanged: busy
-                                    ? null
-                                    : (value) => c.smartPicks.value = value,
-                              ),
-                              const Divider(height: 20),
-                              SwitchListTile.adaptive(
-                                contentPadding: EdgeInsets.zero,
-                                secondary: const Icon(
-                                  Icons.timer_outlined,
-                                  color: AptiquColors.primary,
-                                ),
-                                title: const Text('60-second timer'),
-                                subtitle: const Text(
-                                  'For each question. Your pace when off.',
-                                ),
-                                value: c.timerEnabled.value,
-                                onChanged: busy
-                                    ? null
-                                    : (value) => c.timerEnabled.value = value,
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (custom) ...[
-                          const SizedBox(height: 20),
-                          Text(
-                            'Choose a subject',
-                            style: AptiquTypography.titleSmall,
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: c.liveSubjects
-                                .map(
-                                  (subject) => ChoiceChip(
-                                    selectedColor:
-                                        AptiquColors.surfaceContainerHigh,
-                                    checkmarkColor: AptiquColors.primary,
-                                    label: Text(subject.name),
-                                    selected:
-                                        c.selectedSubjectId.value == subject.id,
-                                    onSelected: busy
-                                        ? null
-                                        : (_) => c.selectSubject(subject.id),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  '${c.selectedSubtopicIds.length} subtopics selected',
-                                  style: AptiquTypography.bodySmall,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: busy
-                                    ? null
-                                    : c.selectAllCurrentSubject,
-                                child: const Text('All'),
-                              ),
-                              TextButton(
-                                onPressed: busy ? null : c.clearSelection,
-                                child: const Text('Clear'),
-                              ),
-                            ],
-                          ),
-                          ...c.currentSubjectTopics.map(
-                            (topic) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: _card(
-                                ExpansionTile(
-                                  key: PageStorageKey(topic.topicId),
-                                  tilePadding: EdgeInsets.zero,
-                                  childrenPadding: EdgeInsets.zero,
-                                  leading: Checkbox(
-                                    tristate: true,
-                                    value: c.isTopicFullySelected(topic.topicId)
-                                        ? true
-                                        : c.isTopicPartiallySelected(
-                                            topic.topicId,
-                                          )
-                                        ? null
-                                        : false,
-                                    onChanged: busy
-                                        ? null
-                                        : (_) => c.toggleTopic(topic.topicId),
-                                  ),
-                                  title: Text(topic.topicName),
-                                  subtitle: Text(
-                                    '${topic.subtopics.length} subtopics',
-                                  ),
-                                  children: topic.subtopics
-                                      .map(
-                                        (sub) => CheckboxListTile(
-                                          contentPadding: EdgeInsets.zero,
-                                          controlAffinity:
-                                              ListTileControlAffinity.leading,
-                                          title: Text(sub.name),
-                                          value: c.selectedSubtopicIds.contains(
-                                            sub.id,
-                                          ),
-                                          onChanged: busy
-                                              ? null
-                                              : (_) => c.toggleSubtopic(sub.id),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                        if (c.liveTopics.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                              'Practice questions are not available yet.',
-                            ),
-                          ),
-                      ],
-                    ),
-            ),
-            if (!c.showHistory.value)
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AptiquColors.buttonDarkBg,
-                        foregroundColor: AptiquColors.onSurface,
-                        side: BorderSide(
-                          color: custom && c.selectedSubtopicIds.isEmpty
-                              ? AptiquColors.outlineVariant
-                              : AptiquColors.primary.withValues(alpha: .5),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      onPressed:
-                          busy ||
-                              c.liveTopics.isEmpty ||
-                              (custom && c.selectedSubtopicIds.isEmpty)
-                          ? null
-                          : c.startPracticeSession,
-                      icon: busy
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: AppLoader(),
-                            )
-                          : const Icon(Icons.play_arrow_rounded),
-                      label: Text(
-                        busy
-                            ? 'Preparing your session...'
-                            : c.friendlyDuel.value
-                            ? 'Invite a friend'
-                            : 'Start Practice Session',
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      );
-    });
+      }),
+    );
   }
 
-  Widget _card(Widget child) => Material(
-    color: AptiquColors.surfaceContainerLowest,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
-      side: const BorderSide(color: AptiquColors.outlineVariant),
+  Widget _header(
+    BuildContext context,
+    PracticeCatalogController c,
+    bool history,
+    bool busy,
+  ) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+    child: Row(
+      children: [
+        if (history)
+          IconButton(
+            tooltip: 'Back to practice',
+            onPressed: () => c.showHistory.value = false,
+            icon: const Icon(Icons.arrow_back_rounded),
+          ),
+        Expanded(
+          child: Text(
+            history ? 'History & replays' : 'Practice',
+            style: context.type.titleLarge,
+          ),
+        ),
+        if (!history)
+          IconButton(
+            tooltip: 'History & replays',
+            onPressed: busy
+                ? null
+                : () {
+                    c.showHistory.value = true;
+                    c.fetchHistory();
+                  },
+            icon: const Icon(Icons.history_rounded),
+          ),
+      ],
     ),
-    clipBehavior: Clip.antiAlias,
-    child: Padding(padding: const EdgeInsets.all(16), child: child),
   );
 
-  /// History & Replays View
-  Widget _buildHistoryMode(
+  Widget _action(
     BuildContext context,
-    PracticeCatalogController controller,
-  ) {
-    return Obx(() {
-      if (controller.isLoadingHistory.value && controller.historyList.isEmpty) {
-        return const Center(
-          child: AppLoader(),
-        );
-      }
-
-      if (controller.historyError.isNotEmpty) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  controller.historyError.value,
-                  textAlign: TextAlign.center,
-                ),
-                TextButton(
-                  onPressed: () => controller.fetchHistory(refresh: true),
-                  child: const Text('Try again'),
-                ),
-              ],
+    PracticeCatalogController c,
+    bool busy,
+    bool custom,
+  ) => SafeArea(
+    top: false,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (c.liveTopics.isEmpty || custom && c.selectedSubtopicIds.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                c.liveTopics.isEmpty
+                    ? 'Practice questions are not available yet.'
+                    : 'Select at least one subtopic to continue.',
+                style: context.type.bodySmall,
+              ),
             ),
+          AptiquButton(
+            label: busy
+                ? 'Preparing your session…'
+                : c.friendlyDuel.value
+                ? 'Invite a friend'
+                : 'Start practice',
+            icon: const Icon(Icons.play_arrow_rounded),
+            isLoading: busy,
+            onPressed:
+                busy ||
+                    c.liveTopics.isEmpty ||
+                    custom && c.selectedSubtopicIds.isEmpty
+                ? null
+                : c.startPracticeSession,
           ),
-        );
-      }
-      if (controller.historyList.isEmpty) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.history_toggle_off_rounded,
-                color: AptiquColors.onSurfaceVariant,
-                size: 48,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'No Practice Sessions Yet',
-                style: AptiquTypography.bodyMedium.copyWith(
-                  color: AptiquColors.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Complete a practice session to see it here.',
-                style: AptiquTypography.bodySmall.copyWith(
-                  color: AptiquColors.outline,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
+        ],
+      ),
+    ),
+  );
 
-      return RefreshIndicator(
-        onRefresh: () => controller.fetchHistory(refresh: true),
-        color: AptiquColors.primary,
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemCount: controller.historyList.length + 1,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              // Stats Overview Banner
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: AptiquColors.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AptiquColors.outlineVariant),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildStatItem(
-                      'COMPLETED',
-                      '${controller.historyCompletedDrills.value}',
+  Widget _setup(
+    BuildContext context,
+    PracticeCatalogController c,
+    bool busy,
+    bool custom, {
+    Widget? header,
+    Widget? action,
+  }) {
+    if (c.isLoading.value) {
+      return const Center(
+        child: AppStateView(title: 'Loading practice', loading: true),
+      );
+    }
+    if (c.errorMessage.isNotEmpty) {
+      return SingleChildScrollView(
+        child: AppStateView(
+          title: 'Could not load practice',
+          message: c.errorMessage.value,
+          actionLabel: 'Retry',
+          onAction: c.fetchLiveTopics,
+        ),
+      );
+    }
+    return ListView(
+      key: const PageStorageKey('practice-setup'),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      children: [
+        if (header != null) header,
+        LayoutBuilder(
+          builder: (context, box) {
+            final horizontal =
+                textFits(
+                  context,
+                  'Random',
+                  context.type.bodyLarge!,
+                  box.maxWidth / 2 - 40,
+                ) &&
+                textFits(
+                  context,
+                  'Custom',
+                  context.type.bodyLarge!,
+                  box.maxWidth / 2 - 40,
+                );
+            if (!horizontal) {
+              return Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final mode in PracticeSelectionMode.values)
+                    ChoiceChip(
+                      label: Text(
+                        mode == PracticeSelectionMode.random
+                            ? 'Random'
+                            : 'Custom',
+                      ),
+                      selected: c.selectionMode.value == mode,
+                      onSelected: busy
+                          ? null
+                          : (_) => c.selectionMode.value = mode,
                     ),
-                    Container(
-                      width: 1,
-                      height: 24,
-                      color: AptiquColors.outlineVariant,
-                    ),
-                    _buildStatItem(
-                      'ACCURACY',
-                      '${controller.historyOverallAccuracy.value}%',
-                    ),
-                    Container(
-                      width: 1,
-                      height: 24,
-                      color: AptiquColors.outlineVariant,
-                    ),
-                    _buildStatItem(
-                      'AVG TIME',
-                      controller.historyAvgResponseTimeMs.value > 0
-                          ? '${(controller.historyAvgResponseTimeMs.value / 1000).toStringAsFixed(1)}s'
-                          : 'N/A',
-                    ),
-                  ],
-                ),
+                ],
               );
             }
-
-            final item = controller.historyList[index - 1];
-            final isReplay = item.isReplay;
-            final isPvpReplay = item.replaySourceType == 'PVP';
-
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: isReplay
-                      ? Colors.purple.withValues(alpha: 0.5)
-                      : AptiquColors.outlineVariant,
+            return SegmentedButton<PracticeSelectionMode>(
+              segments: const [
+                ButtonSegment(
+                  value: PracticeSelectionMode.random,
+                  icon: Icon(Icons.shuffle_rounded),
+                  label: Text('Random'),
                 ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            isPvpReplay
-                                ? Icons.sports_esports_rounded
-                                : Icons.flash_on_rounded,
-                            size: 16,
-                            color: isPvpReplay
-                                ? const Color(0xFFF59E0B)
-                                : AptiquColors.primary,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            isPvpReplay
-                                ? 'PvP Duel Replay'
-                                : ('Practice Session'),
-                            style: AptiquTypography.labelCaps.copyWith(
-                              color: AptiquColors.onSurface,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (isReplay)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.purple.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: Colors.purple.withValues(alpha: 0.4),
-                            ),
-                          ),
-                          child: Text(
-                            'REPLAY · 0 REWARDS',
-                            style: AptiquTypography.labelCaps.copyWith(
-                              color: Colors.purpleAccent,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        )
-                      else if (item.xpAwarded > 0)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AptiquColors.primary.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            '+${item.xpAwarded} XP',
-                            style: AptiquTypography.labelCaps.copyWith(
-                              color: AptiquColors.primary,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Score: ${item.correctCount}/${item.totalQuestions} Correct',
-                            style: AptiquTypography.bodySmall.copyWith(
-                              color: AptiquColors.onSurface,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Total Time: ${(item.totalTimeMs / 1000).toStringAsFixed(1)}s',
-                            style: AptiquTypography.bodySmall.copyWith(
-                              color: AptiquColors.onSurfaceVariant,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Replay Button
-                      OutlinedButton.icon(
-                        onPressed: controller.isReplaying.value
-                            ? null
-                            : () => controller.replayPracticeSession(item.id),
-                        icon: const Icon(Icons.replay_rounded, size: 14),
-                        label: const Text(
-                          'Replay',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AptiquColors.primary,
-                          side: const BorderSide(color: AptiquColors.primary),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ButtonSegment(
+                  value: PracticeSelectionMode.specific,
+                  icon: Icon(Icons.tune_rounded),
+                  label: Text('Custom'),
+                ),
+              ],
+              selected: {c.selectionMode.value},
+              showSelectedIcon: false,
+              onSelectionChanged: busy
+                  ? null
+                  : (value) => c.selectionMode.value = value.first,
             );
           },
         ),
-      );
-    });
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: AptiquTypography.labelCaps.copyWith(
-            color: AptiquColors.onSurfaceVariant,
-            fontSize: 9,
+        const SizedBox(height: 24),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              custom ? Icons.track_changes_rounded : Icons.shuffle_rounded,
+              color: context.colors.primary,
+              size: 28,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('10 questions', style: context.type.titleMedium),
+                  Text(
+                    custom
+                        ? 'Your choice of topics.'
+                        : 'Any topic. Any difficulty.',
+                    style: context.type.bodyMedium?.copyWith(
+                      color: context.colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Material(
+          color: context.colors.surface,
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            children: [
+              _setting(
+                context,
+                icon: Icons.people_outline,
+                title: 'Friendly duel',
+                subtitle: '1v1 with a friend · 10 XP each when both finish',
+                value: c.friendlyDuel.value,
+                onChanged: busy ? null : (v) => c.friendlyDuel.value = v,
+              ),
+              const Divider(height: 1, indent: 16, endIndent: 16),
+              _setting(
+                context,
+                icon: Icons.auto_awesome_outlined,
+                title: 'Smart AI Picks',
+                subtitle: c.friendlyDuel.value
+                    ? '5 questions from each player’s weaker topics.'
+                    : 'Focus on patterns you find difficult.',
+                value: c.smartPicks.value,
+                onChanged: busy ? null : (v) => c.smartPicks.value = v,
+              ),
+              const Divider(height: 1, indent: 16, endIndent: 16),
+              _setting(
+                context,
+                icon: Icons.timer_outlined,
+                title: '60-second timer',
+                subtitle: 'For each question. Your pace when off.',
+                value: c.timerEnabled.value,
+                onChanged: busy ? null : (v) => c.timerEnabled.value = v,
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: AptiquTypography.bodyMedium.copyWith(
-            color: AptiquColors.onSurface,
-            fontWeight: FontWeight.bold,
+        if (custom) ...[
+          const SizedBox(height: 24),
+          Text('Choose a subject', style: context.type.titleSmall),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final subject in c.liveSubjects)
+                ChoiceChip(
+                  label: Text(subject.name),
+                  selected: c.selectedSubjectId.value == subject.id,
+                  onSelected: busy ? null : (_) => c.selectSubject(subject.id),
+                ),
+            ],
           ),
-        ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 12,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                '${c.selectedSubtopicIds.length} subtopics selected',
+                style: context.type.bodyMedium,
+              ),
+              TextButton(
+                onPressed: busy ? null : c.selectAllCurrentSubject,
+                child: const Text('All'),
+              ),
+              TextButton(
+                onPressed: busy ? null : c.clearSelection,
+                child: const Text('Clear'),
+              ),
+            ],
+          ),
+          for (final topic in c.currentSubjectTopics) ...[
+            const Divider(height: 1),
+            ExpansionTile(
+              key: PageStorageKey(topic.topicId),
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              leading: Checkbox(
+                tristate: true,
+                value: c.isTopicFullySelected(topic.topicId)
+                    ? true
+                    : c.isTopicPartiallySelected(topic.topicId)
+                    ? null
+                    : false,
+                onChanged: busy ? null : (_) => c.toggleTopic(topic.topicId),
+              ),
+              title: Text(topic.topicName, style: context.type.bodyLarge),
+              subtitle: Text('${topic.subtopics.length} subtopics'),
+              children: [
+                for (final sub in topic.subtopics)
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(sub.name, style: context.type.bodyLarge),
+                    value: c.selectedSubtopicIds.contains(sub.id),
+                    onChanged: busy ? null : (_) => c.toggleSubtopic(sub.id),
+                  ),
+              ],
+            ),
+          ],
+        ],
+        if (action != null) action,
       ],
     );
   }
+
+  Widget _setting(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool value,
+    required ValueChanged<bool>? onChanged,
+  }) => SwitchListTile.adaptive(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    secondary: Icon(icon, color: context.colors.primary),
+    title: Text(title, style: context.type.bodyLarge),
+    subtitle: Text(subtitle, style: context.type.bodyMedium),
+    value: value,
+    onChanged: onChanged,
+  );
+
+  Widget _history(
+    BuildContext context,
+    PracticeCatalogController c, {
+    Widget? header,
+  }) {
+    if (c.isLoadingHistory.value && c.historyList.isEmpty) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            if (header != null) header,
+            const AppStateView(
+              title: 'Loading practice history',
+              loading: true,
+            ),
+          ],
+        ),
+      );
+    }
+    if (c.historyList.isEmpty) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            if (header != null) header,
+            AppStateView(
+              title: c.historyError.isNotEmpty
+                  ? 'Could not load history'
+                  : 'No practice history yet',
+              message: c.historyError.isNotEmpty
+                  ? c.historyError.value
+                  : 'Your practice sessions and replays will appear here.',
+              actionLabel: c.historyError.isNotEmpty ? 'Retry' : null,
+              onAction: c.historyError.isNotEmpty ? c.fetchHistory : null,
+            ),
+          ],
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: () => c.fetchHistory(refresh: true),
+      child: ListView(
+        key: const PageStorageKey('practice-history'),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        children: [
+          if (header != null) header,
+          if (c.historyError.isNotEmpty)
+            SessionNotice(
+              message: 'History could not be refreshed',
+              onRetry: () => c.fetchHistory(refresh: true),
+            ),
+          if (c.isLoadingHistory.value) const LinearProgressIndicator(),
+          SessionMetrics(
+            items: [
+              (label: 'Completed', value: '${c.historyCompletedDrills.value}'),
+              (label: 'Accuracy', value: '${c.historyOverallAccuracy.value}%'),
+              (
+                label: 'Average time',
+                value: c.historyAvgResponseTimeMs.value > 0
+                    ? '${(c.historyAvgResponseTimeMs.value / 1000).toStringAsFixed(1)}s'
+                    : 'Unavailable',
+              ),
+            ],
+          ),
+          if (c.isReplaying.value)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: AppStateView(title: 'Preparing replay…', loading: true),
+            ),
+          const SizedBox(height: 16),
+          for (final item in c.historyList) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    item.replaySourceType == 'PVP'
+                        ? 'PvP duel replay'
+                        : 'Practice session',
+                    style: context.type.titleSmall,
+                  ),
+                  Text(
+                    '${_date(context, item.createdAt)} · ${_status(item.status)}',
+                    style: context.type.bodySmall,
+                  ),
+                  const SizedBox(height: 8),
+                  SessionMetrics(
+                    items: [
+                      (
+                        label: 'Correct',
+                        value: '${item.correctCount}/${item.totalQuestions}',
+                      ),
+                      (
+                        label: 'Total time',
+                        value:
+                            '${(item.totalTimeMs / 1000).toStringAsFixed(1)}s',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        item.isReplay
+                            ? 'Replay · No rewards'
+                            : '${item.xpAwarded} XP awarded',
+                        style: context.type.bodyMedium?.copyWith(
+                          color: context.colors.onSurfaceVariant,
+                        ),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed:
+                            c.isReplaying.value || c.isStartingSession.value
+                            ? null
+                            : () => c.replayPracticeSession(item.id),
+                        icon: const Icon(Icons.replay_rounded),
+                        label: const Text('Replay'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (c.historyPage.value < c.historyTotalPages.value)
+            OutlinedButton(
+              onPressed: c.isLoadingHistory.value
+                  ? null
+                  : () => c.fetchHistory(loadMore: true),
+              child: Text(
+                c.isLoadingHistory.value ? 'Loading history…' : 'Load more',
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  String _date(BuildContext context, String raw) {
+    final date = DateTime.tryParse(raw)?.toLocal();
+    return date == null
+        ? 'Date unavailable'
+        : MaterialLocalizations.of(context).formatFullDate(date);
+  }
+
+  String _status(String value) => switch (value) {
+    'COMPLETED' => 'Completed',
+    'ABANDONED' => 'Abandoned',
+    'IN_PROGRESS' => 'In progress',
+    'FAILED' => 'Finished',
+    _ => value,
+  };
 }

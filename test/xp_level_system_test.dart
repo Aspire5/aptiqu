@@ -136,7 +136,7 @@ void main() {
       await tester.pump();
 
       expect(find.text('Shagun'), findsOneWidget);
-      expect(find.text('LEVEL 4'), findsOneWidget);
+      expect(find.text('Level 4'), findsOneWidget);
       expect(find.byType(CustomPaint), findsWidgets);
     });
   });
@@ -351,14 +351,15 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('PROFILE'), findsOneWidget);
+      expect(find.text('Profile'), findsOneWidget);
       expect(find.text('Shagun Kumar'), findsOneWidget);
       expect(find.text('shagun@aptiqu.io'), findsOneWidget);
       expect(find.text('LEVEL 2'), findsWidgets);
       expect(find.text('15 / 40 XP'), findsOneWidget);
       expect(find.text('Next: Level 3'), findsOneWidget);
-      expect(find.text('3'), findsOneWidget);
-      expect(find.text('/ 45 Topics across all roadmaps'), findsOneWidget);
+      expect(find.text('3 / 45'), findsOneWidget);
+      expect(find.text('Across all roadmaps'), findsOneWidget);
+      expect(find.text('6%'), findsOneWidget);
       expect(find.text('5 / 19'), findsOneWidget);
       expect(find.text('2 / 6'), findsOneWidget);
       expect(find.text('0 / 0'), findsOneWidget);

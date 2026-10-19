@@ -37,6 +37,9 @@ class LessonFeedController extends GetxController {
   final Rxn<LessonNodeModel> currentNode = Rxn<LessonNodeModel>();
   final Rxn<NextLearningStepModel> nextStep = Rxn<NextLearningStepModel>();
   final Rxn<String> errorMessage = Rxn<String>();
+  final RxnString lessonTitle = RxnString();
+  final RxnString doubtError = RxnString();
+  final RxBool doubtUnavailable = false.obs;
 
   String? sessionId;
   int stateVersion = 1;
@@ -51,6 +54,8 @@ class LessonFeedController extends GetxController {
     status.value = FeedStatus.loading;
     errorMessage.value = null;
     nextStep.value = null;
+    currentNode.value = null;
+    lessonTitle.value = null;
 
     try {
       final session = roadmapStepId != null
@@ -95,6 +100,7 @@ class LessonFeedController extends GetxController {
       return;
     }
     status.value = FeedStatus.submitting;
+    errorMessage.value = null;
     final generation = _feedGeneration;
 
     // Display user answer in chat immediately
@@ -162,30 +168,35 @@ class LessonFeedController extends GetxController {
     } catch (e) {
       if (generation != _feedGeneration) return;
       feedItems.remove(thinking);
-      feedItems.add(
-        FeedItem(
-          isUser: false,
-          text: 'Connection hiccup. Please try that action again.',
-        ),
-      );
+      errorMessage.value =
+          'Could not send your response. Please try that action again.';
       _scrollToBottom();
       status.value = FeedStatus.active;
     }
   }
 
   Future<String> submitDoubt(String questionText) async {
+    final generation = _feedGeneration;
+    doubtError.value = null;
+    doubtUnavailable.value = false;
     if (sessionId == null || currentNode.value == null) {
+      doubtError.value = 'Open a lesson step before asking your tutor.';
       return 'Session not active.';
     }
 
     try {
-      return await _repository.submitInterrupt(
+      final response = await _repository.submitInterrupt(
         sessionId: sessionId!,
         clientActionId: _uuid.v4(),
         currentNodeId: currentNode.value!.id,
         questionText: questionText,
       );
+      if (!isClosed && generation == _feedGeneration) {
+        doubtUnavailable.value = response.unavailable;
+      }
+      return response.message;
     } catch (e) {
+      doubtError.value = 'Could not reach your tutor. Please try again.';
       return 'AI Tutor doubt service is currently unreachable.';
     }
   }
@@ -195,6 +206,9 @@ class LessonFeedController extends GetxController {
       Get.find<HomeController>().refreshLearningProgress();
     }
     sessionId = session.id;
+    if (session.scriptTitle?.trim().isNotEmpty == true) {
+      lessonTitle.value = session.scriptTitle!.trim();
+    }
     stateVersion = session.stateVersion;
     currentNode.value = session.currentNode;
     if (session.next != null) {
@@ -232,7 +246,13 @@ class LessonFeedController extends GetxController {
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isClosed) return;
       if (scrollController.hasClients) {
+        final context = scrollController.position.context.storageContext;
+        if (MediaQuery.disableAnimationsOf(context)) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          return;
+        }
         scrollController.animateTo(
           scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 300),

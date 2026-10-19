@@ -97,9 +97,22 @@ void main() {
           matching: find.byType(FilledButton),
         );
         expect(tester.getSize(practice), tester.getSize(play));
-        expect(tester.getTopLeft(practice).dy, tester.getTopLeft(play).dy);
-        if (config.$2 == 1) expect(tester.getSize(play).height, 44);
+        if (config.$2 < 1.6) {
+          expect(tester.getTopLeft(practice).dy, tester.getTopLeft(play).dy);
+        } else {
+          expect(
+            tester.getTopLeft(play).dy,
+            greaterThan(tester.getTopLeft(practice).dy),
+          );
+        }
+        if (config.$2 == 1) {
+          expect(tester.getSize(play).height, greaterThanOrEqualTo(48));
+        }
+        await tester.ensureVisible(practice);
+        await tester.pumpAndSettle();
         await tester.tap(practice);
+        await tester.ensureVisible(play);
+        await tester.pumpAndSettle();
         await tester.tap(play);
         expect(practised, '0');
         expect(played, '0');

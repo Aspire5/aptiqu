@@ -34,31 +34,22 @@ class FriendRequestCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    excludeFromSemantics: true,
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    borderRadius: BorderRadius.circular(20),
-    child: SocialSurface(
-      highlighted: true,
-      radius: 20,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Semantics(
-            button: true,
-            label:
-                'View ${person['name']} profile, level ${person['level'] ?? 1}',
-            onTap: onTap,
-            child: ExcludeSemantics(
-              child: SocialIdentityHeader(person: person, detail: requested),
-            ),
+  Widget build(BuildContext context) => SocialSurface(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextButton(
+          onPressed: onTap,
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(48, 48),
           ),
-          const SizedBox(height: 18),
-          actions,
-        ],
-      ),
+          child: SocialIdentityHeader(person: person, detail: requested),
+        ),
+        const SizedBox(height: 16),
+        actions,
+      ],
     ),
   );
 }

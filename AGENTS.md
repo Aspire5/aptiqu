@@ -66,3 +66,9 @@
 
 ## Database and migration restrictions
 - Do not perform local database setup/actions, connect to a VPS, or perform migrations unless the user explicitly authorizes a change to these restrictions.
+
+## UI revamp preferences and approval boundaries
+- For UI work, read `docs/UI_UX_DESIGN_PREFERENCES.md` and the current checkpoint in `docs/UI_UX_REVAMP_PROGRESS.md`. These record the user's composition preferences and phase approvals.
+- Preserve the approved palette, typography, font sizes and design tokens. Prefer purposeful rows, compact groups, task-appropriate controls and visual hierarchy over automatic vertical stacking, repeated cards and explanatory prose.
+- Adapt to real content, width and enlarged text while preserving readable controls and 48 px touch targets. Reference designs guide composition, not a replacement visual system.
+- Implement only the explicitly authorized phase or revision, then stop for manual approval. Saved preferences do not authorize future phases.

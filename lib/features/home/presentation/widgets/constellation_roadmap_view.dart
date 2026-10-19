@@ -1,23 +1,16 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:get/get.dart';
-import 'package:aptiqu/core/theme/aptiqu_colors.dart';
-import 'package:aptiqu/core/theme/aptiqu_typography.dart';
+import 'package:aptiqu/core/theme/aptiqu_tokens.dart';
 import '../../models/roadmap_model.dart';
 import '../controllers/home_controller.dart';
 import 'topic_details_sheet.dart';
+import '../../../../shared/widgets/sheets/app_sheet.dart';
 import '../../../practice/controllers/practice_catalog_controller.dart';
 
-/// Cyberpunk Constellation Winding Roadmap View
-///
-/// Features:
-/// - 2D Zoomable & Pannable Canvas with [InteractiveViewer] (unconstrained for full scroll freedom)
-/// - Cinematic zoom-in camera animation focusing on the active user node upon tab open
-/// - Fixed minimal, non-transparent "Subjects" header with dynamic progress (e.g. 0/72)
-/// - Fullscreen mode with smooth animated slide/fade transitions
-/// - Topic details open in a draggable modal bottom sheet
-/// - Winding S-curve constellation path with glowing neon progress line
-/// - Gamified milestone nodes (Active Objective, Completed lessons, Ready/Unlocked, Boss Gate, Coming Soon)
+/// Existing curriculum canvas with theme-aware pilot styling.
+/// Layout, topic state, sheet selection and lesson/practice callbacks stay local.
 class ConstellationRoadmapView extends StatefulWidget {
   final SubjectLearningMapModel learningMap;
   final List<RoadmapSubjectSummary> subjects;
@@ -50,7 +43,8 @@ class ConstellationRoadmapView extends StatefulWidget {
 class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     with TickerProviderStateMixin {
   // Canvas vertical metrics
-  static const double nodeSpacing = 160.0;
+  double get nodeSpacing =>
+      190.0 + (MediaQuery.textScalerOf(context).scale(40) - 40);
   static const double topPadding = 100.0;
   static const double bottomPadding = 450.0;
 
@@ -59,13 +53,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   late AnimationController _cameraAnimationController;
   Animation<Matrix4>? _cameraAnimation;
 
-  // Pulsing glow animation for active node
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
-
   // Inspected topic and live state for the modal bottom sheet.
   LearningMapTopicItemModel? _inspectedTopic;
   bool _isTopicSheetOpen = false;
+  bool? _showList;
   final _sheetTopic = ValueNotifier<LearningMapTopicItemModel?>(null);
 
   // Viewport cached size
@@ -79,16 +70,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
     _cameraAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat(reverse: true);
-
-    _pulseAnimation = Tween<double>(begin: 0.85, end: 1.25).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+      duration: const Duration(milliseconds: 240),
     );
 
     // Default inspected topic without opening the sheet
@@ -132,7 +114,6 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   void dispose() {
     _transformationController.dispose();
     _cameraAnimationController.dispose();
-    _pulseController.dispose();
     _sheetTopic.dispose();
     super.dispose();
   }
@@ -227,7 +208,7 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
     // Viewport center target
     final double targetViewportX = _viewportSize.width / 2;
-    final double targetViewportY = _viewportSize.height * 0.45;
+    final double targetViewportY = _viewportSize.height * 0.28;
 
     // End matrix focused on active node
     final Matrix4 endMatrix = _buildMatrix2D(
@@ -236,7 +217,8 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       scale: targetScale,
     );
 
-    if (instant) {
+    _hasInitialZoomAnimated = true;
+    if (instant || MediaQuery.disableAnimationsOf(context)) {
       _transformationController.value = endMatrix;
       return;
     }
@@ -285,6 +267,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       scale: currentScale,
     );
 
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _transformationController.value = targetMatrix;
+      return;
+    }
     _cameraAnimation =
         Matrix4Tween(
           begin: _transformationController.value,
@@ -308,6 +294,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     return LayoutBuilder(
       builder: (context, constraints) {
         _viewportSize = Size(constraints.maxWidth, constraints.maxHeight);
+        final list =
+            _showList ??
+            (constraints.maxWidth < 360 ||
+                MediaQuery.textScalerOf(context).scale(14) > 18);
 
         final canvasWidth = max(constraints.maxWidth, 420.0);
         final canvasHeight =
@@ -331,77 +321,111 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
           children: [
             // 1. FIXED MINIMAL NON-TRANSPARENT SUBJECTS BAR (Slides up in fullscreen)
             _buildAnimatedFixedSubjectsBar(),
-
-            // 2. EXPANDED ZOOMABLE & PANNABLE MAP CANVAS
-            Expanded(
-              child: Stack(
-                children: [
-                  // Full interactive viewer (unconstrained gives full freedom to scroll entire height)
-                  AnimatedBuilder(
-                    animation: _cameraAnimationController,
-                    builder: (context, child) {
-                      if (_cameraAnimation != null &&
-                          _cameraAnimationController.isAnimating) {
-                        _transformationController.value =
-                            _cameraAnimation!.value;
-                      }
-                      return child!;
-                    },
-                    child: InteractiveViewer(
-                      transformationController: _transformationController,
-                      constrained:
-                          false, // COMPLETE SCROLL FREEDOM ALL THE WAY DOWN
-                      minScale: 0.35,
-                      maxScale: 2.2,
-                      boundaryMargin: const EdgeInsets.symmetric(
-                        horizontal: 200,
-                        vertical: 800,
+            if (!widget.isFullScreen)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: SegmentedButton<bool>(
+                    segments: const [
+                      ButtonSegment(
+                        value: false,
+                        icon: Icon(Icons.map_outlined),
+                        label: Text('Map'),
                       ),
-                      clipBehavior: Clip.hardEdge,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: SizedBox(
-                          width: canvasWidth,
-                          height: canvasHeight,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              // Ambient Cyber Constellation Background & Connecting Winding Path
-                              Positioned.fill(
-                                child: CustomPaint(
-                                  painter: _ConstellationPathPainter(
-                                    nodePositions: nodePositions,
-                                    completedNodeIndices: {
-                                      for (var i = 0; i < topics.length; i++)
-                                        if (topics[i].isCompleted) i,
-                                    },
+                      ButtonSegment(
+                        value: true,
+                        icon: Icon(Icons.format_list_bulleted),
+                        label: Text('List'),
+                      ),
+                    ],
+                    selected: {list},
+                    onSelectionChanged: (values) =>
+                        setState(() => _showList = values.single),
+                  ),
+                ),
+              ),
+            if (list)
+              Expanded(child: _buildTopicList(topics))
+            else
+              // 2. EXPANDED ZOOMABLE & PANNABLE MAP CANVAS
+              Expanded(
+                child: Stack(
+                  children: [
+                    // Full interactive viewer (unconstrained gives full freedom to scroll entire height)
+                    AnimatedBuilder(
+                      animation: _cameraAnimationController,
+                      builder: (context, child) {
+                        if (_cameraAnimation != null &&
+                            _cameraAnimationController.isAnimating) {
+                          _transformationController.value =
+                              _cameraAnimation!.value;
+                        }
+                        return child!;
+                      },
+                      child: InteractiveViewer(
+                        transformationController: _transformationController,
+                        constrained:
+                            false, // COMPLETE SCROLL FREEDOM ALL THE WAY DOWN
+                        minScale: 0.35,
+                        maxScale: 2.2,
+                        boundaryMargin: const EdgeInsets.symmetric(
+                          horizontal: 200,
+                          vertical: 800,
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          child: SizedBox(
+                            width: canvasWidth,
+                            height: canvasHeight,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                // Curriculum path using resolved theme colors.
+                                Positioned.fill(
+                                  child: CustomPaint(
+                                    painter: _ConstellationPathPainter(
+                                      nodePositions: nodePositions,
+                                      track: context.colors.outlineVariant,
+                                      progress: context.status.success,
+                                      completedNodeIndices: {
+                                        for (var i = 0; i < topics.length; i++)
+                                          if (topics[i].isCompleted) i,
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                              // Topic Nodes Along the Winding S-Curve
-                              for (int i = 0; i < totalTopics; i++)
-                                _buildNodeItem(
-                                  topic: topics[i],
-                                  index: i,
-                                  position: nodePositions[i],
-                                  isActiveFocus: i == activeIndex,
-                                  isInspected:
-                                      _inspectedTopic?.roadmapStepId ==
-                                      topics[i].roadmapStepId,
-                                ),
-                            ],
+                                // Topic Nodes Along the Winding S-Curve
+                                for (int i = 0; i < totalTopics; i++)
+                                  _buildNodeItem(
+                                    topic: topics[i],
+                                    index: i,
+                                    position: nodePositions[i],
+                                    isActiveFocus: i == activeIndex,
+                                    isInspected:
+                                        _inspectedTopic?.roadmapStepId ==
+                                        topics[i].roadmapStepId,
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  // 3. FLOATING HUD CONTROLS (Fullscreen, Re-center, Zoom In, Zoom Out)
-                  Positioned(right: 14, bottom: 20, child: _buildHudControls()),
-                ],
+                    // 3. FLOATING HUD CONTROLS (Fullscreen, Re-center, Zoom In, Zoom Out)
+                    Positioned(
+                      right: 16,
+                      bottom: 16 + MediaQuery.paddingOf(context).bottom,
+                      child: _buildHudControls(
+                        horizontal: constraints.maxHeight < 520,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         );
       },
@@ -412,201 +436,108 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   // FIXED MINIMAL SUBJECTS SELECTION BAR
   // ===========================================================================
 
-  Widget _buildAnimatedFixedSubjectsBar() {
-    const double barHeight = 48.0;
+  Widget _buildAnimatedFixedSubjectsBar() =>
+      widget.isFullScreen ? const SizedBox.shrink() : _buildFixedSubjectsBar();
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 320),
-      curve: Curves.easeInOutCubic,
-      height: widget.isFullScreen ? 0.0 : barHeight,
-      child: AnimatedSlide(
-        offset: widget.isFullScreen ? const Offset(0, -1) : Offset.zero,
-        duration: const Duration(milliseconds: 320),
-        curve: Curves.easeInOutCubic,
-        child: AnimatedOpacity(
-          opacity: widget.isFullScreen ? 0.0 : 1.0,
-          duration: const Duration(milliseconds: 240),
-          child: OverflowBox(
-            minHeight: barHeight,
-            maxHeight: barHeight,
-            alignment: Alignment.topCenter,
-            child: _buildFixedSubjectsBar(),
+  Widget _buildFixedSubjectsBar() => Material(
+    color: context.colors.surface,
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          for (final subject in widget.subjects)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                selected: subject.id == widget.selectedSubjectId,
+                showCheckmark: true,
+                label: Text(
+                  '${subject.name} · ${subject.id == widget.selectedSubjectId ? widget.learningMap.completedTopics : subject.completedTopics}/${subject.id == widget.selectedSubjectId ? widget.learningMap.totalTopics : subject.totalTopics} topics',
+                ),
+                labelStyle: context.type.labelMedium!.copyWith(
+                  color: subject.id == widget.selectedSubjectId
+                      ? context.colors.onPrimaryContainer
+                      : context.colors.onSurface,
+                ),
+                onSelected: (_) => widget.onSelectSubject(subject.id),
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _buildTopicList(
+    List<LearningMapTopicItemModel> topics,
+  ) => ListView.separated(
+    key: PageStorageKey('topics-list-${widget.selectedSubjectId}'),
+    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+    itemCount: topics.length,
+    separatorBuilder: (_, __) => const SizedBox(height: 12),
+    itemBuilder: (context, index) {
+      final topic = topics[index];
+      final focus =
+          topic.roadmapStepId == widget.learningMap.focusTopic?.roadmapStepId;
+      final state = topic.isCompleted
+          ? 'Completed · Replay'
+          : topic.isComingSoon
+          ? 'Coming soon'
+          : topic.isLocked
+          ? 'Locked'
+          : topic.isInProgress
+          ? 'In progress'
+          : 'Ready to learn';
+      return Semantics(
+        sortKey: OrdinalSortKey(index.toDouble()),
+        child: Material(
+          color: focus
+              ? context.colors.primaryContainer
+              : context.colors.surface,
+          borderRadius: BorderRadius.circular(16),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16),
+            leading: Icon(
+              focus
+                  ? Icons.play_arrow_rounded
+                  : topic.isCompleted
+                  ? Icons.check_circle_outline
+                  : topic.isComingSoon || topic.isLocked
+                  ? Icons.lock_outline_rounded
+                  : Icons.menu_book_outlined,
+              color: focus
+                  ? context.colors.onPrimaryContainer
+                  : context.colors.primary,
+            ),
+            title: Text(
+              topic.topicName,
+              style: context.type.titleSmall!.copyWith(
+                color: focus
+                    ? context.colors.onPrimaryContainer
+                    : context.colors.onSurface,
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '${focus ? 'Current topic · ' : ''}$state\n${topic.completedSubtopics} of ${topic.totalSubtopics} subtopics completed',
+                style: context.type.bodyMedium!.copyWith(
+                  color: focus
+                      ? context.colors.onPrimaryContainer
+                      : context.colors.onSurfaceVariant,
+                ),
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              setState(() => _inspectedTopic = topic);
+              _openTopicSheet(topic);
+            },
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFixedSubjectsBar() {
-    final compact = MediaQuery.sizeOf(context).width < 480;
-    return Container(
-      height: 48.0,
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: const BoxDecoration(
-        color: AptiquColors.surfaceContainerHigh,
-        border: Border(
-          bottom: BorderSide(color: AptiquColors.outlineVariant, width: 1.0),
-        ),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            // "SUBJECTS" Label
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.hub_rounded,
-                  size: 14,
-                  color: AptiquColors.primary,
-                ),
-                if (!compact) ...[
-                  const SizedBox(width: 5),
-                  Text(
-                    'SUBJECTS',
-                    style: AptiquTypography.labelCapsBold.copyWith(
-                      color: AptiquColors.primary,
-                      fontSize: 10,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
-                const SizedBox(width: 10),
-                Container(
-                  width: 1,
-                  height: 16,
-                  color: AptiquColors.outlineVariant,
-                ),
-                const SizedBox(width: 10),
-              ],
-            ),
-
-            // Horizontal Subject Chips
-            ...widget.subjects.map((subj) {
-              final isSelected = subj.id == widget.selectedSubjectId;
-              final completed = isSelected
-                  ? widget.learningMap.completedTopics
-                  : subj.completedTopics;
-              final total = isSelected
-                  ? widget.learningMap.totalTopics
-                  : subj.totalTopics;
-              final progressText = '$completed/$total topics';
-
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () => widget.onSelectSubject(subj.id),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AptiquColors.primaryContainer.withValues(
-                              alpha: 0.25,
-                            )
-                          : AptiquColors.surfaceContainer,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected
-                            ? AptiquColors.primary
-                            : AptiquColors.outlineVariant,
-                        width: isSelected ? 1.4 : 1.0,
-                      ),
-                      boxShadow: isSelected ? AptiquColors.primaryGlow : null,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isSelected) ...[
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: AptiquColors.secondary,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AptiquColors.secondary,
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                        ],
-                        Tooltip(
-                          message: subj.name,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: compact
-                                  ? MediaQuery.sizeOf(context).width * .3
-                                  : 200,
-                            ),
-                            child: Text(
-                              subj.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AptiquTypography.bodySm.copyWith(
-                                fontSize: 12,
-                                color: isSelected
-                                    ? Colors.white
-                                    : AptiquColors.onSurfaceVariant,
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                        ...[
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 1,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AptiquColors.surfaceContainerLowest,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.menu_book_rounded,
-                                  size: 11,
-                                  color: AptiquColors.secondary,
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  progressText,
-                                  style: AptiquTypography.metricSm.copyWith(
-                                    color: AptiquColors.tertiary,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ],
-        ),
-      ),
-    );
-  }
+      );
+    },
+  );
 
   // ===========================================================================
   // NODE WIDGETS
@@ -619,293 +550,159 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     required bool isActiveFocus,
     required bool isInspected,
   }) {
+    void inspect() {
+      setState(() => _inspectedTopic = topic);
+      _panCameraToNode(index);
+      _openTopicSheet(topic);
+    }
+
     return Positioned(
       left: position.dx - 130,
       top: position.dy - 55,
       width: 260,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          setState(() {
-            _inspectedTopic = topic;
-          });
-          _panCameraToNode(index);
-          _openTopicSheet(topic);
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Active Focus Tag Banner
-            if (isActiveFocus)
-              Container(
-                margin: const EdgeInsets.only(bottom: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      AptiquColors.primaryContainer,
-                      AptiquColors.primaryDark,
-                    ],
+      child: Semantics(
+        button: true,
+        excludeSemantics: true,
+        onTap: inspect,
+        sortKey: OrdinalSortKey(index.toDouble()),
+        label:
+            '${topic.topicName}. ${topic.state.toLowerCase().replaceAll('_', ' ')}. ${topic.completedSubtopics} of ${topic.totalSubtopics} subtopics completed. Open topic details.',
+        child: InkWell(
+          onTap: inspect,
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Active Focus Tag Banner
+              if (isActiveFocus)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: AptiquColors.primaryGlow,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.bolt_rounded,
-                      size: 12,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        'CURRENT TOPIC',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AptiquTypography.labelCapsBold.copyWith(
-                          color: Colors.white,
-                          fontSize: 8.5,
-                          letterSpacing: 0.6,
+                  decoration: BoxDecoration(
+                    color: context.colors.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: null,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.bolt_rounded,
+                        size: 12,
+                        color: context.colors.onPrimaryContainer,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          'CURRENT TOPIC',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.type.labelMedium!.copyWith(
+                            color: context.colors.onPrimaryContainer,
+                            fontSize: 12,
+                            letterSpacing: 0.6,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+
+              // Node Circle
+              if (isActiveFocus)
+                _buildActiveFocusNodeCircle(topic)
+              else if (topic.isCompleted)
+                _buildCompletedNodeCircle(topic, isInspected)
+              else if (topic.isAvailable || topic.isInProgress)
+                _buildReadyNodeCircle(topic, isInspected)
+              else
+                _buildLockedNodeCircle(topic, isInspected),
+
+              const SizedBox(height: 6),
+
+              // Subtopics Progress Pill (e.g. 0/8 or 3/8)
+              _buildSubtopicsProgressPill(topic),
+
+              const SizedBox(height: 2),
+
+              // Node Title
+              Text(
+                topic.topicName,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: context.type.titleSmall!.copyWith(
+                  fontSize: 16,
+                  fontWeight: isActiveFocus ? FontWeight.w800 : FontWeight.w600,
+                  color: isActiveFocus
+                      ? context.colors.primary
+                      : isInspected
+                      ? context.colors.onSurface
+                      : context.colors.onSurface,
                 ),
               ),
 
-            // Node Circle
-            if (isActiveFocus)
-              _buildActiveFocusNodeCircle(topic)
-            else if (topic.isCompleted)
-              _buildCompletedNodeCircle(topic, isInspected)
-            else if (topic.isAvailable || topic.isInProgress)
-              _buildReadyNodeCircle(topic, isInspected)
-            else
-              _buildLockedNodeCircle(topic, isInspected),
+              const SizedBox(height: 2),
 
-            const SizedBox(height: 6),
-
-            // Subtopics Progress Pill (e.g. 0/8 or 3/8)
-            _buildSubtopicsProgressPill(topic),
-
-            const SizedBox(height: 2),
-
-            // Node Title
-            Text(
-              topic.topicName,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AptiquTypography.headlineSm.copyWith(
-                fontSize: 13.5,
-                fontWeight: isActiveFocus ? FontWeight.w800 : FontWeight.w600,
-                color: isActiveFocus
-                    ? AptiquColors.primary
-                    : isInspected
-                    ? Colors.white
-                    : AptiquColors.onSurface,
-              ),
-            ),
-
-            const SizedBox(height: 2),
-
-            // Status Badge Pill
-            _buildNodeStatusBadge(topic, isActiveFocus),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActiveFocusNodeCircle(LearningMapTopicItemModel topic) {
-    return AnimatedBuilder(
-      animation: _pulseAnimation,
-      builder: (context, child) {
-        return Transform.scale(scale: _pulseAnimation.value, child: child);
-      },
-      child: Container(
-        width: 66,
-        height: 66,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            colors: [AptiquColors.primary, AptiquColors.secondary],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AptiquColors.primaryContainer.withValues(alpha: 0.6),
-              blurRadius: 22,
-              spreadRadius: 2,
-            ),
-            BoxShadow(
-              color: AptiquColors.secondary.withValues(alpha: 0.4),
-              blurRadius: 16,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
-        child: Center(
-          child: Container(
-            width: 52,
-            height: 52,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AptiquColors.surfaceContainerLowest,
-            ),
-            child: const Icon(
-              Icons.play_arrow_rounded,
-              color: AptiquColors.primary,
-              size: 32,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCompletedNodeCircle(
-    LearningMapTopicItemModel topic,
-    bool isInspected,
-  ) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: 54,
-          height: 54,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AptiquColors.surfaceContainerHigh,
-            border: Border.all(
-              color: AptiquColors.secondary.withValues(
-                alpha: isInspected ? 1.0 : 0.6,
-              ),
-              width: isInspected ? 2.5 : 1.8,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AptiquColors.secondary.withValues(alpha: 0.3),
-                blurRadius: 12,
-              ),
+              // Status Badge Pill
+              _buildNodeStatusBadge(topic, isActiveFocus),
             ],
           ),
-          child: const Center(
-            child: Icon(
-              Icons.check_rounded,
-              color: AptiquColors.secondary,
-              size: 26,
-            ),
-          ),
         ),
-        Positioned(
-          bottom: -2,
-          right: -2,
-          child: Container(
-            width: 18,
-            height: 18,
-            decoration: BoxDecoration(
-              color: AptiquColors.secondary,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AptiquColors.surfaceContainerHigh,
-                width: 1.5,
-              ),
-            ),
-            child: const Icon(
-              Icons.done_all_rounded,
-              size: 11,
-              color: AptiquColors.onSecondary,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
+  Widget _nodeCircle(
+    IconData icon,
+    Color foreground,
+    Color background, {
+    bool emphasized = false,
+  }) => Container(
+    width: emphasized ? 64 : 54,
+    height: emphasized ? 64 : 54,
+    decoration: BoxDecoration(
+      color: background,
+      shape: BoxShape.circle,
+      border: Border.all(color: foreground, width: emphasized ? 2 : 1),
+    ),
+    child: Icon(icon, color: foreground, size: 26),
+  );
+  Widget _buildActiveFocusNodeCircle(LearningMapTopicItemModel topic) =>
+      _nodeCircle(
+        Icons.play_arrow_rounded,
+        context.colors.onPrimaryContainer,
+        context.colors.primaryContainer,
+        emphasized: true,
+      );
+  Widget _buildCompletedNodeCircle(
+    LearningMapTopicItemModel topic,
+    bool inspected,
+  ) => _nodeCircle(
+    Icons.check_rounded,
+    context.status.success,
+    context.status.successContainer,
+  );
   Widget _buildReadyNodeCircle(
     LearningMapTopicItemModel topic,
-    bool isInspected,
-  ) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: 54,
-          height: 54,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AptiquColors.surfaceContainerHigh,
-            border: Border.all(
-              color: isInspected
-                  ? AptiquColors.primary
-                  : AptiquColors.outlineVariant,
-              width: isInspected ? 2.0 : 1.4,
-            ),
-            boxShadow: isInspected ? AptiquColors.primaryGlow : null,
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.menu_book_rounded,
-              color: AptiquColors.secondary,
-              size: 24,
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -3,
-          right: -4,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-            decoration: BoxDecoration(
-              color: AptiquColors.secondaryContainer,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              topic.isInProgress ? 'IN PROGRESS' : 'READY',
-              style: AptiquTypography.labelCapsBold.copyWith(
-                fontSize: 7.5,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
+    bool inspected,
+  ) => _nodeCircle(
+    Icons.menu_book_rounded,
+    context.colors.primary,
+    context.colors.surface,
+  );
   Widget _buildLockedNodeCircle(
     LearningMapTopicItemModel topic,
-    bool isInspected,
-  ) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AptiquColors.surfaceContainerLow,
-        border: Border.all(
-          color: isInspected
-              ? AptiquColors.outline
-              : AptiquColors.outlineVariant,
-          width: 1.2,
-        ),
-      ),
-      child: Center(
-        child: Icon(
-          topic.isComingSoon
-              ? Icons.schedule_rounded
-              : Icons.lock_outline_rounded,
-          color: AptiquColors.onSurfaceVariant.withValues(alpha: 0.6),
-          size: 22,
-        ),
-      ),
-    );
-  }
+    bool inspected,
+  ) => _nodeCircle(
+    topic.isComingSoon ? Icons.schedule_rounded : Icons.lock_outline_rounded,
+    context.colors.onSurfaceVariant,
+    context.colors.surfaceContainer,
+  );
 
   Widget _buildSubtopicsProgressPill(LearningMapTopicItemModel topic) {
     final total = topic.totalSubtopics;
@@ -914,23 +711,25 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainerHigh.withValues(alpha: 0.8),
+        color: context.colors.surfaceContainerHigh.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: topic.isCompleted
-              ? AptiquColors.secondary.withValues(alpha: 0.6)
-              : AptiquColors.outlineVariant.withValues(alpha: 0.4),
+              ? context.colors.secondary.withValues(alpha: 0.6)
+              : context.colors.outlineVariant.withValues(alpha: 0.4),
           width: 0.8,
         ),
       ),
       child: Text(
         total == 0 ? 'Coming soon' : '$done/$total completed',
-        style: AptiquTypography.labelCapsBold.copyWith(
-          fontSize: 9.5,
+        style: context.type.labelMedium!.copyWith(
+          fontSize: 12,
           color: topic.isCompleted
-              ? AptiquColors.secondary
-              : (done > 0 ? Colors.white : AptiquColors.onSurfaceVariant),
-          letterSpacing: 0.5,
+              ? context.colors.secondary
+              : (done > 0
+                    ? context.colors.onSurface
+                    : context.colors.onSurfaceVariant),
+          letterSpacing: 0,
         ),
       ),
     );
@@ -947,10 +746,10 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             : topic.isInProgress || topic.completedSubtopics > 0
             ? 'CONTINUE TOPIC'
             : 'START TOPIC',
-        style: AptiquTypography.labelCapsBold.copyWith(
-          color: AptiquColors.secondary,
-          fontSize: 9.5,
-          letterSpacing: 0.8,
+        style: context.type.labelMedium!.copyWith(
+          color: context.colors.secondary,
+          fontSize: 12,
+          letterSpacing: 0,
         ),
       );
     }
@@ -958,9 +757,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     if (topic.isCompleted) {
       return Text(
         'COMPLETE',
-        style: AptiquTypography.labelCapsBold.copyWith(
-          color: AptiquColors.secondary,
-          fontSize: 9,
+        style: context.type.labelMedium!.copyWith(
+          color: context.colors.secondary,
+          fontSize: 12,
         ),
       );
     }
@@ -968,9 +767,9 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     if (topic.isInProgress) {
       return Text(
         'IN PROGRESS',
-        style: AptiquTypography.labelCaps.copyWith(
-          color: AptiquColors.primary,
-          fontSize: 9,
+        style: context.type.labelMedium!.copyWith(
+          color: context.colors.primary,
+          fontSize: 12,
         ),
       );
     }
@@ -978,45 +777,46 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     if (topic.isAvailable) {
       return Text(
         'UNLOCKED',
-        style: AptiquTypography.labelCaps.copyWith(
-          color: AptiquColors.onSurfaceVariant,
-          fontSize: 9,
+        style: context.type.labelMedium!.copyWith(
+          color: context.colors.onSurfaceVariant,
+          fontSize: 12,
         ),
       );
     }
 
     return Text(
       'COMING SOON',
-      style: AptiquTypography.labelCaps.copyWith(
-        color: AptiquColors.onSurfaceDisabled,
-        fontSize: 8.5,
+      style: context.type.labelMedium!.copyWith(
+        color: context.colors.onSurfaceVariant,
+        fontSize: 12,
       ),
     );
   }
 
   // ===========================================================================
-  // FLOATING HUD CONTROLS (Fullscreen, Re-center, Zoom In, Zoom Out)
+  // MAP CONTROLS (Fullscreen, Re-center, Zoom In, Zoom Out)
   // ===========================================================================
 
-  Widget _buildHudControls() {
-    return Column(
+  Widget _buildHudControls({bool horizontal = false}) {
+    return Flex(
+      direction: horizontal ? Axis.horizontal : Axis.vertical,
       mainAxisSize: MainAxisSize.min,
       children: [
         // 1. Fullscreen Toggle Button
-        FloatingActionButton.small(
+        FloatingActionButton(
           heroTag: 'fullscreen_toggle_map',
           backgroundColor: widget.isFullScreen
-              ? AptiquColors.primaryContainer
-              : AptiquColors.surfaceContainerHigh,
+              ? context.colors.primaryContainer
+              : context.colors.surfaceContainerHigh,
           foregroundColor: widget.isFullScreen
-              ? Colors.white
-              : AptiquColors.secondary,
-          elevation: 6,
+              ? context.colors.onSurface
+              : context.colors.secondary,
+          elevation: 0,
           shape: CircleBorder(
             side: BorderSide(
               color: widget.isFullScreen
-                  ? AptiquColors.primary
-                  : AptiquColors.outlineVariant,
+                  ? context.colors.primary
+                  : context.colors.outlineVariant,
             ),
           ),
           onPressed: widget.onToggleFullScreen,
@@ -1028,16 +828,16 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             size: 20,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: horizontal ? 0 : 8, width: horizontal ? 8 : 0),
 
         // 2. Re-center Target Button
-        FloatingActionButton.small(
+        FloatingActionButton(
           heroTag: 'recenter_node',
-          backgroundColor: AptiquColors.surfaceContainerHigh,
-          foregroundColor: AptiquColors.primary,
-          elevation: 6,
-          shape: const CircleBorder(
-            side: BorderSide(color: AptiquColors.outlineVariant),
+          backgroundColor: context.colors.surfaceContainerHigh,
+          foregroundColor: context.colors.primary,
+          elevation: 0,
+          shape: CircleBorder(
+            side: BorderSide(color: context.colors.outlineVariant),
           ),
           onPressed: () {
             final active = _getActiveOrFirstTopic();
@@ -1048,47 +848,37 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
             if (widget.learningMap.focusTopic != null) _openTopicSheet(active);
           },
           tooltip: 'Focus Active Level',
-          child: const Icon(Icons.my_location_rounded, size: 19),
+          child: Icon(Icons.my_location_rounded, size: 19),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: horizontal ? 0 : 8, width: horizontal ? 8 : 0),
 
         // 3. Zoom In
-        FloatingActionButton.small(
+        FloatingActionButton(
           heroTag: 'zoom_in_map',
-          backgroundColor: AptiquColors.surfaceContainerHigh,
-          foregroundColor: Colors.white,
-          elevation: 6,
-          shape: const CircleBorder(
-            side: BorderSide(color: AptiquColors.outlineVariant),
+          backgroundColor: context.colors.surfaceContainerHigh,
+          foregroundColor: context.colors.onSurface,
+          elevation: 0,
+          shape: CircleBorder(
+            side: BorderSide(color: context.colors.outlineVariant),
           ),
-          onPressed: () {
-            final current = _transformationController.value;
-            final zoomed = Matrix4.copy(current)
-              ..multiply(Matrix4.diagonal3Values(1.25, 1.25, 1.0));
-            _transformationController.value = zoomed;
-          },
+          onPressed: () => _zoom(1.25),
           tooltip: 'Zoom In',
-          child: const Icon(Icons.add, size: 18),
+          child: Icon(Icons.add, size: 18),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: horizontal ? 0 : 8, width: horizontal ? 8 : 0),
 
         // 4. Zoom Out
-        FloatingActionButton.small(
+        FloatingActionButton(
           heroTag: 'zoom_out_map',
-          backgroundColor: AptiquColors.surfaceContainerHigh,
-          foregroundColor: Colors.white,
-          elevation: 6,
-          shape: const CircleBorder(
-            side: BorderSide(color: AptiquColors.outlineVariant),
+          backgroundColor: context.colors.surfaceContainerHigh,
+          foregroundColor: context.colors.onSurface,
+          elevation: 0,
+          shape: CircleBorder(
+            side: BorderSide(color: context.colors.outlineVariant),
           ),
-          onPressed: () {
-            final current = _transformationController.value;
-            final zoomed = Matrix4.copy(current)
-              ..multiply(Matrix4.diagonal3Values(0.80, 0.80, 1.0));
-            _transformationController.value = zoomed;
-          },
+          onPressed: () => _zoom(.8),
           tooltip: 'Zoom Out',
-          child: const Icon(Icons.remove, size: 18),
+          child: Icon(Icons.remove, size: 18),
         ),
       ],
     );
@@ -1097,6 +887,15 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
   // ===========================================================================
   // TOPIC DETAILS BOTTOM SHEET
   // ===========================================================================
+
+  void _zoom(double factor) {
+    final current = _transformationController.value;
+    final scale = current.getMaxScaleOnAxis();
+    final target = (scale * factor).clamp(.35, 2.2);
+    _cameraAnimationController.stop();
+    _transformationController.value = Matrix4.copy(current)
+      ..multiply(Matrix4.diagonal3Values(target / scale, target / scale, 1));
+  }
 
   Future<void> _openTopicSheet(LearningMapTopicItemModel topic) async {
     if (_isTopicSheetOpen || !mounted) return;
@@ -1107,50 +906,49 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      showDragHandle: true,
-      backgroundColor: AptiquColors.surfaceContainerLow,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       clipBehavior: Clip.antiAlias,
       constraints: const BoxConstraints(maxWidth: 640),
-      builder: (sheetContext) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: .78,
-        minChildSize: .4,
-        maxChildSize: .94,
-        builder: (_, scrollController) =>
-            ValueListenableBuilder<LearningMapTopicItemModel?>(
-              valueListenable: _sheetTopic,
-              builder: (_, current, __) => current == null
-                  ? const Center(
-                      child: Text('This topic is no longer available.'),
-                    )
-                  : TopicDetailsSheet(
-                      topic: current,
-                      scrollController: scrollController,
-                      onPracticeTopic: () => Navigator.of(
-                        sheetContext,
-                      ).pop(const _TopicSheetSelection(practice: true)),
-                      onPlayTopic: () => Navigator.of(
-                        sheetContext,
-                      ).pop(const _TopicSheetSelection(practice: false)),
-                      onPracticeSubtopic: (subtopic) =>
-                          Navigator.of(sheetContext).pop(
-                            _TopicSheetSelection(
-                              practice: true,
-                              subtopicId: subtopic.id,
+      builder: (sheetContext) => AppSheetSurface(
+        builder: (_) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: .78,
+          minChildSize: .4,
+          maxChildSize: .94,
+          builder: (_, scrollController) =>
+              ValueListenableBuilder<LearningMapTopicItemModel?>(
+                valueListenable: _sheetTopic,
+                builder: (_, current, __) => current == null
+                    ? Center(child: Text('This topic is no longer available.'))
+                    : TopicDetailsSheet(
+                        topic: current,
+                        scrollController: scrollController,
+                        onPracticeTopic: () => Navigator.of(
+                          sheetContext,
+                        ).pop(const _TopicSheetSelection(practice: true)),
+                        onPlayTopic: () => Navigator.of(
+                          sheetContext,
+                        ).pop(const _TopicSheetSelection(practice: false)),
+                        onPracticeSubtopic: (subtopic) =>
+                            Navigator.of(sheetContext).pop(
+                              _TopicSheetSelection(
+                                practice: true,
+                                subtopicId: subtopic.id,
+                              ),
                             ),
-                          ),
-                      onPlaySubtopic: (subtopic) =>
-                          Navigator.of(sheetContext).pop(
-                            _TopicSheetSelection(
-                              practice: false,
-                              subtopicId: subtopic.id,
+                        onPlaySubtopic: (subtopic) =>
+                            Navigator.of(sheetContext).pop(
+                              _TopicSheetSelection(
+                                practice: false,
+                                subtopicId: subtopic.id,
+                              ),
                             ),
-                          ),
-                    ),
-            ),
+                      ),
+              ),
+        ),
       ),
     );
     _isTopicSheetOpen = false;
@@ -1199,31 +997,24 @@ class _TopicSheetSelection {
 }
 
 // =============================================================================
-// CUSTOM PAINTER: WINDING S-CURVE CONSTELLATION PATH
+// CUSTOM PAINTER: CURRICULUM PATH
 // =============================================================================
 
 class _ConstellationPathPainter extends CustomPainter {
   final List<Offset> nodePositions;
   final Set<int> completedNodeIndices;
+  final Color track, progress;
 
   _ConstellationPathPainter({
     required this.nodePositions,
+    required this.track,
+    required this.progress,
     required this.completedNodeIndices,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     if (nodePositions.length < 2) return;
-
-    // 1. Ambient Constellation Stars in Background
-    final random = Random(42);
-    final starPaint = Paint()..color = Colors.white.withValues(alpha: 0.15);
-    for (int s = 0; s < 50; s++) {
-      final sx = random.nextDouble() * size.width;
-      final sy = random.nextDouble() * size.height;
-      final radius = random.nextDouble() * 1.5 + 0.5;
-      canvas.drawCircle(Offset(sx, sy), radius, starPaint);
-    }
 
     // 2. Build full winding serpentine path
     final fullPath = Path();
@@ -1240,7 +1031,7 @@ class _ConstellationPathPainter extends CustomPainter {
 
     // 3. Dark background path track
     final bgPaint = Paint()
-      ..color = const Color(0xFF232838)
+      ..color = track
       ..strokeWidth = 4.5
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -1262,19 +1053,9 @@ class _ConstellationPathPainter extends CustomPainter {
       activePath.cubicTo(p0.dx, midY, p1.dx, midY, p1.dx, p1.dy);
     }
     if (completedNodeIndices.isNotEmpty) {
-      // Neon outer glow
-      final glowPaint = Paint()
-        ..color = AptiquColors.secondary.withValues(alpha: 0.4)
-        ..strokeWidth = 8.0
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round
-        ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 4.0);
-
-      canvas.drawPath(activePath, glowPaint);
-
       // Core bright cyan line
       final activePaint = Paint()
-        ..color = AptiquColors.secondary
+        ..color = progress
         ..strokeWidth = 3.2
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
@@ -1285,7 +1066,9 @@ class _ConstellationPathPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ConstellationPathPainter oldDelegate) {
-    return oldDelegate.completedNodeIndices.length !=
+    return oldDelegate.track != track ||
+        oldDelegate.progress != progress ||
+        oldDelegate.completedNodeIndices.length !=
             completedNodeIndices.length ||
         !oldDelegate.completedNodeIndices.containsAll(completedNodeIndices) ||
         oldDelegate.nodePositions.length != nodePositions.length ||

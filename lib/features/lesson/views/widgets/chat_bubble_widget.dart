@@ -1,88 +1,62 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
-import '../../../../core/theme/aptiqu_typography.dart';
+import '../../../../core/theme/aptiqu_tokens.dart';
 
 class ChatBubbleWidget extends StatelessWidget {
   final bool isUser;
-  final String text;
-  final String avatarPersona;
-
+  final String text, avatarPersona;
   const ChatBubbleWidget({
     super.key,
     required this.isUser,
     required this.text,
     this.avatarPersona = 'TUTOR',
   });
-
   @override
-  Widget build(BuildContext context) {
-    if (isUser) {
-      return Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          margin: const EdgeInsets.only(top: 8, bottom: 8, left: 48, right: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: AptiquColors.primaryDark,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(4),
-            ),
-            boxShadow: AptiquColors.cardElevation,
-          ),
-          child: Text(
-            text,
-            style: AptiquTypography.bodyLg.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.fromLTRB(isUser ? 32 : 0, 0, isUser ? 0 : 16, 12),
+    child: Semantics(
+      label: isUser
+          ? 'Your response'
+          : avatarPersona == 'SYSTEM'
+          ? 'Lesson information'
+          : 'AptiQu tutor',
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: isUser
+              ? context.colors.primaryContainer
+              : context.colors.surface,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(isUser ? 16 : 4),
+            topRight: const Radius.circular(16),
+            bottomLeft: const Radius.circular(16),
+            bottomRight: Radius.circular(isUser ? 4 : 16),
           ),
         ),
-      );
-    }
-
-    // Tutor / System Bubble
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: AptiquColors.surfaceContainerHigh,
-            child: Icon(
-              avatarPersona == 'SYSTEM' ? Icons.info_outline : Icons.auto_awesome,
-              color: AptiquColors.primary,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainer,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(4),
-                  topRight: Radius.circular(18),
-                  bottomLeft: Radius.circular(18),
-                  bottomRight: Radius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isUser) ...[
+                Text(
+                  avatarPersona == 'SYSTEM' ? 'Lesson' : 'AptiQu',
+                  style: context.type.labelMedium?.copyWith(
+                    color: context.colors.primary,
+                  ),
                 ),
-                border: Border.all(color: AptiquColors.outlineVariant),
-              ),
-              child: Text(
+                const SizedBox(height: 12),
+              ],
+              Text(
                 text,
-                style: AptiquTypography.bodyLg.copyWith(
-                  color: AptiquColors.onSurface,
-                  height: 1.45,
+                style: context.type.bodyLarge?.copyWith(
+                  color: isUser
+                      ? context.colors.onPrimaryContainer
+                      : context.colors.onSurface,
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
-    );
-  }
+    ),
+  );
 }

@@ -1,282 +1,147 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:aptiqu/core/theme/aptiqu_colors.dart';
-import 'package:aptiqu/core/theme/aptiqu_typography.dart';
-import 'package:aptiqu/shared/widgets/badges/aptiqu_badge.dart';
-import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:aptiqu/core/progression/controllers/xp_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:aptiqu/core/routing/app_routes.dart';
+import 'package:aptiqu/core/progression/controllers/xp_controller.dart';
+import 'package:aptiqu/features/auth/presentation/controllers/auth_controller.dart';
 
-/// ZONE 1: TOP 12% SECTION
-/// Left: Circular profile image with First Name & Current Level under it
-/// Center: Space / between
-/// Right: Streak badge (Flame icon first + quantity) & Points badge (Bolt icon first + quantity)
 class TopBarZone extends StatelessWidget {
   final double height;
-
   const TopBarZone({super.key, required this.height});
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.find<AuthController>();
-    final xpController = Get.isRegistered<XpController>()
+    final auth = Get.find<AuthController>();
+    final xp = Get.isRegistered<XpController>()
         ? Get.find<XpController>()
         : null;
-
+    final colors = Theme.of(context).colorScheme;
+    final type = Theme.of(context).textTheme;
     return Obx(() {
-      final user = authController.currentUser.value;
-      final xp = xpController?.progress.value;
-
-      final firstName = user?.firstName.isNotEmpty == true
+      final user = auth.currentUser.value;
+      final progress = xp?.progress.value;
+      final name = user?.firstName.isNotEmpty == true
           ? user!.firstName
           : 'Learner';
-      final level = (xp != null && xp.level > 0)
-          ? xp.level
-          : (user?.level ?? 1);
-      final levelProgress = (xp != null && xp.progress > 0)
-          ? xp.progress
-          : ((user != null && user.progress > 0)
-                ? user.progress
-                : ((user != null &&
-                          user.xpRequiredForNextLevel > 0 &&
-                          user.xpIntoCurrentLevel > 0)
-                      ? user.xpIntoCurrentLevel / user.xpRequiredForNextLevel
-                      : 0.0));
-      final streak = user?.streak ?? '0d';
-      final coins = user?.coins ?? 0;
-      final avatarUrl = user?.avatarUrl ?? '';
-
-      return Container(
+      final level = progress != null && progress.level > 0
+          ? progress.level
+          : user?.level ?? 1;
+      final levelProgress = progress != null && progress.progress > 0
+          ? progress.progress
+          : user != null && user.progress > 0
+          ? user.progress
+          : user != null &&
+                user.xpRequiredForNextLevel > 0 &&
+                user.xpIntoCurrentLevel > 0
+          ? user.xpIntoCurrentLevel / user.xpRequiredForNextLevel
+          : 0.0;
+      return SizedBox(
         height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        decoration: BoxDecoration(
-          color: AptiquColors.surfaceDim.withValues(alpha: 0.95),
-          border: const Border(
-            bottom: BorderSide(color: AptiquColors.outlineVariant, width: 0.8),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Left Side: Circular Profile Image with Level Progress Ring + First Name & Level
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  context.push(AppRoutes.profile);
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Subtle circular level progression ring around avatar
-                        SizedBox(
-                          width: 38,
-                          height: 38,
-                          child: CustomPaint(
-                            painter: _AvatarProgressRingPainter(
-                              progress: levelProgress,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 31,
-                          height: 31,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AptiquColors.surfaceDim,
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AptiquColors.primaryContainer.withValues(
-                                  alpha: 0.35,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Semantics(
+                  label: '$name, Level $level. Open profile',
+                  onTap: () => context.push(AppRoutes.profile),
+                  button: true,
+                  excludeSemantics: true,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => context.push(AppRoutes.profile),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 48),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 36,
+                            height: 36,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: levelProgress.clamp(0, 1),
+                                  strokeWidth: 2,
+                                  color: colors.primary,
+                                  backgroundColor: colors.surfaceContainerHigh,
                                 ),
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          child: ClipOval(
-                            child: avatarUrl.isEmpty
-                                ? const Icon(
-                                    Icons.person_rounded,
-                                    color: AptiquColors.primary,
-                                    size: 18,
-                                  )
-                                : Image.network(
-                                    avatarUrl,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
-                                      color: AptiquColors.surfaceContainerHigh,
-                                      child: const Icon(
-                                        Icons.person_rounded,
-                                        color: AptiquColors.primary,
-                                        size: 18,
-                                      ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: CircleAvatar(
+                                    backgroundColor: colors.primaryContainer,
+                                    foregroundColor: colors.onPrimaryContainer,
+                                    foregroundImage:
+                                        user?.avatarUrl.isNotEmpty == true
+                                        ? NetworkImage(user!.avatarUrl)
+                                        : null,
+                                    onForegroundImageError:
+                                        user?.avatarUrl.isNotEmpty == true
+                                        ? (_, __) {}
+                                        : null,
+                                    child: Text(
+                                      name.substring(0, 1).toUpperCase(),
+                                      style: type.labelMedium,
                                     ),
                                   ),
-                          ),
-                        ),
-                        // Online Active Indicator Dot
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: AptiquColors.secondary,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AptiquColors.surfaceDim,
-                                width: 1.5,
-                              ),
-                              boxShadow: AptiquColors.secondaryGlow,
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            firstName,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: AptiquTypography.headlineSm.copyWith(
-                              fontSize: 13.5,
-                              fontWeight: FontWeight.w700,
-                              height: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 1),
-                          Text(
-                            'LEVEL $level',
-                            style: AptiquTypography.labelCaps.copyWith(
-                              fontSize: 9,
-                              color: AptiquColors.secondary,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.7,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: type.titleSmall,
+                                ),
+                                Text(
+                                  'Level $level',
+                                  style: type.bodySmall?.copyWith(
+                                    color: colors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              TextButton.icon(
+                onPressed: () => context.push(AppRoutes.dailyStreak),
+                icon: Icon(
+                  Icons.local_fire_department_outlined,
+                  color: colors.tertiary,
+                  size: 20,
+                ),
+                label: Text(user?.streak ?? '0d'),
+              ),
+              Semantics(
+                label: '${user?.coins ?? 0} coins',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.bolt_rounded,
+                      size: 20,
+                      color: colors.onSurfaceVariant,
+                    ),
+                    Text('${user?.coins ?? 0}', style: type.bodySmall),
                   ],
                 ),
               ),
-            ),
-
-            // Center: Flexible space automatically handled by spaceBetween
-
-            // Right Side: Streak & Points Badges (both FIRST ICON - then QUANTITY)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Streak Badge (Fire Icon + Quantity) - Opens Daily Streak Arena
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    AptiquBadge.streak(
-                      days: streak,
-                      onTap: () => context.push(AppRoutes.dailyStreak),
-                    ),
-                    if (user?.dailyChallengeDue == true &&
-                        user?.dailyChallengeCompleted != true)
-                      Positioned(
-                        top: -2,
-                        right: -2,
-                        child: Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEF4444),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AptiquColors.surfaceDim,
-                              width: 1.5,
-                            ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0xFFEF4444),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(width: 8),
-                // Coins Badge (Coins Icon + Quantity)
-                AptiquBadge.coins(coins: '$coins'),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });
-  }
-}
-
-/// Subtle circular progression ring around the avatar
-class _AvatarProgressRingPainter extends CustomPainter {
-  final double progress;
-
-  _AvatarProgressRingPainter({required this.progress});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width - 4) / 2;
-
-    // Track
-    final trackPaint = Paint()
-      ..color = AptiquColors.outlineVariant.withValues(alpha: 0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-
-    canvas.drawCircle(center, radius, trackPaint);
-
-    // Active Arc
-    if (progress > 0) {
-      final sweepAngle = 2 * math.pi * progress.clamp(0.0, 1.0);
-      final activePaint = Paint()
-        ..color = AptiquColors.secondary
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.2
-        ..strokeCap = StrokeCap.round;
-
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        -math.pi / 2,
-        sweepAngle,
-        false,
-        activePaint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _AvatarProgressRingPainter oldDelegate) {
-    return oldDelegate.progress != progress;
   }
 }

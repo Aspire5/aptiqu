@@ -63,13 +63,10 @@ class _AppLoaderState extends State<AppLoader> {
     height: widget.size,
     child: LayoutBuilder(
       builder: (context, constraints) => _visible
-          ? Semantics(
-              label: 'Loading',
-              child: AptiquLoadingIndicator(
-                size: math.min(
-                  widget.size,
-                  math.min(constraints.maxWidth, constraints.maxHeight),
-                ),
+          ? AptiquLoadingIndicator(
+              size: math.min(
+                widget.size,
+                math.min(constraints.maxWidth, constraints.maxHeight),
               ),
             )
           : const SizedBox.shrink(),

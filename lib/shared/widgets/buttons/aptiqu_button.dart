@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:aptiqu/core/theme/aptiqu_colors.dart';
-import 'package:aptiqu/core/theme/aptiqu_typography.dart';
 import '../indicators/app_loader.dart';
 
 enum AptiquButtonVariant { primary, secondary, outline, google }
 
-/// Reusable Cyber Glow Button
-class AptiquButton extends StatefulWidget {
+/// Native Material activation, focus and disabled behavior for shared actions.
+class AptiquButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final AptiquButtonVariant variant;
@@ -31,7 +29,6 @@ class AptiquButton extends StatefulWidget {
     this.padding,
     this.fontSize,
   });
-
   const AptiquButton.outline({
     super.key,
     required this.label,
@@ -44,7 +41,6 @@ class AptiquButton extends StatefulWidget {
     this.padding,
     this.fontSize,
   }) : variant = AptiquButtonVariant.outline;
-
   const AptiquButton.google({
     super.key,
     required this.label,
@@ -55,161 +51,120 @@ class AptiquButton extends StatefulWidget {
     this.borderRadius,
     this.padding,
     this.fontSize,
-  })  : variant = AptiquButtonVariant.google,
-        icon = null;
-
-  @override
-  State<AptiquButton> createState() => _AptiquButtonState();
-}
-
-class _AptiquButtonState extends State<AptiquButton> {
-  bool _isPressed = false;
+  }) : variant = AptiquButtonVariant.google,
+       icon = null;
 
   @override
   Widget build(BuildContext context) {
-    final effectiveRadius = widget.borderRadius ?? BorderRadius.circular(16);
-
-    BoxDecoration decoration;
-    TextStyle textStyle;
-
-    switch (widget.variant) {
-      case AptiquButtonVariant.primary:
-        decoration = BoxDecoration(
-          gradient: AptiquColors.primaryGradient,
-          borderRadius: effectiveRadius,
-          boxShadow: widget.onPressed != null && !widget.isLoading
-              ? [
-                  BoxShadow(
-                    color: AptiquColors.primaryContainer.withValues(alpha: 0.45),
-                    blurRadius: 14,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : null,
-        );
-        textStyle = AptiquTypography.bodyMd.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
-          fontSize: widget.fontSize ?? 13.5,
-        );
-        break;
-
-      case AptiquButtonVariant.outline:
-        decoration = BoxDecoration(
-          color: AptiquColors.surfaceContainer,
-          borderRadius: effectiveRadius,
-          border: Border.all(color: AptiquColors.outlineVariant, width: 1.2),
-        );
-        textStyle = AptiquTypography.bodyMd.copyWith(
-          color: AptiquColors.onSurface,
-          fontWeight: FontWeight.w600,
-          fontSize: widget.fontSize ?? 12.5,
-        );
-        break;
-
-      case AptiquButtonVariant.secondary:
-        decoration = BoxDecoration(
-          color: AptiquColors.secondary.withValues(alpha: 0.15),
-          borderRadius: effectiveRadius,
-          border: Border.all(color: AptiquColors.secondary.withValues(alpha: 0.6)),
-          boxShadow: [
-            BoxShadow(
-              color: AptiquColors.secondary.withValues(alpha: 0.25),
-              blurRadius: 10,
-            ),
-          ],
-        );
-        textStyle = AptiquTypography.bodyMd.copyWith(
-          color: AptiquColors.secondary,
-          fontWeight: FontWeight.w700,
-          fontSize: widget.fontSize ?? 13.5,
-        );
-        break;
-
-      case AptiquButtonVariant.google:
-        decoration = BoxDecoration(
-          color: AptiquColors.buttonDarkBg,
-          borderRadius: effectiveRadius,
-          border: Border.all(color: AptiquColors.buttonDarkBorder, width: 1.2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.25),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        );
-        textStyle = AptiquTypography.bodyMd.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
-          fontSize: widget.fontSize ?? 13.5,
-        );
-        break;
-    }
-
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: widget.isLoading ? null : widget.onPressed,
-      child: AnimatedScale(
-        scale: _isPressed ? 0.97 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: Container(
-          width: widget.width,
-          height: widget.height,
-          padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 14),
-          decoration: decoration,
-          child: Center(
-            child: widget.isLoading
-                ? const AppLoader(size: 20)
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (widget.variant == AptiquButtonVariant.google) ...[
-                        _buildGoogleIcon(),
-                        const SizedBox(width: 10),
-                      ] else if (widget.icon != null) ...[
-                        widget.icon!,
-                        const SizedBox(width: 8),
-                      ],
-                      Flexible(
-                        child: Text(
-                          widget.label,
-                          style: textStyle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
+    final colors = Theme.of(context).colorScheme;
+    final outlined =
+        variant == AptiquButtonVariant.outline ||
+        variant == AptiquButtonVariant.google;
+    final primary = variant == AptiquButtonVariant.primary;
+    final google = variant == AptiquButtonVariant.google;
+    final foreground = primary
+        ? colors.onPrimary
+        : google
+        ? const Color(0xFF1F1F1F)
+        : outlined
+        ? colors.onSurface
+        : colors.onSecondaryContainer;
+    final style = ButtonStyle(
+      minimumSize: WidgetStatePropertyAll(Size(48, height < 48 ? 48 : height)),
+      padding: WidgetStatePropertyAll(
+        padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: borderRadius ?? BorderRadius.circular(12),
         ),
       ),
+      textStyle: WidgetStatePropertyAll(
+        google
+            ? const TextStyle(
+                fontFamily: 'GoogleSans',
+                fontSize: 14,
+                height: 20 / 14,
+                fontWeight: FontWeight.w500,
+              )
+            : Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontSize: fontSize ?? 14),
+      ),
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.disabled)
+            ? colors.onSurfaceVariant
+            : foreground,
+      ),
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.disabled)
+            ? colors.surfaceContainerHigh
+            : primary
+            ? colors.primary
+            : google
+            ? Colors.white
+            : outlined
+            ? colors.surface
+            : colors.secondaryContainer,
+      ),
+      side: WidgetStateProperty.resolveWith(
+        (states) => BorderSide(
+          color: states.contains(WidgetState.focused)
+              ? (google
+                    ? const Color(0xFF1F1F1F)
+                    : primary
+                    ? colors.onPrimary
+                    : colors.primary)
+              : google
+              ? const Color(0xFF747775)
+              : outlined
+              ? colors.outline
+              : Colors.transparent,
+          width: states.contains(WidgetState.focused) ? 2 : 1,
+        ),
+      ),
+      elevation: const WidgetStatePropertyAll(0),
     );
-  }
-
-  Widget _buildGoogleIcon() {
-    return Container(
-      width: 22,
-      height: 22,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        'G',
-        style: TextStyle(
-          color: Color(0xFF4285F4),
-          fontWeight: FontWeight.w900,
-          fontSize: 15,
-          fontFamily: 'sans-serif',
-        ),
-      ),
+    final child = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isLoading) ...[
+          const AppLoader(size: 20),
+          const SizedBox(width: 8),
+        ] else if (variant == AptiquButtonVariant.google) ...[
+          ExcludeSemantics(
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              color: Colors.white,
+              child: Image.asset(
+                'assets/images/google_g.png',
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ] else if (icon != null) ...[
+          icon!,
+          const SizedBox(width: 8),
+        ],
+        Flexible(child: Text(label, textAlign: TextAlign.center)),
+      ],
+    );
+    return SizedBox(
+      width: width,
+      child: outlined
+          ? OutlinedButton(
+              style: style,
+              onPressed: isLoading ? null : onPressed,
+              child: child,
+            )
+          : FilledButton(
+              style: style,
+              onPressed: isLoading ? null : onPressed,
+              child: child,
+            ),
     );
   }
 }

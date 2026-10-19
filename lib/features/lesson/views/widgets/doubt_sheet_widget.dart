@@ -1,20 +1,20 @@
-import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
-import '../../../../core/theme/aptiqu_typography.dart';
+import '../../../../core/theme/aptiqu_tokens.dart';
+import '../../../../shared/widgets/buttons/aptiqu_button.dart';
+import '../../../../shared/widgets/sheets/app_sheet.dart';
 import '../../controllers/lesson_feed_controller.dart';
 
 class DoubtSheetWidget extends StatefulWidget {
   final LessonFeedController controller;
-
   const DoubtSheetWidget({super.key, required this.controller});
-
-  static Future<void> show(BuildContext context, LessonFeedController controller) {
-    return showModalBottomSheet(
+  static Future<void> show(
+    BuildContext context,
+    LessonFeedController controller,
+  ) async {
+    await showAppSheet<void>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => DoubtSheetWidget(controller: controller),
+      title: 'Ask tutor',
+      builder: (_) => DoubtSheetWidget(controller: controller),
     );
   }
 
@@ -23,142 +23,118 @@ class DoubtSheetWidget extends StatefulWidget {
 }
 
 class _DoubtSheetWidgetState extends State<DoubtSheetWidget> {
-  final TextEditingController _questionController = TextEditingController();
-  bool _isLoading = false;
-  String? _tutorReply;
-
+  final _question = TextEditingController();
+  bool _loading = false, _unavailable = false;
+  String? _reply, _error;
   @override
   void dispose() {
-    _questionController.dispose();
+    _question.dispose();
     super.dispose();
   }
 
-  Future<void> _handleAskDoubt() async {
-    final query = _questionController.text.trim();
-    if (query.isEmpty || _isLoading) return;
-
+  Future<void> _ask() async {
+    final query = _question.text.trim();
+    if (query.isEmpty || _loading || _unavailable) return;
     setState(() {
-      _isLoading = true;
-      _tutorReply = null;
+      _loading = true;
+      _reply = null;
+      _error = null;
     });
-
-    final reply = await widget.controller.submitDoubt(query);
-
-    setState(() {
-      _isLoading = false;
-      _tutorReply = reply;
-    });
+    try {
+      final reply = await widget.controller.submitDoubt(query);
+      if (!mounted) return;
+      setState(() {
+        _unavailable = widget.controller.doubtUnavailable.value;
+        _reply = widget.controller.doubtError.value == null && !_unavailable
+            ? reply
+            : null;
+        _error = widget.controller.doubtError.value;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => _error = 'Could not reach your tutor. Please try again.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-
-    return Container(
-      padding: EdgeInsets.only(
-        top: 20,
-        left: 20,
-        right: 20,
-        bottom: bottomInset + 20,
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Text(
+        'Tutor preview',
+        style: context.type.labelLarge?.copyWith(color: context.colors.primary),
       ),
-      decoration: const BoxDecoration(
-        color: AptiquColors.surfaceContainerHigh,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      const SizedBox(height: 8),
+      Text(
+        'What would you like help with on this step?',
+        style: context.type.bodyLarge,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.help_outline, color: AptiquColors.tertiary, size: 24),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Ask Tutor a Doubt',
-                    style: AptiquTypography.headlineSm.copyWith(
-                      color: AptiquColors.onSurface,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              IconButton(
-                icon: const Icon(Icons.close, color: AptiquColors.onSurfaceVariant),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Stuck on this step? Type what you are confused about and your AI tutor will assist you.',
-            style: AptiquTypography.bodyMd.copyWith(color: AptiquColors.onSurfaceVariant),
-          ),
-          const SizedBox(height: 16),
-          if (_tutorReply != null) ...[
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AptiquColors.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AptiquColors.tertiaryContainer),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.auto_awesome, color: AptiquColors.tertiary, size: 20),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      _tutorReply!,
-                      style: AptiquTypography.bodyMd.copyWith(
-                        color: AptiquColors.onSurface,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-          TextField(
-            controller: _questionController,
-            maxLines: 3,
-            minLines: 1,
-            style: AptiquTypography.bodyLg.copyWith(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: 'e.g. Why is 4:8 the same as 1:2?',
-              hintStyle: AptiquTypography.bodyMd.copyWith(color: AptiquColors.onSurfaceDisabled),
-              filled: true,
-              fillColor: AptiquColors.surfaceContainerLowest,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AptiquColors.outlineVariant),
-              ),
+      const SizedBox(height: 16),
+      if (_unavailable) ...[
+        Semantics(
+          liveRegion: true,
+          child: Text('Tutor · Coming soon', style: context.type.titleSmall),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Personal tutor explanations are not available yet. Continue with your lesson for now.',
+          style: context.type.bodyLarge,
+        ),
+        const SizedBox(height: 16),
+      ],
+      if (_reply != null) ...[
+        Semantics(
+          liveRegion: true,
+          child: Text('Tutor reply', style: context.type.titleSmall),
+        ),
+        const SizedBox(height: 8),
+        Text(_reply!, style: context.type.bodyLarge),
+        const SizedBox(height: 24),
+      ],
+      if (_error != null) ...[
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            _error!,
+            style: context.type.bodyMedium?.copyWith(
+              color: context.colors.error,
             ),
           ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.tertiaryContainer,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            onPressed: _isLoading ? null : _handleAskDoubt,
-            child: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: AppLoader(),
-                  )
-                : const Text('Ask Tutor'),
-          ),
-        ],
+        ),
+        const SizedBox(height: 16),
+      ],
+      TextField(
+        controller: _question,
+        enabled: !_loading,
+        readOnly: _unavailable,
+        maxLength: 500,
+        minLines: 1,
+        maxLines: 4,
+        style: context.type.bodyLarge,
+        decoration: const InputDecoration(
+          labelText: 'Your question',
+          hintText: 'What would you like explained?',
+        ),
       ),
-    );
-  }
+      const SizedBox(height: 16),
+      if (!_unavailable)
+        ValueListenableBuilder(
+          valueListenable: _question,
+          builder: (context, value, _) => AptiquButton(
+            label: _loading
+                ? 'Asking tutor…'
+                : _error != null
+                ? 'Try again'
+                : 'Ask tutor',
+            isLoading: _loading,
+            onPressed: _loading || value.text.trim().isEmpty ? null : _ask,
+          ),
+        ),
+    ],
+  );
 }

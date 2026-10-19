@@ -14,13 +14,19 @@ class PvpArenaController extends GetxController {
     required this.matchId,
     required this.initialPlayersData,
     required this.totalQuestions,
-  });
+    PvpSocketService? socketService,
+  }) : _socketService = socketService ?? PvpSocketService();
 
-  final PvpSocketService _socketService = PvpSocketService();
+  final PvpSocketService _socketService;
   StreamSubscription? _sub;
+  Timer? _recoveryTimer;
+  final isRecovering = false.obs, recoveredCompletion = false.obs;
+  final connectionError = ''.obs;
 
   final RxInt currentQuestionIndex = 0.obs;
-  final Rx<PvpQuestionDataModel?> currentQuestion = Rx<PvpQuestionDataModel?>(null);
+  final Rx<PvpQuestionDataModel?> currentQuestion = Rx<PvpQuestionDataModel?>(
+    null,
+  );
   final RxString selectedOptionId = ''.obs;
   final RxBool hasSubmittedAnswer = false.obs;
 
@@ -34,6 +40,8 @@ class PvpArenaController extends GetxController {
   final RxInt remainingSeconds = 60.obs;
   Timer? _countdownTimer;
   final Stopwatch _questionStopwatch = Stopwatch();
+  int _responseTimeOffsetMs = 0;
+  bool _snapshotRequested = false;
 
   // Round results
   final RxString roundCorrectAnswer = ''.obs;
@@ -76,6 +84,7 @@ class PvpArenaController extends GetxController {
 
       switch (eventName) {
         case 'QUESTION_STARTED':
+          _finishRecovery();
           _handleQuestionStarted(data);
           break;
 
@@ -85,11 +94,27 @@ class PvpArenaController extends GetxController {
           break;
 
         case 'QUESTION_ENDED':
+          _finishRecovery();
           _handleQuestionEnded(data);
           break;
 
         case 'MATCH_COMPLETED':
+          _finishRecovery();
           _handleMatchCompleted(data);
+          break;
+        case 'AUTH_SUCCESS':
+          if (isRecovering.value) _requestSnapshot();
+          break;
+        case 'MATCH_RECONNECTED':
+          if (data['matchId'] == matchId) _restoreSnapshot(data);
+          break;
+        case 'ERROR':
+        case 'CONNECTION_LOST':
+          _recoveryTimer?.cancel();
+          isRecovering.value = false;
+          connectionError.value =
+              data['message']?.toString() ??
+              'Connection interrupted. Try reconnecting.';
           break;
       }
     });
@@ -112,6 +137,7 @@ class PvpArenaController extends GetxController {
     final durationSec = data['durationSeconds'] as int? ?? 60;
     remainingSeconds.value = durationSec;
 
+    _responseTimeOffsetMs = 0;
     _questionStopwatch.reset();
     _questionStopwatch.start();
 
@@ -159,8 +185,12 @@ class PvpArenaController extends GetxController {
       final uid = p['userId']?.toString();
       if (uid == currentUserId) {
         xpAwarded.value = p['xpAwarded'] as int? ?? 0;
+        if (p['score'] is num) myScore.value = (p['score'] as num).toInt();
       } else {
         isOpponentAfk.value = p['isAfk'] as bool? ?? false;
+        if (p['score'] is num) {
+          opponentScore.value = (p['score'] as num).toInt();
+        }
       }
     }
 
@@ -177,11 +207,21 @@ class PvpArenaController extends GetxController {
   }
 
   void selectOption(String optionId) {
-    if (hasSubmittedAnswer.value || isRoundEnded.value) return;
+    if (hasSubmittedAnswer.value ||
+        selectedOptionId.isNotEmpty ||
+        isRoundEnded.value ||
+        isMatchCompleted.value ||
+        recoveredCompletion.value ||
+        isRecovering.value ||
+        connectionError.isNotEmpty ||
+        remainingSeconds.value <= 0) {
+      return;
+    }
 
     selectedOptionId.value = optionId;
     _questionStopwatch.stop();
-    final elapsedMs = _questionStopwatch.elapsedMilliseconds;
+    final elapsedMs =
+        _responseTimeOffsetMs + _questionStopwatch.elapsedMilliseconds;
 
     // Submit authoritative answer to backend WebSocket
     _socketService.submitAnswer(
@@ -192,10 +232,108 @@ class PvpArenaController extends GetxController {
     );
   }
 
+  void _finishRecovery() {
+    _recoveryTimer?.cancel();
+    isRecovering.value = false;
+    connectionError.value = '';
+  }
+
+  Future<void> recoverConnection() async {
+    if (isRecovering.value ||
+        isMatchCompleted.value ||
+        recoveredCompletion.value ||
+        isClosed) {
+      return;
+    }
+    isRecovering.value = true;
+    _snapshotRequested = false;
+    connectionError.value = '';
+    await _socketService.connect();
+    if (isClosed) return;
+    if (!_socketService.isConnected) {
+      isRecovering.value = false;
+      connectionError.value =
+          'Could not reconnect. Check your connection and try again.';
+      return;
+    }
+    if (_socketService.isAuthenticated) _requestSnapshot();
+    _recoveryTimer?.cancel();
+    _recoveryTimer = Timer(const Duration(seconds: 15), () {
+      if (isClosed || !isRecovering.value) return;
+      isRecovering.value = false;
+      connectionError.value =
+          'No match update received. Try reconnecting again.';
+    });
+  }
+
+  void _requestSnapshot() {
+    if (_snapshotRequested || !isRecovering.value) return;
+    _snapshotRequested = true;
+    _socketService.reconnectMatch(matchId);
+  }
+
+  void _restoreSnapshot(Map<String, dynamic> data) {
+    _finishRecovery();
+    _countdownTimer?.cancel();
+    for (final player in data['players'] as List? ?? []) {
+      if (player['userId'] == currentUserId) {
+        myScore.value = (player['score'] as num?)?.toInt() ?? 0;
+      } else {
+        opponentScore.value = (player['score'] as num?)?.toInt() ?? 0;
+      }
+    }
+    // Reconnection does not return winner/reward fields. History remains authoritative.
+    if (data['status'] == 'COMPLETED') {
+      _questionStopwatch.stop();
+      recoveredCompletion.value = true;
+      return;
+    }
+    final nextIndex =
+        (data['currentQuestionIndex'] as num?)?.toInt() ??
+        currentQuestionIndex.value;
+    final sameQuestion =
+        currentQuestion.value != null &&
+        nextIndex == currentQuestionIndex.value;
+    if (!sameQuestion) {
+      selectedOptionId.value = '';
+      hasSubmittedAnswer.value = false;
+    }
+    currentQuestionIndex.value = nextIndex;
+    final question = data['question'];
+    currentQuestion.value = question is Map && data['status'] != 'STARTING'
+        ? PvpQuestionDataModel.fromJson(Map<String, dynamic>.from(question))
+        : null;
+    if (!sameQuestion || data['status'] == 'QUESTION_ACTIVE') {
+      roundCorrectAnswer.value = '';
+      roundExplanation.value = '';
+    }
+    final remainingMs = (data['remainingMs'] as num?)?.toInt() ?? 0;
+    remainingSeconds.value = (remainingMs / 1000).ceil().clamp(0, 60);
+    isRoundEnded.value =
+        data['status'] != 'QUESTION_ACTIVE' || remainingMs <= 0;
+    if (isRoundEnded.value) _questionStopwatch.stop();
+    if (!isRoundEnded.value) {
+      if (!sameQuestion) {
+        _responseTimeOffsetMs = (60000 - remainingMs).clamp(0, 60000);
+        _questionStopwatch.reset();
+      }
+      if (selectedOptionId.isEmpty) _questionStopwatch.start();
+      _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (remainingSeconds.value > 0) {
+          remainingSeconds.value--;
+        } else {
+          timer.cancel();
+        }
+      });
+    }
+  }
+
   @override
   void onClose() {
     _sub?.cancel();
+    _recoveryTimer?.cancel();
     _countdownTimer?.cancel();
+    _questionStopwatch.stop();
     super.onClose();
   }
 }

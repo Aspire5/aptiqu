@@ -5,7 +5,9 @@ import '../models/lesson_session_model.dart';
 class LessonRepository {
   final DioClient _dioClient = Get.find<DioClient>();
 
-  Future<ActiveLessonStateModel> getActiveLessonState([String? roadmapStepId]) async {
+  Future<ActiveLessonStateModel> getActiveLessonState([
+    String? roadmapStepId,
+  ]) async {
     final response = await _dioClient.dio.get(
       '/lessons/active',
       queryParameters: {
@@ -89,7 +91,7 @@ class LessonRepository {
     return LessonSessionModel.fromJson(data);
   }
 
-  Future<String> submitInterrupt({
+  Future<({String message, bool unavailable})> submitInterrupt({
     required String sessionId,
     required String clientActionId,
     required String currentNodeId,
@@ -105,7 +107,10 @@ class LessonRepository {
     );
 
     final data = response.data['data'] as Map<String, dynamic>;
-    return data['message'] as String? ?? 'Doubt received.';
+    return (
+      message: data['message'] as String? ?? 'Doubt received.',
+      unavailable: data['status'] == 'STUB_RESPONSE',
+    );
   }
 
   Future<void> pauseSession(String sessionId) async {

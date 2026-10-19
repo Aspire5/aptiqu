@@ -130,11 +130,11 @@ void main() {
       });
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byType(HomeDashboardView), findsOneWidget);
-      expect(find.text('HOME'), findsOneWidget);
-      expect(find.text('FRIENDS'), findsOneWidget);
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.text('Friends'), findsOneWidget);
       expect(
-        tester.getCenter(find.text('FRIENDS')).dx,
-        greaterThan(tester.getCenter(find.text('RANKED')).dx),
+        tester.getCenter(find.text('Friends')).dx,
+        greaterThan(tester.getCenter(find.text('Ranked')).dx),
       );
       expect(find.text('PLAY'), findsNothing);
       expect(tester.takeException(), isNull);
@@ -144,7 +144,7 @@ void main() {
       expect(home.currentSession.value?.stateVersion, 7);
       expect(home.messages.any((m) => m.text == 'Earlier teaching'), true);
       expect(lessons.resumed, 'session');
-      await tester.tap(find.text('HOME'));
+      await tester.tap(find.text('Home'));
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byType(HomeDashboardView), findsOneWidget);
       expect(home.currentSession.value?.id, 'session');

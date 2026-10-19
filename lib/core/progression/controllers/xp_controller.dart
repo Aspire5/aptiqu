@@ -11,6 +11,10 @@ class XpController extends GetxController {
 
   final Rx<XpProgressModel> progress = const XpProgressModel().obs;
   final RxBool isLevelUpDialogActive = false.obs;
+  final Rxn<LevelUpModel> pendingCelebration = Rxn<LevelUpModel>();
+  bool presentationManaged = false;
+  Worker? _authWorker;
+  String? _owner;
   int _lastCelebratedLevel = 1;
 
   @override
@@ -19,7 +23,13 @@ class XpController extends GetxController {
     // Reactively listen to AuthController currentUser changes
     if (Get.isRegistered<AuthController>()) {
       final authController = Get.find<AuthController>();
-      ever(authController.currentUser, (user) {
+      _owner = authController.currentUser.value?.id;
+      _authWorker = ever(authController.currentUser, (user) {
+        if (user?.id != _owner) {
+          _owner = user?.id;
+          pendingCelebration.value = null;
+          _lastCelebratedLevel = user?.level ?? 1;
+        }
         if (user != null) {
           progress.value = XpProgressModel(
             level: user.level,
@@ -54,7 +64,9 @@ class XpController extends GetxController {
     final previousLevel = progress.value.level;
     progress.value = xp;
 
-    debugPrint('[XP] handleXpUpdate: earned=${xp.earned}, level=${xp.level}, previousLevel=$previousLevel, levelUpOccurred=${levelUp?.occurred}');
+    debugPrint(
+      '[XP] handleXpUpdate: earned=${xp.earned}, level=${xp.level}, previousLevel=$previousLevel, levelUpOccurred=${levelUp?.occurred}',
+    );
 
     // Synchronize with AuthController user model
     if (Get.isRegistered<AuthController>()) {
@@ -71,10 +83,13 @@ class XpController extends GetxController {
       }
     }
 
-    final didLevelUp = (levelUp != null && levelUp.occurred) ||
-        (previousLevel > 0 && xp.level > previousLevel && xp.level > _lastCelebratedLevel);
+    final didLevelUp =
+        (levelUp != null && levelUp.occurred) ||
+        (previousLevel > 0 &&
+            xp.level > previousLevel &&
+            xp.level > _lastCelebratedLevel);
 
-    if (didLevelUp && !isLevelUpDialogActive.value) {
+    if (didLevelUp && xp.level > _lastCelebratedLevel) {
       _lastCelebratedLevel = xp.level;
       final effectiveLevelUp = (levelUp != null && levelUp.occurred)
           ? levelUp
@@ -85,9 +100,12 @@ class XpController extends GetxController {
               levelsGained: math.max(1, xp.level - previousLevel),
             );
 
-      final targetContext = context ?? AppRouter.navigatorKey.currentContext ?? Get.context;
+      final targetContext =
+          context ?? AppRouter.navigatorKey.currentContext ?? Get.context;
       debugPrint('[XP] Target context for celebration: $targetContext');
-      if (targetContext != null) {
+      if (presentationManaged) {
+        queueCelebration(effectiveLevelUp);
+      } else if (targetContext != null) {
         showLevelUpCelebration(targetContext, effectiveLevelUp);
       }
     }
@@ -112,6 +130,10 @@ class XpController extends GetxController {
 
   /// Displays the single, polished level-up modal celebration.
   void showLevelUpCelebration(BuildContext context, LevelUpModel levelUp) {
+    if (presentationManaged) {
+      queueCelebration(levelUp);
+      return;
+    }
     if (isLevelUpDialogActive.value) return;
     isLevelUpDialogActive.value = true;
 
@@ -128,5 +150,28 @@ class XpController extends GetxController {
     ).then((_) {
       isLevelUpDialogActive.value = false;
     });
+  }
+
+  /// Presentation can wait for a safe boundary; progression is already applied.
+  void queueCelebration(LevelUpModel award) {
+    final pending = pendingCelebration.value;
+    final from = pending == null
+        ? award.fromLevel
+        : math.min(pending.fromLevel, award.fromLevel);
+    final to = pending == null
+        ? award.toLevel
+        : math.max(pending.toLevel, award.toLevel);
+    pendingCelebration.value = LevelUpModel(
+      occurred: true,
+      fromLevel: from,
+      toLevel: to,
+      levelsGained: to - from,
+    );
+  }
+
+  @override
+  void onClose() {
+    _authWorker?.dispose();
+    super.onClose();
   }
 }

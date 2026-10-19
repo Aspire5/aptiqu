@@ -2,7 +2,6 @@ import '../../social/social_controller.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
 import 'package:dio/dio.dart';
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/practice_models.dart';
 import '../repositories/practice_repository.dart';
@@ -23,6 +22,7 @@ class PracticeSessionController extends GetxController {
   late final Rx<PracticeSessionModel> session;
   final RxInt currentQuestionIndex = 0.obs;
   final RxBool isSubmitting = false.obs;
+  final RxString submitError = ''.obs;
   final RxString selectedOptionId = ''.obs;
   final Rx<PracticeAnswerResultModel?> lastResult =
       Rx<PracticeAnswerResultModel?>(null);
@@ -222,6 +222,7 @@ class PracticeSessionController extends GetxController {
     }
 
     isSubmitting.value = true;
+    submitError.value = '';
     _countdown?.cancel();
     _stopwatch.stop();
     final elapsedMs = _stopwatch.elapsedMilliseconds;
@@ -278,19 +279,8 @@ class PracticeSessionController extends GetxController {
         _stopwatch.start();
         if (session.value.timerEnabled) _runCountdown();
       }
-      final context = AppRouter.navigatorKey.currentContext;
-      final message = err.toString().replaceAll('Exception: ', '');
-      if (context != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Submission failed: $message'),
-            backgroundColor: Colors.redAccent,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      } else {
-        debugPrint('[Practice] Answer submission failed: $message');
-      }
+      submitError.value =
+          'Submission failed: ${err.toString().replaceAll('Exception: ', '')}';
     } finally {
       isSubmitting.value = false;
     }
@@ -307,6 +297,7 @@ class PracticeSessionController extends GetxController {
       currentQuestionIndex.value++;
       selectedOptionId.value = '';
       lastResult.value = null;
+      submitError.value = '';
       hintsRevealed.value = 0;
       _startQuestionClock();
     } else {

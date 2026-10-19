@@ -2,8 +2,12 @@ import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
-import '../../../../core/theme/aptiqu_typography.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import '../../../../shared/widgets/feedback/app_state_view.dart';
+import '../../../../core/theme/aptiqu_tokens.dart';
+import '../../../../core/theme/appearance_theme.dart';
+import '../widgets/appearance_setting.dart';
+import '../../../../shared/widgets/layout/text_fit.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/progression/controllers/xp_controller.dart';
 import '../../../auth/domain/models/user_model.dart';
@@ -14,10 +18,7 @@ import '../../../../core/routing/app_routes.dart';
 class ProfileScreen extends StatefulWidget {
   final bool autoFetch;
 
-  const ProfileScreen({
-    super.key,
-    this.autoFetch = true,
-  });
+  const ProfileScreen({super.key, this.autoFetch = true});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -25,37 +26,46 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
+  bool _isSigningOut = false;
+  bool _logoutDialogOpen = false;
+  String? _refreshError;
+  String? _logoutError;
   UserStatsModel? _stats;
+  late final Future<PackageInfo?> _packageInfo;
 
   @override
   void initState() {
     super.initState();
+    _packageInfo = _loadPackageInfo();
     if (widget.autoFetch) {
       _fetchFreshProfileAndStats();
     }
   }
 
   Future<void> _fetchFreshProfileAndStats() async {
-    setState(() => _isLoading = true);
+    if (_isLoading || _isSigningOut) return;
+    final auth = Get.find<AuthController>();
+    final accountId = auth.currentUser.value?.id;
+    setState(() {
+      _isLoading = true;
+      _refreshError = null;
+    });
     try {
       final dioClient = Get.find<DioClient>();
       final response = await dioClient.dio.get('/user/profile');
       if (response.statusCode == 200 && response.data['success'] == true) {
         final data = response.data['data'] as Map<String, dynamic>;
         final updatedUser = UserModel.fromJson(data);
-
-        if (Get.isRegistered<AuthController>()) {
-          Get.find<AuthController>().currentUser.value = updatedUser;
-        }
-
-        if (updatedUser.stats != null) {
-          setState(() {
-            _stats = updatedUser.stats;
-          });
-        }
+        if (!mounted || auth.currentUser.value?.id != accountId) return;
+        auth.currentUser.value = updatedUser;
+        setState(() => _stats = updatedUser.stats);
+      } else {
+        throw StateError('Profile unavailable');
       }
     } catch (_) {
-      // Fallback silently to existing local stats in AuthController
+      if (mounted && auth.currentUser.value?.id == accountId) {
+        setState(() => _refreshError = 'Could not refresh your profile.');
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -63,32 +73,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<PackageInfo?> _loadPackageInfo() async {
+    try {
+      return await PackageInfo.fromPlatform();
+    } catch (_) {
+      return null;
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => AppearanceTheme(builder: _buildProfile);
+
+  Widget _buildProfile(BuildContext context) {
     final authController = Get.find<AuthController>();
-    final xpController = Get.isRegistered<XpController>() ? Get.find<XpController>() : null;
+    final xpController = Get.isRegistered<XpController>()
+        ? Get.find<XpController>()
+        : null;
 
     return Scaffold(
-      backgroundColor: AptiquColors.surface,
+      backgroundColor: context.colors.surface,
       appBar: AppBar(
-        backgroundColor: AptiquColors.surfaceDim.withValues(alpha: 0.95),
+        backgroundColor: context.colors.surface.withValues(alpha: 0.95),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.white),
+          tooltip: 'Back',
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 20,
+            color: context.colors.onSurface,
+          ),
           onPressed: () => Navigator.of(context).maybePop(),
         ),
-        title: Text(
-          'PROFILE',
-          style: AptiquTypography.labelCapsBold.copyWith(
-            fontSize: 14,
-            letterSpacing: 1.5,
-            color: AptiquColors.onSurfaceVariant,
-          ),
-        ),
-        centerTitle: true,
+        title: const Text('Profile'),
+        centerTitle: false,
         actions: [
           if (_isLoading)
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(right: 12),
               child: Center(
                 child: SizedBox(
@@ -98,93 +118,148 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-          IconButton(
-            tooltip: 'Sign Out',
-            icon: const Icon(Icons.logout_rounded, size: 20, color: Colors.white70),
-            onPressed: () => _showLogoutConfirmationDialog(context),
-          ),
           const SizedBox(width: 8),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: AptiquColors.outlineVariant,
-            height: 1,
-          ),
+          child: Container(color: context.colors.outlineVariant, height: 1),
         ),
       ),
       body: Obx(() {
         final user = authController.currentUser.value;
         final xp = xpController?.progress.value;
 
-        final firstName = user?.firstName.isNotEmpty == true ? user!.firstName : 'Student';
-        final lastName = user?.lastName ?? '';
-        final fullName = lastName.isNotEmpty ? '$firstName $lastName' : firstName;
+        final firstName = user?.firstName.trim().isNotEmpty == true
+            ? user!.firstName.trim()
+            : 'Student';
+        final lastName = user?.lastName.trim() ?? '';
+        final fullName = lastName.isNotEmpty
+            ? '$firstName $lastName'
+            : firstName;
         final avatarUrl = user?.avatarUrl.isNotEmpty == true
             ? user!.avatarUrl
-            : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80';
+            : '';
 
-        final level = xp != null && xp.level > 0 ? xp.level : (user?.level ?? 1);
-        final currXpInLevel = xp != null ? xp.xpIntoCurrentLevel : (user?.xpIntoCurrentLevel ?? 0);
-        final xpForNext = xp != null ? xp.xpRequiredForNextLevel : (user?.xpRequiredForNextLevel ?? 20);
-        final levelProgress = xp != null ? xp.progress : (user?.progress ?? 0.0);
+        final level = xp != null && xp.level > 0
+            ? xp.level
+            : (user?.level ?? 1);
+        final currXpInLevel = xp != null
+            ? xp.xpIntoCurrentLevel
+            : (user?.xpIntoCurrentLevel ?? 0);
+        final xpForNext = xp != null
+            ? xp.xpRequiredForNextLevel
+            : (user?.xpRequiredForNextLevel ?? 20);
+        final levelProgress = xp != null
+            ? xp.progress
+            : (user?.progress ?? 0.0);
         final totalXp = xp != null ? xp.total : (user?.totalXp ?? 0);
 
-        final stats = _stats ?? user?.stats ?? const UserStatsModel();
+        final stats = _stats ?? user?.stats;
 
         return RefreshIndicator(
-          color: AptiquColors.primary,
-          backgroundColor: AptiquColors.surfaceContainerHigh,
+          color: context.colors.primary,
+          backgroundColor: context.colors.surfaceContainerHigh,
           onRefresh: _fetchFreshProfileAndStats,
           child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // 1. User Identity Header Card
-                _buildUserHeaderCard(
-                  fullName: fullName,
-                  email: user?.email ?? '',
-                  avatarUrl: avatarUrl,
-                  level: level,
-                  levelProgress: levelProgress,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 840),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_refreshError != null) ...[
+                      Semantics(
+                        liveRegion: true,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: context.colors.errorContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                '$_refreshError${stats != null ? ' Showing saved details.' : ''}',
+                                style: context.type.bodyMedium!.copyWith(
+                                  color: context.colors.onErrorContainer,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: _isLoading
+                                    ? null
+                                    : _fetchFreshProfileAndStats,
+                                style: TextButton.styleFrom(
+                                  foregroundColor:
+                                      context.colors.onErrorContainer,
+                                ),
+                                child: const Text('Retry refresh'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                    _buildUserHeaderCard(
+                      context,
+                      fullName: fullName,
+                      email: user?.email ?? '',
+                      avatarUrl: avatarUrl,
+                      level: level,
+                      levelProgress: levelProgress,
+                    ),
+                    const SizedBox(height: 20),
+                    const AppearanceSetting(),
+                    const SizedBox(height: 24),
+                    _buildProgressGroup(
+                      context,
+                      xp: _buildXpProgression(
+                        context,
+                        level: level,
+                        currXpInLevel: currXpInLevel,
+                        xpForNext: xpForNext,
+                        levelProgress: levelProgress,
+                        totalXp: totalXp,
+                      ),
+                      topics: stats == null
+                          ? null
+                          : _buildTopicsProgress(context, stats.topics),
+                    ),
+                    const SizedBox(height: 24),
+                    if (stats == null)
+                      AppStateView(
+                        title: _isLoading
+                            ? 'Loading statistics'
+                            : 'Statistics unavailable',
+                        message:
+                            'Your topic and question totals will appear when your profile is available.',
+                        loading: _isLoading,
+                        actionLabel: _isLoading || _refreshError != null
+                            ? null
+                            : 'Refresh statistics',
+                        onAction: _isLoading || _refreshError != null
+                            ? null
+                            : _fetchFreshProfileAndStats,
+                      )
+                    else ...[
+                      _buildSectionHeader(context, 'Questions solved'),
+                      const SizedBox(height: 16),
+                      _buildQuestionBreakdown(context, stats.questions),
+                    ],
+                    const SizedBox(height: 24),
+                    const Divider(),
+                    const SizedBox(height: 16),
+                    _buildAccountSettings(context),
+                    const SizedBox(height: 36),
+                  ],
                 ),
-
-                const SizedBox(height: 20),
-
-                // 2. Current Level & XP Progression Card
-                _buildXpProgressionCard(
-                  level: level,
-                  currXpInLevel: currXpInLevel,
-                  xpForNext: xpForNext,
-                  levelProgress: levelProgress,
-                  totalXp: totalXp,
-                ),
-
-                const SizedBox(height: 24),
-
-                // 3. Unique Topics Completed Across All Roadmaps
-                _buildSectionHeader('ROADMAP PROGRESS'),
-                const SizedBox(height: 10),
-                _buildTopicsProgressCard(stats.topics),
-
-                const SizedBox(height: 24),
-
-                // 4. Questions Solved By Difficulty (Easy / Medium / Hard)
-                _buildSectionHeader('QUESTIONS SOLVED'),
-                const SizedBox(height: 10),
-                _buildQuestionsSolvedCard(stats.questions),
-
-                const SizedBox(height: 24),
-
-                // 5. Account & Session Controls
-                _buildSectionHeader('ACCOUNT'),
-                const SizedBox(height: 10),
-                _buildAccountSettingsCard(context),
-
-                const SizedBox(height: 36),
-              ],
+              ),
             ),
           ),
         );
@@ -192,710 +267,494 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 4),
-      child: Text(
-        title,
-        style: AptiquTypography.labelCapsBold.copyWith(
-          fontSize: 12,
-          letterSpacing: 1.2,
-          color: AptiquColors.onSurfaceVariant,
-        ),
+      child: Semantics(
+        header: true,
+        child: Text(title, style: context.type.titleMedium),
       ),
     );
   }
 
-  Widget _buildUserHeaderCard({
+  Widget _profileSurface(BuildContext context, Widget child) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: context.colors.surfaceContainer,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: child,
+  );
+
+  Widget _buildUserHeaderCard(
+    BuildContext context, {
     required String fullName,
     required String email,
     required String avatarUrl,
     required int level,
     required double levelProgress,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceDim,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AptiquColors.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
+    final avatar = SizedBox(
+      width: 64,
+      height: 64,
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          // Circular Avatar with Progress Ring
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 76,
-                height: 76,
-                child: CustomPaint(
-                  painter: _AvatarProgressRingPainter(
-                    progress: levelProgress,
-                    strokeWidth: 3.5,
-                  ),
-                ),
-              ),
-              Container(
-                width: 62,
-                height: 62,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AptiquColors.surfaceDim, width: 2),
-                ),
-                child: ClipOval(
-                  child: Image.network(
-                    avatarUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: AptiquColors.surfaceContainerHigh,
-                      child: const Icon(
-                        Icons.person_rounded,
-                        color: AptiquColors.primary,
-                        size: 32,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          CircularProgressIndicator(
+            value: levelProgress.clamp(0, 1),
+            strokeWidth: 3,
+            backgroundColor: context.colors.outlineVariant,
+            semanticsLabel: 'Level $level progress',
           ),
-          const SizedBox(width: 18),
-          // User Details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  fullName,
-                  style: AptiquTypography.headlineMd.copyWith(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (email.isNotEmpty) ...[
-                  const SizedBox(height: 3),
-                  Text(
-                    email,
-                    style: AptiquTypography.bodyMd.copyWith(
-                      fontSize: 13,
-                      color: AptiquColors.onSurfaceVariant,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                const SizedBox(height: 10),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    if (Get.isRegistered<XpController>()) {
-                      Get.find<XpController>().triggerCelebrationForCurrentLevel();
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AptiquColors.secondary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: AptiquColors.secondary.withValues(alpha: 0.35),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.military_tech_rounded,
-                          size: 14,
-                          color: AptiquColors.secondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'LEVEL $level',
-                          style: AptiquTypography.labelCapsBold.copyWith(
-                            fontSize: 11,
-                            color: AptiquColors.secondary,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+          Padding(
+            padding: const EdgeInsets.all(6),
+            child: CircleAvatar(
+              backgroundColor: context.colors.primaryContainer,
+              foregroundColor: context.colors.onPrimaryContainer,
+              foregroundImage: avatarUrl.isEmpty
+                  ? null
+                  : NetworkImage(avatarUrl),
+              onForegroundImageError: avatarUrl.isEmpty ? null : (_, __) {},
+              child: Text(fullName.characters.first.toUpperCase()),
             ),
           ),
         ],
       ),
     );
+    final identity = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(fullName, style: context.type.titleLarge),
+        if (email.isNotEmpty)
+          Text(
+            email,
+            style: context.type.bodyMedium!.copyWith(
+              color: context.colors.onSurfaceVariant,
+            ),
+          ),
+        const SizedBox(height: 8),
+        TextButton.icon(
+          onPressed: Get.isRegistered<XpController>()
+              ? () =>
+                    Get.find<XpController>().triggerCelebrationForCurrentLevel()
+              : null,
+          style: TextButton.styleFrom(
+            backgroundColor: context.colors.primaryContainer,
+            foregroundColor: context.colors.onPrimaryContainer,
+            disabledBackgroundColor: context.colors.primaryContainer,
+            disabledForegroundColor: context.colors.onPrimaryContainer,
+            shape: const StadiumBorder(),
+          ),
+          icon: const Icon(Icons.military_tech_outlined, size: 20),
+          label: Text('LEVEL $level'),
+        ),
+      ],
+    );
+    return _profileSurface(
+      context,
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final identityWidth = constraints.maxWidth - 80;
+          final stacked =
+              !textFits(
+                context,
+                fullName,
+                context.type.titleLarge!,
+                identityWidth,
+                maxLines: 2,
+              ) ||
+              !textFits(
+                context,
+                email,
+                context.type.bodyMedium!,
+                identityWidth,
+                maxLines: 2,
+              ) ||
+              !textFits(
+                context,
+                'LEVEL $level',
+                context.type.labelLarge!,
+                identityWidth - 60,
+              );
+          return stacked
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Align(alignment: Alignment.centerLeft, child: avatar),
+                    const SizedBox(height: 16),
+                    identity,
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    avatar,
+                    const SizedBox(width: 16),
+                    Expanded(child: identity),
+                  ],
+                );
+        },
+      ),
+    );
   }
 
-  Widget _buildXpProgressionCard({
+  Widget _buildProgressGroup(
+    BuildContext context, {
+    required Widget xp,
+    Widget? topics,
+  }) => _profileSurface(
+    context,
+    LayoutBuilder(
+      builder: (context, constraints) {
+        if (topics == null) return xp;
+        final columns =
+            constraints.maxWidth >= 600 &&
+            textFits(
+              context,
+              'Unique Topics Completed',
+              context.type.titleSmall!,
+              (constraints.maxWidth - 32) / 2,
+            );
+        return columns
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: xp),
+                  const SizedBox(width: 24),
+                  Expanded(child: topics),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  xp,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Divider(),
+                  ),
+                  topics,
+                ],
+              );
+      },
+    ),
+  );
+
+  Widget _buildXpProgression(
+    BuildContext context, {
     required int level,
     required int currXpInLevel,
     required int xpForNext,
     required double levelProgress,
     required int totalXp,
-  }) {
-    final clampedProgress = levelProgress.clamp(0.0, 1.0);
-    final xpNeeded = math.max(0, xpForNext - currXpInLevel);
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceDim,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AptiquColors.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AptiquColors.primary.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.bolt_rounded,
-                      color: AptiquColors.primary,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Level Progression',
-                    style: AptiquTypography.headlineSm.copyWith(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                '$totalXp Total XP',
-                style: AptiquTypography.labelCapsBold.copyWith(
-                  color: AptiquColors.onSurfaceVariant,
-                  fontSize: 11,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '$currXpInLevel / $xpForNext XP',
-                style: AptiquTypography.headlineMd.copyWith(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              Text(
-                'Next: Level ${level + 1}',
-                style: AptiquTypography.labelCapsBold.copyWith(
-                  fontSize: 12,
-                  color: AptiquColors.secondary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          // Progress Bar
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Stack(
-              children: [
-                Container(
-                  height: 10,
-                  width: double.infinity,
-                  color: AptiquColors.surfaceContainerHigh,
-                ),
-                FractionallySizedBox(
-                  widthFactor: clampedProgress,
-                  child: Container(
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AptiquColors.primary,
-                          AptiquColors.secondary,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
+          Text('Level Progression', style: context.type.titleSmall),
           Text(
-            '$xpNeeded XP needed for Level ${level + 1}',
-            style: AptiquTypography.bodyMd.copyWith(
-              fontSize: 12,
-              color: AptiquColors.onSurfaceVariant,
+            '$totalXp Total XP',
+            style: context.type.bodyMedium!.copyWith(
+              color: context.colors.onSurfaceVariant,
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildTopicsProgressCard(TopicStatsModel topics) {
-    final progress = topics.total > 0 ? (topics.completed / topics.total).clamp(0.0, 1.0) : 0.0;
-    final pct = (progress * 100).toInt();
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceDim,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AptiquColors.outlineVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      const SizedBox(height: 12),
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.map_rounded,
-                      color: Color(0xFF818CF8),
-                      size: 18,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Unique Topics Completed',
-                    style: AptiquTypography.headlineSm.copyWith(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AptiquColors.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '$pct%',
-                  style: AptiquTypography.labelCapsBold.copyWith(
-                    color: Colors.white,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            '$currXpInLevel / $xpForNext XP',
+            style: context.type.titleLarge,
           ),
-          const SizedBox(height: 16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                '${topics.completed}',
-                style: AptiquTypography.headlineMd.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                '/ ${topics.total} Topics across all roadmaps',
-                style: AptiquTypography.bodyMd.copyWith(
-                  color: AptiquColors.onSurfaceVariant,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 8,
-              backgroundColor: AptiquColors.surfaceContainerHigh,
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF6366F1)),
+          Text(
+            'Next: Level ${level + 1}',
+            style: context.type.bodyMedium!.copyWith(
+              color: context.colors.secondary,
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildQuestionsSolvedCard(QuestionStatsModel questions) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceDim,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AptiquColors.outlineVariant),
+      const SizedBox(height: 12),
+      LinearProgressIndicator(
+        value: levelProgress.clamp(0, 1),
+        minHeight: 8,
+        borderRadius: BorderRadius.circular(8),
+        semanticsLabel: 'Level progress',
       ),
-      child: Column(
-        children: [
-          _buildDifficultyRow(
-            label: 'Easy',
-            solved: questions.easy.solved,
-            total: questions.easy.total,
-            color: const Color(0xFF10B981), // Emerald
-            icon: Icons.check_circle_outline_rounded,
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
-            child: Divider(color: AptiquColors.outlineVariant, height: 1),
-          ),
-          _buildDifficultyRow(
-            label: 'Medium',
-            solved: questions.medium.solved,
-            total: questions.medium.total,
-            color: const Color(0xFFF59E0B), // Amber
-            icon: Icons.speed_rounded,
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
-            child: Divider(color: AptiquColors.outlineVariant, height: 1),
-          ),
-          _buildDifficultyRow(
-            label: 'Hard',
-            solved: questions.hard.solved,
-            total: questions.hard.total,
-            color: const Color(0xFFEF4444), // Red
-            icon: Icons.local_fire_department_rounded,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDifficultyRow({
-    required String label,
-    required int solved,
-    required int total,
-    required Color color,
-    required IconData icon,
-  }) {
-    final progress = total > 0 ? (solved / total).clamp(0.0, 1.0) : 0.0;
-
-    return Row(
-      children: [
-        Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color.withValues(alpha: 0.35), width: 1),
-          ),
-          child: Icon(icon, color: color, size: 18),
+      const SizedBox(height: 8),
+      Text(
+        '${math.max(0, xpForNext - currXpInLevel)} XP needed for Level ${level + 1}',
+        style: context.type.bodyMedium!.copyWith(
+          color: context.colors.onSurfaceVariant,
         ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    label,
-                    style: AptiquTypography.headlineSm.copyWith(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    '$solved / $total',
-                    style: AptiquTypography.labelCapsBold.copyWith(
-                      color: color,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
+      ),
+    ],
+  );
+
+  Widget _buildTopicsProgress(BuildContext context, TopicStatsModel topics) {
+    final progress = topics.total > 0
+        ? (topics.completed / topics.total).clamp(0.0, 1.0)
+        : 0.0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.auto_stories_outlined,
+              size: 20,
+              color: context.colors.primary,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Unique Topics Completed',
+                style: context.type.titleSmall,
               ),
-              const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 6,
-                  backgroundColor: AptiquColors.surfaceContainerHigh,
-                  valueColor: AlwaysStoppedAnimation<Color>(color),
-                ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '${(progress * 100).toInt()}%',
+              style: context.type.bodyMedium!.copyWith(
+                color: context.colors.primary,
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            Text(
+              '${topics.completed} / ${topics.total}',
+              style: context.type.titleLarge,
+            ),
+            Text(
+              'Across all roadmaps',
+              style: context.type.bodyMedium!.copyWith(
+                color: context.colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        LinearProgressIndicator(
+          value: progress,
+          minHeight: 8,
+          borderRadius: BorderRadius.circular(8),
+          semanticsLabel: 'Topics completed',
         ),
       ],
     );
   }
 
-  Widget _buildAccountSettingsCard(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AptiquColors.surfaceContainer,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AptiquColors.outlineVariant, width: 1.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget _buildQuestionBreakdown(
+    BuildContext context,
+    QuestionStatsModel questions,
+  ) => LayoutBuilder(
+    builder: (context, constraints) {
+      final rows = [
+        _buildDifficultyRow(
+          context,
+          label: 'Easy',
+          solved: questions.easy.solved,
+          total: questions.easy.total,
+          color: context.status.success,
+          icon: Icons.check_circle_outline_rounded,
+        ),
+        _buildDifficultyRow(
+          context,
+          label: 'Medium',
+          solved: questions.medium.solved,
+          total: questions.medium.total,
+          color: context.status.warning,
+          icon: Icons.speed_rounded,
+        ),
+        _buildDifficultyRow(
+          context,
+          label: 'Hard',
+          solved: questions.hard.solved,
+          total: questions.hard.total,
+          color: context.colors.error,
+          icon: Icons.local_fire_department_outlined,
+        ),
+      ];
+      if (constraints.maxWidth >= 600) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < rows.length; i++) ...[
+              if (i > 0) const SizedBox(width: 24),
+              Expanded(child: rows[i]),
+            ],
+          ],
+        );
+      }
+      return Column(
+        children: [
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0) const SizedBox(height: 16),
+            rows[i],
+          ],
+        ],
+      );
+    },
+  );
+
+  Widget _buildDifficultyRow(
+    BuildContext context, {
+    required String label,
+    required int solved,
+    required int total,
+    required Color color,
+    required IconData icon,
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF131722),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AptiquColors.outlineVariant),
-                ),
-                child: const Icon(
-                  Icons.shield_outlined,
-                  size: 18,
-                  color: AptiquColors.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'AptiQu App Version',
-                      style: AptiquTypography.bodyMd.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
+              Icon(icon, color: color, size: 24),
+              const SizedBox(width: 8),
+              Text(label, style: context.type.titleSmall),
+            ],
+          ),
+          Text('$solved / $total', style: context.type.bodyMedium),
+        ],
+      ),
+      const SizedBox(height: 8),
+      LinearProgressIndicator(
+        value: total > 0 ? (solved / total).clamp(0, 1) : 0,
+        color: color,
+        borderRadius: BorderRadius.circular(8),
+        semanticsLabel: '$label questions solved',
+      ),
+    ],
+  );
+
+  Widget _buildAccountSettings(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      if (_logoutError != null) ...[
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            _logoutError!,
+            style: context.type.bodyMedium!.copyWith(
+              color: context.colors.error,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+      ],
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 16,
+        runSpacing: 16,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('App version', style: context.type.bodyMedium),
+              const SizedBox(height: 4),
+              FutureBuilder<PackageInfo?>(
+                future: _packageInfo,
+                builder: (context, snapshot) {
+                  final info = snapshot.data;
+                  return Text(
+                    snapshot.connectionState != ConnectionState.done
+                        ? 'Loading version…'
+                        : info == null || info.version.isEmpty
+                        ? 'Version unavailable'
+                        : '${info.version}${info.buildNumber.isEmpty ? '' : ' (Build ${info.buildNumber})'}',
+                    style: context.type.bodyMedium!.copyWith(
+                      color: context.colors.onSurfaceVariant,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'v1.0.0 (Build 1)',
-                      style: AptiquTypography.bodySm.copyWith(
-                        color: AptiquColors.onSurfaceVariant,
-                        fontSize: 11.5,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: AptiquColors.outlineVariant),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => _showLogoutConfirmationDialog(context),
-            icon: const Icon(Icons.logout_rounded, size: 18, color: Colors.white),
-            label: Text(
-              'Sign Out of AptiQu',
-              style: AptiquTypography.labelLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 13.5,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AptiquColors.buttonDarkBg,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: Colors.redAccent.withValues(alpha: 0.4),
-                  width: 1.2,
-                ),
-              ),
-              elevation: 0,
+          OutlinedButton.icon(
+            onPressed: _isSigningOut
+                ? null
+                : () => _showLogoutConfirmationDialog(context),
+            icon: const Icon(Icons.logout_rounded),
+            label: Text(_isSigningOut ? 'Signing out…' : 'Sign out'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: context.colors.error,
             ),
           ),
         ],
       ),
-    );
-  }
+    ],
+  );
 
-  void _showLogoutConfirmationDialog(BuildContext context) {
-    final authController = Get.find<AuthController>();
-
-    showDialog(
+  Future<void> _showLogoutConfirmationDialog(BuildContext context) async {
+    if (_logoutDialogOpen || _isSigningOut) return;
+    _logoutDialogOpen = true;
+    final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        backgroundColor: AptiquColors.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-          side: const BorderSide(color: AptiquColors.buttonDarkBorder, width: 1.2),
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.redAccent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.logout_rounded,
-                color: Colors.redAccent,
-                size: 20,
-              ),
+      builder: (dialogContext) => AppearanceTheme(
+        builder: (context) => AlertDialog(
+          scrollable: true,
+          title: const Text('Sign out?'),
+          content: const Text(
+            'Your saved progress will be available when you sign in again.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
             ),
-            const SizedBox(width: 12),
-            Text(
-              'Sign Out?',
-              style: AptiquTypography.headlineSm.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colors.error,
+                foregroundColor: context.colors.onError,
               ),
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Sign out'),
             ),
           ],
         ),
-        content: Text(
-          'Are you sure you want to sign out of AptiQu? Your progress will remain securely saved.',
-          style: AptiquTypography.bodyMd.copyWith(
-            color: AptiquColors.onSurfaceVariant,
-            height: 1.45,
-          ),
-        ),
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogCtx).pop(),
-            child: Text(
-              'Cancel',
-              style: AptiquTypography.labelLarge.copyWith(
-                color: AptiquColors.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent.shade700,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 0,
-            ),
-            onPressed: () async {
-              Navigator.of(dialogCtx).pop();
-              await authController.logout();
-              if (context.mounted) {
-                context.go(AppRoutes.login);
-              }
-            },
-            child: Text(
-              'Sign Out',
-              style: AptiquTypography.labelLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
       ),
     );
-  }
-}
-
-/// Circular level progression ring painter around avatar
-class _AvatarProgressRingPainter extends CustomPainter {
-  final double progress;
-  final double strokeWidth;
-
-  _AvatarProgressRingPainter({
-    required this.progress,
-    this.strokeWidth = 2.5,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width - strokeWidth) / 2;
-
-    // Background track
-    final bgPaint = Paint()
-      ..color = AptiquColors.outlineVariant.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-    canvas.drawCircle(center, radius, bgPaint);
-
-    if (progress <= 0.0) return;
-
-    // Active progress arc
-    final sweepAngle = 2 * math.pi * progress.clamp(0.0, 1.0);
-    final activePaint = Paint()
-      ..shader = const SweepGradient(
-        colors: [
-          AptiquColors.primary,
-          AptiquColors.secondary,
-        ],
-        startAngle: 0.0,
-        endAngle: 2 * math.pi,
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = strokeWidth;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      sweepAngle,
-      false,
-      activePaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _AvatarProgressRingPainter oldDelegate) {
-    return oldDelegate.progress != progress;
+    _logoutDialogOpen = false;
+    if (confirmed != true || !mounted) return;
+    setState(() {
+      _isSigningOut = true;
+      _logoutError = null;
+    });
+    try {
+      await Get.find<AuthController>().logout();
+      if (context.mounted) context.go(AppRoutes.login);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _logoutError = 'Could not sign out. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _isSigningOut = false);
+    }
   }
 }

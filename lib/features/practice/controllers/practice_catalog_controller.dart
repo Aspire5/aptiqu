@@ -1,3 +1,5 @@
+import '../../../core/theme/appearance_controller.dart';
+import '../../../core/theme/aptiqu_theme.dart';
 import 'package:uuid/uuid.dart';
 import '../../social/friends_screen.dart';
 import '../../social/social_controller.dart';
@@ -35,6 +37,7 @@ class PracticeCatalogController extends GetxController {
   final RxBool timerEnabled = false.obs;
   final RxBool showHistory = false.obs;
   final List<Worker> _preferenceWorkers = [];
+  Worker? _presentationWorker;
   Future<void> _writes = Future.value();
 
   Future<void> _initialize() async {
@@ -92,6 +95,8 @@ class PracticeCatalogController extends GetxController {
 
   @override
   void onClose() {
+    _presentationWorker?.dispose();
+    AppRouter.overlayGate.setTask(this, false);
     for (final worker in _preferenceWorkers) {
       worker.dispose();
     }
@@ -103,6 +108,8 @@ class PracticeCatalogController extends GetxController {
       <PracticeHistoryItemModel>[].obs;
   final RxBool isLoadingHistory = false.obs;
   final RxString historyError = ''.obs;
+  final RxInt historyPage = 1.obs;
+  final RxInt historyTotalPages = 1.obs;
   final RxInt historyCompletedDrills = 0.obs;
   final RxInt historyOverallAccuracy = 0.obs;
   final RxInt historyAvgResponseTimeMs = 0.obs;
@@ -114,8 +121,18 @@ class PracticeCatalogController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _presentationWorker = everAll([
+      isStartingSession,
+      isReplaying,
+    ], (_) => _syncPresentationActivity());
+    _syncPresentationActivity();
     _initialize();
   }
+
+  void _syncPresentationActivity() => AppRouter.overlayGate.setTask(
+    this,
+    isStartingSession.value || isReplaying.value,
+  );
 
   /// Unique live subjects derived from liveTopics
   List<({String id, String name})> get liveSubjects {
@@ -281,11 +298,33 @@ class PracticeCatalogController extends GetxController {
 
   void _showNotice(String title, String message, {bool isError = false}) {
     final ctx = AppRouter.navigatorKey.currentContext;
+    final mode = Get.isRegistered<AppearanceController>()
+        ? Get.find<AppearanceController>().mode.value
+        : ThemeMode.system;
+    final brightness = mode == ThemeMode.system
+        ? WidgetsBinding.instance.platformDispatcher.platformBrightness
+        : mode == ThemeMode.light
+        ? Brightness.light
+        : Brightness.dark;
+    final colors =
+        (ctx != null && ctx.mounted
+                ? Theme.of(ctx)
+                : brightness == Brightness.light
+                ? AptiquTheme.lightTheme
+                : AptiquTheme.darkTheme)
+            .colorScheme;
+    final background = isError ? colors.errorContainer : colors.inverseSurface;
+    final foreground = isError
+        ? colors.onErrorContainer
+        : colors.onInverseSurface;
     if (ctx != null && ctx.mounted) {
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
-          content: Text('$title: $message'),
-          backgroundColor: isError ? Colors.redAccent : Colors.black87,
+          content: Text(
+            '$title: $message',
+            style: TextStyle(color: foreground),
+          ),
+          backgroundColor: background,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -294,10 +333,8 @@ class PracticeCatalogController extends GetxController {
         title,
         message,
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: isError
-            ? Colors.redAccent.withValues(alpha: 0.9)
-            : Colors.black87,
-        colorText: Colors.white,
+        backgroundColor: background,
+        colorText: foreground,
       );
     }
   }
@@ -441,14 +478,24 @@ class PracticeCatalogController extends GetxController {
   }
 
   /// Fetches practice history including replays and PvP replays
-  Future<void> fetchHistory({bool refresh = false}) async {
+  Future<void> fetchHistory({
+    bool refresh = false,
+    bool loadMore = false,
+  }) async {
     if (isLoadingHistory.value || isClosed) return;
     isLoadingHistory.value = true;
     historyError.value = '';
     try {
-      final res = await _repository.getHistory(page: 1, limit: 20);
+      final page = loadMore ? historyPage.value + 1 : 1;
+      final res = await _repository.getHistory(page: page, limit: 20);
       if (isClosed) return;
-      historyList.assignAll(res.history);
+      if (loadMore) {
+        historyList.addAll(res.history);
+      } else {
+        historyList.assignAll(res.history);
+      }
+      historyPage.value = res.page;
+      historyTotalPages.value = res.totalPages;
       historyCompletedDrills.value = res.completedDrillsCount;
       historyOverallAccuracy.value = res.overallAccuracy;
       historyAvgResponseTimeMs.value = res.avgResponseTimeMs;

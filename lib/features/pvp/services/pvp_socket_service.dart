@@ -11,34 +11,45 @@ class PvpSocketService {
   PvpSocketService._internal();
 
   WebSocketChannel? _channel;
+  Future<void>? _connecting;
   final StreamController<Map<String, dynamic>> _eventController =
       StreamController<Map<String, dynamic>>.broadcast();
 
   Stream<Map<String, dynamic>> get eventStream => _eventController.stream;
   bool isConnected = false;
+  bool isAuthenticated = false;
 
-  Future<void> connect() async {
-    if (isConnected && _channel != null) return;
+  Future<void> connect() {
+    if (isConnected && _channel != null) return Future.value();
+    // The lobby opens a connection before Find match can request the same one.
+    return _connecting ??= _connect().whenComplete(() => _connecting = null);
+  }
 
-    final dioClient = Get.find<DioClient>();
-    final token = await dioClient.getAccessToken();
-    if (token == null || token.isEmpty) {
-      debugPrint('[PvP Socket] Cannot connect: No access token');
-      return;
-    }
-
-    final rawBaseUrl = dioClient.dio.options.baseUrl;
-    final wsBase = rawBaseUrl
-        .replaceFirst('https://', 'wss://')
-        .replaceFirst('http://', 'ws://')
-        .replaceFirst('/api/v1', '');
-
-    final wsUri = Uri.parse('$wsBase/ws/pvp');
-    debugPrint('[PvP Socket] Connecting to: $wsUri');
-
+  Future<void> _connect() async {
     try {
-      _channel = WebSocketChannel.connect(wsUri);
+      final dioClient = Get.find<DioClient>();
+      final token = await dioClient.getAccessToken();
+      if (token == null || token.isEmpty) {
+        debugPrint('[PvP Socket] Cannot connect: No access token');
+        _connectionLost(
+          'Could not connect. Check your connection and sign-in session.',
+        );
+        return;
+      }
+
+      final rawBaseUrl = dioClient.dio.options.baseUrl;
+      final wsBase = rawBaseUrl
+          .replaceFirst('https://', 'wss://')
+          .replaceFirst('http://', 'ws://')
+          .replaceFirst('/api/v1', '');
+
+      final wsUri = Uri.parse('$wsBase/ws/pvp');
+      debugPrint('[PvP Socket] Connecting to: $wsUri');
+
+      final channel = WebSocketChannel.connect(wsUri);
+      _channel = channel;
       isConnected = true;
+      isAuthenticated = false;
 
       // Send initial authentication handshake frame
       send('AUTH_INIT', {'token': token});
@@ -47,6 +58,8 @@ class PvpSocketService {
         (data) {
           try {
             final parsed = jsonDecode(data.toString()) as Map<String, dynamic>;
+            if (!identical(_channel, channel)) return;
+            if (parsed['event'] == 'AUTH_SUCCESS') isAuthenticated = true;
             _eventController.add(parsed);
           } catch (e) {
             debugPrint('[PvP Socket] Failed to decode incoming message: $e');
@@ -54,20 +67,31 @@ class PvpSocketService {
         },
         onError: (err) {
           debugPrint('[PvP Socket] Stream Error: $err');
-          isConnected = false;
-          _channel = null;
+          if (identical(_channel, channel)) {
+            _connectionLost('Ranked connection interrupted.');
+          }
         },
         onDone: () {
           debugPrint('[PvP Socket] Connection closed');
-          isConnected = false;
-          _channel = null;
+          if (identical(_channel, channel)) {
+            _connectionLost('Ranked connection interrupted.');
+          }
         },
       );
     } catch (err) {
       debugPrint('[PvP Socket] Connection Failed: $err');
-      isConnected = false;
-      _channel = null;
+      _connectionLost('Could not connect to Ranked. Please try again.');
     }
+  }
+
+  void _connectionLost(String message) {
+    isConnected = false;
+    isAuthenticated = false;
+    _channel = null;
+    _eventController.add({
+      'event': 'CONNECTION_LOST',
+      'data': {'message': message},
+    });
   }
 
   void send(String type, [Map<String, dynamic>? payload]) {
@@ -110,5 +134,6 @@ class PvpSocketService {
     _channel?.sink.close();
     _channel = null;
     isConnected = false;
+    isAuthenticated = false;
   }
 }

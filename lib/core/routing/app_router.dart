@@ -15,6 +15,9 @@ import '../../features/practice/models/practice_models.dart';
 import '../../features/practice/views/practice_session_screen.dart';
 import '../../features/pvp/views/pvp_arena_screen.dart';
 import 'app_routes.dart';
+import '../presentation/global_overlay_gate.dart';
+import '../theme/appearance_theme.dart';
+import '../../shared/widgets/feedback/app_state_view.dart';
 
 /// Centralized GoRouter with Auth & Onboarding Guards
 class AppRouter {
@@ -22,10 +25,26 @@ class AppRouter {
 
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
+  static final overlayGate = GlobalOverlayGate();
+  static final messengerKey = GlobalKey<ScaffoldMessengerState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
+    observers: [overlayGate],
     initialLocation: AppRoutes.home,
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(title: const Text('AptiQu')),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: AppStateView(
+            title: 'Page unavailable',
+            message: 'This page could not be opened.',
+            actionLabel: 'Return to Home',
+            onAction: () => context.go(AppRoutes.home),
+          ),
+        ),
+      ),
+    ),
     redirect: (BuildContext context, GoRouterState state) {
       final authController = Get.find<AuthController>();
       final isLoggedIn = authController.isLoggedIn;
@@ -85,6 +104,7 @@ class AppRouter {
           key: state.pageKey,
           child: const ProfileScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (MediaQuery.disableAnimationsOf(context)) return child;
             const begin = Offset(-1.0, 0.0);
             const end = Offset.zero;
             const curve = Curves.easeOutCubic;
@@ -113,6 +133,7 @@ class AppRouter {
         path: AppRoutes.lesson,
         name: 'lesson',
         builder: (context, state) => LessonFeedScreen(
+          key: state.pageKey,
           slug: state.pathParameters['slug'],
           roadmapStepId: state.uri.queryParameters['stepId'],
         ),
@@ -120,22 +141,65 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.lessonStep,
         name: 'lessonStep',
-        builder: (context, state) =>
-            LessonFeedScreen(roadmapStepId: state.pathParameters['stepId']),
+        builder: (context, state) => LessonFeedScreen(
+          key: state.pageKey,
+          roadmapStepId: state.pathParameters['stepId'],
+        ),
       ),
       GoRoute(
         path: AppRoutes.practiceSession,
         name: 'practiceSession',
         builder: (context, state) {
-          final session = state.extra as PracticeSessionModel;
-          return PracticeSessionScreen(initialSession: session);
+          final session = state.extra;
+          if (session is PracticeSessionModel) {
+            return PracticeSessionScreen(initialSession: session);
+          }
+          return AppearanceTheme(
+            builder: (context) => Scaffold(
+              appBar: AppBar(title: const Text('Practice')),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: AppStateView(
+                    title: 'No practice session',
+                    message:
+                        'Open Practice from Home to start a session or replay.',
+                    actionLabel: 'Return to Home',
+                    onAction: () => context.go(AppRoutes.home),
+                  ),
+                ),
+              ),
+            ),
+          );
         },
       ),
       GoRoute(
         path: AppRoutes.pvpArena,
         name: 'pvpArena',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
+          final extra = state.extra;
+          if (extra is! Map<String, dynamic> ||
+              extra['matchId'] is! String ||
+              (extra['matchId'] as String).trim().isEmpty ||
+              extra['initialPlayersData'] is! List<dynamic> ||
+              extra['totalQuestions'] is! int ||
+              (extra['totalQuestions'] as int) <= 0) {
+            return AppearanceTheme(
+              builder: (context) => Scaffold(
+                appBar: AppBar(title: const Text('Ranked')),
+                body: SafeArea(
+                  child: SingleChildScrollView(
+                    child: AppStateView(
+                      title: 'No active Ranked match',
+                      message:
+                          'Open Ranked from Home to find a match or review your history.',
+                      actionLabel: 'Return to Home',
+                      onAction: () => context.go(AppRoutes.home),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
           return PvpArenaScreen(
             matchId: extra['matchId'] as String,
             initialPlayersData: extra['initialPlayersData'] as List<dynamic>,

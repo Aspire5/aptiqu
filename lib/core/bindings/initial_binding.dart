@@ -1,4 +1,5 @@
 import '../../features/social/social_controller.dart';
+import '../theme/appearance_controller.dart';
 import 'package:get/get.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../network/dio_client.dart';
@@ -8,6 +9,8 @@ import '../progression/controllers/xp_controller.dart';
 class InitialBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put<AppearanceController>(AppearanceController(), permanent: true);
+
     // 1. Core Network Client
     Get.put<DioClient>(DioClient(), permanent: true);
 

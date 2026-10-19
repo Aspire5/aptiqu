@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../../core/theme/aptiqu_colors.dart';
-import '../../../core/theme/aptiqu_typography.dart';
+import '../../../core/theme/aptiqu_tokens.dart';
 import '../../../shared/widgets/buttons/aptiqu_button.dart';
+import '../../../shared/widgets/layout/text_fit.dart';
 
 class SocialSurface extends StatelessWidget {
   final Widget child;
@@ -16,35 +15,11 @@ class SocialSurface extends StatelessWidget {
     this.highlighted = false,
     this.radius = 16,
   });
-
   @override
-  Widget build(BuildContext context) => Container(
-    padding: padding,
-    decoration: BoxDecoration(
-      color: AptiquColors.surfaceContainerLow,
-      gradient: highlighted
-          ? const LinearGradient(
-              colors: [
-                AptiquColors.surfaceContainer,
-                AptiquColors.surfaceContainerLow,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            )
-          : null,
-      borderRadius: BorderRadius.circular(radius),
-      border: Border.all(color: AptiquColors.outlineVariant),
-      boxShadow: highlighted
-          ? [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: .18),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ]
-          : null,
-    ),
-    child: child,
+  Widget build(BuildContext context) => Material(
+    color: context.colors.surface,
+    borderRadius: BorderRadius.circular(radius),
+    child: Padding(padding: padding, child: child),
   );
 }
 
@@ -60,89 +35,58 @@ class LearnerAvatar extends StatelessWidget {
     this.squared = false,
     this.showPresence = false,
   });
-
   @override
   Widget build(BuildContext context) {
     final name = (person['name'] as String? ?? 'Learner').trim();
     final url = person['avatarUrl'] as String?;
-    if (highlighted) {
-      final fallback = Center(
-        child: Text(
-          name.isEmpty ? '?' : name.characters.first.toUpperCase(),
-          style: AptiquTypography.headlineMd.copyWith(
-            fontSize: radius * .85,
-            color: Colors.white,
-          ),
-        ),
-      );
-      return Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: radius * 2,
-            height: radius * 2,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  AptiquColors.socialAvatarStart,
-                  AptiquColors.socialAvatarEnd,
-                ],
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-              ),
-              borderRadius: BorderRadius.circular(squared ? 16 : radius),
-              border: Border.all(
-                color: AptiquColors.onSurface.withValues(alpha: .15),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AptiquColors.socialAvatarStart.withValues(alpha: .16),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: url == null || url.isEmpty
-                ? fallback
-                : Image.network(
-                    url,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => fallback,
-                  ),
-          ),
-          if (showPresence && person['online'] is bool)
-            Positioned(
-              right: -2,
-              bottom: -2,
-              child: Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  color: person['online'] == true
-                      ? AptiquColors.success
-                      : AptiquColors.onSurfaceDisabled,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AptiquColors.surfaceContainerLow,
-                    width: 3,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      );
-    }
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: AptiquColors.primaryContainer.withValues(alpha: .18),
-      foregroundColor: AptiquColors.primary,
-      foregroundImage: url == null || url.isEmpty ? null : NetworkImage(url),
-      // Keep the initial visible if a remote image fails to load.
-      onForegroundImageError: url == null || url.isEmpty ? null : (_, _) {},
+    final fallback = Center(
       child: Text(
         name.isEmpty ? '?' : name.characters.first.toUpperCase(),
-        style: AptiquTypography.headlineSm.copyWith(fontSize: radius * .8),
+        style: context.type.titleLarge?.copyWith(
+          color: context.colors.onPrimaryContainer,
+        ),
+      ),
+    );
+    return ExcludeSemantics(
+      child: SizedBox(
+        width: radius * 2,
+        height: radius * 2,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(squared ? 16 : radius),
+                child: ColoredBox(
+                  color: context.colors.primaryContainer,
+                  child: url == null || url.isEmpty
+                      ? fallback
+                      : Image.network(
+                          url,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => fallback,
+                        ),
+                ),
+              ),
+            ),
+            if (showPresence && person['online'] is bool)
+              Positioned(
+                right: -2,
+                bottom: -2,
+                child: Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: person['online'] == true
+                        ? context.status.success
+                        : context.colors.onSurfaceVariant,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: context.colors.surface, width: 3),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -151,8 +95,7 @@ class LearnerAvatar extends StatelessWidget {
 class SocialButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
-  final bool secondary, loading;
-  final bool expanded;
+  final bool secondary, loading, expanded;
   final IconData? icon;
   const SocialButton({
     super.key,
@@ -163,144 +106,141 @@ class SocialButton extends StatelessWidget {
     this.expanded = false,
     this.icon,
   });
-
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    enabled: onPressed != null && !loading,
-    label: label,
-    onTap: loading ? null : onPressed,
-    child: ExcludeSemantics(
-      child: Opacity(
-        opacity: onPressed == null && !loading ? .65 : 1,
-        child: _width(
-          AptiquButton(
-            label: label,
-            onPressed: onPressed,
-            isLoading: loading,
-            variant: secondary
-                ? AptiquButtonVariant.outline
-                : AptiquButtonVariant.primary,
-            borderRadius: BorderRadius.circular(12),
-            fontSize: 13,
-            icon: icon == null
-                ? null
-                : Icon(
-                    icon,
-                    size: 16,
-                    color: secondary
-                        ? AptiquColors.onSurfaceVariant
-                        : Colors.white,
-                  ),
-          ),
-        ),
-      ),
-    ),
-  );
-
-  Widget _width(Widget child) =>
-      expanded ? child : IntrinsicWidth(child: child);
+  Widget build(BuildContext context) {
+    final button = AptiquButton(
+      label: label,
+      onPressed: onPressed,
+      isLoading: loading,
+      variant: secondary
+          ? AptiquButtonVariant.outline
+          : AptiquButtonVariant.primary,
+      icon: icon == null ? null : Icon(icon, size: 20),
+    );
+    return expanded ? button : IntrinsicWidth(child: button);
+  }
 }
 
+/// Identity and relationship action are separate native activation targets.
 class LearnerTile extends StatelessWidget {
   final Map<String, dynamic> person;
   final VoidCallback onTap;
   final Widget? actions;
   final String? detail;
+  final bool picker;
   const LearnerTile({
     super.key,
     required this.person,
     required this.onTap,
     this.actions,
     this.detail,
+    this.picker = false,
   });
-
   @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    excludeFromSemantics: true,
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    borderRadius: BorderRadius.circular(16),
-    child: SocialSurface(
-      padding: const EdgeInsets.all(12),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final stacked =
-              person['relation'] == 'INCOMING' ||
-              constraints.maxWidth < 270 ||
-              MediaQuery.textScalerOf(context).scale(13) > 18;
-          final identity = Semantics(
-            button: true,
-            label:
-                'View ${person['name']} profile, level ${person['level'] ?? 1}',
-            onTap: onTap,
-            child: ExcludeSemantics(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 52),
-                child: Row(
+  Widget build(BuildContext context) => SocialSurface(
+    padding: const EdgeInsets.all(12),
+    child: LayoutBuilder(
+      builder: (context, box) {
+        final name = person['name']?.toString() ?? 'Learner';
+        final actionLabel = person['relation'] == 'INVITED'
+            ? 'Request sent'
+            : picker
+            ? 'Invite'
+            : 'Add Friend';
+        final inline =
+            actions != null &&
+            person['relation'] != 'INCOMING' &&
+            textFits(context, actionLabel, context.type.labelLarge!, 80) &&
+            box.maxWidth > 260 &&
+            textFits(
+              context,
+              name,
+              context.type.titleSmall!,
+              box.maxWidth - 184,
+              maxLines: 2,
+            );
+        final identity = Semantics(
+          label: picker ? 'Invite friend' : 'View learner profile',
+          child: TextButton(
+            onPressed: onTap,
+            style: TextButton.styleFrom(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(48, 48),
+              foregroundColor: context.colors.onSurface,
+            ),
+            child: LayoutBuilder(
+              builder: (context, identityBox) {
+                final beside = textFits(
+                  context,
+                  name,
+                  context.type.titleSmall!,
+                  identityBox.maxWidth - 60,
+                  maxLines: 2,
+                );
+                final details = Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LearnerAvatar(person: person),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            person['name'] ?? 'Learner',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: AptiquTypography.titleMedium.copyWith(
-                              fontSize: 15,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            'Level ${person['level'] ?? 1}${person['relation'] == 'FRIEND' ? ' · ${person['online'] == true
-                                      ? 'Online'
-                                      : person['online'] == false
-                                      ? 'Offline'
-                                      : 'Status unavailable'}' : ''}',
-                            style: AptiquTypography.bodySm.copyWith(
-                              color: AptiquColors.onSurfaceVariant,
-                            ),
-                          ),
-                          if (detail != null)
-                            Text(
-                              detail!,
-                              style: AptiquTypography.bodySm.copyWith(
-                                fontSize: 11,
-                                color: AptiquColors.onSurfaceVariant,
-                              ),
-                            ),
-                        ],
+                    Text(name, style: context.type.titleSmall),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Level ${person['level'] ?? 1}${person['relation'] == 'FRIEND' ? ' · ${person['online'] == true
+                                ? 'Online'
+                                : person['online'] == false
+                                ? 'Offline'
+                                : 'Status unavailable'}' : ''}',
+                      style: context.type.bodySmall?.copyWith(
+                        color: context.colors.onSurfaceVariant,
                       ),
                     ),
+                    if (detail != null)
+                      Text(
+                        detail!,
+                        style: context.type.bodySmall?.copyWith(
+                          color: context.colors.onSurfaceVariant,
+                        ),
+                      ),
                   ],
-                ),
-              ),
+                );
+                return beside
+                    ? Row(
+                        children: [
+                          LearnerAvatar(person: person),
+                          const SizedBox(width: 12),
+                          Expanded(child: details),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LearnerAvatar(person: person),
+                          const SizedBox(height: 12),
+                          details,
+                        ],
+                      );
+              },
             ),
-          );
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(child: identity),
-                  if (actions != null && !stacked) ...[
-                    const SizedBox(width: 12),
-                    SizedBox(width: 112, child: actions),
-                  ],
+          ),
+        );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(child: identity),
+                if (inline) ...[
+                  const SizedBox(width: 12),
+                  SizedBox(width: 112, child: actions),
                 ],
-              ),
-              if (actions != null && stacked) ...[
-                const SizedBox(height: 12),
-                actions!,
               ],
+            ),
+            if (actions != null && !inline) ...[
+              const SizedBox(height: 12),
+              actions!,
             ],
-          );
-        },
-      ),
+          ],
+        );
+      },
     ),
   );
 }
@@ -314,31 +254,28 @@ class SocialEmptyState extends StatelessWidget {
     required this.title,
     required this.message,
   });
-
   @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 40, color: AptiquColors.primary),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AptiquTypography.titleMedium,
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(24),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 32, color: context.colors.primary),
+        const SizedBox(height: 16),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: context.type.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: context.type.bodyMedium?.copyWith(
+            color: context.colors.onSurfaceVariant,
           ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: AptiquTypography.bodySm.copyWith(
-              color: AptiquColors.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }

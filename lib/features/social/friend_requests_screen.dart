@@ -9,8 +9,9 @@ import 'widgets/friendship_actions.dart';
 import 'widgets/social_widgets.dart';
 import 'widgets/social_profile_chrome.dart';
 import 'widgets/friend_request_card.dart';
-import '../../core/theme/aptiqu_colors.dart';
-import '../../core/theme/aptiqu_typography.dart';
+import '../../core/theme/appearance_theme.dart';
+import '../../core/theme/aptiqu_tokens.dart';
+import '../../shared/widgets/questions/question_presentation.dart';
 
 class FriendRequestsScreen extends StatefulWidget {
   const FriendRequestsScreen({super.key});
@@ -66,128 +67,91 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: SocialPageAppBar(
-      title: 'Friend requests',
-      trailing: Obx(() {
-        final count = social.friendInvites.length;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-          decoration: BoxDecoration(
-            color: AptiquColors.primaryContainer.withValues(alpha: .12),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AptiquColors.primaryContainer.withValues(alpha: .25),
-            ),
-          ),
-          child: Text(
-            '$count pending',
-            style: AptiquTypography.bodySm.copyWith(
-              color: AptiquColors.primary,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
+  Widget build(BuildContext context) => AppearanceTheme(
+    builder: (context) => Scaffold(
+      appBar: SocialPageAppBar(
+        title: 'Friend requests',
+        toolbarHeight: SocialPageAppBar.height(
+          context,
+          title: 'Friend requests',
+        ),
+      ),
+      body: Obx(() {
+        final invitations = social.friendInvites.toList();
+        return RefreshIndicator(
+          onRefresh: load,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              if (loading) const SliverToBoxAdapter(child: AppLoader()),
+              if (error != null)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SessionNotice(message: error!, onRetry: load),
+                  ),
+                ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Text(
+                    '${invitations.length} pending',
+                    style: context.type.bodyMedium?.copyWith(
+                      color: context.colors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+              if (invitations.isEmpty && !loading && error == null)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: SocialEmptyState(
+                    icon: Icons.mark_email_read_outlined,
+                    title: 'You’re all caught up',
+                    message: 'New friend requests will appear here.',
+                  ),
+                ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                sliver: SliverList.builder(
+                  itemCount: invitations.length,
+                  itemBuilder: (context, index) {
+                    final invitation = invitations[index];
+                    final person = <String, dynamic>{
+                      ...Map<String, dynamic>.from(invitation['sender']),
+                      'relation': 'INCOMING',
+                      'friendshipId': invitation['id'],
+                      'friendshipVersion': invitation['version'],
+                    };
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: FriendRequestCard(
+                        key: ValueKey(invitation['id']),
+                        person: person,
+                        onTap: () async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  FriendProfileScreen(id: person['id']),
+                            ),
+                          );
+                          if (mounted) load();
+                        },
+                        actions: FriendshipActions(
+                          person: person,
+                          onChanged: load,
+                          fullWidth: true,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         );
       }),
-    ),
-    body: Column(
-      children: [
-        if (loading) const AppLoader(),
-        if (error != null)
-          TextButton.icon(
-            onPressed: load,
-            icon: const Icon(Icons.refresh),
-            label: Text('$error Retry'),
-          ),
-        Expanded(
-          child: Obx(() {
-            final invitations = social.friendInvites.toList();
-            return RefreshIndicator(
-              onRefresh: load,
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  if (invitations.isEmpty && !loading && error == null)
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: SocialEmptyState(
-                        icon: Icons.mark_email_read_outlined,
-                        title: 'You’re all caught up',
-                        message: 'New friend requests will appear here.',
-                      ),
-                    ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    sliver: SliverList.builder(
-                      itemCount: invitations.length,
-                      itemBuilder: (context, index) {
-                        final invitation = invitations[index];
-                        final person = <String, dynamic>{
-                          ...Map<String, dynamic>.from(invitation['sender']),
-                          'relation': 'INCOMING',
-                          'friendshipId': invitation['id'],
-                          'friendshipVersion': invitation['version'],
-                        };
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 14),
-                          child: FriendRequestCard(
-                            key: ValueKey(invitation['id']),
-                            person: person,
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      FriendProfileScreen(id: person['id']),
-                                ),
-                              );
-                              if (mounted) load();
-                            },
-                            actions: FriendshipActions(
-                              person: person,
-                              onChanged: load,
-                              fullWidth: true,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  if (invitations.isNotEmpty)
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                      sliver: SliverToBoxAdapter(
-                        child: SocialSurface(
-                          padding: const EdgeInsets.all(14),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.info_outline_rounded,
-                                size: 16,
-                                color: AptiquColors.primary,
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  'Add friends to learn together and invite each other to friendly duels. Tap a learner to view their profile.',
-                                  style: AptiquTypography.bodySm.copyWith(
-                                    fontSize: 11,
-                                    height: 1.6,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            );
-          }),
-        ),
-      ],
     ),
   );
 }

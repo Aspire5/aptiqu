@@ -1,6 +1,7 @@
 import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
+import '../../../../shared/widgets/sheets/app_sheet.dart';
+import '../../../../shared/widgets/feedback/app_state_view.dart';
 import '../../models/home_dashboard_model.dart';
 
 /// Paginated, server-authored catalog. No achievement definitions live here.
@@ -71,14 +72,7 @@ class _AchievementBrowserState extends State<AchievementBrowser> {
   Widget build(BuildContext context) => SafeArea(
     child: Column(
       children: [
-        ListTile(
-          title: const Text('Achievements'),
-          trailing: IconButton(
-            tooltip: 'Close',
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
+        const AppSheetHeader(title: 'Achievements'),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () => load(refresh: true),
@@ -91,11 +85,17 @@ class _AchievementBrowserState extends State<AchievementBrowser> {
                   const SizedBox(height: 12),
                 ],
                 if (!loading && error == null && items.isEmpty)
-                  const Text('No achievements are available yet.'),
+                  const AppStateView(
+                    title: 'No achievements yet',
+                    message:
+                        'New achievements will appear here when they are available.',
+                  ),
                 if (error != null) ...[
                   Text(
                     error!,
-                    style: const TextStyle(color: AptiquColors.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                   TextButton(onPressed: load, child: const Text('Retry')),
                 ],

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../models/home_dashboard_model.dart';
-import '../../../../core/theme/aptiqu_colors.dart';
 import '../../models/roadmap_model.dart';
 import '../../repositories/roadmap_repository.dart';
 import '../../../lesson/models/lesson_session_model.dart';
@@ -1186,7 +1185,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           content: Text(
             'Coming Soon: Content for "${topic.topicName}" is currently being prepared.',
           ),
-          backgroundColor: AptiquColors.surfaceContainer,
           behavior: SnackBarBehavior.floating,
         ),
       );

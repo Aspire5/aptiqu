@@ -1,18 +1,15 @@
+import 'package:get/get.dart';
+import 'package:aptiqu/core/theme/appearance_controller.dart';
+import 'support/presentation_fonts.dart';
 import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
-// ignore: implementation_imports
-import 'package:google_fonts/src/google_fonts_base.dart' as font_test;
 import 'package:aptiqu/core/theme/aptiqu_theme.dart';
 import 'package:aptiqu/features/auth/domain/models/user_model.dart';
 import 'package:aptiqu/features/home/models/home_dashboard_model.dart';
 import 'package:aptiqu/features/home/presentation/widgets/home_dashboard_view.dart';
 import 'package:aptiqu/features/home/presentation/widgets/achievement_browser.dart';
-import 'practice_catalog_test.dart' show TestFontManifest;
+import 'package:aptiqu/shared/widgets/sheets/app_sheet.dart';
 
 HomeDashboardModel fixture({bool populated = false}) => HomeDashboardModel(
   today: '2026-10-13',
@@ -69,17 +66,11 @@ HomeDashboardModel fixture({bool populated = false}) => HomeDashboardModel(
   ranked: populated ? const HomeRanked('Win', 8, 10) : null,
 );
 void main() {
+  tearDown(() => Get.reset());
   setUp(() {
-    GoogleFonts.config.allowRuntimeFetching = false;
-    font_test.assetManifest = TestFontManifest();
-    final bytes = File('test/fonts/Outfit.ttf').readAsBytesSync();
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMessageHandler('flutter/assets', (message) async {
-          final key = utf8.decode(message!.buffer.asUint8List());
-          return key.startsWith('test/fonts/')
-              ? ByteData.sublistView(bytes)
-              : null;
-        });
+    Get.testMode = true;
+    useProductionFontFixtures();
+    Get.put(AppearanceController()).mode.value = ThemeMode.dark;
   });
   Future<void> show(
     WidgetTester tester, {
@@ -129,27 +120,7 @@ void main() {
         ),
       ),
     );
-    await tester.runAsync(() async {
-      await GoogleFonts.pendingFonts();
-      final bytes = ByteData.sublistView(
-        File('test/fonts/Outfit.ttf').readAsBytesSync(),
-      );
-      await (FontLoader('Roboto')..addFont(Future.value(bytes))).load();
-      var directory = File(Platform.resolvedExecutable).parent;
-      for (var i = 0; i < 8; i++) {
-        final icons = File(
-          '${directory.path}/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
-        );
-        if (icons.existsSync()) {
-          await (FontLoader('MaterialIcons')..addFont(
-                Future.value(ByteData.sublistView(icons.readAsBytesSync())),
-              ))
-              .load();
-          break;
-        }
-        directory = directory.parent;
-      }
-    });
+    await loadProductionFontFixtures(tester);
     await tester.pump(const Duration(milliseconds: 200));
   }
 
@@ -328,14 +299,33 @@ void main() {
       final windowHeight = tester
           .getSize(find.byType(YearActivityCalendar))
           .height;
-      expect(windowHeight, lessThan(360));
       expect(
-        tester.getBottomLeft(find.text('Today')).dy,
+        windowHeight,
+        lessThanOrEqualTo(
+          tester.view.physicalSize.height / tester.view.devicePixelRatio,
+        ),
+      );
+      expect(
+        tester
+            .getSize(
+              find.byWidgetPredicate((widget) => widget is TextButton).first,
+            )
+            .height,
+        greaterThanOrEqualTo(48),
+      );
+      expect(
+        tester.getBottomLeft(find.text('Today').hitTestable()).dy,
         lessThanOrEqualTo(
           tester.getBottomLeft(find.byType(YearActivityCalendar)).dy,
         ),
       );
-      final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+      final scroll = tester.state<ScrollableState>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Scrollable &&
+              widget.axisDirection == AxisDirection.down,
+        ),
+      );
       scroll.position.jumpTo(0);
       await tester.pumpAndSettle();
       expect(find.text('January 2026'), findsOneWidget);
@@ -366,7 +356,13 @@ void main() {
       );
       await tester.pumpWidget(calendar('2026-10-13', 390, 1));
       await tester.pumpAndSettle();
-      final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+      final scroll = tester.state<ScrollableState>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Scrollable &&
+              widget.axisDirection == AxisDirection.down,
+        ),
+      );
       scroll.position.jumpTo(0);
       await tester.pumpAndSettle();
       await tester.pumpWidget(calendar('2026-10-14', 390, 1));
@@ -398,10 +394,12 @@ void main() {
     );
     expect(find.text('September 2026').hitTestable(), findsNothing);
     expect(find.text('October 2026'), findsOneWidget);
+    await tester.ensureVisible(find.text('Mo'));
+    await tester.pumpAndSettle();
     expect(find.text('Mo').hitTestable(), findsOneWidget);
     expect(
       find.descendant(
-        of: find.byType(ActivityCalendar),
+        of: find.byType(ActivityCalendar).first,
         matching: find.byIcon(Icons.local_fire_department_rounded),
       ),
       findsNWidgets(2),
@@ -454,11 +452,20 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('May 2026'), findsOneWidget);
+      final horizontal = tester.state<ScrollableState>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Scrollable &&
+              widget.axisDirection == AxisDirection.right,
+        ),
+      );
+      horizontal.position.jumpTo(horizontal.position.maxScrollExtent);
+      await tester.pumpAndSettle();
       expect(find.text('31').hitTestable(), findsOneWidget);
       expect(find.text('Today').hitTestable(), findsOneWidget);
       expect(
         tester.getBottomLeft(find.byType(YearActivityCalendar)).dy -
-            tester.getBottomLeft(find.text('Today')).dy,
+            tester.getBottomLeft(find.text('Today').hitTestable()).dy,
         lessThan(16),
       );
       expect(find.text('June 2026').hitTestable(), findsNothing);
@@ -467,7 +474,7 @@ void main() {
   );
 
   testWidgets(
-    'date sheet spans a wide screen instead of the Material width cap',
+    'date sheet stays within the shared reading width on wide screens',
     (tester) async {
       tester.view.physicalSize = const Size(900, 844);
       tester.view.devicePixelRatio = 1;
@@ -483,8 +490,11 @@ void main() {
       );
       await tester.tap(find.text('14'));
       await tester.pumpAndSettle();
-      expect(tester.getSize(find.byType(BottomSheet)).width, 900);
-      expect(tester.getTopLeft(find.text('Wed, 14 Oct 2026')).dx, 24);
+      expect(tester.getSize(find.byType(AppSheetSurface)).width, 640);
+      expect(
+        tester.getTopLeft(find.text('Wed, 14 Oct 2026')).dx,
+        tester.getTopLeft(find.byType(AppSheetSurface)).dx + 16,
+      );
       expect(find.text('9 answers submitted\n8 correct'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
