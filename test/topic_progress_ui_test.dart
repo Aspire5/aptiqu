@@ -9,6 +9,7 @@ import 'package:aptiqu/core/theme/aptiqu_theme.dart';
 import 'package:aptiqu/features/home/models/roadmap_model.dart';
 import 'package:aptiqu/features/home/presentation/controllers/home_controller.dart';
 import 'package:aptiqu/features/home/presentation/widgets/constellation_roadmap_view.dart';
+import 'package:aptiqu/features/home/presentation/widgets/topic_icon.dart';
 import 'learning_progress_test.dart' show QuietHome, learningMap, topic;
 
 void main() {
@@ -98,7 +99,12 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       expect(find.byIcon(Icons.star_rounded), findsNothing);
       expect(find.byIcon(Icons.trending_up_rounded), findsNothing);
-      expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is TopicIcon && w.type == TopicIconType.currentTopic,
+        ),
+        findsOneWidget,
+      );
       expect(find.textContaining('0/2 topics'), findsOneWidget);
       expect(find.textContaining('1 of 2 subtopics completed'), findsOneWidget);
       await tester.tap(find.text('Problems on Ages'));

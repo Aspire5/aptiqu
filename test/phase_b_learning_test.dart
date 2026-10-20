@@ -379,14 +379,13 @@ void main() {
         ),
       );
       await capture(tester, 'home-${mode.name}');
-      await tester.ensureVisible(find.text('View difficulty details'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('View difficulty details'));
-      await tester.pumpAndSettle();
-      await capture(tester, 'difficulty-${mode.name}');
-      expect(find.text('By difficulty'), findsOneWidget);
-      await tester.tap(find.byTooltip('Close'));
-      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Difficulty Breakdown'),
+        220,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Difficulty Breakdown'), findsOneWidget);
+      expect(find.text('View difficulty details'), findsNothing);
       home.showHomeDashboard.value = false;
       home.activeScriptTitle.value = 'Factors and multiples';
       home.messages.add(

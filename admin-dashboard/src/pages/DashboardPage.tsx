@@ -103,7 +103,7 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
           </div>
-          <Link to="/questions" className="btn-primary" style={{ textDecoration: 'none', whiteSpace: 'nowrap' }}>
+          <Link to="/dashboard/questions" className="btn-primary" style={{ textDecoration: 'none', whiteSpace: 'nowrap' }}>
             Import Manual PYQs
           </Link>
         </div>

@@ -201,15 +201,18 @@ class LearningRepository extends FakeRepository {
   }
 
   @override
-  Future<int> startFriendlyQuestion(String sessionId) async => 60000;
+  Future<({int remainingMs, PracticeSessionModel session})>
+  startFriendlyQuestion(String sessionId) async =>
+      (remainingMs: 60000, session: practice(friendly: true));
 }
 
 class FriendlyRepository extends LearningRepository {
   bool failClock = false;
   @override
-  Future<int> startFriendlyQuestion(String sessionId) async {
+  Future<({int remainingMs, PracticeSessionModel session})>
+  startFriendlyQuestion(String sessionId) async {
     if (failClock) throw Exception('Clock unavailable');
-    return 60000;
+    return (remainingMs: 60000, session: practice(friendly: true));
   }
 }
 

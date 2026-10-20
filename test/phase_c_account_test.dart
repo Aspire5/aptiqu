@@ -265,7 +265,7 @@ void main() {
     controller.firstNameController.text = '  Asha  ';
     controller.lastNameController.text = '  Kumar  ';
     controller.setDob(DateTime(2003, 1, 2));
-    controller.setGender('Prefer not to say');
+    controller.setGender('Female');
     controller.setReligion('Prefer not to say');
     return controller;
   }
@@ -279,7 +279,7 @@ void main() {
         final last = tester.getRect(find.byType(TextFormField).at(1));
         expect(first.top, closeTo(last.top, .1));
         expect(first.right, lessThan(last.left));
-        expect(find.byType(ChoiceChip), findsNWidgets(4));
+        expect(find.byType(ChoiceChip), findsNWidgets(3));
         expect(find.byType(RadioListTile<String>), findsNothing);
         for (final chip in find.byType(ChoiceChip).evaluate()) {
           expect(
@@ -584,8 +584,8 @@ void main() {
           await tester.tap(find.text('OK'));
           await tester.pumpAndSettle();
           expect(controller.dob.value, DateTime(2003, 1, 1));
-          await scrollTap(tester, find.text('Prefer not to say').first);
-          expect(controller.selectedGender.value, 'Prefer not to say');
+          await scrollTap(tester, find.byKey(const ValueKey('gender-Other')));
+          expect(controller.selectedGender.value, 'Other');
           await scrollTap(
             tester,
             find.widgetWithText(OutlinedButton, 'Select a belief option'),
@@ -793,7 +793,7 @@ void main() {
         'firstName': 'Asha',
         'lastName': 'Kumar',
         'dob': DateTime(2003, 1, 2),
-        'gender': 'Prefer not to say',
+        'gender': 'Female',
         'religion': 'Prefer not to say',
         'country': 'India',
       });

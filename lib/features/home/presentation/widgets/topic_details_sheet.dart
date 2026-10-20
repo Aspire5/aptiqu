@@ -3,6 +3,7 @@ import '../../../../core/theme/aptiqu_tokens.dart';
 import '../../../../shared/widgets/layout/text_fit.dart';
 import '../../models/roadmap_model.dart';
 import '../../../../shared/widgets/sheets/app_sheet.dart';
+import 'topic_icon.dart';
 
 /// Presentation only: the caller dismisses the sheet before launching an action.
 class TopicDetailsSheet extends StatelessWidget {
@@ -176,44 +177,95 @@ class _SubtopicCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Icon(
-                  done ? Icons.check_circle_rounded : Icons.menu_book_outlined,
-                  size: 18,
-                  color: done
-                      ? context.colors.secondary
-                      : context.colors.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: 10),
+              done
+                  ? Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        const TopicIcon(type: TopicIconType.subtopic, size: 44),
+                        Positioned(
+                          right: -2,
+                          bottom: -2,
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: context.status.success,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: context.colors.surfaceContainerHigh,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.check_rounded,
+                              size: 10,
+                              color: context.colors.onPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : subtopic.isLocked
+                  ? Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        const Opacity(
+                          opacity: 0.35,
+                          child: TopicIcon(
+                            type: TopicIconType.subtopic,
+                            size: 44,
+                          ),
+                        ),
+                        Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            color: context.colors.surface.withValues(alpha: 0.85),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.lock_outline_rounded,
+                            size: 13,
+                            color: context.colors.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const TopicIcon(type: TopicIconType.subtopic, size: 44),
+              const SizedBox(width: 14),
               Expanded(
-                child: Text(
-                  subtopic.title,
-                  style: context.type.titleSmall!.copyWith(
-                    fontSize: 16,
-                    height: 1.35,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      subtopic.title,
+                      style: context.type.titleSmall!.copyWith(
+                        fontSize: 16,
+                        height: 1.35,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      done
+                          ? 'Completed'
+                          : subtopic.isLocked
+                          ? 'Coming soon'
+                          : 'Ready to learn',
+                      style: context.type.bodyMedium!.copyWith(
+                        fontSize: 12,
+                        color: done
+                            ? context.colors.secondary
+                            : context.colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            done
-                ? 'Completed'
-                : subtopic.isLocked
-                ? 'Coming soon'
-                : 'Ready to learn',
-            style: context.type.bodyMedium!.copyWith(
-              fontSize: 12,
-              color: done
-                  ? context.colors.secondary
-                  : context.colors.onSurfaceVariant,
-            ),
           ),
           const SizedBox(height: 12),
           TopicActionButtons(

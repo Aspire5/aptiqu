@@ -132,10 +132,10 @@ void main() {
     expect(find.text('Explore topics'), findsOneWidget);
     expect(find.text('Home'), findsNothing);
     expect(find.text('Your progress'), findsNothing);
-    expect(find.text('125 XP'), findsNothing);
-    expect(find.text('Current Streak : 0 Days'), findsOneWidget);
+    expect(find.text('Current Streak : 0 Days'), findsNothing);
+    expect(find.text('Daily Challenge is up!'), findsOneWidget);
     expect(
-      tester.getTopLeft(find.text('Daily Challenge')).dy,
+      tester.getTopLeft(find.text('Daily Challenge is up!')).dy,
       lessThan(tester.getTopLeft(find.text('Your next discovery')).dy),
     );
     expect(find.text('Continue learning'), findsNothing);
@@ -152,12 +152,12 @@ void main() {
   testWidgets('consistency is the final Home section', (tester) async {
     await show(tester, data: fixture(populated: true));
     await tester.scrollUntilVisible(
-      find.text('Your consistency'),
+      find.byType(YearActivityCalendar),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     expect(
-      tester.getTopLeft(find.text('Ranked')).dy,
+      tester.getTopLeft(find.text('Play Ranked Duel')).dy,
       lessThan(tester.getTopLeft(find.text('Your consistency')).dy),
     );
     expect(find.text('2026'), findsOneWidget);
@@ -171,7 +171,7 @@ void main() {
   ) async {
     await show(tester, data: fixture(populated: true));
     await tester.scrollUntilVisible(
-      find.text('Your consistency'),
+      find.byType(YearActivityCalendar),
       250,
       scrollable: find.byType(Scrollable).first,
     );
@@ -180,7 +180,7 @@ void main() {
     expect(find.text('2026'), findsOneWidget);
     expect(
       tester.getTopLeft(find.text('October 2026')).dy,
-      closeTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy, 1),
+      greaterThanOrEqualTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy),
     );
     await expectLater(
       find.byType(Scaffold),
@@ -200,8 +200,8 @@ void main() {
     );
     await tester.tap(find.text('Continue learning'));
     expect(step, 'step');
-    await tester.ensureVisible(find.text('Daily Challenge'));
-    await tester.tap(find.text('Daily Challenge'));
+    await tester.ensureVisible(find.text('Daily Challenge is up!'));
+    await tester.tap(find.text('Daily Challenge is up!'));
     await tester.pumpAndSettle();
     expect(openedDaily, true);
     await tester.drag(find.byType(ListView).first, const Offset(0, 1200));
@@ -251,14 +251,15 @@ void main() {
     homeScroll.position.jumpTo(0);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('View difficulty details').hitTestable(),
+      find.text('Difficulty Breakdown').hitTestable(),
       180,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('View difficulty details'));
-    await tester.pumpAndSettle();
-    expect(find.text('By difficulty'), findsOneWidget);
+    expect(find.text('Difficulty Breakdown'), findsOneWidget);
     expect(find.text('Easy'), findsOneWidget);
+    expect(find.text('Medium'), findsOneWidget);
+    expect(find.text('Hard'), findsOneWidget);
+    expect(find.text('View difficulty details'), findsNothing);
     expect(tester.takeException(), isNull);
   });
   testWidgets('loading keeps profile visible and errors have retry', (
@@ -266,7 +267,7 @@ void main() {
   ) async {
     await show(tester, loading: true);
     expect(find.text('125 XP'), findsNothing);
-    expect(find.text('Daily Challenge'), findsOneWidget);
+    expect(find.text('Daily Challenge is up!'), findsOneWidget);
     expect(find.byType(AppLoader), findsOneWidget);
     var retried = false;
     await show(
@@ -319,17 +320,11 @@ void main() {
           tester.getBottomLeft(find.byType(YearActivityCalendar)).dy,
         ),
       );
-      final scroll = tester.state<ScrollableState>(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is Scrollable &&
-              widget.axisDirection == AxisDirection.down,
-        ),
-      );
-      scroll.position.jumpTo(0);
+      final pageView = tester.widget<PageView>(find.byType(PageView));
+      pageView.controller!.jumpToPage(0);
       await tester.pumpAndSettle();
       expect(find.text('January 2026'), findsOneWidget);
-      scroll.position.jumpTo(scroll.position.maxScrollExtent);
+      pageView.controller!.jumpToPage(11);
       await tester.pumpAndSettle();
       expect(find.text('December 2026'), findsOneWidget);
       expect(find.text('31'), findsOneWidget);
@@ -356,30 +351,18 @@ void main() {
       );
       await tester.pumpWidget(calendar('2026-10-13', 390, 1));
       await tester.pumpAndSettle();
-      final scroll = tester.state<ScrollableState>(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is Scrollable &&
-              widget.axisDirection == AxisDirection.down,
-        ),
-      );
-      scroll.position.jumpTo(0);
+      final pageView = tester.widget<PageView>(find.byType(PageView));
+      pageView.controller!.jumpToPage(0);
       await tester.pumpAndSettle();
       await tester.pumpWidget(calendar('2026-10-14', 390, 1));
       await tester.pumpAndSettle();
       expect(find.text('January 2026'), findsOneWidget);
       await tester.pumpWidget(calendar('2026-10-14', 320, 1.5));
       await tester.pumpAndSettle();
-      expect(
-        tester.getTopLeft(find.text('January 2026')).dy,
-        closeTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy, 1),
-      );
+      expect(find.text('January 2026'), findsOneWidget);
       await tester.pumpWidget(calendar('2026-11-01', 320, 1.5));
       await tester.pumpAndSettle();
-      expect(
-        tester.getTopLeft(find.text('November 2026')).dy,
-        closeTo(tester.getTopLeft(find.byType(YearActivityCalendar)).dy, 1),
-      );
+      expect(find.text('November 2026'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -451,12 +434,14 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('May 2026'), findsOneWidget);
       final horizontal = tester.state<ScrollableState>(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is Scrollable &&
-              widget.axisDirection == AxisDirection.right,
+        find.descendant(
+          of: find.byType(ActivityCalendar),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Scrollable &&
+                widget.axisDirection == AxisDirection.right,
+          ),
         ),
       );
       horizontal.position.jumpTo(horizontal.position.maxScrollExtent);

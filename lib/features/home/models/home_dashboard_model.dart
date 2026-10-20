@@ -91,6 +91,9 @@ class HomeDashboardModel {
   final HomeResume? resume;
   final HomeRanked? ranked;
   final RankedSection? rankedLeague;
+  final String? rankedGlobalRank;
+  final String? rankedPercentile;
+  final int? rankedDefaultRating;
   const HomeDashboardModel({
     this.today,
     required this.performance,
@@ -100,6 +103,9 @@ class HomeDashboardModel {
     this.resume,
     this.ranked,
     this.rankedLeague,
+    this.rankedGlobalRank,
+    this.rankedPercentile,
+    this.rankedDefaultRating,
   });
   factory HomeDashboardModel.fromJson(Map<String, dynamic> j) =>
       HomeDashboardModel(
@@ -116,5 +122,8 @@ class HomeDashboardModel {
         resume: j['resume'] == null ? null : HomeResume.fromJson(j['resume']),
         ranked: j['ranked'] == null ? null : HomeRanked.fromJson(j['ranked']),
         rankedLeague: RankedSection.parse(j['rankedLeague']),
+        rankedGlobalRank: j['rankedGlobalRank'] as String?,
+        rankedPercentile: j['rankedPercentile'] as String?,
+        rankedDefaultRating: (j['rankedDefaultRating'] as num?)?.toInt(),
       );
 }

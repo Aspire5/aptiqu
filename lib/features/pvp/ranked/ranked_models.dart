@@ -76,6 +76,7 @@ class RankedStanding {
   final String? nextLabel;
   final int? toNext;
   final double? progress;
+  final String? globalRankPercentile;
   RankedStanding.fromJson(Map<String, dynamic> j)
     : league = RankedLeague.parse(j['league']),
       rating = rankedInt(j['rating']),
@@ -100,7 +101,11 @@ class RankedStanding {
           : rankedInt(rankedMap(j['nextLeague'])['remaining']),
       progress = j['nextLeague'] == null
           ? null
-          : (rankedMap(j['nextLeague'])['progress'] as num?)?.toDouble();
+          : (rankedMap(j['nextLeague'])['progress'] as num?)?.toDouble(),
+      globalRankPercentile = j['globalRankPercentile'] as String? ??
+          (j['percentile'] != null
+              ? 'Top ${(j['percentile'] as num).toStringAsFixed(0)}%'
+              : null);
   String get positionLabel => !qualified
       ? 'Not qualified yet'
       : position == null

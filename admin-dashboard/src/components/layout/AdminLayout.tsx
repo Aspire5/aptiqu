@@ -20,16 +20,16 @@ export const AdminLayout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/dashboard/login');
   };
 
   const getPageTitle = () => {
-    if (location.pathname.includes('/books')) return 'Book Ingestion Engine';
-    if (location.pathname.includes('/syllabus')) return 'Syllabus & Curriculum';
-    if (location.pathname.includes('/questions')) return 'Question Bank';
-    if (location.pathname.includes('/ai-prompts')) return 'AI Prompts Control Center';
-    if (location.pathname.includes('/achievements')) return 'Achievements';
-    if (location.pathname.includes('/users')) return 'User Management';
+    if (location.pathname.includes('/dashboard/books')) return 'Book Ingestion Engine';
+    if (location.pathname.includes('/dashboard/syllabus')) return 'Syllabus & Curriculum';
+    if (location.pathname.includes('/dashboard/questions')) return 'Question Bank';
+    if (location.pathname.includes('/dashboard/ai-prompts')) return 'AI Prompts Control Center';
+    if (location.pathname.includes('/dashboard/achievements')) return 'Achievements';
+    if (location.pathname.includes('/dashboard/users')) return 'User Management';
     return 'Executive SaaS Dashboard';
   };
 
@@ -54,6 +54,7 @@ export const AdminLayout: React.FC = () => {
         <nav className="sidebar-nav">
           <NavLink
             to="/dashboard"
+            end
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             <LayoutDashboard size={18} />
@@ -61,7 +62,7 @@ export const AdminLayout: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/syllabus"
+            to="/dashboard/syllabus"
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             <Layers size={18} />
@@ -69,7 +70,7 @@ export const AdminLayout: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/books"
+            to="/dashboard/books"
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             <BookOpen size={18} />
@@ -77,7 +78,7 @@ export const AdminLayout: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/questions"
+            to="/dashboard/questions"
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             <HelpCircle size={18} />
@@ -85,7 +86,7 @@ export const AdminLayout: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/ai-prompts"
+            to="/dashboard/ai-prompts"
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             <Sparkles size={18} />
@@ -93,13 +94,13 @@ export const AdminLayout: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/users"
+            to="/dashboard/users"
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             <Users size={18} />
             <span>Users</span>
           </NavLink>
-          <NavLink to="/achievements" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard/achievements" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
             <Award size={18} /><span>Achievements</span>
           </NavLink>
         </nav>

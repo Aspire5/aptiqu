@@ -1,4 +1,5 @@
 import '../../../pvp/ranked/ranked_widgets.dart';
+import '../../../pvp/ranked/ranked_models.dart';
 import 'package:aptiqu/shared/widgets/indicators/app_loader.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
@@ -184,33 +185,6 @@ class HomeDashboardContent extends StatelessWidget {
                 icon: Icon(Icons.workspace_premium_outlined),
                 label: Text('View all achievements'),
               ),
-            const SizedBox(height: 20),
-            _heading(
-              context,
-              'Ranked',
-              'Test your skills against another learner',
-            ),
-            const SizedBox(height: 12),
-            if (d.rankedLeague == null)
-              _action(
-                context,
-                title: d.ranked == null
-                    ? 'Ready for your first match?'
-                    : 'Last match · ${d.ranked!.result}',
-                subtitle: d.ranked == null
-                    ? 'Play a match to start your competitive journey.'
-                    : '${d.ranked!.correct} of ${d.ranked!.questions} answers correct',
-                label: 'Open Ranked',
-                icon: Icons.emoji_events_outlined,
-                onTap: onRanked,
-                primary: false,
-              )
-            else
-              RankedSectionView(
-                section: d.rankedLeague,
-                onOpen: onRanked,
-                onRetry: onRefresh,
-              ),
             const SizedBox(height: 24),
             Row(
               children: [
@@ -260,49 +234,214 @@ class HomeDashboardContent extends StatelessWidget {
   }
 
   Widget _daily(BuildContext context) {
-    final streakDays =
-        int.tryParse(
-          (user?.streak ?? '0d').replaceAll(RegExp(r'[^0-9]'), ''),
-        ) ??
-        0;
+    final completed = user?.dailyChallengeCompleted == true;
     return _card(
       context,
-      padding: 4,
+      padding: 0,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        onTap: onDaily,
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: context.colors.tertiary.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.local_fire_department_rounded,
+            color: context.colors.tertiary,
+            size: 24,
+          ),
+        ),
+        title: _text(
+          context,
+          completed ? 'Daily Challenge completed!' : 'Daily Challenge is up!',
+          color: context.colors.onSurface,
+          weight: FontWeight.w600,
+          size: 15,
+        ),
+        subtitle: _text(
+          context,
+          completed
+              ? 'Finished today · see your result'
+              : 'Keep your streak going..',
+          size: 12,
+          color: context.colors.onSurfaceVariant,
+        ),
+        trailing: Icon(
+          Icons.chevron_right_rounded,
+          color: context.colors.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+
+  Widget _performance(BuildContext context, HomeDashboardModel d) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (d.performance.attempted == 0)
+          _action(
+            context,
+            title: 'Build your first results',
+            subtitle: 'Answer a question to see your accuracy and activity here.',
+            label: 'Try practice',
+            icon: Icons.track_changes_rounded,
+            onTap: onPractice,
+            primary: false,
+          )
+        else
+          _QuestionsAndDifficultyCard(
+            dashboard: d,
+            disableAnimations: MediaQuery.disableAnimationsOf(context),
+          ),
+        const SizedBox(height: 12),
+        _rankedSubSection(context, d),
+      ],
+    );
+  }
+
+  Widget _rankedSubSection(BuildContext context, HomeDashboardModel d) {
+    final standing = d.rankedLeague?.summary?.standing;
+    final league = standing?.league ?? RankedLeague.unranked;
+    final rating = standing?.rating ?? d.rankedDefaultRating ?? 1200;
+    final played = standing?.played ?? 0;
+    final positionLabel = standing?.position != null
+        ? '#${standing!.position}'
+        : (d.rankedGlobalRank ?? 'Unranked');
+    final percentileLabel = standing?.globalRankPercentile ??
+        d.rankedPercentile ??
+        (standing?.position != null ? 'Top 15%' : 'Top 50%');
+
+    final isUnplayed = played == 0;
+
+    return _card(
+      context,
+      padding: 16,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ListTile(
-            onTap: onDaily,
-            leading: Icon(
-              Icons.local_fire_department_rounded,
-              color: context.colors.tertiary,
+          Row(
+            children: [
+              RankedBadge(
+                league: league,
+                size: 52,
+                decorative: true,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        Text(
+                          league.label,
+                          style: (context.type.titleMedium ?? const TextStyle()).copyWith(
+                            fontFamily: 'Outfit',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: context.colors.onSurface,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: context.colors.primary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '$rating Elo',
+                            style: (context.type.labelSmall ?? const TextStyle()).copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.colors.primary,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      isUnplayed ? 'Default rating' : 'Ranked rating',
+                      style: (context.type.bodySmall ?? const TextStyle()).copyWith(
+                        color: context.colors.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: context.colors.surfaceContainerHighest.withValues(alpha: 0.4),
+              borderRadius: BorderRadius.circular(AptiquRadius.control),
             ),
-            title: _text(
-              context,
-              'Daily Challenge',
-              color: context.colors.onSurface,
-              weight: FontWeight.w600,
-            ),
-            subtitle: _text(
-              context,
-              user?.dailyChallengeCompleted == true
-                  ? 'Finished today · see your result'
-                  : user?.dailyChallengeDue == true
-                  ? 'Available today · keep your streak going'
-                  : 'See today’s challenge',
-              size: 12,
-            ),
-            trailing: Icon(
-              Icons.chevron_right_rounded,
-              color: context.colors.onSurfaceVariant,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: _rankedStatColumn(
+                    context,
+                    label: 'Global Rank',
+                    value: positionLabel,
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 26,
+                  color: context.colors.outlineVariant.withValues(alpha: 0.5),
+                ),
+                Expanded(
+                  child: _rankedStatColumn(
+                    context,
+                    label: 'Standing',
+                    value: percentileLabel,
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 26,
+                  color: context.colors.outlineVariant.withValues(alpha: 0.5),
+                ),
+                Expanded(
+                  child: _rankedStatColumn(
+                    context,
+                    label: 'Matches',
+                    value: '$played',
+                  ),
+                ),
+              ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-            child: _text(
-              context,
-              'Current Streak : $streakDays ${streakDays == 1 ? 'Day' : 'Days'}',
-              size: 13,
+          const SizedBox(height: 14),
+          Center(
+            child: FilledButton.icon(
+              onPressed: onRanked,
+              icon: const Icon(Icons.sports_kabaddi_rounded, size: 18),
+              label: const Text('Play Ranked Duel'),
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colors.primary,
+                foregroundColor: context.colors.onPrimary,
+                minimumSize: const Size(190, 42),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AptiquRadius.control),
+                ),
+                textStyle: (context.type.labelLarge ?? const TextStyle()).copyWith(
+                  fontFamily: 'Outfit',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
             ),
           ),
         ],
@@ -310,102 +449,38 @@ class HomeDashboardContent extends StatelessWidget {
     );
   }
 
-  Widget _performance(BuildContext context, HomeDashboardModel d) {
-    final p = d.performance;
-    if (p.attempted == 0) {
-      return _action(
-        context,
-        title: 'Build your first results',
-        subtitle: 'Answer a question to see your accuracy and activity here.',
-        label: 'Try practice',
-        icon: Icons.track_changes_rounded,
-        onTap: onPractice,
-        primary: false,
-      );
-    }
-    return _card(
-      context,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            spacing: 24,
-            runSpacing: 18,
-            children: [
-              _stat(context, '${p.correct}', 'Correct answers'),
-              _stat(context, '${p.attempted}', 'Submitted'),
-              _stat(
-                context,
-                '${((p.accuracy ?? 0) * 100).toStringAsFixed(0)}%',
-                'Accuracy',
-              ),
-              _stat(
-                context,
-                p.averageSolveTimeMs == null
-                    ? '—'
-                    : '${(p.averageSolveTimeMs! / 1000).toStringAsFixed(1)}s',
-                'Avg. correct time',
-                secondary: true,
-              ),
-            ],
+  Widget _rankedStatColumn(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: (context.type.titleSmall ?? const TextStyle()).copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            color: context.colors.onSurface,
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
-          const SizedBox(height: 16),
-          _text(
-            context,
-            'Retries and replays count as submissions. Time uses correct timed-mode answers only.',
-            size: 12,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: (context.type.labelSmall ?? const TextStyle()).copyWith(
+            fontSize: 11,
+            color: context.colors.onSurfaceVariant,
           ),
-          const SizedBox(height: 10),
-          TextButton.icon(
-            onPressed: () => showAppSheet<void>(
-              context: context,
-              title: 'By difficulty',
-              builder: (context) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _text(
-                    context,
-                    'Accuracy = correct answers ÷ submissions',
-                    size: 16,
-                  ),
-                  const SizedBox(height: 20),
-                  for (final level in ['EASY', 'MEDIUM', 'HARD', 'UNKNOWN'])
-                    if (d.difficulty[level] != null) ...[
-                      _text(
-                        context,
-                        level == 'UNKNOWN'
-                            ? 'Unclassified history'
-                            : '${level[0]}${level.substring(1).toLowerCase()}',
-                        color: context.colors.primary,
-                      ),
-                      const SizedBox(height: 6),
-                      _text(
-                        context,
-                        '${d.difficulty[level]!.correct} correct / ${d.difficulty[level]!.attempted} submitted · ${((d.difficulty[level]!.accuracy ?? 0) * 100).toStringAsFixed(0)}% accuracy',
-                      ),
-                      const SizedBox(height: 6),
-                      _text(
-                        context,
-                        d.difficulty[level]!.averageSolveTimeMs == null
-                            ? 'No valid timed answers yet'
-                            : '${(d.difficulty[level]!.averageSolveTimeMs! / 1000).toStringAsFixed(1)}s average correct time',
-                        size: 12,
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  _text(
-                    context,
-                    'Skipped questions and timeouts do not count as submissions. Lesson answers contribute to accuracy, but have no recorded solve time. Late answers are excluded from time averages.',
-                    size: 12,
-                  ),
-                ],
-              ),
-            ),
-            icon: Icon(Icons.insights_outlined, size: 18),
-            label: Text('View difficulty details'),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -529,29 +604,6 @@ class HomeDashboardContent extends StatelessWidget {
           _text(context, subtitle, size: 12),
         ],
       );
-  Widget _stat(
-    BuildContext context,
-    String value,
-    String label, {
-    bool secondary = false,
-  }) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        value,
-        style: context.type.bodyLarge!.copyWith(
-          fontSize: secondary ? 18 : 24,
-          fontWeight: FontWeight.w600,
-          fontFeatures: const [FontFeature.tabularFigures()],
-          color: secondary
-              ? context.colors.onSurfaceVariant
-              : context.colors.onSurface,
-        ),
-      ),
-      const SizedBox(height: 3),
-      _text(context, label, size: 12),
-    ],
-  );
   Widget _card(
     BuildContext context, {
     required Widget child,
@@ -587,10 +639,474 @@ class HomeDashboardContent extends StatelessWidget {
   );
 }
 
+class _QuestionsAndDifficultyCard extends StatefulWidget {
+  final HomeDashboardModel dashboard;
+  final bool disableAnimations;
+
+  const _QuestionsAndDifficultyCard({
+    required this.dashboard,
+    this.disableAnimations = false,
+  });
+
+  @override
+  State<_QuestionsAndDifficultyCard> createState() =>
+      _QuestionsAndDifficultyCardState();
+}
+
+class _QuestionsAndDifficultyCardState
+    extends State<_QuestionsAndDifficultyCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animController;
+  late final Animation<double> _animation;
+  bool _hasStarted = false;
+  ScrollPosition? _scrollPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _animation = CurvedAnimation(
+      parent: _animController,
+      curve: Curves.easeOutCubic,
+    );
+
+    if (widget.disableAnimations) {
+      _animController.value = 1.0;
+      _hasStarted = true;
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _checkAndStart());
+    }
+  }
+
+  void _checkAndStart() {
+    if (_hasStarted || !mounted) return;
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox != null && renderBox.hasSize) {
+      final position = renderBox.localToGlobal(Offset.zero);
+      final screenHeight = MediaQuery.sizeOf(context).height;
+      if (position.dy < screenHeight - 20) {
+        _hasStarted = true;
+        _scrollPosition?.removeListener(_checkAndStart);
+        _scrollPosition = null;
+        _animController.forward();
+        return;
+      }
+    }
+
+    final scrollable = Scrollable.maybeOf(context);
+    if (scrollable != null && _scrollPosition != scrollable.position) {
+      _scrollPosition?.removeListener(_checkAndStart);
+      _scrollPosition = scrollable.position;
+      _scrollPosition!.addListener(_checkAndStart);
+    } else {
+      _hasStarted = true;
+      _animController.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _QuestionsAndDifficultyCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.disableAnimations && !_hasStarted) {
+      _animController.value = 1.0;
+      _hasStarted = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollPosition?.removeListener(_checkAndStart);
+    _animController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final d = widget.dashboard;
+    final p = d.performance;
+    final accuracy =
+        p.accuracy ?? (p.attempted > 0 ? p.correct / p.attempted : 0.0);
+
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, _) {
+        final progress = widget.disableAnimations ? 1.0 : _animation.value;
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(AptiquRadius.panel),
+            border: Border.all(color: context.colors.outlineVariant),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.insights_rounded,
+                    size: 20,
+                    color: context.colors.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Question Accuracy',
+                      style:
+                          (context.type.titleSmall ?? const TextStyle()).copyWith(
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: context.colors.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final scale = MediaQuery.textScalerOf(context).scale(1.0);
+                  final isCompact = constraints.maxWidth < 290 || scale > 1.25;
+
+                  if (isCompact) {
+                    return Column(
+                      children: [
+                        Center(
+                          child: AnimatedAccuracyDonutChart(
+                            accuracy: accuracy,
+                            correct: p.correct,
+                            total: p.attempted,
+                            size: 96,
+                            animationProgress: progress,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Wrap(
+                          spacing: 16,
+                          runSpacing: 8,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            _chartStatRow(
+                              context,
+                              indicatorColor: const Color(0xFF10B981),
+                              value: '${p.correct}',
+                              label: 'Correct',
+                            ),
+                            _chartStatRow(
+                              context,
+                              indicatorColor: context.colors.primary,
+                              value: '${p.attempted}',
+                              label: 'Submitted',
+                            ),
+                            _chartStatRow(
+                              context,
+                              indicatorColor: const Color(0xFFF59E0B),
+                              value: p.averageSolveTimeMs == null
+                                  ? '—'
+                                  : '${(p.averageSolveTimeMs! / 1000).toStringAsFixed(1)}s',
+                              label: 'Avg. time',
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    children: [
+                      AnimatedAccuracyDonutChart(
+                        accuracy: accuracy,
+                        correct: p.correct,
+                        total: p.attempted,
+                        size: 104,
+                        animationProgress: progress,
+                      ),
+                      const SizedBox(width: 18),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _chartStatRow(
+                              context,
+                              indicatorColor: const Color(0xFF10B981),
+                              value: '${p.correct}',
+                              label: 'Correct answers',
+                            ),
+                            const SizedBox(height: 10),
+                            _chartStatRow(
+                              context,
+                              indicatorColor: context.colors.primary,
+                              value: '${p.attempted}',
+                              label: 'Total submitted',
+                            ),
+                            const SizedBox(height: 10),
+                            _chartStatRow(
+                              context,
+                              indicatorColor: const Color(0xFFF59E0B),
+                              value: p.averageSolveTimeMs == null
+                                  ? '—'
+                                  : '${(p.averageSolveTimeMs! / 1000).toStringAsFixed(1)}s',
+                              label: 'Avg. solve time',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              Divider(
+                color: context.colors.outlineVariant.withValues(alpha: 0.35),
+                height: 1,
+              ),
+              const SizedBox(height: 14),
+              _difficultyBreakdown(
+                context,
+                d,
+                animationProgress: progress,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Retries and replays count as submissions · Timed mode only',
+                style: (context.type.bodySmall ?? const TextStyle()).copyWith(
+                  fontSize: 11,
+                  color: context.colors.onSurfaceVariant.withValues(alpha: 0.8),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _chartStatRow(
+    BuildContext context, {
+    required Color indicatorColor,
+    required String value,
+    required String label,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: indicatorColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: (context.type.titleMedium ?? const TextStyle()).copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+                color: context.colors.onSurface,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+            Text(
+              label,
+              style: (context.type.labelSmall ?? const TextStyle()).copyWith(
+                color: context.colors.onSurfaceVariant,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _difficultyBreakdown(
+    BuildContext context,
+    HomeDashboardModel d, {
+    required double animationProgress,
+  }) {
+    const levels = ['EASY', 'MEDIUM', 'HARD'];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Difficulty Breakdown',
+                style: (context.type.titleSmall ?? const TextStyle()).copyWith(
+                  fontFamily: 'Outfit',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: context.colors.onSurface,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Accuracy · Time',
+              style: (context.type.labelSmall ?? const TextStyle()).copyWith(
+                fontSize: 11,
+                color: context.colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        for (final level in levels) ...[
+          _difficultyBarRow(
+            context,
+            level: level,
+            data: d.difficulty[level],
+            animationProgress: animationProgress,
+          ),
+          if (level != levels.last) const SizedBox(height: 10),
+        ],
+        if (d.difficulty['UNKNOWN'] != null &&
+            d.difficulty['UNKNOWN']!.attempted > 0) ...[
+          const SizedBox(height: 10),
+          _difficultyBarRow(
+            context,
+            level: 'UNKNOWN',
+            data: d.difficulty['UNKNOWN'],
+            animationProgress: animationProgress,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _difficultyBarRow(
+    BuildContext context, {
+    required String level,
+    required HomePerformance? data,
+    required double animationProgress,
+  }) {
+    final String label;
+    final Color accent;
+    switch (level) {
+      case 'EASY':
+        label = 'Easy';
+        accent = const Color(0xFF10B981);
+      case 'MEDIUM':
+        label = 'Medium';
+        accent = const Color(0xFFF59E0B);
+      case 'HARD':
+        label = 'Hard';
+        accent = const Color(0xFFF43F5E);
+      default:
+        label = level;
+        accent = context.colors.onSurfaceVariant;
+    }
+
+    final attempted = data?.attempted ?? 0;
+    final correct = data?.correct ?? 0;
+    final accuracy =
+        data?.accuracy ?? (attempted > 0 ? correct / attempted : 0.0);
+    final timeStr = data?.averageSolveTimeMs != null
+        ? '${(data!.averageSolveTimeMs! / 1000).toStringAsFixed(1)}s'
+        : '—';
+
+    final targetValue = accuracy.clamp(0.0, 1.0);
+    final animatedValue = targetValue * animationProgress.clamp(0.0, 1.0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 7,
+              height: 7,
+              decoration: BoxDecoration(
+                color: accent,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 8),
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 54),
+              child: Text(
+                label,
+                style: (context.type.labelMedium ?? const TextStyle()).copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: context.colors.onSurface,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 6,
+                  child: LinearProgressIndicator(
+                    value: animatedValue,
+                    backgroundColor: context.colors.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    valueColor: AlwaysStoppedAnimation<Color>(accent),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            SizedBox(
+              width: 38,
+              child: Text(
+                attempted > 0 ? '${(accuracy * 100).toInt()}%' : '—',
+                textAlign: TextAlign.right,
+                style: (context.type.labelSmall ?? const TextStyle()).copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  color: context.colors.onSurface,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 3),
+        Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Text(
+            attempted > 0
+                ? '$correct of $attempted correct · $timeStr avg'
+                : 'No submissions yet',
+            style: (context.type.bodySmall ?? const TextStyle()).copyWith(
+              fontSize: 11,
+              color: context.colors.onSurfaceVariant.withValues(alpha: 0.8),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
 class ActivityCalendar extends StatelessWidget {
   final List<HomeActivityDay> days;
   final String? today;
-  const ActivityCalendar({super.key, required this.days, this.today});
+  final bool showMonthHeader;
+
+  const ActivityCalendar({
+    super.key,
+    required this.days,
+    this.today,
+    this.showMonthHeader = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -603,62 +1119,84 @@ class ActivityCalendar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final entries in months.values) ...[
-          Text(
-            DateFormat('MMMM yyyy').format(DateTime.parse(entries.first.date)),
-            style: context.type.bodyMedium!.copyWith(
-              color: context.colors.onSurface,
-              fontWeight: FontWeight.w600,
+          if (showMonthHeader) ...[
+            Text(
+              DateFormat('MMMM yyyy').format(DateTime.parse(entries.first.date)),
+              style: context.type.bodyMedium!.copyWith(
+                color: context.colors.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
+            const SizedBox(height: 12),
+          ],
           LayoutBuilder(
             builder: (context, constraints) {
-              final gridWidth = math.max(336.0, constraints.maxWidth);
               final firstWeekday =
                   DateTime.parse(entries.first.date).weekday - 1;
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  width: gridWidth,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          for (final label in [
-                            'Mo',
-                            'Tu',
-                            'We',
-                            'Th',
-                            'Fr',
-                            'Sa',
-                            'Su',
-                          ])
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  label,
-                                  style: context.type.bodyMedium!.copyWith(
-                                    fontSize: 12,
-                                    color: context.colors.onSurfaceVariant,
-                                  ),
+              final cells = <Widget>[
+                for (var i = 0; i < firstWeekday; i++)
+                  const SizedBox(height: 44),
+                for (final day in entries)
+                  _day(context, day),
+              ];
+              while (cells.length % 7 != 0) {
+                cells.add(const SizedBox(height: 44));
+              }
+              final weeks = <List<Widget>>[];
+              for (var i = 0; i < cells.length; i += 7) {
+                weeks.add(cells.sublist(i, i + 7));
+              }
+
+              final isSmallScreen = constraints.maxWidth <= 320.0;
+              final gridWidth = isSmallScreen ? 336.0 : constraints.maxWidth;
+
+              Widget content = SizedBox(
+                width: gridWidth,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        for (final label in [
+                          'Mo',
+                          'Tu',
+                          'We',
+                          'Th',
+                          'Fr',
+                          'Sa',
+                          'Su',
+                        ])
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                label,
+                                style: context.type.bodyMedium!.copyWith(
+                                  fontSize: 12,
+                                  color: context.colors.onSurfaceVariant,
                                 ),
                               ),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Wrap(
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    for (final week in weeks)
+                      Row(
                         children: [
-                          for (var i = 0; i < firstWeekday; i++)
-                            SizedBox(width: gridWidth / 7, height: 48),
-                          for (final day in entries)
-                            _day(context, day, gridWidth / 7),
+                          for (final cell in week)
+                            Expanded(child: cell),
                         ],
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               );
+
+              if (isSmallScreen) {
+                content = SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: content,
+                );
+              }
+              return content;
             },
           ),
           const SizedBox(height: 8),
@@ -783,12 +1321,11 @@ class ActivityCalendar extends StatelessWidget {
     ),
   );
 
-  Widget _day(BuildContext context, HomeActivityDay day, double width) {
+  Widget _day(BuildContext context, HomeActivityDay day) {
     final date = DateTime.parse(day.date);
     final isToday = day.date == today;
     return SizedBox(
-      width: width,
-      height: 48,
+      height: 44,
       child: Semantics(
         button: true,
         label:
@@ -797,7 +1334,7 @@ class ActivityCalendar extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           onTap: () => _showDay(context, day),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+            padding: const EdgeInsets.all(2.5),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -840,7 +1377,7 @@ class ActivityCalendar extends StatelessWidget {
                     right: -3,
                     child: Icon(
                       Icons.local_fire_department_rounded,
-                      size: 17,
+                      size: 16,
                       color: context.colors.tertiary,
                     ),
                   ),
@@ -857,18 +1394,23 @@ class YearActivityCalendar extends StatefulWidget {
   final List<HomeActivityDay> days;
   final String today;
   final Widget Function(BuildContext, int, List<HomeActivityDay>)? monthBuilder;
+  final Axis? scrollDirection;
+
   const YearActivityCalendar({
     super.key,
     required this.days,
     required this.today,
     this.monthBuilder,
+    this.scrollDirection,
   });
+
   @override
   State<YearActivityCalendar> createState() => _YearActivityCalendarState();
 }
 
 class _YearActivityCalendarState extends State<YearActivityCalendar> {
   ScrollController? _scroll;
+  PageController? _pageController;
   late int _monthIndex = DateTime.parse(widget.today).month - 1;
   List<double> _heights = [];
   List<double> _starts = [];
@@ -876,17 +1418,23 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
   TextScaler? _layoutScaler;
   static const _monthGap = 24.0;
 
+  bool get _isVertical =>
+      (widget.scrollDirection ??
+          (widget.monthBuilder != null ? Axis.vertical : Axis.horizontal)) ==
+      Axis.vertical;
+
   @override
   void didUpdateWidget(covariant YearActivityCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.today.substring(0, 7) != widget.today.substring(0, 7)) {
       _monthIndex = DateTime.parse(widget.today).month - 1;
       _layoutWidth = null;
+      if (_pageController != null && _pageController!.hasClients) {
+        _pageController!.jumpToPage(_monthIndex);
+      }
     }
   }
 
-  // Mirror the calendar's actual text, grid and legend layout. This avoids
-  // reserving a sixth week (or large-text padding) in a five-week month.
   double _height(BuildContext context, double width, int month) {
     final scaler = MediaQuery.textScalerOf(context);
     final direction = Directionality.of(context);
@@ -908,15 +1456,20 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
     final first = DateTime(year, month);
     final rows = ((first.weekday - 1 + DateTime(year, month + 1, 0).day) / 7)
         .ceil();
-    final title = measure(
-      DateFormat('MMMM yyyy').format(first),
-      context.type.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
-      width,
-    );
+    final isVertical = _isVertical;
+    final titleHeight = isVertical
+        ? (measure(
+            DateFormat('MMMM yyyy').format(first),
+            context.type.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+            width,
+          ).height + 12)
+        : 0.0;
+
+    final colWidth = width > 320.0 ? width / 7 : 336.0 / 7;
     final weekday = measure(
       'Mo',
       context.type.bodyMedium!.copyWith(fontSize: 12),
-      math.max(width, 336) / 7,
+      colWidth,
     );
     final dateListButton = measure(
       'View dates as list',
@@ -936,12 +1489,10 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
     final legendHeight = challenge.width + 21 + 14 + today.width + 16 <= width
         ? (firstHeight > secondHeight ? firstHeight : secondHeight)
         : firstHeight + 8 + secondHeight;
-    return (8 +
-            title.height +
-            12 +
+    return (titleHeight +
             weekday.height +
             4 +
-            rows * 48 +
+            rows * 44 +
             8 +
             buttonHeight +
             16 +
@@ -958,15 +1509,27 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
     if (index != _monthIndex) setState(() => _monthIndex = index);
   }
 
+  void _goToMonth(int index) {
+    if (index < 0 || index > 11) return;
+    _pageController?.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   void dispose() {
     _scroll?.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final byDate = {for (final day in widget.days) day.date: day};
+    final year = DateTime.parse(widget.today).year;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final scaler = MediaQuery.textScalerOf(context);
@@ -997,39 +1560,260 @@ class _YearActivityCalendarState extends State<YearActivityCalendar> {
             });
           }
         }
-        _scroll ??= ScrollController(initialScrollOffset: _starts[_monthIndex])
-          ..addListener(_onScroll);
-        return SizedBox(
-          height: _heights[_monthIndex],
-          child: Scrollbar(
-            controller: _scroll,
-            child: ListView.builder(
+
+        if (_isVertical) {
+          _scroll ??=
+              ScrollController(initialScrollOffset: _starts[_monthIndex])
+                ..addListener(_onScroll);
+          return SizedBox(
+            height: _heights[_monthIndex],
+            child: Scrollbar(
               controller: _scroll,
-              primary: false,
-              // Keep compatibility with Flutter versions before scrollCacheExtent.
-              // ignore: deprecated_member_use
-              cacheExtent: 0,
-              itemExtentBuilder: (index, _) =>
-                  _heights[index] + (index == 11 ? 0 : _monthGap),
-              itemCount: 12,
-              itemBuilder: (context, index) {
-                final month = index + 1;
-                final year = DateTime.parse(widget.today).year;
-                final days = List.generate(DateTime(year, month + 1, 0).day, (
-                  i,
-                ) {
-                  final key = DateFormat(
-                    'yyyy-MM-dd',
-                  ).format(DateTime(year, month, i + 1));
-                  return byDate[key] ?? HomeActivityDay(key, 0, 0);
-                });
-                return widget.monthBuilder?.call(context, month, days) ??
-                    ActivityCalendar(days: days, today: widget.today);
-              },
+              child: ListView.builder(
+                controller: _scroll,
+                primary: false,
+                cacheExtent: 0,
+                itemExtentBuilder: (index, _) =>
+                    _heights[index] + (index == 11 ? 0 : _monthGap),
+                itemCount: 12,
+                itemBuilder: (context, index) {
+                  final month = index + 1;
+                  final days = List.generate(DateTime(year, month + 1, 0).day, (
+                    i,
+                  ) {
+                    final key = DateFormat(
+                      'yyyy-MM-dd',
+                    ).format(DateTime(year, month, i + 1));
+                    return byDate[key] ?? HomeActivityDay(key, 0, 0);
+                  });
+                  return widget.monthBuilder?.call(context, month, days) ??
+                      ActivityCalendar(days: days, today: widget.today);
+                },
+              ),
             ),
-          ),
+          );
+        }
+
+        // Horizontal scrolling with month navigation header
+        _pageController ??= PageController(initialPage: _monthIndex);
+
+        final monthTitle = DateFormat('MMMM yyyy').format(
+          DateTime(year, _monthIndex + 1),
+        );
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.chevron_left_rounded),
+                  tooltip: 'Previous month',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  onPressed: _monthIndex > 0
+                      ? () => _goToMonth(_monthIndex - 1)
+                      : null,
+                ),
+                Expanded(
+                  child: Text(
+                    monthTitle,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.type.bodyMedium!.copyWith(
+                      color: context.colors.onSurface,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right_rounded),
+                  tooltip: 'Next month',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  onPressed: _monthIndex < 11
+                      ? () => _goToMonth(_monthIndex + 1)
+                      : null,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: _heights[_monthIndex],
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: 12,
+                onPageChanged: (index) {
+                  if (mounted && _monthIndex != index) {
+                    setState(() => _monthIndex = index);
+                  }
+                },
+                itemBuilder: (context, index) {
+                  final month = index + 1;
+                  final days = List.generate(DateTime(year, month + 1, 0).day, (
+                    i,
+                  ) {
+                    final key = DateFormat(
+                      'yyyy-MM-dd',
+                    ).format(DateTime(year, month, i + 1));
+                    return byDate[key] ?? HomeActivityDay(key, 0, 0);
+                  });
+                  final monthWidget =
+                      widget.monthBuilder?.call(context, month, days) ??
+                      ActivityCalendar(
+                        days: days,
+                        today: widget.today,
+                        showMonthHeader: false,
+                      );
+                  return SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: monthWidget,
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );
   }
+}
+
+class AnimatedAccuracyDonutChart extends StatelessWidget {
+  final double accuracy; // 0.0 to 1.0
+  final int correct;
+  final int total;
+  final double size;
+  final double? animationProgress;
+  final bool animate;
+
+  const AnimatedAccuracyDonutChart({
+    super.key,
+    required this.accuracy,
+    required this.correct,
+    required this.total,
+    this.size = 104,
+    this.animationProgress,
+    this.animate = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
+    final targetValue = accuracy.clamp(0.0, 1.0);
+    final progress = disableAnimations
+        ? 1.0
+        : (animationProgress ?? (animate ? 1.0 : 0.0)).clamp(0.0, 1.0);
+    final animatedAccuracy = targetValue * progress;
+    final percentText = '${(animatedAccuracy * 100).round()}%';
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomPaint(
+            size: Size(size, size),
+            painter: _DonutChartPainter(
+              accuracy: animatedAccuracy,
+              trackColor: context.colors.surfaceContainerHighest,
+              correctColor: context.colors.primary,
+              incorrectColor: context.colors.error.withValues(alpha: 0.5),
+              hasAttempts: total > 0,
+              strokeWidth: 10,
+            ),
+          ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        percentText,
+                        style: (context.type.titleLarge ?? const TextStyle()).copyWith(
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 22,
+                          color: context.colors.onSurface,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                      Text(
+                        'Accuracy',
+                        style: (context.type.labelSmall ?? const TextStyle()).copyWith(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: context.colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+  }
+}
+
+class _DonutChartPainter extends CustomPainter {
+  final double accuracy;
+  final Color trackColor;
+  final Color correctColor;
+  final Color incorrectColor;
+  final bool hasAttempts;
+  final double strokeWidth;
+
+  _DonutChartPainter({
+    required this.accuracy,
+    required this.trackColor,
+    required this.correctColor,
+    required this.incorrectColor,
+    required this.hasAttempts,
+    required this.strokeWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - strokeWidth) / 2;
+
+    // Background track
+    final trackPaint = Paint()
+      ..color = trackColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+    canvas.drawCircle(center, radius, trackPaint);
+
+    if (!hasAttempts || accuracy <= 0) return;
+
+    // Correct arc
+    final sweepAngle = 2 * math.pi * accuracy;
+    final correctPaint = Paint()
+      ..color = correctColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      sweepAngle,
+      false,
+      correctPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_DonutChartPainter oldDelegate) =>
+      oldDelegate.accuracy != accuracy ||
+      oldDelegate.trackColor != trackColor ||
+      oldDelegate.correctColor != correctColor;
 }

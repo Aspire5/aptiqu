@@ -6,6 +6,7 @@ import 'package:aptiqu/core/theme/aptiqu_tokens.dart';
 import '../../models/roadmap_model.dart';
 import '../controllers/home_controller.dart';
 import 'topic_details_sheet.dart';
+import 'topic_icon.dart';
 import '../../../../shared/widgets/sheets/app_sheet.dart';
 import '../../../practice/controllers/practice_catalog_controller.dart';
 
@@ -75,6 +76,12 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
 
     // Default inspected topic without opening the sheet
     _inspectedTopic = _getActiveOrFirstTopic();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    TopicIcon.precacheIcons(context);
   }
 
   @override
@@ -497,18 +504,63 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
           borderRadius: BorderRadius.circular(16),
           child: ListTile(
             contentPadding: const EdgeInsets.all(16),
-            leading: Icon(
-              focus
-                  ? Icons.play_arrow_rounded
-                  : topic.isCompleted
-                  ? Icons.check_circle_outline
-                  : topic.isComingSoon || topic.isLocked
-                  ? Icons.lock_outline_rounded
-                  : Icons.menu_book_outlined,
-              color: focus
-                  ? context.colors.onPrimaryContainer
-                  : context.colors.primary,
-            ),
+            leading: focus
+                ? const TopicIcon(type: TopicIconType.currentTopic, size: 40)
+                : topic.isCompleted
+                ? Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      const TopicIcon(type: TopicIconType.topic, size: 40),
+                      Positioned(
+                        right: -2,
+                        bottom: -2,
+                        child: Container(
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: context.status.success,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: context.colors.surface,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.check_rounded,
+                            size: 9,
+                            color: context.colors.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : (topic.isComingSoon || topic.isLocked)
+                ? Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Opacity(
+                        opacity: 0.35,
+                        child: TopicIcon(type: TopicIconType.topic, size: 40),
+                      ),
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: context.colors.surface.withValues(alpha: 0.85),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          topic.isComingSoon
+                              ? Icons.schedule_rounded
+                              : Icons.lock_outline_rounded,
+                          size: 12,
+                          color: context.colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  )
+                : const TopicIcon(type: TopicIconType.topic, size: 40),
             title: Text(
               topic.topicName,
               style: context.type.titleSmall!.copyWith(
@@ -657,51 +709,75 @@ class _ConstellationRoadmapViewState extends State<ConstellationRoadmapView>
     );
   }
 
-  Widget _nodeCircle(
-    IconData icon,
-    Color foreground,
-    Color background, {
-    bool emphasized = false,
-  }) => Container(
-    width: emphasized ? 64 : 54,
-    height: emphasized ? 64 : 54,
-    decoration: BoxDecoration(
-      color: background,
-      shape: BoxShape.circle,
-      border: Border.all(color: foreground, width: emphasized ? 2 : 1),
-    ),
-    child: Icon(icon, color: foreground, size: 26),
-  );
   Widget _buildActiveFocusNodeCircle(LearningMapTopicItemModel topic) =>
-      _nodeCircle(
-        Icons.play_arrow_rounded,
-        context.colors.onPrimaryContainer,
-        context.colors.primaryContainer,
-        emphasized: true,
+      const TopicIcon(
+        type: TopicIconType.currentTopic,
+        size: 64,
       );
+
   Widget _buildCompletedNodeCircle(
     LearningMapTopicItemModel topic,
     bool inspected,
-  ) => _nodeCircle(
-    Icons.check_rounded,
-    context.status.success,
-    context.status.successContainer,
+  ) => Stack(
+    clipBehavior: Clip.none,
+    alignment: Alignment.center,
+    children: [
+      const TopicIcon(type: TopicIconType.topic, size: 54),
+      Positioned(
+        right: 0,
+        bottom: 0,
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: context.status.success,
+            shape: BoxShape.circle,
+            border: Border.all(color: context.colors.surface, width: 2),
+          ),
+          child: Icon(
+            Icons.check_rounded,
+            size: 11,
+            color: context.colors.onPrimary,
+          ),
+        ),
+      ),
+    ],
   );
+
   Widget _buildReadyNodeCircle(
     LearningMapTopicItemModel topic,
     bool inspected,
-  ) => _nodeCircle(
-    Icons.menu_book_rounded,
-    context.colors.primary,
-    context.colors.surface,
+  ) => const TopicIcon(
+    type: TopicIconType.topic,
+    size: 54,
   );
+
   Widget _buildLockedNodeCircle(
     LearningMapTopicItemModel topic,
     bool inspected,
-  ) => _nodeCircle(
-    topic.isComingSoon ? Icons.schedule_rounded : Icons.lock_outline_rounded,
-    context.colors.onSurfaceVariant,
-    context.colors.surfaceContainer,
+  ) => Stack(
+    alignment: Alignment.center,
+    children: [
+      const Opacity(
+        opacity: 0.35,
+        child: TopicIcon(type: TopicIconType.topic, size: 54),
+      ),
+      Container(
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(
+          color: context.colors.surface.withValues(alpha: 0.85),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          topic.isComingSoon
+              ? Icons.schedule_rounded
+              : Icons.lock_outline_rounded,
+          size: 15,
+          color: context.colors.onSurfaceVariant,
+        ),
+      ),
+    ],
   );
 
   Widget _buildSubtopicsProgressPill(LearningMapTopicItemModel topic) {

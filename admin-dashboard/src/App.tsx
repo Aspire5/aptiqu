@@ -1,6 +1,7 @@
+import './index.css';
 import { AchievementsPage } from './pages/AchievementsPage';
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AdminLayout } from './components/layout/AdminLayout';
 import { LoginPage } from './pages/LoginPage';
@@ -32,10 +33,16 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/dashboard/login" replace />;
   }
 
   return <>{children}</>;
+};
+
+// Preserve old bookmarks, including query filters and hashes.
+const LegacyAdminRedirect = ({ path }: { path: string }) => {
+  const { search, hash } = useLocation();
+  return <Navigate to={`/dashboard/${path}${search}${hash}`} replace />;
 };
 
 export const App: React.FC = () => {
@@ -43,18 +50,17 @@ export const App: React.FC = () => {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard/login" element={<LoginPage />} />
 
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <AdminLayout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPage />} />
+            <Route index element={<DashboardPage />} />
             <Route path="syllabus" element={<SyllabusPage />} />
             <Route path="books" element={<BooksPage />} />
             <Route path="questions" element={<QuestionsPage />} />
@@ -63,6 +69,9 @@ export const App: React.FC = () => {
             <Route path="users" element={<UsersPage />} />
           </Route>
 
+          {['login', 'syllabus', 'books', 'questions', 'ai-prompts', 'achievements', 'users'].map((path) => (
+            <Route key={path} path={`/${path}`} element={<LegacyAdminRedirect path={path} />} />
+          ))}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>

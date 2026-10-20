@@ -25,10 +25,10 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && !window.location.pathname.includes('/login')) {
+    if (error.response?.status === 401 && !window.location.pathname.includes('/dashboard/login')) {
       localStorage.removeItem('aptiqu_admin_token');
       localStorage.removeItem('aptiqu_admin_user');
-      window.location.href = '/login';
+      window.location.href = '/dashboard/login';
     }
     return Promise.reject(error);
   }

@@ -17,7 +17,7 @@ class SignUpController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
-  final List<String> genders = ['Male', 'Female', 'Non-Binary', 'Prefer not to say'];
+  final List<String> genders = ['Male', 'Female', 'Other'];
   final List<String> religions = [
     'Hinduism',
     'Islam',

@@ -108,7 +108,12 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', (message) async {
           final key = utf8.decode(message!.buffer.asUint8List());
-          if (!key.startsWith('test/fonts/')) return null;
+          if (!key.startsWith('test/fonts/')) {
+            final asset = File('build/unit_test_assets/$key');
+            return asset.existsSync()
+                ? ByteData.sublistView(asset.readAsBytesSync())
+                : null;
+          }
           final filename = key
               .split('/')
               .last
@@ -250,15 +255,12 @@ void main() {
         expect(find.text('Continue learning'), findsOneWidget);
         if (config.$1.width == 390) await capture(tester, 'home-${mode.name}');
         await tester.scrollUntilVisible(
-          find.text('View difficulty details'),
+          find.text('Difficulty Breakdown'),
           220,
           scrollable: find.byType(Scrollable).first,
         );
-        await tester.ensureVisible(find.text('View difficulty details'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('View difficulty details'));
-        await tester.pumpAndSettle();
-        expect(find.text('By difficulty'), findsOneWidget);
+        expect(find.text('Difficulty Breakdown'), findsOneWidget);
+        expect(find.text('View difficulty details'), findsNothing);
         expect(tester.takeException(), isNull);
         final scroll = ScrollController();
         await show(

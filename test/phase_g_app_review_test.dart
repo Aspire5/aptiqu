@@ -605,10 +605,10 @@ void main() {
               onDaily: () {},
             ),
           );
-          await reach(find.text('View difficulty details'));
-          expect(find.text('By difficulty'), findsOneWidget);
+          await reach(find.text('Difficulty Breakdown'));
+          expect(find.text('Difficulty Breakdown'), findsOneWidget);
+          expect(find.text('View difficulty details'), findsNothing);
           await capture(tester, 'O04-${mode.name}-${size.width.toInt()}');
-          await reach(find.byTooltip('Close'));
           await reach(find.text('View all achievements'));
           expect(find.text('A steady start'), findsOneWidget);
           await capture(tester, 'O05-${mode.name}-${size.width.toInt()}');
