@@ -1,4 +1,92 @@
-# Ranked Phase 2 database change preparation
+# Ranked native PostgreSQL guards
+
+## Current tables already exist after Prisma 6 `db push`
+
+Use **[ranked-native-install.sql](ranked-native-install.sql)** for this case. Do **not** replay `ranked-phase2.sql`: it includes historical table/type/column creation and Prisma-managed objects. The supplemental installer adds only these persistent native objects:
+
+| Object | Count | Purpose |
+| --- | ---: | --- |
+| Trigger functions | 4 | Existing audit, identity, answer and settlement guards |
+| Triggers | 10 | Seven immediate guards and three deferred integrity guards |
+| Constraints | 14 | Twelve CHECKs, one season exclusion and one opponent foreign key |
+| Partial indexes | 2 | Qualified standings order and unique final positions |
+
+The exclusion constraint also creates its required GiST backing index. No extension is needed for its built-in `tstzrange` operator class. The Prisma-managed `pvp_matches_status_hard_expires_at_idx` and `ranked_rating_changes_user_id_created_at_id_idx` are deliberately omitted. The four function bodies and all constraint expressions, index definitions and trigger events are retained from the native section of `ranked-phase2.sql`; no gameplay or policy code changes are involved.
+
+**Review status:** static review and the focused disposable local PostgreSQL verification below passed. No SQL fixes were required. No AWS, existing development database or production database was accessed. Production execution and locking under real application traffic remain untested.
+
+Static checks passed using `pglast 7.21` (PostgreSQL 17 parser, without a database): both SQL files, four installer PL/pgSQL blocks and four trigger-function bodies parse; all 14 constraint definitions, ten trigger definitions and two index definitions match the historical native DDL as parsed syntax trees; function bodies match byte for byte. Installer/verifier manifests cover every startup requirement. The verifier's parsed statement tree contains only a read-only transaction, local search-path setting and SELECTs. Parsing does not resolve database types/catalogs or execute DDL.
+
+### Focused disposable runtime verification — 2026-10-20
+
+All seven checks passed on **PostgreSQL 14.19**, with **Prisma CLI/client 6.19.3** and Node 24.5.0. A newly initialized temporary cluster listened only on `127.0.0.1:49732` and its private Unix socket. Every test connection named that cluster's socket/port or explicit loopback URL; no existing database connection settings were used as a fallback. The cluster's actual data directory and unique cluster name were checked before testing. The CLI used a byte-for-byte temporary copy of the repository schema, outside the ordinary `.env` location, with an explicit disposable `DATABASE_URL` and `db push --skip-generate` (no reset). Schema creation, installation and verification used a separate **non-superuser database owner**. Cluster bootstrap alone used its fresh administrative role.
+
+| Requested check | Result and evidence |
+| --- | --- |
+| Fresh Prisma-managed schema | PASS — `db push` created all **55 model tables**. Required Prisma indexes/unique keys were present, including the two historical indexes omitted from this installer. |
+| Pre-install verifier | PASS — **30 `MISSING` native objects**, with the other **16 requirements `OK_METADATA`**, across exactly 46 rows. |
+| First native install | PASS — transaction committed **14 constraints, 2 partial indexes, 4 functions and 10 triggers**. |
+| Post-install verifier | PASS — **46/46 `OK_METADATA`**. |
+| Second install without replacement | PASS — **30 `Matching` notices**, no `Installed` notices; before/after snapshots retained permanent catalog **OIDs, `xmin` values and definitions** across application schemas. A fixture policy row inserted before installation remained byte-for-byte identical. Reverification stayed **46/46**. |
+| Actual startup checker | PASS — imported the actual `src/runtime/schema-contract.ts` through `tsx` and invoked `assertDatabaseContract` using a real `PrismaClient` explicitly targeting the disposable database, with connection budget **20**. This exercised the checker function, not full application startup. |
+| Failed installation rollback | PASS — in a second fresh Prisma-created database in the same new cluster, a deliberately incompatible `ranked_deny_audit_mutation()` caused failure **after 14 constraints and 2 indexes had been created inside the transaction**. Fresh-connection catalog snapshots exactly matched the pre-attempt state, including the conflicting function; fixture data was unchanged. The verifier then showed **29 `MISSING`, 1 `INVALID` function and 16 `OK_METADATA`**, confirming no partial installation. |
+
+Local evidence is retained under `/private/tmp/aptiqu-native-runtime-9v5gt0th/`: `results.json`, `fixture.json`, individual command logs, verifier CSV output and catalog snapshots. The temporary harness is `/private/tmp/aptiqu-native-runtime-check.py`. These are local review artifacts, not deployment dependencies. Both test databases belonged exclusively to this newly created cluster; it was stopped after verification and its disposable data directory removed. No application server, load test, performance benchmark or broader integration suite was run. Existing unrelated workspace changes were preserved.
+
+### Installation behavior and prerequisites
+
+- The current `schema.prisma` tables, columns, enums and Prisma-managed keys/indexes must already exist. This is supplemental installation, not schema repair, a Prisma migration baseline or recovery of data removed by an earlier reset.
+- Use the table-owning deployment role, with `CREATE` on `learning`, database `TEMP` permission, type/schema usage and permission to create functions/triggers and reference the participant key. No superuser or extension installation is required for an ordinary owner deployment.
+- The script uses one transaction. It takes `ACCESS EXCLUSIVE` locks on eight existing Ranked/PvP tables, blocking reads and writes until commit/rollback. Schedule a maintenance window and stop all backend HTTP, PvP and worker processes before installation. Its five-second **lock acquisition** timeout aborts instead of waiting indefinitely; index construction/constraint validation can take longer. Existing connection-level statement timeouts still apply.
+- Matching installed definitions are retained. CHECK/exclusion and partial-index comparisons use empty temporary `LIKE` tables so PostgreSQL canonicalizes both sides with the same actual types and collations. The five temporary templates contain no application rows and disappear at commit/session end. The FK is compared by ordered keys, referenced table, actions and deferral; functions by body and attributes; triggers by function, events, timing, row scope, arguments and deferral. Trigger enable modes `O` (ordinary) and `A` (always) are accepted, as in startup.
+- Different definitions, disabled triggers, unvalidated constraints, invalid indexes or naming collisions abort the **whole** transaction. Function comparison ignores only surrounding whitespace; internal formatting differences also require review. No existing object is dropped, replaced, re-enabled or silently accepted by name. Repeating the command is intended to retain matching installed objects and create only missing ones.
+- Adding CHECK/FK/exclusion/unique guards validates existing rows. Violations abort without altering those rows or leaving a partial installation. A failed statement or lost connection rolls back all new persistent objects. Diagnose the named object/data issue separately; this script performs no cleanup or data correction. Newly installed deferred triggers apply to subsequent writes; they do not retrospectively audit old settlements.
+
+### Exact manual commands (operator runs these after review)
+
+From the repository's `backend/` directory, use your normal **libpq/psql** connection profile. Set `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER` and the provider-required TLS settings for the reviewed target; provide the password through your normal prompt or password file. A Prisma URL containing `schema`, `connection_limit` or `pool_timeout` is not a libpq URL. Do not paste credentials into SQL or commit them. Set `DATABASE_CONNECTION_BUDGET` to the numeric value actually used by the deployed backend.
+
+These shell guards require the target and budget to be chosen explicitly:
+
+```sh
+: "${PGHOST:?Set the reviewed PostgreSQL host}"
+: "${PGDATABASE:?Set the reviewed database name}"
+: "${PGUSER:?Set the table-owning deployment role}"
+: "${DATABASE_CONNECTION_BUDGET:?Set the deployed backend connection budget}"
+```
+
+1. Obtain the normal recoverable backup and confirm the target. The identity query and verification are read-only:
+
+   ```sh
+   psql -X --set=ON_ERROR_STOP=1 --command='SELECT current_database(), current_user, inet_server_addr(), version();'
+   psql -X --set=ON_ERROR_STOP=1 \
+     --set=connection_budget="$DATABASE_CONNECTION_BUDGET" \
+     --file=prisma/changes/ranked-native-verify.sql
+   ```
+
+2. After review and with application processes stopped, install:
+
+   ```sh
+   psql -X --set=ON_ERROR_STOP=1 --file=prisma/changes/ranked-native-install.sql
+   ```
+
+3. Verify again before restarting the backend:
+
+   ```sh
+   psql -X --set=ON_ERROR_STOP=1 \
+     --set=connection_budget="$DATABASE_CONNECTION_BUDGET" \
+     --file=prisma/changes/ranked-native-verify.sql
+   ```
+
+`-X` ignores local psql startup customizations; `ON_ERROR_STOP` stops on SQL errors. Do not add `--single-transaction` or wrap the files in another transaction: both files manage their own transaction. The verification query returns 46 requirement rows, with problems first. Missing native guards are expected before installation. **Every row must report `OK_METADATA`** before restarting. A successful psql exit alone does not mean the report passed: `MISSING`, `INVALID` and `MISSING_OR_INVALID` are report values, not SQL exceptions.
+
+[ranked-native-verify.sql](ranked-native-verify.sql) runs in `BEGIN READ ONLY` and checks all requirements from `src/runtime/schema-contract.ts`: 14 Prisma-managed columns, 10 enabled triggers (including deferred integrity settings), 14 validated constraints, two valid native indexes, the Prisma assignment unique key and the supplied connection budget against available server slots. It also checks function bodies/attributes, trigger structure and native-index keys/order/predicates. It returns actual definitions for review. **`OK_METADATA` is not a full constraint-expression drift proof or a retrospective data audit**; the installer performs the strict expected-definition comparison. Missing Prisma columns/assignment keys or an excessive budget remain separate issues this native-only installer cannot fix.
+
+After a successful install, repeating step 2 is the manual repeatability check; it must report matching objects and commit without replacing them. Re-run step 3 afterward. This passed in the disposable local test above; no AWS execution was performed. Any future Prisma operation that removes native objects requires this reviewed supplemental step again. Do not run a reset to resolve native guard errors. No migration registration or automatic startup installation is added.
+
+PostgreSQL references: [temporary `LIKE` tables](https://www.postgresql.org/docs/14/sql-createtable.html), [catalog definition functions](https://www.postgresql.org/docs/14/functions-info.html), [trigger metadata](https://www.postgresql.org/docs/14/catalog-pg-trigger.html), [index metadata](https://www.postgresql.org/docs/14/catalog-pg-index.html).
+
+## Historical Ranked Phase 2 database change preparation
 
 **Historical change preparation.** Local hardening verification subsequently installed the supplemental guards in dedicated disposable fixtures. No VPS/remote database was contacted or verified. The Stage 3 bootstrap checks required guard metadata; it does not execute this SQL or prove full definition drift.
 
