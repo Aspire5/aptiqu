@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, BookOpen, Bookmark, Check, ChevronRight, Languages, MessageCircle, Moon, Share2, Sun, Target, Trophy, Bell } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, BookOpen, Bookmark, Check, ChevronRight, Languages, Linkedin, Mail, MessageCircle, Moon, Share2, Sun, Target, Trophy, Bell } from 'lucide-react';
 import type { AppScreenshot } from './screenshots';
 import { screenshot, screenshots } from './screenshots';
 import { milestones } from './releases';
@@ -341,6 +341,16 @@ export default function PublicLanding() {
             <h2 id="developer-title">Built by Shagun Kumar</h2>
             <p>Full-stack Software Engineer <span>·</span> 3 years of experience</p>
             <p className="aq-small">Working across mobile applications, backend systems and web platforms.</p>
+            <div className="aq-developer-contacts">
+              <a className="aq-linkedin-link" href="https://www.linkedin.com/in/shagun-kumar-72432a25b" target="_blank" rel="noopener noreferrer" aria-label="Connect with Shagun on LinkedIn (opens in a new tab)">
+                <Linkedin size={18} aria-hidden="true" />
+                Connect on LinkedIn
+              </a>
+              <span className="aq-developer-email">
+                <Mail size={18} aria-hidden="true" />
+                <span><span className="aq-contact-label">Gmail</span>shagunk035@gmail.com</span>
+              </span>
+            </div>
           </div>
         </section>
       </div>
