@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, BookOpen, Bookmark, Check, ChevronRight, Languages, MessageCircle, Moon, Share2, Sparkles, Sun, Target, Trophy, Bell } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, BookOpen, Bookmark, Check, ChevronRight, Languages, MessageCircle, Moon, Share2, Sun, Target, Trophy, Bell } from 'lucide-react';
 import type { AppScreenshot } from './screenshots';
 import { screenshot, screenshots } from './screenshots';
 import { milestones } from './releases';
@@ -28,9 +28,16 @@ function Phone({
     </div>}
   </div>;
 }
+function LoginPreview() {
+  return <div className="aq-login-fan" role="group" aria-label="Three genuine AptiQu login slides, with the centre preview in Light mode">
+    <Phone entry={screenshot('login')} className="aq-login-left" />
+    <Phone entry={screenshot('login-compete')} className="aq-login-right" />
+    <Phone entry={screenshot('login-practice')} className="aq-login-centre" />
+  </div>;
+}
 function ScreenshotGallery() {
   const track = useRef<HTMLDivElement>(null);
-  const entries = screenshots.filter(entry => entry.available && entry.theme === 'dark').sort((a, b) => a.order - b.order);
+  const entries = screenshots.filter(entry => entry.available && entry.theme === 'dark' && entry.gallery !== false).sort((a, b) => a.order - b.order);
   const move = (direction: number) => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     track.current?.scrollBy({
@@ -56,12 +63,12 @@ function ScreenshotGallery() {
         </div>
       </div>
     </div>
-    <div className="aq-gallery" ref={track} tabIndex={0} role="region" aria-label="App screenshots. Scroll horizontally to explore.">{entries.map((entry, index) => <figure key={entry.id}>
+    <div className="aq-gallery" ref={track} tabIndex={0} role="region" aria-label="App screenshots. Scroll horizontally to explore.">{entries.map((entry, index) => <figure key={entry.id} className={entry.id === 'login' ? 'aq-login-gallery-item' : undefined}>
         <div className="aq-gallery-label">
           <span>0{index + 1}</span>
           <strong>{entry.title}</strong>
         </div>
-        <Phone entry={entry} />
+        {entry.id === 'login' ? <LoginPreview /> : <Phone entry={entry} />}
         <figcaption>{entry.caption}</figcaption>
       </figure>)}</div>
     <p className="aq-preview-note">Real Flutter UI, rendered with demo data. Swipe or scroll to explore.</p>
@@ -179,8 +186,6 @@ export default function PublicLanding() {
         <a href="#next">What’s next</a>
         <a href="#updates">Updates</a>
       </nav>
-      <span className="aq-header-status">
-        <span /> In the making</span>
     </header>
     <main id="main">
       <section className="aq-hero aq-container" aria-labelledby="hero-title">
@@ -191,7 +196,7 @@ export default function PublicLanding() {
           </h1>
           <p className="aq-hero-description">Learn the concepts.<br />Practice the patterns.<br />Compete with others.</p>
           <div className="aq-launch">
-            <Sparkles size={22} aria-hidden="true" />
+            <img className="aq-diya" src="/showcase/brand/diya.png" width="44" height="44" alt="" />
             <div>
               <strong>Coming this Diwali</strong>
               <span>
@@ -207,7 +212,7 @@ export default function PublicLanding() {
           <div className="aq-orbit aq-orbit-two" aria-hidden="true" />
           <span className="aq-star aq-star-one" aria-hidden="true">✦</span>
           <span className="aq-star aq-star-two" aria-hidden="true">✦</span>
-          <Phone priority entry={screenshot('ranked')} className="aq-hero-secondary" />
+          <Phone priority entry={screenshot('login')} className="aq-hero-secondary" />
           <Phone priority entry={screenshot('home')} className="aq-hero-primary" />
           <span className="aq-hero-caption">A little better. Every day.</span>
         </div>
@@ -330,8 +335,7 @@ export default function PublicLanding() {
         </section>
         <ReleaseTimeline />
         <section className="aq-developer" aria-labelledby="developer-title">
-          <span className="aq-signature" aria-hidden="true">SK<span>↗</span>
-          </span>
+          <img className="aq-developer-photo" src="/showcase/brand/shagun.jpeg" width="92" height="92" loading="lazy" alt="Shagun Kumar" />
           <div>
             <p className="aq-eyebrow">An independent product</p>
             <h2 id="developer-title">Built by Shagun Kumar</h2>

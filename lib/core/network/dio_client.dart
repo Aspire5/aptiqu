@@ -11,7 +11,7 @@ class DioClient {
   // Primary backend server URL (Enforce HTTPS with TLS)
   static const String defaultBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://15.252.71.142/api/v1',
+    defaultValue: 'https://aptiqu.in/api/v1',
   );
 
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();

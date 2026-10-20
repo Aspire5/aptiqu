@@ -42,19 +42,23 @@ Conceptually, the static-site location needs a `try_files <requested-file> /inde
 
 Manifest: `admin-dashboard/src/public/screenshots.ts`. Each entry records stable ID, title, image path, caption, alt text, theme, order, availability and original source. Files: `admin-dashboard/public/showcase/screenshots/`.
 
-All seven images are **genuine deterministic Flutter widget renders**, copied from existing local evidence and encoded to WebP at quality 90. They show actual application widgets with safe demo data. **No new emulator/device screenshots were captured. No fabricated UI or temporary image placeholders are displayed.** The visible gallery notes the demo provenance. Evidence may predate concurrent Home changes; replace it after the relevant UI is approved.
+All eleven images are **genuine deterministic Flutter widget renders**, encoded to WebP at quality 90. Nine were freshly captured from current widgets for the requested 20 October asset refresh; the two original Practice images were retained unchanged. They show actual application widgets with safe demo data. **No new emulator/device screenshots were captured. No fabricated UI or temporary image placeholders are displayed.** The visible gallery notes the demo provenance. The refreshed Home, lesson shell, login carousel, duel and Ranked use the current widgets. The supplied portrait and Shagun demo identity are consistent across the Home/lesson captures. See [capture provenance and reproduction](public_showcase/2026-10-20/README.md).
 
 | File | Original local render |
 |---|---|
-| home-dark.webp | docs/ui_ux_phase_g/S03-home-dark-phone.png |
-| home-light.webp | docs/ui_ux_phase_g/S03-home-light-phone.png |
-| lesson-dark.webp | docs/ui_ux_phase_g/S04-embedded-dark-phone.png |
+| home-dark.webp | docs/public_showcase/2026-10-20/home-dark.png |
+| home-light.webp | docs/public_showcase/2026-10-20/home-light.png |
+| lesson-dark.webp | docs/public_showcase/2026-10-20/lesson-dark.png |
 | practice-setup-dark.webp | test/goldens/practice-custom.png |
 | practice-question-dark.webp | docs/ui_ux_phase_g/S08-practice-dark-phone.png |
-| duel-dark.webp | docs/ui_ux_phase_g/S17-duel-dark-phone.png |
-| ranked-dark.webp | docs/ranked_phase4/lobby-qualified-dark-phone.png |
+| duel-dark.webp | docs/public_showcase/2026-10-20/duel-dark.png |
+| ranked-dark.webp | docs/public_showcase/2026-10-20/ranked-dark.png |
+| consistency-dark.webp | docs/public_showcase/2026-10-20/consistency-dark.png |
+| login-learn-dark.webp | docs/public_showcase/2026-10-20/login-learn-dark.png |
+| login-practice-light.webp | docs/public_showcase/2026-10-20/login-practice-light.png |
+| login-compete-dark.webp | docs/public_showcase/2026-10-20/login-compete-dark.png |
 
-To replace: overwrite the matching WebP, retaining the filename, then rebuild. Prefer a 390×844 portrait render, with demo identity, no debugging overlays, no credentials and no unfinished/error state. Practice setup's source is 360×800; the shared preview normalizes its frame to 390:844 with a slight bottom crop. Update alt text/caption/source/provenance in the manifest if the content changes; extend the provenance union for native captures. Set `available: false` to hide an entry from the gallery. Hero/feature/theme placements show a clearly labelled fallback if a required entry is unavailable or its file fails, never fake UI. Keep paired Home Light/Dark images corresponding to the same app state. Add or remove manifest entries to extend the gallery; referenced stable IDs must remain defined.
+To replace: overwrite the matching WebP, retaining the filename, then rebuild. Prefer a 390×844 portrait render, with demo identity, no debugging overlays, no credentials and no unfinished/error state. Practice setup's source is 360×800; the shared preview normalizes its frame to 390:844 with a slight bottom crop. Update alt text/caption/source/provenance in the manifest if the content changes; extend the provenance union for native captures. Set `available: false` to hide an entry from the gallery; `gallery: false` keeps a secondary fan image available without creating a duplicate gallery item. Hero/feature/theme placements show a clearly labelled fallback if a required entry is unavailable or its file fails, never fake UI. Keep paired Home Light/Dark images corresponding to the same app state. Add or remove manifest entries to extend the gallery; referenced stable IDs must remain defined.
 
 Brand assets are copied unchanged from `assets/images/main_logo.webp` and the six files in `assets/images/ranked/`. Fonts are bundled Outfit and Plus Jakarta Sans, with their OFL license copies in `showcase/fonts/`. Decorative lighting, phone frames and backgrounds are code-created and replaceable in `public.css`; no AI image generation was used.
 
