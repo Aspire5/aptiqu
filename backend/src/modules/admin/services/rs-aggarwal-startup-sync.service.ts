@@ -6,8 +6,11 @@ import { prisma } from '../../../config/prisma';
 import { roadmapProgressionService } from '../../roadmap/services/roadmap-progression.service';
 import { scriptCacheService } from '../../lesson/services/script-cache.service';
 import { AdminSyllabusService } from '../admin-syllabus.service';
+import { catalogMutation } from '../../roadmap/services/catalog-mutation';
+import { ScriptValidator } from '../../lesson/engines/script-validator';
 
 const SUBJECT_NAME = 'RS Aggarwal - Quantitative Aptitude';
+const SUBJECT_SLUG = 'rs-aggarwal-quantitative-aptitude';
 const SUBTOPICS_DIR = ENV.CURRICULUM_SOURCE_ROOT;
 
 // Topic descriptions are shown to students. Keep them short and useful.
@@ -38,12 +41,9 @@ type SourceSubtopic = {
 
 const normalizedName = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
-export async function syncRsAggarwalOnStartup(): Promise<void> {
-  const subject = await prisma.subject.findFirst({ where: { name: SUBJECT_NAME, isActive: true } });
-  if (!subject) {
-    log('info','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.info');
-    return;
-  }
+export async function syncRsAggarwalOnStartup() {
+  const counts = { topics: 0, subtopics: 0, scripts: 0, skippedScripts: 0, failedScripts: 0 };
+  log('info','curriculum.sync.started');
 
   let folders;
   try {
@@ -51,21 +51,31 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
       .filter((entry) => entry.isDirectory() && /^SBT-RSA-\d+-/.test(entry.name))
       .sort((a, b) => Number(a.name.match(/^SBT-RSA-(\d+)-/)![1]) - Number(b.name.match(/^SBT-RSA-(\d+)-/)![1]));
   } catch (error: any) {
-    log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn',safeError(error));
-    return;
+    log('warn','curriculum.source_unavailable',safeError(error));
+    return { ...counts, sourceAvailable: false };
   }
 
-  const counts = { topics: 0, subtopics: 0, scripts: 0, skippedScripts: 0, failedScripts: 0 };
-  let changed = false;
+  if (!folders.length) {
+    log('warn','curriculum.source_empty');
+    return { ...counts, sourceAvailable: false };
+  }
+  // A reset removes the subject too. Preserve existing and inactive subjects.
+  let subject = await prisma.subject.findFirst({ where: { OR: [{ name: SUBJECT_NAME }, { slug: SUBJECT_SLUG }] } });
+  if (!subject) subject = await prisma.subject.create({ data: {
+    id: SUBJECT_SLUG, slug: SUBJECT_SLUG, name: SUBJECT_NAME, displayOrder: 1,
+  } });
+  if (!subject.isActive) {
+    log('info','curriculum.subject_inactive');
+    return { ...counts, sourceAvailable: true };
+  }
 
   for (const folder of folders) {
     try {
       const chapter = Number(folder.name.match(/^SBT-RSA-(\d+)-/)![1]);
-      const details = TOPICS[chapter];
-      if (!details) {
-        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn');
-        continue;
-      }
+      const details = TOPICS[chapter] ?? {
+        name: folder.name.replace(/^SBT-RSA-\d+-/, '').replace(/[_-]+/g, ' '),
+        description: '',
+      };
 
       const sequence = chapter - 1;
       const slug = `${subject.id}-${normalizedName(details.name).replace(/ /g, '-')}`;
@@ -88,23 +98,20 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
           },
         });
         counts.topics++;
-        changed = true;
-      } else if (topic.sequence !== sequence || !topic.description) {
+      } else if (topic.sequence !== sequence || (!topic.description && Boolean(details.description))) {
         topic = await prisma.topic.update({
           where: { id: topic.id },
           data: { sequence, ...(!topic.description ? { description: details.description } : {}) },
         });
-        changed = true;
       }
       if (!topic.isActive) {
         log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn');
         continue;
       }
-      const reorderedLinks = await prisma.subjectTopic.updateMany({
+      await prisma.subjectTopic.updateMany({
         where: { subjectId: subject.id, topicId: topic.id, sequence: { not: sequence } },
         data: { sequence },
       });
-      if (reorderedLinks.count > 0) changed = true;
 
       const folderPath = path.join(SUBTOPICS_DIR, folder.name);
       let sourceSubtopics: SourceSubtopic[] | null = null;
@@ -115,7 +122,13 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
         }
       } catch (error: any) {
         sourceSubtopics = null;
-        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn',safeError(error));
+        // Only the two legacy chapters may legitimately lack a manifest. A bad
+        // approved manifest must never be silently replaced by inferred scope.
+        if (chapter > 2 || error.code !== 'ENOENT') {
+          counts.failedScripts++;
+          log('warn','curriculum.manifest_unavailable',{...safeError(error),chapter});
+          continue;
+        }
       }
 
       if (!sourceSubtopics && chapter > 2) continue;
@@ -136,12 +149,13 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
               !stored.isActive;
           });
           if (needsImport) {
-            await AdminSyllabusService.importSubtopics(topic.id, sourceSubtopics, false);
+            // One derived-roadmap reconciliation after the batch, not after every file.
+            await catalogMutation(() => AdminSyllabusService.importSubtopics(topic.id, sourceSubtopics!, false), false);
             counts.subtopics += sourceSubtopics.length;
-            changed = true;
           }
         } catch (error: any) {
-          log('error','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.error',safeError(error));
+          counts.failedScripts++;
+          log('error','curriculum.subtopics_failed',{ ...safeError(error), chapter });
           continue;
         }
       }
@@ -153,9 +167,11 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
       const scriptDir = path.join(folderPath, 'Scripts');
       let scriptFiles: string[];
       try {
-        scriptFiles = (await readdir(scriptDir)).filter((name) => name.endsWith('.json') && !name.startsWith('_'));
+        scriptFiles = (await readdir(scriptDir)).filter((name) => name.endsWith('.json') && !name.startsWith('_'))
+          .sort((a,b) => a.localeCompare(b, 'en', { numeric: true }));
       } catch (error: any) {
-        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn',safeError(error));
+        counts.failedScripts++;
+        log('warn','curriculum.scripts_unavailable',{...safeError(error),chapter});
         continue;
       }
 
@@ -164,7 +180,8 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
         const approvedKeys = new Set(sourceSubtopics.map((item) => item.externalSubTopicKey));
         for (const key of approvedKeys) {
           if (key && !scriptFiles.includes(`${key}.json`)) {
-            log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn');
+            counts.failedScripts++;
+            log('warn','curriculum.script_missing',{chapter,script:`${key}.json`});
           }
         }
         scriptFiles = scriptFiles.filter((name) => approvedKeys.has(path.parse(name).name));
@@ -174,17 +191,35 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
         try {
           const definition = JSON.parse(await readFile(path.join(scriptDir, fileName), 'utf8'));
           const normalized = scriptCacheService.normalizeScriptDefinition(definition);
+          if (!ScriptValidator.validate(normalized).valid) {
+            counts.failedScripts++;
+            log('warn','curriculum.script_invalid',{chapter,script:fileName,code:'SCRIPT_GRAPH_INVALID'});
+            continue;
+          }
           const fileKey = path.parse(fileName).name;
           const scriptId = normalized.scriptId;
           if (typeof scriptId !== 'string' || !scriptId.trim()) {
             throw new Error('Missing scriptId.');
           }
           const candidateKey = scriptId.replace(/^script-/, '');
-          const matches = subtopics.filter((item) =>
+          let matches = subtopics.filter((item) =>
             item.id === fileKey || item.slug === fileKey ||
             item.id === candidateKey || item.slug === candidateKey ||
             normalizedName(item.name) === normalizedName(normalized.metadata?.title || '')
           );
+          // Chapters 1/2 predate subtopics.json; use their saved script metadata.
+          if (!matches.length && !sourceSubtopics && chapter <= 2) {
+            const legacyId = typeof definition.subtopic?.id === 'string' ? definition.subtopic.id : candidateKey;
+            const legacy = await prisma.subtopic.upsert({ where: { id: legacyId }, update: {}, create: {
+              id: legacyId, slug: legacyId, topicId: topic.id,
+              name: definition.subtopic?.name || normalized.metadata?.title || fileKey,
+              description: normalized.metadata?.description || '', sequence: scriptFiles.indexOf(fileName),
+            } });
+            if (legacy.topicId !== topic.id) throw new Error('Legacy subtopic belongs to another topic.');
+            subtopics.push(legacy);
+            matches = [legacy];
+            counts.subtopics++;
+          }
           if (matches.length !== 1) {
             throw new Error(`Expected one matching subtopic for ${fileName}; found ${matches.length}.`);
           }
@@ -208,24 +243,26 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
             counts.skippedScripts++;
             continue;
           }
-          await AdminSyllabusService.importScript({
+          await catalogMutation(() => AdminSyllabusService.importScript({
             subjectId: subject.id,
             topicId: topic.id,
             subtopicId: subtopic.id,
             definition,
-          }, false);
+          }, false), false);
           counts.scripts++;
-          changed = true;
         } catch (error: any) {
           counts.failedScripts++;
-          log('error','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.error',safeError(error));
+          log('error','curriculum.script_failed',{ ...safeError(error), chapter, script: fileName });
         }
       }
     } catch (error: any) {
-      log('error','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.error',safeError(error));
+      counts.failedScripts++;
+      log('error','curriculum.chapter_failed',{ ...safeError(error), chapter: Number(folder.name.match(/^SBT-RSA-(\d+)-/)![1]) });
     }
   }
 
-  if (changed) await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
-  log('info','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.info');
+  // Repair the graph even if a prior process stopped just after its last import.
+  await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+  log(counts.failedScripts ? 'warn' : 'info','curriculum.sync.completed',counts);
+  return { ...counts, sourceAvailable: true };
 }

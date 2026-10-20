@@ -1,3 +1,4 @@
+import { PublicError } from '../../../security/errors';
 import { prisma as rootPrisma } from '../../../config/prisma';
 import { buildSubtopicProgress } from './learning-map-progress';
 import { prisma, learningTransaction, withDataTransaction } from '../../lesson/services/learning-transaction';
@@ -352,7 +353,7 @@ export class RoadmapProgressionService {
     }
 
     if (!roadmapId) {
-      throw new Error('No active roadmap found in the system.');
+      throw new PublicError('Learning content is being prepared. Please retry shortly.','CURRICULUM_NOT_READY',503);
     }
 
     const roadmap = await prisma.roadmap.findUnique({
@@ -371,7 +372,7 @@ export class RoadmapProgressionService {
     });
 
     if (!roadmap) {
-      throw new Error(`Active roadmap "${roadmapId}" not found.`);
+      throw new PublicError('Active roadmap is unavailable. Choose another roadmap.','NOT_FOUND',404);
     }
 
     const allSteps = await prisma.roadmapStep.findMany({
@@ -539,7 +540,9 @@ export class RoadmapProgressionService {
     });
 
     if (!roadmap) {
-      throw new Error(`Roadmap "${roadmapId}" not found.`);
+      if (!await prisma.roadmap.count({where:{isActive:true}}))
+        throw new PublicError('Learning content is being prepared. Please retry shortly.','CURRICULUM_NOT_READY',503);
+      throw new PublicError('Roadmap not found.','NOT_FOUND',404);
     }
 
     // Resolve subject by ID or slug (active only)
@@ -571,7 +574,7 @@ export class RoadmapProgressionService {
     }
 
     if (!subject) {
-      throw new Error(`No active subject found for roadmap "${roadmapId}".`);
+      throw new PublicError('Learning content is being prepared. Please retry shortly.','CURRICULUM_NOT_READY',503);
     }
 
     // Get all roadmap steps for this subject ordered by sequence

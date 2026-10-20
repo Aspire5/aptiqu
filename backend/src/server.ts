@@ -20,6 +20,7 @@ import { acquireRuntimeOwner } from './runtime/single-owner';
 import { startTelemetry } from './runtime/telemetry';
 import { log, safeError } from './observability/logger';
 import { prepareStorage, startTempCleanup } from './runtime/storage';
+import { syncRsAggarwalOnStartup } from './modules/admin/services/rs-aggarwal-startup-sync.service';
 
 export async function bootstrap() {
   if(ENV.NODE_ENV==='production')assertSupportedRuntime(process.versions.node);
@@ -93,6 +94,11 @@ export async function bootstrap() {
     stopTelemetry=startTelemetry(state,ENV.BACKEND_ROLE);
     if(process.send)process.send('ready');
     log('info','runtime.ready',{role:ENV.BACKEND_ROLE});
+    if(capabilities.api)log('info','cors.configured',{origins:ENV.CORS_ALLOWED_ORIGINS.join(',')});
+    // The jobs lease guarantees a single automatic importer. Track it for shutdown
+    // without delaying PM2 readiness while hundreds of repository files publish.
+    if(capabilities.jobs && ENV.CURRICULUM_SYNC_ON_STARTUP)
+      void state.track(syncRsAggarwalOnStartup()).catch(error=>log('error','curriculum.sync.failed',safeError(error)));
     return {state,server,shutdown};
   } catch(error) {
     // Partial startup owns the same bounded cleanup path; never report ready.

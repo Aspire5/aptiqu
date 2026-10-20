@@ -39,7 +39,12 @@ export function createApp(runtime?: RuntimeState): Application {
   if(ENV.BACKEND_ROLE==='jobs') {app.use((_req,res)=>res.status(404).json({success:false,code:'NOT_FOUND'}));return app;}
   app.use(cors({origin:(origin,callback)=>{
     if(!origin || (ENV.CORS_ALLOWED_ORIGINS??[]).includes(origin))callback(null,true);
-    else callback(new PublicError('Origin is not allowed','ORIGIN_DENIED',403));
+    else {
+      // Log only the parsed origin, never credentials, paths or arbitrary headers.
+      let denied='invalid';try{denied=new URL(origin).origin;}catch{}
+      log('warn','http.origin_denied',{code:'ORIGIN_DENIED',origin:denied});
+      callback(new PublicError('Origin is not allowed','ORIGIN_DENIED',403));
+    }
   }}));
   app.use('/api/v1', (req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
@@ -85,8 +90,8 @@ export function createApp(runtime?: RuntimeState): Application {
 
   // Global Error Handler
   app.use((err: any, _req: Request, res: Response, _next: express.NextFunction) => {
-    log('error','http.unhandled',safeError(err));
     const status = err.type === 'entity.too.large' || err.code === 'LIMIT_FILE_SIZE' ? 413 : err.type === 'entity.parse.failed' || err instanceof ZodError || err.name === 'MulterError' ? 400 : err instanceof PublicError ? err.status : 500;
+    log(status>=500?'error':'warn',status>=500?'http.unhandled':'http.rejected',{...safeError(err),status,requestId:res.getHeader('X-Request-ID')});
     if(err instanceof PublicError && (err.retryAfterSeconds || status===503))res.setHeader('Retry-After',String(err.retryAfterSeconds??3));
     res.status(status).json({
       success: false,

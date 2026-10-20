@@ -1,13 +1,13 @@
 // Deliberately allowlist metadata; never serialize arbitrary Error objects or payloads.
 const levels = { debug: 10, info: 20, warn: 30, error: 40 };
-const fields = new Set(['requestId', 'method', 'route', 'status', 'durationMs', 'code', 'type', 'role', 'event', 'activeRequests', 'rssBytes', 'heapBytes', 'eventLoopDelayMs', 'uptimeSeconds']);
+const fields = new Set(['requestId', 'method', 'route', 'status', 'durationMs', 'code', 'type', 'role', 'event', 'activeRequests', 'rssBytes', 'heapBytes', 'eventLoopDelayMs', 'uptimeSeconds', 'origins', 'origin', 'chapter', 'script', 'topics', 'subtopics', 'scripts', 'skippedScripts', 'failedScripts']);
 export function safeError(error: unknown) {
     const value = error as {
         name?: unknown;
         code?: unknown;
     };
     const names = new Set(['Error', 'TypeError', 'RangeError', 'SyntaxError', 'PublicError', 'PvpError', 'ZodError', 'AbortError', 'PrismaClientKnownRequestError', 'PrismaClientUnknownRequestError', 'PrismaClientInitializationError', 'PrismaClientValidationError']);
-    const codes = new Set(['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'ENOSPC', 'EACCES', 'AI_UNAVAILABLE', 'AI_BUDGET_EXCEEDED', 'QUEUE_UNAVAILABLE', 'SCHEMA_INCOMPATIBLE', 'DATABASE_POOL_BUDGET_EXCEEDED', 'RUNTIME_OWNER_CONFLICT', 'DEPENDENCY_TIMEOUT', 'RUNTIME_UNSUPPORTED']);
+    const codes = new Set(['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'ENOSPC', 'EACCES', 'AI_UNAVAILABLE', 'AI_BUDGET_EXCEEDED', 'QUEUE_UNAVAILABLE', 'SCHEMA_INCOMPATIBLE', 'DATABASE_POOL_BUDGET_EXCEEDED', 'RUNTIME_OWNER_CONFLICT', 'DEPENDENCY_TIMEOUT', 'RUNTIME_UNSUPPORTED', 'ORIGIN_DENIED', 'INVALID_REQUEST', 'CURRICULUM_NOT_READY', 'QUESTION_REFERENCE_MISSING', 'ENOENT']);
     return { type: typeof value?.name === 'string' && names.has(value.name) ? value.name : 'Error',
         code: typeof value?.code === 'string' && (/^P\d{4}$/.test(value.code) || codes.has(value.code)) ? value.code : undefined };
 }

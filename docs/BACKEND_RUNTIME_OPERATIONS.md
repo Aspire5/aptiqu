@@ -40,11 +40,11 @@ Operational keys added/wired in Stage 3:
 | Role/network/lifecycle | BACKEND_ROLE, HOST, PORT, READINESS_TIMEOUT_MS, SHUTDOWN_TIMEOUT_MS, HTTP_REQUEST_TIMEOUT_MS |
 | Pool declaration | DATABASE_URL options, DATABASE_CONNECTION_BUDGET, DATABASE_PROCESS_COUNT |
 | API/browser | CORS_ALLOWED_ORIGINS, AUTH_JSON_LIMIT_BYTES, MOBILE_JSON_LIMIT_BYTES, ADMIN_JSON_LIMIT_BYTES, GOOGLE_AUTH_ENABLED |
-| Jobs/storage | CONTENT_WORKER_CONCURRENCY, SOCIAL_WORKER_CONCURRENCY, QUEUE_FAILED_RETENTION_COUNT, QUEUE_FAILED_RETENTION_SECONDS, BOOK_STORAGE_ROOT, BOOK_TEMP_ROOT, BOOK_UPLOAD_MAX_BYTES, BOOK_MAX_PAGES, BOOK_MAX_EXTRACTED_TEXT_BYTES, BOOK_TEMP_RETENTION_HOURS, CURRICULUM_SOURCE_ROOT |
+| Jobs/storage | CONTENT_WORKER_CONCURRENCY, SOCIAL_WORKER_CONCURRENCY, QUEUE_FAILED_RETENTION_COUNT, QUEUE_FAILED_RETENTION_SECONDS, BOOK_STORAGE_ROOT, BOOK_TEMP_ROOT, BOOK_UPLOAD_MAX_BYTES, BOOK_MAX_PAGES, BOOK_MAX_EXTRACTED_TEXT_BYTES, BOOK_TEMP_RETENTION_HOURS, CURRICULUM_SOURCE_ROOT, CURRICULUM_SYNC_ON_STARTUP |
 | Cache/diagnostics | LOCAL_CACHE_MAX_ENTRIES, LOCAL_CACHE_MAX_BYTES, LOG_LEVEL |
 | Feature consolidation | AI_GENERATION_ENABLED and the existing Ranked activation/runtime/queue/cursor settings |
 
-Book concurrency stays one per jobs owner; automatic billable book retries remain disabled. Existing shared AI admission bounds still apply to each provider attempt. Central abuse policies stay reviewed code constants rather than dozens of independent ENV switches. `CURRICULUM_SOURCE_ROOT` is only for explicit operator import; startup imports no source book.
+Book concurrency stays one per jobs owner; automatic billable book retries remain disabled. Existing shared AI admission bounds still apply to each provider attempt. Central abuse policies stay reviewed code constants rather than dozens of independent ENV switches. `CURRICULUM_SOURCE_ROOT` supplies repository lesson JSON to the single combined/jobs owner when `CURRICULUM_SYNC_ON_STARTUP=true` (default); it runs in the background and retains existing scripts. Source book PDFs are never auto-imported. See [content recovery](BACKEND_CONTENT_RECOVERY.md) for the additive one-shot command, file prerequisites and PM2 environment refresh.
 
 ## Startup, readiness and shutdown
 

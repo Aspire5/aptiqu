@@ -1,4 +1,5 @@
 import { prisma } from './learning-transaction';
+import { PublicError } from '../../../security/errors';
 import { ScriptDefinition, LessonNode, QuestionInlineData } from '../interfaces/script-dsl.interface';
 
 export class QuestionHydrationService {
@@ -81,17 +82,13 @@ export class QuestionHydrationService {
           const key = qRef.externalId.trim();
           matchedQuestion = questionByExtKey.get(key);
           if (!matchedQuestion) {
-            throw new Error(
-              `Script Question Resolution Error: Question "${key}" (referenced in node "${nodeId}") does not exist in the question repository. Please import this question before playing or publishing the script.`
-            );
+            throw new PublicError('A referenced question is missing from the question bank. Restore its original question before publishing this script.','QUESTION_REFERENCE_MISSING',409);
           }
         } else if (qRef.mode === 'REPOSITORY' && qRef.questionId) {
           const id = qRef.questionId.trim();
           matchedQuestion = questionById.get(id);
           if (!matchedQuestion) {
-            throw new Error(
-              `Script Question Resolution Error: Question ID "${id}" (referenced in node "${nodeId}") does not exist in the question repository.`
-            );
+            throw new PublicError('A referenced question is missing from the question bank. Restore its original question before publishing this script.','QUESTION_REFERENCE_MISSING',409);
           }
         }
 
