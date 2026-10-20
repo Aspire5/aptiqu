@@ -31,6 +31,9 @@ class LessonFeedController extends GetxController {
   final ScrollController scrollController = ScrollController();
   final _uuid = const Uuid();
   int _feedGeneration = 0;
+  ({String fingerprint, String id, int? responseTimeMs})? _pendingAction;
+  String? _pendingDoubtFingerprint;
+  String? _pendingDoubtId;
 
   final Rx<FeedStatus> status = FeedStatus.initial.obs;
   final RxList<FeedItem> feedItems = <FeedItem>[].obs;
@@ -48,6 +51,9 @@ class LessonFeedController extends GetxController {
 
   Future<void> initLesson({String? scriptSlug, String? roadmapStepId}) async {
     final generation = ++_feedGeneration;
+    _pendingAction = null;
+    _pendingDoubtFingerprint = null;
+    _pendingDoubtId = null;
     feedItems.clear();
     currentScriptSlug = scriptSlug;
     currentRoadmapStepId = roadmapStepId;
@@ -99,12 +105,33 @@ class LessonFeedController extends GetxController {
         currentNode.value == null) {
       return;
     }
+    final fingerprint = jsonEncode([
+      sessionId,
+      stateVersion,
+      currentNode.value!.id,
+      actionType,
+      actionId,
+      answer,
+    ]);
+    final pending = _pendingAction;
+    if (pending != null && pending.fingerprint != fingerprint) {
+      errorMessage.value =
+          'Your previous response is still unconfirmed. Retry that response or reopen the lesson.';
+      return;
+    }
+    _pendingAction ??= (
+      fingerprint: fingerprint,
+      id: _uuid.v4(),
+      responseTimeMs: responseTimeMs,
+    );
     status.value = FeedStatus.submitting;
     errorMessage.value = null;
     final generation = _feedGeneration;
 
     // Display user answer in chat immediately
-    if (userDisplayText != null && userDisplayText.isNotEmpty) {
+    if (pending == null &&
+        userDisplayText != null &&
+        userDisplayText.isNotEmpty) {
       feedItems.add(FeedItem(isUser: true, text: userDisplayText));
       _scrollToBottom();
     }
@@ -121,13 +148,13 @@ class LessonFeedController extends GetxController {
     try {
       final response = await _repository.submitAction(
         sessionId: sessionId!,
-        clientActionId: _uuid.v4(),
+        clientActionId: _pendingAction!.id,
         stateVersion: stateVersion,
         currentNodeId: currentNode.value!.id,
         actionType: actionType,
         actionId: actionId,
         answer: answer,
-        responseTimeMs: responseTimeMs,
+        responseTimeMs: _pendingAction!.responseTimeMs,
       );
 
       final remaining =
@@ -135,6 +162,7 @@ class LessonFeedController extends GetxController {
       if (remaining > Duration.zero) await Future.delayed(remaining);
       if (generation != _feedGeneration) return;
       feedItems.remove(thinking);
+      _pendingAction = null;
 
       if (response.evaluation != null &&
           response.evaluation!.explanation != null &&
@@ -184,15 +212,26 @@ class LessonFeedController extends GetxController {
       return 'Session not active.';
     }
 
+    final fingerprint = jsonEncode([
+      sessionId,
+      currentNode.value!.id,
+      questionText,
+    ]);
+    if (_pendingDoubtFingerprint != fingerprint) {
+      _pendingDoubtFingerprint = fingerprint;
+      _pendingDoubtId = _uuid.v4();
+    }
     try {
       final response = await _repository.submitInterrupt(
         sessionId: sessionId!,
-        clientActionId: _uuid.v4(),
+        clientActionId: _pendingDoubtId!,
         currentNodeId: currentNode.value!.id,
         questionText: questionText,
       );
       if (!isClosed && generation == _feedGeneration) {
         doubtUnavailable.value = response.unavailable;
+        _pendingDoubtFingerprint = null;
+        _pendingDoubtId = null;
       }
       return response.message;
     } catch (e) {

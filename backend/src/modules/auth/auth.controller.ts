@@ -1,3 +1,5 @@
+import { publicFailure } from '../../security/public-error';
+import { PublicError } from '../../security/errors';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import {
@@ -32,7 +34,7 @@ export class AuthController {
     } catch (error: any) {
       res.status(400).json({
         success: false,
-        message: error.message || 'Google authentication failed',
+        message: 'Google authentication failed',
       });
     }
   }
@@ -65,7 +67,7 @@ export class AuthController {
     } catch (error: any) {
       res.status(400).json({
         success: false,
-        message: error.message || 'Onboarding failed',
+        message: 'Onboarding failed',
       });
     }
   }
@@ -89,18 +91,13 @@ export class AuthController {
         message: 'Session refreshed successfully',
         data: tokens,
       });
-    } catch (error: any) {
-      res.status(401).json({
-        success: false,
-        message: error.message || 'Failed to refresh session',
-      });
-    }
+    } catch (error: any) { publicFailure(res,error); }
   }
 
   async logout(req: Request, res: Response): Promise<void> {
     try {
       const { refreshToken } = req.body;
-      if (refreshToken) {
+      if (typeof refreshToken === 'string' && refreshToken.length <= 256) {
         await authService.logout(refreshToken);
       }
       res.status(200).json({

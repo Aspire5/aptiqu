@@ -1,6 +1,6 @@
 # Ranked Phase 2 database change preparation
 
-**Prepared source only. No database was connected, created, changed or migrated.**
+**Historical change preparation.** Local hardening verification subsequently installed the supplemental guards in dedicated disposable fixtures. No VPS/remote database was contacted or verified. The Stage 3 bootstrap checks required guard metadata; it does not execute this SQL or prove full definition drift.
 
 This repository uses a manual schema workflow and has no Prisma migration baseline. `ranked-phase2.sql` is an additive, single-transaction change generated offline from the pre-Phase-2 schema, followed by reviewed supplemental constraints/indexes/triggers. It is not an automatically applicable migration and is deliberately outside `prisma/migrations`.
 
@@ -26,7 +26,7 @@ The shared competitive mutex uses ordered `FOR NO KEY UPDATE` on users, then the
 
 The recovery worker scans at most 100 due IDs per tick with a keyset cursor, runs without overlapping itself, and reconciles seasons once per minute. Timers/socket maps are routing caches. Delivery remains recoverable through authenticated existing GET/reconnect; there is no distributed socket routing. Phase 3 adds a versioned Redis queue separately from this database change. A missed completion send cannot undo a committed settlement.
 
-Audit relationships use RESTRICT and immutable policy/header/ledger triggers. Existing auth/user code has no account-deletion endpoint; a future erasure workflow must explicitly reconcile anonymization/retention with these restrictions. Do not bypass them with a new cascade. This is a rollout review item, not authorization to erase data.
+Audit relationships use RESTRICT and immutable policy/header/ledger triggers. The admin API includes destructive user deletion; it can conflict with these restrictions. Its redesign is explicitly excluded from backend hardening, and a future erasure workflow must reconcile anonymization/retention deliberately. Do not bypass them with a new cascade. This is a rollout review item, not authorization to erase data.
 
 ## Opt-in PostgreSQL verification
 

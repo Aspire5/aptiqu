@@ -1,9 +1,11 @@
+import { publicFailure } from '../../../security/public-error';
+import { PublicError } from '../../../security/errors';
+import { log, safeError } from '../../../observability/logger';
 import { Response } from 'express';
 import { z } from 'zod';
 import { AuthenticatedRequest } from '../../../middleware/auth.middleware';
 import { PvpError } from '../pvp.errors';
 import { seasonKey, boundedInteger } from './ranked-cursor';
-import { RankedRateLimit } from './ranked-rate-limit';
 import { rankedQueryService } from './ranked-query.service';
 const meSchema = z.object({ seasonId: seasonKey.optional(), fresh: z.enum(['0', '1']).optional() }).strict();
 const boardSchema = z.object({ seasonId: seasonKey.optional(), limit: boundedInteger(25, 50), cursor: z.string().min(1).max(2048).optional() }).strict();
@@ -12,17 +14,12 @@ export async function rankedResponse(res: Response, action: () => Promise<unknow
   res.setHeader('Cache-Control', 'private, no-store');
   try { res.status(200).json({ success: true, data: await action() }); }
   catch (error) {
-    const validation = error instanceof z.ZodError;
-    const status = error instanceof PvpError ? error.status : validation ? 400 : 503;
-    if (status === 503 || status === 429) res.setHeader('Retry-After', String(error instanceof PvpError ? error.retryAfterSeconds ?? 5 : 5));
-    res.status(status).json({ success: false, code: error instanceof PvpError ? error.code : validation ? 'INVALID_QUERY' : 'RANKED_UNAVAILABLE',
-      message: error instanceof PvpError ? error.message : validation ? 'Invalid Ranked query.' : 'Ranked temporarily unavailable. Please retry.' });
+    if(error instanceof PvpError || error instanceof PublicError || error instanceof z.ZodError)publicFailure(res,error);
+    else {log('error','ranked.read_unavailable',safeError(error));publicFailure(res,new PvpError('Ranked temporarily unavailable. Retry shortly.','RANKED_UNAVAILABLE',503,5));}
   }
 }
-const readBudget = new RankedRateLimit(60, 60000);
 export function rankedOwner(req: AuthenticatedRequest) {
   if (!req.userId) throw new PvpError('Authentication required.', 'UNAUTHORIZED', 401);
-  readBudget.take(req.userId);
   return req.userId;
 }
 export class RankedController {

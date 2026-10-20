@@ -75,11 +75,18 @@ class PracticeRepository {
     throw Exception(response.data['message'] ?? 'Failed to retrieve session');
   }
 
-  Future<int> startFriendlyQuestion(String sessionId) async {
+  Future<({int remainingMs, PracticeSessionModel session})>
+  startFriendlyQuestion(String sessionId) async {
     final response = await _client.dio.post(
       '/practice/sessions/$sessionId/start-question',
     );
-    return (response.data['data']['remainingMs'] as num).toInt();
+    final data = response.data['data'] as Map<String, dynamic>;
+    return (
+      remainingMs: (data['remainingMs'] as num).toInt(),
+      session: PracticeSessionModel.fromJson(
+        Map<String, dynamic>.from(data['session']),
+      ),
+    );
   }
 
   Future<PracticeAnswerResultModel> submitAnswer({

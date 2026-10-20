@@ -1,3 +1,4 @@
+import { validateAdminInput } from './admin-input';
 import { AdminAchievementsController } from './admin-achievements.controller';
 import { Router } from 'express';
 import { authenticateAdmin } from './admin.middleware';
@@ -22,6 +23,7 @@ router.post('/auth/login', AdminAuthController.login);
 // PROTECTED ADMIN ROUTES (Require Admin JWT)
 // ==========================================
 router.use(authenticateAdmin);
+router.use(validateAdminInput);
 
 router.get('/achievements/options', AdminAchievementsController.options);
 router.get('/achievements', AdminAchievementsController.list);
@@ -93,6 +95,7 @@ router.get('/users/stats', AdminUsersController.getUserStats);
 router.delete('/users/:id', AdminUsersController.hardDeleteUser);
 
 // 6. Timing & System Configuration
+router.get('/config/timing', (req,res,next) => {void AdminController.getTimingConfig(req,res).catch(next);});
 router.put('/config/timing', AdminController.updateTimingConfig);
 
 // 7. AI Prompts Management

@@ -1,3 +1,4 @@
+import { log, safeError } from '../../../observability/logger';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../../config/prisma';
 import { questionGenerationService } from '../../ai/services/question-generation.service';
@@ -78,7 +79,7 @@ export class PracticeSelectionService {
           try {
             matches = await questionGenerationService.generateQuestionsForSubtopic(g.subtopicId, needed, g.pattern);
           } catch (error) {
-            console.warn('[Practice] Focused generation unavailable; using existing in-scope inventory.', error);
+            log('warn','practice_selection_service.selectQuestionsForPractice.warn',safeError(error));
           }
         }
         if (!matches.length) matches = await choose([g.subtopicId], needed, false, g.pattern || undefined);

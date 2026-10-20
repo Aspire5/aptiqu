@@ -99,10 +99,10 @@ export const api = {
   // AI Prompts
   getAiPrompts: () => apiClient.get('/ai-prompts'),
   getAiPrompt: (key: string) => apiClient.get(`/ai-prompts/${key}`),
-  updateAiPromptDraft: (key: string, draftPrompt: string) =>
-    apiClient.put(`/ai-prompts/${key}`, { draftPrompt }),
-  publishAiPrompt: (key: string) => apiClient.post(`/ai-prompts/${key}/publish`),
-  resetAiPromptToDefault: (key: string) => apiClient.post(`/ai-prompts/${key}/reset-default`),
+  updateAiPromptDraft: (key: string, draftPrompt: string, expectedRevision: number) =>
+    apiClient.put(`/ai-prompts/${key}`, { draftPrompt, expectedRevision }),
+  publishAiPrompt: (key: string, expectedRevision: number) => apiClient.post(`/ai-prompts/${key}/publish`, {expectedRevision}),
+  resetAiPromptToDefault: (key: string, expectedRevision: number) => apiClient.post(`/ai-prompts/${key}/reset-default`, {expectedRevision}),
 
   // Book Ingestion Engine
   uploadBook: (formData: FormData, onUploadProgress?: (progressEvent: any) => void) =>

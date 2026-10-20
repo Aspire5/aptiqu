@@ -30,6 +30,7 @@ model User {
   xpEvents               XpEvent[]
 
   // Learning relations
+  lessonActions          LessonActionReceipt[]
   lessonSessions         LessonSession[]
   questionAttempts       QuestionAttempt[]
   conceptMasteries       StudentConceptMastery[]
@@ -923,6 +924,7 @@ model ScriptAssignment {
   script           LessonScript         @relation(fields: [scriptId], references: [id], onDelete: Cascade)
   publishedVersion LessonScriptVersion? @relation(fields: [publishedVersionId], references: [id], onDelete: SetNull)
 
+  @@unique([roadmapStepId, scriptId])
   @@index([roadmapStepId, sequence])
   @@map("script_assignments")
   @@schema("learning")
@@ -1009,6 +1011,8 @@ model DailyChallengeParticipation {
   xpAwarded         Int                  @default(0) @map("xp_awarded")
   coinsAwarded      Int                  @default(0) @map("coins_awarded")
   startedAt         DateTime             @default(now()) @map("started_at")
+  questionStartedAt DateTime? @map("question_started_at")
+  questionDeadline DateTime? @map("question_deadline")
   completedAt       DateTime?            @map("completed_at")
 
   user    User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1031,6 +1035,10 @@ model DailyChallengeAnswer {
   selectedOptionId String?  @map("selected_option_id")
   isCorrect        Boolean  @map("is_correct")
   responseTimeMs   Int      @map("response_time_ms")
+  questionStartedAt DateTime @map("question_started_at")
+  questionDeadline DateTime @map("question_deadline")
+  requestedOptionId String @map("requested_option_id")
+  response Json
   answeredAt       DateTime @default(now()) @map("answered_at")
 
   participation DailyChallengeParticipation @relation(fields: [participationId], references: [id], onDelete: Cascade)
@@ -1043,6 +1051,7 @@ model DailyChallengeAnswer {
 }
 
 model AiPrompt {
+  draftRevision Int @default(1) @map("draft_revision")
   id              String    @id @default(uuid()) @db.Uuid
   key             String    @unique
   title           String
@@ -1087,6 +1096,10 @@ enum BookProcessingStatus {
 }
 
 model BookSource {
+  processingEpoch Int @default(0) @map("processing_epoch")
+  processingCancelled Boolean @default(false) @map("processing_cancelled")
+  processingToken String? @map("processing_token")
+  processingHeartbeat DateTime? @map("processing_heartbeat")
   id               String               @id @default(uuid()) @db.Uuid
   subjectId        String               @unique @map("subject_id")
   title            String
@@ -1404,5 +1417,38 @@ model RankedRatingChange {
   @@unique([seasonId, userId, seasonVersionAfter])
   @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
   @@map("ranked_rating_changes")
+  @@schema("learning")
+}
+
+// Durable response receipts are committed with lesson state, attempts and rewards.
+model LessonActionReceipt {
+  key String @id
+  userId String @map("user_id") @db.Uuid
+  sessionId String? @map("session_id") @db.Uuid
+  operation String
+  requestHash String @map("request_hash")
+  response Json
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+  @@map("lesson_action_receipts")
+  @@schema("learning")
+}
+
+// Renewable, database-fenced ownership for bounded generation scopes.
+model GenerationLease {
+  scope String @id
+  token String
+  expiresAt DateTime @map("expires_at")
+  @@map("generation_leases")
+  @@schema("learning")
+}
+
+model PracticeTimingPolicy {
+  id String @id @default("practice")
+  minSeconds Int @default(30) @map("min_seconds")
+  maxSeconds Int @default(120) @map("max_seconds")
+  version Int @default(1)
+  @@map("practice_timing_policy")
   @@schema("learning")
 }

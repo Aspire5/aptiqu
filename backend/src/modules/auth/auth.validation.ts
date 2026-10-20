@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const GoogleLoginSchema = z.object({
-  idToken: z.string().min(1, 'Google idToken is required'),
+  idToken: z.string().min(1, 'Google idToken is required').max(16384),
 });
 
 export const RefreshTokenSchema = z.object({
-  refreshToken: z.string().min(1, 'Refresh token is required'),
+  refreshToken: z.string().min(1, 'Refresh token is required').max(256),
 });
 
 export const OnboardingSchema = z.object({

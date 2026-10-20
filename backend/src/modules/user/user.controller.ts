@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { UserService } from './user.service';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
@@ -19,12 +20,7 @@ export class UserController {
         success: true,
         data: profile,
       });
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || 'Failed to fetch user profile',
-      });
-    }
+    } catch (error: any) { publicFailure(res,error); }
   }
 
   async getProgress(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -41,12 +37,7 @@ export class UserController {
         success: true,
         data: progress,
       });
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || 'Failed to fetch user progression',
-      });
-    }
+    } catch (error: any) { publicFailure(res,error); }
   }
 
   async getStats(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -63,11 +54,6 @@ export class UserController {
         success: true,
         data: stats,
       });
-    } catch (error: any) {
-      res.status(400).json({
-        success: false,
-        message: error.message || 'Failed to fetch user stats',
-      });
-    }
+    } catch (error: any) { publicFailure(res,error); }
   }
 }

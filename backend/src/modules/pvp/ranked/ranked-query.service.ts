@@ -43,6 +43,7 @@ export class RankedQueryService {
     const previous = await tx.rankedPlayerSeason.findFirst({ where: { userId, seasonId: { lt: seasonId } }, orderBy: { seasonId: 'desc' } });
     return { rating: previous?.rating ?? initialRating, career: previous ? previous.careerRatedBefore + previous.played : 0 };
   }
+  // CACHE_EXISTING ref=C12 scope=user layer=memory ttl<=5s owner=ranked
   async me(userId: string, options: { seasonId?: string; fresh?: boolean } = {}) {
     this.enabled();
     await this.assertRegistered(userId);
@@ -72,6 +73,7 @@ export class RankedQueryService {
     try { return { status: 'AVAILABLE', ...await this.me(userId) }; }
     catch (error) { return { status: error instanceof PvpError && error.code === 'RANKED_DISABLED' ? 'DISABLED' : 'UNAVAILABLE', retryable: !(error instanceof PvpError && error.code === 'RANKED_DISABLED') }; }
   }
+  // CACHE_EXISTING ref=C13 scope=public-fields layer=memory ttl<=5s owner=ranked
   async leaderboard(userId: string, options: { seasonId?: string; limit: number; cursor?: string }) {
     this.enabled();
     await this.assertRegistered(userId);
@@ -95,6 +97,7 @@ export class RankedQueryService {
     return options.cursor ? load() : this.cache.get(`board:${options.seasonId ?? 'current'}:${options.limit}`, load,
       value => value.season.status === 'ACTIVE' ? Math.min(5000, Math.max(0, +new Date(value.season.endsAt) - +new Date(value.asOf))) : 5000);
   }
+  // CACHE_CANDIDATE ref=C14 scope=user layer=redis ttl=10-30s owner=ranked
   async seasons(userId: string, options: { before?: string; limit: number }) {
     this.enabled();
     await this.assertRegistered(userId);

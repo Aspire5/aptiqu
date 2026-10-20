@@ -8,10 +8,11 @@ export function achievementAnalyticsQuery(page: number, limit: number, search: s
     : status === 'ARCHIVED' ? Prisma.sql`a.deleted_at IS NOT NULL` : Prisma.sql`TRUE`;
   const term = `%${search.replace(/[\\%_]/g, '\\$&')}%`;
   return Prisma.sql`
-    WITH eligible AS (SELECT id FROM auth.users WHERE is_registration_complete),
+    WITH selected_definitions AS (SELECT * FROM gamification.achievements a WHERE ${filter} AND (a.title ILIKE ${term} OR a.description ILIKE ${term})),
+    eligible AS (SELECT id FROM auth.users WHERE is_registration_complete),
     source_answers AS (${homeSubmissions()}),
     submissions AS (SELECT *, CASE WHEN difficulty IN ('EASY', 'MEDIUM', 'HARD')
-      THEN difficulty ELSE 'UNKNOWN' END AS normalized_difficulty FROM source_answers),
+      THEN difficulty ELSE 'UNKNOWN' END AS normalized_difficulty FROM source_answers WHERE EXISTS (SELECT 1 FROM selected_definitions WHERE metric IN ('ATTEMPTED','CORRECT'))),
     answer_totals AS (
       SELECT s.user_id,
         CASE WHEN GROUPING(s.source) = 1 THEN 'ALL' ELSE s.source END AS source,
@@ -27,15 +28,15 @@ export function achievementAnalyticsQuery(page: number, limit: number, search: s
       UNION ALL
       SELECT p.user_id, 'DAILY_COMPLETED', 'ALL', 'ANY', count(*)
       FROM learning.daily_challenge_participations p JOIN eligible e ON e.id = p.user_id
-      WHERE p.status = 'COMPLETED' GROUP BY p.user_id
+      WHERE p.status = 'COMPLETED' AND EXISTS(SELECT 1 FROM selected_definitions WHERE metric='DAILY_COMPLETED') GROUP BY p.user_id
       UNION ALL
       SELECT p.user_id, 'PVP_WINS', 'ALL', 'ANY', count(*)
       FROM learning.pvp_match_players p JOIN learning.pvp_matches m ON m.id = p.match_id
       JOIN eligible e ON e.id = p.user_id
-      WHERE m.status = 'COMPLETED' AND p.is_winner AND NOT m.is_tie GROUP BY p.user_id
+      WHERE m.status = 'COMPLETED' AND p.is_winner AND NOT m.is_tie AND EXISTS(SELECT 1 FROM selected_definitions WHERE metric='PVP_WINS') GROUP BY p.user_id
       UNION ALL
       SELECT s.user_id, 'BEST_STREAK', 'ALL', 'ANY', s.highest_streak::bigint
-      FROM gamification.stats s JOIN eligible e ON e.id = s.user_id
+      FROM gamification.stats s JOIN eligible e ON e.id = s.user_id WHERE EXISTS(SELECT 1 FROM selected_definitions WHERE metric='BEST_STREAK')
     ), distribution AS (
       SELECT metric, source, difficulty, value, count(*) AS users
       FROM user_metrics WHERE value > 0 GROUP BY metric, source, difficulty, value
@@ -44,11 +45,10 @@ export function achievementAnalyticsQuery(page: number, limit: number, search: s
         COALESCE(sum(d.users) FILTER (WHERE d.value >= a.target), 0)::float8 AS completed,
         COALESCE(sum(d.users) FILTER (WHERE d.value < a.target), 0)::float8 AS "inProgress",
         (SELECT count(*)::float8 FROM eligible) AS "eligibleUsers"
-      FROM gamification.achievements a
+      FROM selected_definitions a
       LEFT JOIN distribution d ON d.metric = a.metric::text AND d.source = a.source::text
         AND d.difficulty = COALESCE(a.difficulty::text, 'ANY')
-      WHERE ${filter} AND (a.title ILIKE ${term} OR a.description ILIKE ${term})
-      GROUP BY a.id
+      GROUP BY a.id,a.title,a.description,a.metric,a.source,a.difficulty,a.target,a.sort_order,a.is_active,a.deleted_at,a.version,a.created_at,a.updated_at
     ), result AS (
       SELECT id, title, description, metric, source, difficulty, target,
         sort_order AS "sortOrder", is_active AS "isActive", deleted_at AS "deletedAt",

@@ -1,6 +1,8 @@
+import { log, safeError } from '../../../observability/logger';
+import { ENV } from '../../../config/env';
 import fs from 'fs';
 import path from 'path';
-import { prisma } from '../../../config/prisma';
+import { prisma } from './book-run';
 import { bookStorageService } from './book-storage.service';
 import { bookCancellationService } from './book-cancellation.service';
 
@@ -157,7 +159,7 @@ export class PdfParserService {
     bookId: string,
     onProgress?: (progress: number, currentPage: number, totalPages: number) => Promise<void>
   ): Promise<{ totalPages: number }> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of parseBookPdf');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of parseBookPdf');
 
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
@@ -171,7 +173,7 @@ export class PdfParserService {
       throw new Error(`PDF file not found at storage path: ${bookSource.storagePath}`);
     }
 
-    console.log(`[PdfParserService] Beginning extraction for Book "${bookSource.title}" (${bookId})...`);
+    log('info','pdf_parser_service.parseBookPdf.info');
 
     // 1. Update status to PARSING_PAGES
     await prisma.bookSource.update({
@@ -179,7 +181,9 @@ export class PdfParserService {
       data: { status: 'PARSING_PAGES', errorMessage: null },
     });
 
-    const fileBuffer = fs.readFileSync(bookSource.storagePath);
+    const stat=await fs.promises.stat(bookSource.storagePath);
+    if(stat.size>ENV.BOOK_UPLOAD_MAX_BYTES)throw new Error('PDF exceeds configured size limit');
+    const fileBuffer = await fs.promises.readFile(bookSource.storagePath);
 
     // 2. Load PDF with PDFParse
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -189,7 +193,20 @@ export class PdfParserService {
 
     let parsedResult: any;
     try {
-      parsedResult = await parserInstance.getText();
+      const info=await parserInstance.getInfo();
+      if(!Number.isInteger(info.total)||info.total<1||info.total>ENV.BOOK_MAX_PAGES)throw new Error('PDF exceeds configured page limit');
+      const pages:any[]=[];
+      let bytes=0;
+      for(let first=1;first<=info.total;first+=25) {
+        await bookCancellationService.checkAndThrowIfCancelled(bookId);
+        const result=await parserInstance.getText({partial:Array.from({length:Math.min(25,info.total-first+1)},(_,i)=>first+i)});
+        for(const page of result.pages??[]) {
+          bytes+=Buffer.byteLength(typeof page?.text==='string'?page.text:'','utf8');
+          if(bytes>ENV.BOOK_MAX_EXTRACTED_TEXT_BYTES)throw new Error('PDF exceeds configured extracted text limit');
+          pages.push(page);
+        }
+      }
+      parsedResult={pages,total:info.total};
     } finally {
       if (typeof parserInstance.destroy === 'function') {
         await parserInstance.destroy();
@@ -203,15 +220,18 @@ export class PdfParserService {
       throw new Error('PDF extraction returned 0 pages. The file may be corrupt or encrypted.');
     }
 
-    console.log(`[PdfParserService] Extracted ${totalPages} pages for book "${bookSource.title}". Processing pages...`);
+    log('info','pdf_parser_service.parseBookPdf.info');
 
+    if(totalPages>ENV.BOOK_MAX_PAGES)throw new Error('PDF exceeds configured page limit');
+    const extractedBytes=rawPages.reduce((sum,page)=>sum+Buffer.byteLength(typeof page?.text==='string'?page.text:'','utf8'),0);
+    if(extractedBytes>ENV.BOOK_MAX_EXTRACTED_TEXT_BYTES)throw new Error('PDF exceeds configured extracted text limit');
     const pagesDir = bookStorageService.getPagesDirForBook(bookId);
     const CHUNK_SIZE = 50;
     const pagesToInsert: any[] = [];
 
     for (let i = 0; i < totalPages; i++) {
       if (i % 25 === 0) {
-        bookCancellationService.checkAndThrowIfCancelled(bookId, `parsing page ${i + 1}`);
+        await bookCancellationService.checkAndThrowIfCancelled(bookId, `parsing page ${i + 1}`);
       }
       const pageNumber = i + 1;
       const rawText = (rawPages[i]?.text || '').trim();
@@ -234,7 +254,7 @@ export class PdfParserService {
 
       // A. Write page JSON to disk for lightning-fast subsequent reads
       const pageFilePath = path.join(pagesDir, `page_${String(pageNumber).padStart(4, '0')}.json`);
-      fs.writeFileSync(pageFilePath, JSON.stringify(pageData, null, 2), 'utf-8');
+      await fs.promises.writeFile(pageFilePath,JSON.stringify(pageData,null,2),{encoding:'utf8',mode:0o600});
 
       // B. Prepare DB record
       pagesToInsert.push({
@@ -272,7 +292,7 @@ export class PdfParserService {
       },
     });
 
-    console.log(`[PdfParserService] Successfully parsed and stored ${totalPages} pages for book ID: ${bookId}`);
+    log('info','pdf_parser_service.parseBookPdf.info');
     return { totalPages };
   }
 
@@ -285,7 +305,7 @@ export class PdfParserService {
 
     if (fs.existsSync(pageFilePath)) {
       try {
-        const content = fs.readFileSync(pageFilePath, 'utf-8');
+        const content = await fs.promises.readFile(pageFilePath, 'utf-8');
         return JSON.parse(content) as ParsedPageData;
       } catch {
         // Fallback to database

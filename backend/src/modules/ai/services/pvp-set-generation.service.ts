@@ -1,4 +1,5 @@
-import { prisma } from '../../../config/prisma';
+import { ENV } from '../../../config/env';
+import { generationDb as prisma } from '../../concurrency/concurrency-lock.service';
 import { geminiProvider } from '../gemini.provider';
 import { PVP_GENERATION_SYSTEM_INSTRUCTION } from '../prompts/pvp-generation.prompt';
 import { PVP_REVIEW_SYSTEM_INSTRUCTION } from '../prompts/pvp-review.prompt';
@@ -78,7 +79,9 @@ export class PvpSetGenerationService {
       if (existing && existing.setQuestions.length === 10 && new Set(existing.setQuestions.map(q => q.questionId)).size === 10) return existing;
     }
 
+    if (!lockToken) throw new Error('Generation is already in progress. Please retry later.');
     try {
+      return await ConcurrencyLockService.runWithLease('PVP_SET_GENERATION',lockToken,async () => {
       // 1. Fetch Live Universe & flatten subtopics
       const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
       if (liveUniverse.length === 0) {
@@ -144,11 +147,12 @@ Exclude previously generated fingerprints:
 ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
 `.trim();
 
-      const systemInstruction = await aiPromptService.getPublishedPrompt(
+      const promptSnapshot = await aiPromptService.getPublishedPromptSnapshot(
         'PVP_GENERATION',
         PVP_GENERATION_SYSTEM_INSTRUCTION
       );
 
+      const systemInstruction=promptSnapshot.text;
       const rawGeneration = await geminiProvider.generateStructuredContent<{
         questions: any[];
       }>({
@@ -192,8 +196,8 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
             sourceType: 'AI_GENERATED',
             status: 'PUBLISHED',
             questionCount: 10,
-            generationModel: 'gemini-3.5-flash-lite',
-            generationPromptVersion: 'v1.0.0',
+            generationModel: ENV.GEMINI_MODEL,
+            generationPromptVersion: promptSnapshot.version,
           },
         });
 
@@ -227,8 +231,8 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
                 sourceType: 'AI_GENERATED',
                 status: 'PUBLISHED',
                 fingerprint,
-                generationModel: 'gemini-3.5-flash-lite',
-                generationPromptVersion: 'v1.0.0',
+                generationModel: ENV.GEMINI_MODEL,
+                generationPromptVersion: promptSnapshot.version,
               },
             });
           }
@@ -253,6 +257,7 @@ ${existingFingerprints.slice(0, 30).map((f) => `- ${f}`).join('\n')}
             },
           },
         });
+      });
       });
     } finally {
       await ConcurrencyLockService.releaseLock('PVP_SET_GENERATION', lockToken);

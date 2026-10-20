@@ -1,3 +1,4 @@
+import { readRankedConfig } from '../../../config/runtime-config';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { DEFAULT_RANKED_POLICY, validateRankedPolicy } from './ranked-policy';
@@ -34,7 +35,7 @@ export function canonicalJson(value: unknown): string {
 export function digest(value: unknown): string { return createHash('sha256').update(canonicalJson(value)).digest('hex'); }
 export interface RankedActivation { enabled: boolean; launchSeason?: string }
 export function rankedActivation(): RankedActivation {
-  return { enabled: process.env.RANKED_ADMISSION_ENABLED === 'true', launchSeason: process.env.RANKED_LAUNCH_SEASON };
+  const config=readRankedConfig(); return {enabled:config.admission,launchSeason:config.launch};
 }
 
 export function readPersistedPolicy(row: { config: unknown; configHash: string; approvedAt: Date | null }): PersistedRankedPolicy {

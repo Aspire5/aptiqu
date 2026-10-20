@@ -26,6 +26,7 @@ export function presentAchievements(definitions: (Rule & { id: string })[], stat
 export const liveAchievementWhere = { isActive: true, deletedAt: null };
 export const achievementOrder = [{ sortOrder: 'asc' as const }, { id: 'asc' as const }];
 
+// CACHE_CANDIDATE ref=C06 scope=user layer=fragment ttl=5-60s owner=achievements
 export async function userAchievements(userId: string, page: number, limit: number) {
   const [stats, facts, definitions, total] = await prisma.$transaction([
     prisma.$queryRaw<HomeStatsRow[]>(homeStatsQuery(userId, '1970-01-01', '1970-01-01')),

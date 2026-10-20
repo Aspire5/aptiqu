@@ -1,4 +1,5 @@
-import { prisma } from '../../../config/prisma';
+import { log, safeError } from '../../../observability/logger';
+import { prisma } from './book-run';
 import { geminiProvider } from '../../ai/gemini.provider';
 import { bookCancellationService } from './book-cancellation.service';
 
@@ -21,7 +22,7 @@ export class BookQuestionClassificationService {
     bookId: string,
     onProgress?: (progress: number, classifiedCount: number) => Promise<void>
   ): Promise<number> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of classifyQuestionsForBook');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of classifyQuestionsForBook');
 
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
@@ -77,7 +78,7 @@ export class BookQuestionClassificationService {
       // Classify in batches of 15 questions to prevent prompt bloat
       const BATCH_SIZE = 15;
       for (let i = 0; i < questions.length; i += BATCH_SIZE) {
-        bookCancellationService.checkAndThrowIfCancelled(bookId, `classify batch ${i}`);
+        await bookCancellationService.checkAndThrowIfCancelled(bookId, `classify batch ${i}`);
         const batch = questions.slice(i, i + BATCH_SIZE);
 
         const prompt = `
@@ -121,11 +122,11 @@ Assign each question to the most appropriate subtopic ID from the list above.
             timeoutMs: 45000,
           });
 
-          if (bookCancellationService.isCancelled(bookId)) break;
+          if (await bookCancellationService.isCancelled(bookId)) break;
 
           if (response.classifications && Array.isArray(response.classifications)) {
             for (const item of response.classifications) {
-              if (bookCancellationService.isCancelled(bookId)) break;
+              if (await bookCancellationService.isCancelled(bookId)) break;
               const targetSubtopic = subtopics.find((s) => s.id === item.subtopicId);
               if (targetSubtopic) {
                 await prisma.question.update({
@@ -137,10 +138,10 @@ Assign each question to the most appropriate subtopic ID from the list above.
             }
           }
         } catch (err: any) {
-          if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
+          if (err.message?.includes('BOOK_INGESTION_CANCELLED') || await bookCancellationService.isCancelled(bookId)) {
             throw err;
           }
-          console.warn(`[BookQuestionClassificationService] Batch classification warning: ${err.message}`);
+          throw err;
         }
 
         if (onProgress) {
@@ -153,7 +154,7 @@ Assign each question to the most appropriate subtopic ID from the list above.
       }
     }
 
-    console.log(`[BookQuestionClassificationService] Finished classifying questions across all topics (${totalClassified} mapped).`);
+    log('info','book_question_classification_service.classifyQuestionsForBook.info');
     return totalClassified;
   }
 }

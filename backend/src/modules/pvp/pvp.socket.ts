@@ -1,8 +1,11 @@
+import { log, safeError } from '../../observability/logger';
+import { trustedPeer } from '../../security/trusted-peer';
+import { PublicError } from '../../security/errors';
+import { takeBudget } from '../../security/request-policy';
 import { randomUUID } from 'node:crypto';
 import { rankedRuntime } from './ranked/ranked-runtime';
 import { rankedEligibilityService } from './ranked/ranked-eligibility.service';
 import { RedisRankedQueue } from './ranked/ranked-queue';
-import { RankedRateLimit } from './ranked/ranked-rate-limit';
 import { QueueClaim } from './ranked/ranked-matchmaking-policy';
 import { Server as HttpServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
@@ -15,7 +18,7 @@ import { PvpError } from './pvp.errors';
 import { PvpMessage, pvpMessageSchema } from './pvp.protocol';
 import { PvpInternalMatch, publicQuestion, roundFeedback, serializeMatch } from './pvp.dto';
 
-interface ClientSocket extends WebSocket { userId?: string; matchId?: string; isAlive?: boolean; queueToken?: string }
+interface ClientSocket extends WebSocket { userId?: string; matchId?: string; isAlive?: boolean; queueToken?: string; authExpiresAt?: number; authTimer?: NodeJS.Timeout }
 interface MatchState { matchId: string; players: string[]; currentQuestionIndex: number; timerHandle?: NodeJS.Timeout }
 
 export class PvpSocketServer {
@@ -28,9 +31,9 @@ export class PvpSocketServer {
   private queueIntents = new Map<string, number>();
   private queueOwners = new Map<string, string>();
   private claiming = new Map<string, string>();
-  private queueBudget = new RankedRateLimit(6, 10000);
   private rankedQueue = new RedisRankedQueue(() => redisService.getIsConnected() ? redisService.getClient() : null);
   private queueWork = new Set<Promise<void>>();
+  private messageWork = new Set<Promise<void>>();
 
   private wss: WebSocketServer | null = null;
   private matchmakingQueue: { userId: string; ws: ClientSocket }[] = [];
@@ -53,6 +56,13 @@ export class PvpSocketServer {
     if (previous && previous !== ws) previous.close(4000, 'Connection replaced');
   }
 
+  private authenticateSocket(ws: ClientSocket, token: string) {
+    const payload = verifyAccessToken(token);
+    this.bindSocket(ws,payload.userId);
+    ws.authExpiresAt = payload.exp * 1000;
+    ws.authTimer = setTimeout(() => ws.close(4001,'Authentication expired'),Math.min(2147483647,Math.max(0,ws.authExpiresAt-Date.now())));
+  }
+
   private async updateConnection(userId: string, work: () => Promise<void>) {
     const task = (this.connectionUpdates.get(userId) ?? Promise.resolve()).catch(() => {}).then(work);
     this.connectionUpdates.set(userId, task);
@@ -60,10 +70,14 @@ export class PvpSocketServer {
     finally { if (this.connectionUpdates.get(userId) === task) this.connectionUpdates.delete(userId); }
   }
 
-  public init(server: HttpServer) {
+  public init(server: HttpServer, canServe: () => boolean = () => true) {
     this.wss = new WebSocketServer({ noServer: true, maxPayload: 8192 });
-    server.on('upgrade', (req, socket, head) => {
+    server.on('upgrade', async (req, socket, head) => {
       if (req.url?.split('?')[0] !== '/ws/pvp') return;
+      if(!canServe() || socket.destroyed){socket.destroy();return;}
+      try { await takeBudget('socketConnect',trustedPeer(req)); }
+      catch (error: any) { socket.end(`HTTP/1.1 ${error.status === 429 ? '429 Too Many Requests' : '503 Service Unavailable'}\r\nRetry-After: ${error.retryAfterSeconds || 3}\r\nConnection: close\r\n\r\n`); return; }
+      if(!canServe() || socket.destroyed){socket.destroy();return;}
       this.wss!.handleUpgrade(req, socket, head, ws => this.wss!.emit('connection', ws, req));
     });
     this.wss.on('connection', (ws: ClientSocket, req) => {
@@ -71,19 +85,23 @@ export class PvpSocketServer {
       let authTimeout: NodeJS.Timeout | undefined;
       try {
         const token = new URL(req.url || '', `http://${req.headers.host}`).searchParams.get('token');
-        if (token) this.bindSocket(ws, verifyAccessToken(token).userId);
+        if (token) this.authenticateSocket(ws, token);
         else authTimeout = setTimeout(() => { if (!ws.userId) ws.close(4001, 'Authentication timeout'); }, 3000);
       } catch { ws.close(4003, 'Invalid or expired authentication token'); return; }
       ws.on('pong', () => { ws.isAlive = true; });
+      let pendingMessages = 0;
       ws.on('message', async raw => {
+        if (++pendingMessages > 4) { --pendingMessages; ws.close(4008,'Too many pending messages'); return; }
+        let finish!:()=>void;const work=new Promise<void>(resolve=>{finish=resolve;});this.messageWork.add(work);
         const receivedAt = new Date(); // Trusted ingress time; never a payload field.
         try {
+          if (!ws.userId) await takeBudget('socketConnect', trustedPeer(req));
           const parsed = pvpMessageSchema.safeParse(JSON.parse(raw.toString()));
           if (!parsed.success) throw new PvpError('Invalid message payload.', 'INVALID_MESSAGE', 400);
           const message = parsed.data;
           if (message.type === 'AUTH_INIT') {
             if (ws.userId) throw new PvpError('This connection is already authenticated.', 'ALREADY_AUTHENTICATED', 400);
-            try { this.bindSocket(ws, verifyAccessToken(message.payload.token).userId); }
+            try { this.authenticateSocket(ws, message.payload.token); }
             catch { ws.close(4003, 'Invalid or expired authentication token'); return; }
             clearTimeout(authTimeout);
             this.send(ws, 'AUTH_SUCCESS', { userId: ws.userId });
@@ -91,14 +109,20 @@ export class PvpSocketServer {
           }
           if (!ws.userId) throw new PvpError('Authentication required.', 'UNAUTHORIZED', 401);
           if (this.userSockets.get(ws.userId) !== ws) throw new PvpError('Connection replaced. Reconnect to continue.', 'STALE_CONNECTION', 401);
-          await this.handleMessage(ws, message, receivedAt);
+          if (!ws.authExpiresAt || receivedAt.getTime() >= ws.authExpiresAt) { ws.close(4001,'Authentication expired'); return; }
+          const ingressIntent = message.type === 'JOIN_MATCHMAKING' || message.type === 'LEAVE_MATCHMAKING' ? this.bumpQueueIntent(ws.userId) : undefined;
+          await takeBudget('socketMessage',ws.userId);
+          if (message.type === 'JOIN_MATCHMAKING' || message.type === 'LEAVE_MATCHMAKING') await takeBudget('socketQueue',ws.userId);
+          if (this.userSockets.get(ws.userId) !== ws || Date.now() >= ws.authExpiresAt) { ws.close(4001,'Authentication expired'); return; }
+          await this.handleMessage(ws, message, receivedAt, ingressIntent);
         } catch (error) {
-          const known = error instanceof PvpError;
+          const known = error instanceof PvpError || error instanceof PublicError;
           this.send(ws, 'ERROR', { message: known ? error.message : 'Could not process this update. Please retry.', code: known ? error.code : 'MATCH_UPDATE_FAILED', retryAfterSeconds: known ? error.retryAfterSeconds : undefined });
-        }
+        } finally { --pendingMessages;finish();this.messageWork.delete(work); }
       });
       ws.on('close', () => {
         clearTimeout(authTimeout);
+        clearTimeout(ws.authTimer);
         const userId = ws.userId;
         if (!userId || this.userSockets.get(userId) !== ws) return;
         this.userSockets.delete(userId);
@@ -129,8 +153,12 @@ export class PvpSocketServer {
     }, 15000);
   }
 
+  public beginDrain() {
+    this.closed=true;clearInterval(this.queueTimer);
+    for(const userId of this.userSockets.keys())this.bumpQueueIntent(userId);
+  }
   public async close() {
-    this.closed = true;
+    this.beginDrain();
     clearInterval(this.queueTimer);
     clearInterval(this.heartbeat);
     for (const [userId, token] of this.queueOwners) {
@@ -140,7 +168,12 @@ export class PvpSocketServer {
     await Promise.allSettled([...this.queueWork]);
     for (const match of this.activeMatches.values()) clearTimeout(match.timerHandle);
     for (const ws of this.wss?.clients ?? []) ws.close(1001, 'Server restarting');
-    this.wss?.close();
+    await Promise.allSettled([...this.messageWork]);
+    if(this.wss)await new Promise<void>(resolve=>{
+      const timer=setTimeout(()=>{for(const ws of this.wss?.clients??[])ws.terminate();},500);
+      this.wss!.close(()=>{clearTimeout(timer);resolve();});
+    });
+    await Promise.allSettled([...this.connectionUpdates.values()]);
   }
 
   private send(ws: WebSocket | undefined, event: string, data: unknown) {
@@ -155,17 +188,17 @@ export class PvpSocketServer {
 
   private matchError(matchId: string, error: unknown) {
     this.broadcastToMatch(matchId, 'ERROR', { matchId, code: 'MATCH_UPDATE_FAILED', message: 'Match update unavailable. Try Refresh match.' });
-    console.error('[PvP] Match update failed', matchId, error instanceof PvpError ? error.code : 'INTERNAL_ERROR');
+    log('error','pvp_socket.matchError.error');
     // Persisted due work is retried by the recovery worker; no guessed outcome.
   }
 
-  private async handleMessage(ws: ClientSocket, message: PvpMessage, receivedAt = new Date()) {
+  private async handleMessage(ws: ClientSocket, message: PvpMessage, receivedAt = new Date(), ingressIntent?: number) {
     const userId = ws.userId!;
+    if (ingressIntent !== undefined && this.queueIntents.get(userId) !== ingressIntent) return;
     switch (message.type) {
       case 'JOIN_MATCHMAKING': {
         if (this.closed) throw new PvpError('Server is restarting. Please retry.', 'ADMISSION_PAUSED', 503);
-        this.queueBudget.take(userId);
-        const intent = this.bumpQueueIntent(userId);
+        const intent = ingressIntent ?? this.bumpQueueIntent(userId);
         if (this.claiming.has(userId)) { this.send(ws, 'QUEUE_STATUS', { status: 'PAIRING' }); break; }
         const candidate = await rankedEligibilityService.inspect(userId, message.payload?.rankedCapability ?? 0);
         if (this.userSockets.get(userId) !== ws || this.queueIntents.get(userId) !== intent || this.closed) return;
@@ -174,7 +207,7 @@ export class PvpSocketServer {
           const token = randomUUID();
           ws.queueToken = token;
           const reply = await this.rankedQueue.join(candidate, token);
-          if (this.userSockets.get(userId) !== ws || this.queueIntents.get(userId) !== intent) {
+          if (this.userSockets.get(userId) !== ws || this.queueIntents.get(userId) !== intent || this.closed) {
             await this.rankedQueue.cancel(userId, token).catch(() => {}); return;
           }
           const ownerToken = reply.entry?.token ?? token;
@@ -196,8 +229,7 @@ export class PvpSocketServer {
         break;
       }
       case 'LEAVE_MATCHMAKING': {
-        this.queueBudget.take(userId);
-        this.bumpQueueIntent(userId);
+        if (ingressIntent === undefined) this.bumpQueueIntent(userId);
         if (this.claiming.has(userId)) { this.send(ws, 'QUEUE_STATUS', { status: 'PAIRING' }); break; }
         const token = this.queueOwners.get(userId);
         if (token) {

@@ -1,4 +1,6 @@
-import { prisma } from '../../config/prisma';
+import { prisma } from '../lesson/services/learning-transaction';
+import { catalogMutation } from '../roadmap/services/catalog-mutation';
+import { PublicError } from '../../security/errors';
 import crypto from 'crypto';
 import { ScriptDefinition } from '../lesson/interfaces/script-dsl.interface';
 import { ScriptValidator } from '../lesson/engines/script-validator';
@@ -7,6 +9,30 @@ import { questionHydrationService } from '../lesson/services/question-hydration.
 import { scriptCacheService } from '../lesson/services/script-cache.service';
 
 export class AdminSyllabusService {
+  public static createSubject(...args: Parameters<typeof AdminSyllabusService.createSubjectImpl>) { return catalogMutation(() => this.createSubjectImpl(...args)); }
+  public static updateSubject(...args: Parameters<typeof AdminSyllabusService.updateSubjectImpl>) { return catalogMutation(() => this.updateSubjectImpl(...args)); }
+  public static createTopic(...args: Parameters<typeof AdminSyllabusService.createTopicImpl>) { return catalogMutation(() => this.createTopicImpl(...args)); }
+  public static updateTopic(...args: Parameters<typeof AdminSyllabusService.updateTopicImpl>) { return catalogMutation(() => this.updateTopicImpl(...args)); }
+  public static createSubtopic(...args: Parameters<typeof AdminSyllabusService.createSubtopicImpl>) { return catalogMutation(() => this.createSubtopicImpl(...args)); }
+  public static updateSubtopic(...args: Parameters<typeof AdminSyllabusService.updateSubtopicImpl>) { return catalogMutation(() => this.updateSubtopicImpl(...args)); }
+  public static importSubtopics(...args: Parameters<typeof AdminSyllabusService.importSubtopicsImpl>) { return catalogMutation(() => this.importSubtopicsImpl(...args)); }
+  public static createScript(...args: Parameters<typeof AdminSyllabusService.createScriptImpl>) { return catalogMutation(() => this.createScriptImpl(...args)); }
+  public static updateScript(...args: Parameters<typeof AdminSyllabusService.updateScriptImpl>) { return catalogMutation(() => this.updateScriptImpl(...args)); }
+  public static importScript(...args: Parameters<typeof AdminSyllabusService.importScriptImpl>) { return catalogMutation(() => this.importScriptImpl(...args)); }
+  public static reorderTopics(...args: Parameters<typeof AdminSyllabusService.reorderTopicsImpl>) { return catalogMutation(() => this.reorderTopicsImpl(...args)); }
+  public static reorderSubtopics(...args: Parameters<typeof AdminSyllabusService.reorderSubtopicsImpl>) { return catalogMutation(() => this.reorderSubtopicsImpl(...args)); }
+  public static linkTopicToSubject(...args: Parameters<typeof AdminSyllabusService.linkTopicToSubjectImpl>) { return catalogMutation(() => this.linkTopicToSubjectImpl(...args)); }
+  public static linkSubtopicToTopic(...args: Parameters<typeof AdminSyllabusService.linkSubtopicToTopicImpl>) { return catalogMutation(() => this.linkSubtopicToTopicImpl(...args)); }
+  public static async validateScript(definition: ScriptDefinition,subjectId:string,topicId:string,subtopicId?:string|null) {
+    const topic=await prisma.topic.findUnique({where:{id:topicId}});
+    if(!topic || topic.subjectId!==subjectId)throw new PublicError('Script topic does not belong to its subject');
+    if(subtopicId && !await prisma.subtopic.findFirst({where:{id:subtopicId,topicId}}))throw new PublicError('Script subtopic does not belong to its topic');
+    const validation=ScriptValidator.validate(definition);
+    if(!validation.valid)throw new PublicError('Invalid script graph or question structure');
+    const ids=[...new Set(Object.values(definition.nodes).map(node=>node.questionReference?.questionId).filter((id):id is string=>Boolean(id)))];
+    if(ids.length && await prisma.question.count({where:{id:{in:ids},topicId,...(subtopicId?{subtopicId}:{})}})!==ids.length)throw new PublicError('Script question belongs to a different topic or subtopic');
+  }
+
   /**
    * Retrieves full syllabus tree (Subjects -> Topics -> Subtopics) with attached scripts & question counts
    */
@@ -162,7 +188,7 @@ export class AdminSyllabusService {
 
   // ==================== SUBJECT CRUD ====================
 
-  public static async createSubject(data: {
+  private static async createSubjectImpl(data: {
     id?: string;
     slug?: string;
     name: string;
@@ -183,11 +209,11 @@ export class AdminSyllabusService {
       },
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
-  public static async updateSubject(id: string, data: {
+  private static async updateSubjectImpl(id: string, data: {
     name?: string;
     description?: string;
     displayOrder?: number;
@@ -198,7 +224,7 @@ export class AdminSyllabusService {
       data,
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
@@ -256,7 +282,7 @@ export class AdminSyllabusService {
 
   // ==================== TOPIC CRUD ====================
 
-  public static async createTopic(data: {
+  private static async createTopicImpl(data: {
     id?: string;
     subjectId: string;
     slug?: string;
@@ -283,11 +309,11 @@ export class AdminSyllabusService {
       },
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
-  public static async updateTopic(id: string, data: {
+  private static async updateTopicImpl(id: string, data: {
     name?: string;
     description?: string;
     defaultImportance?: string;
@@ -300,7 +326,7 @@ export class AdminSyllabusService {
       data,
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
@@ -342,7 +368,7 @@ export class AdminSyllabusService {
 
   // ==================== SUBTOPIC CRUD ====================
 
-  public static async importSubtopics(topicId: string, subtopics: Array<{
+  private static async importSubtopicsImpl(topicId: string, subtopics: Array<{
     name: string;
     description?: string;
     priority?: string;
@@ -353,28 +379,28 @@ export class AdminSyllabusService {
     teachingMinutes?: number;
   }>, syncRoadmap = true) {
     if (!Array.isArray(subtopics) || subtopics.length === 0) {
-      throw new Error('subtopics must be a non-empty array.');
+      throw new PublicError('subtopics must be a non-empty array.');
     }
 
     const ids = new Set<string>();
     const names = new Set<string>();
     for (const [index, subtopic] of subtopics.entries()) {
-      if (!subtopic?.name?.trim()) throw new Error(`Subtopic ${index + 1} must have a name.`);
+      if (!subtopic?.name?.trim()) throw new PublicError(`Subtopic ${index + 1} must have a name.`);
       const name = subtopic.name.trim().toLowerCase();
-      if (names.has(name)) throw new Error(`Duplicate subtopic name '${subtopic.name}'.`);
+      if (names.has(name)) throw new PublicError(`Duplicate subtopic name '${subtopic.name}'.`);
       names.add(name);
       const key = subtopic.externalSubTopicKey || subtopic.externalSubtopicKey;
       const generated = key || `${topicId}-${subtopic.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
-      if (ids.has(generated)) throw new Error(`Duplicate subtopic key or name '${generated}'.`);
+      if (ids.has(generated)) throw new PublicError(`Duplicate subtopic key or name '${generated}'.`);
       ids.add(generated);
       if (subtopic.position !== undefined && (!Number.isInteger(subtopic.position) || subtopic.position < 0)) {
-        throw new Error(`Subtopic '${subtopic.name}' has an invalid position.`);
+        throw new PublicError(`Subtopic '${subtopic.name}' has an invalid position.`);
       }
     }
 
     const created = await prisma.$transaction(async (tx) => {
       const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
-      if (!topic) throw new Error(`Topic '${topicId}' was not found.`);
+      if (!topic) throw new PublicError(`Topic '${topicId}' was not found.`);
       const existing = await tx.subtopic.findMany({ where: { topicId }, select: { id: true, slug: true, name: true } });
 
       for (const [index, subtopic] of subtopics.entries()) {
@@ -384,7 +410,7 @@ export class AdminSyllabusService {
         let matched = existing.find((item) => item.id === id || (key && item.slug === key));
         if (!matched) {
           const byName = existing.filter((item) => item.name.trim().toLowerCase() === subtopic.name.trim().toLowerCase());
-          if (byName.length > 1) throw new Error(`Ambiguous existing subtopic name '${subtopic.name}'.`);
+          if (byName.length > 1) throw new PublicError(`Ambiguous existing subtopic name '${subtopic.name}'.`);
           matched = byName[0];
         }
         const values = {
@@ -407,11 +433,11 @@ export class AdminSyllabusService {
       return tx.subtopic.findMany({ where: { topicId }, orderBy: { sequence: 'asc' } });
     });
 
-    if (syncRoadmap) await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return created;
   }
 
-  public static async createSubtopic(data: {
+  private static async createSubtopicImpl(data: {
     id?: string;
     topicId: string;
     slug?: string;
@@ -440,11 +466,11 @@ export class AdminSyllabusService {
       },
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
-  public static async updateSubtopic(id: string, data: {
+  private static async updateSubtopicImpl(id: string, data: {
     name?: string;
     slug?: string;
     description?: string;
@@ -463,7 +489,7 @@ export class AdminSyllabusService {
       data: updateData,
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
@@ -519,7 +545,7 @@ export class AdminSyllabusService {
     });
 
     if (!script) {
-      throw new Error(`Script not found with id: ${scriptId}`);
+      throw new PublicError(`Script not found with id: ${scriptId}`);
     }
 
     const latestVersion = script.versions[0] || null;
@@ -532,7 +558,7 @@ export class AdminSyllabusService {
   /**
    * Create a new script for a topic/subtopic
    */
-  public static async createScript(data: {
+  private static async createScriptImpl(data: {
     title: string;
     subjectId: string;
     topicId: string;
@@ -542,7 +568,9 @@ export class AdminSyllabusService {
   }) {
     const slug = `${data.topicId}-${data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${Date.now().toString(36)}`;
     const normalized = scriptCacheService.normalizeScriptDefinition(data.definition || {}, data.title);
+    if(!ScriptValidator.validate(normalized).valid)throw new PublicError('Invalid script graph or question structure');
     const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalized);
+    await this.validateScript(hydratedDef,data.subjectId!,data.topicId,data.subtopicId);
     const definitionString = JSON.stringify(hydratedDef);
     const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
     const status = data.status || 'PUBLISHED';
@@ -579,18 +607,19 @@ export class AdminSyllabusService {
     });
 
     await scriptCacheService.invalidateScriptCache(slug, result.version?.id);
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
   /**
    * Updates an existing script title, status, or publishes a new JSON version
    */
-  public static async updateScript(scriptId: string, data: {
+  private static async updateScriptImpl(scriptId: string, data: {
     title?: string;
     status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
     subtopicId?: string | null;
     definition?: any;
+    expectedVersion?: number;
   }) {
     const result = await prisma.$transaction(async (tx) => {
       const existing = await tx.lessonScript.findUnique({
@@ -601,9 +630,10 @@ export class AdminSyllabusService {
       });
 
       if (!existing) {
-        throw new Error(`Script not found: ${scriptId}`);
+        throw new PublicError(`Script not found: ${scriptId}`);
       }
 
+      if (data.expectedVersion !== existing.versions[0]?.versionNumber) throw new PublicError('Script changed. Reload before editing.','VERSION_CONFLICT',409);
       // Update script metadata
       const script = await tx.lessonScript.update({
         where: { id: scriptId },
@@ -614,45 +644,35 @@ export class AdminSyllabusService {
         },
       });
 
-      // If definition provided, create a new version
-      if (data.definition) {
-        const normalized = scriptCacheService.normalizeScriptDefinition(data.definition, data.title || existing.title);
-        const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalized);
-        const nextVersionNum = (existing.versions[0]?.versionNumber || 0) + 1;
-        const definitionString = JSON.stringify(hydratedDef);
-        const checksum = crypto.createHash('sha256').update(definitionString).digest('hex');
-
-        const newVersion = await tx.lessonScriptVersion.create({
-          data: {
-            scriptId,
-            versionNumber: nextVersionNum,
-            definition: hydratedDef as any,
-            checksum,
-            status: data.status || 'PUBLISHED',
-            publishedAt: new Date(),
-          },
-        });
-
-        await tx.lessonScript.update({
-          where: { id: scriptId },
-          data: { publishedVersionId: newVersion.id },
-        });
-
-        return { script, version: newVersion };
-      }
-
-      return { script, version: existing.versions[0] };
+      // Every successful edit advances the version, including metadata/status-only edits.
+      // Keep the previously pinned definition intact for existing lesson sessions.
+      const normalized = scriptCacheService.normalizeScriptDefinition(
+        data.definition ?? existing.versions[0]?.definition, data.title || existing.title);
+      if(!ScriptValidator.validate(normalized).valid)throw new PublicError('Invalid script graph or question structure');
+      const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalized);
+      await this.validateScript(hydratedDef,existing.subjectId,existing.topicId,data.subtopicId !== undefined ? data.subtopicId : existing.subtopicId);
+      const status=data.status || existing.status;
+      const newVersion = await tx.lessonScriptVersion.create({
+        data: {
+          scriptId, versionNumber: existing.versions[0].versionNumber + 1,
+          definition: hydratedDef as any,
+          checksum: crypto.createHash('sha256').update(JSON.stringify(hydratedDef)).digest('hex'),
+          status, publishedAt: status === 'PUBLISHED' ? new Date() : null,
+        },
+      });
+      if(status === 'PUBLISHED') await tx.lessonScript.update({where:{id:scriptId},data:{publishedVersionId:newVersion.id}});
+      return { script, version: newVersion };
     });
 
     await scriptCacheService.invalidateScriptCache(result.script?.slug, result.version?.id);
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
   /**
    * Imports a full Lesson Script with strict external question existence and ownership verification.
    */
-  public static async importScript(data: {
+  private static async importScriptImpl(data: {
     subjectId?: string;
     topicId: string;
     subtopicId?: string;
@@ -663,7 +683,7 @@ export class AdminSyllabusService {
   }, syncRoadmap = true) {
     const rawDef = data.definition || data.scriptDefinition;
     if (!rawDef) {
-      throw new Error('Script definition is required.');
+      throw new PublicError('Script definition is required.');
     }
     const normalizedDef = scriptCacheService.normalizeScriptDefinition(rawDef);
 
@@ -675,7 +695,7 @@ export class AdminSyllabusService {
     ).trim();
 
     if (!subtopicKey) {
-      throw new Error('Target subtopicId or externalSubtopicKey is required.');
+      throw new PublicError('Target subtopicId or externalSubtopicKey is required.');
     }
 
     // 1. Resolve subtopic by externalSubtopicKey (slug) or ID under topic
@@ -691,7 +711,7 @@ export class AdminSyllabusService {
     });
 
     if (!subtopic) {
-      throw new Error(
+      throw new PublicError(
         `Target subtopic with key '${subtopicKey}' does not exist under topic '${data.topicId}'.`
       );
     }
@@ -699,33 +719,13 @@ export class AdminSyllabusService {
     // 2. Validate Script DSL Structure
     const validation = ScriptValidator.validate(normalizedDef);
     if (!validation.valid) {
-      throw new Error(`Script DSL validation failed: ${validation.errors.map((e) => e.message).join('; ')}`);
+      throw new PublicError(`Script DSL validation failed: ${validation.errors.map((e) => e.message).join('; ')}`);
     }
 
     // 3. Hydrate questions from question bank & enforce strict existence
     const hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalizedDef);
 
-    // Verify subtopic & topic ownership of referenced questions
-    for (const [nodeId, node] of Object.entries(hydratedDef.nodes)) {
-      if (node.type === 'QUESTION' && node.questionReference?.questionId) {
-        const q = await prisma.question.findUnique({
-          where: { id: node.questionReference.questionId },
-          select: { id: true, externalKey: true, topicId: true, subtopicId: true },
-        });
-        if (q) {
-          if (q.topicId !== data.topicId) {
-            throw new Error(
-              `❌ SCRIPT IMPORT FAILED: Question '${q.externalKey || q.id}' belongs to topic '${q.topicId}', but this script is for topic '${data.topicId}'.`
-            );
-          }
-          if (q.subtopicId !== subtopic.id && q.subtopicId !== subtopic.slug) {
-            throw new Error(
-              `❌ SCRIPT IMPORT FAILED: Question '${q.externalKey || q.id}' belongs to subtopic '${q.subtopicId}', while this script is for subtopic '${subtopic.id}' (${subtopic.slug || ''}).`
-            );
-          }
-        }
-      }
-    }
+    await this.validateScript(hydratedDef,data.subjectId || subtopic.topic.subjectId,data.topicId,subtopic.id);
 
     // 4. Persistence
     const status = data.status || 'PUBLISHED';
@@ -792,13 +792,15 @@ export class AdminSyllabusService {
     });
 
     await scriptCacheService.invalidateScriptCache(slug, result.version?.id);
-    if (syncRoadmap) await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
   // ==================== REORDERING ====================
 
-  public static async reorderTopics(subjectId: string, topicIds: string[]) {
+  private static async reorderTopicsImpl(subjectId: string, topicIds: string[]) {
+    const valid=await prisma.topic.count({where:{id:{in:topicIds},OR:[{subjectId},{subjectTopics:{some:{subjectId}}}]}});
+    if(valid!==topicIds.length)throw new PublicError('Reorder contains a topic from another subject');
     const result = await prisma.$transaction(async (tx) => {
       for (let i = 0; i < topicIds.length; i++) {
         const topicId = topicIds[i];
@@ -817,11 +819,13 @@ export class AdminSyllabusService {
       return { success: true };
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
-  public static async reorderSubtopics(topicId: string, subtopicIds: string[]) {
+  private static async reorderSubtopicsImpl(topicId: string, subtopicIds: string[]) {
+    const valid=await prisma.subtopic.count({where:{id:{in:subtopicIds},OR:[{topicId},{topicSubtopics:{some:{topicId}}}]}});
+    if(valid!==subtopicIds.length)throw new PublicError('Reorder contains a subtopic from another topic');
     const result = await prisma.$transaction(async (tx) => {
       for (let i = 0; i < subtopicIds.length; i++) {
         const subtopicId = subtopicIds[i];
@@ -840,13 +844,13 @@ export class AdminSyllabusService {
       return { success: true };
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return result;
   }
 
   // ==================== LINKING / REUSABILITY ====================
 
-  public static async linkTopicToSubject(subjectId: string, topicId: string) {
+  private static async linkTopicToSubjectImpl(subjectId: string, topicId: string) {
     const existing = await prisma.subjectTopic.findUnique({
       where: { subjectId_topicId: { subjectId, topicId } },
     });
@@ -866,7 +870,7 @@ export class AdminSyllabusService {
       },
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return res;
   }
 
@@ -899,7 +903,7 @@ export class AdminSyllabusService {
     return { success: true, message: 'Topic unlinked successfully without deletion.' };
   }
 
-  public static async linkSubtopicToTopic(topicId: string, subtopicId: string) {
+  private static async linkSubtopicToTopicImpl(topicId: string, subtopicId: string) {
     const existing = await prisma.topicSubtopic.findUnique({
       where: { topicId_subtopicId: { topicId, subtopicId } },
     });
@@ -919,7 +923,7 @@ export class AdminSyllabusService {
       },
     });
 
-    await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
+
     return res;
   }
 

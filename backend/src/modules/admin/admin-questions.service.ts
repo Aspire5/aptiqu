@@ -1,4 +1,7 @@
-import { prisma } from '../../config/prisma';
+import { PublicError } from '../../security/errors';
+import { validateAdminQuestion, questionFields } from './admin-input';
+import { prisma } from '../lesson/services/learning-transaction';
+import { catalogMutation } from '../roadmap/services/catalog-mutation';
 import { QuestionStatus } from '@prisma/client';
 import { FingerprintService } from '../question/services/fingerprint.service';
 import { QuestionOption, QuestionOptionId, QuestionDifficulty, CalculationMode } from '../question/domain/question.types';
@@ -19,6 +22,10 @@ export interface QuestionListFilter {
 }
 
 export class AdminQuestionsService {
+  public static createQuestion(...args: Parameters<typeof AdminQuestionsService.createQuestionImpl>) {return catalogMutation(()=>this.createQuestionImpl(...args),false);}
+  public static updateQuestion(...args: Parameters<typeof AdminQuestionsService.updateQuestionImpl>) {return catalogMutation(()=>this.updateQuestionImpl(...args),false);}
+  public static relinkQuestion(...args: Parameters<typeof AdminQuestionsService.relinkQuestionImpl>) {return catalogMutation(()=>this.relinkQuestionImpl(...args),false);}
+  public static bulkImport(...args: Parameters<typeof AdminQuestionsService.bulkImportImpl>) { return catalogMutation(() => this.bulkImportImpl(...args)); }
   /**
    * Paginated list of questions with filtering
    */
@@ -138,7 +145,7 @@ export class AdminQuestionsService {
   /**
    * Create a single question
    */
-  public static async createQuestion(data: {
+  private static async createQuestionImpl(data: {
     subtopicId: string;
     topicId?: string;
     subjectId?: string;
@@ -165,6 +172,7 @@ export class AdminQuestionsService {
     sourceChapter?: string;
     sourcePageRange?: string;
   }) {
+    data=validateAdminQuestion(data) as typeof data;
     // Resolve subtopic hierarchy
     const subtopic = await prisma.subtopic.findUnique({
       where: { id: data.subtopicId },
@@ -172,18 +180,19 @@ export class AdminQuestionsService {
     });
 
     if (!subtopic) {
-      throw new Error(`Subtopic not found with id: ${data.subtopicId}`);
+      throw new PublicError(`Subtopic not found with id: ${data.subtopicId}`);
     }
 
     const subjectId = subtopic.topic.subjectId;
     const topicId = subtopic.topicId;
 
+    if (data.subjectId && data.subjectId !== subjectId || data.topicId && data.topicId !== topicId) throw new PublicError('Question hierarchy does not match its subtopic');
     const fingerprint = FingerprintService.computeFingerprint(data.prompt, data.options);
 
     // Check duplicate fingerprint
     const existing = await prisma.question.findUnique({ where: { fingerprint } });
     if (existing) {
-      throw new Error('A question with identical prompt and options already exists');
+      throw new PublicError('A question with identical prompt and options already exists');
     }
 
     return prisma.question.create({
@@ -226,12 +235,14 @@ export class AdminQuestionsService {
   /**
    * Update question
    */
-  public static async updateQuestion(id: string, data: any) {
+  private static async updateQuestionImpl(id: string, data: any) {
+    data=questionFields.partial().parse(data);
     const existing = await prisma.question.findUnique({ where: { id } });
     if (!existing) {
-      throw new Error(`Question not found with id: ${id}`);
+      throw new PublicError(`Question not found with id: ${id}`);
     }
 
+    validateAdminQuestion(Object.fromEntries(Object.entries({...existing,...data}).filter(([key])=>Object.hasOwn(questionFields.shape,key))));
     let fingerprint = existing.fingerprint;
     const prompt = data.prompt ?? existing.prompt;
     const options = data.options ?? existing.options;
@@ -247,19 +258,23 @@ export class AdminQuestionsService {
         include: { topic: true },
       });
       if (!subtopic) {
-        throw new Error(`Subtopic not found: ${data.subtopicId}`);
+        throw new PublicError(`Subtopic not found: ${data.subtopicId}`);
       }
       subtopicId = subtopic.id;
       topicId = subtopic.topicId;
       subjectId = subtopic.topic.subjectId;
     }
 
+    if(data.subjectId && data.subjectId!==subjectId || data.topicId && data.topicId!==topicId)throw new PublicError('Question hierarchy does not match its subtopic');
     return prisma.question.update({
       where: { id },
       data: {
         subjectId,
         topicId,
         subtopicId,
+        pattern: data.pattern ?? existing.pattern,
+        sourceType: data.sourceType ?? existing.sourceType,
+        generationMethod: data.generationMethod ?? existing.generationMethod,
         externalKey: data.externalKey !== undefined ? (data.externalKey?.trim() || null) : existing.externalKey,
         prompt,
         options,
@@ -292,14 +307,14 @@ export class AdminQuestionsService {
   /**
    * Relink question to a different subtopic
    */
-  public static async relinkQuestion(id: string, newSubtopicId: string) {
+  private static async relinkQuestionImpl(id: string, newSubtopicId: string) {
     const subtopic = await prisma.subtopic.findUnique({
       where: { id: newSubtopicId },
       include: { topic: true },
     });
 
     if (!subtopic) {
-      throw new Error(`Target subtopic not found: ${newSubtopicId}`);
+      throw new PublicError(`Target subtopic not found: ${newSubtopicId}`);
     }
 
     return prisma.question.update({
@@ -349,9 +364,9 @@ export class AdminQuestionsService {
    * 2. Duplicacy prevention: If any duplicate question exists in the batch or in the database
    *    (by externalKey or fingerprint), the import FAILS completely (0 questions imported).
    */
-  public static async bulkImport(rawQuestions: any[], defaultSubtopicId?: string) {
+  private static async bulkImportImpl(rawQuestions: any[], defaultSubtopicId?: string) {
     if (!Array.isArray(rawQuestions) || rawQuestions.length === 0) {
-      throw new Error('No questions provided for import.');
+      throw new PublicError('No questions provided for import.');
     }
 
     // 1. Fetch all curriculum subtopics into memory for instant O(1) resolution
@@ -391,7 +406,7 @@ export class AdminQuestionsService {
 
       const prompt = String(q.prompt || q.question || '').trim();
       if (!prompt) {
-        throw new Error(`Row ${rowNum}: Question prompt/text is missing.`);
+        throw new PublicError(`Row ${rowNum}: Question prompt/text is missing.`);
       }
 
       // Parse options
@@ -414,11 +429,12 @@ export class AdminQuestionsService {
       }
 
       if (options.length < 2) {
-        throw new Error(`Row ${rowNum}: Question must contain at least 2 options.`);
+        throw new PublicError(`Row ${rowNum}: Question must contain at least 2 options.`);
       }
 
-      const rawCorrect = String(q.correctAnswer || q.correct_answer || q.answer || 'A').toUpperCase().trim();
-      const correctAnswer = (['A', 'B', 'C', 'D'].includes(rawCorrect) ? rawCorrect : 'A') as QuestionOptionId;
+      const rawCorrect = String(q.correctAnswer || q.correct_answer || q.answer || '').toUpperCase().trim();
+      if (!['A','B','C','D'].includes(rawCorrect)) throw new PublicError(`Row ${rowNum}: A valid correct answer is required`);
+      const correctAnswer = rawCorrect as QuestionOptionId;
 
       // Subtopic lookup
       const rawTargetKey = String(
@@ -439,11 +455,11 @@ export class AdminQuestionsService {
 
       if (!subtopic) {
         if (!rawTargetKey) {
-          throw new Error(
+          throw new PublicError(
             `Row ${rowNum}: No subtopic specified. Question "${prompt.slice(0, 35)}..." has no 'externalSubtopicKey' and no target subtopic was selected. Import aborted.`
           );
         } else {
-          throw new Error(
+          throw new PublicError(
             `Row ${rowNum}: Subtopic with key "${rawTargetKey}" not found in curriculum. Please ensure this subtopic exists or set its slug/key in Curriculum before importing. Import aborted.`
           );
         }
@@ -469,7 +485,7 @@ export class AdminQuestionsService {
 
       // Duplicate check within batch
       if (seenFingerprintsInBatch.has(fingerprint)) {
-        throw new Error(
+        throw new PublicError(
           `Import aborted: Duplicate question detected within file at Row ${rowNum}: "${prompt.slice(0, 40)}...".`
         );
       }
@@ -480,7 +496,7 @@ export class AdminQuestionsService {
 
       if (externalKey) {
         if (seenExternalKeysInBatch.has(externalKey)) {
-          throw new Error(
+          throw new PublicError(
             `Import aborted: Duplicate question key "${externalKey}" detected within file at Row ${rowNum}.`
           );
         }
@@ -533,6 +549,8 @@ export class AdminQuestionsService {
       });
     }
 
+    for (const candidate of candidates) validateAdminQuestion(candidate.data);
+
     // 3. Batched duplicate check against database (in chunks of 200 to keep queries light & fast)
     const candidateFingerprints = candidates.map((c) => c.fingerprint);
     const candidateExternalKeys = candidates.map((c) => c.externalKey).filter(Boolean) as string[];
@@ -562,14 +580,14 @@ export class AdminQuestionsService {
 
     if (existingKeyList.length > 0) {
       const dupKey = existingKeyList[0].externalKey;
-      throw new Error(
+      throw new PublicError(
         `Import aborted to avoid duplicacy: Question with key "${dupKey}" already exists in the database. No questions were imported.`
       );
     }
 
     if (existingFpList.length > 0) {
       const dup = existingFpList[0];
-      throw new Error(
+      throw new PublicError(
         `Import aborted to avoid duplicacy: Question already exists in database (identical prompt: "${dup.prompt.slice(0, 40)}..."). No questions were imported.`
       );
     }
@@ -593,15 +611,8 @@ export class AdminQuestionsService {
     );
 
     // Asynchronously trigger cache invalidation and roadmap progression sync in background without delaying HTTP response
-    setImmediate(async () => {
-      try {
-        await scriptCacheService.invalidateAllScriptCaches();
-        await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
-        console.log(`[BulkImport] Successfully synchronized roadmap progression and invalidated script caches for ${recordsToInsert.length} imported questions.`);
-      } catch (err: any) {
-        console.error('[BulkImport] Post-import sync error (async):', err.message);
-      }
-    });
+
+
 
     return {
       success: true,

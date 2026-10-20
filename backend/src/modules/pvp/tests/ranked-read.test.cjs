@@ -18,7 +18,7 @@ test('qualified board pages whitelist identity and recompute current ordinals de
  const first=await f.service.leaderboard(f.users[0],{limit:1});assert.equal(first.entries[0].userId,f.users[0]);assert.equal(first.entries[0].position,1);assert.ok(first.nextCursor);assert.ok(!JSON.stringify(first).includes('NEVER_EXPOSE'));
  Object.assign(newcomer,{qualifiedAt:new Date(f.now()),played:10});
  const second=await f.service.leaderboard(f.users[0],{limit:1,cursor:first.nextCursor});assert.equal(second.entries[0].userId,f.users[1]);assert.equal(second.entries[0].position,3);
- const sql=f.state.queries.at(-1);assert.ok(sql.sql.includes('ahead.user_id<page.user_id'));assert.ok(!sql.sql.includes(f.users[0]));assert.ok(sql.values.includes(f.users[0]));
+ const sql=f.state.queries.at(-1);assert.ok(sql.sql.includes('ahead.user_id<first.user_id'));assert.ok(sql.sql.includes('row_number() OVER'));assert.ok(!sql.sql.includes(f.users[0]));assert.ok(sql.values.includes(f.users[0]));
  await assert.rejects(f.service.leaderboard(f.users[0],{limit:1,cursor:first.nextCursor+'x'}),e=>e.code==='CURSOR_RESET');f.setTime(f.now()+300001);await assert.rejects(f.service.leaderboard(f.users[0],{limit:1,cursor:first.nextCursor}),e=>e.code==='CURSOR_RESET');
 });
 test('final board and played-season history use frozen rating, league, peak and position',async()=>{

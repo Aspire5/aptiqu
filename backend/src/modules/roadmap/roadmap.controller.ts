@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { roadmapProgressionService } from './services/roadmap-progression.service';
@@ -8,6 +9,7 @@ export class RoadmapController {
    * GET /roadmaps
    * List all available roadmaps
    */
+  // CACHE_CANDIDATE ref=C02 scope=catalog+user layer=fragment ttl=60s owner=curriculum
   public static async listRoadmaps(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = req.userId!;
@@ -16,12 +18,7 @@ export class RoadmapController {
         success: true,
         data: roadmaps,
       });
-    } catch (err: any) {
-      res.status(err.status || 500).json({
-        success: false,
-        message: err.message || 'Failed to list roadmaps.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
@@ -36,12 +33,7 @@ export class RoadmapController {
         success: true,
         data: roadmap,
       });
-    } catch (err: any) {
-      res.status(err.status || 500).json({
-        success: false,
-        message: err.message || 'Failed to get active roadmap.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
@@ -58,18 +50,14 @@ export class RoadmapController {
         data: roadmap,
         message: `Active roadmap set to ${roadmap.name}`,
       });
-    } catch (err: any) {
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to select active roadmap.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
    * GET /roadmaps/:roadmapId
    * Get roadmap details by ID or slug
    */
+  // CACHE_CANDIDATE ref=C03 scope=catalog+user layer=fragment ttl=60s owner=curriculum
   public static async getRoadmap(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const roadmapId = req.params.roadmapId as string;
@@ -88,18 +76,14 @@ export class RoadmapController {
         success: true,
         data: target,
       });
-    } catch (err: any) {
-      res.status(err.status || 500).json({
-        success: false,
-        message: err.message || 'Failed to get roadmap.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
    * GET /roadmaps/:roadmapId/subjects/:subjectId/map
    * Returns authoritative learning map with topic order and completion states
    */
+  // CACHE_CANDIDATE ref=C04 scope=catalog+user layer=fragment ttl=5-60s owner=curriculum
   public static async getSubjectMap(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const userId = req.userId!;
@@ -116,12 +100,7 @@ export class RoadmapController {
         success: true,
         data: mapResult,
       });
-    } catch (err: any) {
-      res.status(err.status || 404).json({
-        success: false,
-        message: err.message || 'Failed to get subject learning map.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
@@ -157,12 +136,6 @@ export class RoadmapController {
         success: true,
         data: result,
       });
-    } catch (err: any) {
-      console.error('[RoadmapController:startStepSession] Error:', err);
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to start lesson for roadmap step.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 }

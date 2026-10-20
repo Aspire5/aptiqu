@@ -1,3 +1,4 @@
+import { PublicError } from '../../security/errors';
 import { prisma } from '../../config/prisma';
 import { verifyGoogleToken } from '../../utils/google';
 import { signAccessToken, createRefreshTokenData } from '../../utils/jwt';
@@ -31,12 +32,8 @@ export class AuthService {
       });
 
       if (user) {
-        // Link googleId to existing user
-        user = await prisma.user.update({
-          where: { id: user.id },
-          data: { googleId: googleUser.googleId },
-          include: { profile: true, gameStats: true },
-        });
+        // An email match is never permission to replace an existing identity.
+        if (user.googleId !== googleUser.googleId) throw new Error('Google account cannot be linked');
       } else {
         // Create new user and provisional profile with Google data
         user = await prisma.user.create({
@@ -55,9 +52,7 @@ export class AuthService {
             gameStats: {
               create: {
                 level: 1,
-                // NOTE: streak is hardcoded to 0 for now as requested. Daily streak calculation will be implemented later.
                 streak: 0,
-                // NOTE: coins is hardcoded to 0 for now as requested. Coin rewards/earnings will be implemented later.
                 coins: 0,
               },
             },
@@ -77,8 +72,8 @@ export class AuthService {
       }
     }
 
-    // 2. Generate 7-day Refresh Token and 15-minute Access Token
-    const { rawToken, tokenHash, expiresAt } = createRefreshTokenData(7);
+    // Issue tokens using the configured expiration policy.
+    const { rawToken, tokenHash, expiresAt } = createRefreshTokenData();
 
     await prisma.refreshToken.create({
       data: {
@@ -181,9 +176,7 @@ export class AuthService {
       create: {
         userId,
         level: 1,
-        // NOTE: streak is hardcoded to 0 for now as requested
         streak: 0,
-        // NOTE: coins is hardcoded to 0 for now as requested
         coins: 0,
       },
     });
@@ -223,44 +216,15 @@ export class AuthService {
    */
   async refreshSession(rawRefreshToken: string) {
     const hashed = hashToken(rawRefreshToken);
-
-    const tokenRecord = await prisma.refreshToken.findUnique({
-      where: { tokenHash: hashed },
-      include: { user: true },
+    return prisma.$transaction(async tx => {
+      const tokenRecord = await tx.refreshToken.findUnique({where:{tokenHash:hashed},include:{user:true}});
+      if (!tokenRecord || tokenRecord.expiresAt.getTime() <= Date.now()) throw new PublicError('Invalid or expired refresh token','INVALID_REFRESH_TOKEN',401);
+      const consumed = await tx.refreshToken.deleteMany({where:{id:tokenRecord.id,tokenHash:hashed,expiresAt:{gt:new Date()}}});
+      if (consumed.count !== 1) throw new PublicError('Invalid or expired refresh token','INVALID_REFRESH_TOKEN',401);
+      const replacement = createRefreshTokenData();
+      await tx.refreshToken.create({data:{userId:tokenRecord.userId,tokenHash:replacement.tokenHash,expiresAt:replacement.expiresAt}});
+      return {accessToken:signAccessToken({userId:tokenRecord.user.id,email:tokenRecord.user.email}),refreshToken:replacement.rawToken};
     });
-
-    if (!tokenRecord) {
-      throw new Error('Invalid refresh token');
-    }
-
-    if (tokenRecord.expiresAt < new Date()) {
-      await prisma.refreshToken.delete({ where: { id: tokenRecord.id } });
-      throw new Error('Refresh token expired. Please log in again.');
-    }
-
-    // Rotate refresh token: delete old, create new 7-day token
-    await prisma.refreshToken.delete({ where: { id: tokenRecord.id } });
-
-    const { rawToken: newRawToken, tokenHash: newTokenHash, expiresAt } =
-      createRefreshTokenData(7);
-
-    await prisma.refreshToken.create({
-      data: {
-        userId: tokenRecord.userId,
-        tokenHash: newTokenHash,
-        expiresAt,
-      },
-    });
-
-    const newAccessToken = signAccessToken({
-      userId: tokenRecord.user.id,
-      email: tokenRecord.user.email,
-    });
-
-    return {
-      accessToken: newAccessToken,
-      refreshToken: newRawToken,
-    };
   }
 
   /**

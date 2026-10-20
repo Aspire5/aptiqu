@@ -12,8 +12,9 @@ export class SocialSocketServer {
   private wss = new WebSocketServer({ noServer: true, maxPayload: 4096 });
   private liveness = new Map<WebSocket, { lastSeen: number; expiry: number }>();
   private heartbeat?: NodeJS.Timeout;
-  init(server: Server) {
-    socialTransport.init();
+  private messageWork=new Set<Promise<void>>();
+  init(server: Server, canServe:()=>boolean=()=>true) {
+    socialTransport.init(true);
     const subscriber = socialTransport.subscriber!;
     subscriber.on('message', (channel, message) => {
       const user = channel.slice('social:user:'.length);
@@ -21,6 +22,7 @@ export class SocialSocketServer {
     });
     server.on('upgrade', (req, socket, head) => {
       if (req.url?.split('?')[0] !== '/ws/social') return;
+      if(!canServe() || socket.destroyed){socket.destroy();return;}
       this.wss.handleUpgrade(req, socket, head, ws => this.wss.emit('connection', ws));
     });
     this.wss.on('connection', ws => {
@@ -42,6 +44,7 @@ export class SocialSocketServer {
         if (watched.length) ws.send(JSON.stringify({ event: 'PRESENCE', items: await socialTransport.presence(watched) }));
       };
       ws.on('message', async bytes => {
+        let finish!:()=>void;const work=new Promise<void>(resolve=>{finish=resolve;});this.messageWork.add(work);
         try {
           const msg = JSON.parse(bytes.toString());
           if (msg.type === 'AUTH_INIT' && !user) {
@@ -71,6 +74,7 @@ export class SocialSocketServer {
             ws.send(JSON.stringify({ event: 'PRESENCE', items: await socialTransport.presence(watched) }));
           }
         } catch { ws.close(4003, 'Invalid or expired session'); }
+        finally {finish();this.messageWork.delete(work);}
       });
       ws.on('close', () => {
         clearTimeout(authDeadline); this.liveness.delete(ws);
@@ -90,6 +94,14 @@ export class SocialSocketServer {
     }, 30000);
     this.heartbeat.unref();
   }
-  async close() { clearInterval(this.heartbeat); for (const ws of this.wss.clients) ws.close(1001, 'Server restarting'); this.wss.close(); await socialTransport.subscriber?.quit(); await socialTransport.client?.quit(); }
+  async close() {
+    clearInterval(this.heartbeat);
+    for(const ws of this.wss.clients)ws.close(1001,'Server restarting');
+    await Promise.allSettled([...this.messageWork]);
+    await new Promise<void>(resolve=>{
+      const timer=setTimeout(()=>{for(const ws of this.wss.clients)ws.terminate();},500);
+      this.wss.close(()=>{clearTimeout(timer);resolve();});
+    });
+  }
 }
 export const socialSocketServer = new SocialSocketServer();

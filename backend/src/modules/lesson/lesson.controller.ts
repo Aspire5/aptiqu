@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { lessonSessionService } from './services/lesson-session.service';
@@ -49,10 +50,7 @@ export class LessonController {
         data: result,
       });
     } catch (err: any) {
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to start or resume lesson session.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -67,10 +65,7 @@ export class LessonController {
         data: result,
       });
     } catch (err: any) {
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to retrieve active session.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -85,10 +80,7 @@ export class LessonController {
         data: result,
       });
     } catch (err: any) {
-      res.status(err.status || 404).json({
-        success: false,
-        message: err.message || 'Failed to retrieve session.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -103,25 +95,7 @@ export class LessonController {
         success: true,
         data: result,
       });
-    } catch (err: any) {
-      if (err.code === 'STALE_STATE_VERSION') {
-        res.status(409).json({
-          success: false,
-          error: {
-            code: 'STALE_STATE_VERSION',
-            message: err.message,
-            expectedVersion: err.expectedVersion,
-            authoritativeNodeId: err.authoritativeNodeId,
-          },
-        });
-        return;
-      }
-
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to process lesson action.',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   public static async handleInterrupt(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -136,10 +110,7 @@ export class LessonController {
         data: result,
       });
     } catch (err: any) {
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to process doubt interrupt.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -151,10 +122,7 @@ export class LessonController {
       await lessonSessionService.pauseSession(userId, id);
       res.status(200).json({ success: true, message: 'Session paused.' });
     } catch (err: any) {
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to pause session.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -166,10 +134,7 @@ export class LessonController {
       await lessonSessionService.resumeSession(userId, id);
       res.status(200).json({ success: true, message: 'Session resumed.' });
     } catch (err: any) {
-      res.status(err.status || 400).json({
-        success: false,
-        message: err.message || 'Failed to resume session.',
-      });
+      publicFailure(res, err);
     }
   }
 }

@@ -1,4 +1,5 @@
-import { prisma } from '../../../config/prisma';
+import { log, safeError } from '../../../observability/logger';
+import { prisma } from './book-run';
 import { ScriptValidator } from '../../lesson/engines/script-validator';
 import { bookCancellationService } from './book-cancellation.service';
 
@@ -33,7 +34,7 @@ export class ContentValidationService {
    * Performs multi-layer validation across all generated questions and scripts for a book.
    */
   public async validateBookContent(bookId: string): Promise<ValidationResult> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of validateBookContent');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of validateBookContent');
 
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
@@ -144,9 +145,7 @@ export class ContentValidationService {
       },
     });
 
-    console.log(
-      `[ContentValidationService] Validation finished for book "${bookSource.title}": ${totalQuestionsChecked} questions, ${totalScriptsChecked} scripts. Issues: ${flaggedCount}.`
-    );
+    log('info','content_validation_service.validateBookContent.info');
 
     return {
       passed,

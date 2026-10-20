@@ -1,36 +1,19 @@
+import { prisma } from '../../../config/prisma';
 export class BookCancellationService {
   private static instance: BookCancellationService;
-  private cancelledBooks: Set<string> = new Set();
-
-  private constructor() {}
-
-  public static getInstance(): BookCancellationService {
-    if (!BookCancellationService.instance) {
-      BookCancellationService.instance = new BookCancellationService();
-    }
-    return BookCancellationService.instance;
+  static getInstance() { return this.instance ??= new BookCancellationService(); }
+  async cancel(bookId: string) {
+    await prisma.bookSource.updateMany({where:{id:bookId},data:{processingCancelled:true,processingEpoch:{increment:1}}});
   }
-
-  public cancel(bookId: string): void {
-    this.cancelledBooks.add(bookId);
-    console.log(`[BookCancellationService] Book ${bookId} marked as CANCELLED.`);
+  async isCancelled(bookId: string) {
+    const book=await prisma.bookSource.findUnique({where:{id:bookId},select:{processingCancelled:true}});
+    return !book || book.processingCancelled;
   }
-
-  public isCancelled(bookId: string): boolean {
-    return this.cancelledBooks.has(bookId);
+  async reset(bookId: string) {
+    await prisma.bookSource.updateMany({where:{id:bookId},data:{processingCancelled:false}});
   }
-
-  public reset(bookId: string): void {
-    this.cancelledBooks.delete(bookId);
-  }
-
-  public checkAndThrowIfCancelled(bookId: string, location?: string): void {
-    if (this.isCancelled(bookId)) {
-      const msg = `BOOK_INGESTION_CANCELLED: Book ${bookId} was cancelled${location ? ` at ${location}` : ''}.`;
-      console.log(`[BookCancellationService] ${msg}`);
-      throw new Error(msg);
-    }
+  async checkAndThrowIfCancelled(bookId: string, _location?: string) {
+    if (await this.isCancelled(bookId)) throw new Error('BOOK_INGESTION_CANCELLED');
   }
 }
-
-export const bookCancellationService = BookCancellationService.getInstance();
+export const bookCancellationService=BookCancellationService.getInstance();

@@ -1,3 +1,4 @@
+import { log, safeError } from '../../../observability/logger';
 import { pvpMatchService, PvpMatchService } from '../services/pvp-match.service';
 import { pvpSocketServer } from '../pvp.socket';
 import type { PvpInternalMatch } from '../pvp.dto';
@@ -22,7 +23,7 @@ export class RankedRecoveryWorker {
   }
   async tick() {
     if (this.stopped || this.running) return;
-    this.running = this.run().catch(() => { console.error('[Ranked] Reconciliation unavailable; persisted work will retry.'); });
+    this.running = this.run().catch(() => { log('error','ranked_worker.tick.error'); });
     try { await this.running; } finally { this.running = undefined; }
   }
   private async run() {
@@ -30,7 +31,7 @@ export class RankedRecoveryWorker {
     for (const row of page) {
       if (this.stopped) return;
       try { await this.publish(await this.service.recoverMatch(row.id)); }
-      catch { console.error('[Ranked] Match recovery deferred', row.id); }
+      catch { log('error','ranked_worker.run.error'); }
     }
     this.cursor = page.length === 100 ? page[page.length - 1].id : undefined;
     if (Date.now() - this.lastMaintenance >= 60000) {

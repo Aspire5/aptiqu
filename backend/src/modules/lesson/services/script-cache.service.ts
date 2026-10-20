@@ -1,10 +1,13 @@
-import { prisma } from '../../../config/prisma';
+import { SingleFlight } from './bounded-cache';
+import { PublicError } from '../../../security/errors';
+import { prisma, learningTransaction } from './learning-transaction';
 import { redisService } from './redis.service';
 import { ScriptDefinition } from '../interfaces/script-dsl.interface';
 import { questionHydrationService } from './question-hydration.service';
 
 export class ScriptCacheService {
   private static instance: ScriptCacheService;
+  private readonly loads=new SingleFlight<string|null>();
 
   public static getInstance(): ScriptCacheService {
     if (!ScriptCacheService.instance) {
@@ -18,20 +21,6 @@ export class ScriptCacheService {
     scriptVersionId: string;
     definition: ScriptDefinition;
   } | null> {
-    const slugKey = `script:slug:published:${slug}`;
-    let versionId = await redisService.get(slugKey);
-
-    if (versionId) {
-      const def = await this.getScriptVersionDefinition(versionId);
-      if (def) {
-        return {
-          scriptId: def.scriptId,
-          scriptVersionId: versionId,
-          definition: def,
-        };
-      }
-    }
-
     // Cache miss or definition missing -> query database
     const script = await prisma.lessonScript.findUnique({
       where: { slug },
@@ -44,24 +33,30 @@ export class ScriptCacheService {
       },
     });
 
-    if (!script || !script.versions || script.versions.length === 0) {
+    if (!script || script.status !== 'PUBLISHED' || !script.versions || script.versions.length === 0) {
       return null;
     }
 
     const latestPublished = script.versions[0];
-    versionId = latestPublished.id;
+    const versionId = latestPublished.id;
+    await this.assertPublished(script.id, versionId);
     let definition = this.normalizeScriptDefinition(latestPublished.definition, script.title);
-    definition = await questionHydrationService.hydrateScriptDefinition(definition);
-
-    // Cache in Redis
-    await redisService.set(slugKey, versionId, 86400); // 24 hours
-    await redisService.set(`script:def:${versionId}`, JSON.stringify(definition), 604800); // 7 days
+    definition = await questionHydrationService.hydrateScriptDefinition(definition,{preferPinned:true});
 
     return {
       scriptId: script.id,
       scriptVersionId: versionId,
       definition,
     };
+  }
+
+  public async assertPublished(scriptId: string, versionId: string) {
+    const script = await prisma.lessonScript.findFirst({where:{id:scriptId,status:'PUBLISHED'},select:{subjectId:true,topicId:true,subtopicId:true}});
+    const version = await prisma.lessonScriptVersion.findFirst({where:{id:versionId,scriptId,status:'PUBLISHED'},select:{id:true}});
+    if (!script || !version) throw new PublicError('Published lesson not available','SCRIPT_NOT_PUBLISHED',404);
+    for (const [model,id] of [[prisma.subject,script.subjectId],[prisma.topic,script.topicId],[prisma.subtopic,script.subtopicId]] as const) {
+      if (id && !await (model as any).findFirst({where:{id,isActive:true},select:{id:true}})) throw new PublicError('Published lesson not available','SCRIPT_NOT_PUBLISHED',404);
+    }
   }
 
   public normalizeScriptDefinition(raw: any, fallbackTitle?: string): ScriptDefinition {
@@ -150,53 +145,25 @@ export class ScriptCacheService {
     } as ScriptDefinition;
   }
 
-  public async getScriptVersionDefinition(versionId: string, fallbackTitle?: string): Promise<ScriptDefinition | null> {
-    const defKey = `script:def:${versionId}`;
-    const cached = await redisService.get(defKey);
-
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        const normalized = this.normalizeScriptDefinition(parsed, fallbackTitle);
-        return await questionHydrationService.hydrateScriptDefinition(normalized);
-      } catch {
-        // Fallthrough
-      }
+  public async getScriptVersionDefinition(versionId:string,fallbackTitle?:string):Promise<ScriptDefinition|null> {
+    if(learningTransaction()) {
+      const row=await prisma.lessonScriptVersion.findUnique({where:{id:versionId},select:{definition:true}});
+      return row?questionHydrationService.hydrateScriptDefinition(this.normalizeScriptDefinition(row.definition,fallbackTitle),{preferPinned:true}):null;
     }
-
-    // Stampede lock
-    const lockKey = `lock:script_load:${versionId}`;
-    const acquired = await redisService.setNx(lockKey, '1', 2000);
-
-    if (!acquired) {
-      // Small backoff and re-check cache
-      await new Promise((resolve) => setTimeout(resolve, 60));
-      const retry = await redisService.get(defKey);
-      if (retry) {
-        try {
-          const parsed = JSON.parse(retry);
-          const normalized = this.normalizeScriptDefinition(parsed, fallbackTitle);
-          return await questionHydrationService.hydrateScriptDefinition(normalized);
-        } catch {
-          // Fallthrough
-        }
-      }
-    }
-
-    try {
-      const versionRow = await prisma.lessonScriptVersion.findUnique({
-        where: { id: versionId },
-      });
-
-      if (!versionRow) return null;
-
-      let definition = this.normalizeScriptDefinition(versionRow.definition, fallbackTitle);
-      definition = await questionHydrationService.hydrateScriptDefinition(definition);
-      await redisService.set(defKey, JSON.stringify(definition), 604800);
-      return definition;
-    } finally {
-      await redisService.del(lockKey);
-    }
+    // Cache immutable stored definitions, never a live hydrated replacement or a session DTO.
+    // v2 avoids legacy entries whose questions were refreshed in place. Auth/publication
+    // checks remain at the caller; this internal key never grants access.
+    const key=`script:def:v2:${versionId}`;
+    const serialized=await this.loads.run(versionId,async()=>{
+      const cached=await redisService.get(key);
+      if(cached){try{JSON.parse(cached);return cached;}catch{/* Replace a corrupt cache entry. */}}
+      const row=await prisma.lessonScriptVersion.findUnique({where:{id:versionId},select:{definition:true}});
+      if(!row)return null;
+      const value=JSON.stringify(row.definition);await redisService.set(key,value,3600);return value;
+    });
+    if(!serialized)return null;
+    // A separate object per caller prevents mastery overlays from changing another response.
+    return questionHydrationService.hydrateScriptDefinition(this.normalizeScriptDefinition(JSON.parse(serialized),fallbackTitle),{preferPinned:true});
   }
 
   public async invalidateScriptCache(slug?: string, versionId?: string): Promise<void> {
@@ -205,6 +172,7 @@ export class ScriptCacheService {
     }
     if (versionId) {
       await redisService.del(`script:def:${versionId}`);
+      await redisService.del(`script:def:v2:${versionId}`);
     }
   }
 

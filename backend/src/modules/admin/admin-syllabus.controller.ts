@@ -1,13 +1,15 @@
+import { publicFailure } from '../../security/public-error';
 import { Request, Response } from 'express';
 import { AdminSyllabusService } from './admin-syllabus.service';
 
 export class AdminSyllabusController {
+  // CACHE_CANDIDATE ref=C18 scope=admin-role layer=redis ttl=10-30s owner=curriculum
   public static async getSyllabus(_req: Request, res: Response): Promise<void> {
     try {
       const data = await AdminSyllabusService.getFullSyllabus();
       res.status(200).json({ success: true, data });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -17,7 +19,7 @@ export class AdminSyllabusController {
       const subject = await AdminSyllabusService.createSubject(req.body);
       res.status(201).json({ success: true, data: subject });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -26,7 +28,7 @@ export class AdminSyllabusController {
       const subject = await AdminSyllabusService.updateSubject(req.params.id as string, req.body);
       res.status(200).json({ success: true, data: subject });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -46,7 +48,7 @@ export class AdminSyllabusController {
       const topic = await AdminSyllabusService.createTopic(req.body);
       res.status(201).json({ success: true, data: topic });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -55,7 +57,7 @@ export class AdminSyllabusController {
       const topic = await AdminSyllabusService.updateTopic(req.params.id as string, req.body);
       res.status(200).json({ success: true, data: topic });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -75,7 +77,7 @@ export class AdminSyllabusController {
       const subtopic = await AdminSyllabusService.createSubtopic(req.body);
       res.status(201).json({ success: true, data: subtopic });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -87,7 +89,7 @@ export class AdminSyllabusController {
       );
       res.status(201).json({ success: true, data: subtopics });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -96,7 +98,7 @@ export class AdminSyllabusController {
       const subtopic = await AdminSyllabusService.updateSubtopic(req.params.id as string, req.body);
       res.status(200).json({ success: true, data: subtopic });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -115,9 +117,7 @@ export class AdminSyllabusController {
     try {
       const data = await AdminSyllabusService.getScriptDetails(req.params.id as string);
       res.status(200).json({ success: true, data });
-    } catch (err: any) {
-      res.status(404).json({ success: false, message: err.message });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   public static async createScript(req: Request, res: Response): Promise<void> {
@@ -125,7 +125,7 @@ export class AdminSyllabusController {
       const data = await AdminSyllabusService.createScript(req.body);
       res.status(201).json({ success: true, data });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -134,7 +134,7 @@ export class AdminSyllabusController {
       const data = await AdminSyllabusService.updateScript(req.params.id as string, req.body);
       res.status(200).json({ success: true, data });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -143,7 +143,7 @@ export class AdminSyllabusController {
       const data = await AdminSyllabusService.importScript(req.body);
       res.status(201).json({ success: true, data });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -160,7 +160,7 @@ export class AdminSyllabusController {
       await AdminSyllabusService.reorderTopics(subjectId, topicIds);
       res.status(200).json({ success: true, message: 'Topics reordered successfully' });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -175,7 +175,7 @@ export class AdminSyllabusController {
       await AdminSyllabusService.reorderSubtopics(topicId, subtopicIds);
       res.status(200).json({ success: true, message: 'Subtopics reordered successfully' });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -192,7 +192,7 @@ export class AdminSyllabusController {
       const link = await AdminSyllabusService.linkTopicToSubject(subjectId, topicId);
       res.status(200).json({ success: true, data: link });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -203,7 +203,7 @@ export class AdminSyllabusController {
       const result = await AdminSyllabusService.unlinkTopicFromSubject(subjectId, topicId);
       res.status(200).json(result);
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -218,7 +218,7 @@ export class AdminSyllabusController {
       const link = await AdminSyllabusService.linkSubtopicToTopic(topicId, subtopicId);
       res.status(200).json({ success: true, data: link });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -229,7 +229,7 @@ export class AdminSyllabusController {
       const result = await AdminSyllabusService.unlinkSubtopicFromTopic(topicId, subtopicId);
       res.status(200).json(result);
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -238,7 +238,7 @@ export class AdminSyllabusController {
       const data = await AdminSyllabusService.getAllAvailableTopics();
       res.status(200).json({ success: true, data });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -247,7 +247,7 @@ export class AdminSyllabusController {
       const data = await AdminSyllabusService.getAllAvailableSubtopics();
       res.status(200).json({ success: true, data });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 }

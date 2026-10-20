@@ -1,4 +1,5 @@
-import { prisma } from '../../../config/prisma';
+import { log, safeError } from '../../../observability/logger';
+import { prisma } from './book-run';
 import { geminiProvider } from '../../ai/gemini.provider';
 import { pdfParserService } from './pdf-parser.service';
 import {
@@ -26,7 +27,7 @@ export class TopicDiscoveryService {
    * and creates candidate Topic records in PostgreSQL.
    */
   public async discoverTopics(bookId: string): Promise<DetectedTopicCandidate[]> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of discoverTopics');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of discoverTopics');
 
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
@@ -37,7 +38,7 @@ export class TopicDiscoveryService {
       throw new Error(`BookSource not found with ID: ${bookId}`);
     }
 
-    console.log(`[TopicDiscoveryService] Discovering topics for book "${bookSource.title}" (${bookId})...`);
+    log('info','topic_discovery_service.discoverTopics.info');
 
     await prisma.bookSource.update({
       where: { id: bookId },
@@ -60,11 +61,11 @@ export class TopicDiscoveryService {
     if (tocPages.length > 0) {
       const startToc = tocPages[0];
       const endToc = Math.min(tocPages[tocPages.length - 1] + 3, maxScanPages);
-      console.log(`[TopicDiscoveryService] Detected Table of Contents on pages ${startToc} to ${endToc}.`);
+      log('info','topic_discovery_service.discoverTopics.info');
       sourceExcerpt = await pdfParserService.getPagesText(bookId, startToc, endToc);
     } else {
       // Fallback: Sample headings from first 30 pages
-      console.log('[TopicDiscoveryService] No explicit TOC found in front-matter. Using sample chapter headings.');
+      log('info','topic_discovery_service.discoverTopics.info');
       sourceExcerpt = await pdfParserService.getPagesText(bookId, 1, Math.min(25, bookSource.totalPages));
     }
 
@@ -94,7 +95,7 @@ Extract all major topics / chapters from this book according to the instructions
     }
 
     const topics = result.topics;
-    console.log(`[TopicDiscoveryService] Discovered ${topics.length} topics for book "${bookSource.title}".`);
+    log('info','topic_discovery_service.discoverTopics.info');
 
     // 3. Persist detected topics into BookSource metadata and create draft Topics in PostgreSQL
     const metadata = (bookSource.metadata as any) || {};

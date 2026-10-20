@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { z } from 'zod';
+import { durationMs } from '../../utils/jwt';
 import { ENV } from '../../config/env';
 
 export interface AdminAuthenticatedRequest extends Request {
@@ -11,19 +13,20 @@ export interface AdminAuthenticatedRequest extends Request {
 
 export function signAdminToken(username: string): string {
   return jwt.sign(
-    { username, role: 'ADMIN' },
+    { username, role: 'ADMIN', purpose: 'admin' },
     ENV.ADMIN_JWT_SECRET,
-    { expiresIn: '24h' }
+    { algorithm: 'HS256', expiresIn: durationMs(ENV.ADMIN_JWT_EXPIRATION) / 1000, issuer: ENV.JWT_ISSUER, audience: 'aptiqu-admin' }
   );
 }
 
 export function verifyAdminToken(token: string): { username: string; role: string } {
-  try {
-    return jwt.verify(token, ENV.ADMIN_JWT_SECRET) as { username: string; role: string };
-  } catch (err) {
-    // Fallback to JWT_ACCESS_SECRET if secret was shared
-    return jwt.verify(token, ENV.JWT_ACCESS_SECRET) as { username: string; role: string };
-  }
+  return z.object({
+    username: z.literal(ENV.ADMIN_USERNAME), role: z.literal('ADMIN'), purpose: z.literal('admin'),
+    iat: z.number().int().nonnegative().max(Math.floor(Date.now()/1000)), exp: z.number().int().positive(),
+    iss: z.literal(ENV.JWT_ISSUER), aud: z.literal('aptiqu-admin'),
+  }).strict().refine(p => p.exp > p.iat).parse(jwt.verify(token, ENV.ADMIN_JWT_SECRET, {
+    algorithms: ['HS256'], issuer: ENV.JWT_ISSUER, audience: 'aptiqu-admin',
+  }));
 }
 
 export function authenticateAdmin(

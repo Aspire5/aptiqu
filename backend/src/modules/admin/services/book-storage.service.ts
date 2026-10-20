@@ -1,3 +1,4 @@
+import { ENV } from '../../../config/env';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
@@ -11,15 +12,8 @@ export class BookStorageService {
   private readonly tempDir: string;
 
   private constructor() {
-    this.storageBaseDir = path.resolve(process.cwd(), 'storage/books');
-    this.tempDir = path.resolve(process.cwd(), 'storage/temp');
-
-    if (!fs.existsSync(this.storageBaseDir)) {
-      fs.mkdirSync(this.storageBaseDir, { recursive: true });
-    }
-    if (!fs.existsSync(this.tempDir)) {
-      fs.mkdirSync(this.tempDir, { recursive: true });
-    }
+    this.storageBaseDir = ENV.BOOK_STORAGE_ROOT;
+    this.tempDir = ENV.BOOK_TEMP_ROOT;
   }
 
   public static getInstance(): BookStorageService {
@@ -165,8 +159,9 @@ export class BookStorageService {
     // 6. Move file to permanent storage: storage/books/{bookId}/original.pdf
     const bookDir = this.getStorageDirForBook(result.bookSource.id);
     const permanentPath = path.join(bookDir, 'original.pdf');
-    fs.copyFileSync(tempFilePath, permanentPath);
-    fs.unlinkSync(tempFilePath);
+    await fs.promises.copyFile(tempFilePath,permanentPath);
+    await fs.promises.chmod(permanentPath,0o600);
+    await fs.promises.unlink(tempFilePath);
 
     // Update permanent storage path
     const updatedBookSource = await prisma.bookSource.update({

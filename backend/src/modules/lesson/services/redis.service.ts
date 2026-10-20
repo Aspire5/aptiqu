@@ -1,3 +1,4 @@
+import { BoundedCache } from './bounded-cache';
 import Redis from 'ioredis';
 import { ENV } from '../../../config/env';
 
@@ -5,11 +6,10 @@ export class RedisService {
   private static instance: RedisService;
   private client: Redis | null = null;
   private isConnected = false;
-  private memoryFallback = new Map<string, { value: string; expiresAt: number }>();
+  private memoryFallback = new BoundedCache(ENV.LOCAL_CACHE_MAX_ENTRIES,ENV.LOCAL_CACHE_MAX_BYTES);
 
-  private constructor() {
-    this.init();
-  }
+  private constructor() {}
+  private started = false;
 
   public static getInstance(): RedisService {
     if (!RedisService.instance) {
@@ -19,21 +19,24 @@ export class RedisService {
   }
 
   private init() {
+    if(this.started)return;
+    this.started=true;
     try {
       this.client = new Redis(ENV.REDIS_URL, {
         maxRetriesPerRequest: 1,
         enableOfflineQueue: false,
-        connectTimeout: 2000,
+        connectTimeout: 2000, commandTimeout:ENV.READINESS_TIMEOUT_MS??3000,
         retryStrategy: (times) => {
           if (times > 3) return 30000;
           return Math.min(times * 1000, 5000);
         },
       });
 
-      this.client.on('connect', () => {
+      this.client.on('ready', () => {
         this.isConnected = true;
       });
 
+      this.client.on('close',()=>{this.isConnected=false;});
       this.client.on('error', (_err) => {
         this.isConnected = false;
       });
@@ -42,15 +45,31 @@ export class RedisService {
     }
   }
 
+  public async connect():Promise<void> {
+    this.init();const client=this.client;
+    if(!client)throw new Error('Redis unavailable');
+    if(client.status==='ready')return;
+    await new Promise<void>((resolve,reject)=>{
+      const finish=(error?:Error)=>{clearTimeout(timer);client.off('ready',ready);client.off('error',fail);error?reject(error):resolve();};
+      const ready=()=>finish(),fail=()=>finish(new Error('Redis unavailable'));
+      const timer=setTimeout(()=>finish(new Error('Redis connection timed out')),3000);
+      client.once('ready',ready);client.once('error',fail);
+    });
+  }
+  public async close(){this.client?.disconnect();this.client=null;this.isConnected=false;this.started=false;this.memoryFallback.clear();}
+
   public getClient(): Redis | null {
+    this.init();
     return this.client;
   }
 
   public getIsConnected(): boolean {
-    return this.isConnected;
+    this.init();
+    return this.client?.status==='ready';
   }
 
   public async get(key: string): Promise<string | null> {
+    this.init();
     if (this.isConnected && this.client) {
       try {
         return await this.client.get(key);
@@ -59,16 +78,11 @@ export class RedisService {
       }
     }
 
-    const item = this.memoryFallback.get(key);
-    if (!item) return null;
-    if (item.expiresAt > 0 && Date.now() > item.expiresAt) {
-      this.memoryFallback.delete(key);
-      return null;
-    }
-    return item.value;
+    return this.memoryFallback.get(key);
   }
 
   public async set(key: string, value: string, ttlSeconds?: number): Promise<void> {
+    this.init();
     if (this.isConnected && this.client) {
       try {
         if (ttlSeconds && ttlSeconds > 0) {
@@ -82,39 +96,29 @@ export class RedisService {
       }
     }
 
-    const expiresAt = ttlSeconds && ttlSeconds > 0 ? Date.now() + ttlSeconds * 1000 : 0;
-    this.memoryFallback.set(key, { value, expiresAt });
+    this.memoryFallback.set(key,value,ttlSeconds);
   }
 
   public async setNx(key: string, value: string, ttlMs: number): Promise<boolean> {
     return this.setNxToken(key, value, ttlMs);
   }
 
-  /**
-   * Distributed lock acquisition with unique token.
-   * If Redis is disconnected, falls back to in-memory lock.
-   */
-  public async setNxToken(key: string, token: string, ttlMs: number): Promise<boolean> {
-    if (this.isConnected && this.client) {
-      try {
-        const res = await this.client.set(key, token, 'PX', ttlMs, 'NX');
-        return res === 'OK';
-      } catch {
-        // Fallback to memory
-      }
-    }
-    const existing = this.memoryFallback.get(key);
-    if (!existing || (existing.expiresAt > 0 && Date.now() > existing.expiresAt)) {
-      this.memoryFallback.set(key, { value: token, expiresAt: Date.now() + ttlMs });
-      return true;
-    }
-    return false;
+  // Locks fail closed; only ordinary cache reads/writes have a bounded fallback.
+  public async setNxToken(key:string,token:string,ttlMs:number):Promise<boolean> {
+    this.init();
+    if(this.client?.status!=='ready')return false;
+    try{return await this.client.set(key,token,'PX',ttlMs,'NX')==='OK';}catch{return false;}
+  }
+  public async releaseNxToken(key:string,token:string):Promise<boolean> {
+    if(this.client?.status!=='ready')return false;
+    try{return await this.client.eval("if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('DEL',KEYS[1]) else return 0 end",1,key,token)===1;}catch{return false;}
   }
 
   /**
    * Executes a Lua script atomically against Redis.
    */
   public async evalLua(script: string, keys: string[], args: string[]): Promise<any> {
+    this.init();
     if (this.isConnected && this.client) {
       try {
         return await this.client.eval(script, keys.length, ...keys, ...args);
@@ -126,6 +130,7 @@ export class RedisService {
   }
 
   public async del(key: string): Promise<void> {
+    this.init();
     if (this.isConnected && this.client) {
       try {
         await this.client.del(key);
@@ -137,6 +142,7 @@ export class RedisService {
   }
 
   public async delByPattern(pattern: string): Promise<void> {
+    this.init();
     if (this.isConnected && this.client) {
       try {
         const stream = this.client.scanStream({ match: pattern, count: 100 });

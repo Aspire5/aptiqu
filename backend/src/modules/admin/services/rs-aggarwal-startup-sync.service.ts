@@ -1,3 +1,5 @@
+import { ENV } from '../../../config/env';
+import { log, safeError } from '../../../observability/logger';
 import { readFile, readdir } from 'fs/promises';
 import path from 'path';
 import { prisma } from '../../../config/prisma';
@@ -6,7 +8,7 @@ import { scriptCacheService } from '../../lesson/services/script-cache.service';
 import { AdminSyllabusService } from '../admin-syllabus.service';
 
 const SUBJECT_NAME = 'RS Aggarwal - Quantitative Aptitude';
-const SUBTOPICS_DIR = path.resolve(__dirname, '../../../../../books/SubTopics');
+const SUBTOPICS_DIR = ENV.CURRICULUM_SOURCE_ROOT;
 
 // Topic descriptions are shown to students. Keep them short and useful.
 const TOPICS: Record<number, { name: string; description: string }> = {
@@ -39,7 +41,7 @@ const normalizedName = (value: string) => value.toLowerCase().replace(/[^a-z0-9]
 export async function syncRsAggarwalOnStartup(): Promise<void> {
   const subject = await prisma.subject.findFirst({ where: { name: SUBJECT_NAME, isActive: true } });
   if (!subject) {
-    console.log('[RS Aggarwal sync] Subject is absent; skipping.');
+    log('info','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.info');
     return;
   }
 
@@ -49,7 +51,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
       .filter((entry) => entry.isDirectory() && /^SBT-RSA-\d+-/.test(entry.name))
       .sort((a, b) => Number(a.name.match(/^SBT-RSA-(\d+)-/)![1]) - Number(b.name.match(/^SBT-RSA-(\d+)-/)![1]));
   } catch (error: any) {
-    console.warn(`[RS Aggarwal sync] Cannot read ${SUBTOPICS_DIR}: ${error.message}`);
+    log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn',safeError(error));
     return;
   }
 
@@ -61,7 +63,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
       const chapter = Number(folder.name.match(/^SBT-RSA-(\d+)-/)![1]);
       const details = TOPICS[chapter];
       if (!details) {
-        console.warn(`[RS Aggarwal sync] No student-facing topic metadata for ${folder.name}; skipping.`);
+        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn');
         continue;
       }
 
@@ -95,7 +97,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
         changed = true;
       }
       if (!topic.isActive) {
-        console.warn(`[RS Aggarwal sync] Topic ${details.name} is inactive; leaving it untouched.`);
+        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn');
         continue;
       }
       const reorderedLinks = await prisma.subjectTopic.updateMany({
@@ -113,7 +115,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
         }
       } catch (error: any) {
         sourceSubtopics = null;
-        console.warn(`[RS Aggarwal sync] ${folder.name}/subtopics.json unavailable or invalid: ${error.message}`);
+        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn',safeError(error));
       }
 
       if (!sourceSubtopics && chapter > 2) continue;
@@ -139,7 +141,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
             changed = true;
           }
         } catch (error: any) {
-          console.error(`[RS Aggarwal sync] Subtopics for ${details.name}: ${error.message}`);
+          log('error','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.error',safeError(error));
           continue;
         }
       }
@@ -153,7 +155,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
       try {
         scriptFiles = (await readdir(scriptDir)).filter((name) => name.endsWith('.json') && !name.startsWith('_'));
       } catch (error: any) {
-        console.warn(`[RS Aggarwal sync] Cannot read scripts for ${details.name}: ${error.message}`);
+        log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn',safeError(error));
         continue;
       }
 
@@ -162,7 +164,7 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
         const approvedKeys = new Set(sourceSubtopics.map((item) => item.externalSubTopicKey));
         for (const key of approvedKeys) {
           if (key && !scriptFiles.includes(`${key}.json`)) {
-            console.warn(`[RS Aggarwal sync] Missing script for ${details.name} subtopic ${key}.`);
+            log('warn','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.warn');
           }
         }
         scriptFiles = scriptFiles.filter((name) => approvedKeys.has(path.parse(name).name));
@@ -216,14 +218,14 @@ export async function syncRsAggarwalOnStartup(): Promise<void> {
           changed = true;
         } catch (error: any) {
           counts.failedScripts++;
-          console.error(`[RS Aggarwal sync] ${folder.name}/Scripts/${fileName}: ${error.message}`);
+          log('error','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.error',safeError(error));
         }
       }
     } catch (error: any) {
-      console.error(`[RS Aggarwal sync] ${folder.name}: ${error.message}`);
+      log('error','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.error',safeError(error));
     }
   }
 
   if (changed) await roadmapProgressionService.syncRoadmapWithSyllabus(undefined, true);
-  console.log(`[RS Aggarwal sync] Created ${counts.topics} topics, processed ${counts.subtopics} subtopics, imported ${counts.scripts} scripts, skipped ${counts.skippedScripts} existing scripts, failed ${counts.failedScripts} scripts.`);
+  log('info','rs_aggarwal_startup_sync_service.syncRsAggarwalOnStartup.info');
 }

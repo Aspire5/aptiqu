@@ -1,3 +1,4 @@
+import '../../../security/tests/legacy-local-guard';
 import path from 'path';
 import fs from 'fs';
 import { prisma } from '../../../config/prisma';

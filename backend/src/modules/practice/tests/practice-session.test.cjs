@@ -1,16 +1,17 @@
 const { loader } = require('../../pvp/tests/pvp-test-fixture.cjs');
 const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');const ts=require('typescript');
-function setup({answered=false,replaySourceType,replaySourceId,matchStatus='COMPLETED',parent,questionSnapshot,ratingMode,disposition}={}){
+function setup({answered=false,replaySourceType,replaySourceId,matchStatus='COMPLETED',parent,questionSnapshot,ratingMode,disposition,friendly=false}={}){
  const questions=Array.from({length:10},(_,i)=>({id:'sq'+i,questionId:'q'+i,isAnswered:i===0&&answered,isCorrect:false,responseTimeMs:null,question:{id:'q'+i,prompt:'Add 2 and 2',options:[{id:'A',text:'3'},{id:'B',text:'4'},{id:'C',text:'5'},{id:'D',text:'6'}],correctAnswer:'B',explanation:'2 + 2 = 4.',method:'Add.',alternativeExplanation:'Check 4 - 2 = 2.',preferredSolution:'BOOK',preferredReason:'Simple addition.',hints:[],subtopicId:'s1',difficulty:'EASY'}}));
- const session={id:'session',userId:'user',status:'ACTIVE',currentIndex:0,totalQuestions:10,questions,isReplay:true,totalTimeMs:0,correctCount:0,replaySourceType,replaySourceId};
+ questions.forEach((q,i)=>q.sequence=i+1);
+ const session={isFriendlyDuel:friendly,friendlyDuelId:friendly?'duel':undefined,friendlyDuel:friendly?{status:'ACTIVE',questionSnapshot:Object.fromEntries(questions.map(q=>[q.questionId,q.question]))}:undefined,id:'session',userId:'user',status:'ACTIVE',currentIndex:0,totalQuestions:10,questions,isReplay:true,totalTimeMs:0,correctCount:0,replaySourceType,replaySourceId};
  const writes=[], lookups=[];let transactions=0,createdSession;
  const tx={$queryRaw:async()=>[],practiceSession:{findUnique:async()=>session,update:async args=>{writes.push(args);return session}},practiceSessionQuestion:{findUnique:async()=>({isAnswered:answered}),update:async args=>{Object.assign(questions[0],args.data);return questions[0]},findMany:async()=>questions}};
  const pvpMatch={findUnique:async()=>({id:'match',status:matchStatus,questionSnapshot,ratingMode,settlement:disposition?{disposition}:null,players:[{userId:'user'}],questionSet:{setQuestions:questions.map(q=>({question:q.question,questionId:q.questionId}))}})};
- const prisma={pvpMatch,practiceSession:{findFirst:async args=>{lookups.push(args);return args.where.userId==='other'?null:args.where.id==='parent'?parent:args.where.id===createdSession?.id?createdSession:session}},$transaction:async fn=>{transactions++;return fn(tx)}};
+ const prisma={pvpMatch,practiceSession:{updateMany:async({data})=>{Object.assign(session,data);return {count:1}},findFirst:async args=>{lookups.push(args);return args.where.userId==='other'?null:args.where.id==='parent'?parent:args.where.id===createdSession?.id?createdSession:session}},$transaction:async fn=>{transactions++;return fn(tx)}};
  tx.pvpMatch=pvpMatch;tx.practiceSession.findFirst=prisma.practiceSession.findFirst;
  tx.practiceSession.create=async({data})=>{writes.push({kind:'createReplay',data});return createdSession={...session,...data,id:'created-replay'}};
  tx.practiceSessionQuestion.create=async({data})=>({id:'created-question',...data});
- const deps={'../../pvp/ranked/ranked-questions':loader({})(path.join(__dirname,'../../pvp/ranked/ranked-questions.ts')),'../../../config/prisma':{prisma},'./practice-selection.service':{practiceSelectionService:{}},'../../xp/xp.service':{XpService:{}},'../../xp/xp.policy':{XpPolicy:{}}};
+ const deps={'../../../security/errors':loader({})(path.join(__dirname,'../../../security/errors.ts')),'../../pvp/ranked/ranked-questions':loader({})(path.join(__dirname,'../../pvp/ranked/ranked-questions.ts')),'../../../config/prisma':{prisma},'./practice-selection.service':{practiceSelectionService:{}},'../../xp/xp.service':{XpService:{}},'../../xp/xp.policy':{XpPolicy:{}}};
  const code=ts.transpileModule(fs.readFileSync(path.join(__dirname,'../services/practice-session.service.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const exports={};vm.runInNewContext(code,{exports,require:id=>deps[id],console,Date,Set,Math});
  return {service:exports.practiceSessionService,session,writes,lookups,transactions:()=>transactions};
 }
@@ -64,4 +65,10 @@ test('completed-looking rated matches without committed settlement cannot create
  await assert.rejects(()=>s.service.getSession('session','user'),/still finalizing/);
  await assert.rejects(()=>s.service.replayPvpMatch('user','match'),/still finalizing/);
  assert.equal(s.transactions(),0);
+});
+
+test('friendly duel reveals only the timed current question and blocks premature replay ancestry',async()=>{
+ const s=setup({friendly:true});const first=await s.service.getSession('session','user');assert.equal(first.questions.length,1);assert.ok(s.session.questionStartedAt);assert.equal(first.questions[0].question.correctAnswer,undefined);
+ await assert.rejects(()=>s.service.replayPracticeSession('user','session'),/Finish the friendly duel/);
+ const chain=setup({replaySourceType:'PRACTICE',replaySourceId:'parent',parent:{isFriendlyDuel:true,friendlyDuel:{status:'ACTIVE'}}});await assert.rejects(()=>chain.service.getSession('session','user'),/Finish the friendly duel/);
 });

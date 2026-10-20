@@ -1,3 +1,6 @@
+import { log, safeError } from '../../observability/logger';
+import { Prisma, GameStats } from '@prisma/client';
+import { PublicError } from '../../security/errors';
 import { prisma } from '../../config/prisma';
 import { dailyChallengeGenerationService } from '../ai/services/daily-challenge-generation.service';
 import { XpService } from '../xp/xp.service';
@@ -11,6 +14,8 @@ export interface TierInfo {
 }
 
 export class DailyChallengeService {
+  constructor(private readonly db = prisma, private readonly now: () => Date = () => new Date()) {}
+
   private static instance: DailyChallengeService;
 
   public static getInstance(): DailyChallengeService {
@@ -25,7 +30,7 @@ export class DailyChallengeService {
    * Daily streak day cycle starts and ends at 12:00 AM IST sharp.
    */
   public getIstDates(): { todayDate: string; yesterdayDate: string; msUntilMidnight: number; expiresAt: string } {
-    const now = new Date();
+    const now = this.now();
     // Using Intl.DateTimeFormat with Asia/Kolkata to ensure exact IST date regardless of host system timezone
     const formatter = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Kolkata',
@@ -65,17 +70,17 @@ export class DailyChallengeService {
    * 3. Lazy-load and avoid unnecessary AI calls where tiers have no users.
    */
   public async runMidnightIstCron() {
-    console.log('[DailyStreakCron] Running midnight IST streak evaluation and maintenance...');
+    log('info','daily_challenge_service.runMidnightIstCron.info');
     try {
       const { todayDate, yesterdayDate } = this.getIstDates();
 
       // 1. Reset streak to 0 for users who did not complete yesterday's daily challenge
       // In IST, at 00:00 IST todayDate, users whose lastDailyDate is NOT yesterdayDate missed it.
-      const resetResult = await prisma.gameStats.updateMany({
+      const resetResult = await this.db.gameStats.updateMany({
         where: {
           streak: { gte: 1 },
           NOT: {
-            lastDailyDate: yesterdayDate,
+            lastDailyDate: {in:[yesterdayDate,todayDate]},
           },
         },
         data: {
@@ -83,12 +88,10 @@ export class DailyChallengeService {
         },
       });
 
-      console.log(
-        `[DailyStreakCron] Reset streak to 0 for ${resetResult.count} users who missed the daily challenge on ${yesterdayDate}.`
-      );
+      log('info','daily_challenge_service.runMidnightIstCron.info');
 
       // Expire any incomplete daily challenge participations from previous days
-      await prisma.dailyChallengeParticipation.updateMany({
+      await this.db.dailyChallengeParticipation.updateMany({
         where: {
           status: 'IN_PROGRESS',
           dateString: { not: todayDate },
@@ -100,54 +103,52 @@ export class DailyChallengeService {
 
       // 2. Check user distribution by streak tiers
       const [tier1Users, tier2Users, tier3Users] = await Promise.all([
-        prisma.gameStats.count({
+        this.db.gameStats.count({
           where: { streak: { gte: 0, lte: 9 } },
         }),
-        prisma.gameStats.count({
+        this.db.gameStats.count({
           where: { streak: { gte: 10, lte: 99 } },
         }),
-        prisma.gameStats.count({
+        this.db.gameStats.count({
           where: { streak: { gte: 100 } },
         }),
       ]);
 
-      console.log(
-        `[DailyStreakCron] User tier distribution for ${todayDate}: Tier 1 (0-9)=${tier1Users}, Tier 2 (10-99)=${tier2Users}, Tier 3 (100+)=${tier3Users}`
-      );
+      log('info','daily_challenge_service.runMidnightIstCron.info');
 
       // 3. Lazy-generate scripts only if active users exist in that tier (to avoid unnecessary AI API calls)
       if (tier1Users > 0) {
-        console.log(`[DailyStreakCron] Pre-generating Tier 1 Daily Script for ${todayDate}...`);
+        log('info','daily_challenge_service.runMidnightIstCron.info');
         try {
           await dailyChallengeGenerationService.getOrGenerateDailyScript(todayDate, 1);
         } catch (err) {
-          console.error(`[DailyStreakCron] Error generating Tier 1 script:`, err);
+          log('error','daily_challenge_service.runMidnightIstCron.error',safeError(err));
         }
       }
 
       if (tier2Users > 0) {
-        console.log(`[DailyStreakCron] Pre-generating Tier 2 Daily Script for ${todayDate}...`);
+        log('info','daily_challenge_service.runMidnightIstCron.info');
         try {
           await dailyChallengeGenerationService.getOrGenerateDailyScript(todayDate, 2);
         } catch (err) {
-          console.error(`[DailyStreakCron] Error generating Tier 2 script:`, err);
+          log('error','daily_challenge_service.runMidnightIstCron.error',safeError(err));
         }
       }
 
       if (tier3Users > 0) {
-        console.log(`[DailyStreakCron] Pre-generating Tier 3 Daily Script for ${todayDate}...`);
+        log('info','daily_challenge_service.runMidnightIstCron.info');
         try {
           await dailyChallengeGenerationService.getOrGenerateDailyScript(todayDate, 3);
         } catch (err) {
-          console.error(`[DailyStreakCron] Error generating Tier 3 script:`, err);
+          log('error','daily_challenge_service.runMidnightIstCron.error',safeError(err));
         }
       } else {
-        console.log(`[DailyStreakCron] 0 users in Tier 3 (100+ streak). Skipping Tier 3 script generation to save AI API costs.`);
+        log('info','daily_challenge_service.runMidnightIstCron.info');
       }
 
-      console.log(`[DailyStreakCron] Completed midnight IST challenge rollover successfully.`);
+      log('info','daily_challenge_service.runMidnightIstCron.info');
     } catch (error) {
-      console.error('[DailyStreakCron] Error during midnight IST cron execution:', error);
+      log('error','daily_challenge_service.runMidnightIstCron.error',safeError(error));
     }
   }
 
@@ -186,15 +187,19 @@ export class DailyChallengeService {
    * Authoritatively evaluates and synchronizes the user's streak status.
    * If user missed yesterday, streak resets to 0 (starting streak is 0).
    */
-  public async syncUserStreak(userId: string) {
+  public async syncUserStreak(userId: string, db?: Prisma.TransactionClient): Promise<{stats:GameStats;currentStreak:number;highestStreak:number;isCompletedToday:boolean;isDue:boolean;canAttempt:boolean;tierInfo:TierInfo;todayDate:string;msUntilMidnight:number;expiresAt:string}> {
+    if (!db) return this.db.$transaction(async tx => {
+      await XpService.getInstance().lockProgress(tx,userId);
+      return this.syncUserStreak(userId,tx);
+    });
     const { todayDate, yesterdayDate, msUntilMidnight, expiresAt } = this.getIstDates();
 
-    let stats = await prisma.gameStats.findUnique({
+    let stats = await db.gameStats.findUnique({
       where: { userId },
     });
 
     if (!stats) {
-      stats = await prisma.gameStats.create({
+      stats = await db.gameStats.create({
         data: {
           userId,
           streak: 0,
@@ -204,7 +209,7 @@ export class DailyChallengeService {
       });
     }
 
-    const todayParticipation = await prisma.dailyChallengeParticipation.findUnique({
+    const todayParticipation = await db.dailyChallengeParticipation.findUnique({
       where: {
         userId_dateString: {
           userId,
@@ -240,7 +245,7 @@ export class DailyChallengeService {
     } else {
       // Missed yesterday! Streak is broken -> reset to 0
       if (stats.streak > 0) {
-        stats = await prisma.gameStats.update({
+        stats = await db.gameStats.update({
           where: { userId },
           data: { streak: 0 },
         });
@@ -274,7 +279,7 @@ export class DailyChallengeService {
     const { msUntilMidnight, expiresAt } = this.getIstDates();
 
     // Check if user has an existing participation record for today
-    const todayParticipation = await prisma.dailyChallengeParticipation.findUnique({
+    const todayParticipation = await this.db.dailyChallengeParticipation.findUnique({
       where: {
         userId_dateString: {
           userId,
@@ -333,212 +338,87 @@ export class DailyChallengeService {
    * Lazily triggers AI generation if today's script for this tier does not exist yet.
    */
   public async startDailyChallenge(userId: string) {
-    const sync = await this.syncUserStreak(userId);
-
-    // If already completed today, block starting a new one
-    if (sync.isCompletedToday) {
-      throw new Error('Daily Challenge already completed for today. Come back tomorrow!');
-    }
-
-    // Check if an existing participation is already in progress
-    let participation = await prisma.dailyChallengeParticipation.findUnique({
-      where: {
-        userId_dateString: {
-          userId,
-          dateString: sync.todayDate,
-        },
-      },
-      include: {
-        script: {
-          include: {
-            questions: {
-              include: { question: true },
-              orderBy: { sequence: 'asc' },
-            },
-          },
-        },
-        answers: {
-          orderBy: { sequence: 'asc' },
-        },
-      },
-    });
-
-    if (participation && participation.status !== 'IN_PROGRESS') {
-      throw new Error('Daily Challenge already attempted for today. Come back tomorrow!');
-    }
-
-    if (!participation) {
-      // 1. Fetch today's pre-warmed tier script from DB (never block user HTTP request on Gemini)
-      const script = await prisma.dailyChallengeScript.findUnique({
-        where: {
-          dateString_tier: {
-            dateString: sync.todayDate,
-            tier: sync.tierInfo.tier,
-          },
-        },
-        include: {
-          questions: {
-            include: { question: true },
-            orderBy: { sequence: 'asc' },
-          },
-        },
-      });
-
-      if (!script) {
-        // Enqueue emergency background generation without blocking user HTTP request
-        contentGenQueue.add('prewarm-daily-challenge', { targetDate: sync.todayDate }, {
-          jobId: `emergency-daily-${sync.todayDate}`,
-          removeOnComplete: true,
-        }).catch((err) => {
-          console.warn('[DailyChallenge] Failed to enqueue emergency prewarm job:', err);
+    try {
+      return await this.db.$transaction(async tx => {
+        await XpService.getInstance().lockProgress(tx,userId);
+        const sync = await this.syncUserStreak(userId,tx);
+        const include = {script:{include:{questions:{include:{question:true},orderBy:{sequence:'asc' as const}}}},answers:{orderBy:{sequence:'asc' as const}}};
+        let participation = await tx.dailyChallengeParticipation.findUnique({where:{userId_dateString:{userId,dateString:sync.todayDate}},include});
+        if (participation && participation.status !== 'IN_PROGRESS' || !participation && !sync.canAttempt) throw new PublicError('Daily Challenge already attempted today','DAILY_CLOSED',409);
+        if (!participation) {
+          const script = await tx.dailyChallengeScript.findUnique({where:{dateString_tier:{dateString:sync.todayDate,tier:sync.tierInfo.tier}},include:{questions:{include:{question:{include:{subject:true,topic:true,subtopic:true}}}}}});
+          if (!script) throw new PublicError("Today's Daily Challenge is being prepared. Please retry later.",'DAILY_CHALLENGE_PREPARING',503);
+          if (script.questions.length !== script.questionCount || script.questions.some(({question:q}) => q.status !== 'PUBLISHED' || !q.subject.isActive || !q.topic.isActive || !q.subtopic.isActive)) throw new PublicError('Daily Challenge content is unavailable','DAILY_UNAVAILABLE',503);
+          participation = await tx.dailyChallengeParticipation.create({data:{userId,scriptId:script.id,dateString:sync.todayDate,totalQuestions:script.questionCount,streakAtAttempt:sync.currentStreak},include});
+        }
+        const sequence = participation.answers.length + 1;
+        const current = participation.script.questions.find(q => q.sequence === sequence);
+        if (!current) throw new PublicError('Daily question unavailable','DAILY_UNAVAILABLE',503);
+        if (!participation.questionStartedAt) {
+          const startedAt = this.now();
+          const deadline = new Date(Math.min(startedAt.getTime()+current.timeLimit*1000,new Date(sync.expiresAt).getTime()));
+          participation = {...participation,...await tx.dailyChallengeParticipation.update({where:{id:participation.id},data:{questionStartedAt:startedAt,questionDeadline:deadline}})};
+        }
+        const answers = new Map(participation.answers.map(a => [a.sequence,a]));
+        const questions = participation.script.questions.filter(q => q.sequence <= sequence).map(sq => {
+          const answer = answers.get(sq.sequence);
+          const q = sq.question;
+          return {sequence:sq.sequence,difficulty:sq.difficulty,timeLimit:sq.timeLimit,isAnswered:!!answer,
+            userSelectedOptionId:answer?.selectedOptionId,isCorrect:answer?.isCorrect,responseTimeMs:answer?.responseTimeMs,
+            question:{id:q.id,prompt:q.prompt,options:Array.isArray(q.options) ? (q.options as any[]).map(o => ({id:o.id,text:o.text ?? o.label})) : [],difficulty:q.difficulty,estimatedTimeSeconds:sq.timeLimit,calculationMode:q.calculationMode,pyq:q.pyq,hints:[],
+              ...(answer ? {correctAnswer:q.correctAnswer,explanation:q.explanation,method:q.method,alternativeExplanation:q.alternativeExplanation,preferredSolution:q.preferredSolution,preferredReason:q.preferredReason} : {})}};
         });
-
-        const err: any = new Error(
-          "Today's Daily Challenge is currently being prepared. Please check back in a few minutes."
-        );
-        err.statusCode = 503;
-        err.code = 'DAILY_CHALLENGE_PREPARING';
-        throw err;
-      }
-
-      // 2. Create participation record
-      participation = await prisma.dailyChallengeParticipation.create({
-        data: {
-          userId,
-          scriptId: script.id,
-          dateString: sync.todayDate,
-          status: 'IN_PROGRESS',
-          totalQuestions: script.questionCount,
-          streakAtAttempt: sync.currentStreak,
-        },
-        include: {
-          script: {
-            include: {
-              questions: {
-                include: { question: true },
-                orderBy: { sequence: 'asc' },
-              },
-            },
-          },
-          answers: {
-            orderBy: { sequence: 'asc' },
-          },
-        },
+        return {participationId:participation.id,dateString:participation.dateString,status:participation.status,currentStreak:sync.currentStreak,tier:sync.tierInfo.tier,totalQuestions:participation.totalQuestions,timeLimitPerQuestion:60,
+          serverNow:this.now().toISOString(),questionStartedAt:participation.questionStartedAt,questionDeadline:participation.questionDeadline,questions};
       });
+    } catch (err) {
+      if (err instanceof PublicError && err.code === 'DAILY_CHALLENGE_PREPARING') {
+        const {todayDate} = this.getIstDates();
+        void contentGenQueue.add('prewarm-daily-challenge',{targetDate:todayDate},{jobId:`emergency-daily-${todayDate}`,removeOnComplete:true}).catch(() => {});
+      }
+      throw err;
     }
-
-    // Sanitize questions: strip out correctAnswer, hints, explanation for unanswered questions
-    const answeredMap = new Map(participation.answers.map((a) => [a.questionId, a]));
-
-    const sanitizedQuestions = participation.script.questions.map((sq) => {
-      const answer = answeredMap.get(sq.questionId);
-      const isAnswered = !!answer;
-
-      return {
-        sequence: sq.sequence,
-        difficulty: sq.difficulty,
-        timeLimit: sq.timeLimit,
-        isAnswered,
-        userSelectedOptionId: answer?.selectedOptionId,
-        isCorrect: answer?.isCorrect,
-        responseTimeMs: answer?.responseTimeMs,
-        question: {
-          id: sq.question.id,
-          prompt: sq.question.prompt,
-          options: sq.question.options,
-          difficulty: sq.question.difficulty,
-          estimatedTimeSeconds: 60,
-          calculationMode: sq.question.calculationMode,
-          pyq: sq.question.pyq,
-          // Exclude hints strictly for daily challenge!
-          hints: [],
-          // Reveal explanation and answer only if already answered
-          correctAnswer: isAnswered ? sq.question.correctAnswer : undefined,
-          explanation: isAnswered ? sq.question.explanation : undefined,
-          method: isAnswered ? sq.question.method : undefined,
-          alternativeExplanation: isAnswered ? sq.question.alternativeExplanation : undefined,
-          preferredSolution: isAnswered ? sq.question.preferredSolution : undefined,
-          preferredReason: isAnswered ? sq.question.preferredReason : undefined,
-        },
-      };
-    });
-
-    return {
-      participationId: participation.id,
-      dateString: participation.dateString,
-      status: participation.status,
-      currentStreak: sync.currentStreak,
-      tier: sync.tierInfo.tier,
-      totalQuestions: participation.totalQuestions,
-      timeLimitPerQuestion: 60,
-      questions: sanitizedQuestions,
-    };
   }
 
   /**
    * Submits an answer for a specific question in the Daily Challenge.
    */
   public async submitAnswer(params: {
-    userId: string;
-    participationId: string;
-    questionId: string;
-    selectedOptionId: string;
-    responseTimeMs: number;
+    userId: string; participationId: string; questionId: string; selectedOptionId: string;
+    responseTimeMs?: number; receivedAt?: Date;
   }) {
-    const { userId, participationId, questionId, selectedOptionId, responseTimeMs } = params;
-
-    const participation = await prisma.dailyChallengeParticipation.findFirst({
-      where: { id: participationId, userId },
-      include: {
-        script: {
-          include: {
-            questions: {
-              include: { question: true },
-              orderBy: { sequence: 'asc' },
-            },
-          },
-        },
-        answers: true,
-      },
-    });
-
-    if (!participation) {
-      throw new Error(`Daily Challenge participation "${participationId}" not found.`);
-    }
-
-    if (participation.status !== 'IN_PROGRESS') {
-      throw new Error(`Daily Challenge is already ${participation.status}. Answers closed.`);
-    }
-
-    const scriptQuestion = participation.script.questions.find(
-      (sq) => sq.questionId === questionId
-    );
-    if (!scriptQuestion) {
-      throw new Error(`Question "${questionId}" does not belong to this Daily Challenge.`);
-    }
-
-    const alreadyAnswered = participation.answers.some((a) => a.questionId === questionId);
-    if (alreadyAnswered) {
-      throw new Error(`Question "${questionId}" has already been answered.`);
-    }
-
-    const question = scriptQuestion.question;
-    const isCorrect =
-      selectedOptionId.trim().toUpperCase() === question.correctAnswer.trim().toUpperCase();
-
-    return await prisma.$transaction(async (tx) => {
-      // 1. Record Answer
-      await tx.dailyChallengeAnswer.create({
-        data: {
-          participationId: participation.id,
-          questionId,
-          sequence: scriptQuestion.sequence,
-          selectedOptionId: selectedOptionId.trim().toUpperCase(),
-          isCorrect,
-          responseTimeMs,
-        },
-      });
-
+    const {userId,participationId,questionId} = params;
+    const requestedOptionId = params.selectedOptionId.trim().toUpperCase();
+    const receivedAt = params.receivedAt ?? this.now(); // Captured by HTTP ingress, never a body timestamp.
+    return this.db.$transaction(async tx => {
+      // Match all reward paths' progress -> stats order, and serialize today's starts and settlement.
+      await XpService.getInstance().lockProgress(tx,userId);
+      await tx.$queryRaw`SELECT id FROM learning.daily_challenge_participations WHERE id=${participationId}::uuid AND user_id=${userId}::uuid FOR UPDATE`;
+      const participation = await tx.dailyChallengeParticipation.findFirst({where:{id:participationId,userId},include:{script:{include:{questions:{include:{question:true},orderBy:{sequence:'asc'}}}},answers:true}});
+      if (!participation) throw new PublicError('Daily Challenge not found','NOT_FOUND',404);
+      const previous = participation.answers.find(a => a.questionId === questionId);
+      if (previous) {
+        if (previous.requestedOptionId !== requestedOptionId) throw new PublicError('This question already has a different answer','ANSWER_CONFLICT',409);
+        return previous.response;
+      }
+      if (participation.dateString !== this.getIstDates().todayDate || participation.dateString !== new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(receivedAt)) throw new PublicError('Daily Challenge day has ended','DAILY_EXPIRED',409);
+      if (participation.status !== 'IN_PROGRESS') throw new PublicError('Daily Challenge is closed','DAILY_CLOSED',409);
+      const scriptQuestion = participation.script.questions.find(q => q.questionId === questionId);
+      if (!scriptQuestion || scriptQuestion.sequence !== participation.answers.length + 1) throw new PublicError('Answer the current question first','QUESTION_ORDER',409);
+      const question = scriptQuestion.question;
+      const options = Array.isArray(question.options) ? question.options as Array<any> : [];
+      if (requestedOptionId !== 'TIMEOUT' && !options.some(o => typeof o.id === 'string' && o.id.toUpperCase() === requestedOptionId)) throw new PublicError('Invalid answer option','INVALID_OPTION');
+      const startedAt = participation.questionStartedAt;
+      const deadline = participation.questionDeadline;
+      if (!startedAt || !deadline || receivedAt < startedAt) throw new PublicError('Start the current question first','QUESTION_NOT_STARTED',409);
+      const expired = receivedAt.getTime() >= deadline.getTime();
+      if (requestedOptionId === 'TIMEOUT' && !expired) throw new PublicError('Question has not expired','QUESTION_NOT_EXPIRED',409);
+      const selectedOptionId = expired ? 'TIMEOUT' : requestedOptionId;
+      const isCorrect = !expired && selectedOptionId === question.correctAnswer.trim().toUpperCase();
+      // TODO: Server-measured Daily Challenge response times include network latency; consider latency fairness in a future competitive leaderboard revision.
+      // Aggregate totalTimeMs is the sum of question durations; feedback/next-question delays are excluded.
+      const responseTimeMs = Math.max(0,Math.min(receivedAt.getTime(),deadline.getTime())-startedAt.getTime());
+      const accepted = await tx.dailyChallengeAnswer.create({data:{participationId,questionId,sequence:scriptQuestion.sequence,selectedOptionId,requestedOptionId,isCorrect,responseTimeMs,questionStartedAt:startedAt,questionDeadline:deadline,answeredAt:receivedAt,response:{}}});
       // 2. Fetch all answers for this participation
       const allAnswers = await tx.dailyChallengeAnswer.findMany({
         where: { participationId: participation.id },
@@ -588,7 +468,7 @@ export class DailyChallengeService {
               streak: newStreak,
               highestStreak: newHighestStreak,
               coins: { increment: totalCoins },
-              lastDailyCompletedAt: new Date(),
+              lastDailyCompletedAt: receivedAt,
               lastDailyDate: participation.dateString,
             },
           });
@@ -617,7 +497,7 @@ export class DailyChallengeService {
               streakIncremented: true,
               xpAwarded: totalXp,
               coinsAwarded: totalCoins,
-              completedAt: new Date(),
+              completedAt: receivedAt,
             },
           });
 
@@ -649,7 +529,7 @@ export class DailyChallengeService {
               streakIncremented: false,
               xpAwarded: 0,
               coinsAwarded: 0,
-              completedAt: new Date(),
+              completedAt: receivedAt,
             },
           });
 
@@ -673,7 +553,8 @@ export class DailyChallengeService {
         });
       }
 
-      return {
+      const response = {
+        responseTimeMs,
         isCorrect,
         correctAnswer: question.correctAnswer,
         explanation: question.explanation,
@@ -689,17 +570,21 @@ export class DailyChallengeService {
         avgTimeMs,
         ...streakResult,
       };
+      await tx.dailyChallengeAnswer.update({where:{id:accepted.id},data:{response:JSON.parse(JSON.stringify(response))}});
+      await tx.dailyChallengeParticipation.update({where:{id:participation.id},data:{questionStartedAt:null,questionDeadline:null}});
+      return response;
     });
   }
 
   /**
    * Retrieves paginated history of daily challenge attempts for user.
    */
+  // CACHE_CANDIDATE ref=C11 scope=user layer=redis ttl=5-30s owner=daily
   public async getHistory(userId: string, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
 
     const [items, totalCount, stats] = await Promise.all([
-      prisma.dailyChallengeParticipation.findMany({
+      this.db.dailyChallengeParticipation.findMany({
         where: { userId },
         skip,
         take: limit,
@@ -718,22 +603,15 @@ export class DailyChallengeService {
           },
         },
       }),
-      prisma.dailyChallengeParticipation.count({ where: { userId } }),
-      prisma.gameStats.findUnique({ where: { userId } }),
+      this.db.dailyChallengeParticipation.count({ where: { userId } }),
+      this.db.gameStats.findUnique({ where: { userId } }),
     ]);
 
     // Calculate overall average solve time across completed attempts
-    const completedAttempts = await prisma.dailyChallengeParticipation.findMany({
-      where: { userId, status: 'COMPLETED' },
-      select: { avgTimeMs: true },
+    const completedAttempts = await this.db.dailyChallengeParticipation.aggregate({
+      where:{userId,status:'COMPLETED'},_avg:{avgTimeMs:true},_count:{_all:true},
     });
-
-    const overallAvgTimeMs =
-      completedAttempts.length > 0
-        ? Math.round(
-            completedAttempts.reduce((sum, a) => sum + a.avgTimeMs, 0) / completedAttempts.length
-          )
-        : 0;
+    const overallAvgTimeMs=Math.round(completedAttempts._avg.avgTimeMs??0);
 
     return {
       history: items.map((p) => ({
@@ -767,7 +645,7 @@ export class DailyChallengeService {
       stats: {
         currentStreak: stats?.streak ?? 0,
         highestStreak: stats?.highestStreak ?? 0,
-        totalCompleted: completedAttempts.length,
+        totalCompleted: completedAttempts._count._all,
         overallAvgTimeMs,
       },
     };

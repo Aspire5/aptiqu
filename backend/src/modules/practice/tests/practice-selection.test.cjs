@@ -18,6 +18,7 @@ function setup(batches, progress = []) {
     userQuestionProgress: {findMany: async () => { progressCalls++; return progress; }},
   };
   const deps = {
+    '../../../observability/logger': {log:()=>{},safeError:()=>({})},
     '@prisma/client': {Prisma},
     '../../../config/prisma': {prisma},
     '../../ai/services/question-generation.service': {questionGenerationService: {generateQuestionsForSubtopic: async (id, count, pattern) => { generated++; assert.equal(id, 's1'); assert.equal(pattern, 'addition'); return [{id:'new', subtopicId: id, pattern}]; }}},

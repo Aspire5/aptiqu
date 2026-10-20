@@ -1,7 +1,8 @@
+import { readRankedConfig } from '../../../config/runtime-config';
 import { seasonBounds } from './ranked-season-time';
 export interface RankedRuntime { reads: boolean; skillMatchmaking: boolean; drain?: boolean }
 export function rankedRuntime(): RankedRuntime {
-  return { reads: process.env.RANKED_LEAGUES_READ_ENABLED === 'true', skillMatchmaking: process.env.RANKED_SKILL_MATCHMAKING_ENABLED === 'true', drain: process.env.RANKED_ADMISSION_DRAIN === 'true' };
+  const config=readRankedConfig(); return {reads:config.reads,skillMatchmaking:config.skill,drain:config.drain};
 }
 
 export function ratedAdmissionAvailable(now: Date, runtime: RankedRuntime, activation: import('./ranked-config').RankedActivation) {

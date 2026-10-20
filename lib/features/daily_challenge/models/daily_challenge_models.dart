@@ -41,7 +41,8 @@ class DailyChallengeStatusModel {
       tier: (json['tier'] as num?)?.toInt() ?? 1,
       tierTitle: json['tierTitle']?.toString() ?? 'Novice Duelist',
       questionCount: (json['questionCount'] as num?)?.toInt() ?? 1,
-      difficulties: (json['difficulties'] as List<dynamic>?)
+      difficulties:
+          (json['difficulties'] as List<dynamic>?)
               ?.map((d) => d.toString())
               .toList() ??
           ['EASY'],
@@ -51,7 +52,8 @@ class DailyChallengeStatusModel {
       msUntilMidnight: (json['msUntilMidnight'] as num?)?.toInt() ?? 0,
       todayParticipation: json['todayParticipation'] != null
           ? DailyParticipationSummary.fromJson(
-              Map<String, dynamic>.from(json['todayParticipation'] as Map))
+              Map<String, dynamic>.from(json['todayParticipation'] as Map),
+            )
           : null,
     );
   }
@@ -160,13 +162,17 @@ class DailyChallengeQuestionModel {
       method: qMap['method']?.toString(),
       pyq: qMap['pyq']?.toString(),
       alternativeExplanation: qMap['alternativeExplanation']?.toString(),
-      preferredSolution: (qMap['preferredSolution'] ?? json['preferredSolution'])?.toString(),
-      preferredReason: (qMap['preferredReason'] ?? json['preferredReason'])?.toString(),
+      preferredSolution:
+          (qMap['preferredSolution'] ?? json['preferredSolution'])?.toString(),
+      preferredReason: (qMap['preferredReason'] ?? json['preferredReason'])
+          ?.toString(),
     );
   }
 }
 
 class DailyChallengeSessionModel {
+  final DateTime? serverNow;
+  final DateTime? questionDeadline;
   final String participationId;
   final String dateString;
   final String status;
@@ -177,6 +183,8 @@ class DailyChallengeSessionModel {
   final List<DailyChallengeQuestionModel> questions;
 
   const DailyChallengeSessionModel({
+    this.serverNow,
+    this.questionDeadline,
     required this.participationId,
     required this.dateString,
     required this.status,
@@ -191,12 +199,19 @@ class DailyChallengeSessionModel {
     List<DailyChallengeQuestionModel> qList = [];
     if (json['questions'] is List) {
       qList = (json['questions'] as List)
-          .map((q) => DailyChallengeQuestionModel.fromJson(
-              Map<String, dynamic>.from(q as Map)))
+          .map(
+            (q) => DailyChallengeQuestionModel.fromJson(
+              Map<String, dynamic>.from(q as Map),
+            ),
+          )
           .toList();
     }
 
     return DailyChallengeSessionModel(
+      serverNow: DateTime.tryParse(json['serverNow']?.toString() ?? ''),
+      questionDeadline: DateTime.tryParse(
+        json['questionDeadline']?.toString() ?? '',
+      ),
       participationId: json['participationId']?.toString() ?? '',
       dateString: json['dateString']?.toString() ?? '',
       status: json['status']?.toString() ?? 'IN_PROGRESS',
@@ -338,8 +353,11 @@ class DailyHistoryItemModel {
     List<DailyHistoryAnswerItem> ansList = [];
     if (json['answers'] is List) {
       ansList = (json['answers'] as List)
-          .map((a) => DailyHistoryAnswerItem.fromJson(
-              Map<String, dynamic>.from(a as Map)))
+          .map(
+            (a) => DailyHistoryAnswerItem.fromJson(
+              Map<String, dynamic>.from(a as Map),
+            ),
+          )
           .toList();
     }
 
@@ -382,9 +400,13 @@ class DailyHistoryResponseModel {
   });
 
   factory DailyHistoryResponseModel.fromJson(Map<String, dynamic> json) {
-    final list = (json['history'] as List<dynamic>?)
-            ?.map((h) => DailyHistoryItemModel.fromJson(
-                Map<String, dynamic>.from(h as Map)))
+    final list =
+        (json['history'] as List<dynamic>?)
+            ?.map(
+              (h) => DailyHistoryItemModel.fromJson(
+                Map<String, dynamic>.from(h as Map),
+              ),
+            )
             .toList() ??
         [];
 

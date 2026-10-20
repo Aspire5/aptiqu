@@ -1,3 +1,5 @@
+import { log, safeError } from '../../../observability/logger';
+import { PublicError } from '../../../security/errors';
 import { matchQuestions } from '../../pvp/ranked/ranked-questions';
 import { duelsService } from '../../social/duels.service';
 import { lockUsers } from '../../social/friends.service';
@@ -118,10 +120,10 @@ export class PracticeSessionService {
           resolvedTopicId = foundSubtopics[0].topicId;
         }
       } else {
-        throw new Error('Selected subtopics are unavailable. Please update your selection.');
+        throw new PublicError('Selected subtopics are unavailable. Please update your selection.');
       }
       if (foundSubtopics.length !== candidateSubtopicIds.size) {
-        throw new Error('Some selected subtopics are unavailable. Please update your selection.');
+        throw new PublicError('Some selected subtopics are unavailable. Please update your selection.');
       }
     }
 
@@ -141,7 +143,7 @@ export class PracticeSessionService {
     }
 
     if (topicId && (!resolvedSubtopicIds || !resolvedSubtopicIds.length)) {
-      throw new Error('No available subtopics in this topic. Choose another topic.');
+      throw new PublicError('No available subtopics in this topic. Choose another topic.');
     }
     // 4. Global live curriculum fallback if still empty
     if (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0) {
@@ -149,7 +151,7 @@ export class PracticeSessionService {
       const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
       const allSubtopics = liveUniverse.flatMap((u) => u.subtopics.map((s) => s.id));
       if (allSubtopics.length === 0) {
-        throw new Error('No live topics or subtopics currently available for practice.');
+        throw new PublicError('No live topics or subtopics currently available for practice.');
       }
       resolvedSubtopicIds = allSubtopics;
       if (!resolvedTopicId && liveUniverse.length > 0) {
@@ -180,14 +182,12 @@ export class PracticeSessionService {
     });
 
     if (!topic || !topic.isActive || (topic.subject && !topic.subject.isActive)) {
-      throw new Error(`Topic "${resolvedTopicId}" is inactive or not found.`);
+      throw new PublicError(`Topic "${resolvedTopicId}" is inactive or not found.`);
     }
 
     resolvedTopicId = topic.id;
 
-    console.log(
-      `[PracticeSession] Initiating practice session creation for user "${userId}", topic "${resolvedTopicId}", subtopics [${resolvedSubtopicIds.join(', ')}]`
-    );
+    log('info','practice_session_service.createSession.info');
 
     // 2. Select 10 Questions
     const questions = await practiceSelectionService.selectQuestionsForPractice(
@@ -196,11 +196,9 @@ export class PracticeSessionService {
       10,
       smartPicks
     );
-    if (questions.length !== 10) throw new Error('A practice session requires 10 questions.');
+    if (questions.length !== 10) throw new PublicError('A practice session requires 10 questions.');
 
-    console.log(
-      `[PracticeSession] Selected ${questions.length} questions. Saving practice session to database...`
-    );
+    log('info','practice_session_service.createSession.info');
 
     // 3. Create Session in PostgreSQL
     return await prisma.$transaction(async (tx) => {
@@ -245,21 +243,26 @@ export class PracticeSessionService {
       if (!source.replaySourceType) return;
       const id = source.replaySourceId;
       const key = `${source.replaySourceType}:${id}`;
-      if (!id || seen.has(key)) throw new Error('This replay source is unavailable.');
+      if (!id || seen.has(key)) throw new PublicError('This replay source is unavailable.');
       seen.add(key);
       if (source.replaySourceType === 'PVP') {
         const match = await db.pvpMatch.findUnique({ where: { id }, select: { status: true, ratingMode: true, questionSnapshot: true, settlement: { select: { disposition: true } }, players: { select: { userId: true } } } });
         if (!match || match.status !== 'COMPLETED' || !match.players.some((p: { userId: string }) => p.userId === userId)) {
-          throw new Error('Finish the Ranked match before opening its Practice replay.');
+          throw new PublicError('Finish the Ranked match before opening its Practice replay.');
         }
-        if (match.ratingMode === 'RATED' && match.settlement?.disposition !== 'RATED') throw new Error('The Ranked result is still finalizing. Please retry.');
+        if (match.ratingMode === 'RATED' && match.settlement?.disposition !== 'RATED') throw new PublicError('The Ranked result is still finalizing. Please retry.');
         return match.questionSnapshot ? Object.fromEntries(matchQuestions({ ...match, questionSet: { setQuestions: [] } }).map(q => [q.id, q])) : undefined;
       }
-      if (source.replaySourceType !== 'PRACTICE') throw new Error('This replay source is unavailable.');
-      source = await db.practiceSession.findFirst({ where: { id, userId }, select: { replaySourceType: true, replaySourceId: true } });
-      if (!source) throw new Error('This replay source is unavailable.');
+      if (source.replaySourceType !== 'PRACTICE') throw new PublicError('This replay source is unavailable.');
+      source = await db.practiceSession.findFirst({ where: { id, userId }, select: { replaySourceType: true, replaySourceId: true, isFriendlyDuel:true, friendlyDuel:{select:{status:true,questionSnapshot:true}} } });
+      if (!source) throw new PublicError('This replay source is unavailable.');
+      if ((source as any).isFriendlyDuel) {
+        const duel = (source as any).friendlyDuel;
+        if (!duel || !['COMPLETED','CANCELLED','EXPIRED','ABANDONED'].includes(duel.status)) throw new PublicError('Finish the friendly duel before opening its Practice replay.');
+        return duel.questionSnapshot as Record<string,any>;
+      }
     }
-    throw new Error('This replay source chain is too long.');
+    throw new PublicError('This replay source chain is too long.');
   }
 
   public async getSession(sessionId: string, userId: string, txClient?: any) {
@@ -267,7 +270,7 @@ export class PracticeSessionService {
     const session = await db.practiceSession.findFirst({
       where: { id: sessionId, userId },
       include: {
-        friendlyDuel: { select: { questionSnapshot:true } },
+        friendlyDuel: { select: { questionSnapshot:true, status:true } },
         questions: {
           include: { question: true },
           orderBy: { sequence: 'asc' },
@@ -276,15 +279,19 @@ export class PracticeSessionService {
     });
 
     if (!session) {
-      throw new Error(`Practice session "${sessionId}" not found.`);
+      throw new PublicError(`Practice session "${sessionId}" not found.`);
     }
     const rankedReplay = await this.assertReplaySourceAvailable(session, userId, db);
 
+    if (session.isFriendlyDuel && session.status === 'ACTIVE') {
+      // A prompt is never available before its persistent server clock begins.
+      await db.practiceSession.updateMany({where:{id:session.id,userId,status:'ACTIVE',currentIndex:session.currentIndex,questionStartedAt:null},data:{questionStartedAt:new Date()}});
+    }
     // Sanitize question data so correct answer is NOT leaked to client before answer
-    const sanitizedQuestions = session.questions.map((sq: any) => {
+    const sanitizedQuestions = session.questions.filter((sq: any) => !session.isFriendlyDuel || sq.sequence <= session.currentIndex + 1).map((sq: any) => {
       const isAnswered = sq.isAnswered;
       const q = rankedReplay?.[sq.questionId] ?? session.friendlyDuel?.questionSnapshot?.[sq.questionId] ?? sq.question;
-      if (rankedReplay && !rankedReplay[sq.questionId]) throw new Error('This replay question is unavailable.');
+      if (rankedReplay && !rankedReplay[sq.questionId]) throw new PublicError('This replay question is unavailable.');
       return {
         id: sq.id,
         sequence: sq.sequence,
@@ -296,7 +303,7 @@ export class PracticeSessionService {
         question: {
           id: q.id,
           prompt: q.prompt,
-          options: q.options,
+          options: Array.isArray(q.options) ? q.options.map((o: any) => ({id:o.id,text:o.text ?? o.label})) : [],
           difficulty: q.difficulty,
           estimatedTimeSeconds: q.estimatedTimeSeconds,
           calculationMode: q.calculationMode,
@@ -354,7 +361,7 @@ export class PracticeSessionService {
     const session = await prisma.practiceSession.findFirst({
       where: { id: sessionId, userId },
       include: {
-        friendlyDuel: { select: { questionSnapshot:true } },
+        friendlyDuel: { select: { questionSnapshot:true, status:true } },
         questions: {
           include: { question: true },
           orderBy: { sequence: 'asc' },
@@ -363,65 +370,65 @@ export class PracticeSessionService {
     });
 
     if (!session) {
-      throw new Error(`Practice session "${sessionId}" not found.`);
+      throw new PublicError(`Practice session "${sessionId}" not found.`);
     }
     const rankedReplay = await this.assertReplaySourceAvailable(session, userId);
 
     if (session.status !== 'ACTIVE') {
-      throw new Error(`Session is already ${session.status}. No further answers accepted.`);
+      throw new PublicError(`Session is already ${session.status}. No further answers accepted.`);
     }
 
     const sessionQuestion = session.questions.find((sq) => sq.questionId === questionId);
     if (!sessionQuestion) {
-      throw new Error(`Question "${questionId}" does not belong to this session.`);
+      throw new PublicError(`Question "${questionId}" does not belong to this session.`);
     }
 
     if (sessionQuestion.isAnswered) {
-      throw new Error(`Question "${questionId}" has already been answered.`);
+      throw new PublicError(`Question "${questionId}" has already been answered.`);
     }
 
     if (session.questions[session.currentIndex]?.id !== sessionQuestion.id) {
-      throw new Error('Answer the current question first.');
+      throw new PublicError('Answer the current question first.');
     }
     if (!Number.isFinite(responseTimeMs) || responseTimeMs < 0 || responseTimeMs > 86400000) {
-      throw new Error('Invalid response time.');
+      throw new PublicError('Invalid response time.');
     }
     const deck = session.friendlyDuel?.questionSnapshot as Record<string, any> | undefined;
-    if (session.isFriendlyDuel && !deck?.[questionId]) throw new Error('This friendly duel deck is unavailable.');
-    if (rankedReplay && !rankedReplay[questionId]) throw new Error('This replay question is unavailable.');
+    if (session.isFriendlyDuel && !deck?.[questionId]) throw new PublicError('This friendly duel deck is unavailable.');
+    if (rankedReplay && !rankedReplay[questionId]) throw new PublicError('This replay question is unavailable.');
     const question = rankedReplay?.[questionId] ?? deck?.[questionId] ?? sessionQuestion.question;
     const option = selectedOptionId.trim().toUpperCase();
     if (option !== 'TIMEOUT' && !(question.options as any[]).some(o => o.id === option)) {
-      throw new Error('Choose a valid option.');
+      throw new PublicError('Choose a valid option.');
     }
     const isCorrect =
       selectedOptionId.trim().toUpperCase() === question.correctAnswer.trim().toUpperCase();
 
-    if (session.isFriendlyDuel && !session.friendlyDuelId) throw new Error('This friendly duel is no longer available.');
+    if (session.isFriendlyDuel && !session.friendlyDuelId) throw new PublicError('This friendly duel is no longer available.');
     // Perform database updates in a transaction
     const result = await prisma.$transaction(async (tx) => {
       if (session.friendlyDuelId) {
         const duel = await tx.friendlyDuel.findUnique({ where: { id: session.friendlyDuelId } });
-        if (!duel) throw new Error('Duel not found.');
+        if (!duel) throw new PublicError('Duel not found.');
         await lockUsers(tx, [duel.requesterId, duel.recipientId]);
         await tx.$queryRaw`SELECT id FROM learning.friendly_duels WHERE id=${duel.id}::uuid FOR UPDATE`;
         const live = await tx.friendlyDuel.findUnique({ where: { id: duel.id } });
-        if (live?.status !== 'ACTIVE' || (live.matchExpiresAt && live.matchExpiresAt.getTime() <= Date.now())) throw new Error('This duel is no longer active.');
+        if (live?.status !== 'ACTIVE' || (live.matchExpiresAt && live.matchExpiresAt.getTime() <= Date.now())) throw new PublicError('This duel is no longer active.');
       }
       // Serialize answers for this session and recheck after acquiring the lock.
       await tx.$queryRaw`SELECT id FROM learning.practice_sessions WHERE id = ${session.id}::uuid FOR UPDATE`;
       const lockedSession = await tx.practiceSession.findUnique({ where: { id: session.id } });
-      if (lockedSession?.status !== 'ACTIVE') throw new Error('This session is no longer active.');
+      if (lockedSession?.status !== 'ACTIVE') throw new PublicError('This session is no longer active.');
       const fresh = await tx.practiceSessionQuestion.findUnique({ where: { id: sessionQuestion.id } });
-      if (fresh?.isAnswered) throw new Error('This question has already been answered.');
+      if (fresh?.isAnswered) throw new PublicError('This question has already been answered.');
       let recordedTime = responseTimeMs;
       let recordedOption = selectedOptionId.trim().toUpperCase();
       let recordedCorrect = isCorrect;
       if (session.isFriendlyDuel) {
-        if (!lockedSession.questionStartedAt) throw new Error('Start the current question before answering.');
+        if (!lockedSession.questionStartedAt) throw new PublicError('Start the current question before answering.');
         recordedTime = Math.max(0, Date.now() - lockedSession.questionStartedAt.getTime());
         if (session.timerEnabled && recordedTime >= 60000) { recordedOption = 'TIMEOUT'; recordedCorrect = false; }
-        else if (recordedOption === 'TIMEOUT') throw new Error('The question timer has not expired.');
+        else if (recordedOption === 'TIMEOUT') throw new PublicError('The question timer has not expired.');
       }
       // 1. Update PracticeSessionQuestion
       await tx.practiceSessionQuestion.update({
@@ -517,7 +524,7 @@ export class PracticeSessionService {
               subjectId: session.subjectId,
               topicId: session.topicId,
               description: `Completed 10-Question Practice Session on ${session.topicId}`,
-            });
+            }, tx);
           }
         }
 
@@ -577,10 +584,10 @@ export class PracticeSessionService {
     return prisma.$transaction(async tx => {
       await tx.$queryRaw`SELECT id FROM learning.practice_sessions WHERE id=${sessionId}::uuid AND user_id=${userId}::uuid FOR UPDATE`;
       const session = await tx.practiceSession.findFirst({ where: { id: sessionId, userId, status: 'ACTIVE', isFriendlyDuel: true }, include: { friendlyDuel: true } });
-      if (!session || session.friendlyDuel?.status !== 'ACTIVE' || (session.friendlyDuel.matchExpiresAt && session.friendlyDuel.matchExpiresAt.getTime() <= Date.now())) throw new Error('This duel is no longer active.');
+      if (!session || session.friendlyDuel?.status !== 'ACTIVE' || (session.friendlyDuel.matchExpiresAt && session.friendlyDuel.matchExpiresAt.getTime() <= Date.now())) throw new PublicError('This duel is no longer active.');
       const started = session.questionStartedAt ?? new Date();
       if (!session.questionStartedAt) await tx.practiceSession.update({ where: { id: sessionId }, data: { questionStartedAt: started } });
-      return { remainingMs: Math.max(0, 60000 - (Date.now() - started.getTime())), timerEnabled: session.timerEnabled };
+      return { session: await this.getSession(sessionId,userId,tx), remainingMs: Math.max(0, 60000 - (Date.now() - started.getTime())), timerEnabled: session.timerEnabled };
     });
   }
 
@@ -594,7 +601,7 @@ export class PracticeSessionService {
     });
 
     if (!session) {
-      throw new Error(`Practice session "${sessionId}" not found.`);
+      throw new PublicError(`Practice session "${sessionId}" not found.`);
     }
 
     if (session.friendlyDuelId) { await duelsService.abandon(userId, session.friendlyDuelId); return { success: true, xpAwarded: session.xpAwarded }; }
@@ -624,7 +631,7 @@ export class PracticeSessionService {
     const original = await prisma.practiceSession.findFirst({
       where: { id: originalSessionId, userId },
       include: {
-        friendlyDuel: { select: { questionSnapshot:true } },
+        friendlyDuel: { select: { questionSnapshot:true, status:true } },
         questions: {
           orderBy: { sequence: 'asc' },
         },
@@ -632,11 +639,12 @@ export class PracticeSessionService {
     });
 
     if (!original) {
-      throw new Error(`Practice session "${originalSessionId}" not found for replay.`);
+      throw new PublicError(`Practice session "${originalSessionId}" not found for replay.`);
     }
+    if (original.isFriendlyDuel && (!original.friendlyDuel || !['COMPLETED','CANCELLED','EXPIRED','ABANDONED'].includes((original.friendlyDuel as any).status))) throw new PublicError('Finish the friendly duel before opening its Practice replay.');
     await this.assertReplaySourceAvailable(original, userId);
 
-    if (original.questions.length !== 10) throw new Error('This older session does not contain 10 questions. Start a new session.');
+    if (original.questions.length !== 10) throw new PublicError('This older session does not contain 10 questions. Start a new session.');
     return await prisma.$transaction(async (tx) => {
       const replaySession = await tx.practiceSession.create({
         data: {
@@ -693,16 +701,16 @@ export class PracticeSessionService {
     });
 
     if (!match || !match.questionSet) {
-      throw new Error(`PvP Match "${matchId}" not found for replay.`);
+      throw new PublicError(`PvP Match "${matchId}" not found for replay.`);
     }
 
-    if (!match.players.some(player => player.userId === userId)) throw new Error('You can only replay your own matches.');
-    if (match.status !== 'COMPLETED') throw new Error('Finish the Ranked match before opening its Practice replay.');
-    if (match.ratingMode === 'RATED' && match.settlement?.disposition !== 'RATED') throw new Error('The Ranked result is still finalizing. Please retry.');
+    if (!match.players.some(player => player.userId === userId)) throw new PublicError('You can only replay your own matches.');
+    if (match.status !== 'COMPLETED') throw new PublicError('Finish the Ranked match before opening its Practice replay.');
+    if (match.ratingMode === 'RATED' && match.settlement?.disposition !== 'RATED') throw new PublicError('The Ranked result is still finalizing. Please retry.');
     const frozen = match.questionSnapshot ? matchQuestions(match) : null;
     const setQuestions = frozen ? frozen.map(question => ({ questionId: question.id, question })) : match.questionSet.setQuestions;
     if (setQuestions.length !== 10) {
-      throw new Error('A replay requires a complete 10-question set.');
+      throw new PublicError('A replay requires a complete 10-question set.');
     }
 
     const firstQuestion = frozen ? await prisma.question.findUniqueOrThrow({ where: { id: frozen[0].id } }) : match.questionSet.setQuestions[0].question;
@@ -745,6 +753,7 @@ export class PracticeSessionService {
    * Retrieves paginated Practice history (including replays & PvP replays).
    * Replays do not inflate user average speed stats.
    */
+  // CACHE_CANDIDATE ref=C10 scope=user layer=redis ttl=5-10s owner=practice
   public async getHistory(userId: string, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
 

@@ -1,8 +1,12 @@
+import { PublicError } from '../../../security/errors';
+import { publicFailure } from '../../../security/public-error';
+import { z } from 'zod';
 import { Request, Response } from 'express';
-import { prisma } from '../../../config/prisma';
+import { prisma } from '../../lesson/services/learning-transaction';
+import { catalogMutation } from '../../roadmap/services/catalog-mutation';
 import { bookStorageService } from '../services/book-storage.service';
 import { bookPublishingService } from '../services/book-publishing.service';
-import { bookIngestionQueue, stopBookProcessing } from '../../../queues/book-ingestion.queue';
+import { bookIngestionQueue, stopBookProcessing, enqueueBookStage } from '../../../queues/book-ingestion.queue';
 import { bookCancellationService } from '../services/book-cancellation.service';
 import { BookIngestionProgress } from '../types/book-ingestion.types';
 
@@ -18,7 +22,7 @@ export class AdminBooksController {
         return;
       }
 
-      const { title, author, edition, isbn } = req.body;
+      const { title, author, edition, isbn } = z.object({title:z.string().min(1).max(500),author:z.string().max(300).optional(),edition:z.string().max(100).optional(),isbn:z.string().max(100).optional()}).strict().parse(req.body);
       if (!title || !title.trim()) {
         res.status(400).json({ success: false, message: 'Book title is required' });
         return;
@@ -44,14 +48,7 @@ export class AdminBooksController {
       }
 
       // Enqueue full processing job in BullMQ
-      await bookIngestionQueue.add(
-        'process-full-book',
-        { bookId: bookSource.id },
-        {
-          jobId: `book-process-${bookSource.id}-${Date.now()}`,
-          removeOnComplete: true,
-        }
-      );
+      await enqueueBookStage(bookSource.id,'process-full-book');
 
       res.status(202).json({
         success: true,
@@ -64,10 +61,7 @@ export class AdminBooksController {
           isDuplicate,
         },
       });
-    } catch (err: any) {
-      console.error('[AdminBooksController:uploadBook] Error:', err);
-      res.status(400).json({ success: false, message: err.message || 'Book upload failed' });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
@@ -121,7 +115,7 @@ export class AdminBooksController {
         },
       });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -152,6 +146,7 @@ export class AdminBooksController {
           },
           jobs: {
             orderBy: { startedAt: 'desc' },
+          take: 30,
           },
         },
       });
@@ -169,13 +164,14 @@ export class AdminBooksController {
         },
       });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
   /**
    * Real-time progress polling endpoint for admin dashboard.
    */
+  // CACHE_CANDIDATE ref=C21 scope=admin-role layer=coalesce ttl=1-3s owner=ingestion
   public static async getStatus(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id as string;
@@ -191,6 +187,7 @@ export class AdminBooksController {
           },
           jobs: {
             orderBy: { startedAt: 'desc' },
+          take: 30,
           },
         },
       });
@@ -302,7 +299,7 @@ export class AdminBooksController {
 
       res.status(200).json({ success: true, data: progressData });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -341,7 +338,7 @@ export class AdminBooksController {
         },
       });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -358,6 +355,10 @@ export class AdminBooksController {
         return;
       }
 
+      await catalogMutation(async()=>{
+      const book=await prisma.bookSource.findUniqueOrThrow({where:{id}});
+      const valid=await prisma.topic.count({where:{id:{in:topics.map((topic:any)=>topic.id)},subjectId:book.subjectId}});
+      if(valid!==new Set(topics.map((topic:any)=>topic.id)).size)throw new PublicError('Topic does not belong to this book');
       for (let i = 0; i < topics.length; i++) {
         const t = topics[i];
         if (t.id) {
@@ -372,9 +373,10 @@ export class AdminBooksController {
         }
       }
 
+      });
       res.status(200).json({ success: true, message: 'Topics updated successfully' });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -389,6 +391,8 @@ export class AdminBooksController {
         return;
       }
 
+      const book=await prisma.bookSource.findUniqueOrThrow({where:{id:req.params.id as string}});
+      if(!await prisma.topic.findFirst({where:{id:String(topicId),subjectId:book.subjectId}}))throw new PublicError('Topic does not belong to this book');
       const subtopics = await prisma.subtopic.findMany({
         where: { topicId: String(topicId) },
         orderBy: { sequence: 'asc' },
@@ -399,7 +403,7 @@ export class AdminBooksController {
 
       res.status(200).json({ success: true, data: subtopics });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -414,6 +418,8 @@ export class AdminBooksController {
         return;
       }
 
+      const book=await prisma.bookSource.findUniqueOrThrow({where:{id:req.params.id as string}});
+      if(!await prisma.subtopic.findFirst({where:{id:String(subtopicId),topic:{subjectId:book.subjectId}}}))throw new PublicError('Subtopic does not belong to this book');
       const [script, questions] = await Promise.all([
         prisma.lessonScript.findFirst({
           where: { subtopicId: String(subtopicId) },
@@ -435,7 +441,7 @@ export class AdminBooksController {
         },
       });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -448,7 +454,7 @@ export class AdminBooksController {
       const result = await bookPublishingService.publishBook(id);
       res.status(200).json({ success: true, data: result });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -461,15 +467,11 @@ export class AdminBooksController {
       const { stage } = req.body;
 
       const jobName = stage || 'process-full-book';
-      await bookIngestionQueue.add(
-        jobName,
-        { bookId: id },
-        { removeOnComplete: true }
-      );
+      await enqueueBookStage(id,jobName);
 
       res.status(200).json({ success: true, message: `Retrying stage "${jobName}" in background` });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -707,7 +709,7 @@ export class AdminBooksController {
           if (subject) {
             await AdminBooksController.cascadeDeleteBookData(id, subject.id, '', true);
             bookStorageService.deleteBookStorage(id);
-            bookCancellationService.reset(id);
+            await bookCancellationService.reset(id);
             res.status(200).json({ success: true, message: 'Subject and associated data deleted successfully' });
             return;
           }
@@ -726,7 +728,7 @@ export class AdminBooksController {
       bookStorageService.deleteBookStorage(id);
 
       // 5. Reset cancellation flag
-      bookCancellationService.reset(id);
+      await bookCancellationService.reset(id);
 
       res.status(200).json({ success: true, message: 'Book and all created data deleted successfully' });
     } catch (err: any) {
@@ -759,7 +761,7 @@ export class AdminBooksController {
 
       res.status(200).json({ success: true, message: 'Book processing cancelled successfully.' });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 }

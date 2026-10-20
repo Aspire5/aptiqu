@@ -46,11 +46,12 @@ export function homeSubmissions(userId?: string) {
         AND a.selected_option_id <> 'TIMEOUT'
 
       UNION ALL
-      SELECT a.user_id, 'PVP', a.server_received_at, q.difficulty::text, a.is_correct::int,
+      SELECT a.user_id, 'PVP', a.server_received_at, COALESCE(m.question_snapshot->'questions'->a.question_index->>'difficulty',q.difficulty::text), a.is_correct::int,
         (a.is_correct AND NOT a.is_late AND a.response_time_ms > 0)::int,
         CASE WHEN a.is_correct AND NOT a.is_late AND a.response_time_ms > 0
           THEN a.response_time_ms ELSE 0 END
       FROM learning.pvp_match_answers a
+      JOIN learning.pvp_matches m ON m.id=a.match_id
       JOIN learning.questions q ON q.id = a.question_id
       WHERE ${userId === undefined ? Prisma.sql`TRUE` : Prisma.sql`a.user_id = ${userId}::uuid`} AND a.selected_option_id IS NOT NULL
         AND a.selected_option_id <> 'TIMEOUT'

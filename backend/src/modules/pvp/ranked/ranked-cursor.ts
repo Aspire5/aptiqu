@@ -1,3 +1,4 @@
+import { readRankedConfig } from '../../../config/runtime-config';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { PvpError } from '../pvp.errors';
@@ -11,7 +12,7 @@ const payloadSchema = z.object({
 }).strict();
 export type BoardCursor = z.infer<typeof payloadSchema>;
 export class RankedCursor {
-  constructor(private readonly secret: () => string = () => process.env.RANKED_CURSOR_SECRET ?? process.env.JWT_ACCESS_SECRET ?? '') {}
+  constructor(private readonly secret: () => string = () => readRankedConfig().secret) {}
   private sign(encoded: string) {
     const secret = this.secret();
     if (secret.length < 32) throw new PvpError('Leaderboard temporarily unavailable.', 'CURSOR_CONFIGURATION', 503);

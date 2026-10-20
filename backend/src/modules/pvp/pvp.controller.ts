@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { pvpMatchService } from './services/pvp-match.service';
@@ -21,13 +22,7 @@ export class PvpController {
       const match = await pvpMatchService.getMatchSnapshot(matchId, userId);
       res.setHeader('Cache-Control', 'private, no-store');
       res.status(200).json({ success: true, data: match });
-    } catch (err: any) {
-      res.status(err instanceof PvpError ? err.status : 503).json({
-        success: false,
-        message: err instanceof PvpError ? err.message : 'Match temporarily unavailable. Please retry.',
-        code: err instanceof PvpError ? err.code : 'MATCH_UNAVAILABLE',
-      });
-    }
+    } catch (err: any) { publicFailure(res,err); }
   }
 
   /**
@@ -70,17 +65,7 @@ export class PvpController {
         success: true,
         data: practiceSession,
       });
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '';
-      const known = err instanceof PvpError ? err : message.startsWith('Finish the Ranked match')
-        ? new PvpError('Finish the Ranked match before replaying it.', 'MATCH_NOT_FINISHED')
-        : message.startsWith('The Ranked result is still finalizing') ? new PvpError('The result is still finalizing. Please retry.', 'RESULT_PENDING')
-        : message === 'You can only replay your own matches.' ? new PvpError(message, 'FORBIDDEN_MATCH_ACCESS', 403)
-        : message.includes('not found for replay') ? new PvpError('Match not found.', 'MATCH_NOT_FOUND', 404) : null;
-      if (!known) res.setHeader('Retry-After', '5');
-      res.status(known?.status ?? 503).json({ success: false, code: known?.code ?? 'REPLAY_UNAVAILABLE',
-        message: known?.message ?? 'Replay temporarily unavailable. Please retry.' });
-    }
+    } catch (err: unknown) { publicFailure(res,err); }
   }
 }
 

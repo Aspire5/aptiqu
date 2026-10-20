@@ -5,6 +5,23 @@ import { yearCalendar, dateKey, performance } from './home.metrics';
 import { homeStatsQuery, HomeStatsRow, latestHomeMatchQuery } from './home.queries';
 
 export class HomeService {
+  async getPublicProfileFacts(userId:string,now=new Date()) {
+    const today=dateKey(now),start=`${today.slice(0,7)}-01`;
+    const startUtc=new Date(`${start}T00:00:00+05:30`).toISOString();
+    const endUtc=new Date(+new Date(`${today}T00:00:00+05:30`)+86400000).toISOString();
+    const [stats,definitions,facts,lastMatch]=await prisma.$transaction([
+      prisma.$queryRaw<HomeStatsRow[]>(homeStatsQuery(userId,startUtc,endUtc)),
+      prisma.achievement.findMany({where:liveAchievementWhere,orderBy:achievementOrder,take:6}),
+      prisma.$queryRaw<AchievementFacts[]>(achievementFactsQuery(userId,start,today)),
+      prisma.$queryRaw<{result:string;correct:number;questions:number}[]>(latestHomeMatchQuery(userId)),
+    ],{isolationLevel:'RepeatableRead'});
+    const rows=stats.filter(row=>row.kind==='difficulty');
+    const days=stats.filter(row=>row.kind==='day'&&row.date).map(row=>({date:row.date!,attempted:row.attempted,correct:row.correct}));
+    return {today,performance:performance(rows),difficulty:rows.map(row=>({difficulty:row.difficulty,...performance([row])})),
+      activity:yearCalendar(today,days).filter(day=>day.date.startsWith(today.slice(0,7))).map(day=>({...day,dailyChallengeCompleted:facts[0].dailyDates.includes(day.date)})),
+      badges:presentAchievements(definitions,stats,facts[0]),ranked:lastMatch[0]??null};
+  }
+  // CACHE_CANDIDATE ref=C05 scope=user layer=redis ttl=5-10s owner=stats
   async getHome(userId: string, now = new Date()) {
     const today = dateKey(now);
     const start = `${today.slice(0, 4)}-01-01`;

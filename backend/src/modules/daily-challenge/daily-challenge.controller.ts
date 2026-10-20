@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { dailyChallengeService } from './daily-challenge.service';
@@ -21,11 +23,7 @@ export class DailyChallengeController {
         data: status,
       });
     } catch (err: any) {
-      console.error('[DailyChallengeController] getStatus error:', err);
-      res.status(500).json({
-        success: false,
-        message: err.message || 'Failed to retrieve daily challenge status.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -47,11 +45,7 @@ export class DailyChallengeController {
         data: challenge,
       });
     } catch (err: any) {
-      console.error('[DailyChallengeController] startChallenge error:', err);
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to start daily challenge.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -66,9 +60,9 @@ export class DailyChallengeController {
       return;
     }
 
-    const { participationId, questionId, selectedOptionId, responseTimeMs } = req.body;
+    const { participationId, questionId, selectedOptionId } = req.body;
 
-    if (!participationId || !questionId || !selectedOptionId) {
+    if (!z.object({participationId:z.string().uuid(),questionId:z.string().uuid(),selectedOptionId:z.string().min(1).max(64)}).safeParse(req.body).success) {
       res.status(400).json({
         success: false,
         message: 'participationId, questionId, and selectedOptionId are required.',
@@ -82,7 +76,7 @@ export class DailyChallengeController {
         participationId,
         questionId,
         selectedOptionId,
-        responseTimeMs: typeof responseTimeMs === 'number' ? responseTimeMs : 0,
+        receivedAt: res.locals.receivedAt ?? new Date(),
       });
 
       res.status(200).json({
@@ -90,11 +84,7 @@ export class DailyChallengeController {
         data: result,
       });
     } catch (err: any) {
-      console.error('[DailyChallengeController] submitAnswer error:', err);
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to submit answer.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -109,8 +99,8 @@ export class DailyChallengeController {
       return;
     }
 
-    const page = parseInt(req.query.page as string, 10) || 1;
-    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const page = Math.max(1, Math.min(100000,parseInt(req.query.page as string, 10) || 1));
+    const limit = Math.max(1,Math.min(50,parseInt(req.query.limit as string, 10) || 10));
 
     try {
       const history = await dailyChallengeService.getHistory(userId, page, limit);
@@ -119,11 +109,7 @@ export class DailyChallengeController {
         data: history,
       });
     } catch (err: any) {
-      console.error('[DailyChallengeController] getHistory error:', err);
-      res.status(500).json({
-        success: false,
-        message: err.message || 'Failed to retrieve daily challenge history.',
-      });
+      publicFailure(res, err);
     }
   }
 }

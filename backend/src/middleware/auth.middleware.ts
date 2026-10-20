@@ -13,7 +13,6 @@ export function authenticateJwt(
 ): void {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    console.warn(`[Auth] 401 Unauthorized: Missing or invalid Bearer header on ${req.method} ${req.originalUrl}`);
     res.status(401).json({
       success: false,
       message: 'Access token required. Please authenticate.',
@@ -29,7 +28,6 @@ export function authenticateJwt(
     req.userEmail = payload.email;
     next();
   } catch (error: any) {
-    console.warn(`[Auth] 401 Unauthorized: JWT token verification failed on ${req.method} ${req.originalUrl}:`, error.message);
     res.status(401).json({
       success: false,
       message: 'Invalid or expired access token.',

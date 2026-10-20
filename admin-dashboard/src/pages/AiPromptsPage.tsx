@@ -32,6 +32,7 @@ interface AiPrompt {
   publishedPrompt: string;
   variables?: PromptVariable[];
   version: number;
+  draftRevision: number;
   isLive: boolean;
   hasUnpublishedChanges: boolean;
   lastPublishedAt?: string;
@@ -75,7 +76,7 @@ export const AiPromptsPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Failed to load AI prompts:', err);
-      setFeedback({ type: 'error', message: err.response?.data?.error || 'Failed to load AI prompts' });
+      setFeedback({ type: 'error', message: err.response?.data?.message || err.response?.data?.error || 'Failed to load AI prompts' });
     } finally {
       setLoading(false);
     }
@@ -95,7 +96,7 @@ export const AiPromptsPage: React.FC = () => {
     setSaving(true);
     setFeedback(null);
     try {
-      const res = await api.updateAiPromptDraft(selectedPrompt.key, draftText);
+      const res = await api.updateAiPromptDraft(selectedPrompt.key, draftText, selectedPrompt.draftRevision);
       if (res.data?.success) {
         setFeedback({
           type: 'success',
@@ -106,7 +107,7 @@ export const AiPromptsPage: React.FC = () => {
     } catch (err: any) {
       setFeedback({
         type: 'error',
-        message: err.response?.data?.error || 'Failed to save draft.',
+        message: err.response?.data?.message || err.response?.data?.error || 'Failed to save draft.',
       });
     } finally {
       setSaving(false);
@@ -123,12 +124,14 @@ export const AiPromptsPage: React.FC = () => {
     setPublishing(true);
     setFeedback(null);
     try {
+      let revision = selectedPrompt.draftRevision;
       // If there are unsaved editor changes in the draft, save draft first
       if (draftText !== selectedPrompt.draftPrompt) {
-        await api.updateAiPromptDraft(selectedPrompt.key, draftText);
+        const saved = await api.updateAiPromptDraft(selectedPrompt.key, draftText, revision);
+        revision = saved.data.data.draftRevision;
       }
 
-      const res = await api.publishAiPrompt(selectedPrompt.key);
+      const res = await api.publishAiPrompt(selectedPrompt.key, revision);
       if (res.data?.success) {
         setFeedback({
           type: 'success',
@@ -139,7 +142,7 @@ export const AiPromptsPage: React.FC = () => {
     } catch (err: any) {
       setFeedback({
         type: 'error',
-        message: err.response?.data?.error || 'Failed to publish prompt.',
+        message: err.response?.data?.message || err.response?.data?.error || 'Failed to publish prompt.',
       });
     } finally {
       setPublishing(false);
@@ -154,7 +157,7 @@ export const AiPromptsPage: React.FC = () => {
     if (!confirmReset) return;
 
     try {
-      const res = await api.resetAiPromptToDefault(selectedPrompt.key);
+      const res = await api.resetAiPromptToDefault(selectedPrompt.key, selectedPrompt.draftRevision);
       if (res.data?.success) {
         setDraftText(res.data.data.draftPrompt);
         setFeedback({
@@ -166,7 +169,7 @@ export const AiPromptsPage: React.FC = () => {
     } catch (err: any) {
       setFeedback({
         type: 'error',
-        message: err.response?.data?.error || 'Failed to reset prompt.',
+        message: err.response?.data?.message || err.response?.data?.error || 'Failed to reset prompt.',
       });
     }
   };

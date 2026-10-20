@@ -22,6 +22,7 @@ class PvpSocketService {
       StreamController<Map<String, dynamic>>.broadcast();
 
   Stream<Map<String, dynamic>> get eventStream => _eventController.stream;
+  bool _recoveringAuth = false;
   bool isConnected = false;
   bool isAuthenticated = false;
 
@@ -77,7 +78,10 @@ class PvpSocketService {
           try {
             final parsed = jsonDecode(data.toString()) as Map<String, dynamic>;
             if (!owned() || !identical(_channel, channel)) return;
-            if (parsed['event'] == 'AUTH_SUCCESS') isAuthenticated = true;
+            if (parsed['event'] == 'AUTH_SUCCESS') {
+              isAuthenticated = true;
+              _recoveringAuth = false;
+            }
             _eventController.add(parsed);
           } catch (e) {
             debugPrint('[PvP Socket] Failed to decode incoming message: $e');
@@ -92,7 +96,12 @@ class PvpSocketService {
         onDone: () {
           debugPrint('[PvP Socket] Connection closed');
           if (owned() && identical(_channel, channel)) {
+            final code = channel.closeCode;
             _connectionLost('Ranked connection interrupted.');
+            if ((code == 4001 || code == 4003) && !_recoveringAuth) {
+              _recoveringAuth = true;
+              unawaited(_refreshAndReconnect(generation, account));
+            }
           }
         },
       );
@@ -100,6 +109,22 @@ class PvpSocketService {
       if (!owned()) return;
       debugPrint('[PvP Socket] Connection Failed: $err');
       _connectionLost('Could not connect to Ranked. Please try again.');
+    }
+  }
+
+  Future<void> _refreshAndReconnect(int generation, String? account) async {
+    try {
+      final tokens = await Get.find<DioClient>().refreshSession();
+      if (tokens == null || generation != _generation || account != _account) {
+        return;
+      }
+      await connect(); // Arena AUTH_SUCCESS handling restores the participant's active match.
+    } catch (_) {
+      if (generation == _generation && account == _account) {
+        _connectionLost(
+          'Your session could not be refreshed. Please sign in again.',
+        );
+      }
     }
   }
 
@@ -152,6 +177,7 @@ class PvpSocketService {
   }
 
   void disconnect() {
+    _recoveringAuth = false;
     ++_generation;
     _connecting = null;
     _channel?.sink.close();

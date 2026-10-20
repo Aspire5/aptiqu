@@ -1,4 +1,4 @@
-import { prisma } from '../../../config/prisma';
+import { prisma } from './learning-transaction';
 
 export class MasteryService {
   private static instance: MasteryService;

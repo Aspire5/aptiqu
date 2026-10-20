@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { practiceSessionService } from './services/practice-session.service';
@@ -8,6 +9,7 @@ export class PracticeController {
    * GET /api/v1/practice/topics/live
    * Returns only LIVE topics and subtopics for practice selection.
    */
+  // CACHE_CANDIDATE ref=C01 scope=catalog layer=redis ttl=30-60s owner=curriculum
   public static async getLiveTopics(_req: AuthenticatedRequest, res: Response) {
     try {
       const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
@@ -16,10 +18,7 @@ export class PracticeController {
         data: liveUniverse,
       });
     } catch (err: any) {
-      res.status(500).json({
-        success: false,
-        message: err.message || 'Failed to retrieve live practice topics.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -44,28 +43,15 @@ export class PracticeController {
     // Both specific selection and random drill modes are supported
     const resolvedSubtopics = Array.isArray(subtopicIds) ? subtopicIds : undefined;
 
-    console.log(
-      `[PracticeController] POST /sessions requested by userId="${userId}" - topicId="${topicId || 'ALL'}", subtopicIds=${JSON.stringify(resolvedSubtopics || 'ALL')}`
-    );
 
     try {
       const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics, smartPicks);
-      console.log(
-        `[PracticeController] Practice session created successfully (sessionId="${session.id}", totalQuestions=${session.totalQuestions})`
-      );
       res.status(201).json({
         success: true,
         data: session,
       });
     } catch (err: any) {
-      console.error(
-        `[PracticeController] createSession failed for userId="${userId}":`,
-        err.message || err
-      );
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to create practice session.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -89,10 +75,7 @@ export class PracticeController {
         data: session,
       });
     } catch (err: any) {
-      res.status(404).json({
-        success: false,
-        message: err.message || 'Practice session not found.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -132,10 +115,7 @@ export class PracticeController {
         data: result,
       });
     } catch (err: any) {
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to submit practice answer.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -159,10 +139,7 @@ export class PracticeController {
         data: result,
       });
     } catch (err: any) {
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to abandon practice session.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -187,10 +164,7 @@ export class PracticeController {
         data: history,
       });
     } catch (err: any) {
-      res.status(500).json({
-        success: false,
-        message: err.message || 'Failed to retrieve practice history.',
-      });
+      publicFailure(res, err);
     }
   }
 
@@ -214,10 +188,7 @@ export class PracticeController {
         data: session,
       });
     } catch (err: any) {
-      res.status(400).json({
-        success: false,
-        message: err.message || 'Failed to replay practice session.',
-      });
+      publicFailure(res, err);
     }
   }
 }

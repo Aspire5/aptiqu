@@ -1,5 +1,6 @@
+import { prisma as rootPrisma } from '../../../config/prisma';
 import { buildSubtopicProgress } from './learning-map-progress';
-import { prisma } from '../../../config/prisma';
+import { prisma, learningTransaction, withDataTransaction } from '../../lesson/services/learning-transaction';
 import { xpService } from '../../xp/xp.service';
 import { AwardXpResult } from '../../xp/xp.types';
 
@@ -75,7 +76,6 @@ export interface SubjectLearningMapResult {
 
 export class RoadmapProgressionService {
   private static instance: RoadmapProgressionService;
-  private lastSyncTime = 0;
 
   public static getInstance(): RoadmapProgressionService {
     if (!RoadmapProgressionService.instance) {
@@ -92,13 +92,10 @@ export class RoadmapProgressionService {
    * Also deactivates/cleans up any entries for inactive subjects or topics.
    */
   public async syncRoadmapWithSyllabus(roadmapId?: string, force = false): Promise<void> {
-    const now = Date.now();
-    if (!force && now - this.lastSyncTime < 4000) {
-      return;
+    if (!learningTransaction()) {
+      return rootPrisma.$transaction(tx => withDataTransaction(tx, () => this.syncRoadmapWithSyllabus(roadmapId, true)), {timeout:60000});
     }
-    this.lastSyncTime = now;
-
-    try {
+    await prisma.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('aptiqu:catalog'))`;
       // 1. Resolve active roadmap(s)
       let roadmaps: any[];
       if (roadmapId) {
@@ -228,10 +225,11 @@ export class RoadmapProgressionService {
           if (existingSteps.length > 0) {
             await prisma.roadmapStep.updateMany({
               where: { roadmapId: roadmap.id, subjectId: subject.id },
-              data: { sequence: { increment: 10000 } },
+              data: { sequence: { increment: Math.max(0,...existingSteps.map(step=>step.sequence))+existingSteps.length+activeTopics.length+1 }, isActive:false },
             });
           }
 
+          const activeStepIds=new Set<string>();
           for (let tIdx = 0; tIdx < activeTopics.length; tIdx++) {
             const topic = activeTopics[tIdx];
             const stepSeq = tIdx + 1;
@@ -277,6 +275,7 @@ export class RoadmapProgressionService {
               });
             }
 
+            activeStepIds.add(currentStepId);
             // 6. Sync ScriptAssignments for this step
             const subtopicSeqMap = new Map<string, number>();
             for (const sub of (topic.subtopics || [])) {
@@ -287,10 +286,11 @@ export class RoadmapProgressionService {
             const publishedScripts = await prisma.lessonScript.findMany({
               where: {
                 topicId: topic.id,
-                status: { in: ['PUBLISHED', 'REVIEW'] },
+                status: 'PUBLISHED',
               },
               include: {
                 versions: {
+                  where: { status: 'PUBLISHED' },
                   select: { id: true },
                   orderBy: { versionNumber: 'desc' },
                   take: 1,
@@ -304,46 +304,25 @@ export class RoadmapProgressionService {
               return seqA - seqB;
             });
 
+            await prisma.scriptAssignment.updateMany({where:{roadmapStepId:currentStepId,scriptId:{notIn:publishedScripts.map(script => script.id)}},data:{status:'ARCHIVED'}});
             for (let scIdx = 0; scIdx < publishedScripts.length; scIdx++) {
               const script = publishedScripts[scIdx];
-              const versionId = script.publishedVersionId || script.versions[0]?.id;
+              const versionId = script.versions[0]?.id;
               const assignSeq = (script.subtopicId ? subtopicSeqMap.get(script.subtopicId) : undefined) ?? (scIdx + 1);
 
-              const existingAssign = await prisma.scriptAssignment.findFirst({
-                where: {
-                  roadmapStepId: currentStepId,
-                  scriptId: script.id,
-                },
+              if (!versionId || !script.versions.some(v => v.id === versionId)) continue;
+              await prisma.scriptAssignment.upsert({
+                where:{roadmapStepId_scriptId:{roadmapStepId:currentStepId,scriptId:script.id}},
+                create:{roadmapStepId:currentStepId,scriptId:script.id,publishedVersionId:versionId,status:'PUBLISHED',sequence:assignSeq,isRequired:true},
+                update:{publishedVersionId:versionId,status:'PUBLISHED',sequence:assignSeq},
               });
-
-              if (!existingAssign) {
-                await prisma.scriptAssignment.create({
-                  data: {
-                    roadmapStepId: currentStepId,
-                    scriptId: script.id,
-                    publishedVersionId: versionId || null,
-                    status: 'PUBLISHED',
-                    sequence: assignSeq,
-                    isRequired: true,
-                  },
-                });
-              } else {
-                await prisma.scriptAssignment.update({
-                  where: { id: existingAssign.id },
-                  data: {
-                    publishedVersionId: versionId || existingAssign.publishedVersionId,
-                    status: 'PUBLISHED',
-                    sequence: assignSeq,
-                  },
-                });
-              }
             }
           }
+          const inactiveSteps=existingSteps.filter(step=>!activeStepIds.has(step.id)).sort((a,b)=>a.id.localeCompare(b.id));
+          for(let index=0;index<inactiveSteps.length;index++) await prisma.roadmapStep.update({where:{id:inactiveSteps[index].id},data:{sequence:activeTopics.length+index+1,isActive:false}});
         }
       }
-    } catch (err) {
-      console.error('[RoadmapSync] Error synchronizing roadmap with syllabus:', err);
-    }
+
   }
 
   /**
@@ -375,17 +354,6 @@ export class RoadmapProgressionService {
     if (!roadmapId) {
       throw new Error('No active roadmap found in the system.');
     }
-
-    // Persist active roadmap on user if it was null
-    if (user && !user.activeRoadmapId) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { activeRoadmapId: roadmapId },
-      });
-    }
-
-    // Automatically synchronize roadmap with active syllabus
-    await this.syncRoadmapWithSyllabus(roadmapId);
 
     const roadmap = await prisma.roadmap.findUnique({
       where: { id: roadmapId },
@@ -560,7 +528,7 @@ export class RoadmapProgressionService {
     subjectId: string
   ): Promise<SubjectLearningMapResult> {
     // 1. Reconcile roadmap with active syllabus
-    await this.syncRoadmapWithSyllabus(roadmapId);
+
 
     // Resolve roadmap by ID or slug
     const roadmap = await prisma.roadmap.findFirst({
@@ -862,7 +830,7 @@ export class RoadmapProgressionService {
     currentRoadmapStepId?: string | null,
     currentScriptId?: string | null
   ): Promise<NextLearningStepResult> {
-    await this.syncRoadmapWithSyllabus(roadmapId);
+
 
     const roadmap = await prisma.roadmap.findUnique({
       where: { id: roadmapId },

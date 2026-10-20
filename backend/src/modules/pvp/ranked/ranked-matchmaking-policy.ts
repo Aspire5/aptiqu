@@ -1,3 +1,4 @@
+import { readRankedConfig } from '../../../config/runtime-config';
 import { z } from 'zod';
 const policySchema = z.object({ narrowWindow: z.number().int().min(1).max(400), narrowMs: z.literal(60000),
   expandEveryMs: z.number().int().min(5000).max(60000), expandBy: z.number().int().min(1).max(200),
@@ -8,10 +9,8 @@ export const DEFAULT_MATCHMAKING_POLICY: MatchmakingPolicy = {
   narrowWindow: 100, narrowMs: 60000, expandEveryMs: 15000, expandBy: 50, maximumWindow: 600, queueLeaseMs: 45000, claimLeaseMs: 120000,
 };
 export function matchmakingPolicy(): MatchmakingPolicy {
-  return policySchema.parse({ ...DEFAULT_MATCHMAKING_POLICY,
-    narrowWindow: Number(process.env.RANKED_QUEUE_NARROW_WINDOW ?? 100), expandEveryMs: Number(process.env.RANKED_QUEUE_EXPAND_INTERVAL_MS ?? 15000),
-    expandBy: Number(process.env.RANKED_QUEUE_EXPAND_BY ?? 50), maximumWindow: Number(process.env.RANKED_QUEUE_MAXIMUM_WINDOW ?? 600),
-  });
+  const config=readRankedConfig();
+  return policySchema.parse({...DEFAULT_MATCHMAKING_POLICY,narrowWindow:config.narrowWindow,maximumWindow:config.maximumWindow,expandEveryMs:config.expandEveryMs,expandBy:config.expandBy});
 }
 export function ratingWindow(waitMs: number, p: MatchmakingPolicy = DEFAULT_MATCHMAKING_POLICY): number {
   if (!Number.isFinite(waitMs)) throw new RangeError('Invalid queue time.');

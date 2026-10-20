@@ -1,3 +1,4 @@
+import { log, safeError } from '../../observability/logger';
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
@@ -12,11 +13,13 @@ const versionInput = z.object({ version: z.number().int().positive() }).strict()
 function fail(res: Response, error: unknown) {
   if (error instanceof z.ZodError) return res.status(400).json({ success: false, error: error.issues.map(i => i.message).join('; ') });
   if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') return res.status(404).json({ success: false, error: 'Achievement no longer exists.' });
-  console.error('[Achievements]', error);
+  log('error','admin_achievements_controller.fail.error');
   return res.status(500).json({ success: false, error: 'Unable to manage achievements. Please try again.' });
 }
 export class AdminAchievementsController {
+  // CACHE_CANDIDATE ref=C16 scope=admin-role layer=memory ttl=build owner=achievements
   static options(_req: Request, res: Response) { res.json({ success: true, data: achievementOptions }); }
+  // CACHE_CANDIDATE ref=C17 scope=admin-role layer=fragment ttl=30-60s owner=achievements
   static async list(req: Request, res: Response) {
     try {
       const q = listing.parse(req.query);

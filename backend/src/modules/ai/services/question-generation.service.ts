@@ -1,4 +1,7 @@
-import { prisma } from '../../../config/prisma';
+import { log, safeError } from '../../../observability/logger';
+import { getPracticeTiming } from '../../../config/timing-policy';
+import { ENV } from '../../../config/env';
+import { generationDb as prisma } from '../../concurrency/concurrency-lock.service';
 import { geminiProvider } from '../gemini.provider';
 import {
   PRACTICE_GENERATION_SYSTEM_INSTRUCTION,
@@ -80,6 +83,7 @@ export class QuestionGenerationService {
     }
 
     try {
+      return await ConcurrencyLockService.runWithLease(subtopicId,lockToken,async () => {
       // 2. Fetch existing fingerprints for this subtopic to avoid duplicate output
       const existingQuestions = await prisma.question.findMany({
         where: { subtopicId },
@@ -90,9 +94,7 @@ export class QuestionGenerationService {
       const existingFingerprints = existingQuestions.map((q) => q.fingerprint);
 
       // 3. Generator Call
-      console.log(
-        `[QuestionGen] Initiating AI question generation for subtopic "${subtopic.name}" (${subtopicId}), requestedCount: ${requestedCount}`
-      );
+      log('info','question_generation_service.generateQuestionsForSubtopic.info');
       const generatorPrompt = `
 Generate ${requestedCount} aptitude practice questions under these constraints:
 - Subject: ${subtopic.topic.subject.name} (ID: ${subtopic.topic.subject.id})
@@ -111,15 +113,17 @@ ${existingFingerprints.map((f) => `- ${f}`).join('\n')}
 Generate exactly ${requestedCount} questions.
 `.trim();
 
-      const systemInstruction = await aiPromptService.getPublishedPrompt(
+      const promptSnapshot = await aiPromptService.getPublishedPromptSnapshot(
         'PRACTICE_GENERATION',
         PRACTICE_GENERATION_SYSTEM_INSTRUCTION
       );
 
+      const systemInstruction=promptSnapshot.text;
+      const timing=await getPracticeTiming();
       const rawGeneration = await geminiProvider.generateStructuredContent<{
         questions: any[];
       }>({
-        systemInstruction: systemInstruction + '\nMandatory runtime rule: use only value/context variations of the approved examples and exact pattern labels in the request. Never invent a question structure.',
+        systemInstruction: systemInstruction + `\nSolving time must be ${timing.minSeconds}..${timing.maxSeconds} seconds.` + '\nMandatory runtime rule: use only value/context variations of the approved examples and exact pattern labels in the request. Never invent a question structure.',
         prompt: generatorPrompt,
         responseSchema: QUESTION_ARRAY_JSON_SCHEMA,
         timeoutMs: 60000,
@@ -130,9 +134,7 @@ Generate exactly ${requestedCount} questions.
         throw new Error('Gemini generator did not return a valid questions array.');
       }
 
-      console.log(
-        `[QuestionGen] Gemini returned ${rawGeneration.questions.length} candidate questions for "${subtopic.name}". Validating structure...`
-      );
+      log('info','question_generation_service.generateQuestionsForSubtopic.info');
 
       // 4. Structural Validation Gate
       const structurallyValid: any[] = [];
@@ -179,6 +181,7 @@ Generate exactly ${requestedCount} questions.
         });
         if (existsInDb) continue;
 
+        if(validData.estimatedTimeSeconds<timing.minSeconds || validData.estimatedTimeSeconds>timing.maxSeconds)continue;
         acceptedRecords.push({
           subjectId: subtopic.topic.subject.id,
           topicId: subtopic.topic.id,
@@ -196,8 +199,8 @@ Generate exactly ${requestedCount} questions.
           sourceType: 'AI_GENERATED',
           status: 'PUBLISHED',
           fingerprint,
-          generationModel: 'gemini-3.5-flash-lite',
-          generationPromptVersion: 'v2.0.0-exemplar',
+          generationModel: ENV.GEMINI_MODEL,
+          generationPromptVersion: promptSnapshot.version,
           generatedAt: new Date(),
           reviewedAt: new Date(),
         });
@@ -211,15 +214,14 @@ Generate exactly ${requestedCount} questions.
             data: record,
           });
           createdQuestions.push(created);
-        } catch {
-          // Ignore unique fingerprint constraint race collision
+        } catch (error: any) {
+          if (error?.code !== 'P2002') throw error;
         }
       }
 
-      console.log(
-        `[QuestionGen] Successfully persisted ${createdQuestions.length} valid questions to DB for subtopic "${subtopic.name}" (${subtopicId}).`
-      );
+      log('info','question_generation_service.generateQuestionsForSubtopic.info');
       return createdQuestions;
+      });
     } finally {
       await ConcurrencyLockService.releaseLock(subtopicId, lockToken);
     }

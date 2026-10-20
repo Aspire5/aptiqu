@@ -1,4 +1,5 @@
-import { prisma } from '../../../config/prisma';
+import { log, safeError } from '../../../observability/logger';
+import { generationDb as prisma } from '../../concurrency/concurrency-lock.service';
 import { geminiProvider } from '../gemini.provider';
 import { DAILY_CHALLENGE_GENERATION_SYSTEM_INSTRUCTION } from '../prompts/daily-challenge-generation.prompt';
 import { QUESTION_ARRAY_JSON_SCHEMA } from '../prompts/practice-generation.prompt';
@@ -80,7 +81,9 @@ export class DailyChallengeGenerationService {
       if (generated) return generated;
     }
 
+    if (!lockToken) throw new Error('Generation is already in progress. Please retry later.');
     try {
+      return await ConcurrencyLockService.runWithLease(lockKey,lockToken,async () => {
       // Double check after lock acquisition
       const doubleCheck = await prisma.dailyChallengeScript.findUnique({
         where: {
@@ -128,9 +131,7 @@ export class DailyChallengeGenerationService {
         });
 
         if (candidates.length === 0) {
-          console.error(
-            `[DailyChallenge] INVENTORY DEPLETED: Zero unused MANUAL PYQs for difficulty ${diff} on ${dateString} (Tier ${tier}).`
-          );
+          log('error','daily_challenge_generation_service.getOrGenerateDailyScript.error');
           // Inventory depletion alert is monitored and displayed in Admin Dashboard (AdminDashboardService.getDailyChallengeInventoryStatus)
           // to prevent corrupted or non-PYQ daily challenge generation.
           throw new Error(
@@ -178,6 +179,7 @@ export class DailyChallengeGenerationService {
             },
           },
         });
+      });
       });
     } finally {
       await ConcurrencyLockService.releaseLock(lockKey, lockToken);
@@ -297,9 +299,9 @@ export class DailyChallengeGenerationService {
     for (const tier of tiers) {
       try {
         await this.getOrGenerateDailyScript(dateString, tier);
-        console.log(`[Prewarm] Successfully pre-warmed Daily Challenge for ${dateString} Tier ${tier}`);
+        log('info','daily_challenge_generation_service.prewarmDailyChallengeScripts.info');
       } catch (err) {
-        console.error(`[Prewarm] Error pre-warming Daily Challenge for ${dateString} Tier ${tier}:`, err);
+        throw err; // Real tier failure must fail the queue job; earlier tiers are idempotent.
       }
     }
   }

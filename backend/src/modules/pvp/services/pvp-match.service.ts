@@ -253,6 +253,7 @@ export class PvpMatchService {
     // Explicit defense-in-depth: discard if any question belongs to an inactive subtopic, topic, or subject
     const hasInactive = questionSet.setQuestions.some(
       (sq) =>
+        sq.question.status !== 'PUBLISHED' ||
         !sq.question?.subtopic?.isActive ||
         !sq.question?.topic?.isActive ||
         !sq.question?.topic?.subject?.isActive

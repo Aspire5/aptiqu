@@ -1,3 +1,4 @@
+import '../../../security/tests/legacy-local-guard';
 import { prisma } from '../../../config/prisma';
 import { lessonSessionService } from '../services/lesson-session.service';
 import { randomUUID as uuidv4 } from 'crypto';

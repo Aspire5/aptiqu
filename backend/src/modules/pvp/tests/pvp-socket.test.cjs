@@ -34,10 +34,12 @@ function setup({ skill = false, inspect, queue } = {}) {
   };
   const schedule = (fn, delay) => { const timer = { fn, delay, cleared: false }; timers.push(timer); return timer; };
   const deps = {
+    '../../security/trusted-peer': {trustedPeer: () => '127.0.0.1'},
+    '../../security/request-policy': {takeBudget: async () => {}},
     './ranked/ranked-runtime': { rankedRuntime: () => ({ reads: skill, skillMatchmaking: skill }) },
     './ranked/ranked-eligibility.service': { rankedEligibilityService: { inspect: inspect ?? (async userId => ({ userId, rating: 1200, standingVersion: 0, seasonId: '2026-10', policyId: 'ranked-v1', ratingMode: 'RATED', capability: 1, league: 'UNRANKED' })) } },
     ws: { WebSocket: Socket, WebSocketServer: Wss },
-    '../../utils/jwt': { verifyAccessToken: token => { if (!users.includes(token)) throw new Error('bad token'); return { userId: token }; } },
+    '../../utils/jwt': { verifyAccessToken: token => { if (!users.includes(token)) throw new Error('bad token'); return { userId: token, exp: Math.floor(Date.now()/1000)+900 }; } },
     './services/pvp-match.service': { pvpMatchService: service },
     '../lesson/services/redis.service': { redisService: { getClient: () => ({ zrem: async (...args) => { redisRemovals.push(args); } }), getIsConnected: () => true } },
   };
@@ -212,4 +214,11 @@ test('a winning claim replies PAIRING to cancellation, and Redis cleanup failure
 test('rated search pauses on Redis failure without entering the local FIFO fallback', async () => {
  const f=setup({skill:true}),ws=await f.connect(users[0]);await ws.receive({type:'JOIN_MATCHMAKING',payload:{rankedCapability:1}});
  assert.equal(f.sent.at(-1).data.code,'QUEUE_UNAVAILABLE');assert.equal(f.server.matchmakingQueue.length,0);assert.equal(f.server.queueOwners.size,0);
+});
+
+test('expired authentication closes the socket and cannot submit another answer', async () => {
+  const f = setup(); const ws = await f.connect(users[0]);
+  ws.authExpiresAt = Date.now()-1;
+  await ws.receive({type:'SUBMIT_ANSWER',payload:{matchId,questionIndex:0,selectedOptionId:'B',responseTimeMs:0}});
+  assert.equal(ws.readyState,3); assert.equal(f.mutations.length,0);
 });

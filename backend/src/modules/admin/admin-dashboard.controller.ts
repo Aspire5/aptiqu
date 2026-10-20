@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Request, Response } from 'express';
 import { AdminDashboardService } from './admin-dashboard.service';
 
@@ -5,6 +6,7 @@ export class AdminDashboardController {
   /**
    * GET /api/v1/admin/dashboard/stats
    */
+  // CACHE_CANDIDATE ref=C15 scope=admin-role layer=redis ttl=15-60s owner=analytics
   public static async getStats(_req: Request, res: Response): Promise<void> {
     try {
       const [overview, growthTrends, dailyStreakHistory, activityTrends] = await Promise.all([
@@ -24,11 +26,7 @@ export class AdminDashboardController {
         },
       });
     } catch (err: any) {
-      console.error('[AdminDashboardController] Error fetching stats:', err);
-      res.status(500).json({
-        success: false,
-        message: err.message || 'Failed to fetch dashboard statistics',
-      });
+      publicFailure(res,err);
     }
   }
 }

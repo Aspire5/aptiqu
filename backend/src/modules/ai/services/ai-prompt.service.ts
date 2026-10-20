@@ -1,3 +1,4 @@
+import { PublicError } from '../../../security/errors';
 import { prisma } from '../../../config/prisma';
 import { PVP_GENERATION_SYSTEM_INSTRUCTION } from '../prompts/pvp-generation.prompt';
 import { PVP_REVIEW_SYSTEM_INSTRUCTION } from '../prompts/pvp-review.prompt';
@@ -261,7 +262,6 @@ export const DEFAULT_PROMPT_DEFINITIONS: Record<string, PromptDefinition> = {
 export class AiPromptService {
   private static instance: AiPromptService;
   // In-memory cache for ultra-fast, zero-restart prompt access
-  private publishedPromptCache: Map<string, string> = new Map();
   private isInitialized = false;
 
   public static getInstance(): AiPromptService {
@@ -279,33 +279,14 @@ export class AiPromptService {
 
     try {
       for (const [key, def] of Object.entries(DEFAULT_PROMPT_DEFINITIONS)) {
-        const existing = await prisma.aiPrompt.findUnique({
-          where: { key },
-        });
-
-        if (!existing) {
-          const created = await prisma.aiPrompt.create({
-            data: {
-              key: def.key,
-              title: def.title,
-              category: def.category,
-              description: def.description,
-              draftPrompt: def.defaultPrompt,
-              publishedPrompt: def.defaultPrompt,
-              variables: def.variables as any,
-              version: 1,
-              isLive: true,
-              lastPublishedAt: new Date(),
-            },
-          });
-          this.publishedPromptCache.set(key, created.publishedPrompt);
-        } else {
-          this.publishedPromptCache.set(key, existing.publishedPrompt);
-        }
+        await prisma.aiPrompt.upsert({where:{key},update:{},create:{
+          key:def.key,title:def.title,category:def.category,description:def.description,
+          draftPrompt:def.defaultPrompt,publishedPrompt:def.defaultPrompt,variables:def.variables as any,version:1,isLive:true,lastPublishedAt:new Date(),
+        }});
       }
       this.isInitialized = true;
     } catch (err) {
-      console.error('[AiPromptService] Failed to initialize default prompts:', err);
+      throw err;
     }
   }
 
@@ -314,44 +295,20 @@ export class AiPromptService {
    * Reads from memory cache with DB fallback. Immediate live effect without server restart!
    */
   public async getPublishedPrompt(key: string, fallback?: string): Promise<string> {
-    if (!this.isInitialized) {
-      await this.ensureInitialized();
-    }
+    return (await this.getPublishedPromptSnapshot(key,fallback)).text;
+  }
 
-    const cached = this.publishedPromptCache.get(key);
-    if (cached) {
-      return cached;
-    }
-
-    // Cache miss: check DB
-    try {
-      const record = await prisma.aiPrompt.findUnique({
-        where: { key },
-      });
-
-      if (record && record.publishedPrompt) {
-        this.publishedPromptCache.set(key, record.publishedPrompt);
-        return record.publishedPrompt;
-      }
-    } catch (err) {
-      console.warn(`[AiPromptService] DB read error for prompt key "${key}":`, err);
-    }
-
-    // Default fallback
-    const def = DEFAULT_PROMPT_DEFINITIONS[key];
-    const resolved = def ? def.defaultPrompt : (fallback || '');
-    if (resolved) {
-      this.publishedPromptCache.set(key, resolved);
-    }
-    return resolved;
+  public async getPublishedPromptSnapshot(key:string,fallback?:string) {
+    // Published prompt reads are small and authoritative across workers. No immortal local cache.
+    const record=await prisma.aiPrompt.findUnique({where:{key},select:{publishedPrompt:true,version:true,isLive:true}});
+    if(record?.isLive && record.publishedPrompt)return {text:record.publishedPrompt,version:String(record.version)};
+    return {text:DEFAULT_PROMPT_DEFINITIONS[key]?.defaultPrompt??fallback??'',version:'builtin'};
   }
 
   /**
    * Synchronous getter for when caller already ensured initialization
    */
   public getPublishedPromptSync(key: string, fallback?: string): string {
-    const cached = this.publishedPromptCache.get(key);
-    if (cached) return cached;
     const def = DEFAULT_PROMPT_DEFINITIONS[key];
     return def ? def.defaultPrompt : (fallback || '');
   }
@@ -393,76 +350,27 @@ export class AiPromptService {
   /**
    * Save a draft prompt (does NOT update live server prompt).
    */
-  public async saveDraft(key: string, draftPrompt: string): Promise<any> {
-    await this.ensureInitialized();
-    const updated = await prisma.aiPrompt.update({
-      where: { key },
-      data: {
-        draftPrompt,
-      },
+  private async edit(key:string,expectedRevision:number|undefined,data:Record<string,unknown>,publish=false) {
+    if(!Number.isInteger(expectedRevision))throw new PublicError('Reload the prompt before editing','PRECONDITION_REQUIRED',428);
+    const updated=await prisma.$transaction(async tx=>{
+      const current=await tx.aiPrompt.findUnique({where:{key}});
+      if(!current)throw new PublicError('Prompt not found','NOT_FOUND',404);
+      const changed=await tx.aiPrompt.updateMany({where:{key,draftRevision:expectedRevision},data:{...data,draftRevision:{increment:1},...(publish?{publishedPrompt:current.draftPrompt,version:{increment:1},lastPublishedAt:new Date()}: {})}});
+      if(changed.count!==1)throw new PublicError('Prompt changed in another editor. Reload and review it.','VERSION_CONFLICT',409);
+      return tx.aiPrompt.findUniqueOrThrow({where:{key}});
     });
-
-    return {
-      ...updated,
-      hasUnpublishedChanges: updated.draftPrompt !== updated.publishedPrompt,
-    };
+    return {...updated,hasUnpublishedChanges:updated.draftPrompt!==updated.publishedPrompt};
+  }
+  public async saveDraft(key:string,draftPrompt:string,expectedRevision?:number){
+    if(!draftPrompt.trim()||draftPrompt.length>100000)throw new PublicError('Invalid prompt text');
+    return this.edit(key,expectedRevision,{draftPrompt});
+  }
+  public async publishPrompt(key:string,expectedRevision?:number){return this.edit(key,expectedRevision,{},true);}
+  public async resetToDefault(key:string,expectedRevision?:number){
+    const def=DEFAULT_PROMPT_DEFINITIONS[key];if(!def)throw new PublicError('Unknown prompt');
+    return this.edit(key,expectedRevision,{draftPrompt:def.defaultPrompt});
   }
 
-  /**
-   * Publish the draft prompt (immediately updates live server prompt without restarting).
-   */
-  public async publishPrompt(key: string): Promise<any> {
-    await this.ensureInitialized();
-    const current = await prisma.aiPrompt.findUnique({
-      where: { key },
-    });
-
-    if (!current) {
-      throw new Error(`Prompt with key "${key}" not found.`);
-    }
-
-    const updated = await prisma.aiPrompt.update({
-      where: { key },
-      data: {
-        publishedPrompt: current.draftPrompt,
-        version: { increment: 1 },
-        lastPublishedAt: new Date(),
-      },
-    });
-
-    // CRITICAL: Immediately update memory cache so live server calls use the new prompt instantly
-    this.publishedPromptCache.set(key, updated.publishedPrompt);
-
-    console.log(`[AiPromptService] Prompt "${key}" PUBLISHED to version ${updated.version}. Memory cache refreshed.`);
-
-    return {
-      ...updated,
-      hasUnpublishedChanges: false,
-    };
-  }
-
-  /**
-   * Reset prompt draft back to default implementation.
-   */
-  public async resetToDefault(key: string): Promise<any> {
-    await this.ensureInitialized();
-    const def = DEFAULT_PROMPT_DEFINITIONS[key];
-    if (!def) {
-      throw new Error(`Default definition for key "${key}" not found.`);
-    }
-
-    const updated = await prisma.aiPrompt.update({
-      where: { key },
-      data: {
-        draftPrompt: def.defaultPrompt,
-      },
-    });
-
-    return {
-      ...updated,
-      hasUnpublishedChanges: updated.draftPrompt !== updated.publishedPrompt,
-    };
-  }
 }
 
 export const aiPromptService = AiPromptService.getInstance();

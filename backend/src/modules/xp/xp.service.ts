@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { prisma } from '../../config/prisma';
+import { prisma, learningTransaction } from '../lesson/services/learning-transaction';
 import { XpPolicy } from './xp.policy';
 import {
   AwardXpInput,
@@ -180,23 +180,6 @@ export class XpService {
 
         const metrics = XpPolicy.getLevelProgress(newTotal);
 
-        // 7. Structured observability log
-        console.log(
-          JSON.stringify({
-            event: 'XP_AWARDED',
-            userId,
-            sourceType,
-            amount: numericAmount,
-            previousTotal,
-            newTotal,
-            previousLevel,
-            newLevel,
-            levelsGained,
-            idempotencyKey,
-            timestamp: new Date().toISOString(),
-          })
-        );
-
         return {
           awarded: true,
           xp: {
@@ -216,6 +199,7 @@ export class XpService {
       };
 
     try {
+      txClient = txClient ?? learningTransaction();
       if (txClient) {
         return await executeAward(txClient);
       }

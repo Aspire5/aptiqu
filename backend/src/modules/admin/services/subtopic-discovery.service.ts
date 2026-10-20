@@ -1,4 +1,5 @@
-import { prisma } from '../../../config/prisma';
+import { log, safeError } from '../../../observability/logger';
+import { prisma } from './book-run';
 import { geminiProvider } from '../../ai/gemini.provider';
 import { pdfParserService } from './pdf-parser.service';
 import {
@@ -28,11 +29,9 @@ export class SubtopicDiscoveryService {
     topicCandidate: DetectedTopicCandidate,
     dbTopicId: string
   ): Promise<DiscoveredSubtopicCandidate[]> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'discoverSubtopicsForTopic');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'discoverSubtopicsForTopic');
 
-    console.log(
-      `[SubtopicDiscoveryService] Discovering subtopics for topic "${topicCandidate.name}" (Pages ${topicCandidate.startPage}-${topicCandidate.endPage})...`
-    );
+    log('info','subtopic_discovery_service.discoverSubtopicsForTopic.info');
 
     // Retrieve topic source text (capped to 10 introductory theory/concept pages to prevent token overflow)
     const maxEndPage = Math.min(topicCandidate.endPage, topicCandidate.startPage + 10);
@@ -70,9 +69,7 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
     }
 
     const subtopics = result.subtopics;
-    console.log(
-      `[SubtopicDiscoveryService] Generated ${subtopics.length} subtopics for topic "${topicCandidate.name}". Persisting...`
-    );
+    log('info','subtopic_discovery_service.discoverSubtopicsForTopic.info');
 
     // Persist into database under this topic
     for (let i = 0; i < subtopics.length; i++) {
@@ -142,13 +139,13 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
       throw new Error('No detected topics found in book metadata. Run topic discovery first.');
     }
 
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of discoverAllSubtopicsForBook');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of discoverAllSubtopicsForBook');
 
     const subtopicsByTopicCode: Record<string, DiscoveredSubtopicCandidate[]> = {};
     const totalTopics = detectedTopics.length;
 
     for (let i = 0; i < totalTopics; i++) {
-      bookCancellationService.checkAndThrowIfCancelled(bookId, `discovering subtopics topic index ${i}`);
+      await bookCancellationService.checkAndThrowIfCancelled(bookId, `discovering subtopics topic index ${i}`);
       const topicCandidate = detectedTopics[i];
       // Find matching dbTopicId
       const matchingTopic = bookSource.subject.topics.find(
@@ -166,9 +163,7 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
       });
 
       if (existingSubtopics.length >= 2) {
-        console.log(
-          `[SubtopicDiscoveryService] Topic "${topicCandidate.name}" already has ${existingSubtopics.length} subtopics. Skipping AI synthesis.`
-        );
+        log('info','subtopic_discovery_service.discoverAllSubtopicsForBook.info');
         subtopicsByTopicCode[topicCandidate.code] = existingSubtopics as any;
         if (onProgress) {
           await onProgress((i + 1) / totalTopics, i + 1, totalTopics);
@@ -180,14 +175,10 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
         const discovered = await this.discoverSubtopicsForTopic(bookId, topicCandidate, dbTopicId);
         subtopicsByTopicCode[topicCandidate.code] = discovered;
       } catch (err: any) {
-        if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
+        if (err.message?.includes('BOOK_INGESTION_CANCELLED') || await bookCancellationService.isCancelled(bookId)) {
           throw err;
         }
-        console.error(
-          `[SubtopicDiscoveryService] Error discovering subtopics for topic "${topicCandidate.name}":`,
-          err.message
-        );
-        // Continue to other topics rather than aborting entire book
+        throw err;
       }
 
       if (onProgress) {
@@ -210,7 +201,7 @@ Synthesize the pedagogical subtopics for this topic based strictly on the concep
       },
     });
 
-    console.log(`[SubtopicDiscoveryService] Finished subtopic discovery across all topics for book "${bookSource.title}".`);
+    log('info','subtopic_discovery_service.discoverAllSubtopicsForBook.info');
     return subtopicsByTopicCode;
   }
 }

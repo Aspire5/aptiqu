@@ -39,7 +39,7 @@ class DioClient {
 
   void _setupInterceptors() {
     dio.interceptors.add(
-      QueuedInterceptorsWrapper(
+      InterceptorsWrapper(
         onRequest: (options, handler) async {
           // Attach Access Token if available
           final accessToken = await getAccessToken();
@@ -55,20 +55,26 @@ class DioClient {
           // If 401 Unauthorized, attempt 7-day refresh token rotation
           if (error.response?.statusCode == 401 &&
               !error.requestOptions.path.contains('/auth/refresh') &&
-              !error.requestOptions.path.contains('/auth/google')) {
+              !error.requestOptions.path.contains('/auth/google') &&
+              error.requestOptions.extra['authRetried'] != true) {
             try {
-              final newTokens = await _performTokenRefresh();
+              final newTokens = await refreshSession();
               if (newTokens != null) {
                 // Retry failed request with new access token
                 final opts = error.requestOptions;
-                opts.headers['Authorization'] = 'Bearer ${newTokens['accessToken']}';
+                opts.extra['authRetried'] = true;
+                opts.headers['Authorization'] =
+                    'Bearer ${newTokens['accessToken']}';
                 final cloneReq = await dio.fetch(opts);
                 return handler.resolve(cloneReq);
               }
-            } catch (_) {
-              // Refresh failed: 7 days expired or revoked
-              await clearTokens();
-              onSessionExpired?.call();
+            } on DioException catch (refreshError) {
+              if (refreshError.response?.statusCode == 401 ||
+                  refreshError.response?.statusCode == 403) {
+                await clearTokens();
+                onSessionExpired?.call();
+              }
+              // Rate limits, outages and uncertain network results preserve local credentials.
             }
           }
           return handler.next(error);
@@ -77,11 +83,31 @@ class DioClient {
     );
   }
 
+  Future<Map<String, String>?>? _refreshing;
+  Future<Map<String, String>?> refreshSession() {
+    final pending = _refreshing;
+    if (pending != null) return pending;
+    late final Future<Map<String, String>?> work;
+    work = _performTokenRefresh().whenComplete(() {
+      if (identical(_refreshing, work)) _refreshing = null;
+    });
+    _refreshing = work;
+    return work;
+  }
+
   Future<Map<String, String>?> _performTokenRefresh() async {
     final refreshToken = await getRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) return null;
 
-    final response = await dio.post(
+    // Separate transport avoids waiting on this client's queued error interceptor.
+    final transport = Dio(
+      BaseOptions(
+        baseUrl: dio.options.baseUrl,
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
+    final response = await transport.post(
       '/auth/refresh',
       data: {'refreshToken': refreshToken},
     );
@@ -91,15 +117,13 @@ class DioClient {
       final newAccessToken = data['accessToken'] as String;
       final newRefreshToken = data['refreshToken'] as String;
 
+      if (await getRefreshToken() != refreshToken) return null;
       await saveTokens(
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
       );
 
-      return {
-        'accessToken': newAccessToken,
-        'refreshToken': newRefreshToken,
-      };
+      return {'accessToken': newAccessToken, 'refreshToken': newRefreshToken};
     }
     return null;
   }

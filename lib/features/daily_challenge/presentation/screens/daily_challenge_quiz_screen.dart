@@ -283,10 +283,19 @@ class _DailyChallengeQuizScreenState extends State<DailyChallengeQuizScreen> {
             ),
           ),
         ),
+        if (controller.answerError.value.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SessionNotice(
+              message: controller.answerError.value,
+              onRetry: () => controller.proceedNext(context),
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.all(16),
           child: AptiquButton(
             label: result.isComplete ? 'View result' : 'Next question',
+            isLoading: controller.isSubmitting.value,
             onPressed: () {
               if (_dialogOpen || _advancing) return;
               if (result.isComplete) {

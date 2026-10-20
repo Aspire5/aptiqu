@@ -1,3 +1,4 @@
+import '../../../security/tests/legacy-local-guard';
 import { prisma } from '../../../config/prisma';
 import { XpPolicy } from '../xp.policy';
 import { xpService } from '../xp.service';

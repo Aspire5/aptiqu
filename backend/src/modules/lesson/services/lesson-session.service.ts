@@ -1,7 +1,8 @@
-import { prisma } from '../../../config/prisma';
-import { redisService } from './redis.service';
+import { prisma } from './learning-transaction';
+import { learningAction } from './learning-transaction';
+import { PublicError } from '../../../security/errors';
+import { publicLessonNode } from './public-lesson-node';
 import { scriptCacheService } from './script-cache.service';
-import { questionHydrationService } from './question-hydration.service';
 import { questionService } from './question.service';
 import { masteryService } from './mastery.service';
 import { defaultAiProvider } from '../providers/stub-ai.provider';
@@ -13,6 +14,17 @@ import { xpService } from '../../xp/xp.service';
 import { AwardXpResult } from '../../xp/xp.types';
 
 export class LessonSessionService {
+
+  public async startOrResumeSessionByStep(userId: string, step: string, action: string, slug?: string, restart = false): Promise<any> {
+    return learningAction(userId, 'start-step', step, action, {step,slug,restart}, id => this.startOrResumeSessionByStepImpl(userId,step,id,slug,restart));
+  }
+  public async startOrResumeSession(userId: string, slug: string, action: string, step?: string, restart = false): Promise<any> {
+    return learningAction(userId,'start-script',slug,action,{slug,step,restart},id => this.startOrResumeSessionImpl(userId,slug,id,step,restart));
+  }
+  public async submitAction(userId: string, sessionId: string, input: SubmitActionInput) {
+    return learningAction(userId,'submit',sessionId,input.clientActionId,input,id => this.submitActionImpl(userId,sessionId,{...input,clientActionId:id}),sessionId);
+  }
+
   private static instance: LessonSessionService;
 
   public static getInstance(): LessonSessionService {
@@ -26,18 +38,7 @@ export class LessonSessionService {
    * Sanitizes a node before sending it to the client so that answer keys are not leaked.
    */
   private sanitizeNode(node: LessonNode): LessonNode {
-    const cloned = JSON.parse(JSON.stringify(node)) as LessonNode;
-    if (
-      (cloned.type === 'QUESTION' || cloned.type === 'CHOICE') &&
-      cloned.questionReference?.inlineData
-    ) {
-      delete (cloned.questionReference.inlineData as any).correctOptionId;
-      delete (cloned.questionReference.inlineData as any).explanation;
-      delete (cloned.questionReference.inlineData as any).alternativeExplanation;
-      delete (cloned.questionReference.inlineData as any).preferredSolution;
-      delete (cloned.questionReference.inlineData as any).preferredReason;
-    }
-    return cloned;
+    return publicLessonNode(node);
   }
 
   private async sanitizeNodeForUser(node: LessonNode, userId?: string, scriptId?: string): Promise<LessonNode> {
@@ -64,18 +65,13 @@ export class LessonSessionService {
    * Starts or resumes a lesson session by roadmap step.
    * This is the authoritative entry point for roadmap-based learning.
    */
-  public async startOrResumeSessionByStep(
+  private async startOrResumeSessionByStepImpl(
     userId: string,
     roadmapStepId: string,
     clientActionId: string,
     targetScriptSlug?: string,
     restart = false
   ): Promise<any> {
-    const idempKey = `idemp:action:${clientActionId}`;
-    const cachedResponse = await redisService.get(idempKey);
-    if (cachedResponse) {
-      return JSON.parse(cachedResponse);
-    }
 
     let step = await prisma.roadmapStep.findUnique({
       where: { id: roadmapStepId },
@@ -91,6 +87,7 @@ export class LessonSessionService {
             script: {
               include: {
                 versions: {
+                  where: { status: 'PUBLISHED' },
                   orderBy: { versionNumber: 'desc' },
                   take: 1,
                 },
@@ -117,10 +114,10 @@ export class LessonSessionService {
           .getNextStepOrScript(userId, activeRoadmap.id)
           .catch(() => null);
         if (nextStep?.available && nextStep.roadmapStepId && nextStep.roadmapStepId !== roadmapStepId) {
-          return this.startOrResumeSessionByStep(userId, nextStep.roadmapStepId, clientActionId, targetScriptSlug);
+          return this.startOrResumeSessionByStepImpl(userId, nextStep.roadmapStepId, clientActionId, targetScriptSlug);
         }
       }
-      throw new Error(`Roadmap step "${roadmapStepId}" is currently not active.`);
+      throw new PublicError(`Roadmap step "${roadmapStepId}" is currently not active.`);
     }
 
     if (!step.scriptAssignments || step.scriptAssignments.length === 0) {
@@ -155,43 +152,7 @@ export class LessonSessionService {
         );
       }
 
-      if (!target) {
-        // Fallback 2: lookup script by slug, id, or subtopicId directly across lesson scripts
-        const directScript = await prisma.lessonScript.findFirst({
-          where: {
-            OR: [
-              { slug: targetScriptSlug },
-              { id: targetScriptSlug },
-              { subtopicId: targetScriptSlug },
-            ],
-            status: { in: ['PUBLISHED', 'REVIEW'] },
-          },
-          include: {
-            versions: {
-              where: { status: { in: ['PUBLISHED', 'REVIEW'] } },
-              orderBy: { versionNumber: 'desc' },
-              take: 1,
-            },
-          },
-        });
-
-        if (directScript) {
-          const effectiveVersion = directScript.versions?.[0];
-          target = {
-            id: directScript.id,
-            roadmapStepId: step.id,
-            scriptId: directScript.id,
-            publishedVersionId: directScript.publishedVersionId || effectiveVersion?.id || null,
-            status: 'PUBLISHED',
-            sequence: 1,
-            isRequired: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            script: directScript,
-            publishedVersion: effectiveVersion || null,
-          } as any;
-        }
-      }
+      if (!target) throw new PublicError('Published script is not assigned to this step', 'SCRIPT_NOT_PUBLISHED',404);
 
       if (target) {
         assignment = target;
@@ -252,6 +213,8 @@ export class LessonSessionService {
       throw error;
     }
 
+    await scriptCacheService.assertPublished(assignment.scriptId, effectiveVersionId);
+
     // Self-heal assignment publishedVersionId if it was null
     if (!assignment.publishedVersionId && effectiveVersionId) {
       await prisma.scriptAssignment.update({
@@ -263,20 +226,11 @@ export class LessonSessionService {
     const script = session?.script || assignment.script;
     const scriptVersionId = session?.scriptVersionId || effectiveVersionId;
 
+    await scriptCacheService.assertPublished(script.id, scriptVersionId);
     let definition: any;
 
     if (!session) {
       definition = await scriptCacheService.getScriptVersionDefinition(scriptVersionId, script.title);
-      if (!definition) {
-        const latestVer = await prisma.lessonScriptVersion.findFirst({
-          where: { scriptId: script.id },
-          orderBy: { versionNumber: 'desc' },
-        });
-        if (latestVer) {
-          definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, script.title);
-          definition = await questionHydrationService.hydrateScriptDefinition(definition);
-        }
-      }
 
       if (!definition) {
         const error: any = new Error(`Script version definition "${scriptVersionId}" could not be loaded.`);
@@ -320,16 +274,6 @@ export class LessonSessionService {
       });
       definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId, script.title);
       if (!definition) {
-        const latestVer = await prisma.lessonScriptVersion.findFirst({
-          where: { scriptId: script.id },
-          orderBy: { versionNumber: 'desc' },
-        });
-        if (latestVer) {
-          definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, script.title);
-          definition = await questionHydrationService.hydrateScriptDefinition(definition);
-        }
-      }
-      if (!definition) {
         const error: any = new Error(`Script version definition "${session.scriptVersionId}" could not be loaded.`);
         error.status = 404;
         throw error;
@@ -342,7 +286,7 @@ export class LessonSessionService {
       Object.values(definition.nodes)[0];
 
     if (!rawNode) {
-      throw new Error(`Current node "${session.currentNodeId}" not found in script version.`);
+      throw new PublicError(`Current node "${session.currentNodeId}" not found in script version.`);
     }
 
     const events = await prisma.lessonEvent.findMany({
@@ -414,30 +358,24 @@ export class LessonSessionService {
       currentNode: await this.sanitizeNodeForUser(rawNode, userId, session.scriptId),
       history,
     };
-
-    await redisService.set(idempKey, JSON.stringify(response), 86400);
     return response;
   }
 
-  public async startOrResumeSession(
+  private async startOrResumeSessionImpl(
     userId: string,
     scriptSlug: string,
     clientActionId: string,
     roadmapStepId?: string,
     restart = false
   ) {
-    const idempKey = `idemp:action:${clientActionId}`;
-    const cachedResponse = await redisService.get(idempKey);
-    if (cachedResponse) {
-      return JSON.parse(cachedResponse);
-    }
 
     const scriptMeta = await scriptCacheService.getPublishedScriptBySlug(scriptSlug);
     if (!scriptMeta) {
-      throw new Error(`Published lesson script "${scriptSlug}" not found.`);
+      throw new PublicError(`Published lesson script "${scriptSlug}" not found.`);
     }
 
-    const { scriptId, scriptVersionId, definition } = scriptMeta;
+    const { scriptId, scriptVersionId } = scriptMeta;
+    let definition = scriptMeta.definition;
 
     // Resolve roadmapStepId and roadmapId if not explicitly provided
     let effectiveRoadmapId: string | null = null;
@@ -520,9 +458,11 @@ export class LessonSessionService {
       });
     }
 
+    await scriptCacheService.assertPublished(session.scriptId, session.scriptVersionId);
+    definition = (await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId))!;
     const rawNode = definition.nodes[session.currentNodeId];
     if (!rawNode) {
-      throw new Error(`Current node "${session.currentNodeId}" not found in script version.`);
+      throw new PublicError(`Current node "${session.currentNodeId}" not found in script version.`);
     }
 
     const response = {
@@ -536,8 +476,6 @@ export class LessonSessionService {
       stateVersion: session.stateVersion,
       currentNode: await this.sanitizeNodeForUser(rawNode, userId, scriptId),
     };
-
-    await redisService.set(idempKey, JSON.stringify(response), 86400);
     return response;
   }
 
@@ -547,12 +485,13 @@ export class LessonSessionService {
     });
 
     if (!session) {
-      throw new Error(`Session "${sessionId}" not found or unauthorized.`);
+      throw new PublicError(`Session "${sessionId}" not found or unauthorized.`);
     }
 
+    await scriptCacheService.assertPublished(session.scriptId, session.scriptVersionId);
     const definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId);
     if (!definition) {
-      throw new Error(`Script version "${session.scriptVersionId}" could not be loaded.`);
+      throw new PublicError(`Script version "${session.scriptVersionId}" could not be loaded.`);
     }
 
     const rawNode = definition.nodes[session.currentNodeId];
@@ -566,35 +505,23 @@ export class LessonSessionService {
     };
   }
 
-  public async submitAction(userId: string, sessionId: string, input: SubmitActionInput) {
-    const idempKey = `idemp:action:${input.clientActionId}`;
-    const cachedResponse = await redisService.get(idempKey);
-    if (cachedResponse) {
-      return JSON.parse(cachedResponse);
-    }
+  private async submitActionImpl(userId: string, sessionId: string, input: SubmitActionInput) {
 
-    const lockKey = `lock:session:${sessionId}`;
-    const locked = await redisService.setNx(lockKey, '1', 3000);
-    if (!locked) {
-      throw new Error('A concurrent action is being processed for this session. Please retry.');
-    }
-
-    try {
       const session = await prisma.lessonSession.findFirst({
         where: { id: sessionId, userId },
       });
 
       if (!session) {
-        throw new Error(`Session "${sessionId}" not found.`);
+        throw new PublicError(`Session "${sessionId}" not found.`);
       }
 
-      if (session.status === 'COMPLETED') {
-        throw new Error('This lesson has already been completed.');
+      if (!['ACTIVE', 'PAUSED'].includes(session.status)) {
+        throw new PublicError('This lesson has already been completed.');
       }
 
       // Optimistic concurrency check
       if (session.stateVersion !== input.stateVersion) {
-        const error: any = new Error('Stale state version. Client is out of sync.');
+        const error: any = new PublicError('Stale state version. Client is out of sync.');
         error.code = 'STALE_STATE_VERSION';
         error.expectedVersion = session.stateVersion;
         error.authoritativeNodeId = session.currentNodeId;
@@ -603,19 +530,20 @@ export class LessonSessionService {
 
       // Node ID validation
       if (session.currentNodeId !== input.currentNodeId) {
-        throw new Error(
+        throw new PublicError(
           `Node mismatch. Server expects "${session.currentNodeId}", received "${input.currentNodeId}".`
         );
       }
 
+      await scriptCacheService.assertPublished(session.scriptId, session.scriptVersionId);
       const definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId);
       if (!definition) {
-        throw new Error(`Script definition for version ${session.scriptVersionId} not found.`);
+        throw new PublicError(`Script definition for version ${session.scriptVersionId} not found.`);
       }
 
       const currentNode = definition.nodes[session.currentNodeId];
       if (!currentNode) {
-        throw new Error(`Node "${session.currentNodeId}" not found in script definition.`);
+        throw new PublicError(`Node "${session.currentNodeId}" not found in script definition.`);
       }
 
       // Evaluate question if applicable
@@ -630,6 +558,7 @@ export class LessonSessionService {
         currentNode.type === 'QUESTION' ||
         (currentNode.type === 'CHOICE' && currentNode.questionReference?.inlineData)
       ) {
+        if (!['QUESTION_ANSWER', 'CHOICE'].includes(input.action.type)) throw new PublicError('An answer is required');
         const rawAnswer = input.action.answer || input.action.actionId || '';
         const evalRes = await questionService.evaluate(currentNode, rawAnswer);
         evaluation = {
@@ -689,7 +618,7 @@ export class LessonSessionService {
       const nextStateVersion = session.stateVersion + 1;
 
       // Atomic persistence
-      await prisma.$transaction([
+      await Promise.all([
         prisma.lessonSession.update({
           where: { id: sessionId },
           data: {
@@ -845,24 +774,26 @@ export class LessonSessionService {
         levelUp: actionXpResult && actionXpResult.awarded && actionXpResult.levelUp && actionXpResult.levelUp.occurred ? actionXpResult.levelUp : null,
         ...(isCompleted && nextStepResult ? { next: nextStepResult } : {}),
       };
-
-      await redisService.set(idempKey, JSON.stringify(response), 86400);
       return response;
-    } finally {
-      await redisService.del(lockKey);
-    }
   }
 
   public async handleInterrupt(userId: string, sessionId: string, input: InterruptInput) {
+    // The current provider is a local stub. Real AI generation belongs outside this commit boundary.
+    return learningAction(userId,'interrupt',sessionId,input.clientActionId,input,() => this.handleInterruptImpl(userId,sessionId,input),sessionId);
+  }
+
+  private async handleInterruptImpl(userId: string, sessionId: string, input: InterruptInput) {
     const session = await prisma.lessonSession.findFirst({
       where: { id: sessionId, userId },
     });
 
     if (!session) {
-      throw new Error(`Session "${sessionId}" not found.`);
+      throw new PublicError(`Session "${sessionId}" not found.`);
     }
 
+    await scriptCacheService.assertPublished(session.scriptId, session.scriptVersionId);
     const definition = await scriptCacheService.getScriptVersionDefinition(session.scriptVersionId);
+    if (input.currentNodeId !== session.currentNodeId) throw new PublicError('Lesson step has changed. Reopen the current step.','STALE_NODE',409);
     const rawNode = definition?.nodes[session.currentNodeId];
 
     const answer = await defaultAiProvider.answerDoubt({
@@ -900,6 +831,7 @@ export class LessonSessionService {
   }
 
   public async pauseSession(userId: string, sessionId: string) {
+    if (!await prisma.lessonSession.findFirst({where:{id:sessionId,userId},select:{id:true}})) throw new PublicError('Lesson session not found','NOT_FOUND',404);
     return prisma.lessonSession.updateMany({
       where: { id: sessionId, userId, status: 'ACTIVE' },
       data: { status: 'PAUSED', lastActivityAt: new Date() },
@@ -907,6 +839,7 @@ export class LessonSessionService {
   }
 
   public async resumeSession(userId: string, sessionId: string) {
+    if (!await prisma.lessonSession.findFirst({where:{id:sessionId,userId},select:{id:true}})) throw new PublicError('Lesson session not found','NOT_FOUND',404);
     return prisma.lessonSession.updateMany({
       where: { id: sessionId, userId, status: { in: ['ACTIVE', 'PAUSED'] } },
       data: { status: 'ACTIVE', lastActivityAt: new Date() },
@@ -944,6 +877,7 @@ export class LessonSessionService {
             script: {
               include: {
                 versions: {
+                  where: { status: 'PUBLISHED' },
                   orderBy: { versionNumber: 'desc' },
                   take: 1,
                 },
@@ -989,16 +923,8 @@ export class LessonSessionService {
     });
 
     if (activeSession) {
+      await scriptCacheService.assertPublished(activeSession.scriptId,activeSession.scriptVersionId);
       let definition = await scriptCacheService.getScriptVersionDefinition(activeSession.scriptVersionId, activeSession.script.title);
-      if (!definition) {
-        const latestVer = await prisma.lessonScriptVersion.findFirst({
-          where: { scriptId: activeSession.script.id },
-          orderBy: { versionNumber: 'desc' },
-        });
-        if (latestVer) {
-          definition = scriptCacheService.normalizeScriptDefinition(latestVer.definition, activeSession.script.title);
-        }
-      }
 
       if (definition) {
         const rawNode =
@@ -1109,6 +1035,7 @@ export class LessonSessionService {
       nextAssignment?.script?.publishedVersionId ||
       (nextAssignment?.script as any)?.versions?.[0]?.id;
 
+    if (effectiveVerId) await scriptCacheService.assertPublished(nextAssignment.scriptId,effectiveVerId);
     const def = effectiveVerId
       ? await scriptCacheService.getScriptVersionDefinition(effectiveVerId, nextAssignment.script?.title)
       : null;

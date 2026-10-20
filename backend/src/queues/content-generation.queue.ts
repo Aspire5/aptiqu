@@ -1,45 +1,20 @@
-import { Queue, Worker, Job } from 'bullmq';
+import { log, safeError } from '../observability/logger';
 import { ENV } from '../config/env';
+import { queueRedis } from '../config/queue-redis';
+import { Queue, Worker, Job } from 'bullmq';
 import { QuestionGenerationService } from '../modules/ai/services/question-generation.service';
 import { DailyChallengeGenerationService } from '../modules/ai/services/daily-challenge-generation.service';
-
-function parseRedisConnection(urlStr: string) {
-  try {
-    const url = new URL(urlStr);
-    return {
-      host: url.hostname,
-      port: parseInt(url.port || '6379', 10),
-      password: url.password || undefined,
-      maxRetriesPerRequest: null,
-      enableOfflineQueue: false,
-      retryStrategy: (times: number) => {
-        if (times > 3) return 30000;
-        return Math.min(times * 1000, 5000);
-      },
-    };
-  } catch {
-    return {
-      host: '127.0.0.1',
-      port: 6379,
-      maxRetriesPerRequest: null,
-      enableOfflineQueue: false,
-      retryStrategy: (times: number) => {
-        if (times > 3) return 30000;
-        return Math.min(times * 1000, 5000);
-      },
-    };
-  }
-}
-
-const connection = parseRedisConnection(ENV.REDIS_URL);
 
 export const CONTENT_GEN_QUEUE_NAME = 'content-generation';
 
 /**
  * BullMQ Queue for decoupled background AI question generation and pre-warming.
  */
-export const contentGenQueue = new Queue(CONTENT_GEN_QUEUE_NAME, {
-  connection,
+let queue: Queue | undefined;
+let producerConnection: ReturnType<typeof queueRedis> | undefined;
+export function getContentGenQueue() {
+  return queue ??= new Queue(CONTENT_GEN_QUEUE_NAME, {
+  connection: producerConnection ??= queueRedis(),
   defaultJobOptions: {
     attempts: 3,
     backoff: {
@@ -47,73 +22,52 @@ export const contentGenQueue = new Queue(CONTENT_GEN_QUEUE_NAME, {
       delay: 5000,
     },
     removeOnComplete: true,
-    removeOnFail: false,
+    removeOnFail: {count:ENV.QUEUE_FAILED_RETENTION_COUNT??500,age:ENV.QUEUE_FAILED_RETENTION_SECONDS??604800},
   },
-});
+  });
+}
+export const contentGenQueue = {
+  add: (...args: Parameters<Queue['add']>) => getContentGenQueue().add(...args),
+  close: async () => { if (queue) { await queue.close(); producerConnection?.disconnect(); producerConnection = undefined; queue = undefined; } },
+};
 
 /**
  * Background worker with concurrency = 2 to respect Gemini rate limits.
  */
-export const contentGenWorker = new Worker(
-  CONTENT_GEN_QUEUE_NAME,
-  async (job: Job) => {
+export async function processContentJob(job: Job) {
     const { name, data } = job;
-    console.log(`[ContentGenQueue] Processing job: ${name} (ID: ${job.id})`);
+    log('info','content_generation_queue.processContentJob.info');
 
     switch (name) {
       case 'generate-subtopic-questions': {
         const { subtopicId, count } = data;
-        if (!subtopicId) {
+        if (typeof subtopicId !== 'string' || !Number.isInteger(count) || count < 1 || count > 50) {
           throw new Error('subtopicId is required for generate-subtopic-questions');
         }
         const service = QuestionGenerationService.getInstance();
-        const results = await service.generateQuestionsForSubtopic(subtopicId, count || 10);
-        console.log(
-          `[ContentGenQueue] Successfully generated ${results.length} questions for subtopic: ${subtopicId}`
-        );
+        const results = await service.generateQuestionsForSubtopic(subtopicId, count);
+        log('info','content_generation_queue.processContentJob.info');
         return { count: results.length };
       }
 
       case 'prewarm-daily-challenge': {
         const { targetDate } = data;
-        if (!targetDate) {
+        if (typeof targetDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(targetDate) || !Number.isFinite(Date.parse(targetDate)) || new Date(targetDate).toISOString().slice(0,10)!==targetDate) {
           throw new Error('targetDate is required for prewarm-daily-challenge');
         }
         const service = DailyChallengeGenerationService.getInstance();
         await service.prewarmDailyChallengeScripts(targetDate);
-        console.log(
-          `[ContentGenQueue] Successfully pre-warmed Daily Challenge scripts for date: ${targetDate}`
-        );
+        log('info','content_generation_queue.processContentJob.info');
         return { targetDate };
       }
 
-      default:
-        console.warn(`[ContentGenQueue] Unknown job type: ${name}`);
-        return null;
+      default: throw new Error('Unsupported content generation job');
     }
-  },
-  {
-    connection,
-    concurrency: 2,
-  }
-);
-
-contentGenWorker.on('completed', (job: Job) => {
-  console.log(`[ContentGenQueue] Job ${job.name} (ID: ${job.id}) completed successfully.`);
-});
-
-contentGenWorker.on('failed', (job: Job | undefined, err: Error) => {
-  console.error(`[ContentGenQueue] Job ${job?.name} (ID: ${job?.id}) failed:`, err);
-});
-
-let lastQueueErrorLog = 0;
-const handleRedisQueueError = (source: string, err: any) => {
-  const now = Date.now();
-  if (now - lastQueueErrorLog > 300000) { // Log once every 5 minutes
-    console.warn(`[ContentGenQueue] Redis is unreachable (${source}): ${err?.message || err}. Background generation paused.`);
-    lastQueueErrorLog = now;
-  }
-};
-
-contentGenQueue.on('error', (err) => handleRedisQueueError('Queue', err));
-contentGenWorker.on('error', (err) => handleRedisQueueError('Worker', err));
+}
+export function startContentGenWorker() {
+  const connection = queueRedis(true);
+  const worker = new Worker(CONTENT_GEN_QUEUE_NAME, processContentJob, {connection,concurrency:ENV.CONTENT_WORKER_CONCURRENCY??2});
+  worker.on('error', () => log('warn','content_generation_queue.startContentGenWorker.warn'));
+  worker.on('failed', () => log('warn','content_generation_queue.startContentGenWorker.warn'));
+  return Object.assign(async () => { await worker.close(); connection.disconnect(); await contentGenQueue.close(); },{pause:()=>worker.pause(true),ready:()=>worker.waitUntilReady(),isReady:()=>worker.isRunning() && connection.status==='ready'});
+}

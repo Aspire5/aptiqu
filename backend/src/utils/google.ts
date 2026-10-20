@@ -18,19 +18,21 @@ export interface GoogleUserPayload {
  * Verifies a Google ID Token received from mobile / web Google Sign-In.
  */
 export async function verifyGoogleToken(idToken: string): Promise<GoogleUserPayload> {
+  if(ENV.GOOGLE_AUTH_ENABLED===false)throw new Error('Google authentication is disabled');
   const validAudiences = [
     ENV.GOOGLE_WEB_CLIENT_ID,
     ENV.GOOGLE_ANDROID_CLIENT_ID,
     ENV.GOOGLE_IOS_CLIENT_ID,
   ].filter(Boolean);
 
+  if (!validAudiences.length) throw new Error('Google authentication unavailable');
   const ticket = await client.verifyIdToken({
     idToken,
     audience: validAudiences,
   });
 
   const payload = ticket.getPayload();
-  if (!payload || !payload.sub || !payload.email) {
+  if (!payload || !payload.sub || !payload.email || payload.email_verified !== true) {
     throw new Error('Invalid Google token payload');
   }
 

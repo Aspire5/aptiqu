@@ -119,10 +119,12 @@ class PracticeSessionController extends GetxController {
       isReady.value = false;
       clockError.value = '';
       try {
-        _timerBudgetMs = await _repository.startFriendlyQuestion(
+        final delivery = await _repository.startFriendlyQuestion(
           session.value.id,
         );
         if (isClosed || isLeaving.value) return;
+        _timerBudgetMs = delivery.remainingMs;
+        session.value = delivery.session;
         isReady.value = true;
       } catch (_) {
         if (!isClosed) {

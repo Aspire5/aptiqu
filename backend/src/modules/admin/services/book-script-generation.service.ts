@@ -1,5 +1,6 @@
+import { log, safeError } from '../../../observability/logger';
 import crypto from 'crypto';
-import { prisma } from '../../../config/prisma';
+import { prisma } from './book-run';
 import { geminiProvider } from '../../ai/gemini.provider';
 import { pdfParserService } from './pdf-parser.service';
 import { ScriptValidator } from '../../lesson/engines/script-validator';
@@ -35,7 +36,7 @@ export class BookScriptGenerationService {
     subtopicId: string,
     subtopicMeta?: DiscoveredSubtopicCandidate
   ): Promise<any> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'generateScriptForSubtopic');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'generateScriptForSubtopic');
 
     const subtopic = await prisma.subtopic.findUnique({
       where: { id: subtopicId },
@@ -108,10 +109,7 @@ entryNodeId must be "start".
 
     const validation = ScriptValidator.validate(normalized);
     if (!validation.valid) {
-      console.warn(
-        `[BookScriptGenerationService] Script validation warnings for ${subtopic.id}:`,
-        validation.errors.map((e) => e.message).join(', ')
-      );
+      log('warn','book_script_generation_service.generateScriptForSubtopic.warn');
     }
 
     // 4. Hydrate referenced questions
@@ -119,9 +117,7 @@ entryNodeId must be "start".
     try {
       hydratedDef = await questionHydrationService.hydrateScriptDefinition(normalized);
     } catch (err: any) {
-      console.warn(
-        `[BookScriptGenerationService] Hydration notice for ${subtopic.id}: ${err.message}. Saving baseline script.`
-      );
+      log('warn','book_script_generation_service.generateScriptForSubtopic.warn',safeError(err));
     }
 
     // 5. Checksum & Persistence
@@ -178,7 +174,7 @@ entryNodeId must be "start".
       return { script, version };
     });
 
-    console.log(`[BookScriptGenerationService] Created LessonScript "${slug}" for subtopic "${subtopic.name}".`);
+    log('info','book_script_generation_service.generateScriptForSubtopic.info');
     return result;
   }
 
@@ -208,7 +204,7 @@ entryNodeId must be "start".
       throw new Error(`BookSource not found: ${bookId}`);
     }
 
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of generateAllScriptsForBook');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of generateAllScriptsForBook');
 
     await prisma.bookSource.update({
       where: { id: bookId },
@@ -226,7 +222,7 @@ entryNodeId must be "start".
     let completedCount = 0;
 
     for (let i = 0; i < totalSubtopics; i++) {
-      bookCancellationService.checkAndThrowIfCancelled(bookId, `generate script subtopic index ${i}`);
+      await bookCancellationService.checkAndThrowIfCancelled(bookId, `generate script subtopic index ${i}`);
       const item = allSubtopics[i];
 
       // Skip subtopics that already have a generated lesson script
@@ -236,9 +232,7 @@ entryNodeId must be "start".
       });
 
       if (existingScript && existingScript.versions && existingScript.versions.length > 0) {
-        console.log(
-          `[BookScriptGenerationService] Subtopic ${item.subtopic.id} already has a generated script. Skipping AI synthesis.`
-        );
+        log('info','book_script_generation_service.generateAllScriptsForBook.info');
         completedCount++;
         if (onProgress) {
           await onProgress((i + 1) / totalSubtopics, completedCount, totalSubtopics);
@@ -255,13 +249,10 @@ entryNodeId must be "start".
         );
         completedCount++;
       } catch (err: any) {
-        if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
+        if (err.message?.includes('BOOK_INGESTION_CANCELLED') || await bookCancellationService.isCancelled(bookId)) {
           throw err;
         }
-        console.error(
-          `[BookScriptGenerationService] Error generating script for subtopic ${item.subtopic.id}:`,
-          err.message
-        );
+        throw err;
       }
 
       if (onProgress) {
@@ -274,7 +265,7 @@ entryNodeId must be "start".
       }
     }
 
-    console.log(`[BookScriptGenerationService] Finished generating ${completedCount}/${totalSubtopics} lesson scripts.`);
+    log('info','book_script_generation_service.generateAllScriptsForBook.info');
     return completedCount;
   }
 }

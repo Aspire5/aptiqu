@@ -1,6 +1,10 @@
-import { Queue, Worker, Job } from 'bullmq';
+import { log, safeError } from '../observability/logger';
 import { ENV } from '../config/env';
-import { prisma } from '../config/prisma';
+import { withBookRun } from '../modules/admin/services/book-run';
+import { z } from 'zod';
+import { queueRedis } from '../config/queue-redis';
+import { Queue, Worker, Job } from 'bullmq';
+import { prisma } from '../modules/admin/services/book-run';
 import { pdfParserService } from '../modules/admin/services/pdf-parser.service';
 import { topicDiscoveryService } from '../modules/admin/services/topic-discovery.service';
 import { subtopicDiscoveryService } from '../modules/admin/services/subtopic-discovery.service';
@@ -10,46 +14,23 @@ import { bookScriptGenerationService } from '../modules/admin/services/book-scri
 import { contentValidationService } from '../modules/admin/services/content-validation.service';
 import { bookCancellationService } from '../modules/admin/services/book-cancellation.service';
 
-function parseRedisConnection(urlStr: string) {
-  try {
-    const url = new URL(urlStr);
-    return {
-      host: url.hostname,
-      port: parseInt(url.port || '6379', 10),
-      password: url.password || undefined,
-      maxRetriesPerRequest: null,
-      enableOfflineQueue: false,
-      retryStrategy: (times: number) => {
-        if (times > 3) return 30000;
-        return Math.min(times * 1000, 5000);
-      },
-    };
-  } catch {
-    return {
-      host: '127.0.0.1',
-      port: 6379,
-      maxRetriesPerRequest: null,
-      enableOfflineQueue: false,
-      retryStrategy: (times: number) => {
-        if (times > 3) return 30000;
-        return Math.min(times * 1000, 5000);
-      },
-    };
-  }
-}
-
-const connection = parseRedisConnection(ENV.REDIS_URL);
-
 export const BOOK_INGESTION_QUEUE_NAME = 'book-ingestion';
 
-export const bookIngestionQueue = new Queue(BOOK_INGESTION_QUEUE_NAME, {
-  connection,
+let queue: Queue | undefined;
+let producerConnection: ReturnType<typeof queueRedis> | undefined;
+export function getBookIngestionQueue() { return queue ??= new Queue(BOOK_INGESTION_QUEUE_NAME, {
+  connection: producerConnection ??= queueRedis(),
   defaultJobOptions: {
     attempts: 1, // Never automatically loop-retry on failure; wait for explicit user action
     removeOnComplete: true,
-    removeOnFail: false,
+    removeOnFail: {count:ENV.QUEUE_FAILED_RETENTION_COUNT??500,age:ENV.QUEUE_FAILED_RETENTION_SECONDS??604800},
   },
-});
+}); }
+export const bookIngestionQueue = {
+  add: (...args: Parameters<Queue['add']>) => getBookIngestionQueue().add(...args),
+  getJobs: (...args: Parameters<Queue['getJobs']>) => getBookIngestionQueue().getJobs(...args),
+  close: async () => { if (queue) { await queue.close(); producerConnection?.disconnect(); producerConnection = undefined; queue = undefined; } },
+};
 
 /**
  * Helper to update stage progress in BookProcessingJob
@@ -96,16 +77,36 @@ async function updateJobStageProgress(
       });
     }
   } catch (err: any) {
-    console.warn(`[BookIngestionQueue] Could not update job stage progress: ${err.message}`);
+    throw err;
   }
 }
 
 /**
  * Worker to process book ingestion pipeline asynchronously.
  */
-export const bookIngestionWorker = new Worker(
-  BOOK_INGESTION_QUEUE_NAME,
-  async (job: Job) => {
+const bookStages = ['process-full-book','parse-pages','detect-topics','discover-subtopics','extract-questions','classify-questions','generate-scripts','validate-content'] as const;
+export async function enqueueBookStage(bookId: string, stage: string) {
+  z.string().uuid().parse(bookId); z.enum(bookStages).parse(stage);
+  const book = await prisma.bookSource.findUniqueOrThrow({where:{id:bookId}});
+  if (book.processingToken && book.processingHeartbeat && +book.processingHeartbeat > Date.now()-180000) throw new Error('Book is still processing. Wait for cancellation acknowledgment before retrying.');
+  await bookCancellationService.reset(bookId);
+  const jobId=`book-${bookId}-${book.processingEpoch}-${stage}`;
+  const existing=await getBookIngestionQueue().getJob(jobId);
+  if(existing){
+    const state=await existing.getState();
+    if(state==='failed'){await existing.retry();return existing;}
+    if(state==='active')throw new Error('Book stage is still active');
+    return existing;
+  }
+  return bookIngestionQueue.add(stage,{bookId,epoch:book.processingEpoch},{jobId});
+}
+export async function processBookJob(job: Job) {
+  z.enum(bookStages).parse(job.name); const bookId=z.string().uuid().parse(job.data?.bookId);
+  const epoch=z.number().int().nonnegative().parse(job.data?.epoch);
+  try {return await withBookRun(bookId,()=>processBookBody(job),epoch);}
+  catch (err) {if (err instanceof Error && err.message.includes('BOOK_INGESTION_CANCELLED')) return {success:false,cancelled:true};throw err;}
+}
+async function processBookBody(job: Job) {
     const { name, data } = job;
     const { bookId } = data;
 
@@ -113,7 +114,7 @@ export const bookIngestionWorker = new Worker(
       throw new Error(`bookId is required for job: ${name}`);
     }
 
-    console.log(`[BookIngestionQueue] Starting job "${name}" for book ${bookId} (Job ID: ${job.id})`);
+    log('info','book_ingestion_queue.processBookBody.info');
 
     try {
       switch (name) {
@@ -134,12 +135,12 @@ export const bookIngestionWorker = new Worker(
           }
 
           // Stage 1: Parse PDF Pages (Skip if already parsed)
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 1 (PDF Parsing)');
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 1 (PDF Parsing)');
           const pageCount = await prisma.bookPage.count({ where: { bookId } });
           if (currentBook.totalPages > 0 && pageCount >= currentBook.totalPages) {
-            console.log(`[BookIngestionQueue:${bookId}] Stage 1: All ${pageCount} pages already parsed. Skipping to Stage 2.`);
+            log('info','book_ingestion_queue.processBookBody.info');
           } else {
-            console.log(`[BookIngestionQueue:${bookId}] Stage 1: Parsing PDF pages...`);
+            log('info','book_ingestion_queue.processBookBody.info');
             await updateJobStageProgress(bookId, 'PARSING_PAGES', 0.1);
             await pdfParserService.parseBookPdf(bookId, async (prog) => {
               await updateJobStageProgress(bookId, 'PARSING_PAGES', prog);
@@ -147,58 +148,59 @@ export const bookIngestionWorker = new Worker(
           }
 
           // Stage 2: Discover Topics (Skip if already detected)
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 2 (Topic Discovery)');
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 2 (Topic Discovery)');
           const metadata = (currentBook.metadata as any) || {};
           let topics = metadata.detectedTopics || [];
           if (topics.length > 0 && currentBook.subject.topics.length > 0) {
-            console.log(`[BookIngestionQueue:${bookId}] Stage 2: ${topics.length} topics already discovered. Skipping to Stage 3.`);
+            log('info','book_ingestion_queue.processBookBody.info');
           } else {
-            console.log(`[BookIngestionQueue:${bookId}] Stage 2: Discovering topics...`);
+            log('info','book_ingestion_queue.processBookBody.info');
             await updateJobStageProgress(bookId, 'DETECTING_TOPICS', 0.1);
             topics = await topicDiscoveryService.discoverTopics(bookId);
             await updateJobStageProgress(bookId, 'TOPICS_DETECTED', 1.0, topics.length, topics.length);
           }
 
           // Stage 3: Discover Subtopics
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 3 (Subtopic Discovery)');
-          console.log(`[BookIngestionQueue:${bookId}] Stage 3: Discovering subtopics...`);
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 3 (Subtopic Discovery)');
+          log('info','book_ingestion_queue.processBookBody.info');
           await updateJobStageProgress(bookId, 'DISCOVERING_SUBTOPICS', 0.1);
           await subtopicDiscoveryService.discoverAllSubtopicsForBook(bookId, async (prog) => {
             await updateJobStageProgress(bookId, 'DISCOVERING_SUBTOPICS', prog);
           });
 
           // Stage 4: Extract Questions
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 4 (Question Extraction)');
-          console.log(`[BookIngestionQueue:${bookId}] Stage 4: Extracting questions...`);
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 4 (Question Extraction)');
+          log('info','book_ingestion_queue.processBookBody.info');
           await updateJobStageProgress(bookId, 'EXTRACTING_QUESTIONS', 0.1);
           const qCount = await bookQuestionExtractionService.extractAllQuestionsForBook(bookId, async (prog) => {
             await updateJobStageProgress(bookId, 'EXTRACTING_QUESTIONS', prog);
           });
 
           // Stage 5: Classify Questions
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 5 (Question Classification)');
-          console.log(`[BookIngestionQueue:${bookId}] Stage 5: Classifying questions...`);
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 5 (Question Classification)');
+          log('info','book_ingestion_queue.processBookBody.info');
           await updateJobStageProgress(bookId, 'CLASSIFYING_QUESTIONS', 0.1);
           await bookQuestionClassificationService.classifyQuestionsForBook(bookId, async (prog) => {
             await updateJobStageProgress(bookId, 'CLASSIFYING_QUESTIONS', prog);
           });
 
           // Stage 6: Generate Scripts
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 6 (Script Generation)');
-          console.log(`[BookIngestionQueue:${bookId}] Stage 6: Generating scripts...`);
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 6 (Script Generation)');
+          log('info','book_ingestion_queue.processBookBody.info');
           await updateJobStageProgress(bookId, 'GENERATING_SCRIPTS', 0.1);
           await bookScriptGenerationService.generateAllScriptsForBook(bookId, async (prog) => {
             await updateJobStageProgress(bookId, 'GENERATING_SCRIPTS', prog);
           });
 
           // Stage 7: Validate Content
-          bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 7 (Content Validation)');
-          console.log(`[BookIngestionQueue:${bookId}] Stage 7: Validating content...`);
+          await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before Stage 7 (Content Validation)');
+          log('info','book_ingestion_queue.processBookBody.info');
           await updateJobStageProgress(bookId, 'VALIDATING_CONTENT', 0.1);
           const valRes = await contentValidationService.validateBookContent(bookId);
-          await updateJobStageProgress(bookId, 'READY_FOR_REVIEW', 1.0, qCount, qCount, valRes.flaggedCount, { issues: valRes.issues });
+          await updateJobStageProgress(bookId, valRes.passed ? 'READY_FOR_REVIEW' : 'VALIDATING_CONTENT', 1.0, qCount, qCount, valRes.flaggedCount, { issues: valRes.issues });
+          if (!valRes.passed) throw new Error('Book content validation failed; review the recorded issues');
 
-          console.log(`[BookIngestionQueue:${bookId}] Complete pipeline successfully finished! Ready for admin review.`);
+          log('info','book_ingestion_queue.processBookBody.info');
           return { success: true, bookId, status: 'READY_FOR_REVIEW' };
         }
 
@@ -234,16 +236,16 @@ export const bookIngestionWorker = new Worker(
 
         case 'validate-content': {
           const valRes = await contentValidationService.validateBookContent(bookId);
+          if (!valRes.passed) throw new Error('Book content validation failed; review the recorded issues');
           return { success: true, valRes };
         }
 
         default:
-          console.warn(`[BookIngestionQueue] Unknown job type: ${name}`);
-          return null;
+          throw new Error('Unsupported book ingestion job');
       }
     } catch (err: any) {
-      if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
-        console.log(`[BookIngestionQueue] Job "${name}" for book ${bookId} was cleanly stopped due to cancellation.`);
+      if (err.message?.includes('BOOK_INGESTION_CANCELLED') || await bookCancellationService.isCancelled(bookId)) {
+        log('info','book_ingestion_queue.processBookBody.info',safeError(err));
         try {
           const exists = await prisma.bookSource.findUnique({ where: { id: bookId } });
           if (exists) {
@@ -259,7 +261,7 @@ export const bookIngestionWorker = new Worker(
         return { success: false, cancelled: true };
       }
 
-      console.error(`[BookIngestionQueue] Job "${name}" failed for book ${bookId}:`, err);
+      log('error','book_ingestion_queue.processBookBody.error',safeError(err));
       try {
         const exists = await prisma.bookSource.findUnique({ where: { id: bookId } });
         if (exists) {
@@ -267,70 +269,44 @@ export const bookIngestionWorker = new Worker(
             where: { id: bookId },
             data: {
               status: 'FAILED',
-              errorMessage: err.message || 'Unknown processing error',
+              errorMessage: 'Book processing failed. Review server diagnostics and retry explicitly.',
             },
           });
         }
       } catch (_) {}
-      return { success: false, error: err.message };
+      throw err;
     }
-  },
-  {
-    connection,
-    concurrency: 1, // Strict single-worker to prevent concurrent loop runs
-    lockDuration: 900000, // 15 minutes lock window so long AI calls never falsely trigger stalled watchdog
-    stalledInterval: 60000, // Check stalled jobs once per minute
-    maxStalledCount: 1,
-  }
-);
-
-bookIngestionWorker.on('completed', (job: Job) => {
-  console.log(`[BookIngestionQueue] Job ${job.name} (ID: ${job.id}) completed.`);
-});
-
-bookIngestionWorker.on('failed', async (job: Job | undefined, err: Error) => {
-  console.error(`[BookIngestionQueue] Job ${job?.name} (ID: ${job?.id}) failed:`, err);
-  if (job?.data?.bookId) {
-    try {
-      const exists = await prisma.bookSource.findUnique({ where: { id: job.data.bookId } });
-      if (exists) {
-        await prisma.bookSource.update({
-          where: { id: job.data.bookId },
-          data: {
-            status: 'FAILED',
-            errorMessage: err.message || 'Job stalled or failed unrecoverably',
-          },
-        });
-      }
-    } catch (e: any) {
-      console.warn('[BookIngestionQueue] Could not mark book status as FAILED:', e.message);
-    }
-  }
-});
+}
+export function startBookIngestionWorker() {
+  const connection = queueRedis(true);
+  const worker = new Worker(BOOK_INGESTION_QUEUE_NAME, processBookJob, {
+    connection, concurrency:1, lockDuration:900000, stalledInterval:60000, maxStalledCount:0,
+  });
+  worker.on('error', () => log('warn','book_ingestion_queue.startBookIngestionWorker.warn'));
+  worker.on('failed', () => log('warn','book_ingestion_queue.startBookIngestionWorker.warn'));
+  return Object.assign(async () => { await worker.close(); connection.disconnect(); await bookIngestionQueue.close(); },{pause:()=>worker.pause(true),ready:()=>worker.waitUntilReady(),isReady:()=>worker.isRunning() && connection.status==='ready'});
+}
 
 /**
- * Halts processing immediately for a book and clears queued jobs.
+ * Requests durable cancellation and removes waiting jobs. In-flight work is fenced before writes.
  */
 export async function stopBookProcessing(bookId: string): Promise<void> {
-  // 1. Set in-memory cancellation flag
-  bookCancellationService.cancel(bookId);
+  // Persist cancellation before removing waiting jobs.
+  await bookCancellationService.cancel(bookId);
 
   // 2. Remove or discard any queued jobs for this book
   try {
-    const jobs = await bookIngestionQueue.getJobs(['active', 'waiting', 'delayed']);
+    const jobs = await bookIngestionQueue.getJobs(['waiting', 'delayed'],0,499);
     for (const job of jobs) {
       if (job.data?.bookId === bookId) {
-        console.log(`[BookIngestionQueue] Cancelling/removing BullMQ job ${job.id} (${job.name}) for book ${bookId}`);
+        log('info','book_ingestion_queue.stopBookProcessing.info');
         try {
           await job.remove();
-        } catch {
-          try {
-            await (job as any).moveToFailed(new Error('Job cancelled by admin'), '0', false);
-          } catch (_) {}
+        } catch { /* Active jobs observe durable cancellation at their next write/check. */
         }
       }
     }
   } catch (err: any) {
-    console.warn(`[BookIngestionQueue] Error clearing queue jobs for book ${bookId}:`, err.message);
+    log('warn','book_ingestion_queue.stopBookProcessing.warn',safeError(err));
   }
 }

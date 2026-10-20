@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Request, Response } from 'express';
 import { AdminQuestionsService } from './admin-questions.service';
 
@@ -7,16 +8,17 @@ export class AdminQuestionsController {
       const data = await AdminQuestionsService.listQuestions(req.query as any);
       res.status(200).json({ success: true, data });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
+  // CACHE_CANDIDATE ref=C19 scope=admin-role layer=redis ttl=15-60s owner=inventory
   public static async getStats(_req: Request, res: Response): Promise<void> {
     try {
       const data = await AdminQuestionsService.getQuestionStats();
       res.status(200).json({ success: true, data });
     } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -25,7 +27,7 @@ export class AdminQuestionsController {
       const question = await AdminQuestionsService.createQuestion(req.body);
       res.status(201).json({ success: true, data: question });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -34,7 +36,7 @@ export class AdminQuestionsController {
       const question = await AdminQuestionsService.updateQuestion(req.params.id as string, req.body);
       res.status(200).json({ success: true, data: question });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -48,7 +50,7 @@ export class AdminQuestionsController {
       const question = await AdminQuestionsService.relinkQuestion(req.params.id as string, newSubtopicId);
       res.status(200).json({ success: true, data: question });
     } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -71,8 +73,7 @@ export class AdminQuestionsController {
       const result = await AdminQuestionsService.bulkImport(questions, defaultSubtopicId);
       res.status(200).json({ success: true, data: result });
     } catch (err: any) {
-      console.error('[AdminQuestionsController:bulkImport] Error:', err.message);
-      res.status(err.status || 400).json({ success: false, message: err.message });
+      publicFailure(res,err);
     }
   }
 }

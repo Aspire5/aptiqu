@@ -48,7 +48,7 @@ class DailyChallengeController extends GetxController {
 
   Timer? _countdownTimer;
   Timer? _loadingMessageTimer;
-  int _questionStartTimeMs = 0;
+  DateTime? _localQuestionDeadline;
 
   @override
   void onInit() {
@@ -135,7 +135,9 @@ class DailyChallengeController extends GetxController {
     try {
       final session = await _repository.startChallenge();
       activeSession.value = session;
-      currentQuestionIndex.value = 0;
+      currentQuestionIndex.value = session.questions.indexWhere(
+        (q) => !q.isAnswered,
+      );
       selectedOptionId.value = null;
       lastAnswerResult.value = null;
       showExplanation.value = false;
@@ -190,12 +192,22 @@ class DailyChallengeController extends GetxController {
   /// Starts the 60-second fixed timer for the current question
   void _startQuestionTimer() {
     _stopTimer();
-    secondsRemaining.value = 60;
-    _questionStartTimeMs = DateTime.now().millisecondsSinceEpoch;
+    final session = activeSession.value;
+    final budget =
+        session?.questionDeadline != null && session?.serverNow != null
+        ? session!.questionDeadline!
+              .difference(session.serverNow!)
+              .inMilliseconds
+        : 0;
+    _localQuestionDeadline = DateTime.now().add(Duration(milliseconds: budget));
+    secondsRemaining.value = (budget / 1000).ceil().clamp(0, 60);
 
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (secondsRemaining.value > 1) {
-        secondsRemaining.value--;
+      final remaining = _localQuestionDeadline!
+          .difference(DateTime.now())
+          .inMilliseconds;
+      if (remaining > 0) {
+        secondsRemaining.value = (remaining / 1000).ceil().clamp(0, 60);
       } else {
         secondsRemaining.value = 0;
         _stopTimer();
@@ -238,16 +250,13 @@ class DailyChallengeController extends GetxController {
     isSubmitting.value = true;
     answerError.value = '';
 
-    final elapsedMs =
-        DateTime.now().millisecondsSinceEpoch - _questionStartTimeMs;
-    final clampedTimeMs = elapsedMs.clamp(1000, 60000);
-
     try {
       final result = await _repository.submitAnswer(
         participationId: session.participationId,
         questionId: q.id,
         selectedOptionId: selected,
-        responseTimeMs: clampedTimeMs,
+        responseTimeMs:
+            0, // Legacy request field; the server owns scoring time.
       );
 
       lastAnswerResult.value = result;
@@ -287,19 +296,30 @@ class DailyChallengeController extends GetxController {
   }
 
   /// Advances to the next question or finishes the challenge
-  void proceedNext(BuildContext context) {
-    showExplanation.value = false;
-    selectedOptionId.value = null;
-
-    final session = activeSession.value;
-    if (session == null) return;
-
-    if (currentQuestionIndex.value < session.questions.length - 1) {
-      currentQuestionIndex.value++;
-      _startQuestionTimer();
-    } else {
-      // Finished all questions!
+  Future<void> proceedNext(BuildContext context) async {
+    if (isSubmitting.value) return;
+    if (isCompleted.value) {
       context.pop();
+      return;
+    }
+    isSubmitting.value = true;
+    answerError.value = '';
+    try {
+      // This delivery starts the next clock. Reading feedback does not count as solve time.
+      final session = await _repository.startChallenge();
+      if (isClosed) return;
+      activeSession.value = session;
+      currentQuestionIndex.value = session.questions.indexWhere(
+        (q) => !q.isAnswered,
+      );
+      showExplanation.value = false;
+      selectedOptionId.value = null;
+      lastAnswerResult.value = null;
+      _startQuestionTimer();
+    } catch (e) {
+      answerError.value = e.toString().replaceAll('Exception: ', '').trim();
+    } finally {
+      isSubmitting.value = false;
     }
   }
 }

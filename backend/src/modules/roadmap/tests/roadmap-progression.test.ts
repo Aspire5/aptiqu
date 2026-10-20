@@ -1,3 +1,4 @@
+import '../../../security/tests/legacy-local-guard';
 import { prisma } from '../../../config/prisma';
 import { roadmapProgressionService } from '../services/roadmap-progression.service';
 import { lessonSessionService } from '../../lesson/services/lesson-session.service';

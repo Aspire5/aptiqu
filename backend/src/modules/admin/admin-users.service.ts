@@ -87,65 +87,24 @@ export class AdminUsersService {
    * User demographics and registration analytics
    */
   public static async getUserStats() {
-    const [
-      totalUsers,
-      completedRegistration,
-      pendingRegistration,
-      profiles,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({ where: { isRegistrationComplete: true } }),
-      prisma.user.count({ where: { isRegistrationComplete: false } }),
-      prisma.profile.findMany({
-        select: {
-          gender: true,
-          country: true,
-          religion: true,
-        },
-      }),
+    // CACHE CANDIDATE: brief admin-only demographics snapshot; invalidate on registration/profile edits.
+    const [totalUsers,completedRegistration,groups]=await Promise.all([
+      prisma.user.count(),prisma.user.count({where:{isRegistrationComplete:true}}),
+      prisma.$queryRaw<Array<{kind:string;name:string;count:number}>>`
+        WITH dimensions AS (
+          SELECT 'gender' AS kind,CASE WHEN lower(gender)='male' THEN 'MALE' WHEN lower(gender)='female' THEN 'FEMALE'
+            WHEN lower(gender) IN ('non-binary','non binary','other') THEN 'OTHER' ELSE 'UNSPECIFIED' END AS name FROM users.profiles
+          UNION ALL SELECT 'country',COALESCE(NULLIF(trim(country),''),'Unspecified') FROM users.profiles
+          UNION ALL SELECT 'religion',COALESCE(NULLIF(trim(religion),''),'Unspecified') FROM users.profiles
+        ), counts AS (SELECT kind,name,count(*)::int AS count FROM dimensions GROUP BY kind,name), ranked AS (
+          SELECT *,row_number() OVER(PARTITION BY kind ORDER BY count DESC,name) AS position FROM counts
+        ) SELECT kind,name,count FROM ranked WHERE position<=10 ORDER BY kind,count DESC,name`,
     ]);
-
-    // Breakdown by Gender
-    const genderMap: Record<string, number> = {
-      MALE: 0,
-      FEMALE: 0,
-      OTHER: 0,
-      UNSPECIFIED: 0,
-    };
-
-    // Breakdown by Country
-    const countryMap: Record<string, number> = {};
-
-    // Breakdown by Religion
-    const religionMap: Record<string, number> = {};
-
-    for (const p of profiles) {
-      // Gender
-      const g = (p.gender || '').toUpperCase();
-      if (g.includes('MALE') && !g.includes('FE')) genderMap.MALE++;
-      else if (g.includes('FEMALE')) genderMap.FEMALE++;
-      else if (g.includes('OTHER')) genderMap.OTHER++;
-      else genderMap.UNSPECIFIED++;
-
-      // Country
-      const c = (p.country || 'Unspecified').trim();
-      countryMap[c] = (countryMap[c] || 0) + 1;
-
-      // Religion
-      const r = (p.religion || 'Unspecified').trim();
-      religionMap[r] = (religionMap[r] || 0) + 1;
-    }
-
-    // Convert map to sorted arrays
-    const byCountry = Object.entries(countryMap)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
-
-    const byReligion = Object.entries(religionMap)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
+    const pendingRegistration=totalUsers-completedRegistration;
+    const genderMap={MALE:0,FEMALE:0,OTHER:0,UNSPECIFIED:0};
+    for(const row of groups.filter(row=>row.kind==='gender'))if(Object.hasOwn(genderMap,row.name))genderMap[row.name as keyof typeof genderMap]=row.count;
+    const byCountry=groups.filter(row=>row.kind==='country').map(({name,count})=>({name,count}));
+    const byReligion=groups.filter(row=>row.kind==='religion').map(({name,count})=>({name,count}));
 
     return {
       totalUsers,

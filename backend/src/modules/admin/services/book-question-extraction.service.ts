@@ -1,5 +1,6 @@
+import { log, safeError } from '../../../observability/logger';
 import crypto from 'crypto';
-import { prisma } from '../../../config/prisma';
+import { prisma } from './book-run';
 import { geminiProvider } from '../../ai/gemini.provider';
 import { pdfParserService } from './pdf-parser.service';
 import { FingerprintService } from '../../question/services/fingerprint.service';
@@ -34,7 +35,7 @@ export class BookQuestionExtractionService {
     endPage: number,
     startingSeq: number
   ): Promise<any[]> {
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'extractQuestionsFromPageRange');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'extractQuestionsFromPageRange');
 
     const bookSource = await prisma.bookSource.findUnique({
       where: { id: bookId },
@@ -50,7 +51,7 @@ export class BookQuestionExtractionService {
       return [];
     }
 
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'before gemini extraction');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'before gemini extraction');
 
     const prompt = `
 Book Title: ${bookSource.title}
@@ -72,15 +73,13 @@ Extract all practice questions, worked examples, and problem sets from these pag
       timeoutMs: 90000,
     });
 
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'after gemini extraction');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'after gemini extraction');
 
     if (!response.questions || !Array.isArray(response.questions) || response.questions.length === 0) {
       return [];
     }
 
-    console.log(
-      `[BookQuestionExtractionService] Extracted ${response.questions.length} candidates from pages ${startPage}-${endPage}. Validating and persisting...`
-    );
+    log('info','book_question_extraction_service.extractQuestionsFromPageRange.info');
 
     // Fetch existing subtopics for this topic
     const subtopics = await prisma.subtopic.findMany({
@@ -94,8 +93,8 @@ Extract all practice questions, worked examples, and problem sets from these pag
     let currentSeq = startingSeq;
 
     for (const q of response.questions) {
-      if (bookCancellationService.isCancelled(bookId)) {
-        console.log(`[BookQuestionExtractionService] Cancellation detected during question persistence. Halting.`);
+      if (await bookCancellationService.isCancelled(bookId)) {
+        log('info','book_question_extraction_service.extractQuestionsFromPageRange.info');
         return createdRecords;
       }
       const promptText = String(q.prompt || '').trim();
@@ -194,10 +193,10 @@ Extract all practice questions, worked examples, and problem sets from these pag
             });
             createdRecords.push(fallbackRecord);
           } catch (retryErr: any) {
-            console.warn(`[BookQuestionExtractionService] Skipping question due to persistent DB error: ${retryErr.message}`);
+            log('warn','book_question_extraction_service.extractQuestionsFromPageRange.warn',safeError(retryErr));
           }
         } else {
-          console.warn(`[BookQuestionExtractionService] Skipping question due to DB insert error: ${err.message}`);
+          log('warn','book_question_extraction_service.extractQuestionsFromPageRange.warn',safeError(err));
         }
       }
     }
@@ -227,7 +226,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
       throw new Error(`BookSource not found: ${bookId}`);
     }
 
-    bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of extractAllQuestionsForBook');
+    await bookCancellationService.checkAndThrowIfCancelled(bookId, 'start of extractAllQuestionsForBook');
 
     await prisma.bookSource.update({
       where: { id: bookId },
@@ -241,7 +240,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
     const CHUNK_PAGES = 5;
 
     for (let tIdx = 0; tIdx < detectedTopics.length; tIdx++) {
-      bookCancellationService.checkAndThrowIfCancelled(bookId, `topic index ${tIdx}`);
+      await bookCancellationService.checkAndThrowIfCancelled(bookId, `topic index ${tIdx}`);
       const topic = detectedTopics[tIdx];
       const dbTopic = bookSource.subject.topics.find(
         (t) => t.name.toLowerCase() === topic.name.toLowerCase() || t.slug.includes(topic.suggestedSlug)
@@ -258,7 +257,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
       let topicQuestionSeq = existingTopicQCount + 1;
 
       for (let p = topic.startPage; p <= topic.endPage; p += CHUNK_PAGES) {
-        bookCancellationService.checkAndThrowIfCancelled(bookId, `pages ${p} for topic ${topic.name}`);
+        await bookCancellationService.checkAndThrowIfCancelled(bookId, `pages ${p} for topic ${topic.name}`);
         const chunkEnd = Math.min(p + CHUNK_PAGES - 1, topic.endPage);
         const pageRangeStr = `pp. ${p}-${chunkEnd}`;
 
@@ -272,9 +271,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
         });
 
         if (existingInChunk > 0) {
-          console.log(
-            `[BookQuestionExtractionService] Pages ${p}-${chunkEnd} for topic "${topic.name}" already have ${existingInChunk} questions. Skipping AI call.`
-          );
+          log('info','book_question_extraction_service.extractAllQuestionsForBook.info');
           totalExtracted += existingInChunk;
           topicQuestionSeq += existingInChunk;
           continue;
@@ -297,15 +294,11 @@ Extract all practice questions, worked examples, and problem sets from these pag
             await onProgress(overallProg, totalExtracted);
           }
         } catch (err: any) {
-          if (err.message?.includes('BOOK_INGESTION_CANCELLED') || bookCancellationService.isCancelled(bookId)) {
-            console.log(`[BookQuestionExtractionService] Extraction aborted for book ${bookId}`);
+          if (err.message?.includes('BOOK_INGESTION_CANCELLED') || await bookCancellationService.isCancelled(bookId)) {
+            log('info','book_question_extraction_service.extractAllQuestionsForBook.info',safeError(err));
             throw err;
           }
-          console.error(
-            `[BookQuestionExtractionService] Error extracting from pages ${p}-${chunkEnd} for topic "${topic.name}":`,
-            err.message
-          );
-          topicQuestionSeq += 5; // ensure sequence advances even on failure
+          throw err;
         }
 
         // Pacing delay between chunks to ensure smooth token distribution
@@ -318,7 +311,7 @@ Extract all practice questions, worked examples, and problem sets from these pag
       data: { status: 'QUESTIONS_EXTRACTED' },
     });
 
-    console.log(`[BookQuestionExtractionService] Completed question extraction: ${totalExtracted} questions created.`);
+    log('info','book_question_extraction_service.extractAllQuestionsForBook.info');
     return totalExtracted;
   }
 }

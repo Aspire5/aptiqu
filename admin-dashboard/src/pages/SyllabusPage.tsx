@@ -56,6 +56,7 @@ export const SyllabusPage: React.FC = () => {
   const [scriptModal, setScriptModal] = useState<{
     open: boolean;
     scriptId?: string;
+    expectedVersion?: number;
     subtopicId?: string;
     topicId?: string;
     subjectId?: string;
@@ -219,6 +220,7 @@ export const SyllabusPage: React.FC = () => {
         setScriptModal({
           open: true,
           scriptId: script.id,
+          expectedVersion: latestVersion?.versionNumber,
           subtopicId: script.subtopicId,
           topicId: script.topicId,
           subjectId: script.subjectId,
@@ -257,6 +259,7 @@ export const SyllabusPage: React.FC = () => {
         });
       } else if (scriptModal.scriptId) {
         await api.updateScript(scriptModal.scriptId, {
+          expectedVersion: scriptModal.expectedVersion,
           title: scriptModal.title,
           status: scriptModal.status,
           definition: parsedDefinition,

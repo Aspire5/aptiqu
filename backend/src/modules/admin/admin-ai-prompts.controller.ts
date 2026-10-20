@@ -1,3 +1,4 @@
+import { publicFailure } from '../../security/public-error';
 import { Request, Response } from 'express';
 import { aiPromptService } from '../ai/services/ai-prompt.service';
 
@@ -7,8 +8,7 @@ export class AdminAiPromptsController {
       const prompts = await aiPromptService.listPrompts();
       res.json({ success: true, data: prompts });
     } catch (err: any) {
-      console.error('[AdminAiPromptsController.listPrompts] Error:', err);
-      res.status(500).json({ success: false, error: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -21,8 +21,7 @@ export class AdminAiPromptsController {
       }
       res.json({ success: true, data: prompt });
     } catch (err: any) {
-      console.error('[AdminAiPromptsController.getPrompt] Error:', err);
-      res.status(500).json({ success: false, error: err.message });
+      publicFailure(res,err);
     }
   }
 
@@ -35,41 +34,38 @@ export class AdminAiPromptsController {
         return res.status(400).json({ success: false, error: 'draftPrompt must be a non-empty string.' });
       }
 
-      const updated = await aiPromptService.saveDraft(key, draftPrompt);
+      const updated = await aiPromptService.saveDraft(key, draftPrompt,req.body.expectedRevision);
       res.json({ success: true, data: updated, message: 'Draft saved successfully. Prompt is not live yet.' });
     } catch (err: any) {
-      console.error('[AdminAiPromptsController.updateDraft] Error:', err);
-      res.status(500).json({ success: false, error: err.message });
+      publicFailure(res,err);
     }
   }
 
   public static async publishPrompt(req: Request, res: Response) {
     try {
       const key = req.params.key as string;
-      const published = await aiPromptService.publishPrompt(key);
+      const published = await aiPromptService.publishPrompt(key,req.body.expectedRevision);
       res.json({ 
         success: true, 
         data: published, 
         message: `Prompt '${key}' published successfully! Now live across server without restart.` 
       });
     } catch (err: any) {
-      console.error('[AdminAiPromptsController.publishPrompt] Error:', err);
-      res.status(500).json({ success: false, error: err.message });
+      publicFailure(res,err);
     }
   }
 
   public static async resetToDefault(req: Request, res: Response) {
     try {
       const key = req.params.key as string;
-      const reset = await aiPromptService.resetToDefault(key);
+      const reset = await aiPromptService.resetToDefault(key,req.body.expectedRevision);
       res.json({ 
         success: true, 
         data: reset, 
         message: `Prompt '${key}' draft reset to system default template.` 
       });
     } catch (err: any) {
-      console.error('[AdminAiPromptsController.resetToDefault] Error:', err);
-      res.status(500).json({ success: false, error: err.message });
+      publicFailure(res,err);
     }
   }
 }

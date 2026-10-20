@@ -1,4 +1,4 @@
-import { prisma } from '../../../config/prisma';
+import { prisma } from './learning-transaction';
 import { LessonNode } from '../interfaces/script-dsl.interface';
 
 export interface EvaluationResult {

@@ -1,4 +1,4 @@
-import { prisma } from '../../../config/prisma';
+import { prisma } from './learning-transaction';
 import { ScriptDefinition, LessonNode, QuestionInlineData } from '../interfaces/script-dsl.interface';
 
 export class QuestionHydrationService {
@@ -17,7 +17,7 @@ export class QuestionHydrationService {
    *
    * If any referenced question cannot be found, throws an explicit error (fail-fast, no silent broken cards).
    */
-  public async hydrateScriptDefinition(definition: ScriptDefinition): Promise<ScriptDefinition> {
+  public async hydrateScriptDefinition(definition: ScriptDefinition, options: {preferPinned?:boolean} = {}): Promise<ScriptDefinition> {
     if (!definition || !definition.nodes) {
       return definition;
     }
@@ -30,6 +30,9 @@ export class QuestionHydrationService {
       if (node.type === 'QUESTION' || node.type === 'CHOICE') {
         const qRef = node.questionReference;
         if (!qRef) continue;
+        // Published versions carry their reviewed question snapshot. Repository edits
+        // take effect through a new authored/published version, not an active session.
+        if(options.preferPinned && typeof qRef.inlineData?.prompt==='string' && Array.isArray(qRef.inlineData.options) && typeof qRef.inlineData.correctOptionId==='string')continue;
 
         if (qRef.mode === 'QUESTION_EXTERNAL_ID' && qRef.externalId && typeof qRef.externalId === 'string') {
           externalKeysToFetch.add(qRef.externalId.trim());
@@ -68,6 +71,9 @@ export class QuestionHydrationService {
       if (node.type === 'QUESTION' || node.type === 'CHOICE') {
         const qRef = node.questionReference;
         if (!qRef) continue;
+        // Published versions carry their reviewed question snapshot. Repository edits
+        // take effect through a new authored/published version, not an active session.
+        if(options.preferPinned && typeof qRef.inlineData?.prompt==='string' && Array.isArray(qRef.inlineData.options) && typeof qRef.inlineData.correctOptionId==='string')continue;
 
         let matchedQuestion: any = null;
 

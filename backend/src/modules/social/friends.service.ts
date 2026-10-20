@@ -63,7 +63,7 @@ export class FriendsService {
     const found = await prisma.user.findFirst({ where: { id: target, isRegistrationComplete: true }, select: publicUserSelect });
     if (!found) throw socialError('Learner not found.', 404);
     const relation = user === target ? null : await prisma.friendship.findUnique({ where: { lowId_highId: friendPair(user, target) } });
-    const home = await new HomeService().getHome(target);
+    const home = await new HomeService().getPublicProfileFacts(target);
     return { ...publicUser(found), online: (await socialTransport.presence([target]))[0].online,
       friendshipId: relation?.id, friendshipVersion: relation?.updatedAt.toISOString(), relation: relation?.status === 'ACCEPTED' ? 'FRIEND' : relation?.status === 'PENDING'
         ? relation.senderId === user ? 'INVITED' : 'INCOMING' : 'NONE',
