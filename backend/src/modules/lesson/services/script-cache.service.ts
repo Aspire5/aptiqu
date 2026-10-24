@@ -119,6 +119,13 @@ export class ScriptCacheService {
         node.content = { text: String(node.prompt || '') };
       }
 
+      // JSON object key order can change in storage. A terminal node must stay
+      // terminal even when it is no longer the last dictionary entry.
+      if (node.type === 'COMPLETION') {
+        node.transitions = node.transitions ?? [];
+        continue;
+      }
+
       // If not the last node and has no transitions, link to next sequential node
       if ((!node.transitions || node.transitions.length === 0) && i < nodeKeys.length - 1) {
         node.transitions = [{ targetNodeId: nodeKeys[i + 1] }];

@@ -549,7 +549,11 @@ export class AdminQuestionsService {
       });
     }
 
-    for (const candidate of candidates) validateAdminQuestion(candidate.data);
+    for (const candidate of candidates) {
+      // fingerprint is computed by the server, not part of the strict admin input.
+      const { fingerprint, ...input } = candidate.data;
+      candidate.data = { ...validateAdminQuestion(input), fingerprint };
+    }
 
     // 3. Batched duplicate check against database (in chunks of 200 to keep queries light & fast)
     const candidateFingerprints = candidates.map((c) => c.fingerprint);
