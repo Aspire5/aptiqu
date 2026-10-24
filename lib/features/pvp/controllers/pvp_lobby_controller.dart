@@ -1,3 +1,4 @@
+import '../../../core/feedback/app_feedback_service.dart';
 import '../ranked/ranked_models.dart';
 import '../ranked/ranked_repository.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
@@ -97,6 +98,7 @@ class PvpLobbyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    AppFeedbackService.maybe?.prewarm();
     _account = repository.owner;
     if (Get.isRegistered<AuthController>()) {
       _accountWorker = ever(Get.find<AuthController>().currentUser, (_) {

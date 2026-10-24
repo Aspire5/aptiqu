@@ -212,6 +212,7 @@ test('a winning claim replies PAIRING to cancellation, and Redis cleanup failure
  assert.equal(f.server.claiming.size,2,'Pairing loop returns while content preparation remains active');
  await sockets[0].receive({type:'LEAVE_MATCHMAKING'});assert.equal(f.sent.at(-1).data.status,'PAIRING');
  queue.finish=async()=>{throw new Error('Redis lost after commit');};release();await Promise.all([...f.server.queueWork]);
+ for(const message of f.sent.filter(item=>item.event==='MATCH_FOUND')) { assert.ok(message.data.players.every(player=>Number.isInteger(player.level))); assert.ok(!JSON.stringify(message.data).includes('totalXp')); }
  assert.equal(f.sent.filter(item=>item.event==='MATCH_FOUND').length,2);assert.equal(f.server.activeMatches.has(matchId),true);assert.equal(f.server.claiming.size,0);
 });
 

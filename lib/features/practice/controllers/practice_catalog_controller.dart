@@ -1,3 +1,4 @@
+import '../../../core/feedback/app_feedback_service.dart';
 import '../../../core/theme/appearance_controller.dart';
 import '../../../core/theme/aptiqu_theme.dart';
 import 'package:uuid/uuid.dart';
@@ -158,6 +159,7 @@ class PracticeCatalogController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    AppFeedbackService.maybe?.prewarm();
     _presentationWorker = everAll([
       isStartingSession,
       isReplaying,

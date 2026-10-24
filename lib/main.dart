@@ -1,3 +1,4 @@
+import 'core/feedback/feedback_preferences.dart';
 import 'features/social/social_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,10 @@ void main() async {
   // Initialize Global GetX Dependencies
   InitialBinding().dependencies();
 
-  await Get.find<AppearanceController>().load();
+  await Future.wait([
+    Get.find<AppearanceController>().load(),
+    Get.find<FeedbackPreferences>().load(),
+  ]);
 
   // Check 7-day persistent session on launch
   final authController = Get.find<AuthController>();

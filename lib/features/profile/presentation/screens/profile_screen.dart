@@ -8,6 +8,7 @@ import '../../../../shared/widgets/feedback/app_state_view.dart';
 import '../../../../core/theme/aptiqu_tokens.dart';
 import '../../../../core/theme/appearance_theme.dart';
 import '../widgets/appearance_setting.dart';
+import '../widgets/feedback_settings.dart';
 import '../../../../shared/widgets/layout/text_fit.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/progression/controllers/xp_controller.dart';
@@ -217,6 +218,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     const AppearanceSetting(),
+                    const SizedBox(height: 24),
+                    const FeedbackSettings(),
                     const SizedBox(height: 24),
                     _buildSectionHeader(context, 'Ranked this season'),
                     RankedSectionView(

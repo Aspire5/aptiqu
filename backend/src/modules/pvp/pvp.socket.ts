@@ -1,3 +1,4 @@
+import { XpPolicy } from '../xp/xp.policy';
 import { log, safeError } from '../../observability/logger';
 import { trustedPeer } from '../../security/trusted-peer';
 import { PublicError } from '../../security/errors';
@@ -375,7 +376,7 @@ export class PvpSocketServer {
       this.broadcastToMatch(match.id, 'MATCH_FOUND', {
         matchId: match.id, seasonId: match.seasonId, policyId: claim.a.policyId, ratingMode: match.ratingMode,
         admittedAt: match.seasonAssignedAt?.toISOString() ?? null, totalQuestions: match.totalQuestions,
-        players: match.players.map(p => ({ userId: p.userId, firstName: p.user.profile?.firstName || 'Learner', avatarUrl: p.user.profile?.avatarUrl ?? null, league: entries.find(e => e.userId === p.userId)?.league ?? 'UNRANKED' })),
+        players: match.players.map(p => ({ userId: p.userId, firstName: p.user.profile?.firstName || 'Learner', avatarUrl: p.user.profile?.avatarUrl ?? null, level: XpPolicy.getLevelFromXp(Number(p.user.progress?.totalXp ?? 0)), league: entries.find(e => e.userId === p.userId)?.league ?? 'UNRANKED' })),
       });
       await this.publishRecovered(match);
     } catch (error) {
@@ -452,6 +453,7 @@ export class PvpSocketServer {
           userId: p.userId,
           firstName: p.user?.profile?.firstName || 'Aptiqu Warrior',
           avatarUrl: p.user?.profile?.avatarUrl,
+          level: XpPolicy.getLevelFromXp(Number(p.user?.progress?.totalXp ?? 0)),
         })),
         totalQuestions: match.totalQuestions,
       });

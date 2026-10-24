@@ -174,3 +174,23 @@ test('XP unique failure inside a caller-owned transaction propagates instead of 
   await assert.rejects(xp.awardXp({ userId: users[0], amount: 15, sourceType: 'RANKED', idempotencyKey: 'test' }, f.db), error => error.code === 'P2002');
   assert.equal(externalReads, 0);
 });
+
+
+test('arena identities expose public levels, keep XP balances private and share identical question content', async () => {
+  const f = fixture();
+  f.state().match.players[0].user.progress = { totalXp: 80 };
+  f.state().match.players[1].user.progress = { totalXp: 200 };
+  const first = await f.service.getMatchSnapshot(matchId, users[0]);
+  const second = await f.service.getMatchSnapshot(matchId, users[1]);
+  assert.equal(first.players[0].level, 3);
+  assert.equal(first.players[1].level, 5);
+  assert.deepEqual(first.question, second.question);
+  assert.equal(first.roundResult, null);
+  assert.equal(second.roundResult, null);
+  for (const player of first.players) {
+    assert.ok(!Object.hasOwn(player, 'progress'));
+    assert.ok(!Object.hasOwn(player, 'totalXp'));
+    assert.ok(!Object.hasOwn(player, 'selectedOptionId'));
+    assert.ok(!Object.hasOwn(player, 'isCorrect'));
+  }
+});

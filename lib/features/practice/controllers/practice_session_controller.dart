@@ -1,3 +1,5 @@
+import '../../../core/feedback/app_feedback_service.dart';
+import '../../../core/progression/models/xp_models.dart';
 import '../../social/social_controller.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
 import 'package:dio/dio.dart';
@@ -9,6 +11,99 @@ import '../../../core/progression/controllers/xp_controller.dart';
 import '../../../core/routing/app_router.dart';
 
 class PracticeSessionController extends GetxController {
+  final Object _feedbackScope = Object();
+  String? _feedbackOwner;
+  final friendlyResult = Rxn<Map<String, dynamic>>();
+  final celebrateVictory = false.obs;
+  bool _friendlyWasLive = false;
+  AppFeedbackService? get _feedback => AppFeedbackService.maybe;
+  bool get _ownsFeedback =>
+      !isClosed &&
+      (!Get.isRegistered<AuthController>() ||
+          Get.find<AuthController>().currentUser.value?.id == _feedbackOwner);
+  String get _questionReceipt =>
+      '${session.value.id}:${currentQuestionIndex.value}';
+  String? get feedbackUserId => _feedbackOwner;
+  Map<String, dynamic> get friendlyWinnerPerson {
+    final user = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>().currentUser.value
+        : null;
+    return {'name': user?.firstName ?? 'You', 'avatarUrl': user?.avatarUrl};
+  }
+
+  bool get canAnswer =>
+      isReady.value &&
+      !isLeaving.value &&
+      !isCompleted.value &&
+      !isSubmitting.value &&
+      lastResult.value == null &&
+      (!session.value.timerEnabled || remainingSeconds.value > 0);
+
+  void setFeedbackVisible(bool visible) {
+    if (_ownsFeedback) _feedback?.setVisible(_feedbackScope, visible);
+  }
+
+  void feedbackPresented() {
+    if (!_ownsFeedback) return;
+    if (isCompleted.value) {
+      if (session.value.isFriendlyDuel) {
+        final finalResult = friendlyResult.value;
+        if (finalResult == null) return;
+        final celebrate =
+            (_feedback?.result(
+                  _feedbackScope,
+                  'friendly:${session.value.friendlyDuelId}',
+                  won:
+                      finalResult['isTie'] != true &&
+                      finalResult['winnerId'] == _feedbackOwner,
+                  recovered: !_friendlyWasLive,
+                ) ??
+                false) &&
+            finalResult['isTie'] != true &&
+            finalResult['winnerId'] == _feedbackOwner;
+        if (celebrate) celebrateVictory.value = true;
+      } else {
+        _feedback?.result(
+          _feedbackScope,
+          'practice:${session.value.id}',
+          won: false,
+          recovered: initialSession.status == 'COMPLETED',
+        );
+      }
+    } else if (canAnswer && currentSessionQuestion != null) {
+      _feedback?.playable(
+        _feedbackScope,
+        session: 'practice:${session.value.id}',
+        question: _questionReceipt,
+        first: currentQuestionIndex.value == 0,
+        fresh:
+            initialSession.currentIndex == 0 &&
+            !currentSessionQuestion!.isAnswered,
+      );
+    }
+  }
+
+  void _tickFeedback() {
+    if (_ownsFeedback && session.value.timerEnabled) {
+      _feedback?.tick(
+        _feedbackScope,
+        _questionReceipt,
+        remainingSeconds.value,
+        answerable: canAnswer,
+      );
+    }
+  }
+
+  void _answerFeedback() {
+    if (_ownsFeedback && lastResult.value != null) {
+      _feedback?.answer(
+        _feedbackScope,
+        _questionReceipt,
+        correct: lastResult.value!.isCorrect,
+      );
+    }
+  }
+
   final PracticeRepository _repository;
   final PracticeSessionModel initialSession;
 
@@ -68,6 +163,7 @@ class PracticeSessionController extends GetxController {
                 : d['recipient']['name'],
           },
       ]);
+      if (d['status'] == 'ACTIVE') _friendlyWasLive = true;
       if ([
         'ABANDONED',
         'CANCELLED',
@@ -75,15 +171,43 @@ class PracticeSessionController extends GetxController {
         'REJECTED',
       ].contains(d['status'])) {
         _countdown?.cancel();
+        _feedback?.lock(_feedbackScope);
         duelEnded.value =
             'This friendly duel ended before both players finished. No XP was awarded.';
         isLeaving.value = true;
       } else if (d['status'] == 'COMPLETED') {
+        friendlyResult.value = Map<String, dynamic>.from(d);
         final restored = await _repository.getSession(session.value.id);
         if (isClosed) return;
         session.value = restored;
         if (Get.isRegistered<AuthController>()) {
-          await Get.find<AuthController>().fetchUserProfile();
+          final auth = Get.find<AuthController>();
+          final before = Get.isRegistered<XpController>()
+              ? XpController.to.progress.value
+              : null;
+          await auth.fetchUserProfile();
+          final user = auth.currentUser.value;
+          if (_ownsFeedback &&
+              user != null &&
+              before != null &&
+              user.level > before.level) {
+            XpController.to.handleXpUpdate(
+              xp: XpProgressModel(
+                level: user.level,
+                total: user.totalXp,
+                xpIntoCurrentLevel: user.xpIntoCurrentLevel,
+                xpRequiredForNextLevel: user.xpRequiredForNextLevel,
+                progress: user.progress,
+              ),
+              levelUp: LevelUpModel(
+                occurred: true,
+                fromLevel: before.level,
+                toLevel: user.level,
+                levelsGained: user.level - before.level,
+                beforeProgress: before,
+              ),
+            );
+          }
         }
       }
     } catch (_) {
@@ -150,7 +274,10 @@ class PracticeSessionController extends GetxController {
       final left =
           ((_timerBudgetMs - _stopwatch.elapsedMilliseconds + 999) ~/ 1000)
               .clamp(0, 60);
-      if (remainingSeconds.value != left) remainingSeconds.value = left;
+      if (remainingSeconds.value != left) {
+        remainingSeconds.value = left;
+        _tickFeedback();
+      }
       if (left == 0) {
         _countdown?.cancel();
         selectedOptionId.value = 'TIMEOUT';
@@ -161,6 +288,7 @@ class PracticeSessionController extends GetxController {
 
   @override
   void onClose() {
+    _feedback?.release(_feedbackScope);
     _duelEvents?.cancel();
     _requests.cancel('Practice session closed');
     _readyTimer?.cancel();
@@ -175,6 +303,12 @@ class PracticeSessionController extends GetxController {
   void onInit() {
     super.onInit();
     session = Rx<PracticeSessionModel>(initialSession);
+    _feedbackOwner = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>().currentUser.value?.id
+        : null;
+    _feedback?.acquire(_feedbackScope);
+    _friendlyWasLive =
+        initialSession.isFriendlyDuel && initialSession.status != 'COMPLETED';
     if (initialSession.isFriendlyDuel && Get.isRegistered<SocialController>()) {
       _duelEvents = Get.find<SocialController>().events.stream.listen((event) {
         if ((event['event'] == 'DUEL_CHANGED' &&
@@ -224,6 +358,7 @@ class PracticeSessionController extends GetxController {
     }
 
     isSubmitting.value = true;
+    _feedback?.lock(_feedbackScope);
     submitError.value = '';
     _countdown?.cancel();
     _stopwatch.stop();
@@ -240,6 +375,7 @@ class PracticeSessionController extends GetxController {
 
       if (isClosed || isLeaving.value) return;
       lastResult.value = result;
+      _answerFeedback();
 
       if (result.isComplete) {
         completionResult.value = result;
@@ -269,6 +405,7 @@ class PracticeSessionController extends GetxController {
             correctCount: restored.correctCount,
             xpAwarded: restored.xpAwarded,
           );
+          _answerFeedback();
           if (restored.status == 'COMPLETED') {
             completionResult.value = lastResult.value;
           }
@@ -326,6 +463,7 @@ class PracticeSessionController extends GetxController {
   Future<void> abandon() async {
     if (isLeaving.value) return;
     isLeaving.value = true;
+    _feedback?.release(_feedbackScope);
     _requests.cancel('Leaving session');
     _countdown?.cancel();
     _readyTimer?.cancel();

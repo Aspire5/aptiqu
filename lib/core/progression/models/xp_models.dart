@@ -33,7 +33,10 @@ class XpProgressModel {
     return XpProgressModel(
       earned: (json['earned'] as num?)?.toInt() ?? 0,
       previousTotal: (json['previousTotal'] as num?)?.toInt() ?? 0,
-      total: (json['total'] as num?)?.toInt() ?? (json['totalXp'] as num?)?.toInt() ?? 0,
+      total:
+          (json['total'] as num?)?.toInt() ??
+          (json['totalXp'] as num?)?.toInt() ??
+          0,
       level: (json['level'] as num?)?.toInt() ?? 1,
       currentLevelStartXp: (json['currentLevelStartXp'] as num?)?.toInt() ?? 0,
       nextLevelStartXp: (json['nextLevelStartXp'] as num?)?.toInt() ?? 20,
@@ -96,11 +99,17 @@ class LevelUpModel {
   final int toLevel;
   final int levelsGained;
 
+  /// Client presentation snapshots only; never serialized as an XP award.
+  final XpProgressModel? beforeProgress;
+  final XpProgressModel? afterProgress;
+
   const LevelUpModel({
     this.occurred = false,
     this.fromLevel = 1,
     this.toLevel = 1,
     this.levelsGained = 0,
+    this.beforeProgress,
+    this.afterProgress,
   });
 
   factory LevelUpModel.none(int currentLevel) {
@@ -154,4 +163,3 @@ class AwardXpResultModel {
     );
   }
 }
-

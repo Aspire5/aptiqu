@@ -16,6 +16,7 @@ class XpController extends GetxController {
   Worker? _authWorker;
   String? _owner;
   int _lastCelebratedLevel = 1;
+  bool _hasProgressSnapshot = false;
 
   @override
   void onInit() {
@@ -28,9 +29,11 @@ class XpController extends GetxController {
         if (user?.id != _owner) {
           _owner = user?.id;
           pendingCelebration.value = null;
+          _hasProgressSnapshot = false;
           _lastCelebratedLevel = user?.level ?? 1;
         }
         if (user != null) {
+          _hasProgressSnapshot = true;
           progress.value = XpProgressModel(
             level: user.level,
             total: user.totalXp,
@@ -43,6 +46,7 @@ class XpController extends GetxController {
 
       final initialUser = authController.currentUser.value;
       if (initialUser != null) {
+        _hasProgressSnapshot = true;
         progress.value = XpProgressModel(
           level: initialUser.level,
           total: initialUser.totalXp,
@@ -61,8 +65,11 @@ class XpController extends GetxController {
     LevelUpModel? levelUp,
     BuildContext? context,
   }) {
-    final previousLevel = progress.value.level;
+    final before = levelUp?.beforeProgress ?? progress.value;
+    final trustworthyBefore = _hasProgressSnapshot;
+    final previousLevel = before.level;
     progress.value = xp;
+    _hasProgressSnapshot = true;
 
     debugPrint(
       '[XP] handleXpUpdate: earned=${xp.earned}, level=${xp.level}, previousLevel=$previousLevel, levelUpOccurred=${levelUp?.occurred}',
@@ -91,14 +98,24 @@ class XpController extends GetxController {
 
     if (didLevelUp && xp.level > _lastCelebratedLevel) {
       _lastCelebratedLevel = xp.level;
-      final effectiveLevelUp = (levelUp != null && levelUp.occurred)
-          ? levelUp
-          : LevelUpModel(
-              occurred: true,
-              fromLevel: previousLevel,
-              toLevel: xp.level,
-              levelsGained: math.max(1, xp.level - previousLevel),
-            );
+      final fromLevel = (levelUp != null && levelUp.occurred)
+          ? levelUp.fromLevel
+          : previousLevel;
+      final effectiveLevelUp = LevelUpModel(
+        occurred: true,
+        fromLevel: fromLevel,
+        toLevel: xp.level,
+        levelsGained: math.max(1, xp.level - fromLevel),
+        beforeProgress:
+            trustworthyBefore &&
+                before.level == fromLevel &&
+                before.total <= xp.total &&
+                before.xpRequiredForNextLevel > 0 &&
+                before.progress.isFinite
+            ? before
+            : null,
+        afterProgress: xp,
+      );
 
       final targetContext =
           context ?? AppRouter.navigatorKey.currentContext ?? Get.context;
@@ -108,6 +125,17 @@ class XpController extends GetxController {
       } else if (targetContext != null) {
         showLevelUpCelebration(targetContext, effectiveLevelUp);
       }
+    } else if (pendingCelebration.value != null &&
+        xp.level == pendingCelebration.value!.toLevel) {
+      final pending = pendingCelebration.value!;
+      pendingCelebration.value = LevelUpModel(
+        occurred: true,
+        fromLevel: pending.fromLevel,
+        toLevel: pending.toLevel,
+        levelsGained: pending.levelsGained,
+        beforeProgress: pending.beforeProgress,
+        afterProgress: xp,
+      );
     }
   }
 
@@ -166,6 +194,10 @@ class XpController extends GetxController {
       fromLevel: from,
       toLevel: to,
       levelsGained: to - from,
+      beforeProgress: pending == null
+          ? award.beforeProgress
+          : pending.beforeProgress,
+      afterProgress: award.afterProgress ?? pending?.afterProgress,
     );
   }
 

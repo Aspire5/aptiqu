@@ -57,18 +57,9 @@ void main() {
     });
 
     test('QuestionInlineModel dynamically calculates question XP', () {
-      expect(
-        QuestionInlineModel.calculateQuestionXp('PRACTICE', 'EASY'),
-        10,
-      );
-      expect(
-        QuestionInlineModel.calculateQuestionXp('PRACTICE', 'HARD'),
-        20,
-      );
-      expect(
-        QuestionInlineModel.calculateQuestionXp('RANKED', 'HARD'),
-        25,
-      );
+      expect(QuestionInlineModel.calculateQuestionXp('PRACTICE', 'EASY'), 10);
+      expect(QuestionInlineModel.calculateQuestionXp('PRACTICE', 'HARD'), 20);
+      expect(QuestionInlineModel.calculateQuestionXp('RANKED', 'HARD'), 25);
     });
 
     test('QuestionData in HomeController calculates dynamic XP', () {
@@ -114,7 +105,9 @@ void main() {
   });
 
   group('TopBarZone Level & Progress Ring Widget Tests', () {
-    testWidgets('Renders Level text and circular progress avatar ring', (tester) async {
+    testWidgets('Renders Level text and circular progress avatar ring', (
+      tester,
+    ) async {
       final auth = Get.put(AuthController());
       auth.currentUser.value = const UserModel(
         id: 'user_1',
@@ -126,11 +119,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: TopBarZone(height: 80),
-          ),
-        ),
+        const MaterialApp(home: Scaffold(body: TopBarZone(height: 80))),
       );
 
       await tester.pump();
@@ -142,7 +131,9 @@ void main() {
   });
 
   group('LevelUpOverlay Widget & Interaction Tests', () {
-    testWidgets('Renders LEVEL UP!, level number, and Continue button', (tester) async {
+    testWidgets('Renders LEVEL UP!, level number, and Continue button', (
+      tester,
+    ) async {
       bool continued = false;
       const levelUp = LevelUpModel(
         occurred: true,
@@ -178,191 +169,201 @@ void main() {
       expect(continued, isTrue);
     });
 
-    testWidgets('Multi-level transition increments to final level', (tester) async {
-      const multiLevelUp = LevelUpModel(
-        occurred: true,
-        fromLevel: 2,
-        toLevel: 5,
-        levelsGained: 3,
-      );
+    testWidgets(
+      'Multi-level celebration without a prior snapshot shows the real final level',
+      (tester) async {
+        const multiLevelUp = LevelUpModel(
+          occurred: true,
+          fromLevel: 2,
+          toLevel: 5,
+          levelsGained: 3,
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: LevelUpOverlay(
-              levelUp: multiLevelUp,
-              onContinue: () {},
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: LevelUpOverlay(levelUp: multiLevelUp, onContinue: () {}),
             ),
           ),
-        ),
-      );
+        );
 
-      // At start, displays initial level
-      expect(find.text('LEVEL 2'), findsOneWidget);
+        // No captured XP snapshot: show the real final level without inventing intermediate progress.
+        expect(find.text('LEVEL 5'), findsOneWidget);
+        expect(find.text('+3 levels'), findsOneWidget);
 
-      // Finish animation
-      await tester.pump(const Duration(milliseconds: 1600));
+        // Finish animation
+        await tester.pump(const Duration(milliseconds: 1600));
 
-      // Reaches final level 5
-      expect(find.text('LEVEL 5'), findsOneWidget);
-    });
+        // Reaches final level 5
+        expect(find.text('LEVEL 5'), findsOneWidget);
+      },
+    );
   });
 
   group('XpController State & Level-Up Trigger Tests', () {
-    testWidgets('XpController updates progress and triggers overlay when occurred is true', (tester) async {
-      final auth = Get.put(AuthController());
-      auth.currentUser.value = const UserModel(
-        id: 'u1',
-        email: 'test@aptiqu.io',
-        firstName: 'Tester',
-        level: 1,
-      );
+    testWidgets(
+      'XpController updates progress and triggers overlay when occurred is true',
+      (tester) async {
+        final auth = Get.put(AuthController());
+        auth.currentUser.value = const UserModel(
+          id: 'u1',
+          email: 'test@aptiqu.io',
+          firstName: 'Tester',
+          level: 1,
+        );
 
-      final xpController = Get.put(XpController());
+        final xpController = Get.put(XpController());
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) {
-                return ElevatedButton(
-                  onPressed: () {
-                    xpController.handleXpUpdate(
-                      xp: const XpProgressModel(
-                        earned: 20,
-                        total: 20,
-                        level: 2,
-                      ),
-                      levelUp: const LevelUpModel(
-                        occurred: true,
-                        fromLevel: 1,
-                        toLevel: 2,
-                        levelsGained: 1,
-                      ),
-                      context: context,
-                    );
-                  },
-                  child: const Text('Award XP'),
-                );
-              },
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      xpController.handleXpUpdate(
+                        xp: const XpProgressModel(
+                          earned: 20,
+                          total: 20,
+                          level: 2,
+                        ),
+                        levelUp: const LevelUpModel(
+                          occurred: true,
+                          fromLevel: 1,
+                          toLevel: 2,
+                          levelsGained: 1,
+                        ),
+                        context: context,
+                      );
+                    },
+                    child: const Text('Award XP'),
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      // Progress updated in controller and AuthController
-      expect(xpController.progress.value.level, 1);
+        // Progress updated in controller and AuthController
+        expect(xpController.progress.value.level, 1);
 
-      await tester.tap(find.text('Award XP'));
-      await tester.pump(); // Open dialog
-      await tester.pump(const Duration(milliseconds: 1600)); // Finish celebration animation
+        await tester.tap(find.text('Award XP'));
+        await tester.pump(); // Open dialog
+        await tester.pump(
+          const Duration(milliseconds: 1600),
+        ); // Finish celebration animation
 
-      expect(xpController.progress.value.level, 2);
-      expect(auth.currentUser.value?.level, 2);
-      expect(find.text('LEVEL UP!'), findsOneWidget);
-      expect(find.text('LEVEL 2'), findsOneWidget);
-      expect(find.text('Continue'), findsOneWidget);
+        expect(xpController.progress.value.level, 2);
+        expect(auth.currentUser.value?.level, 2);
+        expect(find.text('LEVEL UP!'), findsOneWidget);
+        expect(find.text('LEVEL 2'), findsOneWidget);
+        expect(find.text('Continue'), findsOneWidget);
 
-      // Dismiss dialog via Continue
-      await tester.tap(find.text('Continue'));
-      await tester.pumpAndSettle();
+        // Dismiss dialog via Continue
+        await tester.tap(find.text('Continue'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('LEVEL UP!'), findsNothing);
-      // Persisted level remains 2
-      expect(xpController.progress.value.level, 2);
-      expect(auth.currentUser.value?.level, 2);
-    });
+        expect(find.text('LEVEL UP!'), findsNothing);
+        // Persisted level remains 2
+        expect(xpController.progress.value.level, 2);
+        expect(auth.currentUser.value?.level, 2);
+      },
+    );
 
-    testWidgets('XpController does NOT trigger overlay when levelUp.occurred is false', (tester) async {
-      final auth = Get.put(AuthController());
-      auth.currentUser.value = const UserModel(
-        id: 'u1',
-        email: 'test@aptiqu.io',
-        firstName: 'Tester',
-        level: 1,
-      );
+    testWidgets(
+      'XpController does NOT trigger overlay when levelUp.occurred is false',
+      (tester) async {
+        final auth = Get.put(AuthController());
+        auth.currentUser.value = const UserModel(
+          id: 'u1',
+          email: 'test@aptiqu.io',
+          firstName: 'Tester',
+          level: 1,
+        );
 
-      final xpController = Get.put(XpController());
+        final xpController = Get.put(XpController());
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) {
-                return ElevatedButton(
-                  onPressed: () {
-                    xpController.handleXpUpdate(
-                      xp: const XpProgressModel(
-                        earned: 10,
-                        total: 10,
-                        level: 1,
-                      ),
-                      levelUp: const LevelUpModel(
-                        occurred: false,
-                        fromLevel: 1,
-                        toLevel: 1,
-                        levelsGained: 0,
-                      ),
-                      context: context,
-                    );
-                  },
-                  child: const Text('Small Award'),
-                );
-              },
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      xpController.handleXpUpdate(
+                        xp: const XpProgressModel(
+                          earned: 10,
+                          total: 10,
+                          level: 1,
+                        ),
+                        levelUp: const LevelUpModel(
+                          occurred: false,
+                          fromLevel: 1,
+                          toLevel: 1,
+                          levelsGained: 0,
+                        ),
+                        context: context,
+                      );
+                    },
+                    child: const Text('Small Award'),
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.tap(find.text('Small Award'));
-      await tester.pump();
+        await tester.tap(find.text('Small Award'));
+        await tester.pump();
 
-      // No celebration overlay displayed
-      expect(find.text('LEVEL UP!'), findsNothing);
-      expect(xpController.progress.value.total, 10);
-    });
+        // No celebration overlay displayed
+        expect(find.text('LEVEL UP!'), findsNothing);
+        expect(xpController.progress.value.total, 10);
+      },
+    );
 
-    testWidgets('ProfileScreen renders user profile, level progress, topics and question breakdowns', (tester) async {
-      final auth = Get.put<AuthController>(AuthController());
-      auth.currentUser.value = const UserModel(
-        id: 'u1',
-        email: 'shagun@aptiqu.io',
-        firstName: 'Shagun',
-        lastName: 'Kumar',
-        level: 2,
-        totalXp: 35,
-        xpIntoCurrentLevel: 15,
-        xpRequiredForNextLevel: 40,
-        progress: 0.375,
-        stats: UserStatsModel(
-          topics: TopicStatsModel(completed: 3, total: 45),
-          questions: QuestionStatsModel(
-            easy: QuestionDifficultyStatsModel(solved: 5, total: 19),
-            medium: QuestionDifficultyStatsModel(solved: 2, total: 6),
-            hard: QuestionDifficultyStatsModel(solved: 0, total: 0),
+    testWidgets(
+      'ProfileScreen renders user profile, level progress, topics and question breakdowns',
+      (tester) async {
+        final auth = Get.put<AuthController>(AuthController());
+        auth.currentUser.value = const UserModel(
+          id: 'u1',
+          email: 'shagun@aptiqu.io',
+          firstName: 'Shagun',
+          lastName: 'Kumar',
+          level: 2,
+          totalXp: 35,
+          xpIntoCurrentLevel: 15,
+          xpRequiredForNextLevel: 40,
+          progress: 0.375,
+          stats: UserStatsModel(
+            topics: TopicStatsModel(completed: 3, total: 45),
+            questions: QuestionStatsModel(
+              easy: QuestionDifficultyStatsModel(solved: 5, total: 19),
+              medium: QuestionDifficultyStatsModel(solved: 2, total: 6),
+              hard: QuestionDifficultyStatsModel(solved: 0, total: 0),
+            ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: ProfileScreen(autoFetch: false),
-        ),
-      );
-      await tester.pump();
+        await tester.pumpWidget(
+          const MaterialApp(home: ProfileScreen(autoFetch: false)),
+        );
+        await tester.pump();
 
-      expect(find.text('Profile'), findsOneWidget);
-      expect(find.text('Shagun Kumar'), findsOneWidget);
-      expect(find.text('shagun@aptiqu.io'), findsOneWidget);
-      expect(find.text('LEVEL 2'), findsWidgets);
-      expect(find.text('15 / 40 XP'), findsOneWidget);
-      expect(find.text('Next: Level 3'), findsOneWidget);
-      expect(find.text('3 / 45'), findsOneWidget);
-      expect(find.text('Across all roadmaps'), findsOneWidget);
-      expect(find.text('6%'), findsOneWidget);
-      expect(find.text('5 / 19'), findsOneWidget);
-      expect(find.text('2 / 6'), findsOneWidget);
-      expect(find.text('0 / 0'), findsOneWidget);
-    });
+        expect(find.text('Profile'), findsOneWidget);
+        expect(find.text('Shagun Kumar'), findsOneWidget);
+        expect(find.text('shagun@aptiqu.io'), findsOneWidget);
+        expect(find.text('LEVEL 2'), findsWidgets);
+        expect(find.text('15 / 40 XP'), findsOneWidget);
+        expect(find.text('Next: Level 3'), findsOneWidget);
+        expect(find.text('3 / 45'), findsOneWidget);
+        expect(find.text('Across all roadmaps'), findsOneWidget);
+        expect(find.text('6%'), findsOneWidget);
+        expect(find.text('5 / 19'), findsOneWidget);
+        expect(find.text('2 / 6'), findsOneWidget);
+        expect(find.text('0 / 0'), findsOneWidget);
+      },
+    );
   });
 }

@@ -1,3 +1,6 @@
+import '../../core/feedback/app_feedback_service.dart';
+import '../../core/feedback/feedback_presentation.dart';
+import '../../shared/widgets/feedback/victory_celebration.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +27,39 @@ class DuelRoomScreen extends StatefulWidget {
 }
 
 class _DuelRoomScreenState extends State<DuelRoomScreen> {
+  final _feedbackScope = Object();
+  bool _sawLiveDuel = false, _celebrateVictory = false;
+  String? _feedbackOwner;
+  void _feedbackVisible(bool visible) {
+    final feedback = AppFeedbackService.maybe;
+    if (Get.find<AuthController>().currentUser.value?.id != _feedbackOwner) {
+      return;
+    }
+    if (visible) feedback?.acquire(_feedbackScope);
+    feedback?.setVisible(_feedbackScope, visible);
+  }
+
+  void _feedbackPresented() {
+    final data = duel;
+    if (data == null ||
+        data['status'] != 'COMPLETED' ||
+        Get.find<AuthController>().currentUser.value?.id != _feedbackOwner) {
+      return;
+    }
+    final won = data['isTie'] != true && data['winnerId'] == _feedbackOwner;
+    final fresh =
+        AppFeedbackService.maybe?.result(
+          _feedbackScope,
+          'friendly:${widget.id}',
+          won: won,
+          recovered: !_sawLiveDuel,
+        ) ??
+        false;
+    if (fresh && won && !_celebrateVictory) {
+      setState(() => _celebrateVictory = true);
+    }
+  }
+
   final social = Get.find<SocialController>();
   Map<String, dynamic>? duel;
   String? error;
@@ -40,6 +76,8 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
   @override
   void initState() {
     super.initState();
+    _feedbackOwner = Get.find<AuthController>().currentUser.value?.id;
+    AppFeedbackService.maybe?.acquire(_feedbackScope);
     load();
     subscription = social.events.stream.listen((event) {
       if ((event['event'] == 'DUEL_CHANGED' && event['id'] == widget.id) ||
@@ -65,6 +103,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
 
   @override
   void dispose() {
+    AppFeedbackService.maybe?.release(_feedbackScope);
     timer?.cancel();
     subscription?.cancel();
     elapsed.stop();
@@ -81,6 +120,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
       final data = await social.api.get('duels/${widget.id}');
       if (!mounted) return;
       if (!['PENDING', 'PREPARING'].contains(data['status'])) timer?.cancel();
+      if (['ACTIVE', 'PREPARING'].contains(data['status'])) _sawLiveDuel = true;
       setState(() {
         duel = data;
         error = null;
@@ -260,201 +300,215 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
       final pending = d?['status'] == 'PENDING';
       final preparing = d?['status'] == 'PREPARING';
       final requester = d?['requester']['id'] == me;
-      return PopScope(
-        canPop: !pending && !preparing && !busy,
-        onPopInvokedWithResult: (popped, _) {
-          if (!popped && (pending || preparing) && !busy) {
-            confirmLeave(context, fromBack: true);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: SocialPageAppBar.height(context),
-            title: const Text('Friendly duel'),
-            leading: IconButton(
-              tooltip: 'Back',
-              onPressed: busy
-                  ? null
-                  : () {
-                      if (pending || preparing) {
-                        confirmLeave(context, fromBack: true);
-                      } else {
-                        Navigator.of(context).maybePop();
-                      }
-                    },
-              icon: const Icon(Icons.arrow_back_rounded),
+      return FeedbackPresentation(
+        presentationKey: d?['status']?.toString(),
+        onVisibility: _feedbackVisible,
+        onPresented: _feedbackPresented,
+        child: PopScope(
+          canPop: !pending && !preparing && !busy,
+          onPopInvokedWithResult: (popped, _) {
+            if (!popped && (pending || preparing) && !busy) {
+              confirmLeave(context, fromBack: true);
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: SocialPageAppBar.height(context),
+              title: const Text('Friendly duel'),
+              leading: IconButton(
+                tooltip: 'Back',
+                onPressed: busy
+                    ? null
+                    : () {
+                        if (pending || preparing) {
+                          confirmLeave(context, fromBack: true);
+                        } else {
+                          Navigator.of(context).maybePop();
+                        }
+                      },
+                icon: const Icon(Icons.arrow_back_rounded),
+              ),
             ),
-          ),
-          body: SafeArea(
-            top: false,
-            child: RefreshIndicator(
-              onRefresh: load,
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  if (d == null)
-                    AppStateView(
-                      title: error == null
-                          ? 'Loading friendly duel'
-                          : 'Could not load this duel',
-                      message: error,
-                      loading: error == null,
-                      actionLabel: error == null ? null : 'Retry',
-                      onAction: error == null ? null : load,
-                    ),
-                  if (d != null) ...[
-                    if (error != null)
-                      SessionNotice(message: error!, onRetry: load),
-                    SocialSurface(
-                      child: SessionMetrics(
-                        items: [
-                          (
-                            label: d['requester']['id'] == me
-                                ? 'You'
-                                : 'Challenger',
-                            value: '${d['requester']['name']}',
+            body: SafeArea(
+              top: false,
+              child: RefreshIndicator(
+                onRefresh: load,
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    if (d == null)
+                      AppStateView(
+                        title: error == null
+                            ? 'Loading friendly duel'
+                            : 'Could not load this duel',
+                        message: error,
+                        loading: error == null,
+                        actionLabel: error == null ? null : 'Retry',
+                        onAction: error == null ? null : load,
+                      ),
+                    if (d != null) ...[
+                      if (_celebrateVictory)
+                        VictoryCelebration(
+                          key: ValueKey('friendly-victory:${widget.id}'),
+                          person: Map<String, dynamic>.from(
+                            d['winnerId'] == d['requester']['id']
+                                ? d['requester']
+                                : d['recipient'],
                           ),
-                          (
-                            label: d['recipient']['id'] == me
-                                ? 'You'
-                                : 'Friend',
-                            value: '${d['recipient']['name']}',
-                          ),
-                        ],
+                        ),
+                      if (error != null)
+                        SessionNotice(message: error!, onRetry: load),
+                      SocialSurface(
+                        child: SessionMetrics(
+                          items: [
+                            (
+                              label: d['requester']['id'] == me
+                                  ? 'You'
+                                  : 'Challenger',
+                              value: '${d['requester']['name']}',
+                            ),
+                            (
+                              label: d['recipient']['id'] == me
+                                  ? 'You'
+                                  : 'Friend',
+                              value: '${d['recipient']['name']}',
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      pending
-                          ? requester
-                                ? 'Waiting for your friend'
-                                : 'You’re invited to a duel'
-                          : _outcome(d, me),
-                      style: context.type.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    if (pending)
+                      const SizedBox(height: 24),
                       Text(
-                        '$seconds seconds ${requester ? 'to respond' : 'to accept or reject'}',
-                        style: context.type.bodyLarge,
+                        pending
+                            ? requester
+                                  ? 'Waiting for your friend'
+                                  : 'You’re invited to a duel'
+                            : _outcome(d, me),
+                        style: context.type.headlineSmall,
                       ),
-                    if (preparing)
-                      const AppStateView(
-                        title: 'Finalising your questions…',
-                        message: 'This may take a moment.',
-                        loading: true,
-                      ),
-                    if (d['status'] == 'EXPIRED')
-                      Text(
-                        'The invitation expired after 60 seconds.',
-                        style: context.type.bodyLarge,
-                      ),
-                    if (d['status'] == 'ABANDONED')
-                      Text(
-                        'The duel ended before both players finished. No XP was awarded.',
-                        style: context.type.bodyLarge,
-                      ),
-                    if (d['status'] == 'ACTIVE' &&
-                        own?['status'] == 'COMPLETED')
-                      Text(
-                        'You finished. Waiting for your friend to complete the same ten questions.',
-                        style: context.type.bodyLarge,
-                      ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '10 questions · ${d['timerEnabled'] == true ? '60 seconds per question' : 'No question timer'}',
-                      style: context.type.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      d['smartPicks'] == true
-                          ? '5 questions from each player’s weaker topics.'
-                          : 'Selected live topics',
-                      style: context.type.bodyMedium?.copyWith(
-                        color: context.colors.onSurfaceVariant,
-                      ),
-                    ),
-                    for (final note in d['selectionNotes'] ?? []) ...[
                       const SizedBox(height: 8),
-                      Text('$note', style: context.type.bodyMedium),
-                    ],
-                    const SizedBox(height: 16),
-                    if (pending || preparing || d['status'] == 'ACTIVE')
+                      if (pending)
+                        Text(
+                          '$seconds seconds ${requester ? 'to respond' : 'to accept or reject'}',
+                          style: context.type.bodyLarge,
+                        ),
+                      if (preparing)
+                        const AppStateView(
+                          title: 'Finalising your questions…',
+                          message: 'This may take a moment.',
+                          loading: true,
+                        ),
+                      if (d['status'] == 'EXPIRED')
+                        Text(
+                          'The invitation expired after 60 seconds.',
+                          style: context.type.bodyLarge,
+                        ),
+                      if (d['status'] == 'ABANDONED')
+                        Text(
+                          'The duel ended before both players finished. No XP was awarded.',
+                          style: context.type.bodyLarge,
+                        ),
+                      if (d['status'] == 'ACTIVE' &&
+                          own?['status'] == 'COMPLETED')
+                        Text(
+                          'You finished. Waiting for your friend to complete the same ten questions.',
+                          style: context.type.bodyLarge,
+                        ),
+                      const SizedBox(height: 16),
                       Text(
-                        '10 XP each when both finish. No Ranked rewards.',
+                        '10 questions · ${d['timerEnabled'] == true ? '60 seconds per question' : 'No question timer'}',
+                        style: context.type.bodyMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        d['smartPicks'] == true
+                            ? '5 questions from each player’s weaker topics.'
+                            : 'Selected live topics',
                         style: context.type.bodyMedium?.copyWith(
                           color: context.colors.onSurfaceVariant,
                         ),
                       ),
-                    const SizedBox(height: 24),
-                    for (final session in d['sessions'])
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              session['userId'] == d['requester']['id']
-                                  ? '${d['requester']['name']}'
-                                  : '${d['recipient']['name']}',
-                              style: context.type.titleSmall,
-                            ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 16,
-                              runSpacing: 8,
-                              children: [
-                                Text(
-                                  _status(session['status']),
-                                  style: context.type.bodyMedium,
-                                ),
-                                Text(
-                                  '${session['correctCount']} correct',
-                                  style: context.type.bodyMedium,
-                                ),
-                                Text(
-                                  '${session['xpAwarded']} XP awarded',
-                                  style: context.type.bodyMedium,
-                                ),
-                              ],
-                            ),
-                            const Divider(height: 24),
-                          ],
-                        ),
-                      ),
-                    if (d['status'] == 'ACTIVE' && own?['status'] == 'ACTIVE')
-                      AptiquButton(
-                        label: busy ? 'Opening duel…' : 'Resume duel',
-                        isLoading: busy,
-                        onPressed: busy ? null : openSession,
-                      ),
-                    if (pending && !requester)
-                      AptiquButton(
-                        label: busy ? 'Responding…' : 'Accept duel',
-                        isLoading: busy,
-                        onPressed: busy ? null : accept,
-                      ),
-                    if (pending || preparing || d['status'] == 'ACTIVE')
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: OutlinedButton(
-                          onPressed: busy
-                              ? null
-                              : pending
-                              ? leave
-                              : () => confirmLeave(context),
-                          child: Text(
-                            pending
-                                ? requester
-                                      ? 'Cancel invitation'
-                                      : 'Reject invitation'
-                                : 'Leave duel (no reward)',
+                      for (final note in d['selectionNotes'] ?? []) ...[
+                        const SizedBox(height: 8),
+                        Text('$note', style: context.type.bodyMedium),
+                      ],
+                      const SizedBox(height: 16),
+                      if (pending || preparing || d['status'] == 'ACTIVE')
+                        Text(
+                          '10 XP each when both finish. No Ranked rewards.',
+                          style: context.type.bodyMedium?.copyWith(
+                            color: context.colors.onSurfaceVariant,
                           ),
                         ),
-                      ),
+                      const SizedBox(height: 24),
+                      for (final session in d['sessions'])
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                session['userId'] == d['requester']['id']
+                                    ? '${d['requester']['name']}'
+                                    : '${d['recipient']['name']}',
+                                style: context.type.titleSmall,
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 16,
+                                runSpacing: 8,
+                                children: [
+                                  Text(
+                                    _status(session['status']),
+                                    style: context.type.bodyMedium,
+                                  ),
+                                  Text(
+                                    '${session['correctCount']} correct',
+                                    style: context.type.bodyMedium,
+                                  ),
+                                  Text(
+                                    '${session['xpAwarded']} XP awarded',
+                                    style: context.type.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                              const Divider(height: 24),
+                            ],
+                          ),
+                        ),
+                      if (d['status'] == 'ACTIVE' && own?['status'] == 'ACTIVE')
+                        AptiquButton(
+                          label: busy ? 'Opening duel…' : 'Resume duel',
+                          isLoading: busy,
+                          onPressed: busy ? null : openSession,
+                        ),
+                      if (pending && !requester)
+                        AptiquButton(
+                          label: busy ? 'Responding…' : 'Accept duel',
+                          isLoading: busy,
+                          onPressed: busy ? null : accept,
+                        ),
+                      if (pending || preparing || d['status'] == 'ACTIVE')
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: OutlinedButton(
+                            onPressed: busy
+                                ? null
+                                : pending
+                                ? leave
+                                : () => confirmLeave(context),
+                            child: Text(
+                              pending
+                                  ? requester
+                                        ? 'Cancel invitation'
+                                        : 'Reject invitation'
+                                  : 'Leave duel (no reward)',
+                            ),
+                          ),
+                        ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),

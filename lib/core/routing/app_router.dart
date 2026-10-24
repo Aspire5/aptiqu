@@ -1,3 +1,4 @@
+import '../feedback/feedback_presentation.dart';
 import '../../features/pvp/ranked/ranked_browser_screen.dart';
 import '../../features/social/friends_screen.dart';
 import '../../features/social/duel_room_screen.dart';
@@ -31,7 +32,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    observers: [overlayGate],
+    observers: [overlayGate, feedbackRouteObserver],
     initialLocation: AppRoutes.home,
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(title: const Text('AptiQu')),

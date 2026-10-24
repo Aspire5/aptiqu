@@ -1,3 +1,5 @@
+import '../feedback/app_feedback_service.dart';
+import '../feedback/feedback_preferences.dart';
 import '../../features/social/social_controller.dart';
 import '../theme/appearance_controller.dart';
 import 'package:get/get.dart';
@@ -16,6 +18,9 @@ class InitialBinding extends Bindings {
 
     // 2. Global Authentication Controller
     Get.put<AuthController>(AuthController(), permanent: true);
+
+    final feedback = Get.put(FeedbackPreferences(), permanent: true);
+    Get.put(AppFeedbackService(preferences: feedback), permanent: true);
 
     Get.put<SocialController>(SocialController(), permanent: true);
 

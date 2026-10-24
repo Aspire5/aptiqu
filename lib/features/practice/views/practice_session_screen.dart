@@ -1,3 +1,5 @@
+import '../../../core/feedback/feedback_presentation.dart';
+import '../../../shared/widgets/feedback/victory_celebration.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -63,274 +65,289 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
       final session = controller.session.value;
       final finished =
           controller.isCompleted.value || controller.duelEnded.isNotEmpty;
-      return PopScope(
-        canPop: finished || controller.isLeaving.value,
-        onPopInvokedWithResult: (didPop, _) {
-          if (!didPop) _confirmExit(context);
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: (MediaQuery.textScalerOf(context).scale(18) * 2.4)
-                .clamp(56.0, double.infinity),
-            leading: IconButton(
-              tooltip: 'Exit practice',
-              onPressed: controller.isLeaving.value
-                  ? null
-                  : () => _confirmExit(context),
-              icon: const Icon(Icons.close_rounded),
-            ),
-            title: Text(
-              session.isReplay
-                  ? 'Practice replay'
-                  : session.isFriendlyDuel
-                  ? 'Friendly practice'
-                  : 'Practice',
-            ),
-            actions: [
-              if (!finished)
-                IconButton(
-                  tooltip: 'Hints',
-                  onPressed:
-                      controller
-                                  .currentSessionQuestion
-                                  ?.question
-                                  .hints
-                                  .isNotEmpty ==
-                              true &&
-                          !controller.isLeaving.value
-                      ? () => _showHints(context)
-                      : null,
-                  icon: const Icon(Icons.lightbulb_outline_rounded),
-                ),
-            ],
-          ),
-          body: SafeArea(
-            top: false,
-            child: Obx(() {
-              if (controller.duelEnded.isNotEmpty) {
-                return SingleChildScrollView(
-                  child: AppStateView(
-                    title: 'Duel ended',
-                    message: controller.duelEnded.value,
-                    actionLabel: 'Return to practice',
-                    onAction: () => Navigator.of(context).pop(),
+      return FeedbackPresentation(
+        presentationKey: controller.isCompleted.value
+            ? 'result:${controller.friendlyResult.value?['status'] ?? ''}'
+            : controller.isReady.value
+            ? 'question:${controller.currentQuestionIndex.value}'
+            : null,
+        onVisibility: controller.setFeedbackVisible,
+        onPresented: controller.feedbackPresented,
+        child: PopScope(
+          canPop: finished || controller.isLeaving.value,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop) _confirmExit(context);
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: (MediaQuery.textScalerOf(context).scale(18) * 2.4)
+                  .clamp(56.0, double.infinity),
+              leading: IconButton(
+                tooltip: 'Exit practice',
+                onPressed: controller.isLeaving.value
+                    ? null
+                    : () => _confirmExit(context),
+                icon: const Icon(Icons.close_rounded),
+              ),
+              title: Text(
+                session.isReplay
+                    ? 'Practice replay'
+                    : session.isFriendlyDuel
+                    ? 'Friendly practice'
+                    : 'Practice',
+              ),
+              actions: [
+                if (!finished)
+                  IconButton(
+                    tooltip: 'Hints',
+                    onPressed:
+                        controller
+                                    .currentSessionQuestion
+                                    ?.question
+                                    .hints
+                                    .isNotEmpty ==
+                                true &&
+                            !controller.isLeaving.value
+                        ? () => _showHints(context)
+                        : null,
+                    icon: const Icon(Icons.lightbulb_outline_rounded),
                   ),
-                );
-              }
-              if (controller.isCompleted.value) {
-                return _entrance(context, _completion(context), 'completed');
-              }
-              if (controller.clockError.isNotEmpty) {
-                return SingleChildScrollView(
-                  child: AppStateView(
-                    title: 'Could not start the timer',
-                    message: controller.clockError.value,
-                    actionLabel: 'Retry',
-                    onAction: () => controller.begin(reduceMotion: true),
-                  ),
-                );
-              }
-              if (!controller.isReady.value) {
-                return const Center(
-                  child: SingleChildScrollView(
+              ],
+            ),
+            body: SafeArea(
+              top: false,
+              child: Obx(() {
+                if (controller.duelEnded.isNotEmpty) {
+                  return SingleChildScrollView(
                     child: AppStateView(
-                      title: 'Getting practice ready',
-                      loading: true,
+                      title: 'Duel ended',
+                      message: controller.duelEnded.value,
+                      actionLabel: 'Return to practice',
+                      onAction: () => Navigator.of(context).pop(),
                     ),
-                  ),
-                );
-              }
-              final current = controller.currentSessionQuestion;
-              if (current == null) {
-                return SingleChildScrollView(
-                  child: AppStateView(
-                    title: 'No question available',
-                    actionLabel: 'Return to practice',
-                    onAction: controller.abandon,
-                  ),
-                );
-              }
-              final q = current.question;
-              final result = controller.lastResult.value;
-              final busy =
-                  controller.isSubmitting.value || controller.isLeaving.value;
-              return _entrance(
-                context,
-                Column(
-                  children: [
-                    LinearProgressIndicator(
-                      value: session.totalQuestions > 0
-                          ? ((controller.currentQuestionIndex.value + 1) /
-                                    session.totalQuestions)
-                                .clamp(0.0, 1.0)
-                          : 0,
-                      semanticsLabel: 'Practice progress',
+                  );
+                }
+                if (controller.isCompleted.value) {
+                  return _entrance(context, _completion(context), 'completed');
+                }
+                if (controller.clockError.isNotEmpty) {
+                  return SingleChildScrollView(
+                    child: AppStateView(
+                      title: 'Could not start the timer',
+                      message: controller.clockError.value,
+                      actionLabel: 'Retry',
+                      onAction: () => controller.begin(reduceMotion: true),
                     ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        key: ValueKey('practice-question-${q.id}'),
-                        padding: const EdgeInsets.all(16),
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 720),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Wrap(
-                                  alignment: WrapAlignment.spaceBetween,
-                                  spacing: 16,
-                                  runSpacing: 8,
-                                  children: [
-                                    Text(
-                                      'Question ${controller.currentQuestionIndex.value + 1} of ${session.totalQuestions}',
-                                      style: context.type.titleSmall,
-                                    ),
-                                    if (session.timerEnabled)
-                                      Semantics(
-                                        label:
-                                            '${controller.remainingSeconds.value} seconds remaining',
-                                        child: ExcludeSemantics(
-                                          child: Text(
-                                            '${controller.remainingSeconds.value}s remaining',
-                                            style: context.type.bodyMedium
-                                                ?.copyWith(
-                                                  color: context.colors.primary,
-                                                ),
+                  );
+                }
+                if (!controller.isReady.value) {
+                  return const Center(
+                    child: SingleChildScrollView(
+                      child: AppStateView(
+                        title: 'Getting practice ready',
+                        loading: true,
+                      ),
+                    ),
+                  );
+                }
+                final current = controller.currentSessionQuestion;
+                if (current == null) {
+                  return SingleChildScrollView(
+                    child: AppStateView(
+                      title: 'No question available',
+                      actionLabel: 'Return to practice',
+                      onAction: controller.abandon,
+                    ),
+                  );
+                }
+                final q = current.question;
+                final result = controller.lastResult.value;
+                final busy =
+                    controller.isSubmitting.value || controller.isLeaving.value;
+                return _entrance(
+                  context,
+                  Column(
+                    children: [
+                      LinearProgressIndicator(
+                        value: session.totalQuestions > 0
+                            ? ((controller.currentQuestionIndex.value + 1) /
+                                      session.totalQuestions)
+                                  .clamp(0.0, 1.0)
+                            : 0,
+                        semanticsLabel: 'Practice progress',
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          key: ValueKey('practice-question-${q.id}'),
+                          padding: const EdgeInsets.all(16),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 720),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Wrap(
+                                    alignment: WrapAlignment.spaceBetween,
+                                    spacing: 16,
+                                    runSpacing: 8,
+                                    children: [
+                                      Text(
+                                        'Question ${controller.currentQuestionIndex.value + 1} of ${session.totalQuestions}',
+                                        style: context.type.titleSmall,
+                                      ),
+                                      if (session.timerEnabled)
+                                        Semantics(
+                                          label:
+                                              '${controller.remainingSeconds.value} seconds remaining',
+                                          child: ExcludeSemantics(
+                                            child: Text(
+                                              '${controller.remainingSeconds.value}s remaining',
+                                              style: context.type.bodyMedium
+                                                  ?.copyWith(
+                                                    color:
+                                                        context.colors.primary,
+                                                  ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    if (controller.hintsRevealed.value > 0)
-                                      Text(
-                                        '${controller.hintsRevealed.value}/2 hints used',
-                                        style: context.type.bodyMedium,
-                                      ),
-                                  ],
-                                ),
-                                if (session.isFriendlyDuel) ...[
-                                  const SizedBox(height: 16),
-                                  SessionMetrics(
-                                    items: [
-                                      for (final score
-                                          in controller.friendlyScores.take(2))
-                                        (
-                                          label: '${score['name']}',
-                                          value:
-                                              '${score['correctCount']} / 10 correct',
+                                      if (controller.hintsRevealed.value > 0)
+                                        Text(
+                                          '${controller.hintsRevealed.value}/2 hints used',
+                                          style: context.type.bodyMedium,
                                         ),
                                     ],
                                   ),
-                                ],
-                                const SizedBox(height: 16),
-                                QuestionMetadata(
-                                  difficulty: q.difficulty,
-                                  mode: q.calculationBadge,
-                                  source: q.pyq,
-                                ),
-                                if (q.pattern?.trim().isNotEmpty ?? false) ...[
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    q.pattern!,
-                                    style: context.type.bodySmall?.copyWith(
-                                      color: context.colors.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                                const SizedBox(height: 20),
-                                Text(q.prompt, style: context.type.bodyLarge),
-                                const SizedBox(height: 24),
-                                for (final option in q.options)
-                                  AnswerOption(
-                                    id: option.id,
-                                    text: option.text,
-                                    selected:
-                                        controller.selectedOptionId.value ==
-                                        option.id,
-                                    correct: result?.correctAnswer == option.id,
-                                    incorrect:
-                                        result != null &&
-                                        !result.isCorrect &&
-                                        controller.selectedOptionId.value ==
-                                            option.id,
-                                    onPressed: result != null || busy
-                                        ? null
-                                        : () => controller.selectOption(
-                                            option.id,
+                                  if (session.isFriendlyDuel) ...[
+                                    const SizedBox(height: 16),
+                                    SessionMetrics(
+                                      items: [
+                                        for (final score
+                                            in controller.friendlyScores.take(
+                                              2,
+                                            ))
+                                          (
+                                            label: '${score['name']}',
+                                            value:
+                                                '${score['correctCount']} / 10 correct',
                                           ),
+                                      ],
+                                    ),
+                                  ],
+                                  const SizedBox(height: 16),
+                                  QuestionMetadata(
+                                    difficulty: q.difficulty,
+                                    mode: q.calculationBadge,
+                                    source: q.pyq,
                                   ),
-                                if (controller.submitError.isNotEmpty)
-                                  Semantics(
-                                    liveRegion: true,
-                                    child: Text(
-                                      controller.submitError.value,
-                                      style: context.type.bodyMedium?.copyWith(
-                                        color: context.colors.error,
+                                  if (q.pattern?.trim().isNotEmpty ??
+                                      false) ...[
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      q.pattern!,
+                                      style: context.type.bodySmall?.copyWith(
+                                        color: context.colors.onSurfaceVariant,
                                       ),
                                     ),
-                                  ),
-                                if (result != null) ...[
-                                  const SizedBox(height: 8),
-                                  AnswerFeedback(
-                                    isCorrect: result.isCorrect,
-                                    correctAnswer: result.correctAnswer,
-                                  ),
-                                  const Divider(height: 32),
-                                  QuestionSolutions(
-                                    explanation: result.explanation.isNotEmpty
-                                        ? result.explanation
-                                        : q.explanation ?? '',
-                                    method: result.method.isNotEmpty
-                                        ? result.method
-                                        : q.method ?? '',
-                                    alternativeExplanation:
-                                        result.alternativeExplanation ??
-                                        q.alternativeExplanation,
-                                    preferredSolution:
-                                        result.preferredSolution ??
-                                        q.preferredSolution,
-                                    preferredReason:
-                                        result.preferredReason ??
-                                        q.preferredReason,
-                                    onPreferredReason: (title, reason) =>
-                                        _showReason(context, title, reason),
-                                  ),
+                                  ],
+                                  const SizedBox(height: 20),
+                                  Text(q.prompt, style: context.type.bodyLarge),
+                                  const SizedBox(height: 24),
+                                  for (final option in q.options)
+                                    AnswerOption(
+                                      id: option.id,
+                                      text: option.text,
+                                      selected:
+                                          controller.selectedOptionId.value ==
+                                          option.id,
+                                      correct:
+                                          result?.correctAnswer == option.id,
+                                      incorrect:
+                                          result != null &&
+                                          !result.isCorrect &&
+                                          controller.selectedOptionId.value ==
+                                              option.id,
+                                      onPressed: result != null || busy
+                                          ? null
+                                          : () => controller.selectOption(
+                                              option.id,
+                                            ),
+                                    ),
+                                  if (controller.submitError.isNotEmpty)
+                                    Semantics(
+                                      liveRegion: true,
+                                      child: Text(
+                                        controller.submitError.value,
+                                        style: context.type.bodyMedium
+                                            ?.copyWith(
+                                              color: context.colors.error,
+                                            ),
+                                      ),
+                                    ),
+                                  if (result != null) ...[
+                                    const SizedBox(height: 8),
+                                    AnswerFeedback(
+                                      isCorrect: result.isCorrect,
+                                      correctAnswer: result.correctAnswer,
+                                    ),
+                                    const Divider(height: 32),
+                                    QuestionSolutions(
+                                      explanation: result.explanation.isNotEmpty
+                                          ? result.explanation
+                                          : q.explanation ?? '',
+                                      method: result.method.isNotEmpty
+                                          ? result.method
+                                          : q.method ?? '',
+                                      alternativeExplanation:
+                                          result.alternativeExplanation ??
+                                          q.alternativeExplanation,
+                                      preferredSolution:
+                                          result.preferredSolution ??
+                                          q.preferredSolution,
+                                      preferredReason:
+                                          result.preferredReason ??
+                                          q.preferredReason,
+                                      onPreferredReason: (title, reason) =>
+                                          _showReason(context, title, reason),
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: AptiquButton(
-                          label: busy
-                              ? 'Submitting answer…'
-                              : result != null
-                              ? controller.currentQuestionIndex.value <
-                                        session.totalQuestions - 1
-                                    ? 'Next question'
-                                    : 'Continue to summary'
-                              : controller.submitError.isNotEmpty
-                              ? 'Retry answer'
-                              : 'Submit answer',
-                          isLoading: busy,
-                          onPressed: busy
-                              ? null
-                              : result != null
-                              ? controller.nextQuestion
-                              : controller.selectedOptionId.value.isEmpty
-                              ? null
-                              : controller.submitAnswer,
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: AptiquButton(
+                            label: busy
+                                ? 'Submitting answer…'
+                                : result != null
+                                ? controller.currentQuestionIndex.value <
+                                          session.totalQuestions - 1
+                                      ? 'Next question'
+                                      : 'Continue to summary'
+                                : controller.submitError.isNotEmpty
+                                ? 'Retry answer'
+                                : 'Submit answer',
+                            isLoading: busy,
+                            onPressed: busy
+                                ? null
+                                : result != null
+                                ? controller.nextQuestion
+                                : controller.selectedOptionId.value.isEmpty
+                                ? null
+                                : controller.submitAnswer,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                q.id,
-              );
-            }),
+                    ],
+                  ),
+                  q.id,
+                );
+              }),
+            ),
           ),
         ),
       );
@@ -412,14 +429,28 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(
-                Icons.task_alt_rounded,
-                color: context.status.success,
-                size: 48,
-              ),
+              if (controller.celebrateVictory.value)
+                VictoryCelebration(person: controller.friendlyWinnerPerson)
+              else
+                Icon(
+                  Icons.task_alt_rounded,
+                  color: context.status.success,
+                  size: 48,
+                ),
               const SizedBox(height: 20),
               Text(
-                session.isReplay ? 'Replay complete' : 'Session complete',
+                session.isFriendlyDuel
+                    ? controller.friendlyResult.value == null
+                          ? 'Waiting for your friend'
+                          : controller.friendlyResult.value!['isTie'] == true
+                          ? 'Draw'
+                          : controller.friendlyResult.value!['winnerId'] ==
+                                controller.feedbackUserId
+                          ? 'Victory'
+                          : 'Duel complete'
+                    : session.isReplay
+                    ? 'Replay complete'
+                    : 'Session complete',
                 style: context.type.headlineSmall,
                 textAlign: TextAlign.center,
               ),

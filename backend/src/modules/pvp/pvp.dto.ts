@@ -1,10 +1,11 @@
+import { XpPolicy } from '../xp/xp.policy';
 import type { Prisma } from '@prisma/client';
 import { PvpError } from './pvp.errors';
 import { MatchQuestion, matchQuestions } from './ranked/ranked-questions';
 import { z } from 'zod';
 
 export const pvpMatchInclude = {
-  players: { include: { user: { select: { profile: { select: { firstName: true, avatarUrl: true } } } } } },
+  players: { include: { user: { select: { profile: { select: { firstName: true, avatarUrl: true } }, progress: { select: { totalXp: true } } } } } },
   questionSet: { include: { setQuestions: { include: { question: true }, orderBy: { sequence: 'asc' as const } } } },
   answers: true,
   settlement: { select: { disposition: true, resultSnapshot: true, settledAt: true, changes: { select: { id: true, userId: true, seasonVersionAfter: true } } } },
@@ -31,6 +32,7 @@ export function publicPlayers(match: PvpInternalMatch) {
   return match.players.map(player => ({
     userId: player.userId, firstName: player.user.profile?.firstName || 'Learner',
     avatarUrl: player.user.profile?.avatarUrl ?? null,
+    level: XpPolicy.getLevelFromXp(Number(player.user.progress?.totalXp ?? 0)),
     score: player.score, totalResponseTimeMs: player.totalResponseTimeMs,
     ...(match.status === 'COMPLETED' ? { isWinner: player.isWinner, xpAwarded: player.xpAwarded, isAfk: player.connectionStatus === 'DISCONNECTED' } : {}),
   }));
