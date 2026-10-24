@@ -201,6 +201,71 @@ void main() {
       );
     },
   );
+  for (final entry in [
+    ('FAILED', 'LUNA_QUOTA_EXCEEDED', 'temporarily unavailable'),
+    ('FAILED', 'QUALITY_REVIEW_FAILED', 'finalise a full set'),
+    ('EXPIRED', 'PREPARATION_EXPIRED', 'took too long'),
+  ]) {
+    test(
+      'terminal ${entry.$2} preserves a safe support reference and clears the pending request',
+      () async {
+        final client = Get.find<DioClient>();
+        final records = <String>[];
+        final originalPrint = debugPrint;
+        debugPrint = (message, {wrapWidth}) {
+          if (message != null) records.add(message);
+        };
+        addTearDown(() => debugPrint = originalPrint);
+        client.dio.httpClientAdapter = PreparationAdapter(
+          (options) async => options.path == '/practice/sessions'
+              ? response({'id': 'preparation-id'}, 202)
+              : response({
+                  'id': 'preparation-id',
+                  'state': entry.$1,
+                  'errorCode': entry.$2,
+                  'message': 'SECRET_CANARY provider-key prompt contents',
+                }),
+        );
+        await expectLater(
+          PracticeRepository().createSession(),
+          throwsA(
+            isA<PreparationFailed>()
+                .having((e) => e.preparationId, 'support id', 'preparation-id')
+                .having((e) => e.state, 'state', entry.$1)
+                .having((e) => e.code, 'code', entry.$2)
+                .having(
+                  (e) => e.toString(),
+                  'learner message',
+                  contains(entry.$3),
+                ),
+          ),
+        );
+        expect(
+          records.single,
+          '[Practice Preparation] id=preparation-id state=${entry.$1} code=${entry.$2}',
+        );
+        expect(records.join().contains('SECRET_CANARY'), false);
+        expect(
+          await client.secureStorage.read(key: 'luna_practice_pending_'),
+          isNull,
+        );
+      },
+    );
+  }
+  test(
+    'malformed diagnostic fields cannot leak arbitrary server content into logs or notices',
+    () {
+      final error = PreparationFailed(
+        preparationId: 'https://SECRET_CANARY/key',
+        state: 'SECRET_CANARY',
+        code: 'provider said SECRET_CANARY: key=secret',
+      );
+      expect(error.preparationId, 'unknown');
+      expect(error.state, 'FAILED');
+      expect(error.code, 'PREPARATION_FAILED');
+      expect('${error.diagnostics} $error'.contains('SECRET_CANARY'), false);
+    },
+  );
   testWidgets(
     'preparation loader remains readable at narrow phone width and enlarged text',
     (tester) async {

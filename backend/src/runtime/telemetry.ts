@@ -6,7 +6,7 @@ export function startTelemetry(state: RuntimeState, role: string) {
     delay.enable();
     const timer = setInterval(() => {
         const memory = process.memoryUsage();
-        log('info', 'runtime.resources', { role, activeRequests: state.activeRequests, rssBytes: memory.rss, heapBytes: memory.heapUsed, eventLoopDelayMs: Math.round(delay.percentile(99) / 1e6), uptimeSeconds: Math.floor(process.uptime()) });
+        log('debug', 'runtime.resources', { role, activeRequests: state.activeRequests, rssBytes: memory.rss, heapBytes: memory.heapUsed, eventLoopDelayMs: Math.round(delay.percentile(99) / 1e6), uptimeSeconds: Math.floor(process.uptime()) });
         delay.reset();
     }, 60000);
     timer.unref();

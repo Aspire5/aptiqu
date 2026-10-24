@@ -146,7 +146,7 @@ function ReleaseTimeline() {
         </div>
         <div>
           <h3>{milestone.title}</h3>
-          <ul>{milestone.highlights.slice(0, index === 0 ? 3 : 2).map(text => <li key={text}>{text}</li>)}</ul>
+          <ul>{(index === 0 ? milestone.highlights : milestone.highlights.slice(0, 2)).map(text => <li key={text}>{text}</li>)}</ul>
         </div>
       </article>)}<details>
         <summary>Earlier development milestones <span>v{milestones.at(-1)?.version}–v{milestones[3]?.version}</span>

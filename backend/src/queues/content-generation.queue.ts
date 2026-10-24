@@ -72,7 +72,9 @@ export async function processContentJob(job: Job) {
 export function startContentGenWorker() {
   const connection = queueRedis(true);
   const worker = new Worker(CONTENT_GEN_QUEUE_NAME, processContentJob, {connection,concurrency:ENV.CONTENT_WORKER_CONCURRENCY??2});
-  worker.on('error', () => log('warn','content_generation_queue.startContentGenWorker.warn'));
-  worker.on('failed', () => log('warn','content_generation_queue.startContentGenWorker.warn'));
+  worker.on('error', error => log('warn','content_generation_queue.worker_error',safeError(error)));
+  worker.on('failed', (job,error) => log('error','content_generation_queue.job_failed',{...safeError(error),
+    ...(job?.name==='luna-preparation'&&typeof job.data?.preparationId==='string'&&/^[0-9a-f-]{36}$/i.test(job.data.preparationId)?{preparationId:job.data.preparationId}:{}),
+  }));
   return Object.assign(async () => { await worker.close(); connection.disconnect(); await contentGenQueue.close(); },{pause:()=>worker.pause(true),ready:()=>worker.waitUntilReady(),isReady:()=>worker.isRunning() && connection.status==='ready'});
 }

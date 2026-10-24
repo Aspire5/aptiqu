@@ -2,6 +2,7 @@ import { ENV } from '../../../config/env';
 import { PublicError } from '../../../security/errors';
 import { reserveProvider } from '../provider-budget';
 import type { Call } from './workflow';
+import { LunaFailure, safeProviderCode } from './failures';
 
 export interface LunaUsage {stage:string;model:string;reasoning:string;outputTokenCap:number;estimatedInputTokens:number;inputTokens:number|null;cachedInputTokens:number|null;outputTokens:number|null;reasoningTokens:number|null;estimatedCostUsd:number;actualCostUsd:number|null;durationMs:number;outcome:string}
 export function makeLunaRequest(call:Call){
@@ -25,17 +26,29 @@ export async function lunaCall(call:Call, deadline:Date, report:(usage:LunaUsage
   try{
     // Native REST adapter, no automatic retries. Every dispatched call is durably counted by the orchestrator.
     const response=await fetcher('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${cfg.key}`,'Content-Type':'application/json'},body,signal:abort.signal});
-    if(!response.ok)throw new Error('LUNA_REQUEST_FAILED'); // Never log provider bodies or credentials.
-    const result=await response.json() as {status?:string;usage?:{input_tokens?:number;input_tokens_details?:{cached_tokens?:number};output_tokens?:number;output_tokens_details?:{reasoning_tokens?:number}};output?:Array<{type:string;content?:Array<{type:string;text?:string}>}>};
+    if(!response.ok){
+      // Parse only a fixed diagnostic code. Never retain/log provider messages,
+      // request bodies, prompts, headers or credentials.
+      let code:string|undefined;
+      try { const body=await response.json() as {error?:{code?:unknown;type?:unknown}};code=safeProviderCode(body?.error?.code)??safeProviderCode(body?.error?.type); } catch { /* Status alone is still useful. */ }
+      const failure=response.status===401||response.status===403?'LUNA_AUTH_FAILED'
+        :code==='insufficient_quota'?'LUNA_QUOTA_EXCEEDED'
+        :response.status===429?'LUNA_RATE_LIMITED':'LUNA_REQUEST_FAILED';
+      throw new LunaFailure(failure,response.status,code);
+    }
+    const result=await response.json() as {status?:string;incomplete_details?:{reason?:unknown};usage?:{input_tokens?:number;input_tokens_details?:{cached_tokens?:number};output_tokens?:number;output_tokens_details?:{reasoning_tokens?:number}};output?:Array<{type:string;content?:Array<{type:string;text?:string}>}>};
     const input=result.usage?.input_tokens,output=result.usage?.output_tokens,reasoning=result.usage?.output_tokens_details?.reasoning_tokens;
     const cached=Math.min(input??0,Math.max(0,result.usage?.input_tokens_details?.cached_tokens??0));
     usage={...usage,inputTokens:typeof input==='number'?input:null,cachedInputTokens:typeof input==='number'?cached:null,outputTokens:typeof output==='number'?output:null,reasoningTokens:typeof reasoning==='number'?reasoning:null,
       actualCostUsd:typeof input==='number'&&typeof output==='number'?((input-cached)*cfg.inputPricePerMillion+cached*(cfg.cachedInputPricePerMillion??cfg.inputPricePerMillion)+output*cfg.outputPricePerMillion)/1e6:null};
-    if(result.status!=='completed')throw new Error('LUNA_INCOMPLETE_RESPONSE');
+    if(result.status!=='completed')throw new LunaFailure(result.incomplete_details?.reason==='max_output_tokens'?'LUNA_OUTPUT_LIMIT':'LUNA_INCOMPLETE_RESPONSE',response.status,safeProviderCode(result.incomplete_details?.reason));
     const content=(result.output??[]).filter(o=>o.type==='message').flatMap(o=>o.content??[]);
     if(content.some(c=>c.type==='refusal'))throw new Error('LUNA_REFUSAL');
     const text=content.filter(c=>c.type==='output_text').map(c=>c.text??'').join('');
     const parsed=JSON.parse(text);usage.outcome='COMPLETED';return parsed;
+  } catch(error) {
+    if(abort.signal.aborted)throw new LunaFailure('LUNA_REQUEST_TIMEOUT');
+    throw error;
   } finally {
     clearTimeout(timer);await release();usage.durationMs=Date.now()-started;await report(usage);
   }

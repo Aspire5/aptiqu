@@ -12,6 +12,7 @@ function setup(overrides={}){
  vm.runInNewContext(code,{exports,require:id=>{
   if(id==='../../../config/env')return {ENV:{LUNA:cfg}};
   if(id==='../../../security/errors')return {PublicError:class extends Error{}};
+  if(id==='./failures')return require('../failures.ts');
   if(id==='../provider-budget')return {reserveProvider:async(...args)=>{reservations.push(args);return async()=>{};}};
   throw Error(`Unexpected module ${id}`);
  },Buffer,Date,AbortController,setTimeout,clearTimeout,fetch:()=>{throw Error('Real fetch forbidden');}});
@@ -47,4 +48,30 @@ test('timeout, non-2xx, incomplete output and refusal fail with one dispatch, ne
 });
 test('expired deadline and disabled provider never dispatch',async()=>{
  for(const cfg of [{enabled:false},{}]){const s=setup(cfg);let calls=0;await assert.rejects(()=>s.lunaCall(call,new Date(Date.now()-1),async()=>{},async()=>{calls++;}));assert.equal(calls,0);}
+});
+
+test('provider failures retain safe status/reason codes without provider messages or credentials',async()=>{
+ const cases=[
+  [401,'invalid_api_key','LUNA_AUTH_FAILED'],[429,'insufficient_quota','LUNA_QUOTA_EXCEEDED'],
+  [429,'rate_limit_exceeded','LUNA_RATE_LIMITED'],[400,'invalid_json_schema','LUNA_REQUEST_FAILED'],
+  [503,'SECRET_CANARY','LUNA_REQUEST_FAILED'],
+ ];
+ for(const [status,code,expected] of cases){
+  const s=setup();let calls=0;
+  await assert.rejects(()=>s.lunaCall(call,new Date(Date.now()+10000),async()=>{},async()=>{
+   calls++;return {ok:false,status,json:async()=>({error:{code,message:'SECRET_CANARY fixture-key prompt contents'}})};
+  }),error=>{
+   assert.equal(error.code,expected);assert.equal(error.providerStatus,status);
+   assert.equal(error.message,expected);assert.ok(!JSON.stringify(error).includes('SECRET_CANARY'));
+   if(code==='SECRET_CANARY')assert.equal(error.providerCode,undefined);
+   return true;
+  });assert.equal(calls,1);
+ }
+});
+test('output-cap exhaustion is distinguished from other incomplete output without changing request budgets',async()=>{
+ const s=setup(),reports=[];
+ await assert.rejects(()=>s.lunaCall(call,new Date(Date.now()+10000),async value=>reports.push(value),async()=>({
+  ok:true,status:200,json:async()=>({status:'incomplete',incomplete_details:{reason:'max_output_tokens'},usage:{input_tokens:100,output_tokens:24576}}),
+ })),error=>error.code==='LUNA_OUTPUT_LIMIT'&&error.providerCode==='max_output_tokens');
+ assert.equal(reports.length,1);assert.equal(reports[0].outputTokens,24576);assert.equal(reports[0].outcome,'FAILED');
 });

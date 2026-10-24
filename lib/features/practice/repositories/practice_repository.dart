@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
 import 'package:dio/dio.dart';
@@ -162,9 +163,13 @@ class PracticeRepository {
           await _client.secureStorage.delete(key: _pendingKey(owner));
           _activePreparationId = null;
           if (state == 'CANCELLED') throw const PreparationCancelled();
-          throw Exception(
-            'We couldn’t prepare your questions. Please try again.',
+          final failure = PreparationFailed(
+            preparationId: record['id'],
+            state: state,
+            code: status['errorCode'],
           );
+          debugPrint('[Practice Preparation] ${failure.diagnostics}');
+          throw failure;
         }
       } on DioException catch (error) {
         checkOwner();
@@ -287,4 +292,47 @@ class PreparationCancelled implements Exception {
   const PreparationCancelled();
   @override
   String toString() => 'Question preparation cancelled.';
+}
+
+/// Keep a support reference in logs without showing internal provider details
+/// or arbitrary server messages in the learner-facing notice.
+class PreparationFailed implements Exception {
+  final String preparationId;
+  final String state;
+  final String code;
+
+  PreparationFailed({Object? preparationId, Object? state, Object? code})
+    : preparationId =
+          preparationId is String &&
+              RegExp(r'^[a-zA-Z0-9_-]{1,80}$').hasMatch(preparationId)
+          ? preparationId
+          : 'unknown',
+      state = state == 'EXPIRED' ? 'EXPIRED' : 'FAILED',
+      code = code is String && RegExp(r'^[A-Z][A-Z0-9_]{0,79}$').hasMatch(code)
+          ? code
+          : 'PREPARATION_FAILED';
+
+  String get diagnostics => 'id=$preparationId state=$state code=$code';
+
+  @override
+  String toString() {
+    if (state == 'EXPIRED' || code == 'PREPARATION_EXPIRED') {
+      return 'Preparing your questions took too long. Please try again.';
+    }
+    if (code == 'QUALITY_REVIEW_FAILED' || code == 'INCOMPLETE_BATCH') {
+      return 'We couldn’t finalise a full set of questions. Please try again.';
+    }
+    if (const {
+      'LUNA_UNAVAILABLE',
+      'LUNA_AUTH_FAILED',
+      'LUNA_QUOTA_EXCEEDED',
+      'LUNA_RATE_LIMITED',
+      'AI_UNAVAILABLE',
+      'AI_BUDGET_EXCEEDED',
+      'QUEUE_UNAVAILABLE',
+    }.contains(code)) {
+      return 'Question preparation is temporarily unavailable. Please try again later.';
+    }
+    return 'We couldn’t prepare your questions. Please try again.';
+  }
 }

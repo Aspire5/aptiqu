@@ -10,6 +10,22 @@ The older `CHANGELOG_APP.md`, `CHANGELOG_BACKEND.md`, `CHANGELOG_DASHBOARD.md` a
 - Public product landing page with genuine Flutter preview renders, app theme comparison and a unified development timeline.
 - Public root route and isolated protected admin routes under `/dashboard`.
 
+## [0.0.7] — 2026-10-25 · A livelier arena and more rewarding progress
+
+### PvP and Ranked improvements
+- Ranked and Unranked matches now feature a redesigned versus arena with real player avatars, names, levels and scores, refined violet/cyan accents and layered device panels. Compact layouts keep questions and answer options central on smaller screens.
+- Your answer locks immediately on submission, your personal clock freezes, and the shared round countdown remains visible beside your opponent. A clear waiting state explains that the round is still in progress, while your timer ticking stops until the next playable question.
+- Practice and competitive sessions now prepare Luna question variations from approved, manually authored exam patterns, with manageable calculations, explanations, hints and solution metadata. Clear preparation states show when questions are being finalised.
+- Reconnects preserve the server-owned deadline and confirmed results without restarting the clock, revealing answers early or replaying start cues. Ranked leagues, monthly seasons, Elo settlement and XP rewards retain their existing rules.
+
+### Sound, haptics and celebrations
+- The first genuinely playable question announces a Practice, Ranked, Unranked or Friendly session with a short sound and one phone haptic. Timed questions use subtle ticks with a distinct final-ten-seconds cue; submission, feedback screens and backgrounding silence the timer. Correct and incorrect sounds wait for confirmed results.
+- Confirmed PvP wins now have a short victory fanfare and a Flutter-native avatar, trophy and particle celebration lasting about four seconds. Results and exit controls remain accessible throughout. Draws and losses use neutral completion feedback; Friendly duels celebrate only after the shared final result is confirmed.
+- Level-up celebrations now fill the previous level's captured XP bar, gently expand and settle the profile avatar, reveal the actual new level and animate its confirmed XP progress. Multiple levels gained appear together as +N levels, with one celebration and sound, deferred until active gameplay has finished.
+- Profile now includes Sound effects, Haptic feedback and Off / Last 10 seconds / Full timer-audio settings, saved on each device. Celebrations respect reduced motion, ordinary buttons remain quiet, and level-up vibration stays off by default. Sound stops when the app leaves the foreground or the session is exited.
+
+Evidence: `6750da6` (Luna question preparation) and `791fb1d` (arena, sound, haptics and celebrations). These are implemented development improvements, not a public release or deployment announcement.
+
 ## [0.0.6] — 2026-10-20 · Ranked competition and platform reliability
 
 ### Added
@@ -78,4 +94,4 @@ Target: 8 November 2026, Diwali, on Google Play. Not released. Individual roadma
 
 Keep meaningful work under Unreleased until it forms a verified milestone. Then add a descending `## [0.0.x] — YYYY-MM-DD · Short title` section with Added/Improved/Fixed/Changed bullets and supporting commit references. Use dates of verified development, never invented release or deployment dates. Do not renumber published milestones or infer product versions from package files. Keep v1.0.0 reserved until the public release is verified.
 
-The landing page imports this file at build time and displays a short selection of milestone bullets. Rebuild the frontend after updates. There is no second hand-maintained public history, Git hook or release automation.
+The landing page imports this file at build time and displays the latest milestone in full, with a short selection of older milestone bullets. Rebuild the frontend after updates. There is no second hand-maintained public history, Git hook or release automation.

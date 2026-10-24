@@ -1,3 +1,5 @@
+import { log, safeError } from '../../../observability/logger';
+import { preparationFailure } from './failures';
 import { createHash, randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { Prisma, QuestionPreparation } from '@prisma/client';
@@ -49,7 +51,8 @@ export async function startPreparation(input:{users:string[];mode:Mode;tier:Tier
     if(input.mode==='PRACTICE'&&await tx.friendlyDuelSeat.count({where:{userId:{in:users}}}))throw new PublicError('Finish your friendly duel first.','FRIENDLY_DUEL_ACTIVE',409);
     return tx.questionPreparation.create({data:{requestKey,userIds:users,mode:input.mode,tier:input.tier,scope:json(input.scope),deadline:new Date(Date.now()+ENV.LUNA.preparationTimeoutMs)}});
   });
-  if(row.state==='QUEUED')try{await enqueue(row.id);}catch{
+  if(row.state==='QUEUED')try{await enqueue(row.id);}catch(error){
+    log('error','luna.preparation_failed',{preparationId:row.id,mode:row.mode,stage:'QUEUED',...safeError(error),causeCode:safeError(error).code,code:'QUEUE_UNAVAILABLE'});
     await prisma.questionPreparation.updateMany({where:{id:row.id,state:'QUEUED'},data:{state:'FAILED',errorCode:'QUEUE_UNAVAILABLE',version:{increment:1}}});throw unavailable();
   }
   return row;
@@ -59,7 +62,8 @@ export async function preparationStatus(userId:string,id?:string){
   let row=await prisma.questionPreparation.findFirst({where:{...(id?{id}:{state:{in:ACTIVE_STATES}}),userIds:{has:userId}},orderBy:{createdAt:'desc'}});
   if(!row)return null;
   if(ACTIVE_STATES.includes(row.state)&&+row.deadline<=Date.now()){
-    await prisma.questionPreparation.updateMany({where:{id:row.id,state:{in:ACTIVE_STATES},deadline:{lte:new Date()}},data:{state:'EXPIRED',errorCode:'PREPARATION_EXPIRED',version:{increment:1}}});
+    const expired=await prisma.questionPreparation.updateMany({where:{id:row.id,state:{in:ACTIVE_STATES},deadline:{lte:new Date()}},data:{state:'EXPIRED',errorCode:'PREPARATION_EXPIRED',version:{increment:1}}});
+    if(expired.count)log('warn','luna.preparation_failed',{preparationId:row.id,mode:row.mode,stage:row.state,code:'PREPARATION_EXPIRED',callCount:row.callCount});
     row=await prisma.questionPreparation.findUniqueOrThrow({where:{id:row.id}});
   }
   // Repair the durable-insert/queue-dispatch gap after a process interruption.
@@ -92,22 +96,28 @@ export async function waitForPreparation(row:QuestionPreparation,active:()=>bool
 }
 export async function processPreparation(id:string){
   if(!z.string().uuid().safeParse(id).success)throw unavailable();
-  await prisma.questionPreparation.updateMany({where:{id,state:{in:ACTIVE_STATES},deadline:{lte:new Date()}},data:{state:'EXPIRED',errorCode:'PREPARATION_EXPIRED',version:{increment:1}}});
+  const expired=await prisma.questionPreparation.updateMany({where:{id,state:{in:ACTIVE_STATES},deadline:{lte:new Date()}},data:{state:'EXPIRED',errorCode:'PREPARATION_EXPIRED',version:{increment:1}}});
   const token=randomUUID();
   const acquired=await prisma.questionPreparation.updateMany({where:{id,state:'QUEUED',deadline:{gt:new Date()}},data:{state:'GENERATING',workerToken:token,version:{increment:1}}});
   if(!acquired.count){
     const previous=await prisma.questionPreparation.findUnique({where:{id}});
+    if(expired.count&&previous)log('warn','luna.preparation_failed',{preparationId:id,mode:previous.mode,stage:'EXPIRED',code:'PREPARATION_EXPIRED',callCount:previous.callCount});
     // BullMQ retries a stalled worker; never repeat an ambiguous paid call after a crash.
-    if(previous&&ACTIVE_STATES.includes(previous.state))await prisma.questionPreparation.updateMany({where:{id,state:previous.state,workerToken:previous.workerToken},data:{state:'FAILED',errorCode:'WORKER_INTERRUPTED',version:{increment:1}}});
+    if(previous&&ACTIVE_STATES.includes(previous.state)){
+      const interrupted=await prisma.questionPreparation.updateMany({where:{id,state:previous.state,workerToken:previous.workerToken},data:{state:'FAILED',errorCode:'WORKER_INTERRUPTED',version:{increment:1}}});
+      if(interrupted.count)log('error','luna.preparation_failed',{preparationId:id,mode:previous.mode,stage:previous.state,code:'WORKER_INTERRUPTED',callCount:previous.callCount});
+    }
     return;
   }
   const row=await prisma.questionPreparation.findUniqueOrThrow({where:{id}});
-  const scope=scopeSchema.parse(row.scope);
+  let scope:Scope|undefined;
+  let stage='PLANNING',callCount=row.callCount;
   const update=async(data:Prisma.QuestionPreparationUpdateManyMutationInput)=>{
     const changed=await prisma.questionPreparation.updateMany({where:{id,workerToken:token,state:{in:ACTIVE_STATES},deadline:{gt:new Date()}},data:{...data,version:{increment:1}}});
     if(!changed.count)throw new Error('PREPARATION_OWNERSHIP_LOST');
   };
   try{
+    scope=scopeSchema.parse(row.scope);
     // Persist all randomness and exact prompts once. Repairs never re-plan Silver's coin/difficulty.
     const slots=await planSlots(scope,row.tier as Tier,row.userIds);
     const [gen,review]=await Promise.all([
@@ -120,8 +130,10 @@ export async function processPreparation(id:string){
     const usage:LunaUsage[]=[];
     const questions=await runLunaWorkflow(manifest.slots,{
       call:async request=>{
+        stage=request.stage;
         const increment=await prisma.questionPreparation.updateMany({where:{id,workerToken:token,state:{in:ACTIVE_STATES},deadline:{gt:new Date()},callCount:{lt:ENV.LUNA.maxCalls}},data:{state:request.stage,callCount:{increment:1},version:{increment:1}}});
         if(!increment.count)throw new Error('PREPARATION_CALL_BUDGET');
+        callCount++;
         return lunaCall(request,row.deadline,async entry=>{usage.push(entry);await prisma.questionPreparation.updateMany({where:{id,workerToken:token},data:{usage:json(usage)}});});
       },
       duplicates:async candidates=>{
@@ -131,11 +143,15 @@ export async function processPreparation(id:string){
         const found=new Set(existing.map(q=>q.fingerprint));return new Set(candidates.filter(q=>found.has(fingerprint(q))||found.has(legacy(q))).map(q=>q.slotId));
       },
     },{generation:manifest.generation.text,review:manifest.review.text});
+    stage='SAVING';
     await update({state:'SAVING'});
     await publish(row,token,scope,manifest.slots,questions,manifest.generation.version,manifest.review.version);
-  }catch{
-    await prisma.questionPreparation.updateMany({where:{id,workerToken:token,state:{in:ACTIVE_STATES}},data:{state:+row.deadline<=Date.now()?'EXPIRED':'FAILED',errorCode:+row.deadline<=Date.now()?'PREPARATION_EXPIRED':'QUALITY_OR_PROVIDER_FAILURE',version:{increment:1}}});
-    if(row.mode==='FRIENDLY'&&scope.duelId){const {duelsService}=await import('../../social/duels.service');await duelsService.abandon(row.userIds[0],scope.duelId).catch(()=>{});}
+  }catch(error){
+    const failure=preparationFailure(error),expired=+row.deadline<=Date.now();
+    const code=expired?'PREPARATION_EXPIRED':failure.code;
+    const changed=await prisma.questionPreparation.updateMany({where:{id,workerToken:token,state:{in:ACTIVE_STATES}},data:{state:expired?'EXPIRED':'FAILED',errorCode:code,version:{increment:1}}});
+    if(changed.count)log(expired?'warn':'error','luna.preparation_failed',{preparationId:id,mode:row.mode,stage,callCount,...safeError(error),...failure,code});
+    if(row.mode==='FRIENDLY'&&scope?.duelId){const {duelsService}=await import('../../social/duels.service');await duelsService.abandon(row.userIds[0],scope.duelId).catch(()=>{});}
   }
 }
 async function publish(row:QuestionPreparation,token:string,scope:Scope,slots:Slot[],questions:Candidate[],generationVersion:string,reviewVersion:string){

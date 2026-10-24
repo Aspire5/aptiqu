@@ -1,6 +1,6 @@
 // Deliberately allowlist metadata; never serialize arbitrary Error objects or payloads.
 const levels = { debug: 10, info: 20, warn: 30, error: 40 };
-const fields = new Set(['requestId', 'method', 'route', 'status', 'durationMs', 'code', 'type', 'role', 'event', 'activeRequests', 'rssBytes', 'heapBytes', 'eventLoopDelayMs', 'uptimeSeconds', 'origins', 'origin', 'chapter', 'script', 'topics', 'subtopics', 'scripts', 'skippedScripts', 'failedScripts']);
+const fields = new Set(['requestId', 'method', 'route', 'status', 'durationMs', 'code', 'type', 'role', 'event', 'activeRequests', 'rssBytes', 'heapBytes', 'eventLoopDelayMs', 'uptimeSeconds', 'origins', 'origin', 'chapter', 'script', 'topics', 'subtopics', 'scripts', 'skippedScripts', 'failedScripts', 'preparationId', 'mode', 'stage', 'callCount', 'providerStatus', 'providerCode', 'causeCode']);
 export function safeError(error: unknown) {
     const value = error as {
         name?: unknown;
