@@ -34,6 +34,9 @@ function setup({ skill = false, inspect, queue } = {}) {
   };
   const schedule = (fn, delay) => { const timer = { fn, delay, cleared: false }; timers.push(timer); return timer; };
   const deps = {
+    '../../config/env':{ENV:{LUNA:{maxPending:32,preparationTimeoutMs:600000}}},
+    '../../config/prisma':{prisma:{questionPreparation:{findFirst:async()=>null}}},
+    '../ai/luna/preparations':{ACTIVE_STATES:['QUEUED','GENERATING'],publicPreparation:value=>value},
     '../../security/trusted-peer': {trustedPeer: () => '127.0.0.1'},
     '../../security/request-policy': {takeBudget: async () => {}},
     './ranked/ranked-runtime': { rankedRuntime: () => ({ reads: skill, skillMatchmaking: skill }) },
@@ -205,9 +208,10 @@ test('a winning claim replies PAIRING to cancellation, and Redis cleanup failure
  let release,entered;const gate=new Promise(resolve=>{release=resolve;}),started=new Promise(resolve=>{entered=resolve;});
  const raw=fixture().state().match;raw.status='STARTING';raw.transitionDeadline=new Date(Date.now()+3000);
  f.service.createMatch=async(a,b,claim)=>{assert.equal(claim.isActive(),true);entered();await gate;return raw;};
- queue.enableClaim();const work=f.server.searchRanked();await started;
+ queue.enableClaim();const work=f.server.searchRanked();await started;await work;
+ assert.equal(f.server.claiming.size,2,'Pairing loop returns while content preparation remains active');
  await sockets[0].receive({type:'LEAVE_MATCHMAKING'});assert.equal(f.sent.at(-1).data.status,'PAIRING');
- queue.finish=async()=>{throw new Error('Redis lost after commit');};release();await work;
+ queue.finish=async()=>{throw new Error('Redis lost after commit');};release();await Promise.all([...f.server.queueWork]);
  assert.equal(f.sent.filter(item=>item.event==='MATCH_FOUND').length,2);assert.equal(f.server.activeMatches.has(matchId),true);assert.equal(f.server.claiming.size,0);
 });
 

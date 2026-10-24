@@ -14,7 +14,7 @@ export interface QuestionListFilter {
   topicId?: string;
   subtopicId?: string;
   difficulty?: QuestionDifficulty;
-  sourceType?: 'MANUAL' | 'AI_GENERATED';
+  sourceType?: 'MANUAL' | 'AI_GENERATED' | 'LUNA';
   status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
   pyqOnly?: boolean | string;
   page?: number;
@@ -96,6 +96,7 @@ export class AdminQuestionsService {
       hardCount,
       manualCount,
       aiCount,
+      lunaCount,
       publishedCount,
       draftCount,
       topicsWithCount,
@@ -106,6 +107,7 @@ export class AdminQuestionsService {
       prisma.question.count({ where: { difficulty: 'HARD' } }),
       prisma.question.count({ where: { sourceType: 'MANUAL' } }),
       prisma.question.count({ where: { sourceType: 'AI_GENERATED' } }),
+      prisma.question.count({ where: { sourceType: 'LUNA' } }),
       prisma.question.count({ where: { status: 'PUBLISHED' } }),
       prisma.question.count({ where: { status: 'DRAFT' } }),
       prisma.topic.findMany({
@@ -129,6 +131,7 @@ export class AdminQuestionsService {
       bySource: {
         manual: manualCount,
         aiGenerated: aiCount,
+        luna: lunaCount,
       },
       byStatus: {
         published: publishedCount,
@@ -160,7 +163,7 @@ export class AdminQuestionsService {
     estimatedTimeSeconds?: number;
     calculationMode?: CalculationMode;
     status?: 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
-    sourceType?: 'MANUAL' | 'AI_GENERATED';
+    sourceType?: 'MANUAL' | 'AI_GENERATED' | 'LUNA';
     externalKey?: string;
     pyq?: string;
     alternativeExplanation?: string;

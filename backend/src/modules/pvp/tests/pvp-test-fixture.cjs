@@ -52,6 +52,7 @@ function fixture() {
   let failUser;
   const locks = [];
   const db = {
+    questionPreparation:{count:async()=>0},
     $queryRaw: async (strings, ...values) => { locks.push([strings.join('?'), values]); return strings.join('?').includes('clock_timestamp') ? [{ now: new Date(now) }] : [{ id: matchId }]; },
     pvpMatch: {
       count: async () => store.unresolved ?? 0,

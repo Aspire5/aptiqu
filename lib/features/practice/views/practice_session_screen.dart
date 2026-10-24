@@ -223,8 +223,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                                 const SizedBox(height: 16),
                                 QuestionMetadata(
                                   difficulty: q.difficulty,
-                                  mode: q.calculationMode
-                                      .toHumanCalculationMode(),
+                                  mode: q.calculationBadge,
                                   source: q.pyq,
                                 ),
                                 if (q.pattern?.trim().isNotEmpty ?? false) ...[

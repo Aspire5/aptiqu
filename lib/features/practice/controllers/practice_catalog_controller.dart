@@ -62,6 +62,7 @@ class PracticeCatalogController extends GetxController {
     if (isClosed) return;
     await fetchLiveTopics();
     if (isClosed) return;
+    unawaited(_resumePreparation());
     for (final value in <RxInterface<dynamic>>[
       smartPicks,
       timerEnabled,
@@ -70,6 +71,42 @@ class PracticeCatalogController extends GetxController {
       selectedSubtopicIds,
     ]) {
       _preferenceWorkers.add(ever(value, (_) => _savePreferences()));
+    }
+  }
+
+  Future<void> _resumePreparation() async {
+    if (isStartingSession.value || isReplaying.value || isClosed) return;
+    isStartingSession.value = true;
+    try {
+      final session = await _repository.resumePendingPreparation();
+      if (session != null && !isClosed) {
+        if (Get.isRegistered<PracticeSessionController>()) {
+          Get.delete<PracticeSessionController>();
+        }
+        await AppRouter.router.push(AppRoutes.practiceSession, extra: session);
+      }
+    } on PreparationCancelled {
+      // The user cancelled before admission.
+    } catch (_) {
+      if (!isClosed) {
+        _showNotice(
+          'Preparation unavailable',
+          'Retry to reconnect to your questions.',
+          isError: true,
+        );
+      }
+    } finally {
+      if (!isClosed) isStartingSession.value = false;
+    }
+  }
+
+  Future<void> cancelQuestionPreparation() async {
+    try {
+      await _repository.cancelPreparation();
+    } catch (_) {
+      if (!isClosed) {
+        _showNotice('Could not cancel', 'Please try again.', isError: true);
+      }
     }
   }
 
@@ -411,6 +448,8 @@ class PracticeCatalogController extends GetxController {
       );
       await AppRouter.router.push(AppRoutes.practiceSession, extra: session);
       if (!isClosed) unawaited(fetchHistory());
+    } on PreparationCancelled {
+      // No session was admitted.
     } catch (err, stack) {
       if (friendlyDuel.value &&
           Get.isRegistered<SocialController>() &&

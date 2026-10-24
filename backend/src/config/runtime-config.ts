@@ -127,7 +127,8 @@ export function parseRuntimeConfig(source: Source, cwd: string) {
     if (google && !audiences.some(Boolean))
         return configError('GOOGLE_*_CLIENT_ID');
     const ai = flag(source, 'AI_GENERATION_ENABLED', Boolean(source.GEMINI_API_KEY?.trim()));
-    if (ai)
+    const luna = readLunaConfig(source);
+    if (ai && !luna.enabled)
         required('GEMINI_API_KEY');
     const bookRoot = root('BOOK_STORAGE_ROOT', 'storage/books'), tempRoot = root('BOOK_TEMP_ROOT', 'storage/temp');
     if (bookRoot === tempRoot || bookRoot.startsWith(tempRoot + path.sep) || tempRoot.startsWith(bookRoot + path.sep))
@@ -145,6 +146,7 @@ export function parseRuntimeConfig(source: Source, cwd: string) {
         GOOGLE_AUTH_ENABLED: google, GOOGLE_WEB_CLIENT_ID: audiences[0], GOOGLE_ANDROID_CLIENT_ID: audiences[1], GOOGLE_IOS_CLIENT_ID: audiences[2],
         GOOGLE_WEB_CLIENT_SECRET: source.GOOGLE_WEB_CLIENT_SECRET || '', REDIS_URL: redisUrl(source.REDIS_URL ?? 'redis://127.0.0.1:6379'),
         AI_GENERATION_ENABLED: ai, GEMINI_API_KEY: source.GEMINI_API_KEY || '', GEMINI_MODEL: source.GEMINI_MODEL?.trim() || 'gemini-3.5-flash-lite', GEMINI_THINKING_BUDGET: integer(source, 'GEMINI_THINKING_BUDGET', 0, 0, 32768),
+        LUNA: luna,
         CORS_ALLOWED_ORIGINS: origins, AUTH_JSON_LIMIT_BYTES: integer(source, 'AUTH_JSON_LIMIT_BYTES', 24576, 1024, 65536), MOBILE_JSON_LIMIT_BYTES: integer(source, 'MOBILE_JSON_LIMIT_BYTES', 81920, 4096, 262144), ADMIN_JSON_LIMIT_BYTES: integer(source, 'ADMIN_JSON_LIMIT_BYTES', 8388608, 65536, 16777216),
         READINESS_TIMEOUT_MS: integer(source, 'READINESS_TIMEOUT_MS', 5000, 1000, 30000), SHUTDOWN_TIMEOUT_MS: integer(source, 'SHUTDOWN_TIMEOUT_MS', 30000, 1000, 300000), HTTP_REQUEST_TIMEOUT_MS: integer(source, 'HTTP_REQUEST_TIMEOUT_MS', 300000, 1000, 600000),
         CONTENT_WORKER_CONCURRENCY: integer(source, 'CONTENT_WORKER_CONCURRENCY', 2, 1, 4), SOCIAL_WORKER_CONCURRENCY: integer(source, 'SOCIAL_WORKER_CONCURRENCY', 20, 1, 50), QUEUE_FAILED_RETENTION_COUNT: integer(source, 'QUEUE_FAILED_RETENTION_COUNT', 500, 1, 5000), QUEUE_FAILED_RETENTION_SECONDS: integer(source, 'QUEUE_FAILED_RETENTION_SECONDS', 604800, 3600, 2592000),
@@ -152,6 +154,32 @@ export function parseRuntimeConfig(source: Source, cwd: string) {
         LOCAL_CACHE_MAX_ENTRIES: integer(source, 'LOCAL_CACHE_MAX_ENTRIES', 256, 1, 10000), LOCAL_CACHE_MAX_BYTES: integer(source, 'LOCAL_CACHE_MAX_BYTES', 8388608, 1024, 67108864),
         LOG_LEVEL: ['debug', 'info', 'warn', 'error'].includes(source.LOG_LEVEL ?? 'info') ? source.LOG_LEVEL ?? 'info' : configError('LOG_LEVEL'), RANKED: ranked,
     };
+}
+// Luna has its own credentials/configuration; enabling it never requires Gemini.
+export function readLunaConfig(source: Source) {
+    const reasoning = source.LUNA_REASONING_EFFORT ?? 'medium';
+    if (reasoning !== 'medium' && reasoning !== 'high') return configError('LUNA_REASONING_EFFORT');
+    const key = source.OPEN_AI_API_KEY?.trim() ?? '';
+    const enabled = flag(source, 'LUNA_GENERATION_ENABLED', Boolean(key));
+    if (enabled && !key) return configError('OPEN_AI_API_KEY');
+    const topics = (source.LUNA_PILOT_TOPICS ?? 'number-system,hcf-and-lcm,decimal-fractions').split(',').map(v => v.trim()).filter(Boolean);
+    if (!topics.length || topics.length > 4) return configError('LUNA_PILOT_TOPICS');
+    const requestTimeoutMs = integer(source, 'LUNA_REQUEST_TIMEOUT_MS', 120000, 1000, 300000);
+    const preparationTimeoutMs = integer(source, 'LUNA_PREPARATION_TIMEOUT_MS', 600000, requestTimeoutMs, 1800000);
+    return { enabled, key, model: 'gpt-6-luna' as const, reasoning: reasoning as 'medium' | 'high', topics,
+        requestTimeoutMs, preparationTimeoutMs, maxCalls: integer(source, 'LUNA_MAX_PROVIDER_CALLS', 4, 2, 4),
+        generationOutputTokens: integer(source, 'LUNA_GENERATION_OUTPUT_TOKENS', 24576, 8192, 65536),
+        reviewOutputTokens: integer(source, 'LUNA_REVIEW_OUTPUT_TOKENS', 12288, 4096, 32768),
+        maxPending: integer(source, 'LUNA_MAX_PENDING_PREPARATIONS', 32, 1, 500),
+        inputPricePerMillion: decimalPrice(source, 'LUNA_INPUT_PRICE_PER_MILLION', 0.1),
+        cachedInputPricePerMillion: decimalPrice(source, 'LUNA_CACHED_INPUT_PRICE_PER_MILLION', 0.01),
+        outputPricePerMillion: decimalPrice(source, 'LUNA_OUTPUT_PRICE_PER_MILLION', 0.5),
+    };
+}
+function decimalPrice(source: Source, key: string, fallback: number) {
+    const value = source[key] === undefined ? fallback : Number(source[key]);
+    if (!Number.isFinite(value) || value < 0 || value > 1000) return configError(key);
+    return value;
 }
 export function parseAiLimits(source: Source) {
     return {

@@ -15,7 +15,7 @@ type Question = MatchQuestion;
 export function publicQuestion(question: Question) {
   return {
     id: question.id, prompt: question.prompt, difficulty: question.difficulty,
-    pattern: question.pattern, pyq: question.pyq,
+    pattern: question.sourceType === 'LUNA' && /mental/i.test(question.pattern ?? '') ? null : question.pattern, pyq: question.pyq,
     options: Array.isArray(question.options) ? question.options.flatMap(value => {
       if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
       return typeof value.id === 'string' && typeof value.text === 'string' ? [{ id: value.id, text: value.text }] : [];
@@ -45,6 +45,8 @@ export function roundFeedback(match: PvpInternalMatch, questionIndex: number) {
   return {
     matchId: match.id, questionIndex, stateVersion: match.stateVersion, correctAnswer: question.correctAnswer,
     explanation: question.explanation, method: question.method,
+    hints:question.hints??[], alternativeExplanation:question.alternativeExplanation??null,
+    estimatedTimeSeconds:question.estimatedTimeSeconds??null,
     scores: match.players.map(player => {
       const answer = match.answers.find(a => a.questionIndex === questionIndex && a.userId === player.userId);
       return { userId: player.userId, score: player.score, selectedOptionId: answer?.selectedOptionId ?? null, isCorrect: answer?.isCorrect ?? false, isLate: answer?.isLate ?? false };

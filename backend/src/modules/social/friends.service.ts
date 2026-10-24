@@ -136,9 +136,10 @@ export class FriendsService {
     await prisma.$transaction(async tx => {
       await lockUsers(tx, [user, target]);
       await tx.friendship.updateMany({ where: { ...pair }, data: { status: 'REMOVED' } });
-      const pending = await tx.friendlyDuel.findMany({ where: { requesterId: { in: [user, target] }, recipientId: { in: [user, target] }, status: 'PENDING' }, select: { id: true } });
-      await tx.friendlyDuel.updateMany({ where: { id: { in: pending.map(d => d.id) }, status: 'PENDING' }, data: { status: 'CANCELLED' } });
+      const pending = await tx.friendlyDuel.findMany({ where: { requesterId: { in: [user, target] }, recipientId: { in: [user, target] }, status: { in:['PENDING','PREPARING'] } }, select: { id: true } });
+      await tx.friendlyDuel.updateMany({ where: { id: { in: pending.map(d => d.id) }, status: { in:['PENDING','PREPARING'] } }, data: { status: 'CANCELLED' } });
       await tx.friendlyDuelSeat.deleteMany({ where: { duelId: { in: pending.map(d => d.id) } } });
+      for (const duel of pending) await tx.questionPreparation.updateMany({where:{scope:{path:['duelId'],equals:duel.id},state:{in:['QUEUED','GENERATING','REVIEWING','REPAIRING','REREVIEWING','SAVING']}},data:{state:'CANCELLED',version:{increment:1}}});
     });
     await socialTransport.notify([user, target], 'INBOX_CHANGED');
   }

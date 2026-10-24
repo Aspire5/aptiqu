@@ -14,8 +14,8 @@ export const questionFields=z.object({
   subtopicId:id,subjectId:id.optional(),topicId:id.optional(),pattern:z.string().max(100).nullable().optional(),prompt:z.string().trim().min(1).max(10000),
   options:z.array(z.object({id:z.enum(['A','B','C','D']),text:z.string().trim().min(1).max(2000)}).strict()).length(4),correctAnswer:z.enum(['A','B','C','D']),
   hints:z.array(z.string().max(2000)).max(5).optional(),explanation:z.string().max(20000),method:z.string().max(3000).optional(),
-  difficulty:z.enum(['EASY','MEDIUM','HARD']).optional(),estimatedTimeSeconds:z.number().int().min(30).max(120).optional(),calculationMode:z.enum(['MENTAL','LIGHT_PEN_AND_PAPER','PEN_AND_PAPER']).optional(),
-  status:z.enum(['DRAFT','REVIEW','PUBLISHED','ARCHIVED']).optional(),sourceType:z.enum(['MANUAL','AI_GENERATED']).optional(),externalKey:id.nullable().optional(),pyq:z.string().max(500).nullable().optional(),
+  difficulty:z.enum(['EASY','MEDIUM','HARD']).optional(),estimatedTimeSeconds:z.number().int().min(1).max(120).optional(),calculationMode:z.enum(['MENTAL','LIGHT_PEN_AND_PAPER','PEN_AND_PAPER']).optional(),
+  status:z.enum(['DRAFT','REVIEW','PUBLISHED','ARCHIVED']).optional(),sourceType:z.enum(['MANUAL','AI_GENERATED','LUNA']).optional(),externalKey:id.nullable().optional(),pyq:z.string().max(500).nullable().optional(),
   alternativeExplanation:z.string().max(20000).nullable().optional(),preferredSolution:z.enum(['BOOK','ALTERNATIVE']).nullable().optional(),preferredReason:z.string().max(3000).nullable().optional(),
   generationMethod:z.enum(['HUMAN_MANUAL','AI_EXTRACTED','AI_SYNTHETIC']).optional(),sourceBook:z.string().max(500).nullable().optional(),sourceEdition:z.string().max(200).nullable().optional(),sourceChapter:z.string().max(500).nullable().optional(),sourcePageRange:z.string().max(100).nullable().optional(),
 }).strict();
@@ -34,6 +34,7 @@ function optionIdentity(value:string):string {
 }
 export function validateAdminQuestion(value:unknown) {
   const data=questionFields.parse(value);
+  if(data.estimatedTimeSeconds!==undefined && (data.sourceType==='LUNA'?data.estimatedTimeSeconds>60:data.estimatedTimeSeconds<30))throw new z.ZodError([{code:'custom',path:['estimatedTimeSeconds'],message:'Luna estimates must be 1–60 seconds; other question timing remains 30–120 seconds'}]);
   if(new Set(data.options.map(o=>o.id)).size!==4 || new Set(data.options.map(o=>optionIdentity(o.text))).size!==4)throw new z.ZodError([{code:'custom',path:['options'],message:'Options must have distinct IDs and distinct answers'}]);
   if((data.status??'PUBLISHED')==='PUBLISHED'&&!data.explanation.trim())throw new z.ZodError([{code:'custom',path:['explanation'],message:'Published questions require an explanation'}]);
   return data;

@@ -12,6 +12,9 @@ router.use(authenticateJwt);
 
 router.get('/topics/live', PracticeController.getLiveTopics);
 router.get('/history', PracticeController.getHistory);
+router.get('/preparations/current', PracticeController.preparation);
+router.get('/preparations/:id', PracticeController.preparation);
+router.delete('/preparations/:id', PracticeController.cancelPreparation);
 router.post('/sessions', PracticeController.createSession);
 router.get('/sessions/:sessionId', PracticeController.getSession);
 router.post('/sessions/:sessionId/start-question', async (req: AuthenticatedRequest, res, next) => {

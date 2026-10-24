@@ -5,6 +5,7 @@ function readFixture(){
  const state={rows:[],active:null,recent:null,friendly:0,users:new Map([...users,outsider].map(id=>[id,true])),seasons:new Map(),history:[],queries:[],transactions:[],fail:false};
  const matches=(r,w)=>(!w.userId||(typeof w.userId==='string'?r.userId===w.userId:r.userId<w.userId.lt))&&(!w.seasonId||(typeof w.seasonId==='string'?r.seasonId===w.seasonId:r.seasonId<w.seasonId.lt))&&(!w.played||r.played>w.played.gt)&&(!w.finalizedAt||r.finalizedAt!=null)&&(!w.qualifiedAt||r.qualifiedAt!=null)&&(!w.OR||w.OR.some(o=>(typeof o.rating==='object'?r.rating>o.rating.gt:r.rating===o.rating)&&(!o.userId||r.userId<o.userId.lt)));
  const db={
+ questionPreparation:{count:async()=>0},
  user:{findUnique:async({where})=>state.users.has(where.id)?{isRegistrationComplete:state.users.get(where.id)}:null},
  rankedSeason:{findUnique:async({where})=>state.seasons.get(where.id)??null,findUniqueOrThrow:async({where})=>{const row=state.seasons.get(where.id);if(!row)throw new Error('Missing season');return row;}},
  rankedPlayerSeason:{
@@ -15,6 +16,7 @@ function readFixture(){
  },
  pvpMatchPlayer:{findFirst:async({where})=>where.match.status==='COMPLETED'?state.recent:state.active,findMany:async()=>state.history,count:async()=>state.history.length},
  friendlyDuelSeat:{count:async()=>state.friendly},
+ question:{count:async()=>10},
  $transaction:async(fn,options)=>{if(state.fail)throw new Error('PRIVATE_DATABASE_FAILURE');state.transactions.push(options);return fn(db);},
  $queryRaw:async(query)=>{
  if(Array.isArray(query))return[{now:new Date(now)}];state.queries.push(query);

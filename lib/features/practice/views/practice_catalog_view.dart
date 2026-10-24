@@ -19,6 +19,7 @@ class PracticeCatalogView extends StatelessWidget {
       builder: (context, box) => Obx(() {
         final history = c.showHistory.value;
         final busy = c.isStartingSession.value || c.isReplaying.value;
+        final preparing = c.isStartingSession.value && !c.friendlyDuel.value;
         final custom = c.selectionMode.value == PracticeSelectionMode.specific;
         final compact =
             box.maxHeight < 240 * MediaQuery.textScalerOf(context).scale(1);
@@ -39,7 +40,17 @@ class PracticeCatalogView extends StatelessWidget {
               children: [
                 if (!compact) header,
                 Expanded(
-                  child: history
+                  child: preparing
+                      ? SingleChildScrollView(
+                          child: AppStateView(
+                            title: 'Finalising your questions…',
+                            message: 'This may take a moment.',
+                            loading: true,
+                            actionLabel: 'Cancel',
+                            onAction: c.cancelQuestionPreparation,
+                          ),
+                        )
+                      : history
                       ? _history(context, c, header: compact ? header : null)
                       : _setup(
                           context,
@@ -50,7 +61,7 @@ class PracticeCatalogView extends StatelessWidget {
                           action: compact ? action : null,
                         ),
                 ),
-                if (!compact && action != null) action,
+                if (!preparing && !compact && action != null) action,
               ],
             ),
           ),

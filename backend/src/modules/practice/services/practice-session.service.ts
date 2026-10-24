@@ -5,7 +5,9 @@ import { duelsService } from '../../social/duels.service';
 import { lockUsers } from '../../social/friends.service';
 import { socialTransport } from '../../social/social.transport';
 import { prisma } from '../../../config/prisma';
-import { practiceSelectionService } from './practice-selection.service';
+import { randomUUID } from 'node:crypto';
+import { resolveScope } from '../../ai/luna/references';
+import { startPreparation, publicPreparation } from '../../ai/luna/preparations';
 import { XpService } from '../../xp/xp.service';
 import { XpPolicy } from '../../xp/xp.policy';
 
@@ -23,213 +25,10 @@ export class PracticeSessionService {
    * Initializes and persists a new 10-Question Practice Session.
    * Supports specific topic/subtopics or global random selection across live content.
    */
-  public async createSession(userId: string, topicId?: string, subtopicIds?: string[], smartPicks = false) {
-    let resolvedSubtopicIds = subtopicIds;
-    let resolvedTopicId = topicId;
-
-    // 1. Resolve Topic by ID or slug
-    if (resolvedTopicId) {
-      const topicRecord = await prisma.topic.findFirst({
-        where: {
-          OR: [
-            { id: resolvedTopicId },
-            { slug: resolvedTopicId },
-          ],
-        },
-      });
-      if (topicRecord) {
-        resolvedTopicId = topicRecord.id;
-      }
-    }
-
-    // 2. If subtopicIds were provided, resolve any ScriptAssignment IDs or slugs to actual subtopic IDs
-    if (resolvedSubtopicIds && resolvedSubtopicIds.length > 0) {
-      const isUuid = (val: string) =>
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
-
-      const uuidSubtopicIds = resolvedSubtopicIds.filter(isUuid);
-      const assignments =
-        uuidSubtopicIds.length > 0
-          ? await prisma.scriptAssignment.findMany({
-              where: {
-                OR: [
-                  { id: { in: uuidSubtopicIds } },
-                  { scriptId: { in: uuidSubtopicIds } },
-                ],
-              },
-              include: { script: true },
-            })
-          : [];
-
-      const candidateSubtopicIds = new Set<string>();
-      for (const id of resolvedSubtopicIds) {
-        const matchingSa = assignments.find((a) => a.id === id || a.scriptId === id);
-        if (matchingSa?.script?.subtopicId) {
-          candidateSubtopicIds.add(matchingSa.script.subtopicId);
-        } else {
-          candidateSubtopicIds.add(id);
-        }
-      }
-
-      // Query active subtopics by ID or slug
-      const foundSubtopics = await prisma.subtopic.findMany({
-        where: {
-          OR: [
-            { id: { in: Array.from(candidateSubtopicIds) } },
-            { slug: { in: Array.from(candidateSubtopicIds) } },
-          ],
-          isActive: true,
-        },
-        select: { id: true, slug: true, topicId: true },
-      });
-
-      // If not directly matched, check if passed IDs match lessonScript slugs or UUIDs
-      if (foundSubtopics.length === 0) {
-        const scripts = await prisma.lessonScript.findMany({
-          where: {
-            OR: [
-              { slug: { in: Array.from(candidateSubtopicIds) } },
-              ...(uuidSubtopicIds.length > 0 ? [{ id: { in: uuidSubtopicIds } }] : []),
-            ],
-          },
-          select: { subtopicId: true, topicId: true },
-        });
-        const scriptSubtopicIds = scripts
-          .map((s) => s.subtopicId)
-          .filter((id): id is string => !!id);
-        if (scriptSubtopicIds.length > 0) {
-          const subsFromScripts = await prisma.subtopic.findMany({
-            where: {
-              OR: [
-                { id: { in: scriptSubtopicIds } },
-                { slug: { in: scriptSubtopicIds } },
-              ],
-              isActive: true,
-            },
-            select: { id: true, slug: true, topicId: true },
-          });
-          if (subsFromScripts.length > 0) {
-            foundSubtopics.push(...subsFromScripts);
-          }
-        }
-      }
-
-      if (foundSubtopics.length > 0) {
-        resolvedSubtopicIds = foundSubtopics.map(s => s.id);
-        if (!resolvedTopicId) {
-          resolvedTopicId = foundSubtopics[0].topicId;
-        }
-      } else {
-        throw new PublicError('Selected subtopics are unavailable. Please update your selection.');
-      }
-      if (foundSubtopics.length !== candidateSubtopicIds.size) {
-        throw new PublicError('Some selected subtopics are unavailable. Please update your selection.');
-      }
-    }
-
-    // 3. If no subtopicIds resolved yet, load all active subtopics for resolvedTopicId
-    if (resolvedTopicId && (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0)) {
-      const topicSubtopics = await prisma.subtopic.findMany({
-        where: {
-          topicId: resolvedTopicId,
-          isActive: true,
-        },
-        select: { id: true },
-        orderBy: { sequence: 'asc' },
-      });
-      if (topicSubtopics.length > 0) {
-        resolvedSubtopicIds = topicSubtopics.map((s) => s.id);
-      }
-    }
-
-    if (topicId && (!resolvedSubtopicIds || !resolvedSubtopicIds.length)) {
-      throw new PublicError('No available subtopics in this topic. Choose another topic.');
-    }
-    // 4. Global live curriculum fallback if still empty
-    if (!resolvedSubtopicIds || resolvedSubtopicIds.length === 0) {
-      const { LiveCurriculumService } = await import('../../curriculum/services/live-curriculum.service');
-      const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
-      const allSubtopics = liveUniverse.flatMap((u) => u.subtopics.map((s) => s.id));
-      if (allSubtopics.length === 0) {
-        throw new PublicError('No live topics or subtopics currently available for practice.');
-      }
-      resolvedSubtopicIds = allSubtopics;
-      if (!resolvedTopicId && liveUniverse.length > 0) {
-        resolvedTopicId = liveUniverse[0].topicId;
-      }
-    }
-
-    if (!resolvedTopicId && resolvedSubtopicIds.length > 0) {
-      const sub = await prisma.subtopic.findUnique({
-        where: { id: resolvedSubtopicIds[0] },
-      });
-      resolvedTopicId = sub?.topicId;
-    }
-
-    if (!resolvedTopicId) {
-      resolvedTopicId = 'qa-foundations';
-    }
-
-    // Resolve Topic and verify active
-    const topic = await prisma.topic.findFirst({
-      where: {
-        OR: [
-          { id: resolvedTopicId },
-          { slug: resolvedTopicId },
-        ],
-      },
-      include: { subject: true },
-    });
-
-    if (!topic || !topic.isActive || (topic.subject && !topic.subject.isActive)) {
-      throw new PublicError(`Topic "${resolvedTopicId}" is inactive or not found.`);
-    }
-
-    resolvedTopicId = topic.id;
-
-    log('info','practice_session_service.createSession.info');
-
-    // 2. Select 10 Questions
-    const questions = await practiceSelectionService.selectQuestionsForPractice(
-      userId,
-      resolvedSubtopicIds,
-      10,
-      smartPicks
-    );
-    if (questions.length !== 10) throw new PublicError('A practice session requires 10 questions.');
-
-    log('info','practice_session_service.createSession.info');
-
-    // 3. Create Session in PostgreSQL
-    return await prisma.$transaction(async (tx) => {
-      const session = await tx.practiceSession.create({
-        data: {
-          userId,
-          subjectId: topic.subjectId,
-          topicId: topic.id,
-          subtopicIds: resolvedSubtopicIds,
-          status: 'ACTIVE',
-          currentIndex: 0,
-          totalQuestions: questions.length,
-          correctCount: 0,
-          totalTimeMs: 0,
-          xpAwarded: 0,
-        },
-      });
-
-      for (let i = 0; i < questions.length; i++) {
-        await tx.practiceSessionQuestion.create({
-          data: {
-            sessionId: session.id,
-            questionId: questions[i].id,
-            sequence: i + 1,
-            isAnswered: false,
-          },
-        });
-      }
-
-      return await this.getSession(session.id, userId, tx);
-    });
+  public async createSession(userId: string, topicId?: string, subtopicIds?: string[], smartPicks = false, requestKey: string = randomUUID()) {
+    const scope = await resolveScope({ topicId, subtopicIds, smartPicks });
+    const preparation = await startPreparation({ users: [userId], mode: 'PRACTICE', tier: 'UNRANKED', requestKey, scope });
+    return publicPreparation(preparation);
   }
 
   /**
@@ -254,13 +53,14 @@ export class PracticeSessionService {
         return match.questionSnapshot ? Object.fromEntries(matchQuestions({ ...match, questionSet: { setQuestions: [] } }).map(q => [q.id, q])) : undefined;
       }
       if (source.replaySourceType !== 'PRACTICE') throw new PublicError('This replay source is unavailable.');
-      source = await db.practiceSession.findFirst({ where: { id, userId }, select: { replaySourceType: true, replaySourceId: true, isFriendlyDuel:true, friendlyDuel:{select:{status:true,questionSnapshot:true}} } });
+      source = await db.practiceSession.findFirst({ where: { id, userId }, select: { replaySourceType: true, replaySourceId: true, questionSnapshot:true, isFriendlyDuel:true, friendlyDuel:{select:{status:true,questionSnapshot:true}} } });
       if (!source) throw new PublicError('This replay source is unavailable.');
       if ((source as any).isFriendlyDuel) {
         const duel = (source as any).friendlyDuel;
         if (!duel || !['COMPLETED','CANCELLED','EXPIRED','ABANDONED'].includes(duel.status)) throw new PublicError('Finish the friendly duel before opening its Practice replay.');
         return duel.questionSnapshot as Record<string,any>;
       }
+      if ((source as any).questionSnapshot) return (source as any).questionSnapshot as Record<string,any>;
     }
     throw new PublicError('This replay source chain is too long.');
   }
@@ -290,7 +90,8 @@ export class PracticeSessionService {
     // Sanitize question data so correct answer is NOT leaked to client before answer
     const sanitizedQuestions = session.questions.filter((sq: any) => !session.isFriendlyDuel || sq.sequence <= session.currentIndex + 1).map((sq: any) => {
       const isAnswered = sq.isAnswered;
-      const q = rankedReplay?.[sq.questionId] ?? session.friendlyDuel?.questionSnapshot?.[sq.questionId] ?? sq.question;
+      const q = rankedReplay?.[sq.questionId] ?? session.questionSnapshot?.[sq.questionId] ?? session.friendlyDuel?.questionSnapshot?.[sq.questionId] ?? sq.question;
+      if (session.questionSnapshot && !session.questionSnapshot[sq.questionId]) throw new PublicError('This session snapshot is unavailable.');
       if (rankedReplay && !rankedReplay[sq.questionId]) throw new PublicError('This replay question is unavailable.');
       return {
         id: sq.id,
@@ -307,8 +108,9 @@ export class PracticeSessionService {
           difficulty: q.difficulty,
           estimatedTimeSeconds: q.estimatedTimeSeconds,
           calculationMode: q.calculationMode,
+          sourceType: q.sourceType,
           hints: q.hints,
-          pattern: q.pattern,
+          pattern: q.sourceType === 'LUNA' && /mental/i.test(q.pattern ?? '') ? null : q.pattern,
           pyq: q.pyq,
           alternativeExplanation: isAnswered ? q.alternativeExplanation : undefined,
           preferredSolution: isAnswered ? q.preferredSolution : undefined,
@@ -395,8 +197,9 @@ export class PracticeSessionService {
     }
     const deck = session.friendlyDuel?.questionSnapshot as Record<string, any> | undefined;
     if (session.isFriendlyDuel && !deck?.[questionId]) throw new PublicError('This friendly duel deck is unavailable.');
+    if (session.questionSnapshot && !(session.questionSnapshot as Record<string,any>)[questionId]) throw new PublicError('This session snapshot is unavailable.');
     if (rankedReplay && !rankedReplay[questionId]) throw new PublicError('This replay question is unavailable.');
-    const question = rankedReplay?.[questionId] ?? deck?.[questionId] ?? sessionQuestion.question;
+    const question = rankedReplay?.[questionId] ?? (session.questionSnapshot as Record<string, any> | null)?.[questionId] ?? deck?.[questionId] ?? sessionQuestion.question;
     const option = selectedOptionId.trim().toUpperCase();
     if (option !== 'TIMEOUT' && !(question.options as any[]).some(o => o.id === option)) {
       throw new PublicError('Choose a valid option.');

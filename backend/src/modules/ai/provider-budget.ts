@@ -5,11 +5,11 @@ import { PublicError } from '../../security/errors';
 
 // Reserve an upper bound (UTF-8 bytes plus output/thinking budget), never pretend a
 // failed/aborted provider request was free. Daily counters expire; no process-local fallback.
-export async function reserveProvider(tokens:number,timeoutMs:number) {
+export async function reserveProvider(tokens:number,timeoutMs:number,provider='gemini') {
   const client=redisService.getClient();
   if(!client || client.status!=='ready')throw new PublicError('AI generation temporarily unavailable','AI_UNAVAILABLE',503);
   const now=Date.now(), token=randomUUID();
-  const keys=['ai:inflight',`ai:rpm:${Math.floor(now/60000)}`,`ai:tokens:${Math.floor(now/86400000)}`];
+  const keys=['ai:inflight',`ai:${provider}:rpm:${Math.floor(now/60000)}`,`ai:tokens:${Math.floor(now/86400000)}`];
   const result=await client.eval(`
     redis.call('ZREMRANGEBYSCORE',KEYS[1],'-inf',ARGV[1]);
     if redis.call('ZCARD',KEYS[1])>=tonumber(ARGV[2]) then return 1 end;

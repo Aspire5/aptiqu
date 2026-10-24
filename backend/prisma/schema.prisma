@@ -165,6 +165,7 @@ enum ScriptStatus {
 enum QuestionSourceType {
   MANUAL
   AI_GENERATED
+  LUNA @map("Luna")
 
   @@schema("learning")
 }
@@ -380,6 +381,9 @@ model Question {
   generationModel        String?                @map("generation_model")
   generationPromptVersion String?               @map("generation_prompt_version")
   generationJobId        String?                @map("generation_job_id")
+  referenceQuestionId    String?                @map("reference_question_id") @db.Uuid
+  referenceSnapshot      Json?                  @map("reference_snapshot") @db.JsonB
+  generationProfile      String?                @map("generation_profile")
   generatedAt            DateTime?              @map("generated_at")
   reviewedAt             DateTime?              @map("reviewed_at")
 
@@ -512,6 +516,7 @@ model PracticeSession {
   subjectId       String                 @map("subject_id")
   topicId         String                 @map("topic_id")
   subtopicIds     String[]               @map("subtopic_ids")
+  questionSnapshot Json?                @map("question_snapshot") @db.JsonB
   status          PracticeSessionStatus  @default(ACTIVE)
   currentIndex    Int                    @default(0) @map("current_index")
   totalQuestions  Int                    @default(10) @map("total_questions")
@@ -1234,6 +1239,7 @@ model Friendship {
 }
 enum FriendlyDuelStatus {
   PENDING
+  PREPARING
   ACTIVE
   COMPLETED
   REJECTED
@@ -1450,5 +1456,33 @@ model PracticeTimingPolicy {
   maxSeconds Int @default(120) @map("max_seconds")
   version Int @default(1)
   @@map("practice_timing_policy")
+  @@schema("learning")
+}
+
+// Durable, participant-owned preparations. Content is private until admitted.
+model QuestionPreparation {
+  id              String   @id @default(uuid()) @db.Uuid
+  requestKey      String   @unique @map("request_key")
+  userIds         String[] @map("user_ids") @db.Uuid
+  mode            String
+  tier            String
+  state           String   @default("QUEUED")
+  version         Int      @default(0)
+  scope           Json     @db.JsonB
+  manifest        Json?    @db.JsonB
+  callCount       Int      @default(0) @map("call_count")
+  usage           Json     @default("[]") @db.JsonB
+  workerToken     String?  @map("worker_token") @db.Uuid
+  resultSetId     String?  @map("result_set_id") @db.Uuid
+  resultSessionId String?  @map("result_session_id") @db.Uuid
+  resultSnapshot  Json?    @map("result_snapshot") @db.JsonB
+  errorCode       String?  @map("error_code")
+  deadline        DateTime
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([state, deadline])
+  @@index([userIds], type: Gin)
+  @@map("question_preparations")
   @@schema("learning")
 }

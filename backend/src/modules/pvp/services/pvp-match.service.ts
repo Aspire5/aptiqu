@@ -4,7 +4,8 @@ import { pvpMatchInclude, PvpInternalMatch, requireParticipant, serializeMatch }
 import { PvpError } from '../pvp.errors';
 import { lockUsers } from '../../social/friends.service';
 import { prisma } from '../../../config/prisma';
-import { pvpSetGenerationService } from '../../ai/services/pvp-set-generation.service';
+import type { publicPreparation } from '../../ai/luna/preparations';
+import { matchTier, PROFILE } from '../../ai/luna/contracts';
 import { XpService } from '../../xp/xp.service';
 import { XpPolicy } from '../../xp/xp.policy';
 import { matchQuestions, freezeQuestions } from '../ranked/ranked-questions';
@@ -46,25 +47,22 @@ export class PvpMatchService {
 
   /**
    * Creates a new match between two paired players.
-   * Selects an appropriate 10-Question PvP Set or generates a new one on-demand.
+   * Prepares ten fresh reviewed questions before the existing atomic admission.
    */
-  public async createMatch(player1Id: string, player2Id: string, claim?: QueueClaim & { isActive: () => boolean }): Promise<PvpInternalMatch> {
+  public async createMatch(player1Id: string, player2Id: string, claim?: QueueClaim & { isActive: () => boolean }, notify?: (status: ReturnType<typeof publicPreparation>) => void, unratedActive: () => boolean = () => true): Promise<PvpInternalMatch> {
     if (player1Id === player2Id) throw new PvpError('Two different players are required.', 'INVALID_PARTICIPANTS', 400);
     if (this.activation().enabled && !claim) throw new PvpError('Rated admission requires a valid queue claim.', 'QUEUE_CLAIM_REQUIRED', 409);
     if (claim && (claim.a.userId !== player1Id || claim.b.userId !== player2Id || !claim.isActive())) throw new PvpError('Match search expired. Please retry.', 'QUEUE_CLAIM_LOST');
     const admissionId = claim?.id ?? randomUUID();
-    // 1. Select a PvP Question Set
-    let questionSet = await this.selectPvPSetForPlayers(player1Id, player2Id);
-    if (!questionSet) {
-      // On-demand generate fresh set
-      questionSet = await pvpSetGenerationService.generatePvpQuestionSet();
+    // Content is always fresh; the durable job owns all provider work outside admission locks.
+    const existingAdmission = await this.db.pvpMatch.findUnique({ where: { id: admissionId } });
+    if (existingAdmission) {
+      const details = await this.getMatchDetails(admissionId);
+      if (![player1Id,player2Id].every(id=>details.players.some(p=>p.userId===id))) throw new PvpError('Conflicting queue claim.','QUEUE_CLAIM_CONFLICT');
+      return details;
     }
-
-    if (!questionSet) {
-      throw new Error('Failed to obtain or generate a valid PvP Question Set.');
-    }
-
-    const questionSnapshot = freezeQuestions(questionSet.setQuestions.map(q => q.question));
+    const { questionSet, preparationId, questionSnapshot } = await this.prepareQuestions(player1Id,player2Id,admissionId,claim,notify,unratedActive);
+    const frozenQuestions=matchQuestions({questionSnapshot:questionSnapshot as Prisma.JsonValue,ratingMode:'RATED',questionSet:{setQuestions:[]}});
 
     // 2. Persist PvpMatch and PvpMatchPlayer
     try {
@@ -83,6 +81,9 @@ export class PvpMatchService {
         } else {
           await eligibility.inspect(player1Id, 0, tx); await eligibility.inspect(player2Id, 0, tx);
         }
+        if (!claim && !unratedActive()) throw new PvpError('Match preparation expired.','QUEUE_STALE');
+        const contentCount = await tx.question.count({where:{OR:frozenQuestions.map(q=>({id:q.id,subjectId:q.subjectId,topicId:q.topicId,subtopicId:q.subtopicId})),sourceType:'LUNA',generationJobId:preparationId,status:'PUBLISHED',generationProfile:PROFILE,subtopic:{isActive:true},topic:{isActive:true},subject:{isActive:true}}});
+        if(contentCount !== 10) throw new PvpError('Question preparation changed. Please retry.','INVALID_QUESTION_SET');
         const admission = await this.seasons.admit(tx, [player1Id, player2Id]);
         const { admittedAt, policy, ...assignment } = { policy: RANKED_POLICY, ...admission };
         if (claim && (!claim.isActive() || admission.ratingMode !== claim.a.ratingMode || (admission.ratingMode === 'RATED' && admission.seasonId !== claim.a.seasonId))) throw new PvpError('Season or queue claim changed. Search again.', 'QUEUE_STALE');
@@ -148,122 +149,21 @@ export class PvpMatchService {
     }
   }
 
-  /**
-   * Selects a published PvP set, preferring one unseen by both players.
-   * Strictly excludes any set containing questions from inactive subjects, topics, or subtopics.
-   */
-  private async selectPvPSetForPlayers(player1Id: string, player2Id: string) {
-    // 1. Prefer set unseen by both players (all questions active)
-    const unseenBoth = await this.db.$queryRaw<Array<{ id: string }>>`
-      SELECT qs.id FROM learning.pvp_question_sets qs
-      WHERE qs.status = 'PUBLISHED' AND qs.question_count = 10 AND (SELECT count(*) FROM learning.pvp_question_set_questions psq WHERE psq.set_id = qs.id) = 10
-        AND NOT EXISTS (
-          SELECT 1 FROM learning.pvp_player_set_history h
-          WHERE h.question_set_id = qs.id AND h.user_id IN (${player1Id}::uuid, ${player2Id}::uuid)
-        )
-        AND NOT EXISTS (
-          SELECT 1 FROM learning.pvp_question_set_questions psq
-          JOIN learning.questions q ON q.id = psq.question_id
-          JOIN learning.subtopics st ON st.id = q.subtopic_id
-          JOIN learning.topics t ON t.id = q.topic_id
-          JOIN learning.subjects s ON s.id = q.subject_id
-          WHERE psq.set_id = qs.id
-            AND (st.is_active = false OR t.is_active = false OR s.is_active = false)
-        )
-      ORDER BY qs.updated_at ASC LIMIT 1;
-    `;
+  private async prepareQuestions(player1Id:string,player2Id:string,admissionId:string,claim?:QueueClaim & {isActive:()=>boolean},notify?:(status:ReturnType<typeof publicPreparation>)=>void,unratedActive:()=>boolean=()=>true) {
+    const { startPreparation, waitForPreparation, publicPreparation } = await import('../../ai/luna/preparations');
+    const { resolveScope } = await import('../../ai/luna/references');
+    const tier = claim?.a.ratingMode === 'RATED' ? matchTier(claim.a.league,claim.b.league) : 'UNRANKED';
+    const scope = await resolveScope({});
+    const pending = await startPreparation({users:[player1Id,player2Id],mode:claim?.a.ratingMode === 'RATED'?'RANKED':'UNRANKED',tier,requestKey:admissionId,scope});
+    notify?.(publicPreparation(pending));
+    const ready = await waitForPreparation(pending,claim?.isActive ?? unratedActive,notify);
+    const questionSet = ready.resultSetId ? await this.db.pvpQuestionSet.findFirst({where:{id:ready.resultSetId,sourceType:'LUNA',generationJobId:ready.id,status:'PUBLISHED',questionCount:10},include:{setQuestions:{include:{question:true},orderBy:{sequence:'asc'}}}}) : null;
+    if (!questionSet || questionSet.setQuestions.length !== 10 || questionSet.setQuestions.some(s=>s.question.generationJobId!==ready.id||s.question.sourceType!=='LUNA'||s.question.generationProfile!==PROFILE)) throw new PvpError('Question preparation failed. Please try again.','INVALID_QUESTION_SET');
 
-    let selectedSetId = unseenBoth[0]?.id;
-
-    // 2. Fallback: unseen by at least one (all questions active)
-    if (!selectedSetId) {
-      const unseenOne = await this.db.$queryRaw<Array<{ id: string }>>`
-        SELECT qs.id FROM learning.pvp_question_sets qs
-        WHERE qs.status = 'PUBLISHED' AND qs.question_count = 10 AND (SELECT count(*) FROM learning.pvp_question_set_questions psq WHERE psq.set_id = qs.id) = 10
-          AND (
-            NOT EXISTS (
-              SELECT 1 FROM learning.pvp_player_set_history h
-              WHERE h.question_set_id = qs.id AND h.user_id = ${player1Id}::uuid
-            )
-            OR NOT EXISTS (
-              SELECT 1 FROM learning.pvp_player_set_history h
-              WHERE h.question_set_id = qs.id AND h.user_id = ${player2Id}::uuid
-            )
-          )
-          AND NOT EXISTS (
-            SELECT 1 FROM learning.pvp_question_set_questions psq
-            JOIN learning.questions q ON q.id = psq.question_id
-            JOIN learning.subtopics st ON st.id = q.subtopic_id
-            JOIN learning.topics t ON t.id = q.topic_id
-            JOIN learning.subjects s ON s.id = q.subject_id
-            WHERE psq.set_id = qs.id
-              AND (st.is_active = false OR t.is_active = false OR s.is_active = false)
-          )
-        ORDER BY qs.updated_at ASC LIMIT 1;
-      `;
-      selectedSetId = unseenOne[0]?.id;
-    }
-
-    // 3. Fallback: least recently used published set (all questions active)
-    if (!selectedSetId) {
-      const lru = await this.db.$queryRaw<Array<{ id: string }>>`
-        SELECT qs.id FROM learning.pvp_question_sets qs
-        WHERE qs.status = 'PUBLISHED' AND qs.question_count = 10 AND (SELECT count(*) FROM learning.pvp_question_set_questions psq WHERE psq.set_id = qs.id) = 10
-          AND NOT EXISTS (
-            SELECT 1 FROM learning.pvp_question_set_questions psq
-            JOIN learning.questions q ON q.id = psq.question_id
-            JOIN learning.subtopics st ON st.id = q.subtopic_id
-            JOIN learning.topics t ON t.id = q.topic_id
-            JOIN learning.subjects s ON s.id = q.subject_id
-            WHERE psq.set_id = qs.id
-              AND (st.is_active = false OR t.is_active = false OR s.is_active = false)
-          )
-        ORDER BY qs.updated_at ASC LIMIT 1;
-      `;
-      selectedSetId = lru[0]?.id;
-    }
-
-    if (!selectedSetId) return null;
-
-    const questionSet = await this.db.pvpQuestionSet.findUnique({
-      where: { id: selectedSetId },
-      include: {
-        setQuestions: {
-          include: {
-            question: {
-              include: {
-                subtopic: true,
-                topic: {
-                  include: {
-                    subject: true,
-                  },
-                },
-              },
-            },
-          },
-          orderBy: { sequence: 'asc' },
-        },
-      },
-    });
-
-    if (!questionSet || questionSet.questionCount !== 10 || questionSet.setQuestions.length !== 10) {
-      return null;
-    }
-
-    // Explicit defense-in-depth: discard if any question belongs to an inactive subtopic, topic, or subject
-    const hasInactive = questionSet.setQuestions.some(
-      (sq) =>
-        sq.question.status !== 'PUBLISHED' ||
-        !sq.question?.subtopic?.isActive ||
-        !sq.question?.topic?.isActive ||
-        !sq.question?.topic?.subject?.isActive
-    );
-
-    if (hasInactive || new Set(questionSet.setQuestions.map(q => q.questionId)).size !== 10) {
-      return null;
-    }
-
-    return questionSet;
+    if(!ready.resultSnapshot||typeof ready.resultSnapshot!=='object'||Array.isArray(ready.resultSnapshot))throw new PvpError('Frozen questions unavailable.','INVALID_QUESTION_SET');
+    const snapshot=ready.resultSnapshot as Record<string,unknown>;
+    const questionSnapshot=freezeQuestions(questionSet.setQuestions.map(q=>snapshot[q.questionId]));
+    return {questionSet,preparationId:ready.id,questionSnapshot};
   }
 
   /** Internal only. Every REST/WS consumer must use an explicit public serializer. */

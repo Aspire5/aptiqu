@@ -5,6 +5,7 @@ import { PVP_REVIEW_SYSTEM_INSTRUCTION } from '../prompts/pvp-review.prompt';
 import { PRACTICE_GENERATION_SYSTEM_INSTRUCTION } from '../prompts/practice-generation.prompt';
 import { PRACTICE_REVIEW_SYSTEM_INSTRUCTION } from '../prompts/practice-review.prompt';
 import { DAILY_CHALLENGE_GENERATION_SYSTEM_INSTRUCTION } from '../prompts/daily-challenge-generation.prompt';
+import { GENERATION_INSTRUCTION, REVIEW_INSTRUCTION } from '../luna/prompts';
 
 export interface PromptDefinition {
   key: string;
@@ -190,6 +191,16 @@ Output your complete response in two clearly demarcated JSON blocks:
 `.trim();
 
 export const DEFAULT_PROMPT_DEFINITIONS: Record<string, PromptDefinition> = {
+  LUNA_GENERATION_V1: {
+    key: 'LUNA_GENERATION_V1', title: 'Luna fresh question generation', category: 'SERVER_GENERATION',
+    description: 'Ten fresh anchored questions, full hints and explanations, 1–60 second estimates.',
+    defaultPrompt: GENERATION_INSTRUCTION, variables: [{name:'slots',description:'Immutable reference, pattern, difficulty and answer-position manifest'}],
+  },
+  LUNA_REVIEW_V1: {
+    key: 'LUNA_REVIEW_V1', title: 'Luna independent question review', category: 'SERVER_REVIEW',
+    description: 'Independent mathematical, suitability and supporting-content review per stable slot.',
+    defaultPrompt: REVIEW_INSTRUCTION, variables: [{name:'candidates',description:'Candidates and original reference slots'}],
+  },
   PVP_GENERATION: {
     key: 'PVP_GENERATION',
     title: 'PvP Arena Question Generator',

@@ -5,7 +5,7 @@ import { prisma } from '../../config/prisma';
 import { Queue, Worker } from 'bullmq';
 import { duelsService } from './duels.service';
 export async function reconcileDueDuels(limit=100) {
-  const due=await prisma.friendlyDuel.findMany({where:{OR:[{status:'PENDING',expiresAt:{lte:new Date()}},{status:'ACTIVE',matchExpiresAt:{lte:new Date()}}]},select:{id:true},orderBy:{expiresAt:'asc'},take:Math.min(100,Math.max(1,limit))});
+  const due=await prisma.friendlyDuel.findMany({where:{OR:[{status:{in:['PENDING','PREPARING']},expiresAt:{lte:new Date()}},{status:'ACTIVE',matchExpiresAt:{lte:new Date()}}]},select:{id:true},orderBy:{expiresAt:'asc'},take:Math.min(100,Math.max(1,limit))});
   for(const duel of due) await duelsService.expire(duel.id);
   return due.length;
 }

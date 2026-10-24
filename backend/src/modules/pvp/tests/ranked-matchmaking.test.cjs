@@ -46,7 +46,7 @@ test('ordered DB admission rejects a stale claimed estimate before creating any 
  const {RankedEligibilityService}=f.load(path.join(__dirname,'../ranked/ranked-eligibility.service.ts')),{PvpMatchService}=f.load(path.join(__dirname,'../services/pvp-match.service.ts'));
  const eligibility=new RankedEligibilityService(f.db,activation,runtime),tickets=await Promise.all(f.users.map(id=>eligibility.inspect(id,1)));
  let writes=0;f.db.pvpMatch={findUnique:async()=>null,create:async()=>{writes++;throw new Error('Unexpected admission');}};
- const service=new PvpMatchService(f.db,()=>new Date(f.now()),activation,runtime);service.selectPvPSetForPlayers=async()=>({id:'set',setQuestions:fixture().state().match.questionSet.setQuestions});
+ const service=new PvpMatchService(f.db,()=>new Date(f.now()),activation,runtime);service.prepareQuestions=async()=>({preparationId:'prepared',questionSet:{id:'set',setQuestions:fixture().state().match.questionSet.setQuestions},questionSnapshot:{version:1,questions:fixture().state().match.questionSet.setQuestions.map(q=>q.question)}});
  const claim={id:f.matchId,a:entry(f.users[0],tickets[0]),b:entry(f.users[1],tickets[1]),isActive:()=>true};a.rating+=32;a.version++;
  await assert.rejects(service.createMatch(...f.users,claim),e=>e.code==='QUEUE_STALE');assert.equal(writes,0);
 });
@@ -58,7 +58,7 @@ test('a midnight boundary during admission cannot commit the old queue season in
  const original=f.db.$queryRaw;let clocks=0,writes=0;
  f.db.$queryRaw=async(query,...args)=>{if(Array.isArray(query)&&query.join('').includes('clock_timestamp')&&++clocks===3)f.setTime(f.now()+1);return original(query,...args);};
  f.db.pvpMatch={findUnique:async()=>null,create:async()=>{writes++;throw new Error('Unexpected admission');}};
- const service=new PvpMatchService(f.db,()=>new Date(f.now()),activation,runtime);service.selectPvPSetForPlayers=async()=>({id:'set',setQuestions:fixture().state().match.questionSet.setQuestions});
+ const service=new PvpMatchService(f.db,()=>new Date(f.now()),activation,runtime);service.prepareQuestions=async()=>({preparationId:'prepared',questionSet:{id:'set',setQuestions:fixture().state().match.questionSet.setQuestions},questionSnapshot:{version:1,questions:fixture().state().match.questionSet.setQuestions.map(q=>q.question)}});
  const claim={id:f.matchId,a:entry(f.users[0],tickets[0]),b:entry(f.users[1],tickets[1]),isActive:()=>true};
  await assert.rejects(service.createMatch(...f.users,claim),e=>e.code==='QUEUE_STALE');assert.equal(writes,0);
 });

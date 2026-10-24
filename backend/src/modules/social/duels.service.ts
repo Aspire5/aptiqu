@@ -10,7 +10,9 @@ export function friendlyResult(sessions: { userId: string; correctCount: number;
 import { Prisma } from '@prisma/client';
 import { prisma } from '../../config/prisma';
 import { lockUsers, friendPair, publicUser, publicUserSelect } from './friends.service';
-import { resolveDuelScope, selectDuelQuestions } from './duel.selection';
+import { resolveDuelScope } from './duel.selection';
+import { ENV } from '../../config/env';
+import { startPreparation, preparationStatus, ACTIVE_STATES } from '../ai/luna/preparations';
 import { socialError, socialTransport } from './social.transport';
 import { XpService } from '../xp/xp.service';
 
@@ -21,7 +23,7 @@ export class DuelsService {
     const result = await prisma.$transaction(async tx => {
       const changed = await tx.$queryRaw<{ requester_id: string; recipient_id: string }[]>`
         UPDATE learning.friendly_duels SET status=CASE WHEN status='PENDING' THEN 'EXPIRED'::learning."FriendlyDuelStatus" ELSE 'ABANDONED'::learning."FriendlyDuelStatus" END
-        WHERE id=${id}::uuid AND ((status='PENDING' AND expires_at <= NOW()) OR (status='ACTIVE' AND match_expires_at <= NOW()))
+        WHERE id=${id}::uuid AND ((status IN ('PENDING','PREPARING') AND expires_at <= NOW()) OR (status='ACTIVE' AND match_expires_at <= NOW()))
         RETURNING requester_id,recipient_id`;
       if (changed.length) {
         await tx.friendlyDuelSeat.deleteMany({ where: { duelId: id } });
@@ -47,6 +49,7 @@ export class DuelsService {
       if (await tx.pvpMatchPlayer.count({ where: { userId: { in: [userId, targetId] }, match: { OR: [{ status: { in: ['STARTING','IN_PROGRESS','QUESTION_ACTIVE','QUESTION_TRANSITION'] } }, { ratingMode: 'RATED', settlement: null }] } } })) throw socialError('One of you is playing Ranked. Please try later.', 409);
       const friendship = await tx.friendship.findUnique({ where: { lowId_highId: pair } });
       if (friendship?.status !== 'ACCEPTED') throw socialError('Only friends can be invited to a duel.', 403);
+      if (await tx.questionPreparation.count({where:{userIds:{hasSome:[userId,targetId]},state:{in:ACTIVE_STATES},deadline:{gt:new Date()}}})) throw socialError('One of you is preparing questions. Please try later.',409);
       // Release expired reservations under the same pair locks. Database seats
       // enforce one outstanding/active duel per user across all API instances.
       const expired = await tx.$queryRaw<{ id: string }[]>(Prisma.sql`
@@ -69,6 +72,19 @@ export class DuelsService {
     const allowed = await prisma.friendlyDuel.findFirst({ where: { id, OR: [{ requesterId: user }, { recipientId: user }] }, select: { id: true } });
     if (!allowed) throw socialError('Duel not found.', 404);
     await this.expire(id);
+    const preparing=await prisma.friendlyDuel.findUnique({where:{id}});
+    if(preparing?.status==='PREPARING'){
+      const job=await prisma.questionPreparation.findFirst({where:{mode:'FRIENDLY',scope:{path:['duelId'],equals:id}},orderBy:{createdAt:'desc'}});
+      if(job && (['FAILED','EXPIRED','CANCELLED'].includes(job.state)||job.state!=='READY'&&job.deadline<=new Date()))await this.abandon(user,id);
+      else if(job?.state==='QUEUED')await preparationStatus(user,job.id);
+      else if(!job){
+        // Recover an accepted invitation interrupted between PREPARING and queue dispatch.
+        try {
+          const scope={subtopicIds:await resolveDuelScope(preparing.subtopicIds),smartPicks:preparing.smartPicks,duelId:id};
+          await startPreparation({users:[preparing.requesterId,preparing.recipientId],mode:'FRIENDLY',tier:'UNRANKED',requestKey:`duel-${id}`,scope});
+        }catch{await this.abandon(user,id);}
+      }
+    }
     const duel = await prisma.friendlyDuel.findFirst({ where: { id, OR: [{ requesterId: user }, { recipientId: user }] },
       include: { requester: { select: publicUserSelect }, recipient: { select: publicUserSelect },
         sessions: { select: { id: true, userId: true, status: true, correctCount: true, currentIndex: true, totalTimeMs: true, xpAwarded: true } } } });
@@ -83,51 +99,40 @@ export class DuelsService {
     const initial = await prisma.friendlyDuel.findUnique({ where: { id } });
     if (!initial || ![initial.requesterId, initial.recipientId].includes(user)) throw socialError('Duel not found.', 404);
     if (action === 'cancel' ? initial.requesterId !== user : initial.recipientId !== user) throw socialError('This action is not permitted.', 403);
-    if (initial.status === 'ACTIVE' && action === 'accept') return this.get(user, id);
-    if (initial.status === 'ACTIVE' && action === 'cancel') { await this.abandon(user,id); return this.get(user,id); }
     await this.expire(id);
-    const current = await prisma.friendlyDuel.findUnique({ where: { id } });
-    if (current?.status === 'ACTIVE' && action === 'accept') return this.get(user,id);
-    if (current?.status === 'ACTIVE' && action === 'cancel') { await this.abandon(user,id); return this.get(user,id); }
-    if (current?.status !== 'PENDING') throw socialError('This invitation was already handled or expired.', 409);
-    const selection = action === 'accept' ? await selectDuelQuestions(initial.requesterId, initial.recipientId,
-      await resolveDuelScope(initial.subtopicIds), initial.smartPicks) : null;
-    await prisma.$transaction(async tx => {
+    const afterExpiry = await prisma.friendlyDuel.findUnique({where:{id}});
+    if (!afterExpiry || !['PENDING','PREPARING','ACTIVE'].includes(afterExpiry.status)) throw socialError('This invitation expired or was already handled.',409);
+    const duel = await prisma.$transaction(async tx => {
       await lockUsers(tx, [initial.requesterId, initial.recipientId]);
-      const friend = await tx.friendship.findUnique({ where: { id: initial.friendshipId } });
-      if (action === 'accept' && friend?.status !== 'ACCEPTED') throw socialError('You are no longer friends.', 403);
-      const status = action === 'accept' ? 'ACTIVE' : action === 'reject' ? 'REJECTED' : 'CANCELLED';
-      const fresh = await tx.friendlyDuel.findUnique({ where: { id } });
-      if (action === 'accept' && fresh?.status === 'ACTIVE') return;
-      if (action === 'cancel' && fresh?.status === 'ACTIVE') {
-        await tx.friendlyDuel.update({ where: { id }, data: { status: 'ABANDONED' } });
-        await tx.practiceSession.updateMany({ where: { friendlyDuelId:id, status:'ACTIVE' }, data:{status:'ABANDONED'} });
-        await tx.friendlyDuelSeat.deleteMany({ where: { duelId:id } }); return;
+      const fresh = await tx.friendlyDuel.findUniqueOrThrow({ where: { id } });
+      if (action === 'accept' && ['ACTIVE','PREPARING'].includes(fresh.status)) return fresh;
+      if (fresh.status === 'ACTIVE' || fresh.status === 'PREPARING') {
+        if (action !== 'cancel') throw socialError('This invitation was already handled.',409);
+        await tx.friendlyDuel.update({where:{id},data:{status:'ABANDONED'}});
+        await tx.practiceSession.updateMany({where:{friendlyDuelId:id,status:'ACTIVE'},data:{status:'ABANDONED'}});
+        await tx.friendlyDuelSeat.deleteMany({where:{duelId:id}});
+        await tx.questionPreparation.updateMany({where:{scope:{path:['duelId'],equals:id},state:{in:ACTIVE_STATES}},data:{state:'CANCELLED',version:{increment:1}}});
+        return null;
       }
-      const changed = await tx.$queryRaw<{ id: string }[]>`
-        UPDATE learning.friendly_duels SET status=${status}::learning."FriendlyDuelStatus",
-        match_expires_at=CASE WHEN ${status}='ACTIVE' THEN NOW()+interval '24 hours' ELSE match_expires_at END
-        WHERE id=${id}::uuid AND status='PENDING' AND expires_at > NOW() RETURNING id`;
-      if (!changed.length) throw socialError('The invitation expired or was already handled.', 409);
-      if (!selection) { await tx.friendlyDuelSeat.deleteMany({ where: { duelId: id } }); return; }
-      const ids = selection.questions.map(q => q.id);
-      await tx.$queryRaw(Prisma.sql`SELECT id FROM learning.questions WHERE id IN (${Prisma.join(ids.map(id => Prisma.sql`${id}::uuid`))}) ORDER BY id FOR SHARE`);
-      const frozen = await tx.question.findMany({ where: { id: { in: ids }, status:'PUBLISHED',
-        subtopic:{isActive:true},topic:{isActive:true},subject:{isActive:true} } });
-      if(frozen.length !== 10) throw socialError('The question pool changed. Please try again.',409);
-      const snapshot = JSON.parse(JSON.stringify(Object.fromEntries(frozen.map(q => [q.id,q]))));
-      await tx.friendlyDuel.update({ where: { id }, data: { selectionNotes: selection.notes, questionSnapshot:snapshot } });
-      for (const participant of [initial.requesterId, initial.recipientId]) {
-        const session = await tx.practiceSession.create({ data: { userId: participant, friendlyDuelId: id,
-          isFriendlyDuel: true, timerEnabled: initial.timerEnabled, subjectId: selection.questions[0].subjectId,
-          topicId: selection.questions[0].topicId, subtopicIds: initial.subtopicIds, totalQuestions: 10 } });
-        await tx.practiceSessionQuestion.createMany({ data: selection.questions.map((q, i) => ({ sessionId: session.id, questionId: q.id, sequence: i + 1 })) });
+      if (fresh.status !== 'PENDING' || fresh.expiresAt <= new Date()) throw socialError('This invitation expired or was already handled.',409);
+      if (action === 'accept') {
+        const friend = await tx.friendship.findUnique({where:{id:initial.friendshipId}});
+        if(friend?.status !== 'ACCEPTED') throw socialError('You are no longer friends.',403);
+        return tx.friendlyDuel.update({where:{id},data:{status:'PREPARING',expiresAt:new Date(Date.now()+ENV.LUNA.preparationTimeoutMs+30000)}});
       }
+      await tx.friendlyDuel.update({where:{id},data:{status:action === 'reject'?'REJECTED':'CANCELLED'}});
+      await tx.friendlyDuelSeat.deleteMany({where:{duelId:id}});
+      return null;
     });
-    if (action !== 'accept' && this.clearSchedule) await this.clearSchedule(id).catch(() => {});
-    if (action === 'accept' && this.schedule) await this.schedule(id, 86400000).catch(() => {});
+    if (action === 'accept' && duel?.status === 'PREPARING') {
+      try {
+        const scope = {subtopicIds:await resolveDuelScope(initial.subtopicIds),smartPicks:initial.smartPicks,duelId:id};
+        await startPreparation({users:[initial.requesterId,initial.recipientId],mode:'FRIENDLY',tier:'UNRANKED',requestKey:`duel-${id}`,scope});
+        if(this.schedule) await this.schedule(id,ENV.LUNA.preparationTimeoutMs+30000).catch(()=>{});
+      } catch(error) { await this.abandon(user,id); throw error; }
+    } else if(this.clearSchedule) await this.clearSchedule(id).catch(()=>{});
     await socialTransport.notify([initial.requesterId, initial.recipientId], 'DUEL_CHANGED', id);
-    return this.get(user, id);
+    return this.get(user,id);
   }
   async finalizeInTransaction(tx: Prisma.TransactionClient, id: string) {
     const duel = await tx.friendlyDuel.findUnique({ where: { id }, include: { sessions: true } });
@@ -146,8 +151,9 @@ export class DuelsService {
     await prisma.$transaction(async tx => {
       await lockUsers(tx, [initial.requesterId, initial.recipientId]);
       await tx.$queryRaw`SELECT id FROM learning.friendly_duels WHERE id=${id}::uuid FOR UPDATE`;
-      const result = await tx.friendlyDuel.updateMany({ where: { id, status: { in: ['PENDING', 'ACTIVE'] } }, data: { status: 'ABANDONED' } });
+      const result = await tx.friendlyDuel.updateMany({ where: { id, status: { in: ['PENDING', 'PREPARING', 'ACTIVE'] } }, data: { status: 'ABANDONED' } });
       if (result.count) {
+        await tx.questionPreparation.updateMany({where:{scope:{path:['duelId'],equals:id},state:{in:ACTIVE_STATES}},data:{state:'CANCELLED',version:{increment:1}}});
         await tx.practiceSession.updateMany({ where: { friendlyDuelId: id, status: 'ACTIVE' }, data: { status: 'ABANDONED' } });
         await tx.friendlyDuelSeat.deleteMany({ where: { duelId: id } });
       }

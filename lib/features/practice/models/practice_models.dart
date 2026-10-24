@@ -76,6 +76,7 @@ class PracticeQuestionModel {
   final String difficulty;
   final int estimatedTimeSeconds;
   final String calculationMode;
+  final String? sourceType;
   final List<String> hints;
   final String? pattern;
   final String? correctAnswer;
@@ -96,6 +97,7 @@ class PracticeQuestionModel {
     required this.difficulty,
     required this.estimatedTimeSeconds,
     required this.calculationMode,
+    this.sourceType,
     required this.hints,
     this.pattern,
     this.correctAnswer,
@@ -109,6 +111,10 @@ class PracticeQuestionModel {
     this.sourceBook,
     this.sourceChapter,
   });
+
+  String? get calculationBadge => ['LUNA', 'Luna'].contains(sourceType)
+      ? null
+      : calculationMode.toHumanCalculationMode();
 
   factory PracticeQuestionModel.fromJson(Map<String, dynamic> json) {
     List<PracticeOptionModel> opts = [];
@@ -130,6 +136,7 @@ class PracticeQuestionModel {
       estimatedTimeSeconds:
           (json['estimatedTimeSeconds'] as num?)?.toInt() ?? 60,
       calculationMode: json['calculationMode']?.toString() ?? 'MENTAL',
+      sourceType: json['sourceType']?.toString(),
       hints: hintsList,
       pattern: json['pattern']?.toString(),
       correctAnswer: json['correctAnswer']?.toString(),

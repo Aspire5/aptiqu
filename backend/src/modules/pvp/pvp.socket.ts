@@ -3,6 +3,9 @@ import { trustedPeer } from '../../security/trusted-peer';
 import { PublicError } from '../../security/errors';
 import { takeBudget } from '../../security/request-policy';
 import { randomUUID } from 'node:crypto';
+import { ENV } from '../../config/env';
+import { ACTIVE_STATES, publicPreparation } from '../ai/luna/preparations';
+import { prisma } from '../../config/prisma';
 import { rankedRuntime } from './ranked/ranked-runtime';
 import { rankedEligibilityService } from './ranked/ranked-eligibility.service';
 import { RedisRankedQueue } from './ranked/ranked-queue';
@@ -105,6 +108,7 @@ export class PvpSocketServer {
             catch { ws.close(4003, 'Invalid or expired authentication token'); return; }
             clearTimeout(authTimeout);
             this.send(ws, 'AUTH_SUCCESS', { userId: ws.userId });
+            await this.recoverPreparation(ws);
             return;
           }
           if (!ws.userId) throw new PvpError('Authentication required.', 'UNAUTHORIZED', 401);
@@ -128,8 +132,10 @@ export class PvpSocketServer {
         this.userSockets.delete(userId);
         this.bumpQueueIntent(userId);
         const ticket = this.queueOwners.get(userId);
-        this.queueOwners.delete(userId);
-        if (ticket) void this.rankedQueue.cancel(userId, ticket).catch(() => {});
+        if (!this.claiming.has(userId)) {
+          this.queueOwners.delete(userId);
+          if (ticket) void this.rankedQueue.cancel(userId, ticket).catch(() => {});
+        }
         this.matchmakingQueue = this.matchmakingQueue.filter(entry => entry.ws !== ws);
         const redis = redisService.getClient();
         if (!ticket && redis && redisService.getIsConnected()) void redis.zrem('pvp:matchmaking', userId).catch(() => {});
@@ -180,6 +186,21 @@ export class PvpSocketServer {
     if (ws?.readyState !== WebSocket.OPEN) return;
     try { ws.send(JSON.stringify({ event, data, timestamp: new Date().toISOString() })); }
     catch { /* Socket delivery is optional; committed results remain retrievable. */ }
+  }
+
+  private async recoverPreparation(ws: ClientSocket) {
+    if (!ws.userId) return;
+    const row=await prisma.questionPreparation.findFirst({where:{userIds:{has:ws.userId},mode:{in:['RANKED','UNRANKED']},state:{in:[...ACTIVE_STATES,'READY']},createdAt:{gte:new Date(Date.now()-ENV.LUNA.preparationTimeoutMs-60000)}},orderBy:{createdAt:'desc'}});
+    if (!row) return;
+    if(row.resultSetId){
+      const match=await prisma.pvpMatch.findFirst({where:{questionSetId:row.resultSetId,players:{some:{userId:ws.userId}}},select:{id:true}});
+      if(match){ws.matchId=match.id;this.send(ws,'MATCH_FOUND',{matchId:match.id,resume:true,totalQuestions:10});return;}
+    }
+    if (this.claiming.has(ws.userId)) this.send(ws,'QUESTIONS_PREPARING',publicPreparation(row));
+    else {
+      await prisma.questionPreparation.updateMany({where:{id:row.id,state:{in:ACTIVE_STATES}},data:{state:'CANCELLED',errorCode:'OWNERSHIP_LOST',version:{increment:1}}});
+      this.send(ws,'ERROR',{code:'PREPARATION_INTERRUPTED',message:'Match preparation was interrupted. Please search again.'});
+    }
   }
 
   private broadcastToMatch(matchId: string, event: string, payload: unknown) {
@@ -319,9 +340,10 @@ export class PvpSocketServer {
     this.searching = true;
     try {
       for (let count = 0; count < 4 && !this.closed; count++) {
+        if (this.claiming.size >= ENV.LUNA.maxPending * 2) break;
         const claim = await this.rankedQueue.claim();
         if (!claim) break;
-        await this.admitClaim(claim);
+        this.trackQueueWork(this.admitClaim(claim));
       }
     } finally { this.searching = false; }
   }
@@ -339,7 +361,9 @@ export class PvpSocketServer {
     try {
       if (entries.some(e => this.queueOwners.get(e.userId) !== e.token || this.userSockets.get(e.userId)?.readyState !== WebSocket.OPEN)) throw new PvpError('Search expired. Please retry.', 'QUEUE_STALE');
       for (const e of entries) this.send(this.userSockets.get(e.userId), 'QUEUE_STATUS', { status: 'PAIRING' });
-      const match = await pvpMatchService.createMatch(claim.a.userId, claim.b.userId, { ...claim, isActive: () => valid && !this.closed && Date.now() < leaseUntil });
+      const match = await pvpMatchService.createMatch(claim.a.userId, claim.b.userId, { ...claim, isActive: () => valid && !this.closed && Date.now() < leaseUntil }, status => {
+        for (const e of entries) this.send(this.userSockets.get(e.userId),'QUESTIONS_PREPARING',status);
+      });
       // After commit, transport/Redis errors must never hide or undo the match.
       await this.rankedQueue.finish(claim).catch(() => {});
       for (const e of entries) {
@@ -404,7 +428,10 @@ export class PvpSocketServer {
 
     try {
       if (this.userSockets.get(player1Id)?.readyState !== WebSocket.OPEN || this.userSockets.get(player2Id)?.readyState !== WebSocket.OPEN) throw new PvpError('Search again.', 'QUEUE_STALE');
-      const match = await pvpMatchService.createMatch(player1Id, player2Id);
+      const players=[player1Id,player2Id];
+      const match = await pvpMatchService.createMatch(player1Id, player2Id,undefined,status=>{
+        for(const id of players)this.send(this.userSockets.get(id),'QUESTIONS_PREPARING',status);
+      },()=>!this.closed&&players.every(id=>this.claiming.get(id)===claimId));
 
       const ws1 = this.userSockets.get(player1Id);
       const ws2 = this.userSockets.get(player2Id);

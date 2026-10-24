@@ -18,6 +18,7 @@ export class RankedEligibilityService {
     if (!user) throw new PvpError('Authentication required.', 'UNAUTHORIZED', 401);
     if (!user.isRegistrationComplete) throw new PvpError('Complete registration to play Ranked.', 'REGISTRATION_REQUIRED', 403);
     if (await tx.friendlyDuelSeat.count({ where: { userId } })) throw new PvpError('Finish or cancel your friendly duel first.', 'FRIENDLY_DUEL_ACTIVE');
+    if (await tx.questionPreparation.count({where:{userIds:{has:userId},mode:{in:['PRACTICE','FRIENDLY']},state:{in:['QUEUED','GENERATING','REVIEWING','REPAIRING','REREVIEWING','SAVING']},deadline:{gt:new Date()}}})) throw new PvpError('Finish preparing your questions first.','PREPARATION_ACTIVE');
     const active = await tx.pvpMatchPlayer.findFirst({ where: { userId, match: { OR: [
       { status: { in: ['STARTING','IN_PROGRESS','QUESTION_ACTIVE','QUESTION_TRANSITION'] } }, { ratingMode: 'RATED', settlement: null },
     ] } }, select: { matchId: true } });

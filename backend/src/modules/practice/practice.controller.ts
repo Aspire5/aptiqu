@@ -2,7 +2,8 @@ import { publicFailure } from '../../security/public-error';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../middleware/auth.middleware';
 import { practiceSessionService } from './services/practice-session.service';
-import { LiveCurriculumService } from '../curriculum/services/live-curriculum.service';
+import { referenceCatalog } from '../ai/luna/references';
+import { preparationStatus, cancelPreparation } from '../ai/luna/preparations';
 
 export class PracticeController {
   /**
@@ -12,7 +13,7 @@ export class PracticeController {
   // CACHE_CANDIDATE ref=C01 scope=catalog layer=redis ttl=30-60s owner=curriculum
   public static async getLiveTopics(_req: AuthenticatedRequest, res: Response) {
     try {
-      const liveUniverse = await LiveCurriculumService.getAllLiveCurriculumUniverse();
+      const liveUniverse = await referenceCatalog();
       res.status(200).json({
         success: true,
         data: liveUniverse,
@@ -24,7 +25,7 @@ export class PracticeController {
 
   /**
    * POST /api/v1/practice/sessions
-   * Creates an active 10-Question Practice Session.
+   * Enqueues ten fresh questions and immediately returns a durable preparation handle.
    */
   public static async createSession(req: AuthenticatedRequest, res: Response) {
     const userId = req.userId;
@@ -45,14 +46,29 @@ export class PracticeController {
 
 
     try {
-      const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics, smartPicks);
-      res.status(201).json({
+      const requestKey = req.get('Idempotency-Key');
+      if (requestKey && !/^[a-zA-Z0-9_-]{16,100}$/.test(requestKey)) {
+        res.status(400).json({ success:false, message:'Invalid request key.' }); return;
+      }
+      const session = await practiceSessionService.createSession(userId, topicId, resolvedSubtopics, smartPicks, requestKey);
+      res.status(202).json({
         success: true,
         data: session,
       });
     } catch (err: any) {
       publicFailure(res, err);
     }
+  }
+
+  public static async preparation(req: AuthenticatedRequest,res:Response) {
+    try {
+      const status=await preparationStatus(req.userId!,req.params.id as string|undefined);
+      res.json({success:true,data:status});
+    } catch(error){publicFailure(res,error);}
+  }
+  public static async cancelPreparation(req: AuthenticatedRequest,res:Response) {
+    try {res.json({success:true,data:await cancelPreparation(req.userId!,req.params.id as string)});}
+    catch(error){publicFailure(res,error);}
   }
 
   /**

@@ -122,7 +122,8 @@ class PvpLobbyView extends StatelessWidget {
               cacheWidth: cachePx,
               filterQuality: FilterQuality.medium,
               excludeFromSemantics: true,
-              errorBuilder: (_, __, ___) => const SizedBox(height: bannerHeight),
+              errorBuilder: (_, __, ___) =>
+                  const SizedBox(height: bannerHeight),
             ),
           ),
           Positioned.fill(
@@ -151,7 +152,10 @@ class PvpLobbyView extends StatelessWidget {
               runSpacing: 4,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: context.colors.primary.withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(5),
@@ -167,12 +171,13 @@ class PvpLobbyView extends StatelessWidget {
                       const SizedBox(width: 3),
                       Text(
                         'HEAD-TO-HEAD DUEL',
-                        style: (context.type.labelSmall ?? const TextStyle()).copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.4,
-                          fontSize: 9.5,
-                        ),
+                        style: (context.type.labelSmall ?? const TextStyle())
+                            .copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.4,
+                              fontSize: 9.5,
+                            ),
                       ),
                     ],
                   ),
@@ -180,11 +185,12 @@ class PvpLobbyView extends StatelessWidget {
                 if (seasonLabel != null)
                   Text(
                     seasonLabel,
-                    style: (context.type.bodySmall ?? const TextStyle()).copyWith(
-                      color: Colors.white.withValues(alpha: 0.95),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11,
-                    ),
+                    style: (context.type.bodySmall ?? const TextStyle())
+                        .copyWith(
+                          color: Colors.white.withValues(alpha: 0.95),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
                   ),
               ],
             ),
@@ -217,7 +223,9 @@ class PvpLobbyView extends StatelessWidget {
     final percentileLabel = isEnlarged && !isQualified
         ? '${standing?.completed ?? 0}/${standing?.required ?? 5}'
         : (standing?.globalRankPercentile ??
-            (isQualified ? 'Ranked' : (standing?.placementLabel ?? 'Placements 0 of 5')));
+              (isQualified
+                  ? 'Ranked'
+                  : (standing?.placementLabel ?? 'Placements 0 of 5')));
 
     return Container(
       decoration: BoxDecoration(
@@ -283,26 +291,31 @@ class PvpLobbyView extends StatelessWidget {
                 ),
                 child: Text(
                   '$rating Elo',
-                  style: (context.type.labelMedium ?? const TextStyle()).copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: context.colors.primary,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
+                  style: (context.type.labelMedium ?? const TextStyle())
+                      .copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: context.colors.primary,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
                 ),
               ),
               if (isProvisional)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: context.colors.secondaryContainer,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     'Provisional',
-                    style: (context.type.labelSmall ?? const TextStyle()).copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: context.colors.onSecondaryContainer,
-                    ),
+                    style: (context.type.labelSmall ?? const TextStyle())
+                        .copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: context.colors.onSecondaryContainer,
+                        ),
                   ),
                 )
               else if (isUnplayed)
@@ -393,7 +406,9 @@ class PvpLobbyView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
-              color: context.colors.surfaceContainerHighest.withValues(alpha: 0.4),
+              color: context.colors.surfaceContainerHighest.withValues(
+                alpha: 0.4,
+              ),
               borderRadius: BorderRadius.circular(AptiquRadius.control),
             ),
             child: Row(
@@ -468,10 +483,11 @@ class PvpLobbyView extends StatelessWidget {
                   ),
                   Text(
                     '$draws D',
-                    style: (context.type.bodySmall ?? const TextStyle()).copyWith(
-                      color: context.status.warning,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: (context.type.bodySmall ?? const TextStyle())
+                        .copyWith(
+                          color: context.status.warning,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ],
                 if (standing?.peakRating != null) ...[
@@ -552,11 +568,14 @@ class PvpLobbyView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (c.isOpeningMatch.value)
-          const AppStateView(
-            title: 'Match found. Opening…',
+        if (c.isPreparingQuestions.value)
+          AppStateView(
+            title: c.statusMessage.value,
+            message: 'This may take a moment.',
             loading: true,
           )
+        else if (c.isOpeningMatch.value)
+          const AppStateView(title: 'Match found. Opening…', loading: true)
         else if (c.summary.value?.activeMatchId != null)
           AptiquButton(
             label: c.summary.value?.recoveryState == 'RESULT_PENDING'
@@ -607,7 +626,10 @@ class PvpLobbyView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: context.colors.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(6),
@@ -653,9 +675,7 @@ class PvpLobbyView extends StatelessWidget {
                 : 'Find match',
             icon: const Icon(Icons.bolt_rounded),
             isLoading: c.isReplayingMatch.value,
-            onPressed: c.isReplayingMatch.value
-                ? null
-                : c.startMatchmaking,
+            onPressed: c.isReplayingMatch.value ? null : c.startMatchmaking,
           ),
 
         if (c.summary.value != null &&
@@ -745,7 +765,10 @@ class PvpLobbyView extends StatelessWidget {
   }
 
   /// Recent matches section with cards and practice replay
-  Widget _buildRecentMatchesSection(BuildContext context, PvpLobbyController c) {
+  Widget _buildRecentMatchesSection(
+    BuildContext context,
+    PvpLobbyController c,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -768,15 +791,9 @@ class PvpLobbyView extends StatelessWidget {
           ],
         ),
         if (c.historyError.isNotEmpty)
-          SessionNotice(
-            message: c.historyError.value,
-            onRetry: c.fetchHistory,
-          ),
+          SessionNotice(message: c.historyError.value, onRetry: c.fetchHistory),
         if (c.isLoadingHistory.value && c.matchHistory.isEmpty)
-          const AppStateView(
-            title: 'Loading match history',
-            loading: true,
-          )
+          const AppStateView(title: 'Loading match history', loading: true)
         else if (c.matchHistory.isEmpty && c.historyError.isEmpty)
           Container(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -902,10 +919,11 @@ class PvpLobbyView extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       resultText,
-                      style: (context.type.labelSmall ?? const TextStyle()).copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: resultColor,
-                      ),
+                      style: (context.type.labelSmall ?? const TextStyle())
+                          .copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: resultColor,
+                          ),
                     ),
                   ],
                 ),
@@ -922,15 +940,18 @@ class PvpLobbyView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: context.colors.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: context.colors.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  ),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   '${match.score} : ${match.opponentScore}',
-                  style: (context.type.labelMedium ?? const TextStyle()).copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
+                  style: (context.type.labelMedium ?? const TextStyle())
+                      .copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
                 ),
               ),
             ],
@@ -954,10 +975,8 @@ class PvpLobbyView extends StatelessWidget {
                   children: [
                     Text(
                       'vs ${match.opponent.name}',
-                      style: (context.type.bodyLarge ?? const TextStyle()).copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
+                      style: (context.type.bodyLarge ?? const TextStyle())
+                          .copyWith(fontWeight: FontWeight.w600, fontSize: 14),
                     ),
                     Text(
                       '${(match.avgResponseTimeMs / 1000).toStringAsFixed(1)}s avg speed',
@@ -972,10 +991,14 @@ class PvpLobbyView extends StatelessWidget {
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   minimumSize: const Size(0, 36),
                 ),
-                onPressed: match.voided ||
+                onPressed:
+                    match.voided ||
                         match.disposition == 'PENDING' ||
                         c.isReplayingMatch.value ||
                         c.isInQueue.value ||

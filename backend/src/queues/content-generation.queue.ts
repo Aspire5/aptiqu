@@ -32,13 +32,18 @@ export const contentGenQueue = {
 };
 
 /**
- * Background worker with concurrency = 2 to respect Gemini rate limits.
+ * Background worker with bounded concurrency; all providers share admission budgets.
  */
 export async function processContentJob(job: Job) {
     const { name, data } = job;
     log('info','content_generation_queue.processContentJob.info');
 
     switch (name) {
+      case 'luna-preparation': {
+        const { processPreparation } = await import('../modules/ai/luna/preparations');
+        await processPreparation(data.preparationId);
+        return { preparationId: data.preparationId };
+      }
       case 'generate-subtopic-questions': {
         const { subtopicId, count } = data;
         if (typeof subtopicId !== 'string' || !Number.isInteger(count) || count < 1 || count > 50) {

@@ -5,7 +5,7 @@ import { prisma } from '../../../config/prisma';
 import { friendPair, lockUsers, publicUser } from '../friends.service';
 import { friendlyResult, DuelsService } from '../duels.service';
 import { socialTransport } from '../social.transport';
-import { selectDuelQuestions } from '../duel.selection';
+import { resolveDuelScope } from '../duel.selection';
 import { XpService } from '../../xp/xp.service';
 const A = '00000000-0000-4000-8000-000000000001';
 const B = '00000000-0000-4000-8000-000000000002';
@@ -26,10 +26,14 @@ test('public profiles exclude email, Google identity, birthday and personal deta
 test('only accepted friendships can allocate friendly duel seats', async () => {
   const old = prisma.$transaction; const limit = socialTransport.limit; const oldFind = prisma.friendlyDuel.findUnique;
   const universe = LiveCurriculumService.getAllLiveCurriculumUniverse;
+  const qFind=prisma.question.findMany,sFind=prisma.subtopic.findMany,lFind=prisma.lessonScript.findMany;
   let created = false;
   try {
     socialTransport.limit = async () => {};
-    LiveCurriculumService.getAllLiveCurriculumUniverse = (async () => [{subtopics:[{id:'scope'}]}]) as any;
+    LiveCurriculumService.getAllLiveCurriculumUniverse = (async () => [{topicId:'number-system',topicName:'Number System',subtopics:[{id:'scope'}]}]) as any;
+    prisma.question.findMany=(async()=>[{subtopicId:'scope',pattern:'ADD',prompt:'Find the sum.',options:['A','B','C','D'].map((id,i)=>({id,text:String(i)})),correctAnswer:'A',explanation:'Add the values.',method:'Addition'}]) as any;
+    prisma.subtopic.findMany=(async()=>[{id:'scope',slug:'scope'}]) as any;
+    prisma.lessonScript.findMany=(async()=>[]) as any;
     prisma.friendlyDuel.findUnique = (async () => null) as any;
     prisma.$transaction = (async (fn: any) => fn({ $queryRaw:async()=>[],
       friendlyDuel:{findUnique:async()=>null}, pvpMatchPlayer:{count:async()=>0},
@@ -41,28 +45,22 @@ test('only accepted friendships can allocate friendly duel seats', async () => {
     await assert.rejects(service.respond('00000000-0000-4000-8000-000000000003', A, 'accept'), /not found/);
     await assert.rejects(service.respond(A, A, 'accept'), /not permitted/);
     assert.equal(created, false);
-  } finally { prisma.$transaction=old; socialTransport.limit=limit; prisma.friendlyDuel.findUnique=oldFind; LiveCurriculumService.getAllLiveCurriculumUniverse=universe; }
+  } finally { prisma.$transaction=old; socialTransport.limit=limit; prisma.friendlyDuel.findUnique=oldFind; LiveCurriculumService.getAllLiveCurriculumUniverse=universe; prisma.question.findMany=qFind;prisma.subtopic.findMany=sFind;prisma.lessonScript.findMany=lFind; }
 });
-test('AI picks allocate exactly five distinct questions to each player’s weak topics', async () => {
-  const oldRaw=prisma.$queryRaw; const oldFind=prisma.question.findMany;
-  const bank=Array.from({length:10},(_,i)=>({id:`00000000-0000-4000-8000-${String(i+10).padStart(12,'0')}`,
-    topicId:i<5?'weak-a':'weak-b',subjectId:'subject',subtopicId:i<5?'scope-a':'scope-b'}));
+test('duel scope is restricted to pilot topics with usable original references', async () => {
+  const oldUniverse=LiveCurriculumService.getAllLiveCurriculumUniverse;
+  const oldQuestions=prisma.question.findMany, oldSub=prisma.subtopic.findMany,oldScripts=prisma.lessonScript.findMany;
   try {
-    prisma.$queryRaw=(async(query:any)=>[{topicId:query.values.includes(A)?'weak-a':'weak-b'}]) as any;
-    prisma.question.findMany=(async(args:any)=>bank.filter(q=> args.where.subtopicId.in.includes(q.subtopicId)
-      && (!args.where.topicId || args.where.topicId.in.includes(q.topicId))
-      && !args.where.id.notIn.includes(q.id)
-      && (args.where.id.gte ? q.id>=args.where.id.gte : q.id<args.where.id.lt)).slice(0,args.take)) as any;
-    const selected=await selectDuelQuestions(A,B,['scope-a','scope-b'],true);
-    assert.equal(selected.questions.length,10); assert.equal(new Set(selected.questions.map(q=>q.id)).size,10);
-    assert.equal(selected.questions.filter(q=>q.topicId==='weak-a').length,5);
-    assert.equal(selected.questions.filter(q=>q.topicId==='weak-b').length,5);
-    assert.deepEqual(selected.notes,[]);
-    await assert.rejects(selectDuelQuestions(A,B,['scope-a'],true), /Not enough distinct/);
-    prisma.$queryRaw=(async()=>[]) as any;
-    const fallback=await selectDuelQuestions(A,B,['scope-a','scope-b'],true);
-    assert.equal(fallback.notes.length,2); assert.equal(fallback.questions.length,10);
-  } finally { prisma.$queryRaw=oldRaw; prisma.question.findMany=oldFind; }
+    LiveCurriculumService.getAllLiveCurriculumUniverse=(async()=>[{topicId:'number-system',topicName:'Number System',subtopics:[{id:'scope'}]}]) as any;
+    prisma.question.findMany=(async(args:any)=>{
+      assert.deepEqual(args.where.sourceType.in,['MANUAL','AI_GENERATED']);
+      return [{id:A,subtopicId:'scope',pattern:'ADDITION',prompt:'Find the sum of 10 and 5.',options:['A','B','C','D'].map((id,i)=>({id,text:String(i+10)})),correctAnswer:'A',explanation:'Add both numbers.',method:'Addition'}];
+    }) as any;
+    prisma.subtopic.findMany=(async()=>[{id:'scope',slug:'scope'}]) as any;
+    prisma.lessonScript.findMany=(async()=>[]) as any;
+    assert.deepEqual(await resolveDuelScope(['scope']),['scope']);
+    await assert.rejects(resolveDuelScope(['other']),/unavailable/);
+  } finally {LiveCurriculumService.getAllLiveCurriculumUniverse=oldUniverse;prisma.question.findMany=oldQuestions;prisma.subtopic.findMany=oldSub;prisma.lessonScript.findMany=oldScripts;}
 });
 test('both players must finish before exactly one 10 XP award per player; repeats do not reward', async () => {
   let status='ACTIVE'; let removed=0;

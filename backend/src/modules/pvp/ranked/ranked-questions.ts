@@ -7,6 +7,13 @@ const questionSchema = z.object({
   pattern: z.string().nullable(), pyq: z.string().nullable(),
   options: z.array(z.object({ id: z.string().min(1), text: z.string() })).min(2),
   correctAnswer: z.string().min(1), explanation: z.string(), method: z.string(),
+  // Optional for old immutable v1 snapshots; new Luna snapshots retain all supporting metadata.
+  hints:z.array(z.string()).optional(), alternativeExplanation:z.string().nullable().optional(),
+  estimatedTimeSeconds:z.number().int().optional(), calculationMode:z.string().optional(),
+  subjectId:z.string().optional(), topicId:z.string().optional(), subtopicId:z.string().optional(),
+  sourceType:z.string().optional(), generationModel:z.string().nullable().optional(),
+  generationPromptVersion:z.string().nullable().optional(), generationJobId:z.string().nullable().optional(),
+  referenceQuestionId:z.string().nullable().optional(), generationProfile:z.string().nullable().optional(),
 });
 export type MatchQuestion = z.infer<typeof questionSchema>;
 const snapshotSchema = z.object({ version: z.literal(1), questions: z.array(questionSchema).length(10) }).strict();

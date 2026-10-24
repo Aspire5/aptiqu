@@ -25,6 +25,7 @@ class PvpLobbyController extends GetxController {
   final standingError = ''.obs, standingStatus = ''.obs;
   final isLoadingStanding = false.obs,
       isPairing = false.obs,
+      isPreparingQuestions = false.obs,
       searchExpanded = false.obs,
       queueUncertain = false.obs;
   final hasMoreHistory = false.obs;
@@ -86,7 +87,9 @@ class PvpLobbyController extends GetxController {
       queueError = ''.obs,
       historyError = ''.obs;
   final RxInt secondsInQueue = 0.obs;
-  Timer? _queueTimer, _cancelTimer;
+  Timer? _queueTimer, _cancelTimer, _preparationReconnect;
+  String? _preparationId;
+  int _preparationVersion = -1;
   int _queueGeneration = 0;
   final RxList<PvpMatchHistoryItemModel> matchHistory =
       <PvpMatchHistoryItemModel>[].obs;
@@ -105,6 +108,9 @@ class PvpLobbyController extends GetxController {
         matchHistory.clear();
         isInQueue.value = false;
         isPairing.value = false;
+        isPreparingQuestions.value = false;
+        _preparationReconnect?.cancel();
+        _preparationReconnect = null;
         isCancelling.value = false;
         isOpeningMatch.value = false;
         isReplayingMatch.value = false;
@@ -146,6 +152,26 @@ class PvpLobbyController extends GetxController {
     if (!_owned) return;
     final data = event['data'] as Map<String, dynamic>? ?? {};
     switch (event['event']) {
+      case 'AUTH_SUCCESS':
+        _preparationReconnect?.cancel();
+        _preparationReconnect = null;
+        break;
+      case 'QUESTIONS_PREPARING':
+        final id = data['id'] as String?;
+        final version = (data['version'] as num?)?.toInt() ?? 0;
+        if (id == _preparationId && version < _preparationVersion) break;
+        _preparationId = id;
+        _preparationVersion = version;
+        isPreparingQuestions.value = true;
+        isPairing.value = true;
+        isInQueue.value = true;
+        isCancelling.value = false;
+        queueUncertain.value = false;
+        queueError.value = '';
+        _cancelTimer?.cancel();
+        _stopQueueTimer();
+        statusMessage.value = 'Finalising your questions…';
+        break;
       case 'QUEUE_STATUS':
         if (data['waitedMs'] is num) {
           secondsInQueue.value = ((data['waitedMs'] as num).toInt() / 1000)
@@ -178,6 +204,8 @@ class PvpLobbyController extends GetxController {
         }
         break;
       case 'MATCH_FOUND':
+        isPreparingQuestions.value = false;
+        _preparationReconnect?.cancel();
         if (isOpeningMatch.value) return;
         _stopQueueTimer();
         _cancelTimer?.cancel();
@@ -186,8 +214,27 @@ class PvpLobbyController extends GetxController {
         isInQueue.value = false;
         _openMatch(data);
         break;
-      case 'ERROR':
       case 'CONNECTION_LOST':
+        if (isPreparingQuestions.value) {
+          statusMessage.value = 'Reconnecting to your questions…';
+          _preparationReconnect ??= Timer.periodic(const Duration(seconds: 3), (
+            _,
+          ) {
+            if (_owned) unawaited(_socketService.connect());
+          });
+          unawaited(_socketService.connect());
+          break;
+        }
+        queueUncertain.value = isPairing.value || isInQueue.value;
+        isPairing.value = false;
+        isInQueue.value = false;
+        queueError.value = 'Ranked connection interrupted. Please reconnect.';
+        _stopQueueTimer();
+        break;
+      case 'ERROR':
+        isPreparingQuestions.value = false;
+        _preparationReconnect?.cancel();
+        _preparationReconnect = null;
         queueUncertain.value = isPairing.value || isInQueue.value;
         isPairing.value = false;
         unawaited(fetchSummary());
@@ -381,6 +428,7 @@ class PvpLobbyController extends GetxController {
     _presentationWorker?.dispose();
     AppRouter.overlayGate.setTask(this, false);
     _sub?.cancel();
+    _preparationReconnect?.cancel();
     _queueTimer?.cancel();
     _cancelTimer?.cancel();
     super.onClose();

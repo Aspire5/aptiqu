@@ -50,6 +50,9 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
     });
     timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
+      if (duel?['status'] == 'PREPARING' && elapsed.elapsed.inSeconds >= 2) {
+        load();
+      }
       if (duel?['status'] == 'PENDING' &&
           remaining - elapsed.elapsedMilliseconds <= 0 &&
           !expiryChecked) {
@@ -77,7 +80,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
     try {
       final data = await social.api.get('duels/${widget.id}');
       if (!mounted) return;
-      if (data['status'] != 'PENDING') timer?.cancel();
+      if (!['PENDING', 'PREPARING'].contains(data['status'])) timer?.cancel();
       setState(() {
         duel = data;
         error = null;
@@ -189,7 +192,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
         duel?['requester']['id'] ==
         Get.find<AuthController>().currentUser.value?.id;
     final pending = expected == 'PENDING';
-    if (!pending && expected != 'ACTIVE') return;
+    if (!pending && expected != 'ACTIVE' && expected != 'PREPARING') return;
     confirming = true;
     final proceed = await showDialog<bool>(
       context: context,
@@ -255,11 +258,12 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
           ? null
           : (d['sessions'] as List).where((s) => s['userId'] == me).firstOrNull;
       final pending = d?['status'] == 'PENDING';
+      final preparing = d?['status'] == 'PREPARING';
       final requester = d?['requester']['id'] == me;
       return PopScope(
-        canPop: !pending && !busy,
+        canPop: !pending && !preparing && !busy,
         onPopInvokedWithResult: (popped, _) {
-          if (!popped && pending && !busy) {
+          if (!popped && (pending || preparing) && !busy) {
             confirmLeave(context, fromBack: true);
           }
         },
@@ -272,7 +276,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
               onPressed: busy
                   ? null
                   : () {
-                      if (pending) {
+                      if (pending || preparing) {
                         confirmLeave(context, fromBack: true);
                       } else {
                         Navigator.of(context).maybePop();
@@ -335,6 +339,12 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
                         '$seconds seconds ${requester ? 'to respond' : 'to accept or reject'}',
                         style: context.type.bodyLarge,
                       ),
+                    if (preparing)
+                      const AppStateView(
+                        title: 'Finalising your questions…',
+                        message: 'This may take a moment.',
+                        loading: true,
+                      ),
                     if (d['status'] == 'EXPIRED')
                       Text(
                         'The invitation expired after 60 seconds.',
@@ -370,7 +380,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
                       Text('$note', style: context.type.bodyMedium),
                     ],
                     const SizedBox(height: 16),
-                    if (pending || d['status'] == 'ACTIVE')
+                    if (pending || preparing || d['status'] == 'ACTIVE')
                       Text(
                         '10 XP each when both finish. No Ranked rewards.',
                         style: context.type.bodyMedium?.copyWith(
@@ -425,7 +435,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
                         isLoading: busy,
                         onPressed: busy ? null : accept,
                       ),
-                    if (pending || d['status'] == 'ACTIVE')
+                    if (pending || preparing || d['status'] == 'ACTIVE')
                       Padding(
                         padding: const EdgeInsets.only(top: 12),
                         child: OutlinedButton(
@@ -453,6 +463,7 @@ class _DuelRoomScreenState extends State<DuelRoomScreen> {
     },
   );
   String _outcome(Map<String, dynamic> d, String? me) => switch (d['status']) {
+    'PREPARING' => 'Preparing your duel',
     'EXPIRED' => 'Invitation expired',
     'REJECTED' => 'Invitation declined',
     'CANCELLED' => 'Invitation cancelled',
